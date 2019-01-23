@@ -18,3 +18,27 @@ System.NotImplementedException: No se puede implementar el método o la operación
    en SisComWeb.Repository.DatabaseSql.Dispose() en d:\Datos\Proyectos\JELAF\Sistema-Comercial-Web\Fuentes\SisComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 252
    en SisComWeb.Repository.ClientePasajesRepository.ListarTodos() en d:\Datos\Proyectos\JELAF\Sistema-Comercial-Web\Fuentes\SisComercialWeb\SisComWeb.Repository\ClientePasajesRepository.cs:línea 41
    en SisComWeb.Business.ClientePasajesLogic.ListarTodos() en d:\Datos\Proyectos\JELAF\Sistema-Comercial-Web\Fuentes\SisComercialWeb\SisComWeb.Business\ClientePasajesLogic.cs:línea 18
+2019-01-22 11:06:15,775 ERROR SisComWeb.Services.SisComServices - Filtrar
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Services.SisComServices.Filtrar(String id) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Services\SisComServices.svc.cs:línea 38
+2019-01-22 11:08:24,130 ERROR SisComWeb.Services.SisComServices - Filtrar
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Services.SisComServices.Filtrar(String id) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Services\SisComServices.svc.cs:línea 38
+2019-01-22 11:09:18,607 ERROR SisComWeb.Services.SisComServices - Filtrar
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Services.SisComServices.Filtrar(String id) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Services\SisComServices.svc.cs:línea 38
+2019-01-22 11:09:32,487 ERROR SisComWeb.Services.SisComServices - Filtrar
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Services.SisComServices.Filtrar(String id) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Services\SisComServices.svc.cs:línea 38

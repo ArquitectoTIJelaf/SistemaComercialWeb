@@ -33,7 +33,24 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "DELETE", UriTemplate = "Eliminar", ResponseFormat = WebMessageFormat.Json)]
         Response<object> Eliminar();
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario/{CodiUsuario}/{Password}", ResponseFormat = WebMessageFormat.Json)]
+        ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaOficinas", ResponseFormat = WebMessageFormat.Json)]
+        ResListaOficina ListaOficinas();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaServicios", ResponseFormat = WebMessageFormat.Json)]
+        ResListaServicio ListaServicios();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaPuntosVenta", ResponseFormat = WebMessageFormat.Json)]
+        ResListaPuntoVenta ListaPuntosVenta();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaEmpresas", ResponseFormat = WebMessageFormat.Json)]
+        ResListaEmpresa ListaEmpresas();
     }
 }

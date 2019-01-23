@@ -14,7 +14,7 @@ namespace SisComWeb.Repository
             var response = new Response<List<ClientePasajesEntity>>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "usp_BuscarTodosCliente";
+                db.ProcedureName = "scwsp_ListarSucursales";
                 var Lista = new List<ClientePasajesEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {

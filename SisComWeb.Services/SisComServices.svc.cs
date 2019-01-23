@@ -59,5 +59,72 @@ namespace SisComWeb.Services
         {
             throw new NotImplementedException();
         }
+
+        public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
+        {
+
+            try
+            {
+                return UsuarioPasajesLogic.ValidaUsuario(short.Parse(CodiUsuario), Password);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuarioPasaje);
+            }
+
+        }
+
+        public ResListaOficina ListaOficinas()
+        {
+            try
+            {
+                return OficinaPasajesLogic.ListarTodos();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResListaOficina(false, null, Message.MsgErrExcListOficinaPasaje);
+            }
+        }
+
+        public ResListaServicio ListaServicios()
+        {
+            try
+            {
+                return ServicioPasajesLogic.ListarTodos();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResListaServicio(false, null, Message.MsgErrExcListServicioPasaje);
+            }
+        }
+
+        public ResListaPuntoVenta ListaPuntosVenta()
+        {
+            try
+            {
+                return PuntoVentaPasajesLogic.ListarTodos();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVentaPasaje);
+            }
+        }
+
+        public ResListaEmpresa ListaEmpresas()
+        {
+            try
+            {
+                return EmpresaPasajesLogic.ListarTodos();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresaPasaje);
+            }
+        }
     }
 }
