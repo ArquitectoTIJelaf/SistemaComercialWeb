@@ -7,7 +7,6 @@ namespace SisComWeb.Business
 {
     public static class ClientePasajesLogic
     {
-        //XD
         public static ResListaCliente ListarTodos()
         {
             try
