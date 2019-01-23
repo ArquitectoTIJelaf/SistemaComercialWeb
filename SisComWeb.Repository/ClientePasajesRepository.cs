@@ -6,8 +6,6 @@ namespace SisComWeb.Repository
 {
     public static class ClientePasajesRepository
     {
-
-
         #region Metodos No Transaccionales
         public static Response<List<ClientePasajesEntity>> ListarTodos()
         {
@@ -103,7 +101,5 @@ namespace SisComWeb.Repository
         //    return response;
         //}
         //#endregion
-
-
     }
 }
