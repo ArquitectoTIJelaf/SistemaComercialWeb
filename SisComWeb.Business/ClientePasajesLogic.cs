@@ -34,7 +34,5 @@ namespace SisComWeb.Business
                 return new ResFiltroCliente(false, null, Message.MsgErrExcBusqClientePasaje);
             }
         }
-
-
     }
 }
