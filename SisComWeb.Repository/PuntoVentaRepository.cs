@@ -1,30 +1,27 @@
 ﻿using SisComWeb.Entity;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SisComWeb.Repository
 {
-    public static class ServicioPasajesRepository
+    public static class PuntoVentaRepository
     {
         #region Métodos No Transaccionales
-        public static Response<List<ServicioPasajesEntity>> ListarTodos()
+        public static Response<List<PuntoVentaEntity>> ListarTodos()
         {
-            var response = new Response<List<ServicioPasajesEntity>>(false, null, "", false);
+            var response = new Response<List<PuntoVentaEntity>>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListarServicios";
-                var Lista = new List<ServicioPasajesEntity>();
+                db.ProcedureName = "scwsp_ListarPuntosVenta";
+                var Lista = new List<PuntoVentaEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        var entidad = new ServicioPasajesEntity
+                        var entidad = new PuntoVentaEntity
                         {
-                            CodiServicio = Reader.GetTinyIntValue(drlector, "Codi_Servicio"),
+                            CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal"),
+                            CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta"),
                             Descripcion = Reader.GetStringValue(drlector, "Descripcion")
                         };
                         Lista.Add(entidad);

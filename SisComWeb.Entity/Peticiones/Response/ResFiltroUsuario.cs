@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SisComWeb.Entity
+﻿namespace SisComWeb.Entity
 {
     public class ResFiltroUsuario
     {
@@ -12,21 +6,21 @@ namespace SisComWeb.Entity
 
         public string Mensaje { get; set; }
 
-        public UsuarioPasajesEntity Valor { set; get; }
+        public UsuarioEntity Valor { set; get; }
 
         public ResFiltroUsuario()
         {
         }
 
-        public ResFiltroUsuario(bool esCorrecto, UsuarioPasajesEntity valor, string mensaje)
+        public ResFiltroUsuario(bool esCorrecto, UsuarioEntity valor, string mensaje)
         {
-            Valor = (esCorrecto ? valor : new UsuarioPasajesEntity());
+            Valor = (esCorrecto ? valor : new UsuarioEntity());
             Mensaje = mensaje;
         }
 
-        public ResFiltroUsuario(bool esCorrecto, UsuarioPasajesEntity valor, string mensaje, bool estado)
+        public ResFiltroUsuario(bool esCorrecto, UsuarioEntity valor, string mensaje, bool estado)
         {
-            Valor = (esCorrecto ? valor : new UsuarioPasajesEntity());
+            Valor = (esCorrecto ? valor : new UsuarioEntity());
             Mensaje = mensaje;
             Estado = estado;
         }

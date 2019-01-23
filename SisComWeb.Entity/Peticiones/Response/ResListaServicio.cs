@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SisComWeb.Entity
 {
@@ -12,21 +8,21 @@ namespace SisComWeb.Entity
 
         public string Mensaje { get; set; }
 
-        public List<ServicioPasajesEntity> Valor { get; set; }
+        public List<ServicioEntity> Valor { get; set; }
 
         public ResListaServicio()
         {
         }
 
-        public ResListaServicio(bool esCorrecto, List<ServicioPasajesEntity> valor, string mensaje)
+        public ResListaServicio(bool esCorrecto, List<ServicioEntity> valor, string mensaje)
         {
-            Valor = esCorrecto ? valor : new List<ServicioPasajesEntity>();
+            Valor = esCorrecto ? valor : new List<ServicioEntity>();
             Mensaje = mensaje;
         }
 
-        public ResListaServicio(bool esCorrecto, List<ServicioPasajesEntity> valor, string mensaje, bool estado)
+        public ResListaServicio(bool esCorrecto, List<ServicioEntity> valor, string mensaje, bool estado)
         {
-            Valor = esCorrecto ? valor : new List<ServicioPasajesEntity>();
+            Valor = esCorrecto ? valor : new List<ServicioEntity>();
             Mensaje = mensaje;
             Estado = estado;
         }

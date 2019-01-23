@@ -1,26 +1,21 @@
 ﻿using SisComWeb.Entity;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SisComWeb.Repository
 {
-    public static class UsuarioPasajesRepository
+    public static class UsuarioRepository
     {
         #region Métodos no transaccionales
 
-        public static Response<UsuarioPasajesEntity> ValidaUsuario(short CodiUsuario, string Password)
+        public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario, string Password)
         {
-            var response = new Response<UsuarioPasajesEntity>(false, null, "", false);
+            var response = new Response<UsuarioEntity>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarUsuario";
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
                 db.AddParameter("@Pws", DbType.String, ParameterDirection.Input, Password);
-                var entidad = new UsuarioPasajesEntity();
+                var entidad = new UsuarioEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

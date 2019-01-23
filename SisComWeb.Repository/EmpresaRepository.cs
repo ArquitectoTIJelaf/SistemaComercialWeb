@@ -1,28 +1,24 @@
 ﻿using SisComWeb.Entity;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SisComWeb.Repository
 {
-    public static class EmpresaPasajesRepository
+    public static class EmpresaRepository
     {
         #region Métodos No Transaccionales
-        public static Response<List<EmpresaPasajesEntity>> ListarTodos()
+        public static Response<List<EmpresaEntity>> ListarTodos()
         {
-            var response = new Response<List<EmpresaPasajesEntity>>(false, null, "", false);
+            var response = new Response<List<EmpresaEntity>>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarEmpresas";
-                var Lista = new List<EmpresaPasajesEntity>();
+                var Lista = new List<EmpresaEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        var entidad = new EmpresaPasajesEntity
+                        var entidad = new EmpresaEntity
                         {
                             CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa"),
                             RazonSocial = Reader.GetStringValue(drlector, "Razon_Social"),

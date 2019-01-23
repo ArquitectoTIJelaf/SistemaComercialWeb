@@ -10,11 +10,11 @@ namespace SisComWeb.Services
     {
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "Listar", ResponseFormat = WebMessageFormat.Json)]
-        ResListaCliente Listar();
+        ResListaClientePasaje Listar();
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "Filtrar/{id}", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroCliente Filtrar(string id);
+        ResFiltroClientePasaje Filtrar(string id);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "Grabar", ResponseFormat = WebMessageFormat.Json)]
@@ -47,5 +47,9 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaEmpresas", ResponseFormat = WebMessageFormat.Json)]
         ResListaEmpresa ListaEmpresas();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero/{TipoDoc}/{NumeroDoc}", ResponseFormat = WebMessageFormat.Json)]
+        ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
     }
 }
