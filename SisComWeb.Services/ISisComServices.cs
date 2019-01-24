@@ -49,6 +49,8 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListaEmpresas", ResponseFormat = WebMessageFormat.Json)]
         ResListaEmpresa ListaEmpresas();
 
+        #region REGISTRO CLIENTE
+
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
@@ -56,5 +58,7 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request);
+
+        #endregion
     }
 }

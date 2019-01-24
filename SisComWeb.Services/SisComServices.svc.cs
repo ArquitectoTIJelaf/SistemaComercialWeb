@@ -118,6 +118,21 @@ namespace SisComWeb.Services
             }
         }
 
+        #region REGISTRO CLIENTE
+
+        public ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        {
+            try
+            {
+                return ClientePasajeLogic.BuscaPasajero(TipoDoc, NumeroDoc);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
+            }
+        }
+
         public ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request)
         {
             try
@@ -130,5 +145,7 @@ namespace SisComWeb.Services
                 return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
             }
         }
+
+        #endregion
     }
 }
