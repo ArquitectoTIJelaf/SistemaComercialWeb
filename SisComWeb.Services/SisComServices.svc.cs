@@ -129,18 +129,5 @@ namespace SisComWeb.Services
                 return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
             }
         }
-
-        //public Response<bool> GrabaPasajero(ClientePasajeEntity Objeto)
-        //{
-        //    try
-        //    {
-        //        return ClientePasajeLogic.GrabaPasajero(ClientePasajeEntity Objeto);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new Response(false, null, Message.MsgErrExcBusqClientePasaje);
-        //    }
-        //}
     }
 }

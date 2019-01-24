@@ -51,9 +51,5 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
-
-        //[OperationContract]
-        //[WebInvoke(Method = "POST", UriTemplate = "GrabaPasajero", ResponseFormat = WebMessageFormat.Json)]
-        //Response<bool> GrabaPasajero(ClientePasajeEntity Objeto);
     }
 }

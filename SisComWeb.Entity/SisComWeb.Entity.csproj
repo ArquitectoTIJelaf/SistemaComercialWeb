@@ -47,6 +47,7 @@
     <Compile Include="Objects\Entities\ServicioEntity.cs" />
     <Compile Include="Objects\Entities\PuntoVentaEntity.cs" />
     <Compile Include="Objects\Entities\UsuarioEntity.cs" />
+    <Compile Include="Peticiones\Request\ResRequestClientePasaje.cs" />
     <Compile Include="Peticiones\Response\ResFiltroRuc.cs" />
     <Compile Include="Peticiones\Response\ResListaOficina.cs" />
     <Compile Include="Peticiones\Response\ResListaEmpresa.cs" />
@@ -58,9 +59,7 @@
     <Compile Include="Peticiones\Response\ResListaClientePasaje.cs" />
     <Compile Include="Peticiones\Response\ResFiltroUsuario.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Peticiones\Request\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

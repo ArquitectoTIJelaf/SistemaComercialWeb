@@ -8,9 +8,7 @@
 
         public ClientePasajeEntity Valor { set; get; }
 
-        public ResFiltroClientePasaje()
-        {
-        }
+        public ResFiltroClientePasaje() { }
 
         public ResFiltroClientePasaje(bool esCorrecto, ClientePasajeEntity valor, string mensaje)
         {
