@@ -1,4 +1,5 @@
-﻿using SisComWeb.Entity;
+﻿using SisComWeb.Business.ServicioConsultaDNIRUC;
+using SisComWeb.Entity;
 using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
@@ -6,48 +7,61 @@ using System;
 
 namespace SisComWeb.Business
 {
-    public static class ClientePasajeLogic
+    public class ClientePasajeLogic
     {
         public static ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request)
         {
-            ClientePasajeEntity objclientePasajeEntity;
-
             try
             {
+                ClientePasajeEntity objclientePasajeEntity;
+                Response<RucEntity> objEmpresa = new Response<RucEntity>();
+
                 var objPasajero = ClientePasajeRepository.BuscaPasajero(request.ClientePasajeEntity.TipoDoc, request.ClientePasajeEntity.NumeroDoc);
-                var objEmpresa = RucRepository.BuscarEmpresa(request.RucEntity.RucCliente);
 
                 if (objPasajero != null)
                 {
                     if (!string.IsNullOrWhiteSpace(objPasajero.Valor.RucContacto) == false)
                     {
-                        WSDNIRUC.WsConsultaSoapClient ser = new WSDNIRUC.WsConsultaSoapClient();
+                        //Referencia al servicio
+                        WsConsultaSoapClient ser = new WsConsultaSoapClient();
+
                         //Consulta a la SUNAT
-                        var responseSunatRUC = ser.CONSULTAR_RUC(pasajero.Ruc_Cliente);
+                        var responseSunatRUC = ser.CONSULTAR_RUC(objPasajero.Valor.RucContacto);
                         if (string.IsNullOrWhiteSpace(responseSunatRUC.RAZON_SOCIAL) == false && string.IsNullOrWhiteSpace(responseSunatRUC.RUC) == false)
                         {
-                            var responseRuc = oRucDominio.buscar(new RucEntidad { Ruc_Cliente = pasajero.Ruc_Cliente });
+                            objEmpresa = RucRepository.BuscarEmpresa(objPasajero.Valor.RucContacto);
 
-                            if (responseRuc.EsCorrecto = false && responseRuc.Valor != null)
+                            if (objEmpresa.EsCorrecto = false && objEmpresa.Valor != null)
                             {
-                                oRucEntidad.Ruc_Cliente = responseSunatRUC.RUC;
-                                oRucEntidad.Razon_Social = responseSunatRUC.RAZON_SOCIAL;
-                                oRucEntidad.Direccion = "";
+                                objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                objEmpresa.Valor.Direccion = "";
                             }
                             else
                             {
-                                oRucEntidad.Ruc_Cliente = responseSunatRUC.RUC;
-                                oRucEntidad.Razon_Social = responseSunatRUC.RAZON_SOCIAL;
-                                oRucEntidad.Direccion = responseRuc.Valor.Direccion;
+                                objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                objEmpresa.Valor.Direccion = objEmpresa.Valor.Direccion;
                             }
 
+                            var objEmp = new RucEntity
+                            {
+                                RucCliente = responseSunatRUC.RUC,
+                                RazonSocial = responseSunatRUC.RAZON_SOCIAL,
+                                Direccion = objPasajero.Valor.Direccion,
+                                Telefono = objPasajero.Valor.Telefono
+                            };
+
+                            RucRepository.ModificarEmpresa(objEmp);
                         }
                         else
                         {
-                            response.Mensaje = Message.MsgErrNoBusqRucPasajero;
-                            response.Estado = false;
+                            var responses = new ResFiltroClientePasaje
+                            {
+                                Estado = objPasajero.Estado,
+                                Mensaje = objPasajero.Mensaje
+                            };
                         }
-
                     }
 
                     objclientePasajeEntity = new ClientePasajeEntity
@@ -61,7 +75,7 @@ namespace SisComWeb.Business
                         Edad = objPasajero.Valor.Edad,
                         Direccion = objPasajero.Valor.Direccion,
                         Telefono = objPasajero.Valor.Telefono,
-                        RucContacto = objPasajero.Valor.RucContacto,
+                        RucContacto = objEmpresa.Valor.RucCliente
                     };
 
                     var result = ClientePasajeRepository.ModificarPasajero(objclientePasajeEntity);
@@ -94,20 +108,6 @@ namespace SisComWeb.Business
 
                 return response;
 
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
-            }
-        }
-
-        public static ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
-        {
-            try
-            {
-                var response = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
-                return new ResFiltroClientePasaje(response.EsCorrecto, response.Valor, response.Mensaje);
             }
             catch (Exception ex)
             {

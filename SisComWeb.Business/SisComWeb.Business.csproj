@@ -32,6 +32,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,6 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientePasajeLogic.cs" />
+    <Compile Include="Connected Services\ServicioConsultaDNIRUC\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="EmpresaLogic.cs" />
     <Compile Include="OficinaLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,6 +70,40 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Connected Services\ServicioConsultaDNIRUC\SisComWeb.Business.ServicioConsultaDNIRUC.CONSULTAR_DNIResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\SisComWeb.Business.ServicioConsultaDNIRUC.CONSULTAR_RUCResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\SisComWeb.Business.ServicioConsultaDNIRUC.DNI_Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\SisComWeb.Business.ServicioConsultaDNIRUC.RUC_Response.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\WsConsulta.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\ServicioConsultaDNIRUC\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\WsConsulta.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\ServicioConsultaDNIRUC\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
