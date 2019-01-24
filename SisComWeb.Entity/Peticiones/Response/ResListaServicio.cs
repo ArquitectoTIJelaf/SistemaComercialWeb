@@ -16,13 +16,13 @@ namespace SisComWeb.Entity
 
         public ResListaServicio(bool esCorrecto, List<ServicioEntity> valor, string mensaje)
         {
-            Valor = esCorrecto ? valor : new List<ServicioEntity>();
+            Valor = (esCorrecto ? valor : new List<ServicioEntity>());
             Mensaje = mensaje;
         }
 
         public ResListaServicio(bool esCorrecto, List<ServicioEntity> valor, string mensaje, bool estado)
         {
-            Valor = esCorrecto ? valor : new List<ServicioEntity>();
+            Valor = (esCorrecto ? valor : new List<ServicioEntity>());
             Mensaje = mensaje;
             Estado = estado;
         }

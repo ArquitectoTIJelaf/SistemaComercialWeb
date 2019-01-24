@@ -7,6 +7,7 @@ namespace SisComWeb.Repository
     public static class OficinaRepository
     {
         #region Métodos No Transaccionales
+
         public static Response<List<OficinaEntity>> ListarTodos()
         {
             var response = new Response<List<OficinaEntity>>(false, null, "", false);

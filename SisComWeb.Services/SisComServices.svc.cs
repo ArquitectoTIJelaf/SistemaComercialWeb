@@ -9,48 +9,48 @@ namespace SisComWeb.Services
     // NOTE: In order to launch WCF Test Client for testing this service, please select SisComServices.svc or SisComServices.svc.cs at the Solution Explorer and start debugging.
     public class SisComServices : ISisComServices
     {
-        public ResListaClientePasaje Listar()
-        {
-            try
-            {
-                return ClientePasajeLogic.ListarTodos();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaClientePasaje(false, null, Message.MsgErrExcListClientePasaje);
-            }
+        //public ResListaClientePasaje Listar()
+        //{
+        //    try
+        //    {
+        //        return ClientePasajeLogic.ListarTodos();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+        //        return new ResListaClientePasaje(false, null, Message.MsgErrExcListClientePasaje);
+        //    }
 
-        }
+        //}
 
-        public ResFiltroClientePasaje Filtrar(string id)
-        {
-            try
-            {
-                return ClientePasajeLogic.FiltrarxCodigo(int.Parse(id));
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
-            }
+        //public ResFiltroClientePasaje Filtrar(string id)
+        //{
+        //    try
+        //    {
+        //        return ClientePasajeLogic.FiltrarxCodigo(int.Parse(id));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+        //        return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
+        //    }
 
-        }
+        //}
 
-        public Response<object> Grabar()
-        {
-            throw new NotImplementedException();
-        }
+        //public Response<object> Grabar()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Response<object> Modificar()
-        {
-            throw new NotImplementedException();
-        }
+        //public Response<object> Modificar()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Response<object> Eliminar()
-        {
-            throw new NotImplementedException();
-        }
+        //public Response<object> Eliminar()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
         {
@@ -130,9 +130,17 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<ClientePasajeEntity> GrabaPasajero()
-        {
-            throw new NotImplementedException();
-        }
+        //public Response<bool> GrabaPasajero(ClientePasajeEntity Objeto)
+        //{
+        //    try
+        //    {
+        //        return ClientePasajeLogic.GrabaPasajero(ClientePasajeEntity Objeto);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+        //        return new Response(false, null, Message.MsgErrExcBusqClientePasaje);
+        //    }
+        //}
     }
 }
