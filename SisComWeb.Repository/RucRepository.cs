@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -25,6 +24,7 @@ namespace SisComWeb.Repository
                         entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
                         entidad.Telefono = Reader.GetStringValue(drlector, "Telefono");
                     }
+
                     response.EsCorrecto = true;
                     response.Estado = true;
                     response.Valor = entidad;
@@ -34,5 +34,50 @@ namespace SisComWeb.Repository
         }
 
         #endregion
+
+        #region Métodos Transaccionales
+
+        public static Response<bool> GrabarEmpresa(RucEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarEmpresa";
+                db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, entidad.RucCliente);
+                db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Estado = true;
+                response.Valor = true;
+            }
+
+            return response;
+        }
+
+        public static Response<bool> ModificarEmpresa(RucEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificarEmpresa";
+                db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, entidad.RucCliente);
+                db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Estado = true;
+                response.Valor = true;
+            }
+
+            return response;
+        }
+
+        #endregion
+
     }
 }

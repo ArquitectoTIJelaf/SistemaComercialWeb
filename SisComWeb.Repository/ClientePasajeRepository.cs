@@ -5,7 +5,7 @@ namespace SisComWeb.Repository
 {
     public static class ClientePasajeRepository
     {
-        #region MÉTODOS NO TRANSACIONALES
+        #region Métodos No Transaccionales
 
         public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
