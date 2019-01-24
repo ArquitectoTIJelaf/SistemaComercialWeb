@@ -1,5 +1,6 @@
 ﻿using SisComWeb.Business;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Utility;
 using System;
 
@@ -117,11 +118,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        public ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request)
         {
             try
             {
-                return ClientePasajeLogic.BuscaPasajero(TipoDoc, NumeroDoc);
+                return ClientePasajeLogic.GrabarPasajero(request);
             }
             catch (Exception ex)
             {

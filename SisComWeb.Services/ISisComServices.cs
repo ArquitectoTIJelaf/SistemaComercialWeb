@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Peticiones.Request;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -51,5 +52,9 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
+        ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request);
     }
 }

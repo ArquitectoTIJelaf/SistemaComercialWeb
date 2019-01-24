@@ -115,5 +115,20 @@ namespace SisComWeb.Business
                 return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
             }
         }
+
+        public static ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        {
+            try
+            {
+                var response = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
+                return new ResFiltroClientePasaje(response.EsCorrecto, response.Valor, response.Mensaje);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
+            }
+        }
+
     }
 }
