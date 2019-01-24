@@ -7,6 +7,7 @@ namespace SisComWeb.Repository
     public static class PuntoVentaRepository
     {
         #region Métodos No Transaccionales
+
         public static Response<List<PuntoVentaEntity>> ListarTodos()
         {
             var response = new Response<List<PuntoVentaEntity>>(false, null, "", false);

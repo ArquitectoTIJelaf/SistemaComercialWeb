@@ -8,28 +8,28 @@ namespace SisComWeb.Services
     [ServiceContract]
     public interface ISisComServices
     {
-        [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "Listar", ResponseFormat = WebMessageFormat.Json)]
-        ResListaClientePasaje Listar();
+        //[OperationContract]
+        //[WebInvoke(Method = "GET", UriTemplate = "Listar", ResponseFormat = WebMessageFormat.Json)]
+        //ResListaClientePasaje Listar();
+
+        //[OperationContract]
+        //[WebInvoke(Method = "GET", UriTemplate = "Filtrar/{id}", ResponseFormat = WebMessageFormat.Json)]
+        //ResFiltroClientePasaje Filtrar(string id);
+
+        //[OperationContract]
+        //[WebInvoke(Method = "POST", UriTemplate = "Grabar", ResponseFormat = WebMessageFormat.Json)]
+        //Response<object> Grabar();
+
+        //[OperationContract]
+        //[WebInvoke(Method = "PUT", UriTemplate = "Modificar", ResponseFormat = WebMessageFormat.Json)]
+        //Response<object> Modificar();
+
+        //[OperationContract]
+        //[WebInvoke(Method = "DELETE", UriTemplate = "Eliminar", ResponseFormat = WebMessageFormat.Json)]
+        //Response<object> Eliminar();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "Filtrar/{id}", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroClientePasaje Filtrar(string id);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "Grabar", ResponseFormat = WebMessageFormat.Json)]
-        Response<object> Grabar();
-
-        [OperationContract]
-        [WebInvoke(Method = "PUT", UriTemplate = "Modificar", ResponseFormat = WebMessageFormat.Json)]
-        Response<object> Modificar();
-
-        [OperationContract]
-        [WebInvoke(Method = "DELETE", UriTemplate = "Eliminar", ResponseFormat = WebMessageFormat.Json)]
-        Response<object> Eliminar();
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario/{CodiUsuario}/{Password}", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
 
         [OperationContract]
@@ -49,7 +49,11 @@ namespace SisComWeb.Services
         ResListaEmpresa ListaEmpresas();
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero/{TipoDoc}/{NumeroDoc}", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
+
+        //[OperationContract]
+        //[WebInvoke(Method = "POST", UriTemplate = "GrabaPasajero", ResponseFormat = WebMessageFormat.Json)]
+        //Response<bool> GrabaPasajero(ClientePasajeEntity Objeto);
     }
 }
