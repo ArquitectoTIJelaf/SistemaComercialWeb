@@ -1,6 +1,5 @@
 ﻿using SisComWeb.Business.ServicioConsultaDNIRUC;
 using SisComWeb.Entity;
-using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
@@ -9,18 +8,18 @@ namespace SisComWeb.Business
 {
     public class ClientePasajeLogic
     {
-        public static ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request)
+        public static ResFiltroClientePasaje GrabarPasajero(ClientePasajeEntity entidad)
         {
             try
             {
                 ClientePasajeEntity objclientePasajeEntity;
                 Response<RucEntity> objEmpresa = new Response<RucEntity>();
 
-                var objPasajero = ClientePasajeRepository.BuscaPasajero(request.ClientePasajeEntity.TipoDoc, request.ClientePasajeEntity.NumeroDoc);
+                var objPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
 
                 if (objPasajero != null)
                 {
-                    if (!string.IsNullOrWhiteSpace(objPasajero.Valor.RucContacto) == false)
+                    if (string.IsNullOrWhiteSpace(objPasajero.Valor.RucContacto) == false)
                     {
                         //Referencia al servicio
                         WsConsultaSoapClient ser = new WsConsultaSoapClient();
@@ -74,8 +73,8 @@ namespace SisComWeb.Business
                         FechaNacimiento = objPasajero.Valor.FechaNacimiento,
                         Edad = objPasajero.Valor.Edad,
                         Direccion = objPasajero.Valor.Direccion,
-                        Telefono = objPasajero.Valor.Telefono,
-                        RucContacto = objEmpresa.Valor.RucCliente
+                        Telefono = (objPasajero.Valor.Telefono != null) ? objPasajero.Valor.Telefono : string.Empty,
+                        RucContacto = (objEmpresa.Valor.RucCliente != null) ? objEmpresa.Valor.RucCliente : string.Empty
                     };
 
                     var result = ClientePasajeRepository.ModificarPasajero(objclientePasajeEntity);
@@ -84,16 +83,16 @@ namespace SisComWeb.Business
                 {
                     objclientePasajeEntity = new ClientePasajeEntity
                     {
-                        TipoDoc = request.ClientePasajeEntity.TipoDoc,
-                        NumeroDoc = request.ClientePasajeEntity.NumeroDoc,
-                        NombreCliente = request.ClientePasajeEntity.NombreCliente,
-                        ApellidoPaterno = request.ClientePasajeEntity.ApellidoPaterno,
-                        ApellidoMaterno = request.ClientePasajeEntity.ApellidoMaterno,
-                        FechaNacimiento = request.ClientePasajeEntity.FechaNacimiento,
-                        Edad = request.ClientePasajeEntity.Edad,
-                        Direccion = request.ClientePasajeEntity.Direccion,
-                        Telefono = request.ClientePasajeEntity.Telefono,
-                        RucContacto = request.ClientePasajeEntity.RucContacto,
+                        TipoDoc = entidad.TipoDoc,
+                        NumeroDoc = entidad.NumeroDoc,
+                        NombreCliente = entidad.NombreCliente,
+                        ApellidoPaterno = entidad.ApellidoPaterno,
+                        ApellidoMaterno = entidad.ApellidoMaterno,
+                        FechaNacimiento = entidad.FechaNacimiento,
+                        Edad = entidad.Edad,
+                        Direccion = entidad.Direccion,
+                        Telefono = entidad.Telefono,
+                        RucContacto = entidad.RucContacto,
                     };
 
                     var result = ClientePasajeRepository.GrabarPasajero(objclientePasajeEntity);

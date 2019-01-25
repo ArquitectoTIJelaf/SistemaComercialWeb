@@ -120,11 +120,11 @@ namespace SisComWeb.Services
 
         #region REGISTRO CLIENTE
 
-        public ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        public ResFiltroClientePasaje BuscaPasajero(ClientePasajeEntity objeto)
         {
             try
             {
-                return ClientePasajeLogic.BuscaPasajero(TipoDoc, NumeroDoc);
+                return ClientePasajeLogic.BuscaPasajero(objeto.TipoDoc, objeto.NumeroDoc);
             }
             catch (Exception ex)
             {
@@ -133,11 +133,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request)
+        public ResFiltroClientePasaje GrabarPasajero(ClientePasajeEntity entidad)
         {
             try
             {
-                return ClientePasajeLogic.GrabarPasajero(request);
+                return ClientePasajeLogic.GrabarPasajero(entidad);
             }
             catch (Exception ex)
             {

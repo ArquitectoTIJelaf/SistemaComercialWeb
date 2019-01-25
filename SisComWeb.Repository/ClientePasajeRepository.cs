@@ -42,7 +42,7 @@ namespace SisComWeb.Repository
 
         #endregion
 
-        #region MÉTODOS TRANSACIONALES
+        #region Métodos Transaccionales
 
         public static Response<bool> GrabarPasajero(ClientePasajeEntity entidad)
         {

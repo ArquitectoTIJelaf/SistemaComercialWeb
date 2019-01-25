@@ -30,7 +30,7 @@ namespace SisComWeb.Services
         //Response<object> Eliminar();
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario/{CodiUsuario}/{Password}", ResponseFormat = WebMessageFormat.Json)]
         ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
 
         [OperationContract]
@@ -53,11 +53,11 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
+        ResFiltroClientePasaje BuscaPasajero(ClientePasajeEntity objeto);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroClientePasaje GrabarPasajero(ResRequestClientePasaje request);
+        ResFiltroClientePasaje GrabarPasajero(ClientePasajeEntity entidad);
 
         #endregion
     }
