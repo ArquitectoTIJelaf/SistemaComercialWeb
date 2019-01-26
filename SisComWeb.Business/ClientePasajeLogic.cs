@@ -14,52 +14,89 @@ namespace SisComWeb.Business
             {
                 ClientePasajeEntity objclientePasajeEntity;
                 Response<RucEntity> objEmpresa = new Response<RucEntity>();
+                Response<bool> ResultadoEmpresa;
+                Response<bool> resultadoPasajero;
+                string Mensaje = "";
 
                 var objPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
 
-                if (objPasajero != null)
+                if (objPasajero.Valor.NumeroDoc != null)
                 {
-                    if (string.IsNullOrWhiteSpace(objPasajero.Valor.RucContacto) == false)
+                    if (!string.IsNullOrEmpty(objPasajero.Valor.RucContacto))
                     {
+                        objEmpresa = RucRepository.BuscarEmpresa(objPasajero.Valor.RucContacto);
+
                         //Referencia al servicio
-                        WsConsultaSoapClient ser = new WsConsultaSoapClient();
+                        WsConsultaSoapClient Ser = new WsConsultaSoapClient();
 
                         //Consulta a la SUNAT
-                        var responseSunatRUC = ser.CONSULTAR_RUC(objPasajero.Valor.RucContacto);
-                        if (string.IsNullOrWhiteSpace(responseSunatRUC.RAZON_SOCIAL) == false && string.IsNullOrWhiteSpace(responseSunatRUC.RUC) == false)
+                        var responseSunatRUC = Ser.CONSULTAR_RUC(objEmpresa.Valor.RucCliente);
+
+                        if (objEmpresa != null)
                         {
-                            objEmpresa = RucRepository.BuscarEmpresa(objPasajero.Valor.RucContacto);
-
-                            if (objEmpresa.EsCorrecto = false && objEmpresa.Valor != null)
+                            if (!string.IsNullOrEmpty(responseSunatRUC.RAZON_SOCIAL) && !string.IsNullOrEmpty(responseSunatRUC.RUC))
                             {
-                                objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
-                                objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
-                                objEmpresa.Valor.Direccion = "";
+                                if (objEmpresa.EsCorrecto = false && objEmpresa.Valor != null)
+                                {
+                                    objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                    objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                    objEmpresa.Valor.Direccion = "";
+                                }
+                                else
+                                {
+                                    objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                    objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                    objEmpresa.Valor.Direccion = objEmpresa.Valor.Direccion;
+                                }
+
+                                var objEmp = new RucEntity
+                                {
+                                    RucCliente = objEmpresa.Valor.RucCliente,
+                                    RazonSocial = objEmpresa.Valor.RazonSocial,
+                                    Direccion = objEmpresa.Valor.Direccion,
+                                    Telefono = objPasajero.Valor.Telefono
+                                };
+
+                                ResultadoEmpresa = RucRepository.ModificarEmpresa(objEmp);
+
+                                if (ResultadoEmpresa.EsCorrecto == true && ResultadoEmpresa.Estado == true)
+                                {
+                                    Mensaje = "Se modificó correctamente la empresa, ";
+                                }
                             }
-                            else
-                            {
-                                objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
-                                objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
-                                objEmpresa.Valor.Direccion = objEmpresa.Valor.Direccion;
-                            }
-
-                            var objEmp = new RucEntity
-                            {
-                                RucCliente = responseSunatRUC.RUC,
-                                RazonSocial = responseSunatRUC.RAZON_SOCIAL,
-                                Direccion = objPasajero.Valor.Direccion,
-                                Telefono = objPasajero.Valor.Telefono
-                            };
-
-                            RucRepository.ModificarEmpresa(objEmp);
                         }
                         else
                         {
-                            var responses = new ResFiltroClientePasaje
+                            if (!string.IsNullOrEmpty(responseSunatRUC.RAZON_SOCIAL) && !string.IsNullOrEmpty(responseSunatRUC.RUC))
                             {
-                                Estado = objPasajero.Estado,
-                                Mensaje = objPasajero.Mensaje
-                            };
+                                if (objEmpresa.EsCorrecto = false && objEmpresa.Valor != null)
+                                {
+                                    objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                    objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                    objEmpresa.Valor.Direccion = "";
+                                }
+                                else
+                                {
+                                    objEmpresa.Valor.RucCliente = responseSunatRUC.RUC;
+                                    objEmpresa.Valor.RazonSocial = responseSunatRUC.RAZON_SOCIAL;
+                                    objEmpresa.Valor.Direccion = objEmpresa.Valor.Direccion;
+                                }
+
+                                var objEmp = new RucEntity
+                                {
+                                    RucCliente = objEmpresa.Valor.RucCliente,
+                                    RazonSocial = objEmpresa.Valor.RazonSocial,
+                                    Direccion = objEmpresa.Valor.Direccion,
+                                    Telefono = objPasajero.Valor.Telefono
+                                };
+
+                                ResultadoEmpresa = RucRepository.GrabarEmpresa(objEmp);
+
+                                if (ResultadoEmpresa.EsCorrecto == true && ResultadoEmpresa.Estado == true && ResultadoEmpresa.Valor == true)
+                                {
+                                    Mensaje = Mensaje + "Se Insertó correctamente la empresa, ";
+                                }
+                            }
                         }
                     }
 
@@ -74,10 +111,15 @@ namespace SisComWeb.Business
                         Edad = objPasajero.Valor.Edad,
                         Direccion = objPasajero.Valor.Direccion,
                         Telefono = (objPasajero.Valor.Telefono != null) ? objPasajero.Valor.Telefono : string.Empty,
-                        RucContacto = (objEmpresa.Valor.RucCliente != null) ? objEmpresa.Valor.RucCliente : string.Empty
+                        RucContacto = (objEmpresa.Valor != null) ? objEmpresa.Valor.RucCliente : string.Empty,
                     };
 
-                    var result = ClientePasajeRepository.ModificarPasajero(objclientePasajeEntity);
+                    resultadoPasajero = ClientePasajeRepository.ModificarPasajero(objclientePasajeEntity);
+
+                    if (resultadoPasajero.EsCorrecto == true && resultadoPasajero.Estado == true && resultadoPasajero.Valor == true)
+                    {
+                        Mensaje = Mensaje + "Se modificó correctamente el pasajero, ";
+                    }
                 }
                 else
                 {
@@ -95,14 +137,19 @@ namespace SisComWeb.Business
                         RucContacto = entidad.RucContacto,
                     };
 
-                    var result = ClientePasajeRepository.GrabarPasajero(objclientePasajeEntity);
+                    resultadoPasajero = ClientePasajeRepository.GrabarPasajero(objclientePasajeEntity);
+
+                    if (resultadoPasajero.EsCorrecto == true && resultadoPasajero.Estado == true && resultadoPasajero.Valor == true)
+                    {
+                        Mensaje = Mensaje + "Se Insertó correctamente el pasajero.";
+                    }
                 }
 
                 var response = new ResFiltroClientePasaje
                 {
                     Estado = objPasajero.Estado,
-                    Mensaje = objPasajero.Mensaje,
-                    Valor = objPasajero.Valor
+                    Mensaje = Mensaje.Substring(0, Mensaje.Length - 2) + ".",
+                    Valor = objPasajero.Valor,
                 };
 
                 return response;

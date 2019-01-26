@@ -42,3 +42,86 @@ System.FormatException: La cadena de entrada no tiene el formato correcto.
    en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
    en System.Int32.Parse(String s)
    en SisComWeb.Services.SisComServices.Filtrar(String id) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Services\SisComServices.svc.cs:línea 38
+2019-01-25 10:39:34,826 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 66
+2019-01-25 15:23:51,846 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.InvalidOperationException: No se encontró el elemento de extremo predeterminado que hace referencia al contrato 'ServicioConsultaDNIRUC.WsConsultaSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo correspondiente a este contrato en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor()
+   en SisComWeb.Business.ServicioConsultaDNIRUC.WsConsultaSoapClient..ctor() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\Connected Services\ServicioConsultaDNIRUC\Reference.cs:línea 459
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 25
+2019-01-25 15:53:34,704 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.InvalidOperationException: No se encontró el elemento de extremo predeterminado que hace referencia al contrato 'ServicioConsultaDNIRUC.WsConsultaSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo correspondiente a este contrato en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor()
+   en SisComWeb.Business.ServicioConsultaDNIRUC.WsConsultaSoapClient..ctor() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\Connected Services\ServicioConsultaDNIRUC\Reference.cs:línea 459
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 24
+2019-01-25 16:11:40,069 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.InvalidOperationException: No se encontró el elemento de extremo con el nombre 'WsConsultaSoap' y el contrato 'ServicioConsultaDNIRUC.WsConsultaSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo con este nombre en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor(String endpointConfigurationName)
+   en SisComWeb.Business.ServicioConsultaDNIRUC.WsConsultaSoapClient..ctor(String endpointConfigurationName)
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad)
+2019-01-25 16:36:27,580 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.InvalidOperationException: No se encontró el elemento de extremo predeterminado que hace referencia al contrato 'ServicioConsultaDNIRUC.WsConsultaSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo correspondiente a este contrato en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor()
+   en SisComWeb.Business.ServicioConsultaDNIRUC.WsConsultaSoapClient..ctor() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\Connected Services\ServicioConsultaDNIRUC\Reference.cs:línea 459
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 24
+2019-01-25 16:39:52,336 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 65
+2019-01-25 16:41:38,965 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 65
+2019-01-25 16:43:24,056 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 65
+2019-01-25 16:43:41,516 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 65
+2019-01-25 16:46:00,286 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 67
+2019-01-25 16:46:08,879 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 67
+2019-01-25 17:03:29,324 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 66
+2019-01-25 17:03:45,224 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 66

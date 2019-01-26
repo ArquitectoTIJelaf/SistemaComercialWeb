@@ -10,7 +10,7 @@ namespace SisComWeb.Entity
         public string NombreCliente { get; set; }
         public string ApellidoPaterno { get; set; }
         public string ApellidoMaterno { get; set; }
-        public DateTime FechaNacimiento { get; set; }
+        public string FechaNacimiento { get; set; }
         public byte Edad { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }

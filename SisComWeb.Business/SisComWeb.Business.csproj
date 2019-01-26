@@ -69,9 +69,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="Connected Services\ServicioConsultaDNIRUC\SisComWeb.Business.ServicioConsultaDNIRUC.CONSULTAR_DNIResponse.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -86,6 +83,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Connected Services\ServicioConsultaDNIRUC\WsConsulta.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\ServicioConsultaDNIRUC\" />

@@ -26,7 +26,7 @@ namespace SisComWeb.Repository
                         entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes");
                         entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P");
                         entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M");
-                        entidad.FechaNacimiento = Reader.GetDateTimeValue(drlector, "fec_nac");
+                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "fec_nac").ToString("dd/MM/yyyy"));
                         entidad.Edad = Reader.GetTinyIntValue(drlector, "edad");
                         entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono");
