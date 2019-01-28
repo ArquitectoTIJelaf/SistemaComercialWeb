@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Icono de la pestaña -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link href="Lib/Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/login.css" rel="stylesheet" />
+
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="container-fluid py-5 bg">
+        <div class="row justify-content-center">
+            <aside class="col-sm-4 co">
+                <div class="card">
+                    <article class="card-body">
+                        <h4 class="card-title text-center mb-4 mt-1">VENTA COMERCIAL</h4>
+                        <hr>
+                        <p class="text-success text-center">Ingrese sus credenciales </p>
+                        <form class="form-container" style="background: #fff;padding: 30px;border-radius: 10px;box-shadow: 0px, 0px, 10px, 0px, #000;">
+                            <div class="form-group">
+                                <select id="Sucursal" class="form-control" placeholder="ss">
+                                    <option disabled selected hidden>Sucursal</option>
+                                    <option>006 Lima</option>
+                                    <option>001 Tacna</option>
+                                    <option>004 Arequipa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select id="pVenta" class="form-control">
+                                    <option disabled selected hidden>Oficina de Venta</option>
+                                    <option>Paseo la Republica</option>
+                                    <option>28 de Julio</option>
+                                    <option>Plaza Norte</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select id="cajero" class="form-control">
+                                    <option disabled selected hidden>Cajero</option>
+                                    <option>Administrador</option>
+                                    <option>Paola Lopez</option>
+                                    <option>Gloria Zegarra</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" type="password" name="" id="" placeholder="Contraseña">
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block"> INGRESAR </button>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="Lib/JQuery/jquery-3.3.1.min.js"></script>
+    <script src="Lib/Bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
