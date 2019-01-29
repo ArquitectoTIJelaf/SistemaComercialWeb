@@ -30,7 +30,7 @@ namespace SisComWeb.Services
         //Response<object> Eliminar();
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario/{CodiUsuario}/{Password}", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
 
         [OperationContract]
