@@ -1,40 +1,73 @@
-﻿<!DOCTYPE html>
-<html>
+﻿
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon.ico">
+    <title>Template - @ViewBag.Title</title>
+    @*@Styles.Render("~/bundles/css")*@
+    <link href="~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet" />
+    <link href="~/wwwroot/statics/css/animate.css" rel="stylesheet">
+    <link href="~/wwwroot/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css" rel="stylesheet" />
+    <link href="~/wwwroot/statics/css/style.css" rel="stylesheet">
+    <link href="~/wwwroot/statics/css/colors/blue-dark.css" rel="stylesheet">
+    <link href="~/wwwroot/statics/css/custom-style.css" rel="stylesheet">
+    <link href="~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css" rel="stylesheet">
+    @RenderSection("styles", required: false)
+    <script type="text/javascript">
+        var main_globals = {};
+        main_globals.virtualPath = "@HttpContext.Current.Request.ApplicationPath";
+        main_globals.Path = "@HttpContext.Current.Request.Path";
+        main_globals.AbsolutePath = "@HttpContext.Current.Request.Url.AbsolutePath";
+        main_globals.Query = "@HttpContext.Current.Request.Url.Query";
+        main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
+        main_globals.flagDevelop = JSON.parse("true".toLowerCase());
+    </script>
+    <!--CDN-->
+    <!-- <link rel="stylesheet" href="" /> -->
+    <!--CDN-->
 </head>
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+<body class="fix-header">
+    <div class="preloader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+        </svg>
+    </div>
+    <div id="wrapper">
+        @Html.Partial("_LayoutHeader")
+        @Html.Partial("_LayoutSidebar")
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                @{var action = ViewContext.RouteData.Values["controller"].ToString();}
+                @if (action != "Default")
+                {
+                    <div class="row bg-title">
+                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
+                            <h4 class="page-title">@ViewBag.Title</h4>
+                        </div>
+                        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
+                            <ol class="breadcrumb">
+                                <li><a href="javascript:void(0)"><i class="fa fa-home fa-fw"></i>Inicio</a></li>
+                                <li class="active">@(ViewBag.Breadcrum ?? ViewContext.RouteData.Values["action"].ToString())</li>
+                            </ol>
+                        </div>
+                    </div>
+                }
+                @RenderBody()
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                </ul>
-            </div>
+            @Html.Partial("_LayoutFooter")
         </div>
     </div>
-
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
+    @Scripts.Render("~/bundles/js")
+    <!-- CDNJS -->
+    <!-- <script src=""></script> -->
+    <!-- CDNJS -->
+    @RenderSection("scripts", required: false)
 </body>
 </html>
