@@ -50,33 +50,71 @@ namespace SisComWeb.Aplication.Controllers
             {
                 return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
-            
         }
 
         [HttpGet]
         [Route("get-puntosventa")]
-        public string GetPuntosVenta()
+        public async Task<JsonResult> GetPuntosVenta(string CodiSucursal)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "ListaPuntosVenta");
             try
             {
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
                 {
-                    StreamReader reader = new StreamReader(responseStream, System.Text.Encoding.UTF8);
-                    return reader.ReadToEnd();
+                    client.BaseAddress = new Uri(url + "ListaPuntosVenta");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaPuntosVenta/"+ CodiSucursal);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
                 }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["CodiPuntoVenta"],
+                    label = (string)x["Descripcion"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-usuarios")]
+        public async Task<JsonResult> GetUsuarios(string CodiOficina)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
                 {
-                    StreamReader reader = new StreamReader(responseStream, System.Text.Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                    // log errorText
+                    client.BaseAddress = new Uri(url + "ListaPuntosVenta");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaPuntosVenta/" + CodiOficina);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
                 }
-                throw;
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["CodiPuntoVenta"],
+                    label = (string)x["Descripcion"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
 

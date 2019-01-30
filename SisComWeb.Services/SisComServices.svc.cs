@@ -9,6 +9,8 @@ namespace SisComWeb.Services
     // NOTE: In order to launch WCF Test Client for testing this service, please select SisComServices.svc or SisComServices.svc.cs at the Solution Explorer and start debugging.
     public class SisComServices : ISisComServices
     {
+        #region LOGIN
+
         public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
         {
             try
@@ -21,6 +23,10 @@ namespace SisComWeb.Services
                 return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario, false);
             }
         }
+
+        #endregion
+
+        #region OFICINA, SERVICIO, PUNTO DE VENTA Y EMPRESA
 
         public ResListaOficina ListaOficinas()
         {
@@ -48,11 +54,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public ResListaPuntoVenta ListaPuntosVenta()
+        public ResListaPuntoVenta ListaPuntosVenta(string Codi_Sucursal)
         {
             try
             {
-                return PuntoVentaLogic.ListarTodos();
+                return PuntoVentaLogic.ListarTodos(Codi_Sucursal);
             }
             catch (Exception ex)
             {
@@ -73,6 +79,8 @@ namespace SisComWeb.Services
                 return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa, false);
             }
         }
+
+        #endregion
 
         #region REGISTRO CLIENTE
 

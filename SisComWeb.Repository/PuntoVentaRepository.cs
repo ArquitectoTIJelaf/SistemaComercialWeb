@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -8,12 +9,13 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<List<PuntoVentaEntity>> ListarTodos()
+        public static Response<List<PuntoVentaEntity>> ListarTodos(Int16 Codi_Sucursal)
         {
             var response = new Response<List<PuntoVentaEntity>>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosVenta";
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, Codi_Sucursal);
                 var Lista = new List<PuntoVentaEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {

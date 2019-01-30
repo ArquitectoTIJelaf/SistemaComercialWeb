@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using System;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -8,34 +9,66 @@ namespace SisComWeb.Services
     [ServiceContract]
     public interface ISisComServices
     {
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
+        #region LOGIN
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaOficinas", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            UriTemplate = "ValidaUsuario")]
+        ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
+
+        #endregion
+
+        #region OFICINA, SERVICIO, PUNTO DE VENTA Y EMPRESA
+
+        [OperationContract]
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "ListaOficinas")]
         ResListaOficina ListaOficinas();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaServicios", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "ListaServicios")]
         ResListaServicio ListaServicios();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaPuntosVenta", ResponseFormat = WebMessageFormat.Json)]
-        ResListaPuntoVenta ListaPuntosVenta();
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "ListaPuntosVenta/{Codi_Sucursal}")]
+        ResListaPuntoVenta ListaPuntosVenta(string Codi_Sucursal);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaEmpresas", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "ListaEmpresas")]
         ResListaEmpresa ListaEmpresas();
+
+        #endregion
 
         #region REGISTRO CLIENTE
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            UriTemplate = "BuscaPasajero")]
         ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            UriTemplate = "GrabarPasajero")]
         Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
 
         #endregion
@@ -43,7 +76,11 @@ namespace SisComWeb.Services
         #region BÚSQUEDA ITINERARIO
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaItinerarios", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            UriTemplate = "BuscaItinerarios")]
         ResListaItinerario BuscaItinerarios(ItinerarioEntity entidad);
 
         #endregion
