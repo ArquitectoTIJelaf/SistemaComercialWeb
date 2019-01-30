@@ -9,49 +9,6 @@ namespace SisComWeb.Services
     // NOTE: In order to launch WCF Test Client for testing this service, please select SisComServices.svc or SisComServices.svc.cs at the Solution Explorer and start debugging.
     public class SisComServices : ISisComServices
     {
-        //public ResListaClientePasaje Listar()
-        //{
-        //    try
-        //    {
-        //        return ClientePasajeLogic.ListarTodos();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new ResListaClientePasaje(false, null, Message.MsgErrExcListClientePasaje);
-        //    }
-
-        //}
-
-        //public ResFiltroClientePasaje Filtrar(string id)
-        //{
-        //    try
-        //    {
-        //        return ClientePasajeLogic.FiltrarxCodigo(int.Parse(id));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
-        //    }
-
-        //}
-
-        //public Response<object> Grabar()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Response<object> Modificar()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Response<object> Eliminar()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
         {
             try
@@ -61,7 +18,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario);
+                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario, false);
             }
         }
 
@@ -74,7 +31,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaOficina(false, null, Message.MsgErrExcListOficina);
+                return new ResListaOficina(false, null, Message.MsgErrExcListOficina, false);
             }
         }
 
@@ -87,7 +44,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaServicio(false, null, Message.MsgErrExcListServicio);
+                return new ResListaServicio(false, null, Message.MsgErrExcListServicio, false);
             }
         }
 
@@ -100,7 +57,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVenta);
+                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVenta, false);
             }
         }
 
@@ -113,26 +70,26 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa);
+                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa, false);
             }
         }
 
         #region REGISTRO CLIENTE
 
-        public ResFiltroClientePasaje BuscaPasajero(ClientePasajeEntity objeto)
+        public ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
             try
             {
-                return ClientePasajeLogic.BuscaPasajero(objeto.TipoDoc, objeto.NumeroDoc);
+                return ClientePasajeLogic.BuscaPasajero(TipoDoc, NumeroDoc);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
+                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje, false);
             }
         }
 
-        public ResFiltroClientePasaje GrabarPasajero(ClientePasajeEntity entidad)
+        public Response<bool> GrabarPasajero(ClientePasajeEntity entidad)
         {
             try
             {
@@ -141,7 +98,24 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje);
+                return new Response<bool>(false, false, Message.MsgErrExcGrabarClientePasaje, false);
+            }
+        }
+
+        #endregion
+
+        #region BÚSQUEDA ITINERARIO
+
+        public ResListaItinerario BuscaItinerarios(ItinerarioEntity entidad)
+        {
+            try
+            {
+                return ItinerarioLogic.BuscaItinerarios(entidad);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new ResListaItinerario(false, null, Message.MsgErrExcListItinerario, false);
             }
         }
 

@@ -5,7 +5,7 @@ namespace SisComWeb.Repository
 {
     public static class UsuarioRepository
     {
-        #region Métodos no transaccionales
+        #region Métodos No Transaccionales
 
         public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario, string Password)
         {
@@ -28,8 +28,9 @@ namespace SisComWeb.Repository
                         entidad.Nivel = Reader.GetTinyIntValue(drlector, "Nivel");
                     }
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = entidad;
+                    response.Mensaje = "Se encontró correctamente al usuario. ";
+                    response.Estado = true;
                 }
             }
             return response;

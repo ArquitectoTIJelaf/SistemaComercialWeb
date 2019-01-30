@@ -26,8 +26,9 @@ namespace SisComWeb.Repository
                     }
 
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = entidad;
+                    response.Mensaje = "Se encontró correctamente la empresa. ";
+                    response.Estado = true;
                 }
             }
             return response;
@@ -50,8 +51,9 @@ namespace SisComWeb.Repository
                 db.Execute();
 
                 response.EsCorrecto = true;
-                response.Estado = true;
                 response.Valor = true;
+                response.Mensaje = "Se registró correctamente la empresa. ";
+                response.Estado = true;
             }
 
             return response;
@@ -70,8 +72,9 @@ namespace SisComWeb.Repository
                 db.Execute();
 
                 response.EsCorrecto = true;
-                response.Estado = true;
                 response.Valor = true;
+                response.Mensaje = "Se modificó correctamente la empresa. ";
+                response.Estado = true;
             }
 
             return response;

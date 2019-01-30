@@ -3,8 +3,11 @@
     public class Response<T>
     {
         public bool EsCorrecto { get; set; }
+
         public bool Estado { get; set; }
+
         public string Mensaje { get; set; }
+
         public T Valor { set; get; }
 
         public Response()

@@ -40,6 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\Entities\PuntoEntity.cs" />
+    <Compile Include="Objects\Entities\BusEntity.cs" />
+    <Compile Include="Objects\Entities\TurnoViajeEntity.cs" />
+    <Compile Include="Objects\Entities\ItinerarioEntity.cs" />
     <Compile Include="Objects\Entities\ClientePasajeEntity.cs" />
     <Compile Include="Objects\Entities\RucEntity.cs" />
     <Compile Include="Objects\Entities\OficinaEntity.cs" />
@@ -47,8 +51,11 @@
     <Compile Include="Objects\Entities\ServicioEntity.cs" />
     <Compile Include="Objects\Entities\PuntoVentaEntity.cs" />
     <Compile Include="Objects\Entities\UsuarioEntity.cs" />
-    <Compile Include="Peticiones\Request\ResRequestClientePasaje.cs" />
     <Compile Include="Peticiones\Response\ResFiltroRuc.cs" />
+    <Compile Include="Peticiones\Response\ResFiltroBus.cs" />
+    <Compile Include="Peticiones\Response\ResFiltroTurnoViaje.cs" />
+    <Compile Include="Peticiones\Response\ResListaPunto.cs" />
+    <Compile Include="Peticiones\Response\ResListaItinerario.cs" />
     <Compile Include="Peticiones\Response\ResListaOficina.cs" />
     <Compile Include="Peticiones\Response\ResListaEmpresa.cs" />
     <Compile Include="Peticiones\Response\ResListaPuntoVenta.cs" />
@@ -59,7 +66,9 @@
     <Compile Include="Peticiones\Response\ResListaClientePasaje.cs" />
     <Compile Include="Peticiones\Response\ResFiltroUsuario.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Peticiones\Request\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

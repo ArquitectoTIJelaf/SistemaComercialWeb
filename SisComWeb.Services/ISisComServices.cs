@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using SisComWeb.Entity.Peticiones.Request;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -9,28 +8,8 @@ namespace SisComWeb.Services
     [ServiceContract]
     public interface ISisComServices
     {
-        //[OperationContract]
-        //[WebInvoke(Method = "GET", UriTemplate = "Listar", ResponseFormat = WebMessageFormat.Json)]
-        //ResListaClientePasaje Listar();
-
-        //[OperationContract]
-        //[WebInvoke(Method = "GET", UriTemplate = "Filtrar/{id}", ResponseFormat = WebMessageFormat.Json)]
-        //ResFiltroClientePasaje Filtrar(string id);
-
-        //[OperationContract]
-        //[WebInvoke(Method = "POST", UriTemplate = "Grabar", ResponseFormat = WebMessageFormat.Json)]
-        //Response<object> Grabar();
-
-        //[OperationContract]
-        //[WebInvoke(Method = "PUT", UriTemplate = "Modificar", ResponseFormat = WebMessageFormat.Json)]
-        //Response<object> Modificar();
-
-        //[OperationContract]
-        //[WebInvoke(Method = "DELETE", UriTemplate = "Eliminar", ResponseFormat = WebMessageFormat.Json)]
-        //Response<object> Eliminar();
-
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario/{CodiUsuario}/{Password}", ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
 
         [OperationContract]
@@ -52,12 +31,20 @@ namespace SisComWeb.Services
         #region REGISTRO CLIENTE
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroClientePasaje BuscaPasajero(ClientePasajeEntity objeto);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
-        ResFiltroClientePasaje GrabarPasajero(ClientePasajeEntity entidad);
+        Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
+
+        #endregion
+
+        #region BÚSQUEDA ITINERARIO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaItinerarios", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ResListaItinerario BuscaItinerarios(ItinerarioEntity entidad);
 
         #endregion
     }

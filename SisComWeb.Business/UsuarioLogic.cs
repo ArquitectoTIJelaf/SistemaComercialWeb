@@ -12,12 +12,12 @@ namespace SisComWeb.Business
             try
             {
                 var response = UsuarioRepository.ValidaUsuario(CodiUsuario, Password);
-                return new ResFiltroUsuario(response.EsCorrecto, response.Valor, response.Mensaje);
+                return new ResFiltroUsuario(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(UsuarioLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario);
+                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario, false);
             }
         }
     }

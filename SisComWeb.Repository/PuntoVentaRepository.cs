@@ -28,8 +28,9 @@ namespace SisComWeb.Repository
                         Lista.Add(entidad);
                     }
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = Lista;
+                    response.Mensaje = "Se encontró correctamente los puntos de venta. ";
+                    response.Estado = true;
                 }
             }
             return response;
