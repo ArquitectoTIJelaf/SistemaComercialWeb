@@ -1,5 +1,4 @@
-﻿using SisComWeb.Business.ServicioConsultaDNIRUC;
-using SisComWeb.Entity;
+﻿using SisComWeb.Entity;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
