@@ -12,12 +12,12 @@ namespace SisComWeb.Business
             try
             {
                 var response = EmpresaRepository.ListarTodos();
-                return new ResListaEmpresa(response.EsCorrecto, response.Valor, response.Mensaje);
+                return new ResListaEmpresa(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(EmpresaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa);
+                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa, false);
             }
         }
     }

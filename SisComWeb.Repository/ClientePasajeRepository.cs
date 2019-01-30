@@ -33,8 +33,9 @@ namespace SisComWeb.Repository
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto");
                     }
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = entidad;
+                    response.Mensaje = "Se encontró correctamente el pasajero. ";
+                    response.Estado = true;
                 }
             }
             return response;
@@ -44,9 +45,9 @@ namespace SisComWeb.Repository
 
         #region Métodos Transaccionales
 
-        public static Response<bool> GrabarPasajero(ClientePasajeEntity entidad)
+        public static Response<int> GrabarPasajero(ClientePasajeEntity entidad)
         {
-            var response = new Response<bool>(false, false, "", false);
+            var response = new Response<int>(false, 0, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarPasajero";
@@ -64,9 +65,12 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
+                int _outputIdCliente = int.Parse(db.GetParameter("@Id_Clientes").ToString());
+
                 response.EsCorrecto = true;
+                response.Valor = _outputIdCliente;
+                response.Mensaje = "Se registró correctamente el pasajero. ";
                 response.Estado = true;
-                response.Valor = true;
             }
             return response;
         }
@@ -92,8 +96,9 @@ namespace SisComWeb.Repository
                 db.Execute();
 
                 response.EsCorrecto = true;
-                response.Estado = true;
                 response.Valor = true;
+                response.Mensaje = "Se modificó correctamente el pasajero. ";
+                response.Estado = true;
             }
             return response;
         }

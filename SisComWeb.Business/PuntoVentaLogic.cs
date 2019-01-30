@@ -12,12 +12,12 @@ namespace SisComWeb.Business
             try
             {
                 var response = PuntoVentaRepository.ListarTodos();
-                return new ResListaPuntoVenta(response.EsCorrecto, response.Valor, response.Mensaje);
+                return new ResListaPuntoVenta(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(PuntoVentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVenta);
+                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVenta, false);
             }
         }
     }

@@ -27,8 +27,9 @@ namespace SisComWeb.Repository
                         Lista.Add(entidad);
                     }
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = Lista;
+                    response.Mensaje = "Se encontró correctamente las oficinas. ";
+                    response.Estado = true;
                 }
             }
             return response;

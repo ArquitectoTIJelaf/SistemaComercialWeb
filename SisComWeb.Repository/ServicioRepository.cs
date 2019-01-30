@@ -6,7 +6,7 @@ namespace SisComWeb.Repository
 {
     public static class ServicioRepository
     {
-        #region Métodos No Transaccionales
+        #region Métodos no transaccionales
 
         public static Response<List<ServicioEntity>> ListarTodos()
         {
@@ -27,8 +27,9 @@ namespace SisComWeb.Repository
                         Lista.Add(entidad);
                     }
                     response.EsCorrecto = true;
-                    response.Estado = true;
                     response.Valor = Lista;
+                    response.Mensaje = "Se encontró correctamente los servicios. ";
+                    response.Estado = true;
                 }
             }
             return response;

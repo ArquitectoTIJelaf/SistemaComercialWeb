@@ -12,12 +12,12 @@ namespace SisComWeb.Business
             try
             {
                 var response = ServicioRepository.ListarTodos();
-                return new ResListaServicio(response.EsCorrecto, response.Valor, response.Mensaje);
+                return new ResListaServicio(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(OficinaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaServicio(false, null, Message.MsgErrExcListServicio);
+                return new ResListaServicio(false, null, Message.MsgErrExcListServicio, false);
             }
         }
     }
