@@ -10,15 +10,9 @@ namespace SisComWeb.Services
     // NOTE: In order to launch WCF Test Client for testing this service, please select SisComServices.svc or SisComServices.svc.cs at the Solution Explorer and start debugging.
     public class SisComServices : ISisComServices
     {
-<<<<<<< HEAD
         #region BASE
 
         public Response<List<BaseEntity>> ListaOficinas()
-=======
-        #region LOGIN
-
-        public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
->>>>>>> eca434352a135e8a9a42eefca29ea430a03694af
         {
             try
             {
@@ -44,19 +38,11 @@ namespace SisComWeb.Services
             }
         }
 
-<<<<<<< HEAD
-        public Response<List<BaseEntity>> ListaUsuarios(string CodiSucursal, string CodiPuntoVenta)
-=======
-        #endregion
-
-        #region OFICINA, SERVICIO, PUNTO DE VENTA Y EMPRESA
-
-        public ResListaOficina ListaOficinas()
->>>>>>> eca434352a135e8a9a42eefca29ea430a03694af
+        public Response<List<BaseEntity>> ListaUsuarios(string CodiPuntoVenta)
         {
             try
             {
-                return BaseLogic.ListaUsuarios(short.Parse(CodiSucursal), short.Parse(CodiPuntoVenta));
+                return BaseLogic.ListaUsuarios(short.Parse(CodiPuntoVenta));
             }
             catch (Exception ex)
             {
@@ -78,19 +64,11 @@ namespace SisComWeb.Services
             }
         }
 
-<<<<<<< HEAD
         public Response<List<BaseEntity>> ListaEmpresas()
         {
             try
             {
                 return BaseLogic.ListaEmpresas();
-=======
-        public ResListaPuntoVenta ListaPuntosVenta(string Codi_Sucursal)
-        {
-            try
-            {
-                return PuntoVentaLogic.ListarTodos(Codi_Sucursal);
->>>>>>> eca434352a135e8a9a42eefca29ea430a03694af
             }
             catch (Exception ex)
             {

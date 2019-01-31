@@ -83,13 +83,12 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<List<BaseEntity>> ListaUsuarios(short CodiSucursal, short CodiPuntoVenta)
+        public static Response<List<BaseEntity>> ListaUsuarios(short CodiPuntoVenta)
         {
             var response = new Response<List<BaseEntity>>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarUsuarios";
-                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
                 var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())

@@ -36,11 +36,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<BaseEntity>> ListaUsuarios(short CodiSucursal, short CodiPuntoVenta)
+        public static Response<List<BaseEntity>> ListaUsuarios(short CodiPuntoVenta)
         {
             try
             {
-                var response = BaseRepository.ListaUsuarios(CodiSucursal, CodiPuntoVenta);
+                var response = BaseRepository.ListaUsuarios(CodiPuntoVenta);
                 return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
