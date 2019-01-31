@@ -128,3 +128,115 @@ System.NullReferenceException: Referencia a objeto no establecida como instancia
 2019-01-28 17:39:35,748 ERROR SisComWeb.Business.OficinaLogic - ListarTodos
 System.Exception: Se produjo una excepción de tipo 'System.Exception'.
    en SisComWeb.Business.OficinaLogic.ListarTodos() en D:\WS_Git\SistemaComercialWeb\SisComWeb.Business\OficinaLogic.cs:línea 15
+2019-01-30 18:06:33,928 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): La función o el procedimiento scwsp_ListarPuntosVenta tiene demasiados argumentos.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios(Int16 CodiSucursal, Int16 CodiPuntoVenta) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios(Int16 CodiSucursal, Int16 CodiPuntoVenta) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:ebe06c5a-64d3-4b84-98ea-0147e80d7114
+Error Number:8144,State:2,Class:16
+2019-01-30 18:41:25,854 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 200
+2019-01-30 18:50:46,212 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 197
+2019-01-30 18:50:46,263 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.Data.SqlClient.SqlException (0x80131904): No se puede insertar el valor NULL en la columna 'Ruc_Cliente', tabla 'BDPASAJE_N.dbo.Tb_Ruc'. La columna no admite valores NULL. Error de INSERT.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.ClientePasajeRepository.GrabarEmpresa(RucEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ClientePasajeRepository.cs:línea 143
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 151
+ClientConnectionId:3b4a0df1-9879-401a-9c86-418d65b7084c
+Error Number:515,State:2,Class:16
+2019-01-30 18:51:07,861 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 197
+2019-01-30 18:51:07,906 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.Data.SqlClient.SqlException (0x80131904): No se puede insertar el valor NULL en la columna 'Ruc_Cliente', tabla 'BDPASAJE_N.dbo.Tb_Ruc'. La columna no admite valores NULL. Error de INSERT.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.ClientePasajeRepository.GrabarEmpresa(RucEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ClientePasajeRepository.cs:línea 143
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 151
+ClientConnectionId:3b4a0df1-9879-401a-9c86-418d65b7084c
+Error Number:515,State:2,Class:16
+2019-01-30 18:51:12,326 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 197
+2019-01-30 18:51:12,367 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.Data.SqlClient.SqlException (0x80131904): No se puede insertar el valor NULL en la columna 'Ruc_Cliente', tabla 'BDPASAJE_N.dbo.Tb_Ruc'. La columna no admite valores NULL. Error de INSERT.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.ClientePasajeRepository.GrabarEmpresa(RucEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ClientePasajeRepository.cs:línea 143
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 151
+ClientConnectionId:3b4a0df1-9879-401a-9c86-418d65b7084c
+Error Number:515,State:2,Class:16
+2019-01-30 18:53:47,281 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 197
+2019-01-30 19:34:06,342 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 195
+2019-01-30 19:35:46,577 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 195
+2019-01-30 19:38:30,830 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 195
+2019-01-30 19:58:20,982 ERROR SisComWeb.Business.ClientePasajeLogic - GrabarPasajero
+System.Data.SqlClient.SqlException (0x80131904): No se puede insertar el valor NULL en la columna 'Tipo_Doc_id', tabla 'BDPASAJE_N.dbo.Tb_Cliente_Pasajes'. La columna no admite valores NULL. Error de INSERT.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.ClientePasajeRepository.GrabarPasajero(ClientePasajeEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ClientePasajeRepository.cs:línea 93
+   en SisComWeb.Business.ClientePasajeLogic.GrabarPasajero(ClientePasajeEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 88
+ClientConnectionId:d2f2c7e3-d9b1-40ee-8015-f492d2271b12
+Error Number:515,State:2,Class:16

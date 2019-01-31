@@ -2,6 +2,7 @@
 using SisComWeb.Entity;
 using SisComWeb.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace SisComWeb.Services
 {
@@ -9,7 +10,78 @@ namespace SisComWeb.Services
     // NOTE: In order to launch WCF Test Client for testing this service, please select SisComServices.svc or SisComServices.svc.cs at the Solution Explorer and start debugging.
     public class SisComServices : ISisComServices
     {
-        public ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password)
+        #region BASE
+
+        public Response<List<BaseEntity>> ListaOficinas()
+        {
+            try
+            {
+                return BaseLogic.ListaOficinas();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListOficina, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal)
+        {
+            try
+            {
+                return BaseLogic.ListaPuntosVenta(short.Parse(CodiSucursal));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListPuntoVenta, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaUsuarios(string CodiSucursal, string CodiPuntoVenta)
+        {
+            try
+            {
+                return BaseLogic.ListaUsuarios(short.Parse(CodiSucursal), short.Parse(CodiPuntoVenta));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListUsuario, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaServicios()
+        {
+            try
+            {
+                return BaseLogic.ListaServicios();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListServicio, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaEmpresas()
+        {
+            try
+            {
+                return BaseLogic.ListaEmpresas();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListEmpresa, false);
+            }
+        }
+
+        #endregion
+
+        #region LOGIN
+
+        public Response<UsuarioEntity> ValidaUsuario(string CodiUsuario, string Password)
         {
             try
             {
@@ -18,65 +90,15 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroUsuario(false, null, Message.MsgErrExcBusqUsuario, false);
+                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcBusqUsuario, false);
             }
         }
 
-        public ResListaOficina ListaOficinas()
-        {
-            try
-            {
-                return OficinaLogic.ListarTodos();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaOficina(false, null, Message.MsgErrExcListOficina, false);
-            }
-        }
-
-        public ResListaServicio ListaServicios()
-        {
-            try
-            {
-                return ServicioLogic.ListarTodos();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaServicio(false, null, Message.MsgErrExcListServicio, false);
-            }
-        }
-
-        public ResListaPuntoVenta ListaPuntosVenta()
-        {
-            try
-            {
-                return PuntoVentaLogic.ListarTodos();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaPuntoVenta(false, null, Message.MsgErrExcListPuntoVenta, false);
-            }
-        }
-
-        public ResListaEmpresa ListaEmpresas()
-        {
-            try
-            {
-                return EmpresaLogic.ListarTodos();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaEmpresa(false, null, Message.MsgErrExcListEmpresa, false);
-            }
-        }
+        #endregion
 
         #region REGISTRO CLIENTE
 
-        public ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        public Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
             try
             {
@@ -85,7 +107,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje, false);
+                return new Response<ClientePasajeEntity>(false, null, Message.MsgErrExcBusqClientePasaje, false);
             }
         }
 
@@ -106,7 +128,7 @@ namespace SisComWeb.Services
 
         #region BÚSQUEDA ITINERARIO
 
-        public ResListaItinerario BuscaItinerarios(ItinerarioEntity entidad)
+        public Response<ItinerarioEntity> BuscaItinerarios(ItinerarioEntity entidad)
         {
             try
             {
@@ -115,7 +137,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResListaItinerario(false, null, Message.MsgErrExcListItinerario, false);
+                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcListItinerario, false);
             }
         }
 

@@ -1,5 +1,4 @@
-﻿//using SisComWeb.Business.ServicioConsultaDNIRUC;
-using SisComWeb.Entity;
+﻿using SisComWeb.Entity;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
@@ -12,17 +11,17 @@ namespace SisComWeb.Business
 {
     public class ClientePasajeLogic
     {
-        public static ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc)
+        public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
             try
             {
                 var response = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
-                return new ResFiltroClientePasaje(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                return new Response<ClientePasajeEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new ResFiltroClientePasaje(false, null, Message.MsgErrExcBusqClientePasaje, false);
+                return new Response<ClientePasajeEntity>(false, null, Message.MsgErrExcBusqClientePasaje, false);
             }
         }
 
@@ -41,7 +40,8 @@ namespace SisComWeb.Business
                 // Validación 'BuscaPasajero'
                 var objPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
                 if (objPasajero.Estado == true) response.Mensaje += objPasajero.Mensaje;
-                else {
+                else
+                {
                     response.Mensaje += "Error: BuscaPasajero. ";
                     return response;
                 }
@@ -73,6 +73,18 @@ namespace SisComWeb.Business
                 }
                 else
                 {
+                    // Consulta DNI a la RENIEC
+                    var objRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
+                    if (objRENIEC.Estado == true)
+                    {
+                        objClientePasajeEntity.ApellidoPaterno = objRENIEC.Valor[0];
+                        objClientePasajeEntity.ApellidoMaterno = objRENIEC.Valor[1];
+                        objClientePasajeEntity.NombreCliente = objRENIEC.Valor[2];
+
+                        response.Mensaje += objRENIEC.Mensaje;
+                    }
+                    else response.Mensaje += "Error: ConsultaRENIEC. ";
+
                     resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
                     if (resGrabarPasajero.Estado == true) response.Mensaje += resGrabarPasajero.Mensaje;
                     else
@@ -96,7 +108,7 @@ namespace SisComWeb.Business
 
 
                 // Validación 'BuscarEmpresa'
-                var objEmpresa = RucRepository.BuscarEmpresa(entidad.RucContacto);
+                var objEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
                 if (objEmpresa.Estado == true) response.Mensaje += objEmpresa.Mensaje;
                 else
                 {
@@ -106,15 +118,15 @@ namespace SisComWeb.Business
 
                 objEmp = new RucEntity
                 {
-                    RucCliente = objEmpresa.Valor.RucCliente,
-                    RazonSocial = objEmpresa.Valor.RazonSocial,
+                    RucCliente = entidad.RucContacto,
+                    RazonSocial = objEmpresa.Valor.RazonSocial ?? "",
                     Direccion = entidad.Direccion,
                     Telefono = entidad.Telefono
                 };
 
                 if (!string.IsNullOrEmpty(objEmpresa.Valor.RucCliente))
                 {
-                    resEmpresa = RucRepository.ModificarEmpresa(objEmp);
+                    resEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmp);
                     if (resEmpresa.Estado == true) response.Mensaje += resEmpresa.Mensaje;
                     else
                     {
@@ -126,18 +138,15 @@ namespace SisComWeb.Business
                 {
                     // Consulta RUC a la SUNAT
                     var objSUNAT = ConsultaSUNAT(entidad.RucContacto);
-                    if (objSUNAT.Estado == true) response.Mensaje += objSUNAT.Mensaje;
-                    else
+                    if (objSUNAT.Estado == true)
                     {
-                        response.Mensaje += "Error: ConsultaSUNAT. ";
-                        return response;
+                        objEmp.RazonSocial = objSUNAT.Valor;
+
+                        response.Mensaje += objSUNAT.Mensaje;
                     }
+                    else response.Mensaje += "Error: ConsultaSUNAT. ";
 
-                    // Preparamos el objeto para 'GrabarEmpresa'
-                    objEmp.RucCliente = entidad.RucContacto;
-                    objEmp.RazonSocial = objSUNAT.Valor;
-
-                    resEmpresa = RucRepository.GrabarEmpresa(objEmp);
+                    resEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmp);
                     if (resEmpresa.Estado == true) response.Mensaje += resEmpresa.Mensaje;
                     else
                     {
@@ -183,15 +192,43 @@ namespace SisComWeb.Business
 
                 foreach (XmlNode xn in xnList)
                 {
-                    RAZON_SOCIAL = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText;
+                    RAZON_SOCIAL = xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText;
                 }
 
-                return new Response<string>(true, RAZON_SOCIAL, "Se consultó correctamente a la SUNAT. ", true);
+                return new Response<string>(true, RAZON_SOCIAL, "Correcto: ConsultaSUNAT. ", true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, "Error: ConsultaSUNAT. ", false);
+            }
+        }
+
+        public static Response<string[]> ConsultaRENIEC(string NumeroDoc)
+        {
+            string[] arrayNombreCompleto = null;
+
+            try
+            {
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri("http://aplicaciones007.jne.gob.pe/srop_publico/Consulta/Afiliado/")
+                };
+
+                var response = client.GetAsync("GetNombresCiudadano?DNI=" + NumeroDoc).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    arrayNombreCompleto = result.Split('|');
+                }
+
+                return new Response<string[]>(true, arrayNombreCompleto, "Correcto: ConsultaRENIEC. ", true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string[]>(false, null, arrayNombreCompleto[3], false);
             }
         }
     }
