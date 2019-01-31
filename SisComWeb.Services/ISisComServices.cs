@@ -1,5 +1,5 @@
 ﻿using SisComWeb.Entity;
-using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -9,66 +9,46 @@ namespace SisComWeb.Services
     [ServiceContract]
     public interface ISisComServices
     {
-        #region LOGIN
+        #region BASE
 
         [OperationContract]
-        [WebInvoke(Method = "POST",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Wrapped,
-            UriTemplate = "ValidaUsuario")]
-        ResFiltroUsuario ValidaUsuario(string CodiUsuario, string Password);
+        [WebInvoke(Method = "GET", UriTemplate = "ListaOficinas", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaOficinas();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaPuntosVenta/{CodiSucursal}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios/{CodiPuntoVenta}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuarios(string CodiPuntoVenta);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaServicios", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaServicios();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaEmpresas", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaEmpresas();
 
         #endregion
 
-        #region OFICINA, SERVICIO, PUNTO DE VENTA Y EMPRESA
+        #region LOGIN
 
         [OperationContract]
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "ListaOficinas")]
-        ResListaOficina ListaOficinas();
-
-        [OperationContract]
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "ListaServicios")]
-        ResListaServicio ListaServicios();
-
-        [OperationContract]
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "ListaPuntosVenta/{Codi_Sucursal}")]
-        ResListaPuntoVenta ListaPuntosVenta(string Codi_Sucursal);
-
-        [OperationContract]
-        [WebInvoke(Method = "GET",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            UriTemplate = "ListaEmpresas")]
-        ResListaEmpresa ListaEmpresas();
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        Response<UsuarioEntity> ValidaUsuario(string CodiUsuario, string Password);
 
         #endregion
 
         #region REGISTRO CLIENTE
 
         [OperationContract]
-        [WebInvoke(Method = "POST",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Wrapped,
-            UriTemplate = "BuscaPasajero")]
-        ResFiltroClientePasaje BuscaPasajero(string TipoDoc, string NumeroDoc);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]
-        [WebInvoke(Method = "POST",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Wrapped,
-            UriTemplate = "GrabarPasajero")]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
 
         #endregion
@@ -76,12 +56,8 @@ namespace SisComWeb.Services
         #region BÚSQUEDA ITINERARIO
 
         [OperationContract]
-        [WebInvoke(Method = "POST",
-            ResponseFormat = WebMessageFormat.Json,
-            RequestFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Wrapped,
-            UriTemplate = "BuscaItinerarios")]
-        ResListaItinerario BuscaItinerarios(ItinerarioEntity entidad);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaItinerarios", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        Response<ItinerarioEntity> BuscaItinerarios(ItinerarioEntity entidad);
 
         #endregion
     }

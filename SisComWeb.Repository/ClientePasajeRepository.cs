@@ -34,7 +34,34 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Se encontró correctamente el pasajero. ";
+                    response.Mensaje = "Correcto: BuscaPasajero. ";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<RucEntity> BuscarEmpresa(string RucCliente)
+        {
+            var response = new Response<RucEntity>(false, null, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarEmpresa";
+                db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, RucCliente);
+                var entidad = new RucEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente");
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
+                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono");
+                    }
+
+                    response.EsCorrecto = true;
+                    response.Valor = entidad;
+                    response.Mensaje = "Correcto: BuscarEmpresa. ";
                     response.Estado = true;
                 }
             }
@@ -69,13 +96,13 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = _outputIdCliente;
-                response.Mensaje = "Se registró correctamente el pasajero. ";
+                response.Mensaje = "Correcto: GrabarPasajero. ";
                 response.Estado = true;
             }
             return response;
         }
 
-        public static Response<bool>ModificarPasajero(ClientePasajeEntity entidad)
+        public static Response<bool> ModificarPasajero(ClientePasajeEntity entidad)
         {
             var response = new Response<bool>(false, false, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -97,9 +124,51 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = true;
-                response.Mensaje = "Se modificó correctamente el pasajero. ";
+                response.Mensaje = "Correcto: ModificarPasajero. ";
                 response.Estado = true;
             }
+            return response;
+        }
+
+        public static Response<bool> GrabarEmpresa(RucEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarEmpresa";
+                db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, entidad.RucCliente);
+                db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarEmpresa. ";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<bool> ModificarEmpresa(RucEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificarEmpresa";
+                db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, entidad.RucCliente);
+                db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: ModificarEmpresa. ";
+                response.Estado = true;
+            }
+
             return response;
         }
 

@@ -46,28 +46,14 @@
     <Compile Include="Objects\Entities\ItinerarioEntity.cs" />
     <Compile Include="Objects\Entities\ClientePasajeEntity.cs" />
     <Compile Include="Objects\Entities\RucEntity.cs" />
-    <Compile Include="Objects\Entities\OficinaEntity.cs" />
-    <Compile Include="Objects\Entities\EmpresaEntity.cs" />
-    <Compile Include="Objects\Entities\ServicioEntity.cs" />
-    <Compile Include="Objects\Entities\PuntoVentaEntity.cs" />
+    <Compile Include="Objects\Entities\BaseEntity.cs" />
     <Compile Include="Objects\Entities\UsuarioEntity.cs" />
-    <Compile Include="Peticiones\Response\ResFiltroRuc.cs" />
-    <Compile Include="Peticiones\Response\ResFiltroBus.cs" />
-    <Compile Include="Peticiones\Response\ResFiltroTurnoViaje.cs" />
-    <Compile Include="Peticiones\Response\ResListaPunto.cs" />
-    <Compile Include="Peticiones\Response\ResListaItinerario.cs" />
-    <Compile Include="Peticiones\Response\ResListaOficina.cs" />
-    <Compile Include="Peticiones\Response\ResListaEmpresa.cs" />
-    <Compile Include="Peticiones\Response\ResListaPuntoVenta.cs" />
-    <Compile Include="Peticiones\Response\ResListaServicio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\Others\Response.cs" />
-    <Compile Include="Peticiones\Response\ResFiltroClientePasaje.cs" />
-    <Compile Include="Peticiones\Response\ResListaClientePasaje.cs" />
-    <Compile Include="Peticiones\Response\ResFiltroUsuario.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Peticiones\Request\" />
+    <Folder Include="Peticiones\Response\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

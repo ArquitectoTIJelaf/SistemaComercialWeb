@@ -51,7 +51,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Se encontró correctamente los itinerarios. ";
+                    response.Mensaje = "Correcto: BuscarItinerarios. ";
                     response.Estado = true;
                 }
             }
@@ -77,7 +77,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Se encontró correctamente el turno viaje. ";
+                    response.Mensaje = "Correcto: VerificaCambiosTurnoViaje. ";
                     response.Estado = true;
                 }
             }
@@ -101,7 +101,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Se encontró correctamente el turno viaje. ";
+                    response.Mensaje = "Correcto: BuscarProgramacionViaje. ";
                     response.Estado = true;
                 }
             }
@@ -131,7 +131,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Se encontró correctamente el bus estándar. ";
+                    response.Mensaje = "Correcto: ObtenerBusEstandar. ";
                     response.Estado = true;
                 }
             }
@@ -157,7 +157,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Se encontró correctamente el bus programación. ";
+                    response.Mensaje = "Correcto: ObtenerBusProgramacion. ";
                     response.Estado = true;
                 }
             }
@@ -182,7 +182,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Se encontró correctamente el turno adicional. ";
+                    response.Mensaje = "Correcto: ValidarTurnoAdicional. ";
                     response.Estado = true;
                 }
             }
@@ -207,7 +207,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Se encontró correctamente el turno adicional. ";
+                    response.Mensaje = "Correcto: ValidarViajeCalendario. ";
                     response.Estado = true;
                 }
             }
@@ -230,7 +230,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Se obtuvo correctamente el total ventas. ";
+                    response.Mensaje = "Correcto: ObtenerTotalVentas. ";
                     response.Estado = true;
                 }
             }
@@ -264,7 +264,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Se obtuvo correctamente los puntos embarque. ";
+                    response.Mensaje = "Correcto: ListarPuntosEmbarque. ";
                     response.Estado = true;
                 }
             }
@@ -298,7 +298,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Se obtuvo correctamente los puntos arribo. ";
+                    response.Mensaje = "Correcto: ListarPuntosArribo. ";
                     response.Estado = true;
                 }
             }
