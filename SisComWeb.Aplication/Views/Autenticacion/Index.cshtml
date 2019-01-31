@@ -156,27 +156,23 @@
                 getSucursales: function () {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
-                        //APP.rq.axios2.get('http://localhost:27958/SisComServices.svc/ListaOficinas')
                         .then(res => {
                             _this.list.sucursales = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getPuntosVenta: function (Codi_Sucursal) {
-                    debugger;
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_Sucursal } })
                         .then(res => {
-                            debugger;
                             _this.list.puntosventa = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getUsuarios: function (_cod) {
-                    debugger;
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-usuarios', { params: { CodiOficina: _cod } })
+                    APP.rq.axios2.get(APP.base + '/base/get-usuarios', { params: { CodiPuntoVenta: _cod } })
                         .then(res => {
                             debugger;
-                            _this.list.puntosventa = res.data;
+                            _this.list.usuarios = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 isNumber: function (evt) {
@@ -230,7 +226,6 @@
             },
             watch: {
                 'filtro.Sucursal': function (newVal, oldVal) {
-                    debugger;
                     if (String(newVal).replace(/\s/g, '').length > 0) {
                         this.getPuntosVenta(newVal);
                     } else {
