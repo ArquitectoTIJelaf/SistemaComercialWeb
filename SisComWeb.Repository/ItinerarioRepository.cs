@@ -38,12 +38,12 @@ namespace SisComWeb.Repository
                             CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta"),
                             NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta"),
                             HoraProgramacion = Reader.GetStringValue(drlector, "Hora_Programacion"),
-                            HoraPartida = Reader.GetStringValue(drlector, "Hora_Partida"),
                             StOpcional = Reader.GetStringValue(drlector, "st_opcional"),
                             CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen"),
                             NomOrigen = Reader.GetStringValue(drlector, "Nom_Origen"),
                             CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino"),
                             NomDestino = Reader.GetStringValue(drlector, "Nom_Destino"),
+                            HoraPartida = Reader.GetStringValue(drlector, "Hora_Partida"),
                             NroRutaInt = Reader.GetIntValue(drlector, "NRO_RUTA_INT"),
                             Dias = Reader.GetSmallIntValue(drlector, "DIAS")
                         };
@@ -91,7 +91,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarProgramacionViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@FechaProgramacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
                 var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -169,7 +169,7 @@ namespace SisComWeb.Repository
             var response = new Response<int>(false, 0, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ObtenerBusProgramacion";
+                db.ProcedureName = "scwsp_ValidarTurnoAdicional";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
                 var valor = new int();

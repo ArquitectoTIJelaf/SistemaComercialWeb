@@ -128,16 +128,16 @@ namespace SisComWeb.Services
 
         #region BÚSQUEDA ITINERARIO
 
-        public Response<ItinerarioEntity> BuscaItinerarios(ItinerarioEntity entidad)
+        public Response<List<ItinerarioEntity>> BuscaItinerarios(ItinerarioRequest request)
         {
             try
             {
-                return ItinerarioLogic.BuscaItinerarios(entidad);
+                return ItinerarioLogic.BuscaItinerarios(request);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcListItinerario, false);
+                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcListItinerario, false);
             }
         }
 

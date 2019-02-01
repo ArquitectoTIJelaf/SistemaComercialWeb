@@ -43,5 +43,8 @@
         public int NroRutaInt { get; set; }
 
         public short Dias { get; set; }
+
+        // Calculado
+        public string FechaProgramacion { get; set; }
     }
 }

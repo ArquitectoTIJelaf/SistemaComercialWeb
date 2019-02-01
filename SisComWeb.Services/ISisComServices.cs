@@ -48,7 +48,7 @@ namespace SisComWeb.Services
         Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
         Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
 
         #endregion
@@ -56,8 +56,8 @@ namespace SisComWeb.Services
         #region BÚSQUEDA ITINERARIO
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaItinerarios", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        Response<ItinerarioEntity> BuscaItinerarios(ItinerarioEntity entidad);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaItinerarios", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<ItinerarioEntity>> BuscaItinerarios(ItinerarioRequest request);
 
         #endregion
     }
