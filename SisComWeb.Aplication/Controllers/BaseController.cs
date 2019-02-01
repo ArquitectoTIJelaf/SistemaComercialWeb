@@ -41,8 +41,8 @@ namespace SisComWeb.Aplication.Controllers
                 JArray data = (JArray)tmpResult["Valor"];
                 List<Base> items = data.Select(x => new Base
                 {
-                    id = (string)x["CodiSucursal"],
-                    label = (string)x["Descripcion"]
+                    id = (string)x["id"],
+                    label = (string)x["label"]
                 }).ToList();
                 return Json(items, JsonRequestBehavior.AllowGet);
             }
@@ -74,8 +74,8 @@ namespace SisComWeb.Aplication.Controllers
                 JArray data = (JArray)tmpResult["Valor"];
                 List<Base> items = data.Select(x => new Base
                 {
-                    id = (string)x["CodiPuntoVenta"],
-                    label = (string)x["Descripcion"]
+                    id = (string)x["id"],
+                    label = (string)x["label"]
                 }).ToList();
                 return Json(items, JsonRequestBehavior.AllowGet);
             }
@@ -87,15 +87,15 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpGet]
         [Route("get-usuarios")]
-        public async Task<JsonResult> GetUsuarios(string CodiOficina)
+        public async Task<JsonResult> GetUsuarios(string CodiPuntoVenta)
         {
             try
             {
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri(url + "ListaPuntosVenta");
-                    HttpResponseMessage response = await client.GetAsync(url + "ListaPuntosVenta/" + CodiOficina);
+                    client.BaseAddress = new Uri(url + "ListaUsuarios");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaUsuarios/" + CodiPuntoVenta);
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
@@ -107,8 +107,8 @@ namespace SisComWeb.Aplication.Controllers
                 JArray data = (JArray)tmpResult["Valor"];
                 List<Base> items = data.Select(x => new Base
                 {
-                    id = (string)x["CodiPuntoVenta"],
-                    label = (string)x["Descripcion"]
+                    id = (string)x["id"],
+                    label = (string)x["label"]
                 }).ToList();
                 return Json(items, JsonRequestBehavior.AllowGet);
             }

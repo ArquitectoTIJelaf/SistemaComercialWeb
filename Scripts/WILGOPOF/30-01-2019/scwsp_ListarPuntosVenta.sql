@@ -1,4 +1,4 @@
-ALTER PROCEDURE scwsp_ListarPuntosVenta
+ALTER PROCEDURE scwsp_ListarPuntosVenta (@Codi_Sucursal SMALLINT)
 AS
 BEGIN
 	SET NOCOUNT ON
@@ -7,6 +7,7 @@ BEGIN
 		,Codi_puntoVenta
 		,Descripcion
 	FROM Tb_PuntoVenta
+	WHERE Codi_Sucursal = @Codi_Sucursal
 
 	SET NOCOUNT OFF
 END
