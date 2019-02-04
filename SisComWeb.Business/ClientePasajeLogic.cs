@@ -30,25 +30,29 @@ namespace SisComWeb.Business
             try
             {
                 var response = new Response<bool>(false, false, "", false);
-                ClientePasajeEntity objClientePasajeEntity;
-                Response<bool> resModificarPasajero;
-                Response<int> resGrabarPasajero;
-                RucEntity objEmp;
-                Response<bool> resEmpresa;
 
+                // Valida 'TipoDoc' y 'NumeroDoc'
+                if (!string.IsNullOrEmpty(entidad.TipoDoc) && !string.IsNullOrEmpty(entidad.NumeroDoc))
+                    response.Mensaje += "TipoDoc: " + entidad.TipoDoc + ". NumeroDoc : " + entidad.NumeroDoc + ". ";
+                else
+                {
+                    response.Mensaje += "Error: TipoDoc o NumeroDoc nulo o vacío, no se pudo 'GrabarPasajero'. ";
+                    return response;
+                }
 
-                // Validación 'BuscaPasajero'
-                var objPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
-                if (objPasajero.Estado == true) response.Mensaje += objPasajero.Mensaje;
+                // Busca 'Pasajero'
+                var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
+                if (resBuscaPasajero.Estado)
+                    response.Mensaje += resBuscaPasajero.Mensaje;
                 else
                 {
                     response.Mensaje += "Error: BuscaPasajero. ";
                     return response;
                 }
 
-                objClientePasajeEntity = new ClientePasajeEntity
+                var objClientePasajeEntity = new ClientePasajeEntity
                 {
-                    IdCliente = objPasajero.Valor.IdCliente,
+                    IdCliente = resBuscaPasajero.Valor.IdCliente,
                     TipoDoc = entidad.TipoDoc,
                     NumeroDoc = entidad.NumeroDoc,
                     NombreCliente = entidad.NombreCliente,
@@ -61,10 +65,11 @@ namespace SisComWeb.Business
                     RucContacto = entidad.RucContacto ?? string.Empty
                 };
 
-                if (!string.IsNullOrEmpty(objPasajero.Valor.NumeroDoc))
+                if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
                 {
-                    resModificarPasajero = ClientePasajeRepository.ModificarPasajero(objClientePasajeEntity);
-                    if (resModificarPasajero.Estado == true) response.Mensaje += resModificarPasajero.Mensaje;
+                    var resModificarPasajero = ClientePasajeRepository.ModificarPasajero(objClientePasajeEntity);
+                    if (resModificarPasajero.Estado)
+                        response.Mensaje += resModificarPasajero.Mensaje;
                     else
                     {
                         response.Mensaje += "Error: ModificarPasajero. ";
@@ -73,20 +78,24 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    // Consulta DNI a la RENIEC
-                    var objRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
-                    if (objRENIEC.Estado == true)
+                    // Consulta 'RENIEC'
+                    var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
+                    if (resConsultaRENIEC.Estado && resConsultaRENIEC.Valor[0] != "")
                     {
-                        objClientePasajeEntity.ApellidoPaterno = objRENIEC.Valor[0];
-                        objClientePasajeEntity.ApellidoMaterno = objRENIEC.Valor[1];
-                        objClientePasajeEntity.NombreCliente = objRENIEC.Valor[2];
+                        objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
+                        objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
+                        objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
 
-                        response.Mensaje += objRENIEC.Mensaje;
+                        response.Mensaje += resConsultaRENIEC.Mensaje;
                     }
-                    else response.Mensaje += "Error: ConsultaRENIEC. ";
+                    else if (resConsultaRENIEC.Estado && resConsultaRENIEC.Valor[0] == "")
+                        response.Mensaje += "Mensaje: ConsultaRENIEC: DNI no encontrado. ";
+                    else
+                        response.Mensaje += "Error: ConsultaRENIEC. ";
 
-                    resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
-                    if (resGrabarPasajero.Estado == true) response.Mensaje += resGrabarPasajero.Mensaje;
+                    var resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
+                    if (resGrabarPasajero.Estado)
+                        response.Mensaje += resGrabarPasajero.Mensaje;
                     else
                     {
                         response.Mensaje += "Error: GrabarPasajero. ";
@@ -95,8 +104,9 @@ namespace SisComWeb.Business
                 }
 
 
-                // Validación 'RucContacto'
-                if (!string.IsNullOrEmpty(entidad.RucContacto)) response.Mensaje += "RucContacto: " + entidad.RucContacto + ". ";
+                // Valida 'RucContacto'
+                if (!string.IsNullOrEmpty(entidad.RucContacto))
+                    response.Mensaje += "RucContacto: " + entidad.RucContacto + ". ";
                 else
                 {
                     response.EsCorrecto = true;
@@ -107,27 +117,29 @@ namespace SisComWeb.Business
                 }
 
 
-                // Validación 'BuscarEmpresa'
-                var objEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
-                if (objEmpresa.Estado == true) response.Mensaje += objEmpresa.Mensaje;
+                // Busca 'Empresa'
+                var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+                if (resBuscarEmpresa.Estado)
+                    response.Mensaje += resBuscarEmpresa.Mensaje;
                 else
                 {
                     response.Mensaje += "Error: BuscarEmpresa. ";
                     return response;
                 }
 
-                objEmp = new RucEntity
+                var objEmpresa = new RucEntity
                 {
                     RucCliente = entidad.RucContacto,
-                    RazonSocial = objEmpresa.Valor.RazonSocial ?? "",
+                    RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? "",
                     Direccion = entidad.Direccion,
                     Telefono = entidad.Telefono
                 };
 
-                if (!string.IsNullOrEmpty(objEmpresa.Valor.RucCliente))
+                if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
                 {
-                    resEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmp);
-                    if (resEmpresa.Estado == true) response.Mensaje += resEmpresa.Mensaje;
+                    var resModificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
+                    if (resModificarEmpresa.Estado)
+                        response.Mensaje += resModificarEmpresa.Mensaje;
                     else
                     {
                         response.Mensaje += "Error: ModificarEmpresa. ";
@@ -136,18 +148,22 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    // Consulta RUC a la SUNAT
-                    var objSUNAT = ConsultaSUNAT(entidad.RucContacto);
-                    if (objSUNAT.Estado == true)
+                    // Consulta 'SUNAT'
+                    var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
+                    if (resConsultaSUNAT.Estado && resConsultaSUNAT.Valor != "false")
                     {
-                        objEmp.RazonSocial = objSUNAT.Valor;
+                        objEmpresa.RazonSocial = resConsultaSUNAT.Valor;
 
-                        response.Mensaje += objSUNAT.Mensaje;
+                        response.Mensaje += resConsultaSUNAT.Mensaje;
                     }
-                    else response.Mensaje += "Error: ConsultaSUNAT. ";
+                    else if (resConsultaSUNAT.Estado && resConsultaSUNAT.Valor == "false")
+                        response.Mensaje += "Mensaje: ConsultaSUNAT: RUC no encontrado. ";
+                    else
+                        response.Mensaje += "Error: ConsultaSUNAT. ";
 
-                    resEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmp);
-                    if (resEmpresa.Estado == true) response.Mensaje += resEmpresa.Mensaje;
+                    var resGrabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
+                    if (resGrabarEmpresa.Estado)
+                        response.Mensaje += resGrabarEmpresa.Mensaje;
                     else
                     {
                         response.Mensaje += "Error: GrabarEmpresa. ";
