@@ -67,7 +67,7 @@
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
-            <div class="separate-in-form">
+            <div style="padding-bottom: 30px !important;">
                 <input id="txtContrasena"
                        v-model="filtro.Clave"
                        @@keypress.13="recorrido"
@@ -76,7 +76,7 @@
                        class="form-control input-sm"
                        placeholder="Clave" />
             </div>
-            <div class="separate-in-form">
+            <div>
                 <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">Ingresar</button>
             </div>
         </div>

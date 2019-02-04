@@ -98,7 +98,7 @@
 
         .form-container {
             background: #fff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0px, 0px, 10px, 0px, #000;
         }
@@ -106,6 +106,7 @@
 </head>
 
 <body>
+    @Html.Partial("_LayoutHeader")
     <div class="container-fluid py-5 bg">
         <div class="row justify-content-end">
             <aside class="col-sm-offset-4 col-sm-4">
@@ -119,6 +120,7 @@
             </aside>
         </div>
     </div>
+    @Html.Partial("_LayoutFooter")
     @Scripts.Render("~/bundles/js")
     @RenderSection("scripts", required: false)
 </body>
