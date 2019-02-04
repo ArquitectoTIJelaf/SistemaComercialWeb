@@ -27,95 +27,49 @@
 }
 
 <div id="appVueLogin">
-    <form v-on:submit.prevent="confirmUsuario(filtro)"
-          action="@Url.Content("~/login/redirect")"
-          id="frmLogin"
-          class="form-container"
-          autocomplete="off">
-        <div class="form-group m-t-15">
-            <div class="row">
-                <div class="col-xs-12">
-                    <h3 class="text-center">Venta</h3>
-                    <h3 class="text-center">comercial</h3>
-                </div>
-                <div class="col-xs-12">
-                    <label class="control-label col-sm-3 col-xs-12">OFICINA:</label>
-                    <div class="col-sm-2 col-xs-3">
-                        <input id="txtSucursal"
-                               v-model="filtro.Sucursal"
-                               @@keydown.13="onSubmitMethod($event)"
-                               @@keypress="isNumber($event)"
-                               type="text"
-                               maxlength="3"
-                               class="form-control input-xs" />
-                    </div>
-                    <div class="col-sm-7 col-xs-9">
-                        <select v-model="filtro.Sucursal"
-                                class="form-control input-xs">
-                            <option value="" selected>-- Seleccione Oficina --</option>
-                            <option v-for="item in list.sucursales" :value="item.id">{{item.label}}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <label class="control-label col-sm-3 col-xs-12">PUNTO DE VENTA:</label>
-                    <div class="col-sm-2 col-xs-3">
-                        <input id="txtPuntoVenta"
-                               v-model="filtro.PuntoVenta"
-                               @@keydown.13="onSubmitMethod($event)"
-                               :disabled="!SucursalFilled"
-                               @@keypress="isNumber($event)"
-                               type="text"
-                               maxlength="4"
-                               class="form-control input-xs" />
-                    </div>
-                    <div class="col-sm-7 col-xs-9">
-                        <select v-model="filtro.PuntoVenta"
-                                :disabled="!SucursalFilled"
-                                class="form-control input-xs">
-                            <option value="" selected>-- Seleccione Punto de Venta --</option>
-                            <option v-for="item in list.puntosventa" :value="item.id">{{item.label}}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <label class="control-label col-sm-3">USUARIO:</label>
-                    <div class="col-sm-9">
-                        <select id="cboUsuario"
-                                v-model="filtro.Nombre"
-                                @@keydown.13="onSubmitMethod($event)"
-                                :disabled="!PuntoVentaFilled"
-                                name="Nombre"
-                                class="form-control input-xs">
-                            <option value="" selected>-- Seleccione Usuario --</option>
-                            <option v-for="item in list.usuarios" :value="item.id">{{item.label}}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-xs-12">
-                    <label class="control-label col-sm-3">CONTRASEÑA:</label>
-                    <div class="col-sm-9">
-                        <input id="txtContrasena"
-                               v-model="filtro.Clave"
-                               @@keydown.13="onSubmitMethod($event)"
-                               :disabled="!UsuarioFilled"
-                               name="Clave"
-                               type="password"
-                               placeholder="Ingrese su contraseña"
-                               required="required"
-                               class="form-control input-xs" />
-                    </div>
-                </div>
-                <div class="col-sm-10 col-sm-offset-1">
-                    <button id="btnLogIn"
-                            :disabled="!FiltroFilled"
-                            type="submit"
-                            class=" btn btn-info btn-outline btn-1e btn-md btn-block text-uppercase waves-effect waves-light"
-                            :class="{ 'fcbtn': FiltroFilled }"
-                            :title="TitleWhenNotFilled">
-                        Ingresar
-                    </button>
-                </div>
+    <form v-on:submit.prevent="confirmUsuario(filtro)" action="@Url.Content("~/login/redirect")" id="frmLogin" class="form-container" autocomplete="off">        
+        <div class="form-group m-b-0">
+            <div class="separate-in-form">
+                <center style="padding-bottom: 20px;">
+                    <img width="35%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
+                </center>
+            </div>
+            <div class="separate-in-form">
+                <v-select v-model="filtro.Sucursal"
+                          :id="'cboSucursal'"
+                          :options="list.sucursales"
+                          :placeholder="'Sucursal'"
+                          ref="select">
+                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                </v-select>
+            </div>
+            <div class="separate-in-form">
+                <v-select v-model="filtro.PuntoVenta"
+                          :id="'cboPuntoVenta'"
+                          :options="list.puntosventa"
+                          :placeholder="'Punto de Venta'"
+                          ref="select">
+                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                </v-select>
+            </div>
+            <div class="separate-in-form">
+                <v-select v-model="filtro.Nombre"
+                          :id="'cboUsuario'"
+                          :options="list.usuarios"
+                          :placeholder="'Usuario'"
+                          ref="select">
+                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                </v-select>
+            </div>
+            <div class="separate-in-form">
+                <input v-model="filtro.Clave"
+                       type="password" 
+                       name="txtClave" 
+                       class="form-control input-sm" 
+                       placeholder="Clave" />
+            </div>
+            <div class="separate-in-form">
+                <button type="submit" class="btn btn-info btn-block">Ingresar</button>
             </div>
         </div>
     </form>
@@ -128,10 +82,10 @@
             el: '#appVueLogin',
             data: {
                 filtro: {
-                    Nombre: '',
+                    Nombre: null,
                     Clave: '',
-                    Sucursal: '',
-                    PuntoVenta: ''
+                    Sucursal: null,
+                    PuntoVenta: null
                 },
                 list: {
                     sucursales: [],
@@ -140,19 +94,23 @@
                 }
             },
             mounted: function () {
+                //this.$refs.select.open = true
                 this.getSucursales();
+                this.$nextTick(() => {
+                    $('.vs__selected-options input[type=search]').addClass('input-sm');
+                });
             },
             methods: {
-                confirmUsuario: function (filtro) {
-                    APP.rq.axios2.post(APP.base + '/login/post-usuario', filtro)
-                        .then(res => {
-                            if (res.data.mensaje === 'Log success') {
-                                $('#frmLogin').submit();
-                            } else {
-                                APP.msg.warning(res.data.mensaje);
-                            }
-                        }).catch(APP.rq.axios_handler_error_alert);
-                },
+                //confirmUsuario: function (filtro) {
+                //    APP.rq.axios2.post(APP.base + '/login/post-usuario', filtro)
+                //        .then(res => {
+                //            if (res.data.mensaje === 'Log success') {
+                //                $('#frmLogin').submit();
+                //            } else {
+                //                APP.msg.warning(res.data.mensaje);
+                //            }
+                //        }).catch(APP.rq.axios_handler_error_alert);
+                //},
                 getSucursales: function () {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
@@ -175,76 +133,57 @@
                             _this.list.usuarios = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                isNumber: function (evt) {
-                    evt = evt ? evt : window.event;
-                    var charCode = evt.which ? evt.which : evt.keyCode;
-                    if ((charCode > 31 && (charCode < 48 || charCode > 57))) {
-                        evt.preventDefault();
-                    } else {
-                        return true;
-                    }
-                },
-                onSubmitMethod: function (event) {
-                    var _this = this;
-                    if (event) event.preventDefault();
-                    if (event) event.stopPropagation();
-                    if (_this.filtro.Sucursal === '') {
-                        document.getElementById("txtSucursal").focus();
-                    } else if (_this.filtro.PuntoVenta === '') {
-                        document.getElementById("txtPuntoVenta").focus();
-                    } else if (_this.filtro.Nombre === '') {
-                        document.getElementById("cboUsuario").focus();
-                    } else if (_this.filtro.Clave === '') {
-                        document.getElementById("txtContrasena").focus();
-                    } else {
-                        document.getElementById("btnLogIn").click();
-                    }
-                }
+                //isNumber: function (evt) {
+                //    evt = evt ? evt : window.event;
+                //    var charCode = evt.which ? evt.which : evt.keyCode;
+                //    if ((charCode > 31 && (charCode < 48 || charCode > 57))) {
+                //        evt.preventDefault();
+                //    } else {
+                //        return true;
+                //    }
+                //},
+                //onSubmitMethod: function (event) {
+                //    var _this = this;
+                //    if (event) event.preventDefault();
+                //    if (event) event.stopPropagation();
+                //    if (_this.filtro.Sucursal === '') {
+                //        document.getElementById("txtSucursal").focus();
+                //    } else if (_this.filtro.PuntoVenta === '') {
+                //        document.getElementById("txtPuntoVenta").focus();
+                //    } else if (_this.filtro.Nombre === '') {
+                //        document.getElementById("cboUsuario").focus();
+                //    } else if (_this.filtro.Clave === '') {
+                //        document.getElementById("txtContrasena").focus();
+                //    } else {
+                //        document.getElementById("btnLogIn").click();
+                //    }
+                //}
             },
             computed: {
-                SucursalFilled: function () {
-                    return (this.list.puntosventa.length > 0) ? true : false;
-                },
-                PuntoVentaFilled: function () {
-                    return (this.list.usuarios.length > 0) ? true : false;
-                },
-                UsuarioFilled: function () {
-                    return (this.filtro.Nombre !== '') ? true : false;
-                },
-                FiltroFilled: function () {
-                    return (this.filtro.Nombre &&
-                        this.filtro.Clave &&
-                        this.filtro.Sucursal &&
-                        this.filtro.PuntoVenta);
-                },
-                TitleWhenNotFilled: function () {
-                    return (this.filtro.Nombre &&
-                        this.filtro.Clave &&
-                        this.filtro.Sucursal &&
-                        this.filtro.PuntoVenta) ? "Ingresar" : "Debe rellenar los campos";
-                }
             },
             watch: {
                 'filtro.Sucursal': function (newVal, oldVal) {
-                    if (String(newVal).replace(/\s/g, '').length > 0) {
-                        this.getPuntosVenta(newVal);
+                    if (newVal) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                            this.getPuntosVenta(newVal.id);
+                        } 
                     } else {
                         this.list.puntosventa = [];
-                        this.filtro.PuntoVenta = '';
+                        this.filtro.PuntoVenta = null;
                         this.list.usuarios = [];
-                        this.filtro.Nombre = '';
+                        this.filtro.Nombre = null;
                         this.filtro.Clave = '';
                     }
                 },
-                'filtro.PuntoVenta': function (newVal, oldVal) {
-                    if (String(newVal).replace(/\s/g, '').length > 0) {
-                        this.getUsuarios(newVal);
-                    } else {
-                        this.list.usuarios = [];
-                        this.filtro.Nombre = '';
-                        this.filtro.Clave = '';
-                    }
-                }
+                //'filtro.PuntoVenta': function (newVal, oldVal) {
+                //    if (String(newVal).replace(/\s/g, '').length > 0) {
+                //        this.getUsuarios(newVal);
+                //    } else {
+                //        this.list.usuarios = [];
+                //        this.filtro.Nombre = '';
+                //        this.filtro.Clave = '';
+                //    }
+                //}
             }
         });
 
