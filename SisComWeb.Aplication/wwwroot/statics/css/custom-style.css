@@ -465,17 +465,31 @@ body {
 }
 
 .v-select .dropdown-menu {
-    max-height: 250px;
+    max-height: 250px !important;
     z-index: 101;
 }
 
 .v-select input[type=search],
 .v-select input[type=search]:focus {
     margin: 0 !important;
+    font-size: 10px !important;
 }
 
+    /*.v-select input[type=search]::placeholder {
+        color: #009CFF;
+        opacity: 1;
+    }
+
+    .v-select input[type=search]:-ms-input-placeholder {
+        color: #009CFF;
+    }
+
+    .v-select input[type=search]::-ms-input-placeholder {
+        color: #009CFF;
+    }*/
+
 .v-select .dropdown-menu li {
-    font-size: 10px;
+    font-size: 10px !important;
 }
 
 .v-select .dropdown-toggle .clear {
@@ -517,4 +531,13 @@ body {
 
 .card {
     margin-top: 30%;
+    width: 300px;
 }
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+@media (max-width:600px) and (min-width:768px) {
+}
+

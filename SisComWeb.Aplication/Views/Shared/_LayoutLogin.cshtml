@@ -1,66 +1,4 @@
-﻿@*<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="hsalazar">
-        <link rel="icon" type="image/x-icon" sizes="16x16" href="~/favicon.ico">
-        <title>Template - Login</title>
-        <link href="~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet" />
-        <link href="~/wwwroot/statics/css/animate.css" rel="stylesheet">
-        <link href="~/wwwroot/statics/css/style.css" rel="stylesheet">
-        <link href="~/wwwroot/statics/css/colors/blue-dark.css" rel="stylesheet">
-        <link href="~/wwwroot/statics/css/custom-style.css" rel="stylesheet">
-        <link href="~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
-        <link href="~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css" rel="stylesheet">
-        @RenderSection("styles", required: false)
-        <script type="text/javascript">
-            var main_globals = {};
-            main_globals.virtualPath = "@HttpContext.Current.Request.ApplicationPath";
-            main_globals.Path = "@HttpContext.Current.Request.Path";
-            main_globals.AbsolutePath = "@HttpContext.Current.Request.Url.AbsolutePath";
-            main_globals.Query = "@HttpContext.Current.Request.Url.Query";
-            main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
-            main_globals.flagDevelop = JSON.parse("true".toLowerCase());
-        </script>
-    </head>
-    <body>
-
-        <div class="preloader">
-            <div class="cssload-speeding-wheel"></div>
-        </div>
-
-        <section id="wrapper" class="new-login-register">
-            <div class="lg-info-panel">
-                <div class="inner-panel">
-                    <a href="javascript:void(0)" class="p-20 di"><img width="33" height="33" src="~/wwwroot/plugins/images/logo-white.png"></a>
-                    <div class="lg-content">
-                        <h2>GESTIÓN DE TRANSPORTES</h2>
-                        <p style="color:white">Proyecto para el control de Programaciones.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="new-login-box">
-                <div class="white-box">
-                    <center>
-                        <img src="~/wwwroot/plugins/images/perfil.png">
-                        <br />
-                        <br />
-                        <h3 class="box-title m-b-0">¡Bienvenido!</h3>
-                        <small>Ingrese sus credenciales</small>
-                    </center>
-                    @RenderBody()
-                </div>
-            </div>
-        </section>
-        @Scripts.Render("~/bundles/js")
-        @RenderSection("scripts", required: false)
-    </body>
-    </html>*@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -88,35 +26,51 @@
             main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
             main_globals.flagDevelop = JSON.parse("true".toLowerCase());
     </script>
+    @*background: url("@Url.Content("~/wwwroot/plugins/images/users/FONDO.jpg")") no-repeat;*@
     <style>
-        .bg {
-            background: url("@Url.Content("~/wwwroot/plugins/images/users/FONDO.jpg")") no-repeat;
-            width: 100%;
-            min-height: 640px;
+        html {
+            background: url("/wwwroot/plugins/images/users/FONDO.jpg") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
             background-size: cover;
         }
 
         .form-container {
             background: #fff;
-            padding: 30px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0px, 0px, 10px, 0px, #000;
+        }
+
+        .container-fluid {
+            min-height: 600px;
+        }
+
+        body {
+            background: unset;
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid py-5 bg">
+    @Html.Partial("_LayoutHeader")
+    <div class="container-fluid py-5">
         <div class="row justify-content-end">
             <aside class="col-sm-offset-4 col-sm-4">
-                <div class="card">
-                    <article class="card-body">
-                        @RenderBody()
-                    </article>
-                </div>
+                <center>
+                    <div class="card">
+                        <article class="card-body">
+                            @RenderBody()
+                        </article>
+                    </div>
+                </center>
             </aside>
         </div>
     </div>
+
+    @Html.Partial("_LayoutFooter")
+
     @Scripts.Render("~/bundles/js")
     @RenderSection("scripts", required: false)
 </body>

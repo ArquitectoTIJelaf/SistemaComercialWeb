@@ -1,1 +1,56 @@
-﻿<footer class="footer text-center"> <strong>Copyright &copy; @DateTime.Now.Year </strong>&nbsp;&nbsp;&nbsp;&nbsp;JELAF INTEGRADORES S.R.L. - Todos los derechos reservados. </footer>
+﻿
+<style>
+    footer {
+        background: #0e2843 !important;
+        color: #fff !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+
+        footer a {
+            color: #fff;
+            cursor: pointer;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
+
+        footer p {
+            margin: 0px;
+        }
+
+    .prueba01 {
+        float: left;
+        text-align: center;
+        width: 33%;
+    }
+</style>
+
+<footer class="footer">
+
+    <div style="border:5px solid red; float: left; width: 100%; ">
+
+        <div class="prueba01">
+            <img src="~/wwwroot/plugins/images/logo-jelafazul-blanco.png" height="45" width="150" />
+        </div>
+        
+        <div class="prueba01">
+            <a>Inicio</a>
+            <a>Nosotros</a>
+            <a>Soporte</a>
+        </div>
+        
+        <div class="prueba01">
+            <img src="~/wwwroot/plugins/images/FACB.png" />
+            <img src="~/wwwroot/plugins/images/LINKDIN.png" />
+        </div>
+
+    </div>
+    
+
+    <p style="text-align: center;">Copyright &copy; @DateTime.Now.Year. Jelaf Integradores</p>
+
+</footer>
