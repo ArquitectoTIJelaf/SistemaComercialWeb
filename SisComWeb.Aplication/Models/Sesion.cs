@@ -10,8 +10,8 @@ namespace SisComWeb.Aplication.Models
         {
             get
             {
-                var session = (Sesion)HttpContext.Current.Session["SessionUsuario"] ?? new Sesion();
-                _UsuarioLogueado = session;
+                var sesion = (Sesion)HttpContext.Current.Session["SessionUsuario"] ?? new Sesion();
+                _UsuarioLogueado = sesion;
                 return _UsuarioLogueado;
             }
             set

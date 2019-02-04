@@ -21,6 +21,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.CodiUsuario = Reader.GetSmallIntValue(drlector, "Codi_Usuario");
+                        entidad.Login = Reader.GetStringValue(drlector, "Login");
                         entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
                         entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta");

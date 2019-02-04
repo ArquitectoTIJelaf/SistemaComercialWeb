@@ -36,7 +36,7 @@ namespace SisComWeb.Services
         #region LOGIN
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<UsuarioEntity> ValidaUsuario(string CodiUsuario, string Password);
 
         #endregion
@@ -44,7 +44,7 @@ namespace SisComWeb.Services
         #region REGISTRO CLIENTE
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]

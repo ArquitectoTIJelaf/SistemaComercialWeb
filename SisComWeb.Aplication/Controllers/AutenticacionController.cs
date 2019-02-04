@@ -49,9 +49,9 @@ namespace SisComWeb.Aplication.Controllers
                 JToken tmpResult = JObject.Parse(result);
                 bool estado = (bool)tmpResult.SelectToken("Estado");
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                JArray data = (JArray)tmpResult["Valor"];
-
-                //Sesion.UsuarioLogueado = response.Usuario;
+                JObject data = (JObject)tmpResult["Valor"];
+                short codiUsuario = (short)tmpResult["CodiUsuario"];
+                string login = (string)tmpResult["Login"];
 
                 return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
             }

@@ -4,6 +4,8 @@
     {
         public short CodiUsuario { get; set; }
 
+        public string Login { get; set; }
+
         public byte CodiEmpresa { get; set; }
 
         public short CodiSucursal { get; set; }
