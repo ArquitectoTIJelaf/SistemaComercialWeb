@@ -1,4 +1,5 @@
-﻿using SisComWeb.Entity;
+﻿//using SeguridadJelaf;
+using SisComWeb.Entity;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
@@ -11,6 +12,9 @@ namespace SisComWeb.Business
         {
             try
             {
+                //Seguridad seguridad = new Seguridad();
+                //var encriptaPassword = seguridad.Encripta(Password, Constantes.UnaLlave);
+
                 var response = UsuarioRepository.ValidaUsuario(CodiUsuario, Password);
                 return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }

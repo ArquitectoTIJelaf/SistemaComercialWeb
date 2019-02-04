@@ -1,6 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using Newtonsoft.Json.Linq;
+using SisComWeb.Aplication.Helpers;
+using SisComWeb.Aplication.Models;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
@@ -26,35 +30,34 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("post-usuario")]
-        public void POST(string usuario)
+        public async Task<ActionResult> POST(short Nombre, string Clave, string Sucursal, string PuntoVenta)
         {
-            string ipaddress = HttpContext.Request.UserHostAddress;
-            string useragent = HttpContext.Request.UserAgent;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "ValidaUsuario");
-            request.Method = "POST";
-
-            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
-            Byte[] byteArray = encoding.GetBytes(usuario);
-
-            request.ContentLength = byteArray.Length;
-            request.ContentType = @"application/json";
-
-            using (Stream dataStream = request.GetRequestStream())
-            {
-                dataStream.Write(byteArray, 0, byteArray.Length);
-            }
-            long length = 0;
             try
             {
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
                 {
-                    length = response.ContentLength;
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"CodiUsuario\" : " + Nombre + ", \"Password\" : \"" + Clave + "\" }";
+                    HttpResponseMessage response = await client.PostAsync("ValidaUsuario", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
                 }
+
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+
+                //Sesion.UsuarioLogueado = response.Usuario;
+
+                return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
-                // Log exception and throw as for GET example above
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
     }
