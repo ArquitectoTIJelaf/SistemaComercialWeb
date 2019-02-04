@@ -14,23 +14,23 @@ namespace SisComWeb.Repository
             {
                 case 1:
                     item.id = DataUtility.ObjectToString(reader["Codi_Sucursal"]);
-                    item.label = DataUtility.ObjectToString(reader["Descripcion"]);
+                    item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
                     break;
                 case 2:
                     item.id = DataUtility.ObjectToString(reader["Codi_puntoVenta"]);
-                    item.label = DataUtility.ObjectToString(reader["Descripcion"]);
+                    item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
                     break;
                 case 3:
                     item.id = DataUtility.ObjectToString(reader["Codi_Usuario"]);
-                    item.label = DataUtility.ObjectToString(reader["Login"]);
+                    item.label = DataUtility.ObjectToString(reader["Login"]).ToUpper();
                     break;
                 case 4:
                     item.id = DataUtility.ObjectToString(reader["Codi_Servicio"]);
-                    item.label = DataUtility.ObjectToString(reader["Descripcion"]);
+                    item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
                     break;
                 case 5:
                     item.id = DataUtility.ObjectToString(reader["Codi_Empresa"]);
-                    item.label = DataUtility.ObjectToString(reader["Razon_Social"]);
+                    item.label = DataUtility.ObjectToString(reader["Razon_Social"]).ToUpper();
                     break;
             }
             return item;
