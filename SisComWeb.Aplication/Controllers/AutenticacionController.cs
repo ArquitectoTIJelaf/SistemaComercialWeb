@@ -50,8 +50,8 @@ namespace SisComWeb.Aplication.Controllers
                 bool estado = (bool)tmpResult.SelectToken("Estado");
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JObject data = (JObject)tmpResult["Valor"];
-                short codiUsuario = (short)tmpResult["CodiUsuario"];
-                string login = (string)tmpResult["Login"];
+                short codiUsuario = (short)data["CodiUsuario"];
+                string login = (string)data["Login"];
 
                 return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
             }

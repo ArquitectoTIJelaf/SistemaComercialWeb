@@ -27,7 +27,7 @@
 }
 
 <div id="appVueLogin">
-    <form v-on:submit.prevent="confirmUsuario(filtro)" action="@Url.Content("~/login/redirect")" id="frmLogin" class="form-container" autocomplete="off">        
+    <form v-on:submit.prevent="confirmUsuario(filtro)" action="@Url.Content("~/login/redirect")" id="frmLogin" class="form-container" autocomplete="off">
         <div class="form-group m-b-0">
             <div class="separate-in-form">
                 <center style="padding-bottom: 20px;">
@@ -37,6 +37,8 @@
             <div class="separate-in-form">
                 <v-select v-model="filtro.Sucursal"
                           :id="'cboSucursal'"
+                          label="label"
+                          :get-option-label="getLabel"
                           :options="list.sucursales"
                           :placeholder="'Sucursal'"
                           ref="select">
@@ -46,6 +48,8 @@
             <div class="separate-in-form">
                 <v-select v-model="filtro.PuntoVenta"
                           :id="'cboPuntoVenta'"
+                          label="label"
+                          :get-option-label="getLabel"
                           :options="list.puntosventa"
                           :placeholder="'Punto de Venta'"
                           ref="select">
@@ -55,21 +59,30 @@
             <div class="separate-in-form">
                 <v-select v-model="filtro.Nombre"
                           :id="'cboUsuario'"
+                          label="label"
+                          :get-option-label="getLabel"
                           :options="list.usuarios"
                           :placeholder="'Usuario'"
                           ref="select">
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
-            <div class="separate-in-form">
-                <input v-model="filtro.Clave"
-                       type="password" 
-                       name="txtClave" 
-                       class="form-control input-sm" 
+            <div style="padding-bottom: 30px !important;">
+                <input id="txtContrasena"
+                       v-model="filtro.Clave"
+                       @@keypress.13="recorrido"
+                       type="password"
+                       name="txtClave"
+                       class="form-control input-sm"
                        placeholder="Clave" />
             </div>
+<<<<<<< HEAD
             <div class="separate-in-form">
                 <button type="submit" class="btn btn-info btn-block">Ingresar</button>
+=======
+            <div>
+                <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">Ingresar</button>
+>>>>>>> f0f48f2b8936bbff75d718c63f6a781c9f81669f
             </div>
         </div>
     </form>
@@ -98,19 +111,25 @@
                 this.getSucursales();
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
+                    $('#cboSucursal input[type=search]').focus();
                 });
             },
             methods: {
-                //confirmUsuario: function (filtro) {
-                //    APP.rq.axios2.post(APP.base + '/login/post-usuario', filtro)
-                //        .then(res => {
-                //            if (res.data.mensaje === 'Log success') {
-                //                $('#frmLogin').submit();
-                //            } else {
-                //                APP.msg.warning(res.data.mensaje);
-                //            }
-                //        }).catch(APP.rq.axios_handler_error_alert);
-                //},
+                confirmUsuario: function (filtro) {
+                    var input = {};
+                    input.Nombre = filtro.Nombre.id,
+                    input.Clave = filtro.Clave,
+                    input.Sucursal = filtro.Sucursal.id,
+                    input.PuntoVenta = filtro.PuntoVenta.id
+                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
+                        .then(res => {
+                            if (res.data.mensaje === 'Log success') {
+                                $('#frmLogin').submit();
+                            } else {
+                                APP.msg.warning(res.data.mensaje);
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
                 getSucursales: function () {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
@@ -129,44 +148,42 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-usuarios', { params: { CodiPuntoVenta: _cod } })
                         .then(res => {
-                            debugger;
                             _this.list.usuarios = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                //isNumber: function (evt) {
-                //    evt = evt ? evt : window.event;
-                //    var charCode = evt.which ? evt.which : evt.keyCode;
-                //    if ((charCode > 31 && (charCode < 48 || charCode > 57))) {
-                //        evt.preventDefault();
-                //    } else {
-                //        return true;
-                //    }
-                //},
-                //onSubmitMethod: function (event) {
-                //    var _this = this;
-                //    if (event) event.preventDefault();
-                //    if (event) event.stopPropagation();
-                //    if (_this.filtro.Sucursal === '') {
-                //        document.getElementById("txtSucursal").focus();
-                //    } else if (_this.filtro.PuntoVenta === '') {
-                //        document.getElementById("txtPuntoVenta").focus();
-                //    } else if (_this.filtro.Nombre === '') {
-                //        document.getElementById("cboUsuario").focus();
-                //    } else if (_this.filtro.Clave === '') {
-                //        document.getElementById("txtContrasena").focus();
-                //    } else {
-                //        document.getElementById("btnLogIn").click();
-                //    }
-                //}
+                getLabel(option) {
+                    return `${option.id} - ${option.label}`
+                },
+                recorrido: function () {
+                    var _this = this;
+                    if (_this.filtro.Sucursal === null) {
+                        $('#cboSucursal input[type=search]').focus();
+                    } else if (_this.filtro.PuntoVenta === null) {
+                        $('#cboPuntoVenta input[type=search]').focus();
+                    } else if (_this.filtro.Nombre === null) {
+                        $('#cboUsuario input[type=search]').focus();
+                    } else if (_this.filtro.Clave === '') {
+                        document.getElementById("txtContrasena").focus();
+                    } else {
+                        document.getElementById("btnLogIn").click();
+                    }
+                }
             },
             computed: {
+                filledFiltro: function () {
+                    var _this = this;
+                    return (_this.filtro.Sucursal !== null &&
+                        _this.filtro.PuntoVenta !== null &&
+                        _this.filtro.Nombre !== null &&
+                        _this.filtro.Clave) ? true : false;
+                }
             },
             watch: {
                 'filtro.Sucursal': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             this.getPuntosVenta(newVal.id);
-                        } 
+                        }
                     } else {
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
@@ -174,16 +191,23 @@
                         this.filtro.Nombre = null;
                         this.filtro.Clave = '';
                     }
+                    this.recorrido();
                 },
-                //'filtro.PuntoVenta': function (newVal, oldVal) {
-                //    if (String(newVal).replace(/\s/g, '').length > 0) {
-                //        this.getUsuarios(newVal);
-                //    } else {
-                //        this.list.usuarios = [];
-                //        this.filtro.Nombre = '';
-                //        this.filtro.Clave = '';
-                //    }
-                //}
+                'filtro.PuntoVenta': function (newVal, oldVal) {
+                    if (newVal) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                            this.getUsuarios(newVal.id);
+                        }
+                    } else {
+                        this.list.usuarios = [];
+                        this.filtro.Nombre = null;
+                        this.filtro.Clave = '';
+                    }
+                    this.recorrido();
+                },
+                'filtro.Nombre': function (newVal, oldVal) {
+                    this.recorrido();
+                }
             }
         });
 
