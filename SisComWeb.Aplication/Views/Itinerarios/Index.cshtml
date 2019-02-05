@@ -2,29 +2,82 @@
     ViewBag.Title = "Ventas";
 }
 
-@section styles{
-    @*<style type="text/css">
+@Html.Partial("_Filtros")
 
-        input[type=radio],
-        input[type=checkbox] {
-            visibility: hidden;
-            position: absolute;
+@section scripts{
+    <script>
+
+        $(function () {
+
+            if ($('.dp').length) {
+
+                $('#spnFechaDesde').click(function (event) {
+                    event.preventDefault();
+                    $('#txtFechaDesde').focus();
+                });
+            }
+        });
+
+        Vue.filter('money', function (value) {
+            if (typeof value !== 'undefined' && value !== '') {
+                value = parseFloat(value);
+                return 'S/ ' + value.toFixed(2);
+            } else {
+                return 'S/ 0.00';
+            }
+        });
+
+        Vue.filter('fixed2', function (value) {
+            if (typeof value !== 'undefined' && value !== '') {
+                value = parseFloat(value);
+                return String(value.toFixed(2));
+            } else {
+                return '0.00';
+            }
+        });
+
+        var selectAll = {
+            id: 0,
+            label: 'TODOS'
         }
 
-            input[type=radio] + label:before,
-            input[type=checkbox] + label:before {
-                border: 1px solid #777;
-            }
+        var appController = (function () {
+            return {
+            };
+        })();
 
-            input[type=radio] + label:before {
-                border-radius: 50%;
+        var appVueFilter = new Vue({
+            el: '#appVueFilter',
+            data: {
+                filtro: {
+                    OrigenPas: null,
+                    DestinoPas: null,
+                    DestinoBus: null
+                },
+                list: {
+                    origenesPas: [],
+                    destinosPas: [],
+                    destinosBus: []
+                }
+            },
+            mounted: function () {
+                $(".preloader").fadeIn();
+                this.$nextTick(() => {
+                    $('.vs__selected-options input[type=search]').addClass('input-sm');
+                    $('#cboOrigenPas input[type=search]').focus();
+                    $(".preloader").fadeOut();
+                });
+            },
+            methods: {
+                getLabel(option) {
+                    return `${option.id} - ${option.label}`
+                },
+            },
+            computed: {
+            },
+            watch: {
             }
+        });
 
-            input[type=checkbox] + label:before {
-                border-radius: 2px;
-            }
-    </style>*@
+    </script>
 }
-
-
-@Html.Partial("_Principal")

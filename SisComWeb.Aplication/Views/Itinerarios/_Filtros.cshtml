@@ -1,4 +1,4 @@
-﻿<div class="row">
+﻿<div id="appVueFilter" class="row">
     <div class="col-md-12">
         <form id="claseBrevetesGridForm" action="/" class="" autocomplete="off">
             <div class="panel panel-default">
@@ -13,29 +13,41 @@
                             <div class="form-row">
                                 <div class="col col-xs-6 col-md-2">
                                     <div class="form-group">
-                                        <select class="form-control">
-                                            <option value="value">ORIGEN PAS.</option>
-                                            <option value="value">text</option>
-                                            <option value="value">text</option>
-                                        </select>
+                                        <v-select v-model="filtro.OrigenPas"
+                                                  :id="'cboOrigenPas'"
+                                                  label="label"
+                                                  :get-option-label="getLabel"
+                                                  :options="list.origenesPas"
+                                                  :placeholder="'ORIGEN PAS.'"
+                                                  ref="select">
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                                 <div class="col col-xs-6 col-md-2">
                                     <div class="form-group">
-                                        <select class="form-control">
-                                            <option value="value">DESTINO PAS.</option>
-                                            <option value="value">text</option>
-                                            <option value="value">text</option>
-                                        </select>
+                                        <v-select v-model="filtro.DestinoPas"
+                                                  :id="'cboDestinoPas'"
+                                                  label="label"
+                                                  :get-option-label="getLabel"
+                                                  :options="list.destinosPas"
+                                                  :placeholder="'DESTINO PAS.'"
+                                                  ref="select">
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                                 <div class="col col-xs-6 col-md-2">
                                     <div class="form-group">
-                                        <select class="form-control">
-                                            <option value="value">DESTINO BUS.</option>
-                                            <option value="value">text</option>
-                                            <option value="value">text</option>
-                                        </select>
+                                        <v-select v-model="filtro.DestinoBus"
+                                                  :id="'cboDestinoBus'"
+                                                  label="label"
+                                                  :get-option-label="getLabel"
+                                                  :options="list.destinosBus"
+                                                  :placeholder="'DESTINO BUS.'"
+                                                  ref="select">
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                                 <div class="col col-xs-6 col-md-2">
