@@ -1,4 +1,4 @@
-﻿//using SeguridadJelaf;
+﻿using SeguridadJelaf;
 using SisComWeb.Entity;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
@@ -12,11 +12,15 @@ namespace SisComWeb.Business
         {
             try
             {
-                //Seguridad seguridad = new Seguridad();
-                //var encriptaPassword = seguridad.Encripta(Password, Constantes.UnaLlave);
+                Seguridad seguridad = new Seguridad();
+                var response = UsuarioRepository.ValidaUsuario(CodiUsuario);
 
-                var response = UsuarioRepository.ValidaUsuario(CodiUsuario, Password);
-                return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var desencriptaPassword = seguridad.Desencripta(response.Valor.Password, Constantes.UnaLlave);
+
+                if (response.Valor.CodiUsuario != 0 && (Password == desencriptaPassword || Password == response.Valor.Password))
+                    return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                else
+                    return new Response<UsuarioEntity>(false, null, "¡Usuario o Clave incorrecto!", false);
             }
             catch (Exception ex)
             {
