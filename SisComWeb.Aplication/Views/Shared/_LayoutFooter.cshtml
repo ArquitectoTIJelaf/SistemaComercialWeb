@@ -3,54 +3,58 @@
     footer {
         background: #0e2843 !important;
         color: #fff !important;
-        padding-top: 5px !important;
-        padding-bottom: 5px !important;
+        padding: 5px 0px !important;
+        height: 100px;
     }
+
+        footer #footer_contenedor {
+            float: left;
+            width: 100%;
+        }
+
+        footer .footer_column {
+            float: left;
+            line-height: 70px;
+            text-align: center;
+        }
 
         footer a {
             color: #fff;
             cursor: pointer;
             font-size: 11px;
-            margin-left: 10px;
+            margin-left: 5px;
         }
 
-        footer a:hover {
-            color: #fff;
-        }
+            footer a:hover {
+                color: #009cff;
+            }
 
         footer p {
             margin: 0px;
+            text-align: center;
         }
-
-    .prueba01 {
-        float: left;
-        text-align: center;
-        width: 33%;
-    }
 </style>
 
 <footer class="footer">
 
-    <div style="border:5px solid red; float: left; width: 100%; ">
-
-        <div class="prueba01">
+    <div id="footer_contenedor">
+        <div class="footer_column hidden-xs" style="width: 30%; ">
             <img src="~/wwwroot/plugins/images/logo-jelafazul-blanco.png" height="45" width="150" />
         </div>
-        
-        <div class="prueba01">
+        <div class="footer_column visible-xs" style="width: 30%; ">
+            <img src="~/wwwroot/plugins/images/logo-jelafazul-blanco-recortado.png" height="45" width="61" />
+        </div>
+        <div class="footer_column" style="width: 40%; ">
             <a>Inicio</a>
             <a>Nosotros</a>
             <a>Soporte</a>
         </div>
-        
-        <div class="prueba01">
-            <img src="~/wwwroot/plugins/images/FACB.png" />
-            <img src="~/wwwroot/plugins/images/LINKDIN.png" />
+        <div class="footer_column" style="width: 30%; ">
+            <a href="https://www.facebook.com/" target="_blank"><img src="~/wwwroot/plugins/images/FACB.png" /></a>
+            <a href="https://pe.linkedin.com/" target="_blank"><img src="~/wwwroot/plugins/images/LINKDIN.png" /></a>
         </div>
-
     </div>
-    
 
-    <p style="text-align: center;">Copyright &copy; @DateTime.Now.Year. Jelaf Integradores</p>
+    <p>Copyright &copy; @DateTime.Now.Year. Jelaf Integradores</p>
 
 </footer>

@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
-using SisComWeb.Aplication.Models;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -25,7 +24,7 @@ namespace SisComWeb.Aplication.Controllers
         public ActionResult Redirect()
         {
 
-            return RedirectToAction("Index", "Default");
+            return RedirectToAction("Index", "Principal");
         }
 
         [HttpPost]
@@ -49,11 +48,17 @@ namespace SisComWeb.Aplication.Controllers
                 JToken tmpResult = JObject.Parse(result);
                 bool estado = (bool)tmpResult.SelectToken("Estado");
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                JObject data = (JObject)tmpResult["Valor"];
-                short codiUsuario = (short)data["CodiUsuario"];
-                string login = (string)data["Login"];
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+                    string login = (string)data["Login"];
 
-                return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {

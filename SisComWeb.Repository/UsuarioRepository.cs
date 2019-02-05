@@ -7,14 +7,13 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario, string Password)
+        public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario)
         {
             var response = new Response<UsuarioEntity>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarUsuario";
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
-                db.AddParameter("@Pws", DbType.String, ParameterDirection.Input, Password);
                 var entidad = new UsuarioEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {

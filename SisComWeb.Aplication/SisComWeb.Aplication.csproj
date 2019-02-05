@@ -203,20 +203,31 @@
     <Content Include="wwwroot\plugins\bower_components\sweetalert\sweetalert2.all.min.js" />
     <Content Include="wwwroot\plugins\bower_components\toast-master\css\jquery.toast.css" />
     <Content Include="wwwroot\plugins\bower_components\toast-master\js\jquery.toast.js" />
+    <Content Include="wwwroot\plugins\images\CLIENTE1.png" />
+    <Content Include="wwwroot\plugins\images\CLIENTES2.png" />
+    <Content Include="wwwroot\plugins\images\CORELA1.png" />
+    <Content Include="wwwroot\plugins\images\CORELA2.png" />
     <Content Include="wwwroot\plugins\images\FACB.png" />
     <Content Include="wwwroot\plugins\images\favicon.ico" />
     <Content Include="wwwroot\plugins\images\heading-title-bg.jpg" />
     <Content Include="wwwroot\plugins\images\headline.png" />
     <Content Include="wwwroot\plugins\images\LINKDIN.png" />
+    <Content Include="wwwroot\plugins\images\LIQ1.png" />
+    <Content Include="wwwroot\plugins\images\LIQU2.png" />
     <Content Include="wwwroot\plugins\images\login-register.jpg" />
     <Content Include="wwwroot\plugins\images\logo-blackjelaf.png" />
+    <Content Include="wwwroot\plugins\images\LOGO-FLORES.png" />
+    <Content Include="wwwroot\plugins\images\logo-jelafazul-blanco-recortado.png" />
     <Content Include="wwwroot\plugins\images\logo-jelafazul-blanco.png" />
+    <Content Include="wwwroot\plugins\images\logo-jelafazul.png" />
     <Content Include="wwwroot\plugins\images\logo-white.png" />
     <Content Include="wwwroot\plugins\images\logo-whitejelaf.png" />
     <Content Include="wwwroot\plugins\images\multiple-arrow.png" />
     <Content Include="wwwroot\plugins\images\news\gradiant-bg.png" />
     <Content Include="wwwroot\plugins\images\owner\venta-comercial.png" />
     <Content Include="wwwroot\plugins\images\perfil.png" />
+    <Content Include="wwwroot\plugins\images\RUTAS1.png" />
+    <Content Include="wwwroot\plugins\images\RUTAS2.png" />
     <Content Include="wwwroot\plugins\images\sort_asc.png" />
     <Content Include="wwwroot\plugins\images\sort_asc_disabled.png" />
     <Content Include="wwwroot\plugins\images\sort_both.png" />
@@ -230,8 +241,11 @@
     <Content Include="wwwroot\plugins\images\tooltip\tooltip3.svg" />
     <Content Include="wwwroot\plugins\images\users\circle.gif" />
     <Content Include="wwwroot\plugins\images\users\FONDO.jpg" />
+    <Content Include="wwwroot\plugins\images\users\FONDO_OPACO.jpg" />
     <Content Include="wwwroot\plugins\images\users\jelaf-blue.gif" />
     <Content Include="wwwroot\plugins\images\users\jelaf.png" />
+    <Content Include="wwwroot\plugins\images\VENTA1.png" />
+    <Content Include="wwwroot\plugins\images\VENTA2.png" />
     <Content Include="wwwroot\statics\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="wwwroot\statics\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="wwwroot\statics\bootstrap\dist\css\bootstrap.css" />
@@ -364,6 +378,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ItinerariosController.cs" />
     <Compile Include="Controllers\VentaPasajesController.cs" />
+    <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -392,6 +407,8 @@
     <Content Include="Views\VentaPasajes\_Principal.cshtml" />
     <Content Include="Views\Itinerarios\Index.cshtml" />
     <Content Include="Views\Itinerarios\_Principal.cshtml" />
+    <Content Include="Views\Principal\Index.cshtml" />
+    <Content Include="Views\Shared\_LayoutPrincipal.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

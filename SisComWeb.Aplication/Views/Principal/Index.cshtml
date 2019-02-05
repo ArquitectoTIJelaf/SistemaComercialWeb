@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Principal";
+    Layout = "~/Views/Shared/_LayoutPrincipal.cshtml";
+}
+
+<style>
+    #principal {
+        text-align: center;
+        margin-top: 5%;
+    }
+
+        #principal .item {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-bottom: 5px solid #999999;
+            display: inline-block;
+            height: 175px;
+            margin-right: 10px;
+            margin-left: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            width: 150px;
+        }
+
+        #principal img {
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        #principal h5 {
+            font-weight: 500;
+        }
+
+        #principal .item:hover {
+            border-bottom: 5px solid #009cff !important;
+        }
+</style>
+
+<div id="principal">
+
+    <div id="item01" class="item">
+        <img src="~/wwwroot/plugins/images/VENTA1.png" />
+        <h5>Ventas</h5>
+    </div>
+
+    <div class="item">
+        <img src="~/wwwroot/plugins/images/CLIENTE1.png" />
+        <h5>Clientes</h5>
+    </div>
+
+    <div class="item">
+        <img src="~/wwwroot/plugins/images/CORELA1.png" />
+        <h5>Correlativos</h5>
+    </div>
+
+    <div class="item">
+        <img src="~/wwwroot/plugins/images/RUTAS1.png" />
+        <h5>Rutas y precios</h5>
+    </div>
+
+    <div class="item">
+        <img src="~/wwwroot/plugins/images/LIQ1.png" />
+        <h5>Liquidación</h5>
+    </div>
+
+</div>

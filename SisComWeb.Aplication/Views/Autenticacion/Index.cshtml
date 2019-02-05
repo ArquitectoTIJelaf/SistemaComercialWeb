@@ -5,6 +5,29 @@
 
 @section styles{
     <style>
+<<<<<<< HEAD
+=======
+        .form-control:focus {
+            border-color: #66afe9;
+            border-top-color: rgb(102, 175, 233);
+            border-right-color: rgb(102, 175, 233);
+            border-bottom-color: rgb(102, 175, 233);
+            border-left-color: rgb(102, 175, 233);
+        }
+
+        .v-select.open .dropdown-toggle {
+            border: 1px solid #66afe9 !important;
+        }
+
+        /*button:disabled {
+            background-color: #DFE1FF !important
+        }
+
+        button:hover:disabled {
+            color: red !important;
+            border-color: #FC9898 !important;
+        }*/
+>>>>>>> 1c50ea53ec35f3fcd78fd61481cb93268923f47a
     </style>
 }
 
@@ -13,7 +36,7 @@
         <div class="form-group m-b-0">
             <div class="separate-in-form">
                 <center style="padding-bottom: 20px;">
-                    <img width="35%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
+                    <img width="50%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
                 </center>
             </div>
             <div class="separate-in-form">
@@ -59,7 +82,7 @@
                        placeholder="Clave" />
             </div>
             <div>
-                <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">Ingresar</button>
+                <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">INGRESAR</button>
             </div>
         </div>
     </form>
@@ -144,7 +167,7 @@
                     } else if (_this.filtro.Clave === '') {
                         document.getElementById("txtContrasena").focus();
                     } else {
-                        document.getElementById("btnLogIn").click();
+                        document.getElementById("btnLogIn").focus();
                     }
                 }
             },

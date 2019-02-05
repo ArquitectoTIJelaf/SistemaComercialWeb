@@ -10,13 +10,10 @@
     <title>Login</title>
     <link href="~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet" />
-    @*<link href="~/wwwroot/statics/css/animate.css" rel="stylesheet">*@
     <link href="~/wwwroot/statics/css/style.css" rel="stylesheet">
-    @*<link href="~/wwwroot/statics/css/colors/blue-dark.css" rel="stylesheet">*@
     <link href="~/wwwroot/statics/css/custom-style.css" rel="stylesheet">
-    @*<link href="~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
-        <link href="~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css" rel="stylesheet">*@
     @RenderSection("styles", required: false)
+
     <script type="text/javascript">
             var main_globals = {};
             main_globals.virtualPath = "@HttpContext.Current.Request.ApplicationPath";
@@ -26,10 +23,10 @@
             main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
             main_globals.flagDevelop = JSON.parse("true".toLowerCase());
     </script>
-    @*background: url("@Url.Content("~/wwwroot/plugins/images/users/FONDO.jpg")") no-repeat;*@
+
     <style>
         html {
-            background: url("/wwwroot/plugins/images/users/FONDO.jpg") no-repeat center center fixed;
+            background: url("/wwwroot/plugins/images/users/FONDO_OPACO.jpg") no-repeat center center fixed;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
@@ -54,33 +51,14 @@
 </head>
 
 <body>
-<<<<<<< HEAD
-    <div class="preloader">
-        <svg class="circular" viewBox="25 25 50 50">
-            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
-        </svg>
-    </div>
-    @Html.Partial("_LayoutHeader")
-=======
     <nav class="navbar navbar-default navbar-static-top m-b-0">
         <div class="navbar-header" id="appVueNavarHeader" style="background: #fff; text-align: center; height: 80px; ">
-            <img src="~/wwwroot/plugins/images/logo-jelafazul.png" style="margin: 10px 0px; " />
+            <img src="~/wwwroot/plugins/images/LOGO-FLORES.png" style="margin: 20px 0px; " />
         </div>
     </nav>
 
->>>>>>> 1c50ea53ec35f3fcd78fd61481cb93268923f47a
     <div class="container-fluid py-5">
-        <div class="row justify-content-end">
-            <aside class="col-sm-offset-4 col-sm-4">
-                <center>
-                    <div class="card">
-                        <article class="card-body">
-                            @RenderBody()
-                        </article>
-                    </div>
-                </center>
-            </aside>
-        </div>
+        @RenderBody()
     </div>
 
     @Html.Partial("_LayoutFooter")
