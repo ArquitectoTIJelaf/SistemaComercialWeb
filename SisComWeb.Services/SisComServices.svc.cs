@@ -38,11 +38,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<BaseEntity>> ListaUsuarios(string CodiPuntoVenta)
+        public Response<List<BaseEntity>> ListaUsuarios()
         {
             try
             {
-                return BaseLogic.ListaUsuarios(short.Parse(CodiPuntoVenta));
+                return BaseLogic.ListaUsuarios();
             }
             catch (Exception ex)
             {

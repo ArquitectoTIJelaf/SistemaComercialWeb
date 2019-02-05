@@ -43,21 +43,6 @@
         @Html.Partial("_LayoutSidebar")
         <div id="page-wrapper">
             <div class="container-fluid">
-                @{var action = ViewContext.RouteData.Values["controller"].ToString();}
-                @if (action != "Default")
-                {
-                    @*<div class="row bg-title">
-                        <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12">
-                            <h4 class="page-title">@ViewBag.Title</h4>
-                        </div>
-                        <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
-                            <ol class="breadcrumb">
-                                <li><a href="javascript:void(0)"><i class="fa fa-home fa-fw"></i>Inicio</a></li>
-                                <li class="active">@(ViewBag.Breadcrum ?? ViewContext.RouteData.Values["action"].ToString())</li>
-                            </ol>
-                        </div>
-                    </div>*@
-                }
                 @RenderBody()
             </div>
             @Html.Partial("_LayoutFooter")

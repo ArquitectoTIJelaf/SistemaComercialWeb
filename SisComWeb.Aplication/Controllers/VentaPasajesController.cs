@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
 {
-    public class VentasController : Controller
+    public class VentaPasajesController : Controller
     {
-        // GET: Ventas
+        // GET: VentaPasajes
         public ActionResult Index()
         {
             return View();

@@ -376,8 +376,9 @@
     <Compile Include="Controllers\AutenticacionController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ItinerariosController.cs" />
+    <Compile Include="Controllers\VentaPasajesController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
-    <Compile Include="Controllers\VentasController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -402,9 +403,12 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Autenticacion\Index.cshtml" />
+    <Content Include="Views\VentaPasajes\Index.cshtml" />
+    <Content Include="Views\VentaPasajes\_Principal.cshtml" />
+    <Content Include="Views\Itinerarios\Index.cshtml" />
+    <Content Include="Views\Itinerarios\_Principal.cshtml" />
     <Content Include="Views\Principal\Index.cshtml" />
     <Content Include="Views\Shared\_LayoutPrincipal.cshtml" />
-    <Content Include="Views\Ventas\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,43 +1,4 @@
-﻿@{
-    ViewBag.Title = "Ventas";
-}
-
-<style type="text/css">
-    /* COMMON RADIO AND CHECKBOX STYLES  */
-    input[type=radio],
-    input[type=checkbox] {
-        /* Hide original inputs */
-        visibility: hidden;
-        position: absolute;
-    }
-
-        input[type=radio] + label:before,
-        input[type=checkbox] + label:before {
-            /*height: 12px;
-            width: 12px;
-            margin-right: 2px;
-            content: " ";
-            display: inline-block;
-            vertical-align: baseline;*/
-            border: 1px solid #777;
-        }
-
-        input[type=radio]:checked + label:before,
-        input[type=checkbox]:checked + label:before {
-            background: gold;
-        }
-
-        /* CUSTOM RADIO AND CHECKBOX STYLES */
-        input[type=radio] + label:before {
-            border-radius: 50%;
-        }
-
-        input[type=checkbox] + label:before {
-            border-radius: 2px;
-        }
-</style>
-
-<div class="row">
+﻿<div class="row">
     <div class="col-md-12">
         <form id="claseBrevetesGridForm" action="/" class="" autocomplete="off">
             <div class="panel panel-default">

@@ -64,7 +64,7 @@
                           label="label"
                           :get-option-label="getLabel"
                           :options="list.usuarios"
-                          :placeholder="'Usuario'"
+                          :placeholder="'Cajero'"
                           ref="select">
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
@@ -76,7 +76,7 @@
                        type="password"
                        name="txtClave"
                        class="form-control input-sm"
-                       placeholder="Clave" />
+                       placeholder="Password" />
             </div>
             <div>
                 <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">INGRESAR</button>
@@ -105,19 +105,21 @@
             },
             mounted: function () {
                 //this.$refs.select.open = true
-                this.getSucursales();
+                $(".preloader").fadeIn();
+                this.getUsuarios();
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
-                    $('#cboSucursal input[type=search]').focus();
+                    $('#cboUsuario input[type=search]').focus();
+                    $(".preloader").fadeOut();
                 });
             },
             methods: {
                 confirmUsuario: function (filtro) {
                     var input = {};
-                    input.Nombre = filtro.Nombre.id,
-                    input.Clave = filtro.Clave,
-                    input.Sucursal = filtro.Sucursal.id,
-                    input.PuntoVenta = filtro.PuntoVenta.id
+                    input.Nombre = filtro.Nombre.id;
+                    input.Clave = filtro.Clave;
+                    input.Sucursal = filtro.Nombre.id === '339' ? filtro.Sucursal.id : '0';
+                    input.PuntoVenta = filtro.Nombre.id === '339' ? filtro.PuntoVenta.id : '0';
                     APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
                             if (res.data.mensaje === 'Log success') {
@@ -141,9 +143,9 @@
                             _this.list.puntosventa = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getUsuarios: function (_cod) {
+                getUsuarios: function () {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-usuarios', { params: { CodiPuntoVenta: _cod } })
+                    APP.rq.axios2.get(APP.base + '/base/get-usuarios')
                         .then(res => {
                             _this.list.usuarios = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -153,11 +155,12 @@
                 },
                 recorrido: function () {
                     var _this = this;
-                    if (_this.filtro.Sucursal === null) {
-                        $('#cboSucursal input[type=search]').focus();
-                    } else if (_this.filtro.PuntoVenta === null) {
-                        $('#cboPuntoVenta input[type=search]').focus();
-                    } else if (_this.filtro.Nombre === null) {
+                    //if (_this.filtro.Sucursal === null) {
+                    //    $('#cboSucursal input[type=search]').focus();
+                    //} else if (_this.filtro.PuntoVenta === null) {
+                    //    $('#cboPuntoVenta input[type=search]').focus();
+                    //} else
+                    if (_this.filtro.Nombre === null) {
                         $('#cboUsuario input[type=search]').focus();
                     } else if (_this.filtro.Clave === '') {
                         document.getElementById("txtContrasena").focus();
@@ -169,8 +172,9 @@
             computed: {
                 filledFiltro: function () {
                     var _this = this;
-                    return (_this.filtro.Sucursal !== null &&
-                        _this.filtro.PuntoVenta !== null &&
+                    return (
+                        //_this.filtro.Sucursal !== null &&
+                        //_this.filtro.PuntoVenta !== null &&
                         _this.filtro.Nombre !== null &&
                         _this.filtro.Clave) ? true : false;
                 }
