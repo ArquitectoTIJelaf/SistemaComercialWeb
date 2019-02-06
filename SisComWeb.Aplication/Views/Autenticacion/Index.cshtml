@@ -33,30 +33,32 @@
         <div class="form-group m-b-0">
             <div class="separate-in-form">
                 <center style="padding-bottom: 20px;">
-                    <img width="50%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
+                    <img width="35%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
                 </center>
             </div>
-            <div class="separate-in-form">
-                <v-select v-model="filtro.Sucursal"
-                          :id="'cboSucursal'"
-                          label="label"
-                          :get-option-label="getLabel"
-                          :options="list.sucursales"
-                          :placeholder="'Sucursal'"
-                          ref="select">
-                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                </v-select>
-            </div>
-            <div class="separate-in-form">
-                <v-select v-model="filtro.PuntoVenta"
-                          :id="'cboPuntoVenta'"
-                          label="label"
-                          :get-option-label="getLabel"
-                          :options="list.puntosventa"
-                          :placeholder="'Punto de Venta'"
-                          ref="select">
-                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                </v-select>
+            <div v-show="filtro.Nombre !== null && filtro.Nombre.id === '339'">
+                <div class="separate-in-form">
+                    <v-select v-model="filtro.Sucursal"
+                              :id="'cboSucursal'"
+                              label="label"
+                              :get-option-label="getLabel"
+                              :options="list.sucursales"
+                              :placeholder="'Sucursal'"
+                              ref="select">
+                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                    </v-select>
+                </div>
+                <div class="separate-in-form">
+                    <v-select v-model="filtro.PuntoVenta"
+                              :id="'cboPuntoVenta'"
+                              label="label"
+                              :get-option-label="getLabel"
+                              :options="list.puntosventa"
+                              :placeholder="'Punto de Venta'"
+                              ref="select">
+                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                    </v-select>
+                </div>
             </div>
             <div class="separate-in-form">
                 <v-select v-model="filtro.Nombre"
@@ -69,7 +71,7 @@
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
-            <div style="padding-bottom: 30px !important;">
+            <div class="separate-in-form">
                 <input id="txtContrasena"
                        v-model="filtro.Clave"
                        @@keypress.13="recorrido"
@@ -78,7 +80,7 @@
                        class="form-control input-sm"
                        placeholder="Password" />
             </div>
-            <div>
+            <div style="padding-top: 30px !important; ">
                 <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">INGRESAR</button>
             </div>
         </div>
@@ -155,28 +157,35 @@
                 },
                 recorrido: function () {
                     var _this = this;
-                    //if (_this.filtro.Sucursal === null) {
-                    //    $('#cboSucursal input[type=search]').focus();
-                    //} else if (_this.filtro.PuntoVenta === null) {
-                    //    $('#cboPuntoVenta input[type=search]').focus();
-                    //} else
-                    if (_this.filtro.Nombre === null) {
+                    if (_this.filtro.Nombre.id === '339' && _this.filtro.Sucursal === null)
+                        $('#cboSucursal input[type=search]').focus();
+                    else if (_this.filtro.Nombre.id === '339' && _this.filtro.PuntoVenta === null)
+                        $('#cboPuntoVenta input[type=search]').focus();
+                    else if (_this.filtro.Nombre === null)
                         $('#cboUsuario input[type=search]').focus();
-                    } else if (_this.filtro.Clave === '') {
+                    else if (_this.filtro.Clave === '')
                         document.getElementById("txtContrasena").focus();
-                    } else {
+                    else
                         document.getElementById("btnLogIn").focus();
-                    }
                 }
             },
             computed: {
                 filledFiltro: function () {
                     var _this = this;
-                    return (
-                        //_this.filtro.Sucursal !== null &&
-                        //_this.filtro.PuntoVenta !== null &&
-                        _this.filtro.Nombre !== null &&
-                        _this.filtro.Clave) ? true : false;
+                    if (_this.filtro.Nombre !== null && _this.filtro.Nombre.id === '339')
+                    {
+                        return (
+                            _this.filtro.Sucursal !== null &&
+                            _this.filtro.PuntoVenta !== null &&
+                            _this.filtro.Nombre !== null &&
+                            _this.filtro.Clave) ? true : false;
+                    }
+                    else
+                    {
+                        return (
+                            _this.filtro.Nombre !== null &&
+                            _this.filtro.Clave) ? true : false;
+                    }
                 }
             },
             watch: {
@@ -188,26 +197,30 @@
                     } else {
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
-                        this.list.usuarios = [];
-                        this.filtro.Nombre = null;
-                        this.filtro.Clave = '';
+                        //this.list.usuarios = [];
+                        //this.filtro.Nombre = null;
+                        //this.filtro.Clave = '';
                     }
                     this.recorrido();
                 },
                 'filtro.PuntoVenta': function (newVal, oldVal) {
-                    if (newVal) {
-                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
-                            this.getUsuarios(newVal.id);
-                        }
-                    } else {
-                        this.list.usuarios = [];
-                        this.filtro.Nombre = null;
-                        this.filtro.Clave = '';
-                    }
+                    //if (newVal) {
+                    //    if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                    //        this.getUsuarios(newVal.id);
+                    //    }
+                    //} else {
+                    //    this.list.usuarios = [];
+                    //    this.filtro.Nombre = null;
+                    //    this.filtro.Clave = '';
+                    //}
                     this.recorrido();
                 },
                 'filtro.Nombre': function (newVal, oldVal) {
-                    this.recorrido();
+                    if (this.filtro.Nombre.id === '339' && this.list.sucursales.length === 0)
+                        this.getSucursales();
+                    this.$nextTick(function () {
+                        this.recorrido();
+                    });
                 }
             }
         });
