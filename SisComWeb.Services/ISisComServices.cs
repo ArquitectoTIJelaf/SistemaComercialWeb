@@ -60,5 +60,13 @@ namespace SisComWeb.Services
         Response<List<ItinerarioEntity>> BuscaItinerarios(ItinerarioRequest request);
 
         #endregion
+
+        #region MUESTRA PLANO
+
+        //[OperationContract]
+        //[WebInvoke(Method = "POST", UriTemplate = "MuestraPlano", ResponseFormat = WebMessageFormat.Json)]
+        //Response<List<PlanoEntity>> MuestraPlano(PlanoRequest request);
+
+        #endregion
     }
 }

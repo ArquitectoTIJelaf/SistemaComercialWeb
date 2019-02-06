@@ -20,7 +20,7 @@ namespace SisComWeb.Business
                 if (response.Valor.CodiUsuario != 0 && (Password == desencriptaPassword || Password == response.Valor.Password))
                     return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
                 else
-                    return new Response<UsuarioEntity>(false, null, "¡Usuario o Clave incorrecto!", false);
+                    return new Response<UsuarioEntity>(false, null, "Las credenciales ingresadas son inválidas.", false);
             }
             catch (Exception ex)
             {

@@ -4,7 +4,7 @@
     {
         // Usuario
         public const string MsgErrExcListUsuario = "Ocurrió una excepción al listar los usuarios.";
-        public const string MsgErrExcBusqUsuario = "Ocurrió una excepción al buscar el usuario.";
+        public const string MsgErrExcBusqUsuario = "Ocurrió un error con el sistema. Reportar al soporte técnico.";
 
         // Oficina
         public const string MsgErrExcListOficina = "Ocurrió una excepción al listar todas las oficinas.";
