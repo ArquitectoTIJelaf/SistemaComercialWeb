@@ -2,29 +2,128 @@
     ViewBag.Title = "Ventas";
 }
 
-@section styles{
-    @*<style type="text/css">
+@Html.Partial("_Filtros")
+@Html.Partial("_Table")
 
-        input[type=radio],
-        input[type=checkbox] {
-            visibility: hidden;
-            position: absolute;
+@section styles{
+    <style>
+        .input-group-addon {
+            border-radius: 4px;
+            border: 1px solid rgb(228, 231, 234);
+            color: #2a97f4;
+            background-color: #fff;
         }
 
-            input[type=radio] + label:before,
-            input[type=checkbox] + label:before {
-                border: 1px solid #777;
-            }
+        /*.radio input[type=checkbox] {
+            cursor: pointer;
+            opacity: 0;
+            z-index: 1;
+            outline: 0 !important;
+        }
 
-            input[type=radio] + label:before {
-                border-radius: 50%;
-            }
+        .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
+            position: absolute;
+            margin-top: 4px\9;
+            margin-left: -20px;
+        }
 
-            input[type=checkbox] + label:before {
-                border-radius: 2px;
-            }
-    </style>*@
+        input[type="checkbox"] {
+            -webkit-appearance: radio !important;
+            box-sizing: border-box;
+        }*/
+    </style>
 }
 
+@section scripts{
+    <script>
 
-@Html.Partial("_Principal")
+        $(function () {
+
+            if ($('.dp').length) {
+
+                $('#spnFecha').click(function (event) {
+                    event.preventDefault();
+                    $('#txtFecha').focus();
+                });
+            }
+        });
+
+        Vue.filter('money', function (value) {
+            if (typeof value !== 'undefined' && value !== '') {
+                value = parseFloat(value);
+                return 'S/ ' + value.toFixed(2);
+            } else {
+                return 'S/ 0.00';
+            }
+        });
+
+        Vue.filter('fixed2', function (value) {
+            if (typeof value !== 'undefined' && value !== '') {
+                value = parseFloat(value);
+                return String(value.toFixed(2));
+            } else {
+                return '0.00';
+            }
+        });
+
+        var selectAll = {
+            id: 0,
+            label: 'TODOS'
+        }
+
+        var appController = (function () {
+            return {
+            };
+        })();
+
+        var appVueFilter = new Vue({
+            el: '#appVueFilter',
+            data: {
+                filtro: {
+                    OrigenPas: null,
+                    DestinoPas: null,
+                    DestinoBus: null,
+                    Fecha: '',
+                    HoraDesde: ''
+                },
+                list: {
+                    origenesPas: [],
+                    destinosPas: [],
+                    destinosBus: []
+                }
+            },
+            mounted: function () {
+                $(".preloader").fadeIn();
+                this.$nextTick(() => {
+                    $('.vs__selected-options input[type=search]').addClass('input-sm');
+                    $('#cboOrigenPas input[type=search]').focus();
+                    $(".preloader").fadeOut();
+                });
+            },
+            methods: {
+                getLabel(option) {
+                    return `${option.id} - ${option.label}`
+                },
+            },
+            computed: {
+            },
+            watch: {
+            }
+        });
+
+        var appVueTable = new Vue({
+            el: '#appVueTable',
+            data: {
+            },
+            mounted: function () {
+            },
+            methods: {
+            },
+            computed: {
+            },
+            watch: {
+            }
+        });
+
+    </script>
+}

@@ -1,0 +1,133 @@
+﻿<div id="appVueFilter" class="row">
+    <div class="col-md-12">
+        <form id="claseBrevetesGridForm" action="/" class="" autocomplete="off">
+            <div class="panel panel-default">
+                <div class="panel-wrapper" aria-expanded="false">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group has-success">
+                                    <label class="col-md-12 text-center" style="font-family:Rubik, sans-serif; font-size:14px;">FILTRAR</label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <v-select v-model="filtro.OrigenPas"
+                                                      :id="'cboOrigenPas'"
+                                                      label="label"
+                                                      :get-option-label="getLabel"
+                                                      :options="list.origenesPas"
+                                                      :placeholder="'ORIGEN PAS.'"
+                                                      ref="select">
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <v-select v-model="filtro.DestinoPas"
+                                                      :id="'cboDestinoPas'"
+                                                      label="label"
+                                                      :get-option-label="getLabel"
+                                                      :options="list.destinosPas"
+                                                      :placeholder="'DESTINO PAS.'"
+                                                      ref="select">
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <v-select v-model="filtro.DestinoBus"
+                                                      :id="'cboDestinoBus'"
+                                                      label="label"
+                                                      :get-option-label="getLabel"
+                                                      :options="list.destinosBus"
+                                                      :placeholder="'DESTINO BUS.'"
+                                                      ref="select">
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="col-md-3">
+                                        <div class="form-group ">
+                                            @*<div class="input-group input-sm group-strench">
+                                                    <input @@blur="filtro.Fecha = $event.target.value"
+                                                           :value="filtro.Fecha"
+                                                           type="text"
+                                                           id="txtFecha"
+                                                           class="form-control input-sm dp"
+                                                           placeholder="FECHA"
+                                                           autocomplete="off">
+                                                    <span id="spnFecha" class="input-group-addon open-datetimepicker"><i class="fa fa-calendar-o"></i></span>
+                                                </div>*@
+                                            <input @@blur="filtro.Fecha = $event.target.value"
+                                                   :value="filtro.Fecha"
+                                                   type="text"
+                                                   id="txtFecha"
+                                                   class="form-control input-sm dp"
+                                                   placeholder="FECHA"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <input @@blur="filtro.HoraDesde = $event.target.value"
+                                                   :value="filtro.HoraDesde"
+                                                   type="text"
+                                                   id="txtHora"
+                                                   class="form-control input-sm dph"
+                                                   placeholder="HORA DESDE"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @*<div class="radio-list custom-radiolist">
+                                                    <div class="radio-inline p-0">
+                                                        <div class="radio radio-info">
+                                                            <input type="radio" name="radio" id="radio1" value="option1">
+                                                            <label for="radio1">TODOS</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="radio-inline">
+                                                        <div class="radio radio-info">
+                                                            <input type="radio" name="radio" id="radio2" value="option2">
+                                                            <label for="radio2">PROGRAMADOS</label>
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            <div class="checkbox-list">
+                                                <div class="col-md-6">
+                                                    <div class="checkbox checkbox-info checkbox-circle">
+                                                        <input id="checkbox-9" type="checkbox" checked="">
+                                                        <label for="checkbox-9">TODOS</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="checkbox checkbox-info checkbox-circle">
+                                                        <input id="checkbox-10" type="checkbox" checked="">
+                                                        <label for="checkbox-10">PROGRAMADOS</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-inverse btn-block waves-effect waves-light">
+                                        <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
