@@ -3,6 +3,36 @@
 }
 
 @Html.Partial("_Filtros")
+@Html.Partial("_Table")
+
+@section styles{
+    <style>
+        .input-group-addon {
+            border-radius: 4px;
+            border: 1px solid rgb(228, 231, 234);
+            color: #2a97f4;
+            background-color: #fff;
+        }
+
+        /*.radio input[type=checkbox] {
+            cursor: pointer;
+            opacity: 0;
+            z-index: 1;
+            outline: 0 !important;
+        }
+
+        .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
+            position: absolute;
+            margin-top: 4px\9;
+            margin-left: -20px;
+        }
+
+        input[type="checkbox"] {
+            -webkit-appearance: radio !important;
+            box-sizing: border-box;
+        }*/
+    </style>
+}
 
 @section scripts{
     <script>
@@ -11,9 +41,9 @@
 
             if ($('.dp').length) {
 
-                $('#spnFechaDesde').click(function (event) {
+                $('#spnFecha').click(function (event) {
                     event.preventDefault();
-                    $('#txtFechaDesde').focus();
+                    $('#txtFecha').focus();
                 });
             }
         });
@@ -52,7 +82,9 @@
                 filtro: {
                     OrigenPas: null,
                     DestinoPas: null,
-                    DestinoBus: null
+                    DestinoBus: null,
+                    Fecha: '',
+                    HoraDesde: ''
                 },
                 list: {
                     origenesPas: [],
@@ -72,6 +104,20 @@
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
                 },
+            },
+            computed: {
+            },
+            watch: {
+            }
+        });
+
+        var appVueTable = new Vue({
+            el: '#appVueTable',
+            data: {
+            },
+            mounted: function () {
+            },
+            methods: {
             },
             computed: {
             },

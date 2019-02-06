@@ -20,8 +20,8 @@ namespace SisComWeb.Services
         Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios/{CodiPuntoVenta}", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaUsuarios(string CodiPuntoVenta);
+        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuarios();
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaServicios", ResponseFormat = WebMessageFormat.Json)]

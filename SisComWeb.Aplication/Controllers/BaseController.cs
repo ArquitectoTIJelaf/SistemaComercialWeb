@@ -87,7 +87,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpGet]
         [Route("get-usuarios")]
-        public async Task<JsonResult> GetUsuarios(string CodiPuntoVenta)
+        public async Task<JsonResult> GetUsuarios()
         {
             try
             {
@@ -95,7 +95,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url + "ListaUsuarios");
-                    HttpResponseMessage response = await client.GetAsync(url + "ListaUsuarios/" + CodiPuntoVenta);
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaUsuarios");
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
