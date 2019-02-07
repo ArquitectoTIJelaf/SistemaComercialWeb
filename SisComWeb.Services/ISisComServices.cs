@@ -63,9 +63,9 @@ namespace SisComWeb.Services
 
         #region MUESTRA PLANO
 
-        //[OperationContract]
-        //[WebInvoke(Method = "POST", UriTemplate = "MuestraPlano", ResponseFormat = WebMessageFormat.Json)]
-        //Response<List<PlanoEntity>> MuestraPlano(PlanoRequest request);
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "MuestraPlano", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<PlanoEntity>> MuestraPlano(PlanoRequest request);
 
         #endregion
     }

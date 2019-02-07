@@ -142,5 +142,22 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region MUESTRA PLANO
+
+        public Response<List<PlanoEntity>> MuestraPlano(PlanoRequest request)
+        {
+            try
+            {
+                return PlanoLogic.MuestraPlano(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcListPlano, false);
+            }
+        }
+
+        #endregion
     }
 }

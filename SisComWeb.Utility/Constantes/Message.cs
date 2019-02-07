@@ -25,5 +25,8 @@
 
         // Itinerario
         public const string MsgErrExcListItinerario = "Ocurrió una excepción al listar todos los itinerarios.";
+
+        // Plano
+        public const string MsgErrExcListPlano = "Ocurrió una excepción al listar plano.";
     }
 }
