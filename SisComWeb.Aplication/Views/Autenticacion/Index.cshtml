@@ -116,7 +116,7 @@
                 });
             },
             methods: {
-                confirmUsuario: function (filtro) {
+                confirmUsuario(filtro) {
                     var input = {};
                     input.Nombre = filtro.Nombre.id;
                     input.Clave = filtro.Clave;
@@ -131,21 +131,21 @@
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getSucursales: function () {
+                getSucursales() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
                             _this.list.sucursales = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getPuntosVenta: function (Codi_Sucursal) {
+                getPuntosVenta(Codi_Sucursal) {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_Sucursal } })
                         .then(res => {
                             _this.list.puntosventa = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getUsuarios: function () {
+                getUsuarios() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-usuarios')
                         .then(res => {
@@ -155,7 +155,7 @@
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
                 },
-                recorrido: function () {
+                recorrido() {
                     var _this = this;
                     if (_this.filtro.Nombre.id === '339' && _this.filtro.Sucursal === null)
                         $('#cboSucursal input[type=search]').focus();
