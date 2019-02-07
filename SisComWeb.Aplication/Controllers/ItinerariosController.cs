@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,6 +48,11 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     JArray data = (JArray)tmpResult["Valor"];
+                    //List<SelectableEnumItem> items = ((JArray)tmpResult["Valor"]).Select(x => new SelectableEnumItem
+                    //{
+                    //    FirstName = (string)x["first_name"],
+                    //    Selected = (bool)x["selected"]
+                    //}).ToList();
                     return Json(data, JsonRequestBehavior.AllowGet);
                 }
                 else
