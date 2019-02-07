@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
+using SisComWeb.Aplication.Models;
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -25,6 +26,8 @@ namespace SisComWeb.Aplication.Controllers
         {
             try
             {
+                var auxHora = Hora.Replace(" ", "");
+
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())
                 {
@@ -32,7 +35,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{ \"CodiOrigen\" : " + CodiOrigen +
                                 ",\"CodiDestino\" : " + CodiDestino +
                                 ",\"CodiRuta\" : " + CodiRuta +
-                                ",\"Hora\" : \"" + Hora + "\"" +
+                                ",\"Hora\" : \"" + auxHora + "\"" +
                                 ",\"FechaViaje\" : \"" + FechaViaje + "\"" +
                                 ",\"TodosTurnos\" : " + TodosTurnos.ToLower() +
                                 ", \"SoloProgramados\" : " + SoloProgramados.ToLower() + " }";

@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-namespace SisComWeb.Entity
+﻿namespace SisComWeb.Entity
 {
-    public class ItinerarioEntity
+    public class TurnoEntity
     {
         public int NroViaje { get; set; }
 
@@ -55,10 +53,6 @@ namespace SisComWeb.Entity
         public string CapacidadBus { get; set; }
 
         public int CodiProgramacion { get; set; }
-
-        public List<PuntoEntity> ListaEmbarques { get; set; }
-
-        public List<PuntoEntity> ListaArribos { get; set; }
 
         public short Dias { get; set; }
 

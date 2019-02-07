@@ -406,3 +406,81 @@ System.Data.SqlClient.SqlException (0x80131904): La función o el procedimiento s
    en SisComWeb.Business.UsuarioLogic.ValidaUsuario(Int16 CodiUsuario, String Password) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Business\UsuarioLogic.cs:línea 18
 ClientConnectionId:3f226011-886c-47c3-8420-f40ba269ccf9
 Error Number:8144,State:2,Class:16
+2019-02-07 11:23:14,179 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:fde11a86-528a-4451-9186-3ea21959779b
+Error Number:241,State:1,Class:16
+2019-02-07 11:25:13,959 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:fde11a86-528a-4451-9186-3ea21959779b
+Error Number:241,State:1,Class:16
+2019-02-07 11:30:34,771 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:2042c234-3fbd-4e07-9180-28f83209522e
+Error Number:241,State:1,Class:16
+2019-02-07 11:30:34,813 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:62b76823-7ca9-4bb1-b814-bddebcd451c5
+Error Number:241,State:1,Class:16
+2019-02-07 11:30:47,944 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:fde11a86-528a-4451-9186-3ea21959779b
+Error Number:241,State:1,Class:16
+2019-02-07 11:35:22,642 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena de caracteres en fecha y/u hora.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.ItinerarioRepository.BuscarItinerarios(Int16 CodiOrigen, Int16 CodiDestino, Int16 CodiRuta, String Hora) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 24
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
+ClientConnectionId:10939311-a5f5-4bfb-9cbd-84ccdfa0863a
+Error Number:241,State:1,Class:16

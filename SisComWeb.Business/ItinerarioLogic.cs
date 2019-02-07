@@ -9,13 +9,13 @@ namespace SisComWeb.Business
     public class ItinerarioLogic
     {
         public static Response<List<ItinerarioEntity>> BuscaItinerarios(ItinerarioRequest request)
+
         {
             try
             {
                 var response = new Response<List<ItinerarioEntity>>(false, null, "", false);
 
                 Response<BusEntity> resObtenerBus;
-                Response<int> resObtenerTotalVentas;
                 Response<List<PuntoEntity>> resListarPuntosEmbarque;
                 Response<List<PuntoEntity>> resListarPuntosArribo;
 
@@ -65,7 +65,14 @@ namespace SisComWeb.Business
                         // Obtiene 'BusProgramacion'
                         resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarProgramacionViaje.Valor);
                         if (resObtenerBus.Estado)
+                        {
+                            resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
+                            resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus;
+                            resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                            resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus;
+
                             response.Mensaje += resObtenerBus.Mensaje;
+                        }
                         else
                         {
                             response.Mensaje += "Error: ObtenerBusProgramacion. ";
@@ -97,7 +104,14 @@ namespace SisComWeb.Business
                             {
                                 resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, "");
                                 if (resObtenerBus.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
+                                    resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus;
+                                    resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                                    resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus;
+
                                     response.Mensaje += resObtenerBus.Mensaje;
+                                }
                                 else
                                 {
                                     response.Mensaje += "Error: ObtenerBusEstandar. ";
@@ -134,19 +148,27 @@ namespace SisComWeb.Business
                             else
                             {
                                 // Obtiene 'TotalVentas'
-                                resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor);
+                                Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor);
                                 if (resObtenerTotalVentas.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
+
                                     response.Mensaje += resObtenerTotalVentas.Mensaje;
+                                }
                                 else
                                 {
                                     response.Mensaje += "Error: ObtenerTotalVentas. ";
                                     return response;
                                 }
 
-                                // Lista 'TotalVentas'
+                                // Lista 'PuntosEmbarque'
                                 resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
                                 if (resListarPuntosEmbarque.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].ListaEmbarques = resListarPuntosEmbarque.Valor;
+
                                     response.Mensaje += resListarPuntosEmbarque.Mensaje;
+                                }
                                 else
                                 {
                                     response.Mensaje += "Error: ListarPuntosEmbarque. ";
@@ -156,7 +178,11 @@ namespace SisComWeb.Business
                                 // Lista 'PuntosArribo'
                                 resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
                                 if (resListarPuntosArribo.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].ListaArribos = resListarPuntosArribo.Valor;
+
                                     response.Mensaje += resListarPuntosArribo.Mensaje;
+                                }
                                 else
                                 {
                                     response.Mensaje += "Error: ListarPuntosArribo. ";

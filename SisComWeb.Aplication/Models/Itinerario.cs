@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SisComWeb.Aplication.Models
 {
-    public class Itinerarios
+    public class Itinerario
     {
     }
 }

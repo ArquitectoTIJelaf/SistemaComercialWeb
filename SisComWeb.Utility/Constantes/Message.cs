@@ -28,5 +28,8 @@
 
         // Plano
         public const string MsgErrExcListPlano = "Ocurrió una excepción al listar plano.";
+
+        // Turno
+        public const string MsgErrExcBusqTurno = "Ocurrió una excepción al buscar turno.";
     }
 }

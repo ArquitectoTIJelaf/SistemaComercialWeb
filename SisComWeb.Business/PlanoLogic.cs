@@ -43,21 +43,21 @@ namespace SisComWeb.Business
                             response.Mensaje += "Error: ObtenerNivelAsiento. ";
                             return response;
                         }
-                    }
 
-                    // Obtiene 'PrecioAsiento'
-                    var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resObtenerNivelAsiento.Valor);
-                    if (resObtenerPrecioAsiento.Estado)
-                    {
-                        response.Mensaje += resObtenerPrecioAsiento.Mensaje;
-                        resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
-                        resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
-                        resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
-                    }
-                    else
-                    {
-                        response.Mensaje += "Error: ObtenerPrecioAsiento. ";
-                        return response;
+                        // Obtiene 'PrecioAsiento'
+                        var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resObtenerNivelAsiento.Valor);
+                        if (resObtenerPrecioAsiento.Estado)
+                        {
+                            response.Mensaje += resObtenerPrecioAsiento.Mensaje;
+                            resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
+                            resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
+                            resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
+                        }
+                        else
+                        {
+                            response.Mensaje += "Error: ObtenerPrecioAsiento. ";
+                            return response;
+                        }
                     }
                 }
 
