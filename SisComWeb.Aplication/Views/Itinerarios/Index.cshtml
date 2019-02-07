@@ -14,23 +14,6 @@
             background-color: #fff;
         }
 
-        /*.radio input[type=checkbox] {
-            cursor: pointer;
-            opacity: 0;
-            z-index: 1;
-            outline: 0 !important;
-        }
-
-        .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
-            position: absolute;
-            margin-top: 4px\9;
-            margin-left: -20px;
-        }
-
-        input[type="checkbox"] {
-            -webkit-appearance: radio !important;
-            box-sizing: border-box;
-        }*/
     </style>
 }
 
@@ -46,6 +29,7 @@
                     $('#txtFecha').focus();
                 });
             }
+
         });
 
         Vue.filter('money', function (value) {
@@ -80,11 +64,13 @@
             el: '#appVueFilter',
             data: {
                 filtro: {
-                    OrigenPas: null,
-                    DestinoPas: null,
-                    DestinoBus: null,
-                    Fecha: '',
-                    HoraDesde: ''
+                    CodiOrigen: null,
+                    CodiDestino: null,
+                    CodiRuta: null,
+                    FechaViaje: '',
+                    Hora: '',
+                    TodosTurnos: false,
+                    SoloProgramados: false
                 },
                 list: {
                     origenesPas: [],
@@ -94,6 +80,7 @@
             },
             mounted: function () {
                 $(".preloader").fadeIn();
+                this.getSucursales();
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
                     $('#cboOrigenPas input[type=search]').focus();
@@ -104,6 +91,30 @@
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
                 },
+                getSucursales() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            _this.list.origenesPas = res.data;
+                            _this.list.destinosPas = res.data;
+                            _this.list.destinosBus = res.data;
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                search() {
+                    var _this = this;
+                    var input = {};
+                    input.CodiOrigen = _this.filtro.CodiOrigen.id;
+                    input.CodiDestino = _this.filtro.CodiDestino.id;
+                    input.CodiRuta = (_this.filtro.CodiRuta) ? _this.filtro.CodiRuta.id : 0;
+                    input.FechaViaje = _this.filtro.FechaViaje;
+                    input.Hora = _this.filtro.Hora;
+                    input.TodosTurnos = _this.filtro.TodosTurnos;
+                    input.SoloProgramados = _this.filtro.SoloProgramados;
+                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios',input)
+                        .then(res => {
+                            debugger;
+                        }).catch(APP.rq.axios_handler_error_alert);
+                }
             },
             computed: {
             },

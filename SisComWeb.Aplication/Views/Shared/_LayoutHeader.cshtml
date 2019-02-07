@@ -1,46 +1,18 @@
-﻿@using SisComWeb.Aplication.Helpers
-
+﻿
 <nav class="navbar navbar-default navbar-static-top m-b-0">
     <div class="navbar-header" id="appVueNavarHeader">
         <div class="top-left-part">
             <a class="logo" href="javascript:void(0);">
-                <b class="visible-xs">
-                    <img height="24" width="33" src="~/wwwroot/plugins/images/logo-white.png" />
+                <b class="hidden-xs">
+                    <img height="40" src="~/wwwroot/plugins/images/users/flores.png" style="padding-left: 40%;" />
                 </b>
-                <span class="hidden-xs">
-                    <b>JELAF INTEGRADORES</b>
-                </span>
             </a>
         </div>
-        @{
-            //var usuario = DataSession.UsuarioLogueado;
-        }
-
+        <ul class="nav navbar-top-links navbar-left">
+            <li><a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;"><i class="ti-close ti-menu fa-fw"></i>Herramientas</a></li>
+        </ul>
         <ul class="nav navbar-top-links navbar-left">
             <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>
-        </ul>
-
-        <ul class="nav navbar-top-links navbar-right pull-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
-                    <i class="mdi mdi-laptop-windows fa-fw"></i>
-                    <b class="hidden-xs">@*@usuario.Nombre*@</b><span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-user animated flipInY">
-                    <li>
-                        <div class="dw-user-box">
-                            <div class="u-img"><img src="~/wwwroot/plugins/images/users/jelaf.png" alt="user" /></div>
-                            <div class="u-text">
-                                <center><p class="visible-xs">@*@usuario.Nombre*@</p></center>
-                                <p>@*@usuario.Correo*@</p>
-                                <center><a href="javascript:void(0)" class="btn btn-rounded btn-danger btn-sm">@*@usuario.Nombre*@</a></center>
-                            </div>
-                        </div>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="@Url.Action("Logout", "Autenticacion")"><i class="fa fa-power-off fa-fw"></i> Cerrar sesión</a></li>
-                </ul>
-            </li>
         </ul>
     </div>
 </nav>

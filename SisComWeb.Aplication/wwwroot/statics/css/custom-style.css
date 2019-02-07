@@ -1,6 +1,7 @@
 ﻿/*Reducir Cabecera de plantilla*/
 .navbar-header {
     height: unset;
+    background-color: #1D4672;
 }
 
 /*Todas las columnas con menos padding*/
@@ -51,7 +52,7 @@
     }
 
         .panel .panel-heading a i {
-            font-size: 10px;
+            font-size: 12px;
             margin-left: 0px;
         }
 
@@ -92,15 +93,15 @@ ul.ui-autocomplete {
 
 /*Todo el cuerpo con tamañano de letra*/
 body {
-    font-size: 10px !important;
+    font-size: 12px !important;
 }
 
 .form-control {
-    font-size: 10px !important;
+    font-size: 12px !important;
 }
 
 .btn {
-    font-size: 10px;
+    font-size: 12px;
 }
 
 /*Estilos de table vue-fix*/
@@ -120,13 +121,13 @@ body {
 .table-style th {
     /*color: #657180;*/
     color: white;
-    font-size: 10px;
+    font-size: 12px;
     border: 1px solid #e3e8ee;
     background-color: #616E7E !important;
 }
 
 .tr-hover {
-    background-color: #ebf7ff !important;    
+    background-color: #ebf7ff !important;
 }
 
 .table-style tbody tr:nth-child(even) {
@@ -136,7 +137,7 @@ body {
 .table-style td {
     padding: 4px 6px;
     color: #657180;
-    font-size: 10px;
+    font-size: 12px;
     text-align: center;
     box-sizing: border-box;
     border: 1px solid #e3e8ee;
@@ -294,7 +295,7 @@ body {
 .row-custom {
     padding: 6px !important;
     vertical-align: middle !important;
-    font-size: 10px !important;
+    font-size: 12px !important;
 }
 
 .table > thead:first-child > tr:first-child > th {
@@ -396,22 +397,23 @@ body {
 .v-select .selected-tag {
     margin: 0 0 0 7px !important;
     padding: 0 !important;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .v-select .dropdown-menu {
-    max-height: 225px !important;
+    max-height: 230px !important;
+    overflow-x: hidden;
     z-index: 101;
 }
 
 .v-select input[type=search],
 .v-select input[type=search]:focus {
     margin: 0 !important;
-    font-size: 10px !important;
+    font-size: 12px !important;
 }
 
 .v-select .dropdown-menu li {
-    font-size: 10px !important;
+    font-size: 12px !important;
 }
 
 .v-select .dropdown-toggle .clear {
@@ -510,9 +512,39 @@ body {
 }
 
 .custom-th {
-    padding: 8px 10px 8px 10px !important;
+    /*padding: 8px 10px 8px 10px !important;*/
 }
 
 .custom-td {
-    padding: 4px 10px 4px 10px !important;
+    /*padding: 4px 10px 4px 10px !important;*/
+}
+
+.custom-scroll-container ::-webkit-scrollbar {
+    width: 28px;
+    height: 28px;
+}
+
+.custom-scroll-container ::-webkit-scrollbar-thumb:horizontal {
+    background: url('/wwwroot/plugins/images/users/SCROLL.png') no-repeat;
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px;
+    min-height: 26px;
+    padding: 100px 0 0;
+    box-shadow: inset 1px 1px 0 rgb(220, 172, 0), inset 0 -1px 0 rgb(220, 172, 0);
+}
+
+.custom-scroll-container ::-webkit-scrollbar-track {
+    background: white;
+    border-width: 1px;
+}
+
+.custom-scroll-container ::-webkit-scrollbar-thumb:vertical {
+    background: url('/wwwroot/plugins/images/users/SCROLL2.png') no-repeat;
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px;
+    min-height: 26px;
+    padding: 100px 0 0;
+    box-shadow: inset 1px 1px 0 rgb(220, 172, 0), inset 0 -1px 0 rgb(220, 172, 0);
 }

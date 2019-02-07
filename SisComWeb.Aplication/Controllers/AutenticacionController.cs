@@ -30,7 +30,7 @@ namespace SisComWeb.Aplication.Controllers
         [HttpPost]
         [Route("post-usuario")]
         public async Task<ActionResult> POST(short Nombre, string Clave, string Sucursal, string PuntoVenta)
-       {
+        {
             try
             {
                 string result = string.Empty;
