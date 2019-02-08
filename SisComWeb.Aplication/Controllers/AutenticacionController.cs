@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
+using SisComWeb.Aplication.Models;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -51,8 +52,16 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     JObject data = (JObject)tmpResult["Valor"];
-                    string login = (string)data["Login"];
-
+                    Usuario user = new Usuario
+                    {
+                        CodiEmpresa = (int)data["CodiEmpresa"],
+                        CodiPuntoVenta = (int)data["CodiPuntoVenta"],
+                        CodiSucursal = (int)data["CodiSucursal"],
+                        CodiUsuario = (int)data["CodiUsuario"],
+                        Nombre = (string)data["Login"],
+                        Nivel = (int)data["Nivel"]
+                    };
+                    DataSession.UsuarioLogueado = user;
                     return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
                 }
                 else

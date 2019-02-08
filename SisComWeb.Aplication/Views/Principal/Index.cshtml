@@ -44,35 +44,78 @@
             margin-top: 20px;
         }
     }
+    
 </style>
 
 <div id="principal">
 
-    <a href="@Url.Action("Index","itinerarios")">
-        <div class="item">
-            <img src="~/wwwroot/plugins/images/VENTA1.png" />
+    <a href="@Url.Action("Index","Itinerarios")">
+        <div class="item" onmouseover="hoverV();" onmouseout="unhoverV();" >
+            <img id="ventas" src="~/wwwroot/plugins/images/VENTA1.png"/>
             <h5>Ventas</h5>
         </div>
     </a>
 
-    <div class="item">
-        <img src="~/wwwroot/plugins/images/CLIENTE1.png" />
+    <div class="item" onmouseover="hoverC();" onmouseout="unhoverC();">
+        <img id="clientes" src="~/wwwroot/plugins/images/CLIENTE1.png" />
         <h5>Clientes</h5>
     </div>
 
-    <div class="item">
-        <img src="~/wwwroot/plugins/images/CORELA1.png" />
+    <div class="item" onmouseover="hoverCo();" onmouseout="unhoverCo();">
+        <img id="correlativos" src="~/wwwroot/plugins/images/CORELA1.png" />
         <h5>Correlativos</h5>
     </div>
 
-    <div class="item">
-        <img src="~/wwwroot/plugins/images/RUTAS1.png" />
+    <div class="item" onmouseover="hoverR();" onmouseout="unhoverR();">
+        <img id="rutas" src="~/wwwroot/plugins/images/RUTAS1.png" />
         <h5>Rutas y precios</h5>
     </div>
 
-    <div class="item">
-        <img src="~/wwwroot/plugins/images/LIQ1.png" />
+    <div class="item" onmouseover="hoverL();" onmouseout="unhoverL();">
+        <img id="liquidaciones" src="~/wwwroot/plugins/images/LIQ1.png" />
         <h5>Liquidación</h5>
     </div>
 
 </div>
+
+<script>
+    function unhoverV() {
+        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA1.png");
+    }
+
+    function hoverV() {
+        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA2.png");
+    }
+
+    function unhoverC() {
+        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTE1.png");
+    }
+
+    function hoverC() {
+        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTES2.png");
+    }
+
+    function unhoverCo() {
+        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA1.png");
+    }
+
+    function hoverCo() {
+        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA2.png");
+    }
+
+    function unhoverR() {
+        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS1.png");
+    }
+
+    function hoverR() {
+        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS2.png");
+    }
+
+    function unhoverL() {
+        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQ1.png");
+    }
+
+    function hoverL() {
+        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQU2.png");
+    }
+</script>

@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace SisComWeb.Aplication.Models
+{
+    public class Usuario
+    {
+        public int CodiEmpresa { get; set; }
+        public int CodiPuntoVenta { get; set; }
+        public int CodiSucursal { get; set; }
+        public int CodiUsuario { get; set; }
+        public string Nombre { get; set; }
+        public int Nivel { get; set; }
+    }
+}

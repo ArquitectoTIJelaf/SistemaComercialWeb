@@ -1,5 +1,8 @@
-﻿@{
+﻿@using SisComWeb.Aplication.Helpers
+
+@{
     ViewBag.Title = "Ventas";
+    var usuario = DataSession.UsuarioLogueado;
 }
 
 @Html.Partial("_Filtros")
@@ -13,7 +16,6 @@
             color: #2a97f4;
             background-color: #fff;
         }
-
     </style>
 }
 
@@ -98,7 +100,9 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
+                            debugger;
                             _this.list.origenesPas = res.data;
+                            _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === '@usuario.CodiSucursal')
                             _this.list.destinosPas = res.data;
                             _this.list.destinosBus = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
