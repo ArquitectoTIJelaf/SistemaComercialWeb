@@ -484,3 +484,63 @@ System.Data.SqlClient.SqlException (0x80131904): Error al convertir una cadena d
    en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 23
 ClientConnectionId:10939311-a5f5-4bfb-9cbd-84ccdfa0863a
 Error Number:241,State:1,Class:16
+2019-02-08 16:26:49,908 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): No se encontró el procedimiento almacenado 'scwsp_ValidarViajeCalendario'.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.ItinerarioRepository.ValidarViajeCalendario(Int32 NroViaje, String FechaProgramacion) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 201
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 139
+ClientConnectionId:07172556-eac9-4beb-8590-8634a0407fff
+Error Number:2812,State:62,Class:16
+2019-02-08 16:27:57,978 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): No se encontró el procedimiento almacenado 'scwsp_ValidarViajeCalendario'.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.ItinerarioRepository.ValidarViajeCalendario(Int32 NroViaje, String FechaProgramacion) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 201
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 139
+ClientConnectionId:54e388e6-2db0-4659-9387-aef137823b18
+Error Number:2812,State:62,Class:16
+2019-02-08 16:28:29,753 ERROR SisComWeb.Business.ItinerarioLogic - BuscaItinerarios
+System.Data.SqlClient.SqlException (0x80131904): No se encontró el procedimiento almacenado 'scwsp_ValidarViajeCalendario'.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.ItinerarioRepository.ValidarViajeCalendario(Int32 NroViaje, String FechaProgramacion) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Repository\ItinerarioRepository.cs:línea 201
+   en SisComWeb.Business.ItinerarioLogic.BuscaItinerarios(ItinerarioRequest request) en D:\WS_Git\SistemaComercialWeb\SisComWeb.Business\ItinerarioLogic.cs:línea 139
+ClientConnectionId:54e388e6-2db0-4659-9387-aef137823b18
+Error Number:2812,State:62,Class:16

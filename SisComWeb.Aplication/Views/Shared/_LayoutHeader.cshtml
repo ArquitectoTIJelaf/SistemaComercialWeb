@@ -1,4 +1,8 @@
-﻿
+﻿@using SisComWeb.Aplication.Helpers
+@{
+    var usuario = DataSession.UsuarioLogueado;
+}
+
 <nav class="navbar navbar-default navbar-static-top m-b-0">
     <div class="navbar-header" id="appVueNavarHeader">
         <div class="top-left-part">
@@ -13,6 +17,14 @@
         </ul>
         <ul class="nav navbar-top-links navbar-left">
             <li><a href="javascript:void(0)" class="open-close waves-effect waves-light visible-xs"><i class="ti-close ti-menu"></i></a></li>
+        </ul>
+        <ul class="nav navbar-top-links navbar-right pull-right">
+            <li>
+                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;line-height: 25px !important;">
+                    <i class="fa fa-user fa-fw"></i>@usuario.Nombre
+                    <p style="font-size:10px">Cerrar Sesión</p>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

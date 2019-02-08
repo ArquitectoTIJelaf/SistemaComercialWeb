@@ -13,6 +13,7 @@
                             <div class="col-md-6">
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label class="control-label">Origen pasajero:</label>
                                         <v-select v-model="filtro.CodiOrigen"
                                                   :id="'cboOrigenPas'"
                                                   label="label"
@@ -26,6 +27,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label class="control-label">Destino pasajero:</label>
                                         <v-select v-model="filtro.CodiDestino"
                                                   :id="'cboDestinoPas'"
                                                   label="label"
@@ -39,6 +41,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        <label class="control-label">Destino bus:</label>
                                         <v-select v-model="filtro.CodiRuta"
                                                   :id="'cboDestinoBus'"
                                                   label="label"
@@ -55,19 +58,28 @@
                                 <div class="col-md-3">
                                     <div class="form-group ">
                                         <div class="input-group input-sm group-strench">
-                                            <input @@blur="filtro.FechaViaje = $event.target.value"
+                                            <label class="control-label">Fecha desde:</label>
+                                            <input @@blur="filtro.FechaViaje = $event.target.value.trim()"
                                                    :value="filtro.FechaViaje"
                                                    type="text"
                                                    id="txtFecha"
                                                    class="form-control input-sm dp"
                                                    placeholder="FECHA"
                                                    autocomplete="off">
-                                            <span id="spnFecha" class="input-group-addon open-datetimepicker"><i class="fa fa-calendar-o"></i></span>
+                                            @*<input @@blur="filtro.FechaViaje = $event.target.value"
+                                                       :value="filtro.FechaViaje"
+                                                       type="text"
+                                                       id="txtFecha"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA"
+                                                       autocomplete="off">
+                                                <span id="spnFecha" class="input-group-addon open-datetimepicker"><i class="fa fa-calendar-o"></i></span>*@
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        <label class="control-label">Hora desde:</label>
                                         <input @@blur="filtro.Hora = $event.target.value.trim()"
                                                :value="filtro.Hora"
                                                type="text"
@@ -97,7 +109,7 @@
                                 </div>
                             </div>
                             <div class="col-md-1">
-                                <button @@click="search" class="btn btn-inverse btn-block waves-effect waves-light">
+                                <button id="buscar" @@click="search" class="btn btn-inverse btn-block waves-effect waves-light">
                                     <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
                                 </button>
                             </div>

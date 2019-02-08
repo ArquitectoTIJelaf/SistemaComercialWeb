@@ -11,11 +11,13 @@ using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
 {
+    [SessionExpire]
     [RoutePrefix("itinerarios")]
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        // GET: Itinerarios
+
+        [Route("")]
         public ActionResult Index()
         {
             return View();

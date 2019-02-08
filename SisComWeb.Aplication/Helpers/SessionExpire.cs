@@ -8,23 +8,22 @@ namespace SisComWeb.Aplication.Helpers
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            //TODO: HMSV - Validar los campos a parte del Nombre
-            //if (String.IsNullOrWhiteSpace(DataSession.UsuarioLogueado.Nombre))
-            //{
-            //    if (!filterContext.HttpContext.Request.IsAjaxRequest())
-            //    {
-            //        filterContext.Result = new RedirectToRouteResult(
-            //            new RouteValueDictionary
-            //           {
-            //                    { "action", "Index" },
-            //                    { "controller", "Autenticacion" },
-            //           });
-            //    }
-            //    else
-            //    {
-            //        filterContext.Result = new RedirectResult("~/Autenticacion/AjaxSessionExpired");
-            //    }
-            //}
+            if (String.IsNullOrWhiteSpace(DataSession.UsuarioLogueado.Nombre))
+            {
+                if (!filterContext.HttpContext.Request.IsAjaxRequest())
+                {
+                    filterContext.Result = new RedirectToRouteResult(
+                        new RouteValueDictionary
+                       {
+                                { "action", "Index" },
+                                { "controller", "Autenticacion" },
+                       });
+                }
+                else
+                {
+                    filterContext.Result = new RedirectResult("~/Autenticacion/AjaxSessionExpired");
+                }
+            }
             base.OnActionExecuting(filterContext);
         }
     }

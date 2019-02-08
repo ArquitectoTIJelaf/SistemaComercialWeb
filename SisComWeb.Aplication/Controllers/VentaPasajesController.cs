@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using SisComWeb.Aplication.Helpers;
 using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
 {
+    [SessionExpire]
+    [RoutePrefix("venta-pasajes")]
     public class VentaPasajesController : Controller
     {
-        // GET: VentaPasajes
+        [Route("")]
         public ActionResult Index()
         {
             return View();
