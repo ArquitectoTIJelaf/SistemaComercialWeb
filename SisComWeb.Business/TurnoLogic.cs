@@ -166,7 +166,11 @@ namespace SisComWeb.Business
                             // Lista 'PuntosArribo'
                             Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, request.HoraViaje);
                             if (resListarPuntosArribo.Estado)
+                            {
+                                resBuscarTurno.Valor.ListaArribos = resListarPuntosArribo.Valor;
+
                                 response.Mensaje += resListarPuntosArribo.Mensaje;
+                            }
                             else
                             {
                                 response.Mensaje += "Error: ListarPuntosArribo. ";
@@ -188,7 +192,19 @@ namespace SisComWeb.Business
                                 FechaProgramacion = resBuscarTurno.Valor.FechaProgramacion,
                                 NroViaje = resBuscarTurno.Valor.NroViaje
                             };
+
                             Response<List<PlanoEntity>> resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
+                            if (resMuestraPlano.Estado)
+                            {
+                                resBuscarTurno.Valor.ListaPlanoBus = resMuestraPlano.Valor;
+
+                                response.Mensaje += resMuestraPlano.Mensaje;
+                            }
+                            else
+                            {
+                                response.Mensaje += "Error: resMuestraPlano. ";
+                                return response;
+                            }
                         }
                     }
                     else

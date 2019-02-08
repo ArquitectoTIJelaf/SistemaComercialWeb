@@ -60,7 +60,7 @@ namespace SisComWeb.Entity
 
         public List<PuntoEntity> ListaArribos { get; set; }
 
-        public List<PuntoEntity> ListaPlanoBus { get; set; }
+        public List<PlanoEntity> ListaPlanoBus { get; set; }
 
         public short Dias { get; set; }
 
