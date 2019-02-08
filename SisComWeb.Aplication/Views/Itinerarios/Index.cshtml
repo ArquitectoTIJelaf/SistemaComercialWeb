@@ -57,6 +57,9 @@
 
         var appController = (function () {
             return {
+                loadTable: function (_list) {
+                    appVueTable.loadTable(_list)
+                }
             };
         })();
 
@@ -110,25 +113,65 @@
                     input.Hora = _this.filtro.Hora;
                     input.TodosTurnos = _this.filtro.TodosTurnos;
                     input.SoloProgramados = _this.filtro.SoloProgramados;
-                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios',input)
+                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input)
                         .then(res => {
                             debugger;
+                            appController.loadTable(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
+                },
+                recorrido: function () {
+                    var _this = this;
+                    if (_this.filtro.CodiOrigen === null) {
+                        $('#cboOrigenPas input[type=search]').focus();
+                    } else if (_this.filtro.CodiDestino === null) {
+                        $('#cboDestinoPas input[type=search]').focus();
+                    } else if (_this.filtro.CodiRuta === null) {
+                        $('#cboDestinoBus input[type=search]').focus();
+                    } else if (_this.filtro.FechaViaje === '') {
+                        $('#txtFecha').focus();
+                        //} else if (_this.filtro.Hora === '') {
+                        //    $('#txtHora').focus();
+                    } else {
+                        _this.search();
+                    }
                 }
             },
             computed: {
             },
             watch: {
+                'filtro.CodiOrigen': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.CodiDestino': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.CodiRuta': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.FechaViaje': function (newVal, oldVal) {
+                    if (String(newVal).replace(/\s/g, '').length > 0)
+                        this.recorrido();
+                },
+                'filtro.Hora': function (newVal, oldVal) {
+                    if (String(newVal).replace(/\s/g, '').length > 0)
+                        this.recorrido();
+                }
             }
         });
 
         var appVueTable = new Vue({
             el: '#appVueTable',
             data: {
+                list: {
+                    itinerarios: []
+                }
             },
             mounted: function () {
             },
             methods: {
+                loadTable: function (_list) {
+                    this.list.itinerarios = _list;
+                }
             },
             computed: {
             },

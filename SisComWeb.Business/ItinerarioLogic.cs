@@ -33,9 +33,9 @@ namespace SisComWeb.Business
                     // Calcula 'FechaProgramacion'
                     var doubleDias = double.Parse(resBuscarItinerarios.Valor[i].Dias.ToString());
                     if (resBuscarItinerarios.Valor[i].Dias > 0)
-                        resBuscarItinerarios.Valor[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString();
+                        resBuscarItinerarios.Valor[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString("dd/MM/yyyy");
                     else
-                        resBuscarItinerarios.Valor[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString();
+                        resBuscarItinerarios.Valor[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy");
 
                     // Verifica cambios 'TurnoViaje'
                     var resVerificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
