@@ -45,28 +45,28 @@
                                 <th class="custom-th" width="%">FECHA PROG.</th>
                             </tr>
                         </thead>
-                        @*<tbody>
-                            <tr v-for="a in 15">
+                        <tbody>
+                            <tr v-for="item in list.itinerarios">
                                 <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
-                                <td class="custom-td">????</td>
+                                <td class="custom-td">{{item.NroViaje}}</td>
+                                <td class="custom-td">{{item.RazonSocial}}</td>
+                                <td class="custom-td">{{item.NomSucursal}}</td>
+                                <td class="custom-td">{{item.NomOrigen}}</td>
+                                <td class="custom-td">{{item.NomRuta}}</td>
+                                <td class="custom-td">{{item.HoraProgramacion}}</td>
+                                <td class="custom-td">{{item.CodiBus}}</td>
+                                <td class="custom-td">{{item.PlacaBus}}</td>
+                                <td class="custom-td">{{item.AsientosVendidos}}</td>
+                                <td class="custom-td">{{item.CapacidadBus}}</td>
+                                <td class="custom-td">{{item.CodiProgramacion}}</td>
+                                <td class="custom-td">{{item.HoraPartida}}</td>
+                                <td class="custom-td">{{item.CodiPuntoVenta}}</td>
+                                <td class="custom-td">{{item.CodiEmpresa}}</td>
+                                <td class="custom-td">{{item.CodiDestino}}</td>
+                                <td class="custom-td">{{item.CodiServicio}}</td>
+                                <td class="custom-td">{{item.FechaProgramacion}}</td>
                             </tr>
-                        </tbody>*@
+                        </tbody>
                     </table>
                 </div>
             </div>
