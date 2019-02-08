@@ -8,9 +8,9 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<TurnoEntity> BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
+        public static Response<ItinerarioEntity> BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
         {
-            var response = new Response<TurnoEntity>(false, null, "", false);
+            var response = new Response<ItinerarioEntity>(false, null, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarTurno";
@@ -22,7 +22,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, CodiRuta);
                 db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, CodiServicio);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var entidad = new TurnoEntity();
+                var entidad = new ItinerarioEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

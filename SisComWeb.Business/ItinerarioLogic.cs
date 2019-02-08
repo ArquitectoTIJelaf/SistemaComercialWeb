@@ -16,8 +16,6 @@ namespace SisComWeb.Business
                 var response = new Response<List<ItinerarioEntity>>(false, null, "", false);
 
                 Response<BusEntity> resObtenerBus;
-                Response<List<PuntoEntity>> resListarPuntosEmbarque;
-                Response<List<PuntoEntity>> resListarPuntosArribo;
 
                 // Lista Itinerarios
                 var resBuscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
@@ -162,7 +160,7 @@ namespace SisComWeb.Business
                                 }
 
                                 // Lista 'PuntosEmbarque'
-                                resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
+                                Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
                                 if (resListarPuntosEmbarque.Estado)
                                 {
                                     resBuscarItinerarios.Valor[i].ListaEmbarques = resListarPuntosEmbarque.Valor;
@@ -176,7 +174,7 @@ namespace SisComWeb.Business
                                 }
 
                                 // Lista 'PuntosArribo'
-                                resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
+                                Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
                                 if (resListarPuntosArribo.Estado)
                                 {
                                     resBuscarItinerarios.Valor[i].ListaArribos = resListarPuntosArribo.Valor;
