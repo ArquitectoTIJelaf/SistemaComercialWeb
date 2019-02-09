@@ -3,19 +3,19 @@
         <div class="white-box" style="background: transparent;padding: 15px 0 15px 0;">
             <div style="width:100%;overflow:auto;padding-bottom:10px;">
                 <div class="col-sm-1">
-                    <span v-on:click="" class="mdi mdi-checkbox-blank-circle" style="color:#FFFFFF;"></span> Sin ventas
+                    <span class="mdi mdi-checkbox-blank-circle" style="color:#FFFFFF;"></span> Sin ventas
                 </div>
                 <div class="col-sm-1">
-                    <span v-on:click="" class="mdi mdi-checkbox-blank-circle" style="color:#A9E36A;"></span> Con ventas
+                    <span class="mdi mdi-checkbox-blank-circle" style="color:#A9E36A;"></span> Con ventas
                 </div>
                 <div class="col-sm-1">
-                    <span v-on:click="" class="mdi mdi-checkbox-blank-circle" style="color:#E26B67;"></span> Bus lleno
+                    <span class="mdi mdi-checkbox-blank-circle" style="color:#E26B67;"></span> Bus lleno
                 </div>
                 <div class="col-sm-1">
-                    <span v-on:click="" class="mdi mdi-checkbox-blank-circle" style="color:#169BFF;"></span> Prog. Cerrada
+                    <span class="mdi mdi-checkbox-blank-circle" style="color:#169BFF;"></span> Prog. Cerrada
                 </div>
                 <div class="col-sm-1">
-                    <span v-on:click="" class="mdi mdi-checkbox-blank-circle" style="color:#F7C06E;"></span> Adicional
+                    <span class="mdi mdi-checkbox-blank-circle" style="color:#F7C06E;"></span> Adicional
                 </div>
                 <div class="col-sm-7">
                 </div>
@@ -47,7 +47,10 @@
                         </thead>
                         <tbody>
                             <tr v-for="item in list.itinerarios">
-                                <td class="custom-td">????</td>
+                                <td class="custom-td">
+                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                    <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
+                                </td>
                                 <td class="custom-td">{{item.NroViaje}}</td>
                                 <td class="custom-td">{{item.RazonSocial}}</td>
                                 <td class="custom-td">{{item.NomSucursal}}</td>

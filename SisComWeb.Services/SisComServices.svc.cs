@@ -162,18 +162,18 @@ namespace SisComWeb.Services
 
         #region MUESTRA TURNO
 
-        //public Response<List<PlanoEntity>> MuestraTurno(TurnoRequest request)
-        //{
-        //    try
-        //    {
-        //        return PlanoLogic.MuestraPlano(request);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcListPlano, false);
-        //    }
-        //}
+        public Response<ItinerarioEntity> MuestraTurno(TurnoRequest request)
+        {
+            try
+            {
+                return TurnoLogic.MuestraTurno(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcBusqTurno, false);
+            }
+        }
 
         #endregion
     }

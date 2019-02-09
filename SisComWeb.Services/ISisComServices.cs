@@ -69,12 +69,12 @@ namespace SisComWeb.Services
 
         #endregion
 
-        //#region MUESTRA TURNO
+        #region MUESTRA TURNO
 
-        //[OperationContract]
-        //[WebInvoke(Method = "POST", UriTemplate = "MuestraTurno", ResponseFormat = WebMessageFormat.Json)]
-        //Response<List<PlanoEntity>> MuestraTurno(TurnoRequest request);
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "MuestraTurno", ResponseFormat = WebMessageFormat.Json)]
+        Response<ItinerarioEntity> MuestraTurno(TurnoRequest request);
 
-        //#endregion
+        #endregion
     }
 }

@@ -16,6 +16,57 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
+        //private static string _defineColor(int CodProgramacion, int StOpcional) => (CodProgramacion != 0) ? "#A5D6A7" : (StOpcional == 1) ? "#FCD8AA" : "#FFFFFF";
+        private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
+        {
+            var color = "";
+            if (ProgramacionCerrada)
+            {
+                color = "#169BFF";
+            }
+            else
+            {
+                if (AsientosVendidos > 0 && StOpcional.Equals("0"))
+                {
+                    color = "#FFFFFF";
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("0"))
+                {
+                    color = "#A9E36A";
+                }
+                else if (AsientosVendidos == CapacidadBus && StOpcional.Equals("0"))
+                {
+                    color = "#E26B67";
+                }
+                else if (AsientosVendidos == 0 && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E";
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E";
+                }
+                else if (AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E";
+                }
+            }
+            return color;
+        }
+
+        private static string _twoColor(int AsientosVendidos, int CapacidadBus, string StOpcional)
+        {
+            var color = "";
+            if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
+            {
+                color = "#A9E36A";
+            }
+            else if (AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
+            {
+                color = "#E26B67";
+            }
+            return color;
+        }
 
         [Route("")]
         public ActionResult Index()
@@ -83,7 +134,10 @@ namespace SisComWeb.Aplication.Controllers
                         PlacaBus = (string)x["PlacaBus"],
                         PlanoBus = (string)x["PlanoBus"],
                         RazonSocial = (string)x["RazonSocial"],
-                        StOpcional = (string)x["StOpcional"]
+                        StOpcional = (string)x["StOpcional"],
+                        ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
+                        Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
+                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
                     }).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
