@@ -35,5 +35,8 @@ namespace SisComWeb.Aplication.Models
         public string PlanoBus { get; set; }
         public string RazonSocial { get; set; }
         public string StOpcional { get; set; }
+        public bool ProgramacionCerrada { get; set; }
+        public string Color { get; set; }
+        public string SecondColor { get; set; }
     }
 }
