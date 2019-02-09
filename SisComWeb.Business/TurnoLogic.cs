@@ -17,7 +17,7 @@ namespace SisComWeb.Business
                 Response<BusEntity> resObtenerBus;
 
                 // Lista Itinerarios
-                var resBuscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucusal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
+                var resBuscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
                 if (resBuscarTurno.Estado)
                     response.Mensaje += resBuscarTurno.Mensaje;
                 else
@@ -29,22 +29,21 @@ namespace SisComWeb.Business
                 // Calcula 'FechaProgramacion'
                 var doubleDias = double.Parse(resBuscarTurno.Valor.Dias.ToString());
                 if (resBuscarTurno.Valor.Dias > 0)
-                    resBuscarTurno.Valor.FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString();
+                    resBuscarTurno.Valor.FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString("dd/MM/yyyy");
                 else
-                    resBuscarTurno.Valor.FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString();
+                    resBuscarTurno.Valor.FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy");
 
                 // Verifica cambios 'TurnoViaje'
                 var resVerificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
-                if (resVerificaCambiosTurnoViaje.Estado && !string.IsNullOrEmpty(resVerificaCambiosTurnoViaje.Valor.NomServicio))
+                if (resVerificaCambiosTurnoViaje.Estado)
                 {
-                    resBuscarTurno.Valor.CodiServicio = resVerificaCambiosTurnoViaje.Valor.CodiServicio;
-                    resBuscarTurno.Valor.NomServicio = resVerificaCambiosTurnoViaje.Valor.NomServicio;
-                    resBuscarTurno.Valor.CodiEmpresa = resVerificaCambiosTurnoViaje.Valor.CodiEmpresa;
-
-                    response.Mensaje += resVerificaCambiosTurnoViaje.Mensaje;
+                    if (resVerificaCambiosTurnoViaje.Valor.CodiEmpresa != 0)
+                    {
+                        resBuscarTurno.Valor.CodiServicio = resVerificaCambiosTurnoViaje.Valor.CodiServicio;
+                        resBuscarTurno.Valor.NomServicio = resVerificaCambiosTurnoViaje.Valor.NomServicio;
+                        resBuscarTurno.Valor.CodiEmpresa = resVerificaCambiosTurnoViaje.Valor.CodiEmpresa;
+                    }
                 }
-                else if (resVerificaCambiosTurnoViaje.Estado && string.IsNullOrEmpty(resVerificaCambiosTurnoViaje.Valor.NomServicio))
-                    response.Mensaje += "Mensaje: VerificaCambiosTurnoViaje: CodiServicio nulo o vacío, no se pudo actualizar desde 'TurnoViaje'. ";
                 else
                 {
                     response.Mensaje += "Error: VerificaCambiosTurnoViaje. ";
@@ -55,7 +54,6 @@ namespace SisComWeb.Business
                 var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
                 if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor != 0)
                 {
-                    response.Mensaje += resBuscarProgramacionViaje.Mensaje;
                     // Obtiene 'BusProgramacion'
                     resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarProgramacionViaje.Valor);
                     if (resObtenerBus.Estado)
@@ -64,8 +62,6 @@ namespace SisComWeb.Business
                         resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
                         resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
                         resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
-
-                        response.Mensaje += resObtenerBus.Mensaje;
                     }
                     else
                     {
@@ -75,16 +71,12 @@ namespace SisComWeb.Business
                 }
                 else if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor == 0)
                 {
-                    response.Mensaje += "Mensaje: resBuscarProgramacionViaje.Valor: es cero. ";
-
                     // Obtiene 'BusEstandar'
                     resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, resBuscarTurno.Valor.CodiRuta, resBuscarTurno.Valor.CodiServicio, request.HoraViaje);
                     if (resObtenerBus.Estado)
                     {
                         // En caso de no encontrar resultado.
-                        if (!string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
-                            response.Mensaje += resObtenerBus.Mensaje;
-                        else
+                        if (string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                         {
                             resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, resBuscarTurno.Valor.CodiRuta, resBuscarTurno.Valor.CodiServicio, "");
                             if (resObtenerBus.Estado)
@@ -93,19 +85,17 @@ namespace SisComWeb.Business
                                 resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
                                 resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
                                 resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
-
-                                response.Mensaje += resObtenerBus.Mensaje;
                             }
                             else
                             {
-                                response.Mensaje += "Error: ObtenerBusEstandar. ";
+                                response.Mensaje += "Error: ObtenerBusEstandar sin Hora. ";
                                 return response;
                             }
                         }
                     }
                     else
                     {
-                        response.Mensaje += "Error: ObtenerBusEstandar. ";
+                        response.Mensaje += "Error: ObtenerBusEstandar con Hora. ";
                         return response;
                     }
                 }
@@ -119,92 +109,77 @@ namespace SisComWeb.Business
                 var resValidarTurnoAdicional = ItinerarioRepository.ValidarTurnoAdicional(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
                 if (resValidarTurnoAdicional.Estado && resValidarTurnoAdicional.Valor == 1)
                 {
-                    response.Mensaje += resValidarTurnoAdicional.Mensaje;
-
-                    // Valida 'ViajeCalendario'
-                    var resValidarViajeCalendario = ItinerarioRepository.ValidarViajeCalendario(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
-                    if (resValidarViajeCalendario.Estado)
+                    // Valida 'ProgramacionCerrada'
+                    var resValidarProgrmacionCerrada = ItinerarioRepository.ValidarProgrmacionCerrada(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
+                    if (resValidarProgrmacionCerrada.Estado && resValidarProgrmacionCerrada.Valor == 1)
                     {
-                        response.Mensaje += resValidarViajeCalendario.Mensaje;
+                        resBuscarTurno.Valor.ProgramacionCerrada = true;
 
-                        if (resValidarViajeCalendario.Valor == 1)
-                        {
-                            response.Mensaje += "Mensaje: ValidarViajeCalendario: Valor es 1. ";
-                            return response;
-                        }
-                        else
+                        response.EsCorrecto = true;
+                        response.Valor = resBuscarTurno.Valor;
+                        response.Estado = true;
+
+                        response.Mensaje += "Mensaje: ValidarProgrmacionCerrada: Valor es 1. ";
+                        return response;
+                    }
+                    else if (resValidarProgrmacionCerrada.Estado && resValidarProgrmacionCerrada.Valor == 0)
+                    {
+                        if (resBuscarProgramacionViaje.Valor != 0)
                         {
                             // Obtiene 'TotalVentas'
-                            Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor);
+                            Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor, request.CodiOrigen, request.CodiDestino);
                             if (resObtenerTotalVentas.Estado)
-                            {
                                 resBuscarTurno.Valor.AsientosVendidos = resObtenerTotalVentas.Valor;
-
-                                response.Mensaje += resObtenerTotalVentas.Mensaje;
-                            }
-                                
                             else
                             {
                                 response.Mensaje += "Error: ObtenerTotalVentas. ";
                                 return response;
                             }
+                        }
 
-                            // Lista 'PuntosEmbarque'
-                            Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, request.HoraViaje);
-                            if (resListarPuntosEmbarque.Estado)
-                            {
-                                resBuscarTurno.Valor.ListaEmbarques = resListarPuntosEmbarque.Valor;
+                        // Lista 'PuntosEmbarque'
+                        Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, request.HoraViaje);
+                        if (resListarPuntosEmbarque.Estado)
+                            resBuscarTurno.Valor.ListaEmbarques = resListarPuntosEmbarque.Valor;
+                        else
+                        {
+                            response.Mensaje += "Error: ListarPuntosEmbarque. ";
+                            return response;
+                        }
 
-                                response.Mensaje += resListarPuntosEmbarque.Mensaje;
-                            }
-                            else
-                            {
-                                response.Mensaje += "Error: ListarPuntosEmbarque. ";
-                                return response;
-                            }
+                        // Lista 'PuntosArribo'
+                        Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, request.HoraViaje);
+                        if (resListarPuntosArribo.Estado)
+                            resBuscarTurno.Valor.ListaArribos = resListarPuntosArribo.Valor;
+                        else
+                        {
+                            response.Mensaje += "Error: ListarPuntosArribo. ";
+                            return response;
+                        }
 
-                            // Lista 'PuntosArribo'
-                            Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, request.HoraViaje);
-                            if (resListarPuntosArribo.Estado)
-                            {
-                                resBuscarTurno.Valor.ListaArribos = resListarPuntosArribo.Valor;
+                        // Lista 'PlanoBus'
+                        PlanoRequest requestPlano = new PlanoRequest
+                        {
+                            PlanoBus = resBuscarTurno.Valor.PlanoBus,
+                            CodiProgramacion = resBuscarTurno.Valor.CodiProgramacion,
+                            CodiOrigen = resBuscarTurno.Valor.CodiOrigen,
+                            CodiDestino = resBuscarTurno.Valor.CodiDestino,
+                            CodiBus = resBuscarTurno.Valor.CodiBus,
+                            HoraViaje = request.HoraViaje,
+                            FechaViaje = request.FechaViaje,
+                            CodiServicio = resBuscarTurno.Valor.CodiServicio,
+                            CodiEmpresa = resBuscarTurno.Valor.CodiEmpresa,
+                            FechaProgramacion = resBuscarTurno.Valor.FechaProgramacion,
+                            NroViaje = resBuscarTurno.Valor.NroViaje
+                        };
 
-                                response.Mensaje += resListarPuntosArribo.Mensaje;
-                            }
-                            else
-                            {
-                                response.Mensaje += "Error: ListarPuntosArribo. ";
-                                return response;
-                            }
-
-                            // Lista 'PlanoBus'
-                            PlanoRequest requestPlano = new PlanoRequest
-                            {
-                                PlanoBus = resBuscarTurno.Valor.PlanoBus,
-                                CodiProgramacion = resBuscarTurno.Valor.CodiProgramacion,
-                                CodiOrigen = resBuscarTurno.Valor.CodiOrigen,
-                                CodiDestino = resBuscarTurno.Valor.CodiDestino,
-                                CodiBus = resBuscarTurno.Valor.CodiBus,
-                                HoraViaje = request.HoraViaje,
-                                FechaViaje = request.FechaViaje,
-                                CodiServicio = resBuscarTurno.Valor.CodiServicio,
-                                CodiEmpresa = resBuscarTurno.Valor.CodiEmpresa,
-                                FechaProgramacion = resBuscarTurno.Valor.FechaProgramacion,
-                                NroViaje = resBuscarTurno.Valor.NroViaje
-                            };
-
-                            Response<List<PlanoEntity>> resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
-                            if (resMuestraPlano.Estado)
-                            {
-                                resBuscarTurno.Valor.ListaPlanoBus = resMuestraPlano.Valor;
-
-                                response.Mensaje += resMuestraPlano.Mensaje;
-                            }
-                            else
-                            {
-                                response.Mensaje += "Error: resMuestraPlano. ";
-                                return response;
-                            }
+                        Response<List<PlanoEntity>> resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
+                        if (resMuestraPlano.Estado)
+                            resBuscarTurno.Valor.ListaPlanoBus = resMuestraPlano.Valor;
+                        else
+                        {
+                            response.Mensaje += "Error: resMuestraPlano. ";
+                            return response;
                         }
                     }
                     else
@@ -215,6 +190,10 @@ namespace SisComWeb.Business
                 }
                 else if (resValidarTurnoAdicional.Estado && resValidarTurnoAdicional.Valor == 0)
                 {
+                    response.EsCorrecto = true;
+                    response.Valor = resBuscarTurno.Valor;
+                    response.Estado = true;
+
                     response.Mensaje += "Mensaje: resValidarTurnoAdicional: Valor es cero. ";
                     return response;
                 }
