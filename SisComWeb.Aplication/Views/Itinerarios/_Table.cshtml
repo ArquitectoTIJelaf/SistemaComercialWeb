@@ -48,7 +48,12 @@
                         <tbody>
                             <tr v-for="item in list.itinerarios">
                                 <td class="custom-td">
-                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                    <template v-if="item.Color === '#FFFFFF'">
+                                        <span class="mdi mdi-checkbox-blank-circle-outline" style="color:black"></span>
+                                    </template>
+                                    <template v-else>
+                                        <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                    </template>
                                     <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                 </td>
                                 <td class="custom-td">{{item.NroViaje}}</td>

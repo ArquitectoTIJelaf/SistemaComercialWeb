@@ -26,7 +26,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             else
             {
-                if (AsientosVendidos > 0 && StOpcional.Equals("0"))
+                if (AsientosVendidos == 0 && StOpcional.Equals("0"))
                 {
                     color = "#FFFFFF";
                 }
@@ -39,6 +39,10 @@ namespace SisComWeb.Aplication.Controllers
                     color = "#E26B67";
                 }
                 else if (AsientosVendidos == 0 && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E";
+                }
+                else if (CapacidadBus == 0 && StOpcional.Equals("1"))
                 {
                     color = "#F7C06E";
                 }
