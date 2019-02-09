@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository

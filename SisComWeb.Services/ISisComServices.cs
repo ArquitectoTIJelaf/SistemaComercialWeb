@@ -76,5 +76,13 @@ namespace SisComWeb.Services
         Response<ItinerarioEntity> MuestraTurno(TurnoRequest request);
 
         #endregion
+
+        #region BLOQUEO ASIENTO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BloqueoAsiento", ResponseFormat = WebMessageFormat.Json)]
+        Response<int> BloqueoAsiento(BloqueoAsientoRequest request);
+
+        #endregion
     }
 }
