@@ -81,7 +81,7 @@ namespace SisComWeb.Business
 
                         resBuscarItinerarios.Valor[i].CodiBus = "0000";
                         resBuscarItinerarios.Valor[i].PlanoBus = "000";
-                        resBuscarItinerarios.Valor[i].CapacidadBus = "00";
+                        resBuscarItinerarios.Valor[i].CapacidadBus = "0";
                         resBuscarItinerarios.Valor[i].PlacaBus = "00-0000";
                     }
                     else

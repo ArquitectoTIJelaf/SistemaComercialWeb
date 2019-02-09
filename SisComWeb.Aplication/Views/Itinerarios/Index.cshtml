@@ -14,7 +14,55 @@
             border-radius: 4px;
             border: 1px solid rgb(228, 231, 234);
             color: #2a97f4;
-            background-color: #fff;
+            background-color: white;
+        }
+
+        ul.pagination {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            background-color: white;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+            ul.pagination li {
+                display: inline;
+            }
+
+                ul.pagination li a {
+                    color: black;
+                    float: left;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    transition: background-color .3s;
+                    border: 1px solid #ddd;
+                    margin: 0 4px;
+                    border-radius: 50%;
+                }
+
+                    ul.pagination li a.active {
+                        background-color: #4CAF50;
+                        color: white;
+                        border: 1px solid #4CAF50;
+                    }
+
+                    ul.pagination li a:hover:not(.active) {
+                        background-color: #ddd;
+                    }
+
+        .pagination > li:first-child > a {
+            border-top-left-radius: 50%;
+            border-bottom-left-radius: 50%
+        }
+
+        .pagination > li:last-child > a {
+            border-bottom-right-radius: 50%;
+            border-top-right-radius: 50%;
+        }
+
+        .table-responsive > ul {
+            display: none;
         }
     </style>
 }
@@ -100,7 +148,6 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
-                            debugger;
                             _this.list.origenesPas = res.data;
                             _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === '@usuario.CodiSucursal')
                             _this.list.destinosPas = res.data;
@@ -119,7 +166,6 @@
                     input.SoloProgramados = _this.filtro.SoloProgramados;
                     APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input)
                         .then(res => {
-                            debugger;
                             appController.loadTable(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
@@ -168,7 +214,8 @@
             data: {
                 list: {
                     itinerarios: []
-                }
+                },
+                paginate: ['items']
             },
             mounted: function () {
             },

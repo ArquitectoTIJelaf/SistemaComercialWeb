@@ -525,7 +525,12 @@ body {
 }
 
 .custom-scroll-container ::-webkit-scrollbar-thumb:horizontal {
-    background: url('/wwwroot/plugins/images/users/SCROLL.png') no-repeat;
+    /*background: url('/wwwroot/plugins/images/users/SCROLL.png') no-repeat;*/
+    background-image: url('/wwwroot/plugins/images/users/SCROLL.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    /*background-size: 100% 100%;*/
+    background-color: #009CFF;
     background-clip: padding-box;
     border: solid transparent;
     border-width: 1px;
