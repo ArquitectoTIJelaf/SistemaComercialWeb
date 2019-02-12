@@ -1,0 +1,35 @@
+﻿
+<div id="appVueVenta" v-show="showVentas" class="row">
+    <div class="col-md-12">
+        <div class="white-box" @*style="background: transparent;padding: 15px 0 15px 0;"*@>
+            <div @*class="custom-scroll-container"*@>
+                <div class="table-responsive" style="background-color: #616e7e;">
+                    <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                        <tbody>
+                            <tr>
+                                <td rowspan="6" class="td-bus">
+                                    <img src="~/wwwroot/plugins/images/users/cabecera-carro.png" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td v-for="a in 17" class="custom-td"></td>
+                            </tr>                
+                            <tr>                 
+                                <td v-for="a in 17" class="custom-td"></td>
+                            </tr>                
+                            <tr>                 
+                                <td v-for="a in 17" class="custom-td"></td>
+                            </tr>               
+                            <tr>                 
+                                <td v-for="a in 17" class="custom-td"></td>
+                            </tr>                
+                            <tr>                 
+                                <td v-for="a in 17" class="custom-td"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

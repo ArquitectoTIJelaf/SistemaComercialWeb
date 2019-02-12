@@ -7,6 +7,7 @@
 
 @Html.Partial("_Filtros")
 @Html.Partial("_Table")
+@Html.Partial("_Venta")
 
 @section styles{
     <style>
@@ -24,6 +25,7 @@
             background-color: white;
             padding: 5px;
             border-radius: 8px;
+            cursor: pointer;
         }
 
             ul.pagination li {
@@ -63,6 +65,16 @@
 
         .table-responsive > ul {
             display: none;
+        }
+
+        .btn-inverse:focus {
+            background-color: #A1ABB7 !important;
+            border: 1px solid #A1ABB7 !important;
+        }
+
+        .td-bus {
+            padding: 0 !important;
+            width: 166px;
         }
     </style>
 }
@@ -109,6 +121,11 @@
             return {
                 loadTable: function (_list) {
                     appVueTable.loadTable(_list)
+                },
+                showVentas: function (_item) {
+                    appVueFilter.showVentas = true;
+                    appVueTable.showVentas = true;
+                    appVueVenta.showVentas = true;
                 }
             };
         })();
@@ -129,7 +146,8 @@
                     origenesPas: [],
                     destinosPas: [],
                     destinosBus: []
-                }
+                },
+                showVentas: false
             },
             mounted: function () {
                 $(".preloader").fadeIn();
@@ -148,10 +166,11 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
-                            _this.list.origenesPas = res.data;
+                            _this.list.origenesPas = _.cloneDeep(res.data);
                             _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === '@usuario.CodiSucursal')
-                            _this.list.destinosPas = res.data;
-                            _this.list.destinosBus = res.data;
+                            _this.list.destinosPas = _.cloneDeep(res.data);
+                            _this.list.destinosBus = _.cloneDeep(res.data);
+                            _this.list.destinosBus.unshift(selectAll);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 search() {
@@ -179,8 +198,8 @@
                         $('#cboDestinoBus input[type=search]').focus();
                     } else if (_this.filtro.FechaViaje === '') {
                         $('#txtFecha').focus();
-                        //} else if (_this.filtro.Hora === '') {
-                        //    $('#txtHora').focus();
+                    } else if (_this.filtro.Hora === '') {
+                        $('#txtHora').focus();
                     } else {
                         $('#buscar').focus();
                     }
@@ -215,14 +234,36 @@
                 list: {
                     itinerarios: []
                 },
-                paginate: ['items']
+                paginate: ['items'],
+                showVentas: false
             },
             mounted: function () {
             },
             methods: {
-                loadTable: function (_list) {
-                    this.list.itinerarios = _list;
+                loadTable: function (list) {                                     
+                    this.list.itinerarios = list;
+                    this.$nextTick(() => {
+                        this.shown = true
+                    });
+                },
+                sendRow: function (item) {
+                    appController.showVentas(item);
                 }
+            },
+            computed: {
+            },
+            watch: {
+            }
+        });
+
+        var appVueVenta = new Vue({
+            el: '#appVueVenta',
+            data: {
+                showVentas: false
+            },
+            mounted: function () {
+            },
+            methods: {
             },
             computed: {
             },
