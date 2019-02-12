@@ -34,10 +34,7 @@ namespace SisComWeb.Business
                     {
                         resObtenerNivelAsiento = PlanoRepository.ObtenerNivelAsiento(request.CodiBus, auxValue);
                         if (resObtenerNivelAsiento.Estado)
-                        {
-                            response.Mensaje += resObtenerNivelAsiento.Mensaje;
                             resBuscarPlanoBus.Valor[i].Nivel = int.Parse(resObtenerNivelAsiento.Valor);
-                        }
                         else
                         {
                             response.Mensaje += "Error: ObtenerNivelAsiento. ";
@@ -48,7 +45,6 @@ namespace SisComWeb.Business
                         var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resObtenerNivelAsiento.Valor);
                         if (resObtenerPrecioAsiento.Estado)
                         {
-                            response.Mensaje += resObtenerPrecioAsiento.Mensaje;
                             resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
                             resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
                             resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
@@ -80,8 +76,6 @@ namespace SisComWeb.Business
                     var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(resListarAsientosOcupados.Valor[i].TipoDocumento, resListarAsientosOcupados.Valor[i].NumeroDocumento);
                     if (resBuscaPasajero.Estado)
                     {
-                        response.Mensaje += resBuscaPasajero.Mensaje;
-
                         resListarAsientosOcupados.Valor[i].TipoDocumento = resBuscaPasajero.Valor.TipoDoc;
                         resListarAsientosOcupados.Valor[i].NumeroDocumento = resBuscaPasajero.Valor.NumeroDoc;
                         resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto;

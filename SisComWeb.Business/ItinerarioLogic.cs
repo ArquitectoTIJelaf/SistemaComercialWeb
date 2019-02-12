@@ -9,7 +9,6 @@ namespace SisComWeb.Business
     public class ItinerarioLogic
     {
         public static Response<List<ItinerarioEntity>> BuscaItinerarios(ItinerarioRequest request)
-
         {
             try
             {
@@ -40,9 +39,12 @@ namespace SisComWeb.Business
                     var resVerificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
                     if (resVerificaCambiosTurnoViaje.Estado)
                     {
-                        resBuscarItinerarios.Valor[i].CodiServicio = resVerificaCambiosTurnoViaje.Valor.CodiServicio;
-                        resBuscarItinerarios.Valor[i].NomServicio = resVerificaCambiosTurnoViaje.Valor.NomServicio;
-                        resBuscarItinerarios.Valor[i].CodiEmpresa = resVerificaCambiosTurnoViaje.Valor.CodiEmpresa;
+                        if (resVerificaCambiosTurnoViaje.Valor.CodiEmpresa != 0)
+                        {
+                            resBuscarItinerarios.Valor[i].CodiServicio = resVerificaCambiosTurnoViaje.Valor.CodiServicio;
+                            resBuscarItinerarios.Valor[i].NomServicio = resVerificaCambiosTurnoViaje.Valor.NomServicio;
+                            resBuscarItinerarios.Valor[i].CodiEmpresa = resVerificaCambiosTurnoViaje.Valor.CodiEmpresa;
+                        }
                     }
                     else
                     {
@@ -100,8 +102,7 @@ namespace SisComWeb.Business
                         {
                             resBuscarItinerarios.Valor[i].ProgramacionCerrada = true;
 
-
-                            if (resBuscarProgramacionViaje.Valor == 1)
+                            if (resBuscarProgramacionViaje.Valor != 0)
                             {
                                 // Obtiene 'TotalVentas'
                                 Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor, request.CodiOrigen, request.CodiDestino);

@@ -10,7 +10,7 @@
 
         public short CodiDestino { get; set; }
 
-        public short CodiSucusal { get; set; }
+        public short CodiSucursal { get; set; }
 
         public short CodiRuta { get; set; }
 

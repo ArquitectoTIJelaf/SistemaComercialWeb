@@ -116,6 +116,39 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-empresas")]
+        public async Task<JsonResult> GetEmpresas()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaEmpresas");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaEmpresas");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }

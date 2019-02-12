@@ -307,54 +307,6 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<int> ValidarViajeCalendario(int NroViaje, string FechaProgramacion)
-        {
-            var response = new Response<int>(false, 0, "", false);
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_ValidarViajeCalendario";
-                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
-                var valor = new int();
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = 1;
-                        break;
-                    }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarViajeCalendario. ";
-                    response.Estado = true;
-                }
-            }
-            return response;
-        }
-
-        public static Response<int> ObtenerTotalVentas(int CodiProgramacion)
-        {
-            var response = new Response<int>(false, 0, "", false);
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_ObtenerTotalVentas";
-                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
-                var valor = new int();
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = Reader.GetIntValue(drlector, "CantidadVenta");
-                    }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ObtenerTotalVentas. ";
-                    response.Estado = true;
-                }
-            }
-            return response;
-        }
-
         #endregion
     }
 }

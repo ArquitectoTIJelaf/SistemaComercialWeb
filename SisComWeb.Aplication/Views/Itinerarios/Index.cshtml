@@ -126,6 +126,12 @@
                     appVueFilter.showVentas = true;
                     appVueTable.showVentas = true;
                     appVueVenta.showVentas = true;
+                    appVueVenta.item = _item;
+                },
+                hideVentas: function () {
+                    appVueFilter.showVentas = false;
+                    appVueTable.showVentas = false;
+                    appVueVenta.showVentas = false;
                 }
             };
         })();
@@ -259,11 +265,36 @@
         var appVueVenta = new Vue({
             el: '#appVueVenta',
             data: {
+                item: {},
+                filtro: {
+                    CodiEmpresa: null
+                },
+                list: {
+                    empresas: []
+                },
                 showVentas: false
             },
             mounted: function () {
+                this.getEmpresas();
+                this.$nextTick(() => {
+                    $('.vs__selected-options input[type=search]').addClass('input-sm');
+                    $('#cboEmpresa input[type=search]').focus();
+                });
             },
             methods: {
+                getLabel(option) {
+                    return `${option.id} - ${option.label}`
+                },
+                getEmpresas() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-empresas')
+                        .then(res => {
+                            _this.list.empresas = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                hideVentas() {
+                    appController.hideVentas();
+                }
             },
             computed: {
             },

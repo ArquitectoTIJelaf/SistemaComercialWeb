@@ -176,5 +176,22 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region BLOQUEO ASIENTO
+
+        public Response<int> BloqueoAsiento(BloqueoAsientoRequest request)
+        {
+            try
+            {
+                return BloqueoAsientoLogic.BloqueoAsiento(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgErrExcBusqAsientoBloqueado, false);
+            }
+        }
+
+        #endregion
     }
 }

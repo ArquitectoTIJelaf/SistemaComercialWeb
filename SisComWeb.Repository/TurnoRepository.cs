@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -40,12 +39,12 @@ namespace SisComWeb.Repository
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta");
                         entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
                         entidad.HoraProgramacion = Reader.GetStringValue(drlector, "Hora_Programacion");
-                        entidad.HoraPartida = Reader.GetStringValue(drlector, "Hora_Partida");
                         entidad.StOpcional = Reader.GetStringValue(drlector, "st_opcional");
                         entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen");
                         entidad.NomOrigen = Reader.GetStringValue(drlector, "Nom_Origen");
                         entidad.CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino");
                         entidad.NomDestino = Reader.GetStringValue(drlector, "Nom_Destino");
+                        entidad.HoraPartida = Reader.GetStringValue(drlector, "Hora_Partida");
                         entidad.NroRutaInt = Reader.GetIntValue(drlector, "NRO_RUTA_INT");
                         entidad.Dias = Reader.GetSmallIntValue(drlector, "DIAS");
                     }

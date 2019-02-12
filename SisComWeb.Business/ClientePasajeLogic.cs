@@ -103,7 +103,6 @@ namespace SisComWeb.Business
                     }
                 }
 
-
                 // Valida 'RucContacto'
                 if (!string.IsNullOrEmpty(entidad.RucContacto))
                     response.Mensaje += "RucContacto: " + entidad.RucContacto + ". ";
@@ -115,7 +114,6 @@ namespace SisComWeb.Business
                     response.Estado = true;
                     return response;
                 }
-
 
                 // Busca 'Empresa'
                 var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
