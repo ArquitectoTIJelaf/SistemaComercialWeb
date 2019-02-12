@@ -83,13 +83,11 @@
             },
             currentPage: {
                 get: function get() {
-                    debugger;
                     if (this.parent.paginate[this.name]) {
                         return this.parent.paginate[this.name].page
                     }
                 },
                 set: function set(page) {
-                    debugger;
                     this.parent.paginate[this.name].page = page
                 }
             },

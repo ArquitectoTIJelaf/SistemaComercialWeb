@@ -1,4 +1,5 @@
-﻿<div id="appVueTable" class="row">
+﻿
+<div id="appVueTable" v-show="!showVentas" class="row">
     <div class="col-md-12">
         <div class="white-box" style="background: transparent;padding: 15px 0 15px 0;">
             <div style="width:100%;overflow:auto;padding-bottom:10px;">
@@ -26,7 +27,7 @@
                         <thead>
                             <tr>
                                 <th class="custom-th" width="%">Estado</th>
-                                <th class="custom-th" width="%">StOpcional</th>
+                                @*<th class="custom-th" width="%">StOpcional</th>*@
                                 <th class="custom-th" width="%">N° VIAJE</th>
                                 <th class="custom-th" width="%">EMPRESA</th>
                                 <th class="custom-th" width="%">SALIDA BUS</th>
@@ -49,7 +50,7 @@
                         </thead>
                         <tbody>
                             <paginate name="items" :list="list.itinerarios" :per="10">
-                                <tr v-for="item in paginated('items')">
+                                <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                     <td class="custom-td">
                                         <template v-if="item.Color === '#FFFFFF'">
                                             <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -59,7 +60,7 @@
                                         </template>
                                         <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                     </td>
-                                    <td class="custom-td">{{item.StOpcional}}</td>
+                                    @*<td class="custom-td">{{item.StOpcional}}</td>*@
                                     <td class="custom-td">{{item.NroViaje}}</td>
                                     <td class="custom-td">{{item.RazonSocial}}</td>
                                     <td class="custom-td">{{item.NomSucursal}}</td>
