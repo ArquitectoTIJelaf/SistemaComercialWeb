@@ -20,8 +20,6 @@
 
         public byte CodiEmpresa { get; set; }
 
-        public byte Nivel { get; set; }
-
         public string FechaProgramacion { get; set; }
 
         public int NroViaje { get; set; }
