@@ -34,7 +34,10 @@ namespace SisComWeb.Business
                     {
                         resObtenerNivelAsiento = PlanoRepository.ObtenerNivelAsiento(request.CodiBus, auxValue);
                         if (resObtenerNivelAsiento.Estado)
-                            resBuscarPlanoBus.Valor[i].Nivel = int.Parse(resObtenerNivelAsiento.Valor);
+                        {
+                            if (!string.IsNullOrEmpty(resObtenerNivelAsiento.Valor))
+                                resBuscarPlanoBus.Valor[i].Nivel = int.Parse(resObtenerNivelAsiento.Valor);
+                        }
                         else
                         {
                             response.Mensaje += "Error: ObtenerNivelAsiento. ";
