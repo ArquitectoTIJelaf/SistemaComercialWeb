@@ -39,4 +39,15 @@ namespace SisComWeb.Aplication.Models
         public string Color { get; set; }
         public string SecondColor { get; set; }
     }
+
+    public class FiltroItinerario
+    {
+        public int CodiOrigen { get; set; }
+        public int CodiDestino { get; set; }
+        public int CodiRuta { get; set; }
+        public string Hora { get; set; }
+        public string FechaViaje { get; set; }
+        public string TodosTurnos { get; set; }
+        public string SoloProgramados { get; set; }
+    }
 }

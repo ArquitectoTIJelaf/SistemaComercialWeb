@@ -80,23 +80,21 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("lista-itinerarios")]
-        public async Task<ActionResult> ChargeList(int CodiOrigen, int CodiDestino, int CodiRuta, string Hora, string FechaViaje, string TodosTurnos, string SoloProgramados)
+        public async Task<ActionResult> ChargeList(FiltroItinerario filtro)
         {
             try
             {
-                var auxHora = Hora.Replace(" ", "");
-
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiOrigen\" : " + CodiOrigen +
-                                ",\"CodiDestino\" : " + CodiDestino +
-                                ",\"CodiRuta\" : " + CodiRuta +
-                                ",\"Hora\" : \"" + auxHora + "\"" +
-                                ",\"FechaViaje\" : \"" + FechaViaje + "\"" +
-                                ",\"TodosTurnos\" : " + TodosTurnos.ToLower() +
-                                ", \"SoloProgramados\" : " + SoloProgramados.ToLower() + " }";
+                    var _body = "{ \"CodiOrigen\" : " + filtro.CodiOrigen +
+                                ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                ",\"CodiRuta\" : " + filtro.CodiRuta +
+                                ",\"Hora\" : \"" + filtro.Hora.Replace(" ", "") + "\"" +
+                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
+                                ", \"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() + " }";
                     HttpResponseMessage response = await client.PostAsync("BuscaItinerarios", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -112,7 +110,6 @@ namespace SisComWeb.Aplication.Controllers
                     List<Itinerario> items = ((JArray)tmpResult["Valor"]).Select(x => new Itinerario
                     {
                         AsientosVendidos = (int)x["AsientosVendidos"],
-                        //AsientosVendidos = 8,
                         CapacidadBus = (string)x["CapacidadBus"],
                         CodiBus = (string)x["CodiBus"],
                         CodiDestino = (int)x["CodiDestino"],
@@ -142,9 +139,80 @@ namespace SisComWeb.Aplication.Controllers
                         StOpcional = (string)x["StOpcional"],
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        //Color = _oneColor((bool)x["ProgramacionCerrada"], 8, (int)x["CapacidadBus"], (string)x["StOpcional"]),
                         SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
-                        //SecondColor = _twoColor(8, (int)x["CapacidadBus"], (string)x["StOpcional"])
+                    }).ToList();
+                    return Json(items, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("plano")]
+        public async Task<ActionResult> ChargePlano(FiltroPlano filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"PlanoBus\" : \"" + filtro.PlanoBus + "\"" +
+                                ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
+                                ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                ", \"NroViaje\" : " + filtro.NroViaje + " }";
+                    HttpResponseMessage response = await client.PostAsync("MuestraPlano", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JArray data = (JArray)tmpResult["Valor"];
+                    List<Plano> items = ((JArray)tmpResult["Valor"]).Select(x => new Plano
+                    {
+                        ApellidoMaterno = (string)x["ApellidoMaterno"],
+                        ApellidoPaterno = (string)x["ApellidoPaterno"],
+                        Codigo = (string)x["Codigo"],
+                        Color = (long)x["Color"],
+                        Edad = (int)x["Edad"],
+                        FechaNacimiento = (string)x["FechaNacimiento"],
+                        FechaVenta = (string)x["FechaVenta"],
+                        FechaViaje = (string)x["FechaViaje"],
+                        FlagVenta = (string)x["FlagVenta"],
+                        Indice = (int)x["Indice"],
+                        Nacionalidad = (string)x["Nacionalidad"],
+                        Nivel = (int)x["Nivel"],
+                        Nombres = (string)x["Nombres"],
+                        NumeAsiento = (int)x["NumeAsiento"],
+                        NumeroDocumento = (string)x["NumeroDocumento"],
+                        PrecioMaximo = (int)x["PrecioMaximo"],
+                        PrecioMinimo = (int)x["PrecioMinimo"],
+                        PrecioNormal = (int)x["PrecioNormal"],
+                        PrecioVenta = (int)x["PrecioVenta"],
+                        RecogeEn = (string)x["RecogeEn"],
+                        RucContacto = (string)x["RucContacto"],
+                        Telefono = (string)x["Telefono"],
+                        Tipo = (string)x["Tipo"],
+                        TipoDocumento = (string)x["TipoDocumento"]
                     }).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }

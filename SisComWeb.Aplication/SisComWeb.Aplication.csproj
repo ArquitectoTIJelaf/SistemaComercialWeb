@@ -243,6 +243,7 @@
     <Content Include="wwwroot\plugins\images\tooltip\tooltip1.svg" />
     <Content Include="wwwroot\plugins\images\tooltip\tooltip2.svg" />
     <Content Include="wwwroot\plugins\images\tooltip\tooltip3.svg" />
+    <Content Include="wwwroot\plugins\images\users\cabecera-bus.png" />
     <Content Include="wwwroot\plugins\images\users\cabecera-carro.png" />
     <Content Include="wwwroot\plugins\images\users\circle.gif" />
     <Content Include="wwwroot\plugins\images\users\flores.png" />
@@ -387,7 +388,6 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ItinerariosController.cs" />
-    <Compile Include="Controllers\VentaPasajesController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -398,6 +398,7 @@
     <Compile Include="Helpers\NotifyJson.cs" />
     <Compile Include="Helpers\SessionExpire.cs" />
     <Compile Include="Models\Itinerario.cs" />
+    <Compile Include="Models\Plano.cs" />
     <Compile Include="Models\Sesion.cs" />
     <Compile Include="Models\Base.cs" />
     <Compile Include="Models\Usuario.cs" />
@@ -415,8 +416,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Autenticacion\Index.cshtml" />
-    <Content Include="Views\VentaPasajes\Index.cshtml" />
-    <Content Include="Views\VentaPasajes\_Principal.cshtml" />
     <Content Include="Views\Itinerarios\Index.cshtml" />
     <Content Include="Views\Itinerarios\_Filtros.cshtml" />
     <Content Include="Views\Principal\Index.cshtml" />
