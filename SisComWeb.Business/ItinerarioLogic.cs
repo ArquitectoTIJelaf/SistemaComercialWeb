@@ -81,10 +81,35 @@ namespace SisComWeb.Business
                             continue;
                         }
 
-                        resBuscarItinerarios.Valor[i].CodiBus = "0000";
-                        resBuscarItinerarios.Valor[i].PlanoBus = "000";
-                        resBuscarItinerarios.Valor[i].CapacidadBus = "0";
-                        resBuscarItinerarios.Valor[i].PlacaBus = "00-0000";
+                        // Obtiene 'BusEstandar'
+                        resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, request.Hora);
+                        if (resObtenerBus.Estado)
+                        {
+                            // En caso de no encontrar resultado.
+                            if (!string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                                response.Mensaje += resObtenerBus.Mensaje;
+                            else
+                            {
+                                resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, "");
+                                if (resObtenerBus.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
+                                    resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
+                                    resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
+                                    resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
+                                }
+                                else
+                                {
+                                    response.Mensaje += "Error: ObtenerBusEstandar. ";
+                                    return response;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            response.Mensaje += "Error: ObtenerBusEstandar. ";
+                            return response;
+                        }
                     }
                     else
                     {

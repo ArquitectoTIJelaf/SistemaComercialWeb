@@ -42,7 +42,7 @@ namespace SisComWeb.Business
                         }
 
                         // Obtiene 'PrecioAsiento'
-                        var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resObtenerNivelAsiento.Valor);
+                        var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resBuscarPlanoBus.Valor[i].Nivel.ToString());
                         if (resObtenerPrecioAsiento.Estado)
                         {
                             resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
