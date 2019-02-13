@@ -11,6 +11,11 @@
 
 @section styles{
     <style>
+        .panel-default .panel-heading {
+            height: 35px;
+            min-height: 35px;
+        }
+
         .input-group-addon {
             border-radius: 4px;
             border: 1px solid rgb(228, 231, 234);
@@ -295,14 +300,14 @@
                     CodiPVOrigenBus: null,
                     CodiDestinoBus: null,
                     CodiServicio: null,
-                    CodiDestinoPas: null
+                    CodiDestinoPas: null,
+                    Fecha: '',
+                    Turno: ''
                 },
                 list: {
                     empresas: [],
                     sucursales: [],
-                    origenesBus: [],
                     pvOrigenesBus: [],
-                    destinosBus: [],
                     servicios: [],
                     destinosPas: [],
                     plano: []
@@ -313,10 +318,9 @@
             mounted: function () {
                 this.getEmpresas();
                 this.getSucursales();
-                this.getOrigenesBus();
-                this.getDestinosBus();
                 this.getServicios();
-                this.getDestinosPas();
+                this.filtro.Fecha = moment(new Date).format('DD/MM/YYYY');
+                this.filtro.Turno = moment(new Date).format('hh:mm A');
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
                 });
@@ -362,13 +366,9 @@
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
                             _this.list.sucursales = _.cloneDeep(res.data);
-                        }).catch(APP.rq.axios_handler_error_alert);
-                },
-                getOrigenesBus() {
-                    var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
-                        .then(res => {
                             _this.list.origenesBus = _.cloneDeep(res.data);
+                            _this.list.destinosBus = _.cloneDeep(res.data);
+                            _this.list.destinosPas = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getPVOrigenesBus(Codi_OrigenBus) {
@@ -378,13 +378,6 @@
                             _this.list.pvOrigenesBus = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getDestinosBus() {
-                    var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
-                        .then(res => {
-                            _this.list.destinosBus = _.cloneDeep(res.data);
-                        }).catch(APP.rq.axios_handler_error_alert);
-                },
                 getServicios() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-servicios')
@@ -392,18 +385,14 @@
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getDestinosPas() {
-                    var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
-                        .then(res => {
-                            _this.list.destinosPas = _.cloneDeep(res.data);
-                        }).catch(APP.rq.axios_handler_error_alert);
-                },
                 hideVentas() {
                     appController.hideVentas();
                 }
             },
             computed: {
+                computedGetUsuario: function () {
+                    return 'USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()';
+                }
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal) {
@@ -416,6 +405,16 @@
                     } else {
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
+                    }
+                },
+                'filtro.Fecha': function (newVal) {
+                    if (newVal) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                            var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd');
+                            document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
+                        }
+                    } else {
+                        return '';
                     }
                 }
             }
