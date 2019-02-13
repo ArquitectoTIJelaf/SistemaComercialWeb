@@ -84,6 +84,7 @@
         .container-bus {
             display: inline-block;
             width: 100%;
+            padding: 15px;
         }
 
         .img-bus {
@@ -95,6 +96,7 @@
             width: calc(100% - 108px);
             border: 2px solid #4b4a4b;
             border-radius: 0 8px 8px 0;
+            margin-bottom: 0;
         }
 
         .table-bus {
@@ -387,6 +389,16 @@
                 },
                 hideVentas() {
                     appController.hideVentas();
+                },
+                test() {
+                    var colors = [
+                        "red",
+                        "green",
+                        "lime",
+                        "purple",
+                        "blue"
+                    ];
+                    document.documentElement.style.setProperty('--emp-color', colors[Math.floor(Math.random() * colors.length)]);
                 }
             },
             computed: {
