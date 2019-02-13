@@ -147,7 +147,8 @@
                     appVueFilter.showVentas = true;
                     appVueTable.showVentas = true;
                     appVueVenta.showVentas = true;
-                    appVueVenta.item = _item;
+                    var _fechaViaje = appVueFilter.filtro.FechaViaje
+                    appVueVenta.chargeVentas(_item, _fechaViaje);
                 },
                 hideVentas: function () {
                     appVueFilter.showVentas = false;
@@ -304,8 +305,10 @@
                     destinosBus: [],
                     servicios: [],
                     destinosPas: [],
+                    plano: []
                 },
-                showVentas: false
+                showVentas: false,
+                fechaViaje: ''
             },
             mounted: function () {
                 this.getEmpresas();
@@ -319,8 +322,33 @@
                 });
             },
             methods: {
+                chargeVentas(item, fechaViaje) {
+                    this.item = item;
+                    this.fechaViaje = fechaViaje;
+                    this.getPlano(item);
+                },
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
+                },
+                getPlano(item) {
+                    var _this = this;
+                    var input = {};
+                    input.PlanoBus = item.PlanoBus;
+                    input.CodiProgramacion = item.CodiProgramacion;
+                    input.CodiOrigen = item.CodiOrigen;
+                    input.CodiDestino = item.CodiDestino;
+                    input.CodiBus = item.CodiBus;
+                    input.HoraViaje = item.HoraPartida;
+                    input.FechaViaje = _this.fechaViaje;
+                    input.CodiServicio = item.CodiServicio;
+                    input.CodiEmpresa = item.CodiEmpresa;
+                    input.FechaProgramacion = item.FechaProgramacion;
+                    input.NroViaje = item.NroViaje;
+                    APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
+                        .then(res => {
+                            debugger;
+                            _this.list.plano = res.data;
+                        }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getEmpresas() {
                     var _this = this;
