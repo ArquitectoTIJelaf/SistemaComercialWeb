@@ -3,48 +3,197 @@
     <div class="col-md-12">
         <div class="white-box" @*style="background: transparent;padding: 15px 0 15px 0;"*@>
             <div @*class="custom-scroll-container"*@>
-
                 <div class="row">
-                    <div class="col-md-10">
-                        <div class="col-md-4">
+                    <div class="col-md-12">
+                        <div class="col-md-10">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Empresa:</label>
+                                    <v-select v-model="filtro.CodiEmpresa"
+                                              :id="'cboEmpresa'"
+                                              label="label"
+                                              :get-option-label="getLabel"
+                                              :options="list.empresas"
+                                              :placeholder="'EMPRESA'"
+                                              ref="select">
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                            <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
+                                <label class="control-label">Nº Viaje: {{item.NroViaje}}</label>
+                            </div>
+                            <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
+                                <label class="control-label">Nº Programación: {{item.CodiProgramacion}}</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2" style="text-align: right; ">
+                            <div style="display: inline-block; cursor: pointer; ">
+                                <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
+                                <label style="cursor: pointer; ">Actualizar</label>
+                            </div>
+                            <div @@click="hideVentas" style="display: inline-block; cursor: pointer;">
+                                <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
+                                <label style="cursor: pointer; ">Atrás</label>
+                            </div>
+                            <a href="@Url.Action("Index","Principal")">
+                                <div style="display: inline-block; cursor: pointer;">
+                                    <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px; " />
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <img src="~/wwwroot/plugins/images/BUS3.png" style="margin: 0px 0px 3px 10px; " />
+                        <label class="control-label" style="margin: 10px; ">
+                            Con embarque en: Lima, Plaza Norte, 9:00 am.
+                        </label>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-2">
                             <div class="form-group">
-                                <label class="control-label">Empresa:</label>
-                                <v-select v-model="filtro.CodiEmpresa"
-                                          :id="'cboEmpresa'"
+                                <label class="control-label">Sucursal:</label>
+                                <v-select v-model="filtro.CodiSucursal"
+                                          :id="'cboSucursal'"
                                           label="label"
                                           :get-option-label="getLabel"
-                                          :options="list.empresas"
-                                          :placeholder="'EMPRESA'"
+                                          :options="list.sucursales"
+                                          :placeholder="'SUCURSAL'"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
                         </div>
-                        <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                            <label class="control-label">Nº Viaje: {{item.NroViaje}}</label>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Origen bus:</label>
+                                <v-select v-model="filtro.CodiOrigenBus"
+                                          :id="'cboOrigenBus'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.origenesBus"
+                                          :placeholder="'ORIGEN BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
                         </div>
-                        <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                            <label class="control-label">Nº Programación: {{item.CodiProgramacion}}</label>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">P.V. Origen bus:</label>
+                                <v-select v-model="filtro.CodiPVOrigenBus"
+                                          :id="'cboPVOrigenBus'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.pvOrigenesBus"
+                                          :placeholder="'P.V. ORIGEN BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-2" style="text-align: right; ">
-                        <div style="display: inline-block; cursor: pointer;">
-                            <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
-                            <label style="cursor: pointer; ">Actualizar</label>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Destino bus:</label>
+                                <v-select v-model="filtro.CodiDestinoBus"
+                                          :id="'cboDestinoBus_2'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.destinosBus"
+                                          :placeholder="'DESTINO BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
                         </div>
-                        <div @@click="hideVentas" style="display: inline-block; cursor: pointer;">
-                            <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
-                            <label style="cursor: pointer; ">Atrás</label>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Servicio:</label>
+                                <v-select v-model="filtro.CodiServicio"
+                                          :id="'cboServicio'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.servicios"
+                                          :placeholder="'SERVICIO'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
                         </div>
-                        <div style="display: inline-block; cursor: pointer;">
-                            <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px; " />
+                        <div class="col-md-2" style="background-color: blue; float: right; height: 114px; ">
+
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <img src="~/wwwroot/plugins/images/BUS3.png" style="margin-left: 5px; " />
-                        <label class="control-label" style="margin: 5px 0px 10px 0px; ">
-                            Con embarque en: {{item.NroViaje}}
-                        </label>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Destino pasajero:</label>
+                                <v-select v-model="filtro.CodiDestinoPas"
+                                          :id="'cboDestinoPas_2'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.destinosPas"
+                                          :placeholder="'DESTINO PASAJERO'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Origen bus:</label>
+                                <v-select v-model="filtro.CodiOrigenBus"
+                                          :id="'cboOrigenBus'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.origenesBus"
+                                          :placeholder="'ORIGEN BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">P.V. Origen bus:</label>
+                                <v-select v-model="filtro.CodiPVOrigenBus"
+                                          :id="'cboPVOrigenBus'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.pvOrigenesBus"
+                                          :placeholder="'P.V. ORIGEN BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Destino bus:</label>
+                                <v-select v-model="filtro.CodiDestinoBus"
+                                          :id="'cboDestinoBus_2'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.destinosBus"
+                                          :placeholder="'DESTINO BUS'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label class="control-label">Servicio:</label>
+                                <v-select v-model="filtro.CodiServicio"
+                                          :id="'cboServicio'"
+                                          label="label"
+                                          :get-option-label="getLabel"
+                                          :options="list.servicios"
+                                          :placeholder="'SERVICIO'"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <div class="container-bus">

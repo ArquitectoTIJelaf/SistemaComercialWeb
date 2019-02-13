@@ -288,18 +288,34 @@
             data: {
                 item: {},
                 filtro: {
-                    CodiEmpresa: null
+                    CodiEmpresa: null,
+                    CodiSucursal: null,
+                    CodiOrigenBus: null,
+                    CodiPVOrigenBus: null,
+                    CodiDestinoBus: null,
+                    CodiServicio: null,
+                    CodiDestinoPas: null
                 },
                 list: {
-                    empresas: []
+                    empresas: [],
+                    sucursales: [],
+                    origenesBus: [],
+                    pvOrigenesBus: [],
+                    destinosBus: [],
+                    servicios: [],
+                    destinosPas: [],
                 },
                 showVentas: false
             },
             mounted: function () {
                 this.getEmpresas();
+                this.getSucursales();
+                this.getOrigenesBus();
+                this.getDestinosBus();
+                this.getServicios();
+                this.getDestinosPas();
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
-                    $('#cboEmpresa input[type=search]').focus();
                 });
             },
             methods: {
@@ -313,6 +329,48 @@
                             _this.list.empresas = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
+                getSucursales() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            _this.list.sucursales = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getOrigenesBus() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            _this.list.origenesBus = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getPVOrigenesBus(Codi_OrigenBus) {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_OrigenBus } })
+                        .then(res => {
+                            _this.list.pvOrigenesBus = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getDestinosBus() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            _this.list.destinosBus = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getServicios() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-servicios')
+                        .then(res => {
+                            _this.list.servicios = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getDestinosPas() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            _this.list.destinosPas = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
                 hideVentas() {
                     appController.hideVentas();
                 }
@@ -320,6 +378,18 @@
             computed: {
             },
             watch: {
+                'filtro.CodiOrigenBus': function (newVal) {
+                    if (newVal) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                            this.getPVOrigenesBus(newVal.id);
+                            // Limpiamos el último valor seleccionado
+                            this.filtro.CodiPVOrigenBus = null;
+                        }
+                    } else {
+                        this.list.pvOrigenesBus = [];
+                        this.filtro.CodiPVOrigenBus = null;
+                    }
+                }
             }
         });
 
