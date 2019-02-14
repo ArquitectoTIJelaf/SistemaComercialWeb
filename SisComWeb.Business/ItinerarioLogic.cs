@@ -60,10 +60,10 @@ namespace SisComWeb.Business
                         resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarProgramacionViaje.Valor);
                         if (resObtenerBus.Estado)
                         {
-                            resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
-                            resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus;
-                            resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros;
-                            resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus;
+                            resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
+                            resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
+                            resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
+                            resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
                         }
                         else
                         {
@@ -81,10 +81,54 @@ namespace SisComWeb.Business
                             continue;
                         }
 
-                        resBuscarItinerarios.Valor[i].CodiBus = "0000";
-                        resBuscarItinerarios.Valor[i].PlanoBus = "000";
-                        resBuscarItinerarios.Valor[i].CapacidadBus = "0";
-                        resBuscarItinerarios.Valor[i].PlacaBus = "00-0000";
+                        // Obtiene 'BusEstandar'
+                        resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, request.Hora);
+                        if (resObtenerBus.Estado && !string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                        {
+                            resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
+                            resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus;
+                            resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                            resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus;
+                        }
+                        else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                        {
+                            // En caso de no encontrar resultado
+                            resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, "");
+                            if (resObtenerBus.Estado && !string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                            {
+                                resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
+                                resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus;
+                                resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                                resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus;
+                            }
+                            else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                            {
+                                // En caso de no encontrar resultado
+                                resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, 0, resBuscarItinerarios.Valor[i].CodiServicio, "");
+                                if (resObtenerBus.Estado)
+                                {
+                                    resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
+                                    resBuscarItinerarios.Valor[i].PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
+                                    resBuscarItinerarios.Valor[i].CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
+                                    resBuscarItinerarios.Valor[i].PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
+                                }
+                                else
+                                {
+                                    response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0. ";
+                                    return response;
+                                }
+                            }
+                            else
+                            {
+                                response.Mensaje += "Error: ObtenerBusEstandar sin hora. ";
+                                return response;
+                            }
+                        }
+                        else
+                        {
+                            response.Mensaje += "Error: ObtenerBusEstandar con hora. ";
+                            return response;
+                        }
                     }
                     else
                     {

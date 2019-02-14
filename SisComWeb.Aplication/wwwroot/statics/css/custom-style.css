@@ -553,3 +553,33 @@ body {
     padding: 100px 0 0;
     box-shadow: inset 1px 1px 0 rgb(220, 172, 0), inset 0 -1px 0 rgb(220, 172, 0);
 }
+
+/*Variables de Empresa*/
+:root {
+    --emp-color: #ff7601;
+}
+
+.bgc-emp {
+    background-color: var(--emp-color);
+}
+
+.color-emp {
+    color: var(--emp-color);
+}
+
+.btn-emp {
+    background-color: var(--emp-color);
+    border-color: var(--emp-color);
+}
+
+    .btn-emp:focus {
+        background-color: var(--emp-color);
+        border-color: var(--emp-color);
+        opacity: 0.3;
+    }
+
+    .btn-emp:hover {
+        background-color: var(--emp-color);
+        border-color: var(--emp-color);
+        opacity: 0.6;
+    }

@@ -687,3 +687,21 @@ System.FormatException: Error al convertir el valor del parámetro de String a In
    en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
    en SisComWeb.Repository.BloqueoAsientoRepository.ValidarBloqueoAsiento(Int32 CodiProgramacion, Int32 NroViaje, Int16 CodiOrigen, Int16 CodiDestino, String NumeAsiento, String FechaProgramacion) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\BloqueoAsientoRepository.cs:línea 23
    en SisComWeb.Business.BloqueoAsientoLogic.BloqueoAsiento(BloqueoAsientoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\BloqueoAsientoLogic.cs:línea 17
+2019-02-13 17:15:57,398 ERROR SisComWeb.Business.PlanoLogic - MuestraPlano
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 37
+2019-02-13 17:16:08,887 ERROR SisComWeb.Business.PlanoLogic - MuestraPlano
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 37
+2019-02-13 17:17:05,036 ERROR SisComWeb.Business.PlanoLogic - MuestraPlano
+System.FormatException: La cadena de entrada no tiene el formato correcto.
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int32.Parse(String s)
+   en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 37
