@@ -20,9 +20,9 @@
         </ul>
         <ul class="nav navbar-top-links navbar-right pull-right">
             <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;line-height: 25px !important;">
-                    <i class="fa fa-user fa-fw"></i>@usuario.Nombre
-                    <p style="font-size:10px">Cerrar Sesión</p>
+                <a href="@Url.Action("Logout", "Autenticacion")">
+                    <i class="fa fa-user fa-fw"></i>@usuario.Nombre &ensp;
+                    <i class="fa fa-sign-out"></i> Cerrar Sesión
                 </a>
             </li>
         </ul>
