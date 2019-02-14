@@ -160,6 +160,8 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url + "ListaServicios");
                     HttpResponseMessage response = await client.GetAsync(url + "ListaServicios");
+
+
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();

@@ -1,4 +1,6 @@
-﻿
+﻿@using SisComWeb.Aplication.Helpers
+@{ var usuario = DataSession.UsuarioLogueado; }
+
 <div id="appVueVenta" v-show="showVentas" class="row">
     <div class="col-md-12">
         <div class="white-box" style="padding: 10px 0 15px 0;">
@@ -183,7 +185,7 @@
                                     <div class="col-md-2">
                                         <div class="form-group ">
                                             <label class="control-label">&nbsp;</label>
-                                            <input :value="computedGetUsuario"
+                                            <input value="USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="USUARIO"
@@ -196,8 +198,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" style="background-color:white;height:50px;">
-                        <div class="col-md-4 bgc-emp">
+                    <div class="col-md-12" style="background-color:white;height:40px;">
+                        <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px;">
 
                         </div>
                     </div>
@@ -212,19 +214,54 @@
                             <table id="tblLista" class="table table-bus">
                                 <tbody>
                                     <tr>
-                                        <td v-for="a in 17" class="custom-td"></td>
+                                        <td v-for="(item, key) in list.plano5" class="custom-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>                                            
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="a in 17" class="custom-td"></td>
+                                        <td v-for="(item, key) in list.plano4" class="custom-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="a in 17" class="custom-td"></td>
+                                        <td v-for="(item, key) in list.plano3" class="custom-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="a in 17" class="custom-td"></td>
+                                        <td v-for="(item, key) in list.plano2" class="custom-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="a in 17" class="custom-td"></td>
+                                        <td v-for="(item, key) in list.plano1" class="custom-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

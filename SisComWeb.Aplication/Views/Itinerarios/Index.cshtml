@@ -104,6 +104,13 @@
             background-color: white;
             height: 252px;
         }
+
+        .LI {
+            border-left: 2px solid #4b4a4b;
+            height: 100%;
+            display: block;
+        }
+
     </style>
 }
 
@@ -182,7 +189,8 @@
                     destinosPas: [],
                     destinosBus: []
                 },
-                showVentas: false
+                showVentas: false,
+                processing: false
             },
             mounted: function () {
                 $(".preloader").fadeIn();
@@ -209,6 +217,7 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 search() {
+                    this.processing = true;
                     var _this = this;
                     var input = {};
                     input.CodiOrigen = _this.filtro.CodiOrigen.id;
@@ -221,6 +230,7 @@
                     APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input)
                         .then(res => {
                             appController.loadTable(res.data);
+                            this.processing = false;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 recorrido: function () {
@@ -312,7 +322,11 @@
                     pvOrigenesBus: [],
                     servicios: [],
                     destinosPas: [],
-                    plano: []
+                    plano1: [],
+                    plano2: [],
+                    plano3: [],
+                    plano4: [],
+                    plano5: []
                 },
                 showVentas: false,
                 fechaViaje: ''
@@ -352,8 +366,12 @@
                     input.NroViaje = item.NroViaje;
                     APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
                         .then(res => {
-                            debugger;
-                            _this.list.plano = res.data;
+                            var tempList = _.cloneDeep(res.data);                          
+                            _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5); 
+                            _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5); 
+                            _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5); 
+                            _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5); 
+                            _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5); 
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getEmpresas() {
@@ -402,9 +420,6 @@
                 }
             },
             computed: {
-                computedGetUsuario: function () {
-                    return 'USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()';
-                }
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal) {
