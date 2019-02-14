@@ -74,5 +74,11 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult Logout()
+        {
+            DataSession.UsuarioLogueado = null;
+            return RedirectToAction("Index", "Autenticacion");
+        }
     }
 }
