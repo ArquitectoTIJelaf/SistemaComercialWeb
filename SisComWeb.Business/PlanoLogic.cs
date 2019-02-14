@@ -48,13 +48,32 @@ namespace SisComWeb.Business
                         var resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resBuscarPlanoBus.Valor[i].Nivel.ToString());
                         if (resObtenerPrecioAsiento.Estado)
                         {
-                            resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
-                            resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
-                            resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
+                            // En caso de no encontrar resultado
+                            if (resObtenerPrecioAsiento.Valor.PrecioNormal == 0 && resObtenerPrecioAsiento.Valor.PrecioMinimo == 0 && resObtenerPrecioAsiento.Valor.PrecioMaximo == 0)
+                            {
+                                resObtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, "", request.FechaViaje, request.CodiServicio, request.CodiEmpresa, resBuscarPlanoBus.Valor[i].Nivel.ToString());
+                                if (resObtenerPrecioAsiento.Estado)
+                                {
+                                    resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
+                                    resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
+                                    resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
+                                }
+                                else
+                                {
+                                    response.Mensaje += "Error: ObtenerPrecioAsiento sin Hora. ";
+                                    return response;
+                                }
+                            }
+                            else
+                            {
+                                resBuscarPlanoBus.Valor[i].PrecioNormal = resObtenerPrecioAsiento.Valor.PrecioNormal;
+                                resBuscarPlanoBus.Valor[i].PrecioMinimo = resObtenerPrecioAsiento.Valor.PrecioMinimo;
+                                resBuscarPlanoBus.Valor[i].PrecioMaximo = resObtenerPrecioAsiento.Valor.PrecioMaximo;
+                            }
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerPrecioAsiento. ";
+                            response.Mensaje += "Error: ObtenerPrecioAsiento con Hora. ";
                             return response;
                         }
                     }

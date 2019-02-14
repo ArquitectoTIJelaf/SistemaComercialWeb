@@ -58,10 +58,10 @@ namespace SisComWeb.Business
                     resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarProgramacionViaje.Valor);
                     if (resObtenerBus.Estado)
                     {
-                        resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus;
-                        resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
-                        resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
-                        resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                        resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
+                        resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
+                        resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
+                        resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
                     }
                     else
                     {
@@ -73,24 +73,45 @@ namespace SisComWeb.Business
                 {
                     // Obtiene 'BusEstandar'
                     resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, resBuscarTurno.Valor.CodiRuta, resBuscarTurno.Valor.CodiServicio, request.HoraViaje);
-                    if (resObtenerBus.Estado)
+                    if (resObtenerBus.Estado && !string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                    {
+                        resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus;
+                        resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
+                        resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                        resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                    }
+                    else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                     {
                         // En caso de no encontrar resultado.
-                        if (string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                        resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, resBuscarTurno.Valor.CodiRuta, resBuscarTurno.Valor.CodiServicio, "");
+                        if (resObtenerBus.Estado && !string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                         {
-                            resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, resBuscarTurno.Valor.CodiRuta, resBuscarTurno.Valor.CodiServicio, "");
+                            resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus;
+                            resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
+                            resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
+                            resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                        }
+                        else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
+                        {
+                            // En caso de no encontrar resultado
+                            resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiSucursal, 0, resBuscarTurno.Valor.CodiServicio, "");
                             if (resObtenerBus.Estado)
                             {
-                                resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus;
-                                resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
-                                resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
-                                resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                                resBuscarTurno.Valor.CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
+                                resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
+                                resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
+                                resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
                             }
                             else
                             {
-                                response.Mensaje += "Error: ObtenerBusEstandar sin Hora. ";
+                                response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0. ";
                                 return response;
                             }
+                        }
+                        else
+                        {
+                            response.Mensaje += "Error: ObtenerBusEstandar sin hora. ";
+                            return response;
                         }
                     }
                     else
