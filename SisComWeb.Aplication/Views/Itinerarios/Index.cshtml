@@ -160,7 +160,6 @@
             text-align: center;
         }
 
-<<<<<<< HEAD
         .contenedorVSelectEditado .v-select .vs__actions {
             position: absolute;
             right: 0;
@@ -170,7 +169,6 @@
             visibility: hidden;
         }
 
-=======
         .btn-bus {
             padding: 5px;
             height: 95% !important;
@@ -196,7 +194,6 @@
             position: relative;
             right: -10%;
         }
->>>>>>> bd0cfdf82807805f7dafbebeb51ff68449e67a64
     </style>
 }
 
@@ -434,7 +431,11 @@
                     Recoger: '',
                     Reintegro: '',
                     Observacion: '',
-                    Precio: ''
+                    Precio: '',
+                    NroAsiento: '',
+                    NroVenta: '',
+                    NroSolicitud: '',
+                    FechaVen: ''
                 },
                 showVentas: false,
                 showPlano: false,
@@ -444,12 +445,7 @@
                 this.getEmpresas();
                 this.getSucursales();
                 this.getServicios();
-<<<<<<< HEAD
-                this.filtro.Fecha = moment(new Date).format('DD/MM/YYYY');
-                this.filtro.Turno = moment(new Date).format('hh:mm A');
                 this.getTiposDoc();
-=======
->>>>>>> bd0cfdf82807805f7dafbebeb51ff68449e67a64
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
                 });
@@ -461,7 +457,6 @@
                     this.getPlano(item, fechaViaje);
                 },
                 setFilters: async function (item, fechaViaje) {
-                    debugger;
                     var _this = this;
                     _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(item.CodiEmpresa));
                     _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(item.CodiSucursal));
@@ -541,7 +536,6 @@
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-<<<<<<< HEAD
                 getTiposDoc() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-tiposDoc')
@@ -549,11 +543,8 @@
                             _this.list.tiposDoc = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                hideVentas() {
-=======
                 hideVentas: function() {
                     this.showPlano = false;
->>>>>>> bd0cfdf82807805f7dafbebeb51ff68449e67a64
                     appController.hideVentas();
                 },
                 //test() {
@@ -571,7 +562,6 @@
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
-                    debugger;
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             this.getPVOrigenesBus(newVal.id);
@@ -596,7 +586,7 @@
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             var auxFechaNac = moment(newVal, 'DD/MM/YYYY');
-                            this.objVenta.Edad = moment().diff(auxFechaNac, 'years');
+                            this.objVenta.Edad = '' + moment().diff(auxFechaNac, 'years');
                         }
                     } else {
                         return '';

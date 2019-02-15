@@ -312,17 +312,24 @@
                             </table>
                         </div>
                     </div>
-
                     <div class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 200px; width: 50px; ">
 
                         </div>
-                        <div class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 0px;">
-
-                            <div class="col-md-1" style="height: 200px; ">
-
+                        <div class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; ">
+                            <div class="col-md-1">
+                                <div class="col-md-12">
+                                    <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
+                                            <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
+                                            <input v-model="objVenta.NroAsiento"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="Nº"
+                                                   style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
+                                                   autocomplete="off">
+                                    </div>
+                                </div>
                             </div>
-
                             <div class="col-md-9">
                                 <div class="col-md-3">
                                     <div class="form-group contenedorVSelectEditado">
@@ -366,7 +373,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group ">
-                                        <label class="control-label">Fecha Nacimiento:</label>
+                                        <label class="control-label">Fecha de nacimiento:</label>
                                         <input @@blur="objVenta.FechaNac = $event.target.value.trim()"
                                                :value="objVenta.FechaNac"
                                                type="text"
@@ -427,7 +434,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group ">
                                         <label class="control-label">Recoger:</label>
-                                        <input :value="objVenta.Recoger"
+                                        <input v-model="objVenta.Recoger"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="RECOGER"
@@ -437,7 +444,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group ">
                                         <label class="control-label">Reintegro:</label>
-                                        <input :value="objVenta.Reintegro"
+                                        <input v-model="objVenta.Reintegro"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="REINTEGRO"
@@ -448,7 +455,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group ">
                                         <label class="control-label">Observación:</label>
-                                        <input :value="objVenta.Observacion"
+                                        <input v-model="objVenta.Observacion"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="OBSERVACIÓN"
@@ -457,18 +464,15 @@
                                 </div>
                                 <div class="col-md-8" style="float:right; padding: 0px; ">
                                     <div class="col-md-4">
-                                        <div class="form-group ">
-                                            <label class="control-label" style="width: 100%; ">&nbsp;</label>
-                                            <div class="col-md-12" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; ">
-                                                <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
-                                                <input :value="objVenta.Precio"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="PRECIO"
-                                                       style="text-align: center; border-color: #fff; "
-                                                       autocomplete="off">
-                                            </div>
-
+                                        <label class="control-label" style="width: 100%; ">&nbsp;</label>
+                                        <div class="form-group" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; padding: 5px 0px; ">
+                                            <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
+                                            <input v-model="objVenta.Precio"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="PRECIO"
+                                                   style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
+                                                   autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -481,7 +485,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-5" style="float: right; ">
-                                        <div class="form-group ">
+                                        <div class="form-group">
                                             <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                             <textarea style="width: 100%; height: 66px; border-radius: 5px; border-color: #e4e7ea; "></textarea>
                                         </div>
@@ -496,7 +500,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-4">
                                     <div class="form-group ">
                                         <button class="btn btn-secondary"
@@ -506,19 +509,51 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
-
-                            <div class="col-md-2" style="height: 200px; ">
-
+                            <div class="col-md-2">
+                                <div class="col-md-12">
+                                    <div class="form-group" style="text-align: center; ">
+                                        <label class="control-label" style="width: 100%; ">Nº Venta</label>
+                                        <input :value="objVenta.NroVenta"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="Nº VENTA"
+                                               readonly="readonly"
+                                               style="text-align: center; "
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group" style="text-align: center; ">
+                                        <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
+                                        <input v-model="objVenta.NroSolicitud"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="Nº SOLICITUD"
+                                               readonly="readonly"
+                                               style="text-align: center; "
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group" style="text-align: center; ">
+                                        <label class="control-label" style="width: 100%; ">Fecha de venta</label>
+                                        <input @@blur="objVenta.FechaVen = $event.target.value.trim()"
+                                               :value="objVenta.FechaVen"
+                                               type="text"
+                                               id="txtFechaVen"
+                                               class="form-control input-sm dp"
+                                               placeholder="FECHA VENTA"
+                                               style="text-align: center; "
+                                               autocomplete="off">
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                         <div class="col-md-1" style="height: 200px; width: 50px; ">
 
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

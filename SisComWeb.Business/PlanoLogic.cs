@@ -14,6 +14,7 @@ namespace SisComWeb.Business
             {
                 var response = new Response<List<PlanoEntity>>(false, null, "", false);
                 Response<string> resObtenerNivelAsiento = new Response<string>(false, null, "", false);
+                string auxTipoLI = "";
 
                 // Busca PlanoBus
                 var resBuscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus);
@@ -77,6 +78,20 @@ namespace SisComWeb.Business
                             return response;
                         }
                     }
+                    //else
+                    //{
+                    //    if (resBuscarPlanoBus.Valor[i].Tipo == "LI")
+                    //    {
+                    //        auxTipoLI = resBuscarPlanoBus.Valor[i].Tipo;
+                    //    }
+                    //    else
+                    //    {
+                    //        if (!string.IsNullOrEmpty(auxTipoLI))
+                    //            resBuscarPlanoBus.Valor[i].Nivel = 1;
+                    //        else
+                    //            resBuscarPlanoBus.Valor[i].Nivel = 2;
+                    //    }
+                    //}
                 }
 
                 // Lista 'AsientosOcupados'
