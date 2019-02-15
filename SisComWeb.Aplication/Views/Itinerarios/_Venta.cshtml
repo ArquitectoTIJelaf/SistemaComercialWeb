@@ -53,11 +53,16 @@
                                 <div class="panel-action">
                                     <button type="button"
                                             class="btn btn-default btn-sm waves-effect waves-light btn-emp"
-                                            style="color: #fff; font-weight: 400; "
+                                            style="color: #fff; font-weight: 400;padding: 1px 10px;"
                                             href="#"
                                             data-perform="panel-collapse"
-                                            @@click="test">
-                                        DESPLEGAR TURNOS
+                                            @@click="showTextTurnos = !showTextTurnos">
+                                        <template v-if="showTextTurnos">
+                                            <span class="mdi mdi-arrow-down-bold-circle fa-fw"></span>DESPLEGAR TURNOS
+                                        </template>
+                                        <template v-else>
+                                            <span class="mdi mdi-arrow-up-bold-circle fa-fw"></span>CONTRAER TURNOS
+                                        </template>                                        
                                     </button>
                                 </div>
                             </div>
@@ -198,12 +203,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" style="background-color:white;height:40px;">
+                    <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
                         <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px;">
 
                         </div>
                     </div>
-                    <div class="container-bus bgc-emp">
+                    <div v-show="showPlano" class="container-bus bgc-emp" >
                         <div class="col-md-12" style="background-color: white; height: 40px;margin-bottom: 15px;border-radius: 4px;">
 
                         </div>
@@ -216,7 +221,15 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano5" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                                <button class="btn btn-bus">
+                                                    <div class="icons-of-seat" v-if="false">
+                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-right">TE</span>                                                         
+                                                    </div>
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
@@ -226,7 +239,15 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano4" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                                <button class="btn btn-bus">
+                                                    <div class="icons-of-seat" v-if="true">
+                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-right">TE</span>
+                                                    </div>
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
@@ -236,7 +257,15 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano3" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                                <button class="btn btn-bus">
+                                                    <div class="icons-of-seat" v-if="true">
+                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-right">TE</span>
+                                                    </div>
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
@@ -246,7 +275,15 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano2" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                                <button class="btn btn-bus">
+                                                    <div class="icons-of-seat" v-if="true">
+                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-right">TE</span>
+                                                    </div>
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
@@ -256,7 +293,15 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-info">{{item.Tipo}}</button>
+                                                <button class="btn btn-bus">
+                                                    <div class="icons-of-seat" v-if="true">
+                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-right">TE</span>
+                                                    </div>
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>

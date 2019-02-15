@@ -103,26 +103,52 @@
 
         .LI {
             border-left: 2px solid #4b4a4b;
+            margin-left: 5px;
+            margin-right: 3px;
             height: 100%;
             display: block;
+        }
+
+        .PU {
+            background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;
+            display: block;
+            height: 95%;
+            min-width: 30px;
+        }
+
+        .VA {
+            /*background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;*/
+            display: block;
+            height: 95%;
+            min-width: 30px;
+        }
+
+        .CU {
+            /*background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;*/
+            display: block;
+            height: 95%;
+            min-width: 30px;
         }
 
         .BA {
-            background: url("/wwwroot/plugins/images/users/icono-ba.png") no-repeat;
+            background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
             display: block;
-            height: 100%;
+            height: 95%;
+            min-width: 30px;
         }
 
         .TV {
-            background: url("/wwwroot/plugins/images/users/icono-tv.png") no-repeat;
+            background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
             display: block;
-            height: 100%;
+            height: 95%;
+            min-width: 30px;
         }
 
         .EE {
-            background: url("/wwwroot/plugins/images/users/icono-es.png") no-repeat;
+            background: url("/wwwroot/plugins/images/users/ESCALERAS.png") no-repeat center center;
             display: block;
-            height: 100%;
+            height: 95%;
+            min-width: 30px;
         }
 
         .bus-td {
@@ -134,6 +160,31 @@
             text-align: center;
         }
 
+        .btn-bus {
+            padding: 5px;
+            height: 95% !important;
+            width: 95% !important;
+            font-weight: 900;
+        }
+
+        .number-of-seat {
+            display: block;
+            font-size: 14px;
+        }
+
+        .icons-of-seat {
+            display: block;
+        }
+
+        .ios-left {
+            position: relative;
+            left: -10%;
+        }
+
+        .ios-right {
+            position: relative;
+            right: -10%;
+        }
     </style>
 }
 
@@ -308,7 +359,7 @@
             mounted: function () {
             },
             methods: {
-                loadTable: function (list) {                                     
+                loadTable: function (list) {
                     this.list.itinerarios = list;
                     this.$nextTick(() => {
                         this.shown = true
@@ -342,7 +393,9 @@
                 list: {
                     empresas: [],
                     sucursales: [],
+                    origenesBus: [],
                     pvOrigenesBus: [],
+                    destinosBus: [],
                     servicios: [],
                     destinosPas: [],
                     plano1: [],
@@ -352,28 +405,43 @@
                     plano5: []
                 },
                 showVentas: false,
-                fechaViaje: ''
+                showPlano: false,
+                showTextTurnos: false
             },
             mounted: function () {
                 this.getEmpresas();
                 this.getSucursales();
                 this.getServicios();
-                this.filtro.Fecha = moment(new Date).format('DD/MM/YYYY');
-                this.filtro.Turno = moment(new Date).format('hh:mm A');
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
                 });
             },
             methods: {
-                chargeVentas(item, fechaViaje) {
+                chargeVentas: function (item, fechaViaje) {
                     this.item = item;
-                    this.fechaViaje = fechaViaje;
-                    this.getPlano(item);
+                    this.setFilters(item, fechaViaje);
+                    this.getPlano(item, fechaViaje);
                 },
-                getLabel(option) {
+                setFilters: async function (item, fechaViaje) {
+                    debugger;
+                    var _this = this;
+                    _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(item.CodiEmpresa));
+                    _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(item.CodiSucursal));
+                    _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(item.CodiSucursal));
+                    _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(item.CodiRuta));
+                    _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(item.CodiServicio));
+                    _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(item.CodiDestino));
+                    _this.filtro.Fecha = fechaViaje;
+                    _this.filtro.Turno = item.HoraPartida;
+                    await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
+                    _this.$nextTick(() => {
+                        _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(item.CodiPuntoVenta));
+                    });
+                },
+                getLabel: function(option) {
                     return `${option.id} - ${option.label}`
                 },
-                getPlano(item) {
+                getPlano: function (item, fechaViaje) {
                     var _this = this;
                     var input = {};
                     input.PlanoBus = item.PlanoBus;
@@ -382,29 +450,36 @@
                     input.CodiDestino = item.CodiDestino;
                     input.CodiBus = item.CodiBus;
                     input.HoraViaje = item.HoraPartida;
-                    input.FechaViaje = _this.fechaViaje;
+                    input.FechaViaje = fechaViaje;
                     input.CodiServicio = item.CodiServicio;
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.FechaProgramacion = item.FechaProgramacion;
                     input.NroViaje = item.NroViaje;
                     APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
                         .then(res => {
-                            var tempList = _.cloneDeep(res.data);                          
-                            _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5); 
-                            _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5); 
-                            _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5); 
-                            _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5); 
-                            _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5); 
+                            var tempList = _.cloneDeep(res.data);
+                            if (tempList.length > 0) {
+                                _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                _this.$nextTick(() => {
+                                    _this.showPlano = true;
+                                });
+                            } else {
+                                APP.msg.error('No se pudo cargar el plano');
+                            }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getEmpresas() {
+                getEmpresas: function() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-empresas')
                         .then(res => {
                             _this.list.empresas = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getSucursales() {
+                getSucursales: function() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
@@ -414,42 +489,43 @@
                             _this.list.destinosPas = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getPVOrigenesBus(Codi_OrigenBus) {
+                getPVOrigenesBus: async function(Codi_OrigenBus) {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_OrigenBus } })
+                    await APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_OrigenBus } })
                         .then(res => {
                             _this.list.pvOrigenesBus = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getServicios() {
+                getServicios: function() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-servicios')
                         .then(res => {
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                hideVentas() {
+                hideVentas: function() {
+                    this.showPlano = false;
                     appController.hideVentas();
                 },
-                test() {
-                    var colors = [
-                        "red",
-                        "green",
-                        "lime",
-                        "purple",
-                        "blue"
-                    ];
-                    document.documentElement.style.setProperty('--emp-color', colors[Math.floor(Math.random() * colors.length)]);
-                }
+                //test() {
+                //    var colors = [
+                //        "red",
+                //        "green",
+                //        "lime",
+                //        "purple",
+                //        "blue"
+                //    ];
+                //    document.documentElement.style.setProperty('--emp-color', colors[Math.floor(Math.random() * colors.length)]);
+                //}
             },
             computed: {
             },
             watch: {
-                'filtro.CodiOrigenBus': function (newVal) {
+                'filtro.CodiOrigenBus': function (newVal, oldVal) {
+                    debugger;
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             this.getPVOrigenesBus(newVal.id);
-                            // Limpiamos el último valor seleccionado
                             this.filtro.CodiPVOrigenBus = null;
                         }
                     } else {
@@ -457,14 +533,14 @@
                         this.filtro.CodiPVOrigenBus = null;
                     }
                 },
-                'filtro.Fecha': function (newVal) {
+                'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd');
                             document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
                         }
                     } else {
-                        return '';
+                        document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
                     }
                 }
             }
