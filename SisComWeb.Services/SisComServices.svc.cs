@@ -77,6 +77,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaTiposDoc()
+        {
+            try
+            {
+                return BaseLogic.ListaTiposDoc();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoDoc, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN

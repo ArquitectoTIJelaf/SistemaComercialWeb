@@ -18,6 +18,9 @@
         // Empresa
         public const string MsgErrExcListEmpresa = "Ocurrió una excepción al listar todas las empresas.";
 
+        // Tipos de documento
+        public const string MsgErrExcListTipoDoc = "Ocurrió una excepción al listar todos los tipos de documento.";
+
         // Cliente Pasaje
         public const string MsgErrExcListClientePasaje = "Ocurrió una excepción al listar todos los clientes.";
         public const string MsgErrExcBusqClientePasaje = "Ocurrió una excepción al buscar el cliente.";

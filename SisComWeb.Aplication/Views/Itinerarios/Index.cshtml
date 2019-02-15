@@ -116,6 +116,15 @@
             text-align: center;
         }
 
+        .contenedorVSelectEditado .v-select .vs__actions {
+            position: absolute;
+            right: 0;
+        }
+
+        .contenedorVSelectEditado .v-select .dropdown-toggle .clear {
+            visibility: hidden;
+        }
+
     </style>
 }
 
@@ -331,7 +340,27 @@
                     plano2: [],
                     plano3: [],
                     plano4: [],
-                    plano5: []
+                    plano5: [],
+                    tiposDoc: [],
+                    sexos: [
+                        { 'id': 1, 'label': 'Masculino' },
+                        { 'id': 2, 'label': 'Femenino' }
+                    ]
+                },
+                objVenta: {
+                    CodiTipoDoc: null,
+                    Documento: '',
+                    Nombres: '',
+                    Apellidos: '',
+                    FechaNac: '',
+                    Edad: '',
+                    Sexo: '',
+                    Telefono: '',
+                    Ruc: '',
+                    Recoger: '',
+                    Reintegro: '',
+                    Observacion: '',
+                    Precio: ''
                 },
                 showVentas: false,
                 fechaViaje: ''
@@ -342,6 +371,7 @@
                 this.getServicios();
                 this.filtro.Fecha = moment(new Date).format('DD/MM/YYYY');
                 this.filtro.Turno = moment(new Date).format('hh:mm A');
+                this.getTiposDoc();
                 this.$nextTick(() => {
                     $('.vs__selected-options input[type=search]').addClass('input-sm');
                 });
@@ -410,6 +440,13 @@
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
+                getTiposDoc() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-tiposDoc')
+                        .then(res => {
+                            _this.list.tiposDoc = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
                 hideVentas() {
                     appController.hideVentas();
                 },
@@ -444,6 +481,16 @@
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd');
                             document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
+                        }
+                    } else {
+                        return '';
+                    }
+                },
+                'objVenta.FechaNac': function (newVal) {
+                    if (newVal) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                            var auxFechaNac = moment(newVal, 'DD/MM/YYYY');
+                            this.objVenta.Edad = moment().diff(auxFechaNac, 'years');
                         }
                     } else {
                         return '';

@@ -267,6 +267,213 @@
                             </table>
                         </div>
                     </div>
+
+                    <div class="col-md-12" style="margin-top: 15px; padding: 0px; ">
+                        <div class="col-md-1" style="height: 200px; width: 50px; ">
+
+                        </div>
+                        <div class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 0px;">
+
+                            <div class="col-md-1" style="height: 200px; ">
+
+                            </div>
+
+                            <div class="col-md-9">
+                                <div class="col-md-3">
+                                    <div class="form-group contenedorVSelectEditado">
+                                        <label class="control-label" style="width: 100%; ">Tipo de documento:</label>
+                                        <v-select v-model="objVenta.CodiTipoDoc"
+                                                  :id="'cboTipoDoc'"
+                                                  label="label"
+                                                  :options="list.tiposDoc"
+                                                  :placeholder="'TIPO'"
+                                                  style="width: 50%; display: inline-block; "
+                                                  ref="select">
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
+                                        <input v-model="objVenta.Documento"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="DOCUMENTO"
+                                               style="width: 50%; display: inline-block; float: right; "
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Nombres:</label>
+                                        <input v-model="objVenta.Nombres"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="NOMBRES"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">Apellidos:</label>
+                                        <input v-model="objVenta.Apellidos"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="Apellidos"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group ">
+                                        <label class="control-label">Fecha Nacimiento:</label>
+                                        <input @@blur="objVenta.FechaNac = $event.target.value.trim()"
+                                               :value="objVenta.FechaNac"
+                                               type="text"
+                                               id="txtFechaNac"
+                                               class="form-control input-sm dp"
+                                               placeholder="FECHA NACIMIENTO"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group ">
+                                        <label class="control-label">Edad:</label>
+                                        <input :value="objVenta.Edad"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="EDAD"
+                                               style="text-align: center; "
+                                               readonly="readonly"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" style="padding: 0px; ">
+                                    <div class="col-md-6">
+                                        <div class="form-group contenedorVSelectEditado">
+                                            <label class="control-label">Sexo:</label>
+                                            <v-select v-model="objVenta.Sexo"
+                                                      :id="'cboSexo'"
+                                                      label="label"
+                                                      :options="list.sexos"
+                                                      :placeholder="'SEXO'"
+                                                      ref="select">
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Teléfono:</label>
+                                            <input v-model="objVenta.Telefono"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="TELÉFONO"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">RUC:</label>
+                                        <input v-model="objVenta.Ruc"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="RUC"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group ">
+                                        <label class="control-label">Recoger:</label>
+                                        <input :value="objVenta.Recoger"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="RECOGER"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group ">
+                                        <label class="control-label">Reintegro:</label>
+                                        <input :value="objVenta.Reintegro"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="REINTEGRO"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group ">
+                                        <label class="control-label">Observación:</label>
+                                        <input :value="objVenta.Observacion"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="OBSERVACIÓN"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-8" style="float:right; padding: 0px; ">
+                                    <div class="col-md-4">
+                                        <div class="form-group ">
+                                            <label class="control-label" style="width: 100%; ">&nbsp;</label>
+                                            <div class="col-md-12" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; ">
+                                                <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
+                                                <input :value="objVenta.Precio"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="PRECIO"
+                                                       style="text-align: center; border-color: #fff; "
+                                                       autocomplete="off">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group ">
+                                            <label class="control-label" style="width: 100%; ">&nbsp;</label>
+                                            <button class="btn btn-secondary"
+                                                    style="width: 100%; ">
+                                                $ Tipo pago
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5" style="float: right; ">
+                                        <div class="form-group ">
+                                            <label class="control-label" style="width: 100%; ">&nbsp;</label>
+                                            <textarea style="width: 100%; height: 66px; border-radius: 5px; border-color: #e4e7ea; "></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <button class="btn btn-secondary"
+                                                    style="width: 100%; ">
+                                                <img src="~/wwwroot/plugins/images/PAGO.png" />
+                                                Pago mult.
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group ">
+                                        <button class="btn btn-secondary"
+                                                style="width: 100%; font-weight: 500; background-color: #fff; border-color: #009cff; ">
+                                            <img src="~/wwwroot/plugins/images/NINIO2.png" />
+                                            REGISTRAR NIÑO
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-2" style="height: 200px; ">
+
+                            </div>
+
+                        </div>
+                        <div class="col-md-1" style="height: 200px; width: 50px; ">
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

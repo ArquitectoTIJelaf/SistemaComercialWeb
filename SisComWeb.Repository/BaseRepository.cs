@@ -32,6 +32,10 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Empresa"]);
                     item.label = DataUtility.ObjectToString(reader["Razon_Social"]).ToUpper();
                     break;
+                case 6:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Documento"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Documento"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -143,6 +147,28 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = Lista;
                     response.Mensaje = "Correcto: ListaEmpresas. ";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListaTiposDoc()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListaTipoDocumento";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 6));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListaTiposDoc. ";
                     response.Estado = true;
                 }
             }

@@ -77,5 +77,19 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListEmpresa, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListaTiposDoc()
+        {
+            try
+            {
+                var response = BaseRepository.ListaTiposDoc();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoDoc, false);
+            }
+        }
     }
 }
