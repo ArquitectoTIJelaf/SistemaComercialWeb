@@ -506,25 +506,14 @@
                 hideVentas: function() {
                     this.showPlano = false;
                     appController.hideVentas();
-                },
-                //test() {
-                //    var colors = [
-                //        "red",
-                //        "green",
-                //        "lime",
-                //        "purple",
-                //        "blue"
-                //    ];
-                //    document.documentElement.style.setProperty('--emp-color', colors[Math.floor(Math.random() * colors.length)]);
-                //}
+                }
             },
             computed: {
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
-                    debugger;
                     if (newVal) {
-                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
                             this.getPVOrigenesBus(newVal.id);
                             this.filtro.CodiPVOrigenBus = null;
                         }
