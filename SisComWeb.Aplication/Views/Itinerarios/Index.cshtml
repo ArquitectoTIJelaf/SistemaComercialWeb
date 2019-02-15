@@ -159,16 +159,7 @@
             align-items: center;
             text-align: center;
         }
-
-        .contenedorVSelectEditado .v-select .vs__actions {
-            position: absolute;
-            right: 0;
-        }
-
-        .contenedorVSelectEditado .v-select .dropdown-toggle .clear {
-            visibility: hidden;
-        }
-
+        
         .btn-bus {
             padding: 5px;
             height: 95% !important;
@@ -240,12 +231,12 @@
                 loadTable: function (_list) {
                     appVueTable.loadTable(_list)
                 },
-                showVentas: function (_item) {
+                showVentas: function (_item, _turnos) {
                     appVueFilter.showVentas = true;
                     appVueTable.showVentas = true;
                     appVueVenta.showVentas = true;
                     var _fechaViaje = appVueFilter.filtro.FechaViaje
-                    appVueVenta.chargeVentas(_item, _fechaViaje);
+                    appVueVenta.chargeVentas(_item, _fechaViaje, _turnos);
                 },
                 hideVentas: function () {
                     appVueFilter.showVentas = false;
@@ -375,7 +366,14 @@
                     });
                 },
                 sendRow: function (item) {
-                    appController.showVentas(item);
+                    var turnos = this.list.itinerarios.map(x => (
+                        {
+                            NomServicio: x.NomServicio,
+                            HoraPartida: x.HoraPartida,
+                            CodiServicio: x.CodiServicio
+                        }
+                    ));
+                    appController.showVentas(item, turnos);
                 }
             },
             computed: {
@@ -396,8 +394,8 @@
                     CodiDestinoBus: null,
                     CodiServicio: null,
                     CodiDestinoPas: null,
-                    Fecha: '',
-                    Turno: ''
+                    Turno: '',
+                    Fecha: ''                    
                 },
                 list: {
                     empresas: [],
@@ -413,6 +411,7 @@
                     plano4: [],
                     plano5: [],
                     tiposDoc: [],
+                    turnos: [],
                     sexos: [
                         { 'id': 1, 'label': 'Masculino' },
                         { 'id': 2, 'label': 'Femenino' }
@@ -439,7 +438,8 @@
                 },
                 showVentas: false,
                 showPlano: false,
-                showTextTurnos: false
+                showTextTurnos: false,
+                firstCharge: true
             },
             mounted: function () {
                 this.getEmpresas();
@@ -451,8 +451,10 @@
                 });
             },
             methods: {
-                chargeVentas: function (item, fechaViaje) {
+                chargeVentas: function (item, fechaViaje, turnos) {
                     this.item = item;
+                    this.firstCharge = true;
+                    this.list.turnos = turnos;
                     this.setFilters(item, fechaViaje);
                     this.getPlano(item, fechaViaje);
                 },
@@ -471,7 +473,7 @@
                         _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(item.CodiPuntoVenta));
                     });
                 },
-                getLabel: function(option) {
+                getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
                 getPlano: function (item, fechaViaje) {
@@ -546,11 +548,60 @@
                 hideVentas: function() {
                     this.showPlano = false;
                     appController.hideVentas();
+                },
+                changeTurno: function (item) {
+                    this.filtro.CodiServicio = { id: item.CodiServicio, label: item.NomServicio };
+                    this.filtro.Turno = item.HoraPartida;
+                },
+                recorrido: function () {
+                    var _this = this;
+                    if (_this.filtro.CodiEmpresa === null) {
+                        $('#cboEmpresa input[type=search]').focus();
+                    } else if (_this.filtro.CodiSucursal === null) {
+                        $('#cboSucursal input[type=search]').focus();
+                    } else if (_this.filtro.CodiOrigenBus === null) {
+                        $('#cboOrigenBus input[type=search]').focus();
+                    } else if (_this.filtro.CodiPVOrigenBus === null) {
+                        $('#cboPVOrigenBus input[type=search]').focus();
+                    } else if (_this.filtro.CodiDestinoBus === null) {
+                        $('#cboDestinoBus_2 input[type=search]').focus();
+                    } else if (_this.filtro.CodiServicio === null) {
+                        $('#cboServicio input[type=search]').focus();
+                    } else if (_this.filtro.CodiDestinoPas === null) {
+                        $('#cboDestinoPas_2 input[type=search]').focus();
+                    } else if (_this.filtro.Turno === '') {
+                        $('#txtTurno').focus();
+                    } else if (_this.filtro.Fecha === '') {
+                        $('#txtFecha_2').focus();
+                    } else {
+                        //BUSCAR
+                        if (!_this.firstCharge)
+                            $('#btnDesplegar').click();
+                    }
+                },
+                clear: function () {                    
+                    var _this = this;    
+                    _this.firstCharge = false; //TODO
+                    _this.filtro.CodiEmpresa = null;
+                    _this.filtro.CodiSucursal = null;
+                    _this.filtro.CodiOrigenBus = null;
+                    _this.filtro.CodiPVOrigenBus = null;
+                    _this.filtro.CodiDestinoBus = null;
+                    _this.filtro.CodiServicio = null;
+                    _this.filtro.CodiDestinoPas = null;
+                    _this.filtro.Turno = '';
+                    _this.filtro.Fecha = '';
                 }
             },
             computed: {
             },
             watch: {
+                'filtro.CodiEmpresa': function (newVal, oldVal) {                    
+                    this.recorrido();
+                },
+                'filtro.CodiSucursal': function (newVal, oldVal) {
+                    this.recorrido();
+                },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
@@ -561,6 +612,22 @@
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
                     }
+                    this.recorrido();
+                },
+                'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.CodiDestinoBus': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.CodiServicio': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.CodiDestinoPas': function (newVal, oldVal) {
+                    this.recorrido();
+                },
+                'filtro.Turno': function (newVal, oldVal) {
+                    this.recorrido();
                 },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
@@ -571,6 +638,7 @@
                     } else {
                         document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
                     }
+                    this.recorrido();
                 },
                 'objVenta.FechaNac': function (newVal) {
                     if (newVal) {
