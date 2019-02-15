@@ -139,7 +139,13 @@ namespace SisComWeb.Aplication.Controllers
                         StOpcional = (string)x["StOpcional"],
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
+                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
+                        ListaEmbarques = ((JArray)tmpResult["ListaPlanoBus"]).Select(y => new Punto
+                        {
+                            CodiPuntoVenta = (short)x["CodiPuntoVenta"],
+                            Lugar = (string)x["Lugar"],
+                            Hora = (string)x["Hora"]
+                        }).ToList()
                     }).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }

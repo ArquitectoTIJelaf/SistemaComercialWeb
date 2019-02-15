@@ -82,7 +82,7 @@ namespace SisComWeb.Business
                         }
 
                         // Obtiene 'BusEstandar'
-                        resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, request.Hora);
+                        resObtenerBus = ItinerarioRepository.ObtenerBusEstandar(resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiSucursal, resBuscarItinerarios.Valor[i].CodiRuta, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].HoraPartida);
                         if (resObtenerBus.Estado && !string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                         {
                             resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus;
@@ -149,7 +149,7 @@ namespace SisComWeb.Business
                             if (resBuscarProgramacionViaje.Valor != 0)
                             {
                                 // Obtiene 'TotalVentas'
-                                Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor, request.CodiOrigen, request.CodiDestino);
+                                Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor, resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino);
                                 if (resObtenerTotalVentas.Estado)
                                     resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
                                 else
@@ -162,7 +162,7 @@ namespace SisComWeb.Business
                         else if (resValidarProgrmacionCerrada.Estado && resValidarProgrmacionCerrada.Valor == 0)
                         {
                             // Lista 'PuntosEmbarque'
-                            Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
+                            Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, resBuscarItinerarios.Valor[i].HoraPartida);
                             if (resListarPuntosEmbarque.Estado)
                                 resBuscarItinerarios.Valor[i].ListaEmbarques = resListarPuntosEmbarque.Valor;
                             else
@@ -172,7 +172,7 @@ namespace SisComWeb.Business
                             }
 
                             // Lista 'PuntosArribo'
-                            Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, request.Hora);
+                            Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, resBuscarItinerarios.Valor[i].HoraPartida);
                             if (resListarPuntosArribo.Estado)
                                 resBuscarItinerarios.Valor[i].ListaArribos = resListarPuntosArribo.Valor;
                             else
