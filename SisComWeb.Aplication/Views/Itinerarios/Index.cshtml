@@ -577,10 +577,14 @@
                     appController.hideVentas();
                 },
                 changeTurno: function (item) {
+                    this.showPlano = false;
                     this.filtro.CodiDestinoBus = this.list.destinosBus.find(x => x.id === String(item.CodiRuta));
                     this.filtro.CodiServicio = { id: item.CodiServicio, label: item.NomServicio };
-                    this.filtro.Turno = item.HoraPartida;
+                    this.filtro.Turno = item.HoraPartida; 
                     this.getPlano(item, item.FechaViaje);
+                    //this.$nextTick(() => {
+                    //    this.getPlano(item, item.FechaViaje);
+                    //});                    
                 },
                 recorrido: function () {
                     var _this = this;
@@ -606,19 +610,19 @@
                         if (!_this.firstCharge) {
                             $('#btnDesplegar').click();
                             //***********************************************************
-                            debugger;
                             var turno = _this.list.turnos.find(x =>
-                                x.CodiEmpresa === String(_this.filtro.CodiEmpresa.id) &&
-                                x.CodiOrigen === String(_this.filtro.CodiSucursal.id) &&
-                                x.CodiSucursal === String(_this.filtro.CodiOrigenBus.id) &&
-                                x.CodiPuntoVenta === String(_this.filtro.CodiPVOrigenBus.id) &&
-                                x.CodiRuta === String(_this.filtro.CodiDestinoBus.id) &&
-                                x.CodiServicio === String(_this.filtro.CodiServicio.id) &&
-                                x.CodiDestino === String(_this.filtro.CodiDestinoPas.id) &&
-                                x.HoraPartida === String(_this.filtro.Turno) &&
-                                x.FechaViaje === String(_this.filtro.Fecha)
+                                x.CodiEmpresa === parseInt(_this.filtro.CodiEmpresa.id) &&
+                                x.CodiOrigen === parseInt(_this.filtro.CodiSucursal.id) &&
+                                x.CodiSucursal === parseInt(_this.filtro.CodiOrigenBus.id) &&
+                                x.CodiPuntoVenta === parseInt(_this.filtro.CodiPVOrigenBus.id) &&
+                                x.CodiRuta === parseInt(_this.filtro.CodiDestinoBus.id) &&
+                                x.CodiServicio === parseInt(_this.filtro.CodiServicio.id) &&
+                                x.CodiDestino === parseInt(_this.filtro.CodiDestinoPas.id) &&
+                                x.HoraPartida === _this.filtro.Turno.replace(" ", "") &&
+                                x.FechaViaje === _this.filtro.Fecha
                             );
                             if (turno) {
+                                this.showPlano = true;
                                 this.getPlano(turno[0], turno[0].FechaViaje);
                             } else {
                                 APP.msg.error('No se encontró plano con los filtros ingresados');
