@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -38,6 +39,7 @@ namespace SisComWeb.Aplication.Models
         public bool ProgramacionCerrada { get; set; }
         public string Color { get; set; }
         public string SecondColor { get; set; }
+        public List<Punto> ListaArribos { get; set; }
         public List<Punto> ListaEmbarques { get; set; }
     }
 

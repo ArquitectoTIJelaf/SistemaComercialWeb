@@ -72,6 +72,18 @@ namespace SisComWeb.Aplication.Controllers
             return color;
         }
 
+        private static List<Punto> _listPuntos(JToken list)
+        {
+            List<Punto> itemsEmbarques = list.Select(x => new Punto
+            {
+                CodiPuntoVenta = (short)x["CodiPuntoVenta"],
+                Lugar = (string)x["Lugar"],
+                Hora = (string)x["Hora"]
+            }).ToList();
+
+            return itemsEmbarques;
+        }
+
         [Route("")]
         public ActionResult Index()
         {
@@ -140,13 +152,11 @@ namespace SisComWeb.Aplication.Controllers
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
                         SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        ListaEmbarques = ((JArray)tmpResult["ListaPlanoBus"]).Select(y => new Punto
-                        {
-                            CodiPuntoVenta = (short)x["CodiPuntoVenta"],
-                            Lugar = (string)x["Lugar"],
-                            Hora = (string)x["Hora"]
-                        }).ToList()
+                        ListaArribos = _listPuntos(x["ListaArribos"]),
+                        ListaEmbarques = _listPuntos(x["ListaEmbarques"])
+
                     }).ToList();
+
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
                 else
