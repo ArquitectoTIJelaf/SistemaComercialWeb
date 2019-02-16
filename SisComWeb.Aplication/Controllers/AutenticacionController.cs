@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
 using SisComWeb.Aplication.Models;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,6 +81,13 @@ namespace SisComWeb.Aplication.Controllers
         {
             DataSession.UsuarioLogueado = null;
             return RedirectToAction("Index", "Autenticacion");
+        }
+
+        public ActionResult AjaxSessionExpired()
+        {
+            Response.StatusCode = 403;
+            var dict = new Dictionary<string, object> { { "CustomErrorCode", 5001 } };
+            return Content(JsonConvert.SerializeObject(dict), "application/json");
         }
     }
 }

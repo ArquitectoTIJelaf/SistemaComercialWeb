@@ -17,7 +17,6 @@
                                         <label class="control-label">Origen pasajero:</label>
                                         <v-select v-model="filtro.CodiOrigen"
                                                   :id="'cboOrigenPas'"
-                                                  label="label"
                                                   :get-option-label="getLabel"
                                                   :options="list.origenesPas"
                                                   :placeholder="'ORIGEN PAS.'"
@@ -31,7 +30,6 @@
                                         <label class="control-label">Destino pasajero:</label>
                                         <v-select v-model="filtro.CodiDestino"
                                                   :id="'cboDestinoPas'"
-                                                  label="label"
                                                   :get-option-label="getLabel"
                                                   :options="list.destinosPas"
                                                   :placeholder="'DESTINO PAS.'"
@@ -45,7 +43,6 @@
                                         <label class="control-label">Destino bus:</label>
                                         <v-select v-model="filtro.CodiRuta"
                                                   :id="'cboDestinoBus'"
-                                                  label="label"
                                                   :get-option-label="getLabel"
                                                   :options="list.destinosBus"
                                                   :placeholder="'DESTINO BUS.'"
@@ -67,14 +64,6 @@
                                                    class="form-control input-sm dp"
                                                    placeholder="FECHA"
                                                    autocomplete="off">
-                                            @*<input @@blur="filtro.FechaViaje = $event.target.value"
-                                                       :value="filtro.FechaViaje"
-                                                       type="text"
-                                                       id="txtFecha"
-                                                       class="form-control input-sm dp"
-                                                       placeholder="FECHA"
-                                                       autocomplete="off">
-                                                <span id="spnFecha" class="input-group-addon open-datetimepicker"><i class="fa fa-calendar-o"></i></span>*@
                                         </div>
                                     </div>
                                 </div>

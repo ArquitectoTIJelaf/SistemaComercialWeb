@@ -154,7 +154,6 @@ namespace SisComWeb.Aplication.Controllers
                         SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
                         ListaArribos = _listPuntos(x["ListaArribos"]),
                         ListaEmbarques = _listPuntos(x["ListaEmbarques"])
-
                     }).ToList();
 
                     return Json(items, JsonRequestBehavior.AllowGet);

@@ -13,7 +13,6 @@
                                     <label class="control-label">Empresa:</label>
                                     <v-select v-model="filtro.CodiEmpresa"
                                               :id="'cboEmpresa'"
-                                              label="label"
                                               :get-option-label="getLabel"
                                               :options="list.empresas"
                                               :placeholder="'EMPRESA'"
@@ -28,7 +27,7 @@
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
                                 <label class="control-label">Nº Programación: {{item.CodiProgramacion}}</label>
                             </div>
-                            <div class="col-md-4" style="text-align: right; ">
+                            <div @@click="clear" class="col-md-4" style="text-align: right; ">
                                 <div style="display: inline-block; cursor: pointer; ">
                                     <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer; ">Actualizar</label>
@@ -52,6 +51,7 @@
                                 </label>
                                 <div class="panel-action">
                                     <button type="button"
+                                            id="btnDesplegar"
                                             class="btn btn-default btn-sm waves-effect waves-light btn-emp"
                                             style="color: #fff; font-weight: 400;padding: 1px 10px;"
                                             href="#"
@@ -75,7 +75,6 @@
                                             <label class="control-label">Sucursal:</label>
                                             <v-select v-model="filtro.CodiSucursal"
                                                       :id="'cboSucursal'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.sucursales"
                                                       :placeholder="'SUCURSAL'"
@@ -89,7 +88,6 @@
                                             <label class="control-label">Origen bus:</label>
                                             <v-select v-model="filtro.CodiOrigenBus"
                                                       :id="'cboOrigenBus'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.origenesBus"
                                                       :placeholder="'ORIGEN BUS'"
@@ -103,7 +101,6 @@
                                             <label class="control-label">P.V. Origen bus:</label>
                                             <v-select v-model="filtro.CodiPVOrigenBus"
                                                       :id="'cboPVOrigenBus'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.pvOrigenesBus"
                                                       :placeholder="'P.V. ORIGEN BUS'"
@@ -117,7 +114,6 @@
                                             <label class="control-label">Destino bus:</label>
                                             <v-select v-model="filtro.CodiDestinoBus"
                                                       :id="'cboDestinoBus_2'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.destinosBus"
                                                       :placeholder="'DESTINO BUS'"
@@ -131,7 +127,6 @@
                                             <label class="control-label">Servicio:</label>
                                             <v-select v-model="filtro.CodiServicio"
                                                       :id="'cboServicio'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.servicios"
                                                       :placeholder="'SERVICIO'"
@@ -140,15 +135,23 @@
                                             </v-select>
                                         </div>
                                     </div>
-                                    <div class="col-md-2" style="background-color: blue; float: right; height: 114px; ">
-
+                                    <div class="col-md-2" style="float: right;text-align:center;">
+                                        <div style="border-left: 1px solid rgb(228, 231, 234);">
+                                            <label>OTROS TURNOS</label>
+                                            <div style="overflow-y:auto;height: 100px;">
+                                                <ul style="list-style-type: none;padding-left: 0;">
+                                                    <li v-for="item in list.turnos">
+                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4">{{item.HoraPartida}}. - {{item.NomServicio}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>                                        
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="control-label">Destino pasajero:</label>
                                             <v-select v-model="filtro.CodiDestinoPas"
                                                       :id="'cboDestinoPas_2'"
-                                                      label="label"
                                                       :get-option-label="getLabel"
                                                       :options="list.destinosPas"
                                                       :placeholder="'DESTINO PASAJERO'"
@@ -171,7 +174,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group ">
-                                            <label class="control-label">Fecha:</label>
+                                            <label class="control-label">Fecha Viaje:</label>
                                             <input @@blur="filtro.Fecha = $event.target.value.trim()"
                                                    :value="filtro.Fecha"
                                                    type="text"
@@ -332,7 +335,7 @@
                             </div>
                             <div class="col-md-9">
                                 <div class="col-md-3">
-                                    <div class="form-group contenedorVSelectEditado">
+                                    <div class="form-group">
                                         <label class="control-label" style="width: 100%; ">Tipo de documento:</label>
                                         <v-select v-model="objVenta.CodiTipoDoc"
                                                   :id="'cboTipoDoc'"
@@ -398,7 +401,7 @@
 
                                 <div class="col-md-3" style="padding: 0px; ">
                                     <div class="col-md-6">
-                                        <div class="form-group contenedorVSelectEditado">
+                                        <div class="form-group">
                                             <label class="control-label">Sexo:</label>
                                             <v-select v-model="objVenta.Sexo"
                                                       :id="'cboSexo'"
