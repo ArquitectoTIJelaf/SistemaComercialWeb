@@ -31,6 +31,7 @@ namespace SisComWeb.Aplication.Models
         public string Telefono { get; set; }
         public string Tipo { get; set; }
         public string TipoDocumento { get; set; }
+        public bool IsDisabled { get; set; } // Para 'BloqueoAsiento'
     }
 
     public class FiltroPlano
@@ -46,5 +47,24 @@ namespace SisComWeb.Aplication.Models
         public int CodiEmpresa { get; set; }
         public string FechaProgramacion { get; set; }
         public long NroViaje { get; set; }
+    }
+
+    public class FiltroBloqueoAsiento
+    {
+        public int CodiProgramacion { get; set; }
+
+        public int NroViaje { get; set; }
+
+        public short CodiOrigen { get; set; }
+
+        public short CodiDestino { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string FechaProgramacion { get; set; }
+
+        public double Precio { get; set; }
+
+        public int CodiTerminal { get; set; }
     }
 }

@@ -296,7 +296,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item.NumeAsiento, item.PrecioVenta)" :disabled="item.IsDisabled">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>

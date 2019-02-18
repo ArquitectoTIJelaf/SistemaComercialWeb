@@ -72,17 +72,17 @@ namespace SisComWeb.Aplication.Controllers
             return color;
         }
 
-        private static List<Punto> _listPuntos(JToken list)
-        {
-            List<Punto> itemsEmbarques = list.Select(x => new Punto
-            {
-                CodiPuntoVenta = (short)x["CodiPuntoVenta"],
-                Lugar = (string)x["Lugar"],
-                Hora = (string)x["Hora"]
-            }).ToList();
+        //private static List<Punto> _listPuntos(JToken list)
+        //{
+        //    List<Punto> itemsEmbarques = list.Select(x => new Punto
+        //    {
+        //        CodiPuntoVenta = (short)x["CodiPuntoVenta"],
+        //        Lugar = (string)x["Lugar"],
+        //        Hora = (string)x["Hora"]
+        //    }).ToList();
 
-            return itemsEmbarques;
-        }
+        //    return itemsEmbarques;
+        //}
 
         [Route("")]
         public ActionResult Index()
@@ -118,7 +118,6 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JArray data = (JArray)tmpResult["Valor"];
                     List<Itinerario> items = ((JArray)tmpResult["Valor"]).Select(x => new Itinerario
                     {
                         AsientosVendidos = (int)x["AsientosVendidos"],
@@ -151,9 +150,9 @@ namespace SisComWeb.Aplication.Controllers
                         StOpcional = (string)x["StOpcional"],
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        ListaArribos = _listPuntos(x["ListaArribos"]),
-                        ListaEmbarques = _listPuntos(x["ListaEmbarques"])
+                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])/*,*/
+                        //ListaArribos = _listPuntos(x["ListaArribos"]),
+                        //ListaEmbarques = _listPuntos(x["ListaEmbarques"])
                     }).ToList();
 
                     return Json(items, JsonRequestBehavior.AllowGet);
@@ -201,7 +200,6 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JArray data = (JArray)tmpResult["Valor"];
                     List<Plano> items = ((JArray)tmpResult["Valor"]).Select(x => new Plano
                     {
                         ApellidoMaterno = (string)x["ApellidoMaterno"],
@@ -227,9 +225,53 @@ namespace SisComWeb.Aplication.Controllers
                         RucContacto = (string)x["RucContacto"],
                         Telefono = (string)x["Telefono"],
                         Tipo = (string)x["Tipo"],
-                        TipoDocumento = (string)x["TipoDocumento"]
+                        TipoDocumento = (string)x["TipoDocumento"],
+                        IsDisabled = false // Para 'BloqueoAsiento'
                     }).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("bloquearAsiento")]
+        public async Task<ActionResult> BloquearAsiento(FiltroBloqueoAsiento filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                ",\"NroViaje\" : " + filtro.NroViaje +
+                                ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                ",\"NumeAsiento\" : " + filtro.NumeAsiento +
+                                ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                ",\"Precio\" : " + filtro.Precio +
+                                ",\"CodiTerminal\" : " + filtro.CodiTerminal + " }";
+                    HttpResponseMessage response = await client.PostAsync("BloqueoAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    int valor = (int)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

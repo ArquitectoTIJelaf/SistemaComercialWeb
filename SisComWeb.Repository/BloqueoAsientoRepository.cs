@@ -73,8 +73,8 @@ namespace SisComWeb.Repository
             var response = new Response<decimal>(false, 0, "", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BloquearAsientobyProgramacion";
-                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, NumeAsiento);
+                db.ProcedureName = "scwsp_BloquearAsientobyViaje";
+                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
                 db.AddParameter("@Costo", DbType.Decimal, ParameterDirection.Input, Costo);
                 db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
