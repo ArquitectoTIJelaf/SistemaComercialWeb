@@ -1274,10 +1274,9 @@ $(function () {
         $('.dp').datetimepicker({
             keyBinds: {
                 enter: function () {
-                    //if (this.date() === null) {
-                    //    this.date(moment());
-                    //}
-                    this.date(moment());
+                    if (this.date() === null) {
+                        this.date(moment());
+                    }
                     this.hide();
                 }
             },
@@ -1303,11 +1302,10 @@ $(function () {
 
         $('.dph').datetimepicker({
             keyBinds: {
-                enter: function () {
-                    //if (this.date() === null) {
-                    //    this.date(moment());
-                    //}
-                    this.date(moment());
+                enter: function (e) {
+                    if (this.date() === null) {
+                        this.date(moment());
+                    }
                     this.hide();
                 }
             },

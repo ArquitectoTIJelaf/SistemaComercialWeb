@@ -110,7 +110,7 @@
         }
 
         .PU {
-            background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;
+            background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
             display: block;
             height: 95%;
             min-width: 30px;
@@ -202,6 +202,8 @@
             }
 
         });
+
+        Vue.use(VueMask.VueMaskPlugin);
 
         Vue.filter('money', function (value) {
             if (typeof value !== 'undefined' && value !== '') {
@@ -466,7 +468,8 @@
                 showVentas: false,
                 showPlano: false,
                 showTextTurnos: false,
-                firstCharge: true
+                firstCharge: true,
+                test:''
             },
             mounted: function () {
                 this.getEmpresas();
@@ -558,12 +561,19 @@
                             _this.list.pvOrigenesBus = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getServicios: function() {
+                getServicios: function () {
+                    debugger;
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-servicios')
                         .then(res => {
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
+                    //axios
+                    //    .get('http://localhost:27958/SisComServices.svc/ListaServicios')
+                    //    .then(res => {
+                    //        debugger;
+                    //        _this.list.servicios = _.cloneDeep(res.data.Valor);
+                    //    });
                 },
                 getTiposDoc() {
                     var _this = this;
@@ -642,6 +652,8 @@
                     _this.filtro.CodiDestinoBus = null;
                     _this.filtro.CodiServicio = null;
                     _this.filtro.CodiDestinoPas = null;
+                    $('#txtTurno').data("DateTimePicker").clear();
+                    $('#txtFecha_2').data("DateTimePicker").clear();
                     _this.filtro.Turno = '';
                     _this.filtro.Fecha = '';
                 }

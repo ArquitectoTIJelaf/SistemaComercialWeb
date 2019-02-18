@@ -162,9 +162,10 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <label class="control-label">Turno:</label>
+                                            <label class="control-label">Turno test:</label>
                                             <input @@blur="filtro.Turno = $event.target.value.trim()"
                                                    :value="filtro.Turno"
+                                                   @*v-mask="'##:## AM'"*@
                                                    type="text"
                                                    id="txtTurno"
                                                    class="form-control input-sm dph"
