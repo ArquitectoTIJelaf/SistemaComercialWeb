@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace SisComWeb.Aplication.Models
 {
@@ -41,6 +37,7 @@ namespace SisComWeb.Aplication.Models
         public string SecondColor { get; set; }
         public List<Punto> ListaArribos { get; set; }
         public List<Punto> ListaEmbarques { get; set; }
+        public List<Plano> ListaPlanoBus { get; set; }
     }
 
     public class FiltroItinerario

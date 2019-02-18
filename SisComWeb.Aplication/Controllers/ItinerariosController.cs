@@ -16,7 +16,6 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        //private static string _defineColor(int CodProgramacion, int StOpcional) => (CodProgramacion != 0) ? "#A5D6A7" : (StOpcional == 1) ? "#FCD8AA" : "#FFFFFF";
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
             var color = "";
@@ -74,14 +73,46 @@ namespace SisComWeb.Aplication.Controllers
 
         private static List<Punto> _listPuntos(JToken list)
         {
-            List<Punto> itemsEmbarques = list.Select(x => new Punto
+            List<Punto> lista = list.Select(x => new Punto
             {
                 CodiPuntoVenta = (short)x["CodiPuntoVenta"],
                 Lugar = (string)x["Lugar"],
                 Hora = (string)x["Hora"]
             }).ToList();
 
-            return itemsEmbarques;
+            return lista;
+        }
+
+        private static List<Plano> _ListaPlanoBus(JToken list)
+        {
+            List<Plano> lista = list.Select(x => new Plano
+            {
+                ApellidoMaterno = (string)x["ApellidoMaterno"],
+                ApellidoPaterno = (string)x["ApellidoPaterno"],
+                Codigo = (string)x["Codigo"],
+                Color = (long)x["Color"],
+                Edad = (int)x["Edad"],
+                FechaNacimiento = (string)x["FechaNacimiento"],
+                FechaVenta = (string)x["FechaVenta"],
+                FechaViaje = (string)x["FechaViaje"],
+                FlagVenta = (string)x["FlagVenta"],
+                Indice = (int)x["Indice"],
+                Nacionalidad = (string)x["Nacionalidad"],
+                Nivel = (int)x["Nivel"],
+                Nombres = (string)x["Nombres"],
+                NumeAsiento = (int)x["NumeAsiento"],
+                NumeroDocumento = (string)x["NumeroDocumento"],
+                PrecioMaximo = (int)x["PrecioMaximo"],
+                PrecioMinimo = (int)x["PrecioMinimo"],
+                PrecioNormal = (int)x["PrecioNormal"],
+                PrecioVenta = (int)x["PrecioVenta"],
+                RecogeEn = (string)x["RecogeEn"],
+                RucContacto = (string)x["RucContacto"],
+                Telefono = (string)x["Telefono"],
+                Tipo = (string)x["Tipo"],
+                TipoDocumento = (string)x["TipoDocumento"]
+            }).ToList();
+            return lista;
         }
 
         [Route("")]
@@ -170,8 +201,8 @@ namespace SisComWeb.Aplication.Controllers
         }
 
         [HttpPost]
-        [Route("plano")]
-        public async Task<ActionResult> ChargePlano(FiltroPlano filtro)
+        [Route("turnos")]
+        public async Task<ActionResult> ChargeTurnos(FiltroTurno filtro)
         {
             try
             {
@@ -179,18 +210,16 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"PlanoBus\" : \"" + filtro.PlanoBus + "\"" +
-                                ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                    var _body = "{ \"CodiEmpresa\" : " + filtro.CodiEmpresa + 
                                 ",\"CodiOrigen\" : " + filtro.CodiOrigen +
                                 ",\"CodiDestino\" : " + filtro.CodiDestino +
-                                ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
-                                ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
-                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-                                ",\"CodiServicio\" : " + filtro.CodiServicio +
-                                ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
-                                ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
-                                ", \"NroViaje\" : " + filtro.NroViaje + " }";
-                    HttpResponseMessage response = await client.PostAsync("MuestraPlano", new StringContent(_body, Encoding.UTF8, "application/json"));
+                                ",\"CodiSucursal\" : " + filtro.CodiSucursal +
+                                ",\"CodiRuta\" : " + filtro.CodiRuta + 
+                                ",\"CodiPuntoVenta\" : " + filtro.CodiPuntoVenta +
+                                ",\"CodiServicio\" : " + filtro.CodiServicio + 
+                                ",\"HoraViaje\" :  \"" + filtro.HoraViaje + "\"" +
+                                ",\"FechaViaje\" :  \"" + filtro.FechaViaje + "\"" + " }";
+                    HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
@@ -201,35 +230,43 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JArray data = (JArray)tmpResult["Valor"];
-                    List<Plano> items = ((JArray)tmpResult["Valor"]).Select(x => new Plano
+                    JObject data = (JObject)tmpResult["Valor"];
+                    Itinerario item = new Itinerario
                     {
-                        ApellidoMaterno = (string)x["ApellidoMaterno"],
-                        ApellidoPaterno = (string)x["ApellidoPaterno"],
-                        Codigo = (string)x["Codigo"],
-                        Color = (long)x["Color"],
-                        Edad = (int)x["Edad"],
-                        FechaNacimiento = (string)x["FechaNacimiento"],
-                        FechaVenta = (string)x["FechaVenta"],
-                        FechaViaje = (string)x["FechaViaje"],
-                        FlagVenta = (string)x["FlagVenta"],
-                        Indice = (int)x["Indice"],
-                        Nacionalidad = (string)x["Nacionalidad"],
-                        Nivel = (int)x["Nivel"],
-                        Nombres = (string)x["Nombres"],
-                        NumeAsiento = (int)x["NumeAsiento"],
-                        NumeroDocumento = (string)x["NumeroDocumento"],
-                        PrecioMaximo = (int)x["PrecioMaximo"],
-                        PrecioMinimo = (int)x["PrecioMinimo"],
-                        PrecioNormal = (int)x["PrecioNormal"],
-                        PrecioVenta = (int)x["PrecioVenta"],
-                        RecogeEn = (string)x["RecogeEn"],
-                        RucContacto = (string)x["RucContacto"],
-                        Telefono = (string)x["Telefono"],
-                        Tipo = (string)x["Tipo"],
-                        TipoDocumento = (string)x["TipoDocumento"]
-                    }).ToList();
-                    return Json(items, JsonRequestBehavior.AllowGet);
+                        AsientosVendidos = (int)data["AsientosVendidos"],
+                        CapacidadBus = (string)data["CapacidadBus"],
+                        CodiBus = (string)data["CodiBus"],
+                        CodiDestino = (int)data["CodiDestino"],
+                        CodiEmpresa = (int)data["CodiEmpresa"],
+                        CodiOrigen = (int)data["CodiOrigen"],
+                        CodiProgramacion = (int)data["CodiProgramacion"],
+                        CodiPuntoVenta = (int)data["CodiPuntoVenta"],
+                        CodiRuta = (int)data["CodiRuta"],
+                        CodiServicio = (int)data["CodiServicio"],
+                        CodiSucursal = (int)data["CodiSucursal"],
+                        Dias = (int)data["Dias"],
+                        FechaProgramacion = (string)data["FechaProgramacion"],
+                        HoraPartida = (string)data["HoraPartida"],
+                        HoraProgramacion = (string)data["HoraProgramacion"],
+                        ListaArribos = _listPuntos(data["ListaArribos"]),
+                        ListaEmbarques = _listPuntos(data["ListaEmbarques"]),
+                        ListaPlanoBus = _ListaPlanoBus(data["ListaPlanoBus"]),
+                        NomDestino = (string)data["NomDestino"],
+                        NomOrigen = (string)data["NomOrigen"],
+                        NomPuntoVenta = (string)data["NomPuntoVenta"],
+                        NomRuta = (string)data["NomRuta"],
+                        NomServicio = (string)data["NomServicio"],
+                        NomSucursal = (string)data["NomSucursal"],
+                        NroRuta = (int)data["NroRuta"],
+                        NroRutaInt = (int)data["NroRutaInt"],
+                        NroViaje = (int)data["NroViaje"],
+                        PlacaBus = (string)data["PlacaBus"],
+                        PlanoBus = (string)data["PlanoBus"],
+                        ProgramacionCerrada = (bool)data["ProgramacionCerrada"],
+                        RazonSocial = (string)data["RazonSocial"],
+                        StOpcional = (string)data["StOpcional"]
+                    };                    
+                    return Json(item, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -241,5 +278,78 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
+
+        //[HttpPost]
+        //[Route("plano")]
+        //public async Task<ActionResult> ChargePlano(FiltroPlano filtro)
+        //{
+        //    try
+        //    {
+        //        string result = string.Empty;
+        //        using (HttpClient client = new HttpClient())
+        //        {
+        //            client.BaseAddress = new Uri(url);
+        //            var _body = "{ \"PlanoBus\" : \"" + filtro.PlanoBus + "\"" +
+        //                        ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+        //                        ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+        //                        ",\"CodiDestino\" : " + filtro.CodiDestino +
+        //                        ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
+        //                        ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+        //                        ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+        //                        ",\"CodiServicio\" : " + filtro.CodiServicio +
+        //                        ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+        //                        ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+        //                        ", \"NroViaje\" : " + filtro.NroViaje + " }";
+        //            HttpResponseMessage response = await client.PostAsync("MuestraPlano", new StringContent(_body, Encoding.UTF8, "application/json"));
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                result = await response.Content.ReadAsStringAsync();
+        //            }
+        //        }
+        //        JToken tmpResult = JObject.Parse(result);
+        //        bool estado = (bool)tmpResult.SelectToken("Estado");
+        //        string mensaje = (string)tmpResult.SelectToken("Mensaje");
+        //        if (estado)
+        //        {
+        //            JArray data = (JArray)tmpResult["Valor"];
+        //            List<Plano> items = ((JArray)tmpResult["Valor"]).Select(x => new Plano
+        //            {
+        //                ApellidoMaterno = (string)x["ApellidoMaterno"],
+        //                ApellidoPaterno = (string)x["ApellidoPaterno"],
+        //                Codigo = (string)x["Codigo"],
+        //                Color = (long)x["Color"],
+        //                Edad = (int)x["Edad"],
+        //                FechaNacimiento = (string)x["FechaNacimiento"],
+        //                FechaVenta = (string)x["FechaVenta"],
+        //                FechaViaje = (string)x["FechaViaje"],
+        //                FlagVenta = (string)x["FlagVenta"],
+        //                Indice = (int)x["Indice"],
+        //                Nacionalidad = (string)x["Nacionalidad"],
+        //                Nivel = (int)x["Nivel"],
+        //                Nombres = (string)x["Nombres"],
+        //                NumeAsiento = (int)x["NumeAsiento"],
+        //                NumeroDocumento = (string)x["NumeroDocumento"],
+        //                PrecioMaximo = (int)x["PrecioMaximo"],
+        //                PrecioMinimo = (int)x["PrecioMinimo"],
+        //                PrecioNormal = (int)x["PrecioNormal"],
+        //                PrecioVenta = (int)x["PrecioVenta"],
+        //                RecogeEn = (string)x["RecogeEn"],
+        //                RucContacto = (string)x["RucContacto"],
+        //                Telefono = (string)x["Telefono"],
+        //                Tipo = (string)x["Tipo"],
+        //                TipoDocumento = (string)x["TipoDocumento"]
+        //            }).ToList();
+        //            return Json(items, JsonRequestBehavior.AllowGet);
+        //        }
+        //        else
+        //        {
+        //            return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+        //    }
+        //}
     }
 }

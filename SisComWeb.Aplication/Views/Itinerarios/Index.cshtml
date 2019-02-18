@@ -369,13 +369,6 @@
                     });
                 },
                 sendRow: function (item) {
-                    //var turnos = this.list.itinerarios.map(x => (
-                    //    {
-                    //        NomServicio: x.NomServicio,
-                    //        HoraPartida: x.HoraPartida,
-                    //        CodiServicio: x.CodiServicio
-                    //    }
-                    //));
                     var turnos = this.list.itinerarios.reduce(function (filtered, option) {
                         if (option.CodiDestino === item.CodiDestino) {
                             var someNewValue = 
@@ -486,7 +479,7 @@
                     this.firstCharge = true;
                     this.list.turnos = turnos;
                     this.setFilters(item, fechaViaje);
-                    this.getPlano(item, fechaViaje);
+                    this.getTurno(item, fechaViaje);//***
                 },
                 setFilters: async function (item, fechaViaje) {
                     var _this = this;
@@ -506,23 +499,54 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
-                getPlano: function (item, fechaViaje) {
+                //getPlano: function (item, fechaViaje) {
+                //    var _this = this;
+                //    var input = {};
+                //    input.PlanoBus = item.PlanoBus;
+                //    input.CodiProgramacion = item.CodiProgramacion;
+                //    input.CodiOrigen = item.CodiOrigen;
+                //    input.CodiDestino = item.CodiDestino;
+                //    input.CodiBus = item.CodiBus;
+                //    input.HoraViaje = item.HoraPartida;
+                //    input.FechaViaje = fechaViaje;
+                //    input.CodiServicio = item.CodiServicio;
+                //    input.CodiEmpresa = item.CodiEmpresa;
+                //    input.FechaProgramacion = item.FechaProgramacion;
+                //    input.NroViaje = item.NroViaje;
+                //    APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
+                //        .then(res => {
+                //            var tempList = _.cloneDeep(res.data);
+                //            if (tempList.length > 0) {
+                //                _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                //                _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                //                _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                //                _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                //                _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                //                _this.$nextTick(() => {
+                //                    _this.showPlano = true;
+                //                });
+                //            } else {
+                //                APP.msg.error('No se pudo cargar el plano');
+                //            }
+                //        }).catch(APP.rq.axios_handler_error_alert);
+                //},
+                getTurno: function (item, fechaViaje) {
+                    debugger;
                     var _this = this;
                     var input = {};
-                    input.PlanoBus = item.PlanoBus;
-                    input.CodiProgramacion = item.CodiProgramacion;
+                    input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
                     input.CodiDestino = item.CodiDestino;
-                    input.CodiBus = item.CodiBus;
+                    input.CodiSucursal = item.CodiSucursal;
+                    input.CodiRuta = item.CodiRuta;
+                    input.CodiPuntoVenta = item.CodiPuntoVenta;
+                    input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = fechaViaje;
-                    input.CodiServicio = item.CodiServicio;
-                    input.CodiEmpresa = item.CodiEmpresa;
-                    input.FechaProgramacion = item.FechaProgramacion;
-                    input.NroViaje = item.NroViaje;
-                    APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
+                    APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
-                            var tempList = _.cloneDeep(res.data);
+                            debugger;
+                            var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                             if (tempList.length > 0) {
                                 _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                 _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
@@ -591,7 +615,7 @@
                     this.filtro.CodiDestinoBus = this.list.destinosBus.find(x => x.id === String(item.CodiRuta));
                     this.filtro.CodiServicio = { id: item.CodiServicio, label: item.NomServicio };
                     this.filtro.Turno = item.HoraPartida; 
-                    this.getPlano(item, item.FechaViaje);
+                    this.getTurno(item, item.FechaViaje);//***
                     //this.$nextTick(() => {
                     //    this.getPlano(item, item.FechaViaje);
                     //});                    
