@@ -87,6 +87,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "BloqueoAsiento", ResponseFormat = WebMessageFormat.Json)]
         Response<int> BloqueoAsiento(BloqueoAsientoRequest request);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "LiberaAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> LiberaAsiento(int IDS);
+
         #endregion
     }
 }

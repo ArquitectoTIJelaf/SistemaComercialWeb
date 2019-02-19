@@ -70,7 +70,36 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgErrExcBusqAsientoBloqueado, false);
+                return new Response<int>(false, 0, Message.MsgErrExcBusqAsiento, false);
+            }
+        }
+
+        public static Response<bool> LiberaAsiento(int IDS)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "", false);
+
+                // Validar 'LiberaAsiento'
+                var resLiberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
+                if (resLiberaAsiento.Estado)
+                    response.Mensaje += resLiberaAsiento.Mensaje;
+                else
+                {
+                    response.Mensaje += "Error: LiberaAsiento. ";
+                    return response;
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = resLiberaAsiento.Valor;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcBusqAsientoBloqueado, false);
             }
         }
     }
