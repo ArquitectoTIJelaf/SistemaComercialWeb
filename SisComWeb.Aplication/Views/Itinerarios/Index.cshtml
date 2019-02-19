@@ -11,6 +11,10 @@
 
 @section styles{
     <style>
+        .asientoBloqueado {
+            background-color: darkred;
+        }
+
         .panel-default .panel-heading {
             height: 35px;
             min-height: 35px;
@@ -641,30 +645,45 @@
                     _this.filtro.Turno = '';
                     _this.filtro.Fecha = '';
                 },
-                bloquearAsiento: function (numeAsiento, precioVenta) {
+                styleBloquearAsiento: function (NumeAsiento, IDS) {
+                    return (NumeAsiento !== 0 || IDS !== 0) ? true : false;
+                },
+                bloquearAsiento: async function (asientoSel) {
                     var _this = this;
+                    // Validación: 'liberarAsiento'
+                    if (asientoSel.IDS !== 0) {
+                        await _this.liberarAsiento(asientoSel);
+                        return;
+                    }
                     var input = {};
                     input.CodiProgramacion = _this.item.CodiProgramacion;
                     input.NroViaje = _this.item.NroViaje;
                     input.CodiOrigen = _this.item.CodiOrigen;
                     input.CodiDestino = _this.item.CodiDestino;
-                    input.NumeAsiento = numeAsiento;
+                    input.NumeAsiento = asientoSel.Tipo;
                     input.FechaProgramacion = _this.item.FechaProgramacion;
-                    input.Precio = precioVenta;
+                    input.Precio = asientoSel.PrecioVenta;
                     input.CodiTerminal = _this.item.CodiTerminal;
-                    return;
                     APP.rq.axios.post(APP.base + '/itinerarios/bloquearAsiento', input)
                         .then(res => {
-                            var tempList = _.cloneDeep(res.data);
-                            if (tempList.length > 0) {
-                                //_this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                                //_this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                                //_this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                                //_this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                                //_this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
-                                //_this.$nextTick(() => {
-                                //    _this.showPlano = true;
-                                //});
+                            if (res.statusText === "OK") {
+                                if (res.data !== 0) {
+                                    asientoSel.IDS = res.data;
+                                    APP.msg.info('Asiento bloqueado');
+                                }
+                            } else {
+                                APP.msg.error('No se pudo bloquear el asiento');
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                liberarAsiento: async function (asientoSel) {
+                    await APP.rq.axios.post(APP.base + '/itinerarios/liberarAsiento', { IDS : asientoSel.IDS })
+                        .then(res => {
+                            if (res.statusText === "OK") {
+                                if (res.data) {
+                                    asientoSel.IDS = 0;
+                                    APP.msg.info('Asiento liberado');
+                                }
                             } else {
                                 APP.msg.error('No se pudo bloquear el asiento');
                             }

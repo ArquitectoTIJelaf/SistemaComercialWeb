@@ -96,6 +96,24 @@ namespace SisComWeb.Repository
             return response;
         }
 
+        public static Response<bool> LiberaAsiento(int IDS)
+        {
+            var response = new Response<bool>(false, false, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_LiberarAsiento";
+                db.AddParameter("@Ids", DbType.Int32, ParameterDirection.Input, IDS);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: LiberaAsiento. ";
+                response.Estado = true;
+            }
+            return response;
+        }
+
         #endregion
     }
 }

@@ -201,7 +201,20 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgErrExcBusqAsientoBloqueado, false);
+                return new Response<int>(false, 0, Message.MsgErrExcBusqAsiento, false);
+            }
+        }
+
+        public Response<bool> LiberaAsiento(int IDS)
+        {
+            try
+            {
+                return BloqueoAsientoLogic.LiberaAsiento(IDS);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcBusqAsientoBloqueado, false);
             }
         }
 

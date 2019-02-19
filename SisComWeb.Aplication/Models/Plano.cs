@@ -31,7 +31,7 @@ namespace SisComWeb.Aplication.Models
         public string Telefono { get; set; }
         public string Tipo { get; set; }
         public string TipoDocumento { get; set; }
-        public bool IsDisabled { get; set; } // Para 'BloqueoAsiento'
+        public int IDS { get; set; } // Para 'BloqueoAsiento'
     }
 
     public class FiltroPlano

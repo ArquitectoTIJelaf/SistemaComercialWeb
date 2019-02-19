@@ -224,10 +224,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano5" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :class="{ asientoBloqueado: styleBloquearAsiento(item.NumeAsiento, item.IDS) }">
                                                     <div class="icons-of-seat" v-if="false">
                                                         <span class="ios-left">®</span>
-                                                        <span class="ios-right">TE</span>                                                         
+                                                        <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -242,7 +242,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano4" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :class="{ asientoBloqueado: styleBloquearAsiento(item.NumeAsiento, item.IDS) }">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
@@ -260,7 +260,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano3" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :class="{ asientoBloqueado: styleBloquearAsiento(item.NumeAsiento, item.IDS) }">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
@@ -278,7 +278,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano2" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :class="{ asientoBloqueado: styleBloquearAsiento(item.NumeAsiento, item.IDS) }">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
@@ -296,7 +296,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item.NumeAsiento, item.PrecioVenta)" :disabled="item.IsDisabled">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :class="{ asientoBloqueado: styleBloquearAsiento(item.NumeAsiento, item.IDS) }">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>

@@ -225,8 +225,7 @@ namespace SisComWeb.Aplication.Controllers
                         RucContacto = (string)x["RucContacto"],
                         Telefono = (string)x["Telefono"],
                         Tipo = (string)x["Tipo"],
-                        TipoDocumento = (string)x["TipoDocumento"],
-                        IsDisabled = false // Para 'BloqueoAsiento'
+                        TipoDocumento = (string)x["TipoDocumento"]
                     }).ToList();
                     return Json(items, JsonRequestBehavior.AllowGet);
                 }
@@ -271,6 +270,42 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     int valor = (int)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("liberarAsiento")]
+        public async Task<ActionResult> LiberarAsiento(int IDS)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"IDS\" : " + IDS + " }";
+                    HttpResponseMessage response = await client.PostAsync("LiberaAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    bool valor = (bool)tmpResult["Valor"];
                     return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else

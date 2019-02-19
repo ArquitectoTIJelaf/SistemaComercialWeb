@@ -36,6 +36,7 @@
         public const string MsgErrExcBusqTurno = "Ocurrió una excepción al buscar turno.";
 
         // Bloqueo Asiento
+        public const string MsgErrExcBusqAsiento = "Ocurrió una excepción al buscar asiento.";
         public const string MsgErrExcBusqAsientoBloqueado = "Ocurrió una excepción al buscar asiento bloqueado.";
     }
 }
