@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    var JLMrootCode = System.Configuration.ConfigurationManager.AppSettings["JLMrootCode"].ToString();
 }
 
 @section styles{
@@ -12,11 +13,7 @@
             border-bottom-color: rgb(102, 175, 233);
             border-left-color: rgb(102, 175, 233);
         }
-
-        .v-select.open .dropdown-toggle {
-            border: 1px solid #66afe9 !important;
-        }
-
+               
         /*button:disabled {
             background-color: #DFE1FF !important
         }
@@ -36,7 +33,18 @@
                     <img width="35%" src="~/wwwroot/plugins/images/owner/venta-comercial.png" />
                 </center>
             </div>
-            <div v-show="filtro.Nombre !== null && filtro.Nombre.id === '339'">
+            <div class="separate-in-form">
+                <v-select v-model="filtro.Nombre"
+                          :id="'cboUsuario'"
+                          label="label"
+                          :get-option-label="getLabel"
+                          :options="list.usuarios"
+                          :placeholder="'Cajero'"
+                          ref="select">
+                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                </v-select>
+            </div>
+            <div v-show="filtro.Nombre !== null && filtro.Nombre.id === '@JLMrootCode'">
                 <div class="separate-in-form">
                     <v-select v-model="filtro.Sucursal"
                               :id="'cboSucursal'"
@@ -59,17 +67,6 @@
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
-            </div>
-            <div class="separate-in-form">
-                <v-select v-model="filtro.Nombre"
-                          :id="'cboUsuario'"
-                          label="label"
-                          :get-option-label="getLabel"
-                          :options="list.usuarios"
-                          :placeholder="'Cajero'"
-                          ref="select">
-                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                </v-select>
             </div>
             <div class="separate-in-form">
                 <input id="txtContrasena"
@@ -120,9 +117,9 @@
                     var input = {};
                     input.Nombre = filtro.Nombre.id;
                     input.Clave = filtro.Clave;
-                    input.Sucursal = filtro.Nombre.id === '339' ? filtro.Sucursal.id : '0';
-                    input.PuntoVenta = filtro.Nombre.id === '339' ? filtro.PuntoVenta.id : '0';
-                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
+                    input.Sucursal = filtro.Nombre.id === '@JLMrootCode' ? filtro.Sucursal.id : '0';
+                    input.PuntoVenta = filtro.Nombre.id === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
+                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)                  
                         .then(res => {
                             if (res.data.mensaje === 'Log success') {
                                 $('#frmLogin').submit();
@@ -157,9 +154,9 @@
                 },
                 recorrido() {
                     var _this = this;
-                    if (_this.filtro.Nombre.id === '339' && _this.filtro.Sucursal === null)
+                    if (_this.filtro.Nombre.id === '@JLMrootCode' && _this.filtro.Sucursal === null)
                         $('#cboSucursal input[type=search]').focus();
-                    else if (_this.filtro.Nombre.id === '339' && _this.filtro.PuntoVenta === null)
+                    else if (_this.filtro.Nombre.id === '@JLMrootCode' && _this.filtro.PuntoVenta === null)
                         $('#cboPuntoVenta input[type=search]').focus();
                     else if (_this.filtro.Nombre === null)
                         $('#cboUsuario input[type=search]').focus();
@@ -172,7 +169,7 @@
             computed: {
                 filledFiltro: function () {
                     var _this = this;
-                    if (_this.filtro.Nombre !== null && _this.filtro.Nombre.id === '339')
+                    if (_this.filtro.Nombre !== null && _this.filtro.Nombre.id === '@JLMrootCode')
                     {
                         return (
                             _this.filtro.Sucursal !== null &&
@@ -216,7 +213,7 @@
                     this.recorrido();
                 },
                 'filtro.Nombre': function (newVal, oldVal) {
-                    if (this.filtro.Nombre.id === '339' && this.list.sucursales.length === 0)
+                    if (this.filtro.Nombre.id === '@JLMrootCode' && this.list.sucursales.length === 0)
                         this.getSucursales();
                     this.$nextTick(function () {
                         this.recorrido();
