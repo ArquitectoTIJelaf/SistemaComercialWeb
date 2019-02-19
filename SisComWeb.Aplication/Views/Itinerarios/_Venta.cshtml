@@ -6,7 +6,7 @@
         <div class="white-box" style="padding: 10px 0 15px 0;">
             <div @*class="custom-scroll-container"*@>
                 <div class="row">
-                    <div class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
+                    <div id="FiltersVentas" class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
                         <div class="col-md-12">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -62,7 +62,7 @@
                                         </template>
                                         <template v-else>
                                             <span class="mdi mdi-arrow-up-bold-circle fa-fw"></span>CONTRAER TURNOS
-                                        </template>                                        
+                                        </template>
                                     </button>
                                 </div>
                             </div>
@@ -146,7 +146,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
@@ -213,7 +213,7 @@
 
                         </div>
                     </div>
-                    <div v-show="showPlano" class="container-bus bgc-emp" >
+                    <div v-show="showPlano" class="container-bus bgc-emp">
                         <div class="col-md-12" style="background-color: white; height: 40px;margin-bottom: 15px;border-radius: 4px;">
 
                         </div>
@@ -229,7 +229,7 @@
                                                 <button class="btn btn-bus">
                                                     <div class="icons-of-seat" v-if="false">
                                                         <span class="ios-left">®</span>
-                                                        <span class="ios-right">TE</span>                                                         
+                                                        <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -238,7 +238,7 @@
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
-                                            </template>                                            
+                                            </template>
                                         </td>
                                     </tr>
                                     <tr>
@@ -317,7 +317,7 @@
                             </table>
                         </div>
                     </div>
-                    <div  v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
+                    <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 200px; width: 50px; ">
 
                         </div>
@@ -325,13 +325,13 @@
                             <div class="col-md-1">
                                 <div class="col-md-12">
                                     <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
-                                            <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
-                                            <input v-model="objVenta.NroAsiento"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="Nº"
-                                                   style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
-                                                   autocomplete="off">
+                                        <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
+                                        <input v-model="objVenta.NroAsiento"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="Nº"
+                                               style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
+                                               autocomplete="off">
                                     </div>
                                 </div>
                             </div>

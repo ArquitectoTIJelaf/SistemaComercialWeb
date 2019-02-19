@@ -136,34 +136,63 @@
                 });
             }
 
-            $("#cboEmpresa input[type=search]").blur(function () {
-                $('#cboSucursal input[type=search]').focus();
+
+
+            //#region RECORRIDO TURNOS
+
+            var over_click_filter_ventas;
+            $('#FiltersVentas').mouseenter(function () {
+                over_click_filter_ventas = true;
+            }).mouseleave(function () {
+                over_click_filter_ventas = false;
+            });                       
+            $('#cboEmpresa input[type=search]').blur(function (e) {
+                if (over_click_filter_ventas) {
+                    $('#cboSucursal input[type=search]').focus();
+                }
             });
-            $("#cboSucursal input[type=search]").blur(function () {
-                $('#cboOrigenBus input[type=search]').focus();
+            $('#cboSucursal input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboOrigenBus input[type=search]').focus();
+                }
             });
-            $("#cboOrigenBus input[type=search]").blur(function () {
-                $('#cboPVOrigenBus input[type=search]').focus();
+            $('#cboOrigenBus input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboPVOrigenBus input[type=search]').focus();
+                }
             });
-            $("#cboPVOrigenBus input[type=search]").blur(function () {
-                $('#cboDestinoBus_2 input[type=search]').focus();
+            $('#cboPVOrigenBus input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboDestinoBus_2 input[type=search]').focus();
+                }
             });
-            $("#cboDestinoBus_2 input[type=search]").blur(function () {
-                $('#cboServicio input[type=search]').focus();
+            $('#cboDestinoBus_2 input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboServicio input[type=search]').focus();
+                }
             });
-            $("#cboServicio input[type=search]").blur(function () {
-                $('#cboDestinoPas_2 input[type=search]').focus();
+            $('#cboServicio input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboDestinoPas_2 input[type=search]').focus();
+                }
             });
-            $("#cboDestinoPas_2 input[type=search]").blur(function () {
-                $('#txtTurno').focus();
+            $('#cboDestinoPas_2 input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#txtTurno').focus();
+                }
             });
-            $("#txtTurno").blur(function () {
-                $('#txtFecha_2').focus();
+            $('#txtTurno').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#txtFecha_2').focus();
+                }
             });
-            $("#txtFecha_2").blur(function () {
-                appController.chargeTurnos();
+            $('#txtFecha_2').blur(function () {
+                if (over_click_filter_ventas) {
+                    appController.chargeTurnos();
+                }
             });
-            
+            //#endregion
+
         });
 
         Vue.use(VueMask.VueMaskPlugin);
@@ -457,7 +486,6 @@
                     this.getTurno(item, fechaViaje);
                 },
                 getTurno: function (item, fechaViaje) {
-                    debugger;
                     var _this = this;
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
@@ -660,7 +688,7 @@
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
                     }
-                },                
+                },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
