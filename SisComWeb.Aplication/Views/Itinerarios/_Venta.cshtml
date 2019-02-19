@@ -22,10 +22,10 @@
                                 </div>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label">Nº Viaje: {{item.NroViaje}}</label>
+                                <label class="control-label">Nº Viaje: {{filtro.NroViaje}}</label>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label">Nº Programación: {{item.CodiProgramacion}}</label>
+                                <label class="control-label">Nº Programación: {{filtro.CodiProgramacion}}</label>
                             </div>
                             <div @@click="clear" class="col-md-4" style="text-align: right; ">
                                 <div style="display: inline-block; cursor: pointer; ">
@@ -78,6 +78,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.sucursales"
                                                       :placeholder="'SUCURSAL'"
+                                                      v-on:keyup.enter="test($event)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -162,7 +163,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <label class="control-label">Turno test:</label>
+                                            <label class="control-label">Turno:</label>
                                             <input @@blur="filtro.Turno = $event.target.value.trim()"
                                                    :value="filtro.Turno"
                                                    @*v-mask="'##:## AM'"*@
@@ -297,7 +298,7 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item.NumeAsiento, item.PrecioVenta)" :disabled="item.IsDisabled">
                                                     <div class="icons-of-seat" v-if="true">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
@@ -316,7 +317,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="col-md-12" style="margin-top: 15px; padding: 0px; ">
+                    <div  v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 200px; width: 50px; ">
 
                         </div>

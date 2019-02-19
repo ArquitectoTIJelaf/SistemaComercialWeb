@@ -114,7 +114,6 @@
             },
             methods: {
                 confirmUsuario(filtro) {
-                    debugger;
                     var input = {};
                     input.Nombre = filtro.Nombre.id;
                     input.Clave = filtro.Clave;
@@ -122,7 +121,6 @@
                     input.PuntoVenta = filtro.Nombre.id === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
                     APP.rq.axios2.post(APP.base + '/login/post-usuario', input)                  
                         .then(res => {
-                            debugger;
                             if (res.data.mensaje === 'Log success') {
                                 $('#frmLogin').submit();
                             } else {

@@ -12,6 +12,7 @@ namespace SisComWeb.Business
             try
             {
                 var response = new Response<int>(false, 0, "", false);
+                Response<decimal> resBloquearAsiento;
 
                 // Validar 'BloqueoAsiento'
                 var resValidarBloqueoAsiento = BloqueoAsientoRepository.ValidarBloqueoAsiento(request.CodiProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino, request.NumeAsiento.ToString(), request.FechaProgramacion);
@@ -37,9 +38,9 @@ namespace SisComWeb.Business
                     if (request.CodiProgramacion != 0)
                     {
                         // Bloquear 'AsientoProgramacion'
-                        var resBuscarPlanoBus = BloqueoAsientoRepository.BloquearAsientoProgramacion(request.CodiProgramacion, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
-                        if (resBuscarPlanoBus.Estado)
-                            response.Mensaje += resBuscarPlanoBus.Mensaje;
+                        resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoProgramacion(request.CodiProgramacion, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
+                        if (resBloquearAsiento.Estado)
+                            response.Mensaje += resBloquearAsiento.Mensaje;
                         else
                         {
                             response.Mensaje += "Error: BloquearAsientoProgramacion. ";
@@ -49,9 +50,9 @@ namespace SisComWeb.Business
                     else
                     {
                         // Bloquear 'AsientoViaje'
-                        var resBloquearAsientoViaje = BloqueoAsientoRepository.BloquearAsientoViaje(request.NroViaje, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
-                        if (resBloquearAsientoViaje.Estado)
-                            response.Mensaje += resBloquearAsientoViaje.Mensaje;
+                        resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoViaje(request.NroViaje, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
+                        if (resBloquearAsiento.Estado)
+                            response.Mensaje += resBloquearAsiento.Mensaje;
                         else
                         {
                             response.Mensaje += "Error: BloquearAsientoViaje. ";
@@ -61,7 +62,7 @@ namespace SisComWeb.Business
                 }
 
                 response.EsCorrecto = true;
-                //response.Valor = resBuscarPlanoBus.Valor;
+                response.Valor = int.Parse(resBloquearAsiento.Valor.ToString());
                 response.Estado = true;
 
                 return response;

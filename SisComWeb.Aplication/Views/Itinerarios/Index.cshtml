@@ -11,71 +11,6 @@
 
 @section styles{
     <style>
-        .panel-default .panel-heading {
-            height: 35px;
-            min-height: 35px;
-        }
-
-        .input-group-addon {
-            border-radius: 4px;
-            border: 1px solid rgb(228, 231, 234);
-            color: #2a97f4;
-            background-color: white;
-        }
-
-        ul.pagination {
-            display: inline-block;
-            padding: 0;
-            margin: 0;
-            background-color: white;
-            padding: 5px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-            ul.pagination li {
-                display: inline;
-            }
-
-                ul.pagination li a {
-                    color: black;
-                    float: left;
-                    padding: 8px 16px;
-                    text-decoration: none;
-                    transition: background-color .3s;
-                    border: 1px solid #ddd;
-                    margin: 0 4px;
-                    border-radius: 50%;
-                }
-
-                    ul.pagination li a.active {
-                        background-color: #4CAF50;
-                        color: white;
-                        border: 1px solid #4CAF50;
-                    }
-
-                    ul.pagination li a:hover:not(.active) {
-                        background-color: #ddd;
-                    }
-
-        .pagination > li:first-child > a {
-            border-top-left-radius: 50%;
-            border-bottom-left-radius: 50%
-        }
-
-        .pagination > li:last-child > a {
-            border-bottom-right-radius: 50%;
-            border-top-right-radius: 50%;
-        }
-
-        .table-responsive > ul {
-            display: none;
-        }
-
-        .btn-inverse:focus {
-            background-color: #A1ABB7 !important;
-            border: 1px solid #A1ABB7 !important;
-        }
 
         .container-bus {
             display: inline-block;
@@ -159,7 +94,7 @@
             align-items: center;
             text-align: center;
         }
-        
+
         .btn-bus {
             padding: 5px;
             height: 95% !important;
@@ -201,6 +136,34 @@
                 });
             }
 
+            $("#cboEmpresa input[type=search]").blur(function () {
+                $('#cboSucursal input[type=search]').focus();
+            });
+            $("#cboSucursal input[type=search]").blur(function () {
+                $('#cboOrigenBus input[type=search]').focus();
+            });
+            $("#cboOrigenBus input[type=search]").blur(function () {
+                $('#cboPVOrigenBus input[type=search]').focus();
+            });
+            $("#cboPVOrigenBus input[type=search]").blur(function () {
+                $('#cboDestinoBus_2 input[type=search]').focus();
+            });
+            $("#cboDestinoBus_2 input[type=search]").blur(function () {
+                $('#cboServicio input[type=search]').focus();
+            });
+            $("#cboServicio input[type=search]").blur(function () {
+                $('#cboDestinoPas_2 input[type=search]').focus();
+            });
+            $("#cboDestinoPas_2 input[type=search]").blur(function () {
+                $('#txtTurno').focus();
+            });
+            $("#txtTurno").blur(function () {
+                $('#txtFecha_2').focus();
+            });
+            $("#txtFecha_2").blur(function () {
+                appController.chargeTurnos();
+            });
+            
         });
 
         Vue.use(VueMask.VueMaskPlugin);
@@ -244,6 +207,20 @@
                     appVueFilter.showVentas = false;
                     appVueTable.showVentas = false;
                     appVueVenta.showVentas = false;
+                },
+                chargeTurnos: function () {
+                    var item = {};
+                    appVueVenta.firstCharge = false;
+                    item.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
+                    item.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
+                    item.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
+                    item.CodiPuntoVenta = appVueVenta.filtro.CodiPVOrigenBus.id;
+                    item.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
+                    item.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+                    item.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
+                    item.HoraPartida = appVueVenta.filtro.Turno.replace(" ", "");
+                    item.FechaViaje = appVueVenta.filtro.Fecha;
+                    appVueVenta.getTurno(item, item.FechaViaje);
                 }
             };
         })();
@@ -371,7 +348,7 @@
                 sendRow: function (item) {
                     var turnos = this.list.itinerarios.reduce(function (filtered, option) {
                         if (option.CodiDestino === item.CodiDestino) {
-                            var someNewValue = 
+                            var someNewValue =
                             {
                                 NomServicio: option.NomServicio,
                                 HoraPartida: option.HoraPartida,
@@ -407,7 +384,6 @@
         var appVueVenta = new Vue({
             el: '#appVueVenta',
             data: {
-                item: {},
                 filtro: {
                     CodiEmpresa: null,
                     CodiSucursal: null,
@@ -417,7 +393,9 @@
                     CodiServicio: null,
                     CodiDestinoPas: null,
                     Turno: '',
-                    Fecha: ''                    
+                    Fecha: '',
+                    NroViaje: '',
+                    CodiProgramacion: ''
                 },
                 list: {
                     empresas: [],
@@ -461,8 +439,7 @@
                 showVentas: false,
                 showPlano: false,
                 showTextTurnos: false,
-                firstCharge: true,
-                test:''
+                firstCharge: true
             },
             mounted: function () {
                 this.getEmpresas();
@@ -475,61 +452,10 @@
             },
             methods: {
                 chargeVentas: function (item, fechaViaje, turnos) {
-                    this.item = item;
                     this.firstCharge = true;
                     this.list.turnos = turnos;
-                    this.setFilters(item, fechaViaje);
-                    this.getTurno(item, fechaViaje);//***
+                    this.getTurno(item, fechaViaje);
                 },
-                setFilters: async function (item, fechaViaje) {
-                    var _this = this;
-                    _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(item.CodiEmpresa));
-                    _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(item.CodiSucursal));
-                    _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(item.CodiSucursal));
-                    _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(item.CodiRuta));
-                    _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(item.CodiServicio));
-                    _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(item.CodiDestino));
-                    _this.filtro.Fecha = fechaViaje;
-                    _this.filtro.Turno = item.HoraPartida;
-                    await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
-                    _this.$nextTick(() => {
-                        _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(item.CodiPuntoVenta));
-                    });
-                },
-                getLabel: function (option) {
-                    return `${option.id} - ${option.label}`
-                },
-                //getPlano: function (item, fechaViaje) {
-                //    var _this = this;
-                //    var input = {};
-                //    input.PlanoBus = item.PlanoBus;
-                //    input.CodiProgramacion = item.CodiProgramacion;
-                //    input.CodiOrigen = item.CodiOrigen;
-                //    input.CodiDestino = item.CodiDestino;
-                //    input.CodiBus = item.CodiBus;
-                //    input.HoraViaje = item.HoraPartida;
-                //    input.FechaViaje = fechaViaje;
-                //    input.CodiServicio = item.CodiServicio;
-                //    input.CodiEmpresa = item.CodiEmpresa;
-                //    input.FechaProgramacion = item.FechaProgramacion;
-                //    input.NroViaje = item.NroViaje;
-                //    APP.rq.axios.post(APP.base + '/itinerarios/plano', input)
-                //        .then(res => {
-                //            var tempList = _.cloneDeep(res.data);
-                //            if (tempList.length > 0) {
-                //                _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                //                _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                //                _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                //                _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                //                _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
-                //                _this.$nextTick(() => {
-                //                    _this.showPlano = true;
-                //                });
-                //            } else {
-                //                APP.msg.error('No se pudo cargar el plano');
-                //            }
-                //        }).catch(APP.rq.axios_handler_error_alert);
-                //},
                 getTurno: function (item, fechaViaje) {
                     debugger;
                     var _this = this;
@@ -544,21 +470,48 @@
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = fechaViaje;
                     APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
-                        .then(res => {
-                            debugger;
-                            var tempList = _.cloneDeep(res.data.ListaPlanoBus);
-                            if (tempList.length > 0) {
-                                _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                                _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                                _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                                _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                                _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
-                                _this.$nextTick(() => {
-                                    _this.showPlano = true;
-                                });
+                        .then(async function (res) {
+                            if (res.data.NroViaje) {
+                                _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
+                                _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(res.data.CodiOrigen));
+                                _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(res.data.CodiSucursal));
+                                _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(res.data.CodiRuta));
+                                _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(res.data.CodiServicio));
+                                _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(res.data.CodiDestino));
+                                _this.filtro.Turno = res.data.HoraPartida;
+                                _this.filtro.Fecha = fechaViaje;
+                                _this.filtro.NroViaje = res.data.NroViaje;
+                                _this.filtro.CodiProgramacion = res.data.CodiProgramacion;
+                                await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
+                                _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(res.data.CodiPuntoVenta));
+                                var tempList = _.cloneDeep(res.data.ListaPlanoBus);
+                                if (tempList.length > 0) {
+                                    _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.$nextTick(() => {
+                                        if (!_this.firstCharge)
+                                            $('#btnDesplegar').click();
+                                        _this.showPlano = true;
+                                    });
+                                } else {
+                                    _this.list.plano5 = [];
+                                    _this.list.plano4 = [];
+                                    _this.list.plano3 = [];
+                                    _this.list.plano2 = [];
+                                    _this.list.plano1 = [];
+                                    _this.$nextTick(() => {
+                                        _this.showPlano = false;
+                                        APP.msg.error('No se pudo cargar el plano');
+                                    });
+                                }
                             } else {
-                                APP.msg.error('No se pudo cargar el plano');
+                                _this.showPlano = false;
+                                APP.msg.error('No se cargó resultados');
                             }
+
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getEmpresas: function() {
@@ -586,18 +539,11 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getServicios: function () {
-                    debugger;
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-servicios')
                         .then(res => {
                             _this.list.servicios = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
-                    //axios
-                    //    .get('http://localhost:27958/SisComServices.svc/ListaServicios')
-                    //    .then(res => {
-                    //        debugger;
-                    //        _this.list.servicios = _.cloneDeep(res.data.Valor);
-                    //    });
                 },
                 getTiposDoc() {
                     var _this = this;
@@ -612,13 +558,7 @@
                 },
                 changeTurno: function (item) {
                     this.showPlano = false;
-                    this.filtro.CodiDestinoBus = this.list.destinosBus.find(x => x.id === String(item.CodiRuta));
-                    this.filtro.CodiServicio = { id: item.CodiServicio, label: item.NomServicio };
-                    this.filtro.Turno = item.HoraPartida; 
-                    this.getTurno(item, item.FechaViaje);//***
-                    //this.$nextTick(() => {
-                    //    this.getPlano(item, item.FechaViaje);
-                    //});                    
+                    this.getTurno(item, item.FechaViaje);
                 },
                 recorrido: function () {
                     var _this = this;
@@ -642,32 +582,25 @@
                         $('#txtFecha_2').focus();
                     } else {
                         if (!_this.firstCharge) {
-                            $('#btnDesplegar').click();
-                            //***********************************************************
-                            var turno = _this.list.turnos.find(x =>
-                                x.CodiEmpresa === parseInt(_this.filtro.CodiEmpresa.id) &&
-                                x.CodiOrigen === parseInt(_this.filtro.CodiSucursal.id) &&
-                                x.CodiSucursal === parseInt(_this.filtro.CodiOrigenBus.id) &&
-                                x.CodiPuntoVenta === parseInt(_this.filtro.CodiPVOrigenBus.id) &&
-                                x.CodiRuta === parseInt(_this.filtro.CodiDestinoBus.id) &&
-                                x.CodiServicio === parseInt(_this.filtro.CodiServicio.id) &&
-                                x.CodiDestino === parseInt(_this.filtro.CodiDestinoPas.id) &&
-                                x.HoraPartida === _this.filtro.Turno.replace(" ", "") &&
-                                x.FechaViaje === _this.filtro.Fecha
-                            );
-                            if (turno) {
-                                this.showPlano = true;
-                                this.getPlano(turno[0], turno[0].FechaViaje);
-                            } else {
-                                APP.msg.error('No se encontró plano con los filtros ingresados');
-                                _this.showPlano = false;
-                            }                            
-                        //***********************************************************
-                        }                            
+                            var item = {};
+                            item.CodiEmpresa = _this.filtro.CodiEmpresa.id;
+                            item.CodiOrigen = _this.filtro.CodiSucursal.id;
+                            item.CodiSucursal = _this.filtro.CodiOrigenBus.id;
+                            item.CodiPuntoVenta = _this.filtro.CodiPVOrigenBus.id;
+                            item.CodiRuta = _this.filtro.CodiDestinoBus.id;
+                            item.CodiServicio = _this.filtro.CodiServicio.id;
+                            item.CodiDestino = _this.filtro.CodiDestinoPas.id;
+                            item.HoraPartida = _this.filtro.Turno.replace(" ", "");
+                            item.FechaViaje = _this.filtro.Fecha;
+                            _this.getTurno(item, item.FechaViaje);
+                            _this.$nextTick(() => {
+                                $('#btnDesplegar').click();
+                            });
+                        }
                     }
                 },
-                clear: function () {                    
-                    var _this = this;    
+                clear: function () {
+                    var _this = this;
                     _this.firstCharge = false; //TODO
                     _this.filtro.CodiEmpresa = null;
                     _this.filtro.CodiSucursal = null;
@@ -680,17 +613,43 @@
                     $('#txtFecha_2').data("DateTimePicker").clear();
                     _this.filtro.Turno = '';
                     _this.filtro.Fecha = '';
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                bloquearAsiento: function (numeAsiento, precioVenta) {
+                    var _this = this;
+                    var input = {};
+                    input.CodiProgramacion = _this.item.CodiProgramacion;
+                    input.NroViaje = _this.item.NroViaje;
+                    input.CodiOrigen = _this.item.CodiOrigen;
+                    input.CodiDestino = _this.item.CodiDestino;
+                    input.NumeAsiento = numeAsiento;
+                    input.FechaProgramacion = _this.item.FechaProgramacion;
+                    input.Precio = precioVenta;
+                    input.CodiTerminal = _this.item.CodiTerminal;
+                    return;
+                    APP.rq.axios.post(APP.base + '/itinerarios/bloquearAsiento', input)
+                        .then(res => {
+                            var tempList = _.cloneDeep(res.data);
+                            if (tempList.length > 0) {
+                                //_this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                //_this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                //_this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                //_this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                //_this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                //_this.$nextTick(() => {
+                                //    _this.showPlano = true;
+                                //});
+                            } else {
+                                APP.msg.error('No se pudo bloquear el asiento');
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {
             },
             watch: {
-                'filtro.CodiEmpresa': function (newVal, oldVal) {                    
-                    this.recorrido();
-                },
-                'filtro.CodiSucursal': function (newVal, oldVal) {
-                    this.recorrido();
-                },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
@@ -701,23 +660,7 @@
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
                     }
-                    this.recorrido();
-                },
-                'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.CodiDestinoBus': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.CodiServicio': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.CodiDestinoPas': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.Turno': function (newVal, oldVal) {
-                    this.recorrido();
-                },
+                },                
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
@@ -727,7 +670,6 @@
                     } else {
                         document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
                     }
-                    this.recorrido();
                 },
                 'objVenta.FechaNac': function (newVal) {
                     if (newVal) {

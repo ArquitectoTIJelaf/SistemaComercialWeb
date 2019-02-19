@@ -56,8 +56,10 @@ namespace SisComWeb.Business
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
                     if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor != 0)
                     {
+                        resBuscarItinerarios.Valor[i].CodiProgramacion = resBuscarProgramacionViaje.Valor;
+
                         // Obtiene 'BusProgramacion'
-                        resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarProgramacionViaje.Valor);
+                        resObtenerBus = ItinerarioRepository.ObtenerBusProgramacion(resBuscarItinerarios.Valor[i].CodiProgramacion);
                         if (resObtenerBus.Estado)
                         {
                             resBuscarItinerarios.Valor[i].CodiBus = resObtenerBus.Valor.CodiBus ?? "0000";
@@ -136,63 +138,30 @@ namespace SisComWeb.Business
                         return response;
                     }
 
-                    // Valida 'TurnoAdicional'
-                    var resValidarTurnoAdicional = ItinerarioRepository.ValidarTurnoAdicional(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
-                    if (resValidarTurnoAdicional.Estado && resValidarTurnoAdicional.Valor == 1)
+                    // Valida 'ProgramacionCerrada'
+                    var resValidarProgrmacionCerrada = ItinerarioRepository.ValidarProgrmacionCerrada(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
+                    if (resValidarProgrmacionCerrada.Estado)
                     {
-                        // Valida 'ProgramacionCerrada'
-                        var resValidarProgrmacionCerrada = ItinerarioRepository.ValidarProgrmacionCerrada(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
-                        if (resValidarProgrmacionCerrada.Estado && resValidarProgrmacionCerrada.Valor == 1)
-                        {
+                        if (resValidarProgrmacionCerrada.Valor == 1)
                             resBuscarItinerarios.Valor[i].ProgramacionCerrada = true;
-
-                            if (resBuscarProgramacionViaje.Valor != 0)
-                            {
-                                // Obtiene 'TotalVentas'
-                                Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarProgramacionViaje.Valor, resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino);
-                                if (resObtenerTotalVentas.Estado)
-                                    resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
-                                else
-                                {
-                                    response.Mensaje += "Error: ObtenerTotalVentas. ";
-                                    return response;
-                                }
-                            }
-                        }
-                        else if (resValidarProgrmacionCerrada.Estado && resValidarProgrmacionCerrada.Valor == 0)
-                        {
-                            // Lista 'PuntosEmbarque'
-                            Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, resBuscarItinerarios.Valor[i].HoraPartida);
-                            if (resListarPuntosEmbarque.Estado)
-                                resBuscarItinerarios.Valor[i].ListaEmbarques = resListarPuntosEmbarque.Valor;
-                            else
-                            {
-                                response.Mensaje += "Error: ListarPuntosEmbarque. ";
-                                return response;
-                            }
-
-                            // Lista 'PuntosArribo'
-                            Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino, resBuscarItinerarios.Valor[i].CodiServicio, resBuscarItinerarios.Valor[i].CodiEmpresa, resBuscarItinerarios.Valor[i].CodiPuntoVenta, resBuscarItinerarios.Valor[i].HoraPartida);
-                            if (resListarPuntosArribo.Estado)
-                                resBuscarItinerarios.Valor[i].ListaArribos = resListarPuntosArribo.Valor;
-                            else
-                            {
-                                response.Mensaje += "Error: ListarPuntosArribo. ";
-                                return response;
-                            }
-                        }
-                        else
-                        {
-                            response.Mensaje += "Error: ValidarProgrmacionCerrada. ";
-                            return response;
-                        }
                     }
-                    else if (resValidarTurnoAdicional.Estado && resValidarTurnoAdicional.Valor == 0)
-                        continue;
                     else
                     {
-                        response.Mensaje += "Error: ValidarTurnoAdicional. ";
+                        response.Mensaje += "Error: ValidarProgrmacionCerrada. ";
                         return response;
+                    }
+
+                    // Obtiene 'TotalVentas'
+                    if (resBuscarItinerarios.Valor[i].CodiProgramacion != 0)
+                    {
+                        Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarItinerarios.Valor[i].CodiProgramacion, resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino);
+                        if (resObtenerTotalVentas.Estado)
+                            resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
+                        else
+                        {
+                            response.Mensaje += "Error: ObtenerTotalVentas. ";
+                            return response;
+                        }
                     }
                 }
 
