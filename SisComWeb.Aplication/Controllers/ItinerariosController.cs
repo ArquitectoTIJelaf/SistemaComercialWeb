@@ -207,13 +207,13 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiEmpresa\" : " + filtro.CodiEmpresa + 
+                    var _body = "{ \"CodiEmpresa\" : " + filtro.CodiEmpresa +
                                 ",\"CodiOrigen\" : " + filtro.CodiOrigen +
                                 ",\"CodiDestino\" : " + filtro.CodiDestino +
                                 ",\"CodiSucursal\" : " + filtro.CodiSucursal +
-                                ",\"CodiRuta\" : " + filtro.CodiRuta + 
+                                ",\"CodiRuta\" : " + filtro.CodiRuta +
                                 ",\"CodiPuntoVenta\" : " + filtro.CodiPuntoVenta +
-                                ",\"CodiServicio\" : " + filtro.CodiServicio + 
+                                ",\"CodiServicio\" : " + filtro.CodiServicio +
                                 ",\"HoraViaje\" :  \"" + filtro.HoraViaje + "\"" +
                                 ",\"FechaViaje\" :  \"" + filtro.FechaViaje + "\"" + " }";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -262,8 +262,108 @@ namespace SisComWeb.Aplication.Controllers
                         ProgramacionCerrada = (bool)data["ProgramacionCerrada"],
                         RazonSocial = (string)data["RazonSocial"],
                         StOpcional = (string)data["StOpcional"]
-                    };                    
+                    };
                     return Json(item, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("consultar-usuario")]
+        public async Task<ActionResult> SearchClient(string tipoDoc, string numeroDoc)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"TipoDoc\" :\"" + tipoDoc + "\"" +
+                                ",\"NumeroDoc\" :  \"" + numeroDoc + "\"" + " }";
+                    HttpResponseMessage response = await client.PostAsync("BuscaPasajero", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+                    ClientePasaje item = new ClientePasaje
+                    {
+                        ApellidoMaterno = (string)data["ApellidoMaterno"],
+                        ApellidoPaterno = (string)data["ApellidoPaterno"],
+                        Direccion = (string)data["Direccion"],
+                        Edad = (byte)data["Edad"],
+                        Email = (string)data["Email"],
+                        FechaNacimiento = (string)data["FechaNacimiento"],
+                        IdCliente = (int)data["IdCliente"],
+                        NombreCliente = (string)data["NombreCliente"],
+                        NumeroDoc = (string)data["NumeroDoc"],
+                        RucContacto = (string)data["RucContacto"],
+                        Telefono = (string)data["Telefono"],
+                        TipoDoc = (string)data["TipoDoc"],
+                        Sexo = "M" //TODO: Reemplazar por la lectura
+                    };
+                    return Json(item, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("grabar-pasajero")]
+        public async Task<ActionResult> SaveClient(ClientePasaje filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"IdCliente\" : " + filtro.IdCliente + 
+                                ",\"TipoDoc\" : \"" + filtro.TipoDoc + "\"" +
+                                ",\"NumeroDoc\" : \"" + filtro.NumeroDoc + "\"" +
+                                ",\"NombreCliente\" : \"" + filtro.NombreCliente + "\"" +
+                                ",\"ApellidoPaterno\" : \"" + filtro.ApellidoPaterno + "\"" +
+                                ",\"ApellidoMaterno\" : \"" + filtro.ApellidoMaterno + "\"" +
+                                ",\"FechaNacimiento\" : \"" + filtro.FechaNacimiento + "\"" +
+                                ",\"Edad\" : " + filtro.Edad +
+                                ",\"Direccion\" : \"" + filtro.Direccion + "\"" +
+                                ",\"Telefono\" : \"" + filtro.Telefono + "\"" +
+                                ",\"Email\" : \"" + filtro.Email + "\"" +
+                                ",\"RucContacto\" :  \"" + filtro.RucContacto + "\"" + " }";
+                    HttpResponseMessage response = await client.PostAsync("GrabarPasajero", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                bool valor = (bool)tmpResult.SelectToken("Valor");
+                if (valor)
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, mensaje), JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

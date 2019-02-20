@@ -349,7 +349,9 @@
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
                                         <input v-model="objVenta.Documento"
+                                               id="txtDocumento"
                                                type="text"
+                                               @@keypress.13.prevent="searchUser"
                                                class="form-control input-sm"
                                                placeholder="DOCUMENTO"
                                                style="width: 50%; display: inline-block; float: right; "
@@ -360,6 +362,8 @@
                                     <div class="form-group">
                                         <label class="control-label">Nombres:</label>
                                         <input v-model="objVenta.Nombres"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtNombres"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="NOMBRES"
@@ -370,6 +374,8 @@
                                     <div class="form-group">
                                         <label class="control-label">Apellidos:</label>
                                         <input v-model="objVenta.Apellidos"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtApellidos"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="Apellidos"
@@ -392,7 +398,9 @@
                                     <div class="form-group ">
                                         <label class="control-label">Edad:</label>
                                         <input :value="objVenta.Edad"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
                                                type="text"
+                                               id="txtEdad"
                                                class="form-control input-sm"
                                                placeholder="EDAD"
                                                style="text-align: center; "
@@ -419,6 +427,8 @@
                                         <div class="form-group">
                                             <label class="control-label">Teléfono:</label>
                                             <input v-model="objVenta.Telefono"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtTelefono"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="TELÉFONO"
@@ -430,6 +440,8 @@
                                     <div class="form-group">
                                         <label class="control-label">RUC:</label>
                                         <input v-model="objVenta.Ruc"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtRuc"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="RUC"
@@ -440,6 +452,8 @@
                                     <div class="form-group ">
                                         <label class="control-label">Recoger:</label>
                                         <input v-model="objVenta.Recoger"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtRecoger"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="RECOGER"
@@ -450,6 +464,8 @@
                                     <div class="form-group ">
                                         <label class="control-label">Reintegro:</label>
                                         <input v-model="objVenta.Reintegro"
+                                               @@keypress.13.prevent="saveUser"
+                                               id="txtReintegro"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="REINTEGRO"
@@ -461,6 +477,7 @@
                                     <div class="form-group ">
                                         <label class="control-label">Observación:</label>
                                         <input v-model="objVenta.Observacion"
+                                               id="txtObservacion"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="OBSERVACIÓN"
@@ -473,6 +490,7 @@
                                         <div class="form-group" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; padding: 5px 0px; ">
                                             <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
                                             <input v-model="objVenta.Precio"
+                                                   id="txtPrecio"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="PRECIO"

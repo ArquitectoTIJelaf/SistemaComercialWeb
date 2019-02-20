@@ -41,6 +41,7 @@ namespace SisComWeb.Aplication
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment_2.10.6_locale_es.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.js",
+                    //"~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker-4.7.14.min.js",
                     "~/wwwroot/plugins/bower_components/sweetalert/sweetalert2.all.min.js"
                 ));
         }
