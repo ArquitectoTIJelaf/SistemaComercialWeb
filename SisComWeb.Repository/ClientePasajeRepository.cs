@@ -31,10 +31,11 @@ namespace SisComWeb.Repository
                         entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono");
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto");
+                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo");
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscaPasajero. ";
+                    response.Mensaje = "Correcto: BuscaPasajero.";
                     response.Estado = true;
                 }
             }
@@ -61,7 +62,7 @@ namespace SisComWeb.Repository
 
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscarEmpresa. ";
+                    response.Mensaje = "Correcto: BuscarEmpresa.";
                     response.Estado = true;
                 }
             }
@@ -88,6 +89,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
+                db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
                 db.AddParameter("@Id_Clientes", DbType.Int32, ParameterDirection.Output, entidad.IdCliente);
 
                 db.Execute();
@@ -96,7 +98,7 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = _outputIdCliente;
-                response.Mensaje = "Correcto: GrabarPasajero. ";
+                response.Mensaje = "Correcto: GrabarPasajero.";
                 response.Estado = true;
             }
             return response;
@@ -119,12 +121,13 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
+                db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
 
                 db.Execute();
 
                 response.EsCorrecto = true;
                 response.Valor = true;
-                response.Mensaje = "Correcto: ModificarPasajero. ";
+                response.Mensaje = "Correcto: ModificarPasajero.";
                 response.Estado = true;
             }
             return response;
@@ -144,7 +147,7 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = true;
-                response.Mensaje = "Correcto: GrabarEmpresa. ";
+                response.Mensaje = "Correcto: GrabarEmpresa.";
                 response.Estado = true;
             }
 
@@ -165,7 +168,7 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = true;
-                response.Mensaje = "Correcto: ModificarEmpresa. ";
+                response.Mensaje = "Correcto: ModificarEmpresa.";
                 response.Estado = true;
             }
 

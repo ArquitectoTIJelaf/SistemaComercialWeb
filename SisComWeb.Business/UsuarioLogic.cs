@@ -25,7 +25,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(UsuarioLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcBusqUsuario, false);
+                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcValidaUsuario, false);
             }
         }
     }

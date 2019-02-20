@@ -20,11 +20,9 @@ namespace SisComWeb.Business
 
                 // Lista Itinerarios
                 var resBuscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
-                if (resBuscarItinerarios.Estado)
-                    response.Mensaje += resBuscarItinerarios.Mensaje;
-                else
+                if (!resBuscarItinerarios.Estado)
                 {
-                    response.Mensaje += "Error: BuscarItinerarios. ";
+                    response.Mensaje += "Error: BuscarItinerarios.";
                     return response;
                 }
 
@@ -51,7 +49,7 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        response.Mensaje += "Error: VerificaCambiosTurnoViaje. ";
+                        response.Mensaje += "Error: VerificaCambiosTurnoViaje.";
                         return response;
                     }
 
@@ -72,7 +70,7 @@ namespace SisComWeb.Business
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerBusProgramacion. ";
+                            response.Mensaje += "Error: ObtenerBusProgramacion.";
                             return response;
                         }
                     }
@@ -119,25 +117,25 @@ namespace SisComWeb.Business
                                 }
                                 else
                                 {
-                                    response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0. ";
+                                    response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0.";
                                     return response;
                                 }
                             }
                             else
                             {
-                                response.Mensaje += "Error: ObtenerBusEstandar sin hora. ";
+                                response.Mensaje += "Error: ObtenerBusEstandar sin hora.";
                                 return response;
                             }
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerBusEstandar con hora. ";
+                            response.Mensaje += "Error: ObtenerBusEstandar con hora.";
                             return response;
                         }
                     }
                     else
                     {
-                        response.Mensaje += "Error: BuscarProgramacionViaje. ";
+                        response.Mensaje += "Error: BuscarProgramacionViaje.";
                         return response;
                     }
 
@@ -150,7 +148,7 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        response.Mensaje += "Error: ValidarProgrmacionCerrada. ";
+                        response.Mensaje += "Error: ValidarProgrmacionCerrada.";
                         return response;
                     }
 
@@ -162,7 +160,7 @@ namespace SisComWeb.Business
                             resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
                         else
                         {
-                            response.Mensaje += "Error: ObtenerTotalVentas. ";
+                            response.Mensaje += "Error: ObtenerTotalVentas.";
                             return response;
                         }
                     }
@@ -170,6 +168,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = resBuscarItinerarios.Valor;
+                response.Mensaje += "Correcto: BuscaItinerarios.";
                 response.Estado = true;
 
                 return response;
@@ -177,7 +176,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(ItinerarioLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcListItinerario, false);
+                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcBuscaItinerarios, false);
             }
         }
     }

@@ -29,7 +29,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarBloqueoAsiento. ";
+                    response.Mensaje = "Correcto: ValidarBloqueoAsiento.";
                     response.Estado = true;
                 }
             }
@@ -61,7 +61,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: BloquearAsientoProgramacion. ";
+                    response.Mensaje = "Correcto: BloquearAsientoProgramacion.";
                     response.Estado = true;
                 }
             }
@@ -89,7 +89,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: BloquearAsientoViaje. ";
+                    response.Mensaje = "Correcto: BloquearAsientoViaje.";
                     response.Estado = true;
                 }
             }
@@ -108,7 +108,7 @@ namespace SisComWeb.Repository
 
                 response.EsCorrecto = true;
                 response.Valor = true;
-                response.Mensaje = "Correcto: LiberaAsiento. ";
+                response.Mensaje = "Correcto: LiberaAsiento.";
                 response.Estado = true;
             }
             return response;

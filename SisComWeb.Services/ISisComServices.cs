@@ -45,7 +45,7 @@ namespace SisComWeb.Services
 
         #endregion
 
-        #region REGISTRO CLIENTE
+        #region REGISTRO CLIENTE PASAJERO
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaPasajero", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
