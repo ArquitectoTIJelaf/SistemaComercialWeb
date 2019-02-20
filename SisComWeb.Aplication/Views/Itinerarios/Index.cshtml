@@ -182,6 +182,8 @@
         .ios-left {
             position: relative;
             left: -10%;
+            height: 95%;
+            min-width: 8px;
         }
 
         .ios-right {
@@ -895,7 +897,15 @@
                             if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
                         }
                     }
-                } 
+                },
+                iconVentaBus: function (Sexo, Edad) {
+                    if (Edad < 18) {
+                        return { 'background': 'url("/wwwroot/plugins/images/users/HOMBRE.png") no-repeat center center;' }
+                    } else {
+                        return Sexo === 'F' ? { 'background': 'url("/wwwroot/plugins/images/users/MUJER.png") no-repeat center center;' }
+                            : { 'background': 'url("/wwwroot/plugins/images/users/NINO.png") no-repeat center center;' };
+                    }
+                }
             },
             computed: {
             },

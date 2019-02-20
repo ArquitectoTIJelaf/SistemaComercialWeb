@@ -314,7 +314,7 @@ namespace SisComWeb.Aplication.Controllers
                         RucContacto = (string)data["RucContacto"],
                         Telefono = (string)data["Telefono"],
                         TipoDoc = (string)data["TipoDoc"],
-                        Sexo = "M" //TODO: Reemplazar por la lectura
+                        Sexo = (string)data["Sexo"]
                     };
                     return Json(item, JsonRequestBehavior.AllowGet);
                 }

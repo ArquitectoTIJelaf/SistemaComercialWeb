@@ -228,7 +228,7 @@
                                             <template v-if="!isNaN(item.Tipo)">
                                                 <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left"></span>
+                                                        <span class="ios-left" :style="iconVentaBus(item.Sexo, item.Edad)"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
@@ -246,7 +246,7 @@
                                             <template v-if="!isNaN(item.Tipo)">
                                                 <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-left" :style="iconVentaBus(item.Sexo, item.Edad)"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
@@ -264,7 +264,7 @@
                                             <template v-if="!isNaN(item.Tipo)">
                                                 <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-left" :style="iconVentaBus(item.Sexo, item.Edad)"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
@@ -282,7 +282,7 @@
                                             <template v-if="!isNaN(item.Tipo)">
                                                 <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-left" :style="iconVentaBus(item.Sexo, item.Edad)"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
@@ -300,7 +300,7 @@
                                             <template v-if="!isNaN(item.Tipo)">
                                                 <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">®</span>
+                                                        <span class="ios-left" :style="iconVentaBus(item.Sexo, item.Edad)"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
