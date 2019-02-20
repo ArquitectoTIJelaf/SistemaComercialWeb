@@ -62,6 +62,10 @@ namespace SisComWeb.Business
                         resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
                         resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
                         resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
+                        resBuscarTurno.Valor.CodiChofer = resObtenerBus.Valor.CodiChofer ?? "00000";
+                        resBuscarTurno.Valor.NombreChofer = resObtenerBus.Valor.NombreChofer ?? "NINGUNO";
+                        resBuscarTurno.Valor.CodiCopiloto = resObtenerBus.Valor.CodiCopiloto ?? "00000";
+                        resBuscarTurno.Valor.NombreCopiloto = resObtenerBus.Valor.NombreCopiloto ?? "NINGUNO";
                     }
                     else
                     {
@@ -79,6 +83,10 @@ namespace SisComWeb.Business
                         resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
                         resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
                         resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                        resBuscarTurno.Valor.CodiChofer = resObtenerBus.Valor.CodiChofer ?? "00000";
+                        resBuscarTurno.Valor.NombreChofer = resObtenerBus.Valor.NombreChofer ?? "NINGUNO";
+                        resBuscarTurno.Valor.CodiCopiloto = resObtenerBus.Valor.CodiCopiloto ?? "00000";
+                        resBuscarTurno.Valor.NombreCopiloto = resObtenerBus.Valor.NombreCopiloto ?? "NINGUNO";
                     }
                     else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                     {
@@ -90,6 +98,10 @@ namespace SisComWeb.Business
                             resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus;
                             resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros;
                             resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus;
+                            resBuscarTurno.Valor.CodiChofer = resObtenerBus.Valor.CodiChofer ?? "00000";
+                            resBuscarTurno.Valor.NombreChofer = resObtenerBus.Valor.NombreChofer ?? "NINGUNO";
+                            resBuscarTurno.Valor.CodiCopiloto = resObtenerBus.Valor.CodiCopiloto ?? "00000";
+                            resBuscarTurno.Valor.NombreCopiloto = resObtenerBus.Valor.NombreCopiloto ?? "NINGUNO";
                         }
                         else if (resObtenerBus.Estado && string.IsNullOrEmpty(resObtenerBus.Valor.CodiBus))
                         {
@@ -101,6 +113,10 @@ namespace SisComWeb.Business
                                 resBuscarTurno.Valor.PlanoBus = resObtenerBus.Valor.PlanBus ?? "000";
                                 resBuscarTurno.Valor.CapacidadBus = resObtenerBus.Valor.NumePasajeros ?? "0";
                                 resBuscarTurno.Valor.PlacaBus = resObtenerBus.Valor.PlacBus ?? "00-0000";
+                                resBuscarTurno.Valor.CodiChofer = resObtenerBus.Valor.CodiChofer ?? "00000";
+                                resBuscarTurno.Valor.NombreChofer = resObtenerBus.Valor.NombreChofer ?? "NINGUNO";
+                                resBuscarTurno.Valor.CodiCopiloto = resObtenerBus.Valor.CodiCopiloto ?? "00000";
+                                resBuscarTurno.Valor.NombreCopiloto = resObtenerBus.Valor.NombreCopiloto ?? "NINGUNO";
                             }
                             else
                             {

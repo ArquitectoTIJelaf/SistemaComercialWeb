@@ -63,10 +63,17 @@ namespace SisComWeb.Entity
         public List<PlanoEntity> ListaPlanoBus { get; set; }
 
         public short Dias { get; set; }
-
-        // Calculado
-        public string FechaProgramacion { get; set; }
+        
+        public string FechaProgramacion { get; set; } // Calculado
 
         public bool ProgramacionCerrada { get; set; }
+
+        public string CodiChofer { get; set; }
+
+        public string NombreChofer { get; set; }
+
+        public string CodiCopiloto { get; set; }
+
+        public string NombreCopiloto { get; set; }
     }
 }

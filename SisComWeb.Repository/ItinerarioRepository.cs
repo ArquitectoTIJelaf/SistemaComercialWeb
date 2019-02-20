@@ -154,6 +154,10 @@ namespace SisComWeb.Repository
                         entidad.PlanBus = Reader.GetStringValue(drlector, "Plan_bus");
                         entidad.NumePasajeros = Reader.GetStringValue(drlector, "Nume_Pasajeros");
                         entidad.PlacBus = Reader.GetStringValue(drlector, "Plac_bus");
+                        entidad.CodiChofer = Reader.GetStringValue(drlector, "Codi_Chofer");
+                        entidad.NombreChofer = Reader.GetStringValue(drlector, "Nombre_Chofer");
+                        entidad.CodiCopiloto = Reader.GetStringValue(drlector, "Codi_Copiloto");
+                        entidad.NombreCopiloto = Reader.GetStringValue(drlector, "Nombre_Copiloto");
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
