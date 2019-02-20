@@ -49,5 +49,7 @@
         public byte Edad { get; set; }
 
         public string Telefono { get; set; }
+
+        public string Sexo { get; set; }
     }
 }

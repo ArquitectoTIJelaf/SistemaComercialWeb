@@ -51,7 +51,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: BuscarItinerarios. ";
+                    response.Mensaje = "Correcto: BuscarItinerarios.";
                     response.Estado = true;
                 }
             }
@@ -77,7 +77,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: VerificaCambiosTurnoViaje. ";
+                    response.Mensaje = "Correcto: VerificaCambiosTurnoViaje.";
                     response.Estado = true;
                 }
             }
@@ -101,7 +101,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: BuscarProgramacionViaje. ";
+                    response.Mensaje = "Correcto: BuscarProgramacionViaje.";
                     response.Estado = true;
                 }
             }
@@ -131,7 +131,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerBusEstandar. ";
+                    response.Mensaje = "Correcto: ObtenerBusEstandar.";
                     response.Estado = true;
                 }
             }
@@ -157,7 +157,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerBusProgramacion. ";
+                    response.Mensaje = "Correcto: ObtenerBusProgramacion.";
                     response.Estado = true;
                 }
             }
@@ -182,7 +182,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarTurnoAdicional. ";
+                    response.Mensaje = "Correcto: ValidarTurnoAdicional.";
                     response.Estado = true;
                 }
             }
@@ -207,7 +207,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarProgrmacionCerrada. ";
+                    response.Mensaje = "Correcto: ValidarProgrmacionCerrada.";
                     response.Estado = true;
                 }
             }
@@ -232,7 +232,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: ObtenerTotalVentas. ";
+                    response.Mensaje = "Correcto: ObtenerTotalVentas.";
                     response.Estado = true;
                 }
             }
@@ -266,7 +266,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarPuntosEmbarque. ";
+                    response.Mensaje = "Correcto: ListarPuntosEmbarque.";
                     response.Estado = true;
                 }
             }
@@ -300,7 +300,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarPuntosArribo. ";
+                    response.Mensaje = "Correcto: ListarPuntosArribo.";
                     response.Estado = true;
                 }
             }
