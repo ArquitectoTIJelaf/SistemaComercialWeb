@@ -224,11 +224,11 @@
                             <table id="tblLista" class="table table-bus">
                                 <tbody>
                                     <tr>
-                                        <td v-for="(item, key) in list.plano5" class="bus-td">
+                                        <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="styleBloquearAsiento(item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="false">
-                                                        <span class="ios-left">®</span>
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                        <span class="ios-left"></span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
                                                     <div class="number-of-seat">
@@ -242,10 +242,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="(item, key) in list.plano4" class="bus-td">
+                                        <td v-for="(item, key) in list.plano2" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="styleBloquearAsiento(item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="true">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
@@ -262,8 +262,8 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano3" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="styleBloquearAsiento(item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="true">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
@@ -278,10 +278,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="(item, key) in list.plano2" class="bus-td">
+                                        <td v-for="(item, key) in list.plano4" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="styleBloquearAsiento(item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="true">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
                                                     </div>
@@ -296,10 +296,10 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td v-for="(item, key) in list.plano1" class="bus-td">
+                                        <td v-for="(item, key) in list.plano5" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="styleBloquearAsiento(item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="true">
+                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">®</span>
                                                         <span class="ios-right">TE</span>
                                                     </div>

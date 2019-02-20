@@ -1301,15 +1301,15 @@ $(function () {
     if ($('.dph').length) {
 
         $('.dph').datetimepicker({
-            //keyBinds: {
-            //    enter: function () {
-            //        if (this.date() === null) {
-            //            this.date(moment());
-            //        }
-            //        this.hide();
-            //    }
-            //},
-            useCurrent: true,
+            keyBinds: {
+                enter: function () {
+                    if (this.date() === null) {
+                        this.date(moment());
+                    }
+                    this.hide();
+                }
+            },
+            useCurrent: false,
             locale: 'es',
             showTodayButton: false,
             showClose: false,
@@ -1317,8 +1317,8 @@ $(function () {
             keepOpen: false,
             toolbarPlacement: 'top',
             format: 'hh:mm A',
-            //viewDate: '23-04-2015 23:00',
-            //defaultDate: (new Date()).setHours(0, 0, 0),
+            //viewDate: '03:25 PM',
+            //defaultDate: new Date(),
             tooltips: {
                 today: 'Ir a la hora actual',
                 clear: 'Borrar hora',

@@ -113,42 +113,42 @@
             background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .VA {
             /*background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;*/
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .CU {
             /*background: url("/wwwroot/plugins/images/users/PUERTA-moment.png") no-repeat center center;*/
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .BA {
             background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .TV {
             background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .EE {
             background: url("/wwwroot/plugins/images/users/ESCALERAS.png") no-repeat center center;
             display: block;
             height: 95%;
-            min-width: 30px;
+            min-width: 40px;
         }
 
         .bus-td {
@@ -165,6 +165,9 @@
             height: 95% !important;
             width: 95% !important;
             font-weight: 900;
+            background-color: #f7fafc;
+            border: 1px solid #5b5b5c !important;
+            color: #333;
         }
 
         .number-of-seat {
@@ -187,7 +190,6 @@
         }
 
         .check-with-label:checked + .label-for-check {
-            
         }
 
         .active-chck {
@@ -211,22 +213,6 @@
             }
 
             //#region RECORRIDO ITINERARIOS
-
-            //$('#cboOrigenPas input[type=search]').blur(function () {
-            //    $('#cboDestinoPas input[type=search]').focus();
-            //});
-            //$('#cboDestinoPas input[type=search]').blur(function () {
-            //    $('#cboDestinoBus input[type=search]').focus();
-            //});
-            //$('#cboDestinoBus input[type=search]').blur(function () {
-            //    $('#txtFecha').focus();
-            //});
-            //$('#txtFecha').blur(function () {
-            //    $('#txtHora').focus();
-            //});
-            //$('#txtHora').blur(function () {
-            //    $('#chckTodos:first').focus();
-            //});
 
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
@@ -458,7 +444,7 @@
                         case 7:
                             $('#buscar').focus();
                             break;
-                    }                    
+                    }
                 }
             },
             computed: {
@@ -556,6 +542,11 @@
                         { 'id': 'M', 'label': 'MASCULINO' },
                         { 'id': 'F', 'label': 'FEMENINO' }
                     ]
+                },
+                objPlano: {
+                    CodiBus: '',
+                    PlacaBus: '',
+                    PlanoBus: ''
                 },
                 objVenta: {
                     IdCliente: 0,
@@ -719,9 +710,8 @@
                     return `${option.id} - ${option.label}`
                 },
                 styleBloquearAsiento: function (NumeAsiento, IDS) {
-                    if (NumeAsiento != 0) return { 'background-color': 'darkgreen' };
-                    else {
-                        if (IDS != 0) return { 'background-color': 'darkgoldenrod' };
+                    if (NumeAsiento === 0) {
+                        if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
                     }
                 },
                 bloquearAsiento: async function (asientoSel) {
@@ -855,7 +845,7 @@
                                 _this.objVenta.Ruc = '';
                             }
                             _this.recorridoSectionVentas();
-                        }).catch(APP.rq.axios_handler_error_alert);                    
+                        }).catch(APP.rq.axios_handler_error_alert);
                 },
                 passSectionVentas: function (_nroAsiento) {
                     this.objVenta.NroAsiento = _nroAsiento;
@@ -886,7 +876,26 @@
                         .then(res => {
                             APP.msg.info(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
-                }
+                },
+                bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
+                    if (FechaVenta) {
+                        switch (Color) {
+                            case 45074:
+                                return { 'background-color': '#12B000' };
+                                break;
+                            case 11337901:
+                                return { 'background-color': '#AD00AD' };
+                                break;
+                            case 2752511:
+                                return { 'background-color': '#FFFF29' };
+                                break;
+                        }
+                    } else {
+                        if (NumeAsiento === 0) {
+                            if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
+                        }
+                    }
+                } 
             },
             computed: {
             },
