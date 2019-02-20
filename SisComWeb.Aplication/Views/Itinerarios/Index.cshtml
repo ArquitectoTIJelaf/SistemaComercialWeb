@@ -900,10 +900,9 @@
                 },
                 iconVentaBus: function (Sexo, Edad) {
                     if (Edad < 18) {
-                        return { 'background': 'url("/wwwroot/plugins/images/users/HOMBRE.png") no-repeat center center;' }
+                        return '/wwwroot/plugins/images/users/HOMBRE.png';
                     } else {
-                        return Sexo === 'F' ? { 'background': 'url("/wwwroot/plugins/images/users/MUJER.png") no-repeat center center;' }
-                            : { 'background': 'url("/wwwroot/plugins/images/users/NINO.png") no-repeat center center;' };
+                        return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png': '/wwwroot/plugins/images/users/NINO.png';
                     }
                 }
             },

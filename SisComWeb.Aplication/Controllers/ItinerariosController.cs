@@ -110,7 +110,8 @@ namespace SisComWeb.Aplication.Controllers
                 RucContacto = (string)x["RucContacto"],
                 Telefono = (string)x["Telefono"],
                 Tipo = (string)x["Tipo"],
-                TipoDocumento = (string)x["TipoDocumento"]
+                TipoDocumento = (string)x["TipoDocumento"],
+                Sexo = (string)x["Sexo"]
             }).ToList();
             return lista;
         }
