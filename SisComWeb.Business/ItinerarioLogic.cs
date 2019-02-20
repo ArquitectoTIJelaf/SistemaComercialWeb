@@ -15,6 +15,9 @@ namespace SisComWeb.Business
                 var response = new Response<List<ItinerarioEntity>>(false, null, "", false);
                 Response<BusEntity> resObtenerBus;
 
+                // Validar 'TodosTurnos'
+                if (request.TodosTurnos == true) request.Hora = "";
+
                 // Lista Itinerarios
                 var resBuscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
                 if (resBuscarItinerarios.Estado)

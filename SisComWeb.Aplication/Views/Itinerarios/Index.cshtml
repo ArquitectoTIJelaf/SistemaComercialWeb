@@ -11,10 +11,6 @@
 
 @section styles{
     <style>
-        .asientoBloqueado {
-            background-color: darkred;
-        }
-
         .panel-default .panel-heading {
             height: 35px;
             min-height: 35px;
@@ -553,7 +549,8 @@
                                 await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
                                 _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(res.data.CodiPuntoVenta));
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
-                                if (tempList.length > 0) {
+                                var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
+                                if (tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -667,7 +664,7 @@
                         }
                     }
                 },
-                clear: function () {
+                clear: async function () {
                     var _this = this;
                     _this.firstCharge = false; //TODO
                     _this.filtro.CodiEmpresa = null;
@@ -686,7 +683,10 @@
                     return `${option.id} - ${option.label}`
                 },
                 styleBloquearAsiento: function (NumeAsiento, IDS) {
-                    return (NumeAsiento !== 0 || IDS !== 0) ? true : false;
+                    if (NumeAsiento != 0) return { 'background-color': 'darkgreen' };
+                    else {
+                        if (IDS != 0) return { 'background-color': 'darkgoldenrod' };
+                    }
                 },
                 bloquearAsiento: async function (asientoSel) {
                     var _this = this;
@@ -704,12 +704,17 @@
                     input.FechaProgramacion = _this.filtro.Fecha;
                     input.Precio = asientoSel.PrecioVenta;
                     input.CodiTerminal = 0; // Por mientras.
-                    APP.rq.axios.post(APP.base + '/itinerarios/bloquearAsiento', input)
+                    APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
                         .then(res => {
                             if (res.statusText === "OK") {
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
                                     APP.msg.info('Asiento bloqueado');
+
+                                    // CREATE COOKIE
+                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
+                                    APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
+                                    // -------------
                                 }
                             } else {
                                 APP.msg.error('No se pudo bloquear el asiento');
@@ -717,17 +722,47 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 liberarAsiento: async function (asientoSel) {
-                    await APP.rq.axios.post(APP.base + '/itinerarios/liberarAsiento', { IDS : asientoSel.IDS })
+                    var _this = this;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS : asientoSel.IDS })
                         .then(res => {
                             if (res.statusText === "OK") {
                                 if (res.data) {
                                     asientoSel.IDS = 0;
                                     APP.msg.info('Asiento liberado');
+
+                                    // DELETE COOKIE
+                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
+                                    APP.util.deleteCookie(nameCookie);
+                                    // -------------
                                 }
                             } else {
-                                APP.msg.error('No se pudo bloquear el asiento');
+                                APP.msg.error('No se pudo liberar el asiento');
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
+                },
+                limpiarAsientosBloqueados: async function (tempList) {
+                    var _this = this;
+                    var respuesta = true;
+                    var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_';
+
+                    tempList.forEach(async function (e) {
+                        if (!isNaN(e.Tipo)) {
+                            var valueCookie = APP.util.readCookie(partNameCookie + e.Tipo);
+                            if (valueCookie !== null) {
+                                APP.util.deleteCookie(partNameCookie + e.Tipo);
+                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
+                                    .then(res => {
+                                        if (res.statusText === "OK") {
+                                            e.NumeAsiento = 0;
+                                        }
+                                        else
+                                            return false;
+                                    }).catch(APP.rq.axios_handler_error_alert);
+                            }
+                        }
+                    });
+
+                    return respuesta;
                 }
             },
             computed: {

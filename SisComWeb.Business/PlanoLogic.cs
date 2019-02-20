@@ -110,35 +110,37 @@ namespace SisComWeb.Business
                 for (int i = 0; i < resListarAsientosOcupados.Valor.Count; i++)
                 {
                     // Busca 'Pasajero'
-                    var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(resListarAsientosOcupados.Valor[i].TipoDocumento, resListarAsientosOcupados.Valor[i].NumeroDocumento);
-                    if (resBuscaPasajero.Estado)
-                    {
-                        resListarAsientosOcupados.Valor[i].TipoDocumento = resBuscaPasajero.Valor.TipoDoc;
-                        resListarAsientosOcupados.Valor[i].NumeroDocumento = resBuscaPasajero.Valor.NumeroDoc;
-                        resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto;
-                        resListarAsientosOcupados.Valor[i].Nombres = resBuscaPasajero.Valor.NombreCliente;
-                        resListarAsientosOcupados.Valor[i].ApellidoPaterno = resBuscaPasajero.Valor.ApellidoPaterno;
-                        resListarAsientosOcupados.Valor[i].ApellidoMaterno = resBuscaPasajero.Valor.ApellidoMaterno;
-                        resListarAsientosOcupados.Valor[i].FechaNacimiento = resBuscaPasajero.Valor.FechaNacimiento;
-                        resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
-                        resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
-                    }
-                    else
-                    {
-                        response.Mensaje += "Error: BuscaPasajero. ";
-                        return response;
+                    if (!string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].TipoDocumento) && !string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].NumeroDocumento)) {
+                        var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(resListarAsientosOcupados.Valor[i].TipoDocumento, resListarAsientosOcupados.Valor[i].NumeroDocumento);
+                        if (resBuscaPasajero.Estado)
+                        {
+                            resListarAsientosOcupados.Valor[i].TipoDocumento = resBuscaPasajero.Valor.TipoDoc;
+                            resListarAsientosOcupados.Valor[i].NumeroDocumento = resBuscaPasajero.Valor.NumeroDoc;
+                            resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto;
+                            resListarAsientosOcupados.Valor[i].Nombres = resBuscaPasajero.Valor.NombreCliente;
+                            resListarAsientosOcupados.Valor[i].ApellidoPaterno = resBuscaPasajero.Valor.ApellidoPaterno;
+                            resListarAsientosOcupados.Valor[i].ApellidoMaterno = resBuscaPasajero.Valor.ApellidoMaterno;
+                            resListarAsientosOcupados.Valor[i].FechaNacimiento = resBuscaPasajero.Valor.FechaNacimiento;
+                            resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
+                            resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
+                        }
+                        else
+                        {
+                            response.Mensaje += "Error: BuscaPasajero. ";
+                            return response;
+                        }
                     }
                 }
 
                 // Match entre los elementos del plano y los asientos ocupados
                 foreach (PlanoEntity ele in resBuscarPlanoBus.Valor)
                 {
-                    bool auxBool = int.TryParse(ele.Tipo, out int auxValue);
+                    bool auxBool = byte.TryParse(ele.Tipo, out byte auxValue);
                     if (auxBool)
                     {
                         foreach (PlanoEntity ocu in resListarAsientosOcupados.Valor)
                         {
-                            if (ocu.NumeAsiento == auxValue)
+                            if (ocu.NumeAsiento == auxValue && !string.IsNullOrEmpty(ocu.TipoDocumento) && !string.IsNullOrEmpty(ocu.NumeroDocumento))
                             {
                                 ele.NumeAsiento = ocu.NumeAsiento;
                                 ele.TipoDocumento = ocu.TipoDocumento;

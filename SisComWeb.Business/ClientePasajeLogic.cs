@@ -148,7 +148,7 @@ namespace SisComWeb.Business
                 {
                     // Consulta 'SUNAT'
                     var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
-                    if (resConsultaSUNAT.Estado && resConsultaSUNAT.Valor != "false")
+                    if (resConsultaSUNAT.Estado && resConsultaSUNAT.Valor == "true")
                     {
                         objEmpresa.RazonSocial = resConsultaSUNAT.Valor;
 
