@@ -18,11 +18,9 @@ namespace SisComWeb.Business
 
                 // Busca PlanoBus
                 var resBuscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus);
-                if (resBuscarPlanoBus.Estado)
-                    response.Mensaje += resBuscarPlanoBus.Mensaje;
-                else
+                if (!resBuscarPlanoBus.Estado)
                 {
-                    response.Mensaje += "Error: BuscarPlanoBus. ";
+                    response.Mensaje += "Error: BuscarPlanoBus.";
                     return response;
                 }
 
@@ -41,7 +39,7 @@ namespace SisComWeb.Business
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerNivelAsiento. ";
+                            response.Mensaje += "Error: ObtenerNivelAsiento.";
                             return response;
                         }
 
@@ -61,7 +59,7 @@ namespace SisComWeb.Business
                                 }
                                 else
                                 {
-                                    response.Mensaje += "Error: ObtenerPrecioAsiento sin Hora. ";
+                                    response.Mensaje += "Error: ObtenerPrecioAsiento sin Hora.";
                                     return response;
                                 }
                             }
@@ -74,7 +72,7 @@ namespace SisComWeb.Business
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerPrecioAsiento con Hora. ";
+                            response.Mensaje += "Error: ObtenerPrecioAsiento con Hora.";
                             return response;
                         }
                     }
@@ -96,13 +94,9 @@ namespace SisComWeb.Business
 
                 // Lista 'AsientosOcupados'
                 var resListarAsientosOcupados = PlanoRepository.ListarAsientosOcupados(request.CodiProgramacion, request.FechaProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino);
-                if (resListarAsientosOcupados.Estado)
+                if (!resListarAsientosOcupados.Estado)
                 {
-                    response.Mensaje += resListarAsientosOcupados.Mensaje;
-                }
-                else
-                {
-                    response.Mensaje += "Error: ListarAsientosOcupados. ";
+                    response.Mensaje += "Error: ListarAsientosOcupados.";
                     return response;
                 }
 
@@ -126,7 +120,7 @@ namespace SisComWeb.Business
                         }
                         else
                         {
-                            response.Mensaje += "Error: BuscaPasajero. ";
+                            response.Mensaje += "Error: BuscaPasajero.";
                             return response;
                         }
                     }
@@ -166,6 +160,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = resBuscarPlanoBus.Valor;
+                response.Mensaje += "Correcto: MuestraPlano.";
                 response.Estado = true;
 
                 return response;
@@ -173,7 +168,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(PlanoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcListPlano, false);
+                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcMuestraPlano, false);
             }
         }
     }

@@ -29,7 +29,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: ValidaUsuario. ";
+                    response.Mensaje = "Correcto: ValidaUsuario.";
                     response.Estado = true;
                 }
             }

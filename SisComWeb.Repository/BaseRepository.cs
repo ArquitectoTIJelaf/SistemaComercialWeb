@@ -57,7 +57,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaOficinas. ";
+                    response.Mensaje = "Correcto: ListaOficinas.";
                     response.Estado = true;
                 }
             }
@@ -80,7 +80,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaPuntosVenta. ";
+                    response.Mensaje = "Correcto: ListaPuntosVenta.";
                     response.Estado = true;
                 }
             }
@@ -102,7 +102,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaUsuarios. ";
+                    response.Mensaje = "Correcto: ListaUsuarios.";
                     response.Estado = true;
                 }
             }
@@ -124,7 +124,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaServicios. ";
+                    response.Mensaje = "Correcto: ListaServicios.";
                     response.Estado = true;
                 }
             }
@@ -146,7 +146,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaEmpresas. ";
+                    response.Mensaje = "Correcto: ListaEmpresas.";
                     response.Estado = true;
                 }
             }
@@ -168,7 +168,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaTiposDoc. ";
+                    response.Mensaje = "Correcto: ListaTiposDoc.";
                     response.Estado = true;
                 }
             }

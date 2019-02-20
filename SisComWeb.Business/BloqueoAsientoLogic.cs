@@ -16,11 +16,9 @@ namespace SisComWeb.Business
 
                 // Validar 'BloqueoAsiento'
                 var resValidarBloqueoAsiento = BloqueoAsientoRepository.ValidarBloqueoAsiento(request.CodiProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino, request.NumeAsiento.ToString(), request.FechaProgramacion);
-                if (resValidarBloqueoAsiento.Estado)
-                    response.Mensaje += resValidarBloqueoAsiento.Mensaje;
-                else
+                if (!resValidarBloqueoAsiento.Estado)
                 {
-                    response.Mensaje += "Error: BuscarPlanoBus. ";
+                    response.Mensaje += "Error: BuscarPlanoBus.";
                     return response;
                 }
 
@@ -28,6 +26,7 @@ namespace SisComWeb.Business
                 {
                     response.EsCorrecto = true;
                     response.Valor = 0;
+                    response.Mensaje = "resValidarBloqueoAsiento: Asiento ocupado.";
                     response.Estado = true;
 
                     return response;
@@ -39,11 +38,9 @@ namespace SisComWeb.Business
                     {
                         // Bloquear 'AsientoProgramacion'
                         resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoProgramacion(request.CodiProgramacion, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
-                        if (resBloquearAsiento.Estado)
-                            response.Mensaje += resBloquearAsiento.Mensaje;
-                        else
+                        if (!resBloquearAsiento.Estado)
                         {
-                            response.Mensaje += "Error: BloquearAsientoProgramacion. ";
+                            response.Mensaje += "Error: BloquearAsientoProgramacion.";
                             return response;
                         }
                     }
@@ -51,11 +48,9 @@ namespace SisComWeb.Business
                     {
                         // Bloquear 'AsientoViaje'
                         resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoViaje(request.NroViaje, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
-                        if (resBloquearAsiento.Estado)
-                            response.Mensaje += resBloquearAsiento.Mensaje;
-                        else
+                        if (!resBloquearAsiento.Estado)
                         {
-                            response.Mensaje += "Error: BloquearAsientoViaje. ";
+                            response.Mensaje += "Error: BloquearAsientoViaje.";
                             return response;
                         }
                     }
@@ -63,6 +58,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = int.Parse(resBloquearAsiento.Valor.ToString());
+                response.Mensaje += "Correcto: BloqueoAsiento.";
                 response.Estado = true;
 
                 return response;
@@ -70,7 +66,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgErrExcBusqAsiento, false);
+                return new Response<int>(false, 0, Message.MsgErrExcBloqueoAsiento, false);
             }
         }
 
@@ -82,16 +78,15 @@ namespace SisComWeb.Business
 
                 // Validar 'LiberaAsiento'
                 var resLiberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
-                if (resLiberaAsiento.Estado)
-                    response.Mensaje += resLiberaAsiento.Mensaje;
-                else
+                if (!resLiberaAsiento.Estado)
                 {
-                    response.Mensaje += "Error: LiberaAsiento. ";
+                    response.Mensaje += "Error: LiberaAsiento.";
                     return response;
                 }
 
                 response.EsCorrecto = true;
                 response.Valor = resLiberaAsiento.Valor;
+                response.Mensaje += "Correcto: LiberaAsiento.";
                 response.Estado = true;
 
                 return response;
@@ -99,7 +94,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcBusqAsientoBloqueado, false);
+                return new Response<bool>(false, false, Message.MsgErrExcLiberaAsiento, false);
             }
         }
     }

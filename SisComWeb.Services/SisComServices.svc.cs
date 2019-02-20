@@ -103,13 +103,13 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcBusqUsuario, false);
+                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcValidaUsuario, false);
             }
         }
 
         #endregion
 
-        #region REGISTRO CLIENTE
+        #region REGISTRO CLIENTE PASAJERO
 
         public Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
@@ -150,7 +150,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcListItinerario, false);
+                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcBuscaItinerarios, false);
             }
         }
 
@@ -167,7 +167,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcListPlano, false);
+                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcMuestraPlano, false);
             }
         }
 
@@ -184,7 +184,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcBusqTurno, false);
+                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcMuestraTurno, false);
             }
         }
 
@@ -201,7 +201,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgErrExcBusqAsiento, false);
+                return new Response<int>(false, 0, Message.MsgErrExcBloqueoAsiento, false);
             }
         }
 
@@ -214,7 +214,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcBusqAsientoBloqueado, false);
+                return new Response<bool>(false, false, Message.MsgErrExcLiberaAsiento, false);
             }
         }
 

@@ -18,11 +18,9 @@ namespace SisComWeb.Business
 
                 // Lista Itinerarios
                 var resBuscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
-                if (resBuscarTurno.Estado)
-                    response.Mensaje += resBuscarTurno.Mensaje;
-                else
+                if (!resBuscarTurno.Estado)
                 {
-                    response.Mensaje += "Error: BuscarTurno. ";
+                    response.Mensaje += "Error: BuscarTurno.";
                     return response;
                 }
 
@@ -46,7 +44,7 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    response.Mensaje += "Error: VerificaCambiosTurnoViaje. ";
+                    response.Mensaje += "Error: VerificaCambiosTurnoViaje.";
                     return response;
                 }
 
@@ -67,7 +65,7 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        response.Mensaje += "Error: ObtenerBusProgramacion. ";
+                        response.Mensaje += "Error: ObtenerBusProgramacion.";
                         return response;
                     }
                 }
@@ -106,25 +104,25 @@ namespace SisComWeb.Business
                             }
                             else
                             {
-                                response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0. ";
+                                response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0.";
                                 return response;
                             }
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerBusEstandar sin hora. ";
+                            response.Mensaje += "Error: ObtenerBusEstandar sin hora.";
                             return response;
                         }
                     }
                     else
                     {
-                        response.Mensaje += "Error: ObtenerBusEstandar con Hora. ";
+                        response.Mensaje += "Error: ObtenerBusEstandar con Hora.";
                         return response;
                     }
                 }
                 else
                 {
-                    response.Mensaje += "Error: BuscarProgramacionViaje. ";
+                    response.Mensaje += "Error: BuscarProgramacionViaje.";
                     return response;
                 }
 
@@ -137,7 +135,7 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    response.Mensaje += "Error: ValidarProgrmacionCerrada. ";
+                    response.Mensaje += "Error: ValidarProgrmacionCerrada.";
                     return response;
                 }
 
@@ -149,7 +147,7 @@ namespace SisComWeb.Business
                         resBuscarTurno.Valor.AsientosVendidos = resObtenerTotalVentas.Valor;
                     else
                     {
-                        response.Mensaje += "Error: ObtenerTotalVentas. ";
+                        response.Mensaje += "Error: ObtenerTotalVentas.";
                         return response;
                     }
                 }
@@ -160,7 +158,7 @@ namespace SisComWeb.Business
                     resBuscarTurno.Valor.ListaEmbarques = resListarPuntosEmbarque.Valor;
                 else
                 {
-                    response.Mensaje += "Error: ListarPuntosEmbarque. ";
+                    response.Mensaje += "Error: ListarPuntosEmbarque.";
                     return response;
                 }
 
@@ -170,7 +168,7 @@ namespace SisComWeb.Business
                     resBuscarTurno.Valor.ListaArribos = resListarPuntosArribo.Valor;
                 else
                 {
-                    response.Mensaje += "Error: ListarPuntosArribo. ";
+                    response.Mensaje += "Error: ListarPuntosArribo.";
                     return response;
                 }
 
@@ -194,12 +192,13 @@ namespace SisComWeb.Business
                     resBuscarTurno.Valor.ListaPlanoBus = resMuestraPlano.Valor;
                 else
                 {
-                    response.Mensaje += "Error: resMuestraPlano. ";
+                    response.Mensaje += "Error: resMuestraPlano.";
                     return response;
                 }
 
                 response.EsCorrecto = true;
                 response.Valor = resBuscarTurno.Valor;
+                response.Mensaje += "Correcto: MuestraTurno.";
                 response.Estado = true;
 
                 return response;
@@ -207,7 +206,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(TurnoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcBusqTurno, false);
+                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcMuestraTurno, false);
             }
         }
     }
