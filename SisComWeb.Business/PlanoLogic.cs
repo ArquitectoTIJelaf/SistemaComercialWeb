@@ -117,6 +117,7 @@ namespace SisComWeb.Business
                             resListarAsientosOcupados.Valor[i].FechaNacimiento = resBuscaPasajero.Valor.FechaNacimiento;
                             resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
                             resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
+                            resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo;
                         }
                         else
                         {
@@ -153,6 +154,7 @@ namespace SisComWeb.Business
                                 ele.FechaNacimiento = ocu.FechaNacimiento;
                                 ele.Edad = ocu.Edad;
                                 ele.Telefono = ocu.Telefono;
+                                ele.Sexo = ocu.Sexo;
                             }
                         }
                     }
