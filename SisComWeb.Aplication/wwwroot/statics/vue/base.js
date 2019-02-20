@@ -14,7 +14,7 @@
 var APP = APP || {};
 //APP.path = ["/"].indexOf(window.location.pathname[window.location.pathname.length - 1]) !== -1 ? window.location.pathname : window.location.pathname + "/";
 //if ((window.location.origin).includes("localhost"))
-    APP.path = window.location.pathname;
+APP.path = window.location.pathname;
 APP.base = APP.path.substring(0, APP.path.indexOf('/', 1));
 APP.area = APP.path.substring(0, APP.path.indexOf('/', APP.path.indexOf('/', 1) + 1));
 APP.ctrl = APP.path.substring(0, APP.path.indexOf('/', APP.path.indexOf('/', APP.path.indexOf('/', 1) + 1) + 1));
@@ -1272,15 +1272,15 @@ $(function () {
     if ($('.dp').length) {
 
         $('.dp').datetimepicker({
-            keyBinds: {
-                enter: function () {
-                    if (this.date() === null) {
-                        this.date(moment());
-                    }
-                    this.hide();
-                }
-            },
-            useCurrent: false,
+            //keyBinds: {
+            //    enter: function () {
+            //        if (this.date() === null) {
+            //            this.date(moment());
+            //        }
+            //        this.hide();
+            //    }
+            //},
+            useCurrent: true,
             locale: 'es',
             showTodayButton: false,
             showClose: false,
@@ -1301,22 +1301,24 @@ $(function () {
     if ($('.dph').length) {
 
         $('.dph').datetimepicker({
-            keyBinds: {
-                enter: function (e) {
-                    if (this.date() === null) {
-                        this.date(moment());
-                    }
-                    this.hide();
-                }
-            },
-            useCurrent: false,
+            //keyBinds: {
+            //    enter: function () {
+            //        if (this.date() === null) {
+            //            this.date(moment());
+            //        }
+            //        this.hide();
+            //    }
+            //},
+            useCurrent: true,
             locale: 'es',
             showTodayButton: false,
             showClose: false,
             showClear: false,
             keepOpen: false,
             toolbarPlacement: 'top',
-            format: 'hh:mm A',          
+            format: 'hh:mm A',
+            //viewDate: '23-04-2015 23:00',
+            //defaultDate: (new Date()).setHours(0, 0, 0),
             tooltips: {
                 today: 'Ir a la hora actual',
                 clear: 'Borrar hora',
@@ -1324,10 +1326,6 @@ $(function () {
             }
         });
     }
-
-    [].slice.call(document.querySelectorAll('.sttabs')).forEach(function (el) {
-        new CBPFWTabs(el);
-    });
 
 });
 /*!********************* Document ready */

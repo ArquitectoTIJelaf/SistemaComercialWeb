@@ -185,6 +185,15 @@
             position: relative;
             right: -10%;
         }
+
+        .check-with-label:checked + .label-for-check {
+            
+        }
+
+        .active-chck {
+            color: #2A97F4;
+            font-weight: 500 !important;
+        }
     </style>
 }
 
@@ -201,34 +210,87 @@
                 });
             }
 
-            $("#cboEmpresa input[type=search]").blur(function () {
-                $('#cboSucursal input[type=search]').focus();
+            //#region RECORRIDO ITINERARIOS
+
+            //$('#cboOrigenPas input[type=search]').blur(function () {
+            //    $('#cboDestinoPas input[type=search]').focus();
+            //});
+            //$('#cboDestinoPas input[type=search]').blur(function () {
+            //    $('#cboDestinoBus input[type=search]').focus();
+            //});
+            //$('#cboDestinoBus input[type=search]').blur(function () {
+            //    $('#txtFecha').focus();
+            //});
+            //$('#txtFecha').blur(function () {
+            //    $('#txtHora').focus();
+            //});
+            //$('#txtHora').blur(function () {
+            //    $('#chckTodos:first').focus();
+            //});
+
+            $(document).on('focus active', 'input[type=checkbox]', function () {
+                $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
-            $("#cboSucursal input[type=search]").blur(function () {
-                $('#cboOrigenBus input[type=search]').focus();
+            $(document).on('blur', 'input[type=checkbox]', function () {
+                $('label[for=' + $(this).attr('id') + ']').removeClass('active-chck');
             });
-            $("#cboOrigenBus input[type=search]").blur(function () {
-                $('#cboPVOrigenBus input[type=search]').focus();
+            //#endregion
+
+            //#region RECORRIDO TURNOS
+
+            var over_click_filter_ventas;
+            $('#FiltersVentas').mouseenter(function () {
+                over_click_filter_ventas = true;
+            }).mouseleave(function () {
+                over_click_filter_ventas = false;
             });
-            $("#cboPVOrigenBus input[type=search]").blur(function () {
-                $('#cboDestinoBus_2 input[type=search]').focus();
+            $('#cboEmpresa input[type=search]').blur(function (e) {
+                if (over_click_filter_ventas) {
+                    $('#cboSucursal input[type=search]').focus();
+                }
             });
-            $("#cboDestinoBus_2 input[type=search]").blur(function () {
-                $('#cboServicio input[type=search]').focus();
+            $('#cboSucursal input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboOrigenBus input[type=search]').focus();
+                }
             });
-            $("#cboServicio input[type=search]").blur(function () {
-                $('#cboDestinoPas_2 input[type=search]').focus();
+            $('#cboOrigenBus input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboPVOrigenBus input[type=search]').focus();
+                }
             });
-            $("#cboDestinoPas_2 input[type=search]").blur(function () {
-                $('#txtTurno').focus();
+            $('#cboPVOrigenBus input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboDestinoBus_2 input[type=search]').focus();
+                }
             });
-            $("#txtTurno").blur(function () {
-                $('#txtFecha_2').focus();
+            $('#cboDestinoBus_2 input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboServicio input[type=search]').focus();
+                }
             });
-            $("#txtFecha_2").blur(function () {
-                appController.chargeTurnos();
+            $('#cboServicio input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#cboDestinoPas_2 input[type=search]').focus();
+                }
             });
-            
+            $('#cboDestinoPas_2 input[type=search]').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#txtTurno').focus();
+                }
+            });
+            $('#txtTurno').blur(function () {
+                if (over_click_filter_ventas) {
+                    $('#txtFecha_2').focus();
+                }
+            });
+            $('#txtFecha_2').blur(function () {
+                if (over_click_filter_ventas) {
+                    appController.chargeTurnos();
+                }
+            });
+            //#endregion
+
         });
 
         Vue.use(VueMask.VueMaskPlugin);
@@ -273,6 +335,9 @@
                     appVueTable.showVentas = false;
                     appVueVenta.showVentas = false;
                 },
+                chargeItinerarios: function () {
+                    appVueFilter.search();
+                },
                 chargeTurnos: function () {
                     var item = {};
                     appVueVenta.firstCharge = false;
@@ -314,8 +379,7 @@
                 $(".preloader").fadeIn();
                 this.getSucursales();
                 this.$nextTick(() => {
-                    $('.vs__selected-options input[type=search]').addClass('input-sm');
-                    $('#cboOrigenPas input[type=search]').focus();
+                    $('#cboDestinoPas input[type=search]').focus();
                     $(".preloader").fadeOut();
                 });
             },
@@ -350,7 +414,10 @@
                         .then(res => {
                             appController.loadTable(res.data);
                             this.processing = false;
-                        }).catch(APP.rq.axios_handler_error_alert);
+                        }).catch(err => {
+                            this.processing = false;
+                            APP.rq.axios_handler_error_alert;
+                        });
                 },
                 recorrido: function () {
                     var _this = this;
@@ -364,31 +431,39 @@
                         $('#txtFecha').focus();
                     } else if (_this.filtro.Hora === '') {
                         $('#txtHora').focus();
-                    } else {
-                        $('#buscar').focus();
                     }
+                },
+                nextStep: function (code) {
+                    switch (code) {
+                        case 1:
+                            $('#cboDestinoPas input[type=search]').focus();
+                            break;
+                        case 2:
+                            $('#cboDestinoBus input[type=search]').focus();
+                            break;
+                        case 3:
+                            $('#txtFecha').focus();
+                            break;
+                        case 4:
+                            this.filtro.FechaViaje = $('#txtFecha').val();//$('#txtFecha').data('DateTimePicker').date()
+                            $('#txtHora').focus();
+                            break;
+                        case 5:
+                            this.filtro.Hora = $('#txtHora').val();
+                            $('#chckTodos:first').focus();
+                            break;
+                        case 6:
+                            $('#chckProgramados:first').focus();
+                            break;
+                        case 7:
+                            $('#buscar').focus();
+                            break;
+                    }                    
                 }
             },
             computed: {
             },
             watch: {
-                'filtro.CodiOrigen': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.CodiDestino': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.CodiRuta': function (newVal, oldVal) {
-                    this.recorrido();
-                },
-                'filtro.FechaViaje': function (newVal, oldVal) {
-                    if (String(newVal).replace(/\s/g, '').length > 0)
-                        this.recorrido();
-                },
-                'filtro.Hora': function (newVal, oldVal) {
-                    if (String(newVal).replace(/\s/g, '').length > 0)
-                        this.recorrido();
-                }
             }
         });
 
@@ -478,15 +553,18 @@
                     tiposDoc: [],
                     turnos: [],
                     sexos: [
-                        { 'id': 1, 'label': 'Masculino' },
-                        { 'id': 2, 'label': 'Femenino' }
+                        { 'id': 'M', 'label': 'MASCULINO' },
+                        { 'id': 'F', 'label': 'FEMENINO' }
                     ]
                 },
                 objVenta: {
+                    IdCliente: 0,
                     CodiTipoDoc: null,
                     Documento: '',
                     Nombres: '',
                     Apellidos: '',
+                    ApellidoPaterno: '',
+                    ApellidoMaterno: '',
                     FechaNac: '',
                     Edad: '',
                     Sexo: '',
@@ -511,9 +589,6 @@
                 this.getSucursales();
                 this.getServicios();
                 this.getTiposDoc();
-                this.$nextTick(() => {
-                    $('.vs__selected-options input[type=search]').addClass('input-sm');
-                });
             },
             methods: {
                 chargeVentas: function (item, fechaViaje, turnos) {
@@ -625,46 +700,7 @@
                     this.showPlano = false;
                     this.getTurno(item, item.FechaViaje);
                 },
-                recorrido: function () {
-                    var _this = this;
-                    if (_this.filtro.CodiEmpresa === null) {//CodiEmpresa
-                        $('#cboEmpresa input[type=search]').focus();
-                    } else if (_this.filtro.CodiSucursal === null) {//CodiOrigen
-                        $('#cboSucursal input[type=search]').focus();
-                    } else if (_this.filtro.CodiOrigenBus === null) {//CodiSucursal
-                        $('#cboOrigenBus input[type=search]').focus();
-                    } else if (_this.filtro.CodiPVOrigenBus === null) {//CodiPuntoVenta
-                        $('#cboPVOrigenBus input[type=search]').focus();
-                    } else if (_this.filtro.CodiDestinoBus === null) {//CodiRuta
-                        $('#cboDestinoBus_2 input[type=search]').focus();
-                    } else if (_this.filtro.CodiServicio === null) {//CodiServicio
-                        $('#cboServicio input[type=search]').focus();
-                    } else if (_this.filtro.CodiDestinoPas === null) {//CodiDestino
-                        $('#cboDestinoPas_2 input[type=search]').focus();
-                    } else if (_this.filtro.Turno === '') {//HoraPartida
-                        $('#txtTurno').focus();
-                    } else if (_this.filtro.Fecha === '') {//FechaViaje
-                        $('#txtFecha_2').focus();
-                    } else {
-                        if (!_this.firstCharge) {
-                            var item = {};
-                            item.CodiEmpresa = _this.filtro.CodiEmpresa.id;
-                            item.CodiOrigen = _this.filtro.CodiSucursal.id;
-                            item.CodiSucursal = _this.filtro.CodiOrigenBus.id;
-                            item.CodiPuntoVenta = _this.filtro.CodiPVOrigenBus.id;
-                            item.CodiRuta = _this.filtro.CodiDestinoBus.id;
-                            item.CodiServicio = _this.filtro.CodiServicio.id;
-                            item.CodiDestino = _this.filtro.CodiDestinoPas.id;
-                            item.HoraPartida = _this.filtro.Turno.replace(" ", "");
-                            item.FechaViaje = _this.filtro.Fecha;
-                            _this.getTurno(item, item.FechaViaje);
-                            _this.$nextTick(() => {
-                                $('#btnDesplegar').click();
-                            });
-                        }
-                    }
-                },
-                clear: async function () {
+                clear: function () {
                     var _this = this;
                     _this.firstCharge = false; //TODO
                     _this.filtro.CodiEmpresa = null;
@@ -709,6 +745,7 @@
                             if (res.statusText === "OK") {
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
+                                    _this.passSectionVentas(asientoSel.Tipo);
                                     APP.msg.info('Asiento bloqueado');
 
                                     // CREATE COOKIE
@@ -728,6 +765,7 @@
                             if (res.statusText === "OK") {
                                 if (res.data) {
                                     asientoSel.IDS = 0;
+                                    this.clearSectionVentas();
                                     APP.msg.info('Asiento liberado');
 
                                     // DELETE COOKIE
@@ -763,11 +801,97 @@
                     });
 
                     return respuesta;
+                },
+                recorridoSectionVentas: function () {
+                    var _this = this;
+                    if (!_this.objVenta.CodiTipoDoc) {
+                        $('#cboTipoDoc input[type=search]').focus();
+                    } else if (_this.objVenta.Documento === '') {
+                        $('#txtDocumento').focus();
+                    } else if (_this.objVenta.Nombres === '') {
+                        $('#txtNombres').focus();
+                    } else if (_this.objVenta.Apellidos === '') {
+                        $('#txtApellidos').focus();
+                    } else if (_this.objVenta.FechaNac === '') {
+                        $('#txtFechaNac').focus();
+                    } else if (!_this.objVenta.Sexo) {
+                        $('#cboSexo input[type=search]').focus();
+                    } else if (_this.objVenta.Telefono === '') {
+                        $('#txtTelefono').focus();
+                    } else if (_this.objVenta.Ruc === '') {
+                        $('#txtRuc').focus();
+                    } else if (_this.objVenta.Recoger === '') {
+                        $('#txtRecoger').focus();
+                    } else if (_this.objVenta.Reintegro === '') {
+                        $('#txtReintegro').focus();
+                    }
+                },
+                searchUser: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                        tipoDoc: _this.objVenta.CodiTipoDoc.id,
+                        numeroDoc: _this.objVenta.Documento
+                    }))
+                        .then(res => {
+                            if (res.data.IdCliente !== 0) {
+                                _this.objVenta.IdCliente = res.data.IdCliente;
+                                _this.objVenta.Nombres = res.data.NombreCliente;
+                                _this.objVenta.Apellidos = res.data.ApellidoPaterno + ' ' + res.data.ApellidoMaterno;
+                                _this.objVenta.ApellidoPaterno = res.data.ApellidoPaterno ;
+                                _this.objVenta.ApellidoMaterno = res.data.ApellidoMaterno;
+                                _this.objVenta.FechaNac = res.data.FechaNacimiento;
+                                _this.objVenta.Edad = res.data.Edad;
+                                _this.objVenta.Sexo = _this.list.sexos.find(x => x.id === res.data.Sexo);
+                                _this.objVenta.Telefono = res.data.Telefono;
+                                _this.objVenta.Ruc = res.data.RucContacto;
+                            } else {
+                                _this.objVenta.Nombres = '';
+                                _this.objVenta.Apellidos = '';
+                                _this.objVenta.FechaNac = '';
+                                $('#txtFechaNac').data("DateTimePicker").clear();
+                                _this.objVenta.Edad = '';
+                                _this.objVenta.Sexo = null;
+                                _this.objVenta.Telefono = '';
+                                _this.objVenta.Ruc = '';
+                            }
+                            _this.recorridoSectionVentas();
+                        }).catch(APP.rq.axios_handler_error_alert);                    
+                },
+                passSectionVentas: function (_nroAsiento) {
+                    this.objVenta.NroAsiento = _nroAsiento;
+                    this.objVenta.NroVenta = 'N° 02-00000??';
+                    this.recorridoSectionVentas();
+                },
+                clearSectionVentas: function () {
+                    this.objVenta.NroAsiento = '';
+                    this.objVenta.NroVenta = '';
+                },
+                saveUser: function () {
+                    var _this = this;
+                    var input = {};
+                    input.IdCliente = _this.objVenta.IdCliente;
+                    input.TipoDoc = _this.objVenta.CodiTipoDoc.id;
+                    input.NumeroDoc = _this.objVenta.Documento;
+                    input.NombreCliente = _this.objVenta.Nombres;
+                    input.ApellidoPaterno = _this.objVenta.ApellidoPaterno;
+                    input.ApellidoMaterno = _this.objVenta.ApellidoMaterno;
+                    input.FechaNacimiento = _this.objVenta.FechaNac;
+                    input.Edad = _this.objVenta.Edad;
+                    input.Direccion = '';
+                    input.Telefono = _this.objVenta.Telefono;
+                    input.Email = '';
+                    input.RucContacto = _this.objVenta.Ruc;
+                    input.Sexo = _this.objVenta.Sexo;
+                    APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', input)
+                        .then(res => {
+                            APP.msg.info(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {
             },
             watch: {
+                //recorridoSectionVentas
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
@@ -778,7 +902,7 @@
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
                     }
-                },                
+                },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
@@ -789,15 +913,22 @@
                         document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
                     }
                 },
+                'objVenta.CodiTipoDoc': function (newVal, oldVal) {
+                    this.recorridoSectionVentas();
+                },
                 'objVenta.FechaNac': function (newVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0) {
                             var auxFechaNac = moment(newVal, 'DD/MM/YYYY');
                             this.objVenta.Edad = '' + moment().diff(auxFechaNac, 'years');
+                            this.recorridoSectionVentas();
                         }
                     } else {
                         return '';
                     }
+                },
+                'objVenta.Sexo': function (newVal, oldVal) {
+                    this.recorridoSectionVentas();
                 }
             }
         });

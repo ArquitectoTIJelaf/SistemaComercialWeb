@@ -444,6 +444,12 @@ body {
     border: 1px solid #66afe9 !important;
 }
 
+.vs__selected-options input[type=search] {
+    height: 30px;
+    padding: 5px 10px;
+    line-height: 1.5;
+}
+
 .chk-width {
     width: unset;
 }
@@ -608,6 +614,11 @@ body {
     border: 1px solid rgb(228, 231, 234);
     color: #2a97f4;
     background-color: white;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #66afe9;
 }
 
 ul.pagination {

@@ -1,11 +1,11 @@
 ﻿
 <div id="appVueFilter" v-show="!showVentas" class="row">
-    <div class="col-md-12">
+    <div id="FilterItinerarios" class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-wrapper" aria-expanded="false">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="display:none;">
                             <div class="form-group has-success">
                                 <label class="col-md-12 text-center" style="font-family:Rubik, sans-serif; font-size:14px;">FILTRAR</label>
                             </div>
@@ -20,6 +20,7 @@
                                                   :get-option-label="getLabel"
                                                   :options="list.origenesPas"
                                                   :placeholder="'ORIGEN PAS.'"
+                                                  @@keydown.13.native.prevent="nextStep(1)"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -33,6 +34,7 @@
                                                   :get-option-label="getLabel"
                                                   :options="list.destinosPas"
                                                   :placeholder="'DESTINO PAS.'"
+                                                  @@keydown.13.native.prevent="nextStep(2)"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -46,6 +48,7 @@
                                                   :get-option-label="getLabel"
                                                   :options="list.destinosBus"
                                                   :placeholder="'DESTINO BUS.'"
+                                                  @@keydown.13.native.prevent="nextStep(3)"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -57,8 +60,8 @@
                                     <div class="form-group ">
                                         <div class="input-group input-sm group-strench">
                                             <label class="control-label">Fecha desde:</label>
-                                            <input @@blur="filtro.FechaViaje = $event.target.value.trim()"
-                                                   :value="filtro.FechaViaje"
+                                            <input :value="filtro.FechaViaje"
+                                                   @@blur="nextStep(4)"
                                                    type="text"
                                                    id="txtFecha"
                                                    class="form-control input-sm dp"
@@ -70,8 +73,9 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="control-label">Hora desde:</label>
-                                        <input @@blur="filtro.Hora = $event.target.value.trim()"
+                                        <input @*@@blur="filtro.Hora = $event.target.value.trim()"*@
                                                :value="filtro.Hora"
+                                               @@blur="nextStep(5)"
                                                type="text"
                                                id="txtHora"
                                                class="form-control input-sm dph"
@@ -79,26 +83,26 @@
                                                autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="margin-top: 15px;">
                                     <div class="form-group">
                                         <div class="checkbox-list">
                                             <div class="col-md-6">
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="chckTodos" type="checkbox" v-model="filtro.TodosTurnos">
-                                                    <label for="chckTodos">TODOS</label>
+                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(6)">@*1*@
+                                                    <input id="chckTodos" type="checkbox" class="check-with-label" v-model="filtro.TodosTurnos">
+                                                    <label for="chckTodos" class="label-for-check">TODOS</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="chckProgramados" type="checkbox" v-model="filtro.SoloProgramados">
-                                                    <label for="chckProgramados">PROGRAMADOS</label>
+                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(7)">@*2*@
+                                                    <input id="chckProgramados" type="checkbox" class="check-with-label" v-model="filtro.SoloProgramados">
+                                                    <label for="chckProgramados" class="label-for-check">PROGRAMADOS</label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-1">
+                            <div class="col-md-1" style="margin-top: 15px;">
                                 <button id="buscar" @@click="search" :disabled="processing" class="btn btn-inverse btn-block waves-effect waves-light">
                                     <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
                                 </button>

@@ -6,7 +6,7 @@
         <div class="white-box" style="padding: 10px 0 15px 0;">
             <div @*class="custom-scroll-container"*@>
                 <div class="row">
-                    <div class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
+                    <div id="FiltersVentas" class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
                         <div class="col-md-12">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -62,7 +62,7 @@
                                         </template>
                                         <template v-else>
                                             <span class="mdi mdi-arrow-up-bold-circle fa-fw"></span>CONTRAER TURNOS
-                                        </template>                                        
+                                        </template>
                                     </button>
                                 </div>
                             </div>
@@ -146,7 +146,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>                                        
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
@@ -213,7 +213,7 @@
 
                         </div>
                     </div>
-                    <div v-show="showPlano" class="container-bus bgc-emp" >
+                    <div v-show="showPlano" class="container-bus bgc-emp">
                         <div class="col-md-12" style="background-color: white; height: 40px;margin-bottom: 15px;border-radius: 4px;">
 
                         </div>
@@ -238,7 +238,7 @@
                                             </template>
                                             <template v-else>
                                                 <span :class="[item.Tipo]"></span>
-                                            </template>                                            
+                                            </template>
                                         </td>
                                     </tr>
                                     <tr>
@@ -317,7 +317,7 @@
                             </table>
                         </div>
                     </div>
-                    <div  v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
+                    <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 200px; width: 50px; ">
 
                         </div>
@@ -325,13 +325,13 @@
                             <div class="col-md-1">
                                 <div class="col-md-12">
                                     <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
-                                            <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
-                                            <input v-model="objVenta.NroAsiento"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="Nº"
-                                                   style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
-                                                   autocomplete="off">
+                                        <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
+                                        <input v-model="objVenta.NroAsiento"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="Nº"
+                                               style="text-align: center; border-color: #fff; font-size: 30px !important; font-weight: 500; "
+                                               autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +349,9 @@
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
                                         <input v-model="objVenta.Documento"
+                                               id="txtDocumento"
                                                type="text"
+                                               @@keypress.13.prevent="searchUser"
                                                class="form-control input-sm"
                                                placeholder="DOCUMENTO"
                                                style="width: 50%; display: inline-block; float: right; "
@@ -360,6 +362,8 @@
                                     <div class="form-group">
                                         <label class="control-label">Nombres:</label>
                                         <input v-model="objVenta.Nombres"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtNombres"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="NOMBRES"
@@ -370,6 +374,8 @@
                                     <div class="form-group">
                                         <label class="control-label">Apellidos:</label>
                                         <input v-model="objVenta.Apellidos"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtApellidos"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="Apellidos"
@@ -392,7 +398,9 @@
                                     <div class="form-group ">
                                         <label class="control-label">Edad:</label>
                                         <input :value="objVenta.Edad"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
                                                type="text"
+                                               id="txtEdad"
                                                class="form-control input-sm"
                                                placeholder="EDAD"
                                                style="text-align: center; "
@@ -419,6 +427,8 @@
                                         <div class="form-group">
                                             <label class="control-label">Teléfono:</label>
                                             <input v-model="objVenta.Telefono"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtTelefono"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="TELÉFONO"
@@ -430,6 +440,8 @@
                                     <div class="form-group">
                                         <label class="control-label">RUC:</label>
                                         <input v-model="objVenta.Ruc"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtRuc"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="RUC"
@@ -440,6 +452,8 @@
                                     <div class="form-group ">
                                         <label class="control-label">Recoger:</label>
                                         <input v-model="objVenta.Recoger"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtRecoger"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="RECOGER"
@@ -450,6 +464,8 @@
                                     <div class="form-group ">
                                         <label class="control-label">Reintegro:</label>
                                         <input v-model="objVenta.Reintegro"
+                                               @@keypress.13.prevent="saveUser"
+                                               id="txtReintegro"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="REINTEGRO"
@@ -461,6 +477,7 @@
                                     <div class="form-group ">
                                         <label class="control-label">Observación:</label>
                                         <input v-model="objVenta.Observacion"
+                                               id="txtObservacion"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="OBSERVACIÓN"
@@ -473,6 +490,7 @@
                                         <div class="form-group" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; padding: 5px 0px; ">
                                             <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
                                             <input v-model="objVenta.Precio"
+                                                   id="txtPrecio"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="PRECIO"
