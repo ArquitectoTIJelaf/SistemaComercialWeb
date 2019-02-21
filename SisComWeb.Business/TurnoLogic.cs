@@ -169,7 +169,7 @@ namespace SisComWeb.Business
                 }
 
                 // Lista 'PuntosEmbarque'
-                Response<List<PuntoEntity>> resListarPuntosEmbarque = ItinerarioRepository.ListarPuntosEmbarque(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, resBuscarTurno.Valor.HoraPartida);
+                Response<List<PuntoEntity>> resListarPuntosEmbarque = TurnoRepository.ListarPuntosEmbarque(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, resBuscarTurno.Valor.HoraPartida);
                 if (resListarPuntosEmbarque.Estado)
                     resBuscarTurno.Valor.ListaEmbarques = resListarPuntosEmbarque.Valor;
                 else
@@ -179,7 +179,7 @@ namespace SisComWeb.Business
                 }
 
                 // Lista 'PuntosArribo'
-                Response<List<PuntoEntity>> resListarPuntosArribo = ItinerarioRepository.ListarPuntosArribo(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, resBuscarTurno.Valor.HoraPartida);
+                Response<List<PuntoEntity>> resListarPuntosArribo = TurnoRepository.ListarPuntosArribo(resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino, resBuscarTurno.Valor.CodiServicio, resBuscarTurno.Valor.CodiEmpresa, resBuscarTurno.Valor.CodiPuntoVenta, resBuscarTurno.Valor.HoraPartida);
                 if (resListarPuntosArribo.Estado)
                     resBuscarTurno.Valor.ListaArribos = resListarPuntosArribo.Valor;
                 else
@@ -209,6 +209,16 @@ namespace SisComWeb.Business
                 else
                 {
                     response.Mensaje += "Error: resMuestraPlano.";
+                    return response;
+                }
+
+                // Lista 'DestinosRuta'
+                Response<List<DestinoRutaEntity>> resListarDestinosRuta = TurnoRepository.ListaDestinosRuta(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.CodiSucursal);
+                if (resListarDestinosRuta.Estado)
+                    resBuscarTurno.Valor.ListaDestinosRuta = resListarDestinosRuta.Valor;
+                else
+                {
+                    response.Mensaje += "Error: resListarDestinosRuta.";
                     return response;
                 }
 

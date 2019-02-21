@@ -75,5 +75,7 @@ namespace SisComWeb.Entity
         public string CodiCopiloto { get; set; }
 
         public string NombreCopiloto { get; set; }
+
+        public List<DestinoRutaEntity> ListaDestinosRuta { get; set; }
     }
 }
