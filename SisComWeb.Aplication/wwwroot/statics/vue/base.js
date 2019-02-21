@@ -1303,7 +1303,6 @@ $(function () {
         $('.dph').datetimepicker({
             keyBinds: {
                 enter: function () {
-                    debugger;
                     var _test = this;
                     if (this.date() === null) {
                         this.date(moment());

@@ -34,7 +34,7 @@
 
         public string RecogeEn { get; set; }
 
-        public long Color { get; set; }
+        public string Color { get; set; }
 
         public string FlagVenta { get; set; }
 

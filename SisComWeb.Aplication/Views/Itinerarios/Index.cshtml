@@ -541,6 +541,7 @@
                     tiposDoc: [],
                     turnos: [],
                     destinosRuta: [],
+                    embarques: [],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
                         { 'id': 'F', 'label': 'FEMENINO' }
@@ -631,6 +632,7 @@
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
 
                                 _this.list.destinosRuta = res.data.ListaDestinosRuta;
+                                _this.list.embarques = res.data.ListaEmbarques;
 
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
@@ -945,6 +947,17 @@
                 }
             },
             computed: {
+                setCadenaEmbarques: function () {
+                    var _this = this;
+                    var cadenaEmbarques = '';
+                    for (i = 0; i < _this.list.embarques.length; i++) {
+                        if (i !== _this.list.embarques.length - 1)
+                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora + ' - ';
+                        else
+                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora;
+                    }
+                    return cadenaEmbarques;
+                }
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {

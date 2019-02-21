@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Utility;
 using System.Collections.Generic;
 using System.Data;
 
@@ -119,7 +120,7 @@ namespace SisComWeb.Repository
                             Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad"),
                             PrecioVenta = Reader.GetRealValue(drlector, "Precio_Venta"),
                             RecogeEn = Reader.GetStringValue(drlector, "Recoge_En"),
-                            Color = Reader.GetBigIntValue(drlector, "Color"),
+                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")),
                             FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
                             Sigla = Reader.GetStringValue(drlector, "Sigla")
                         };
