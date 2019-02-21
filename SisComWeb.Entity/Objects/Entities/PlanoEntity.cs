@@ -51,5 +51,7 @@
         public string Telefono { get; set; }
 
         public string Sexo { get; set; }
+
+        public string Sigla { get; set; }
     }
 }
