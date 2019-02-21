@@ -301,6 +301,21 @@
             }
         });
 
+        //customColor
+        Vue.filter('customColor', function (value) {
+            switch (value) {
+                case 16741749:
+                    return '#7575FF';
+                    break;
+                case 6184703:
+                    return '#FF5E5E';
+                    break;
+                case 32768:
+                    return '#008000';
+                    break;
+            }
+        });
+
         var selectAll = {
             id: 0,
             label: 'TODOS'
@@ -540,6 +555,7 @@
                     plano5: [],
                     tiposDoc: [],
                     turnos: [],
+                    destinosRuta: [],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
                         { 'id': 'F', 'label': 'FEMENINO' }
@@ -628,6 +644,8 @@
                                 _this.objPlano.NombreChofer = res.data.NombreChofer;
                                 _this.objPlano.CodiCopiloto = res.data.CodiCopiloto;
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
+
+                                _this.list.destinosRuta = res.data.ListaDestinosRuta;
 
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
@@ -927,7 +945,6 @@
             computed: {
             },
             watch: {
-                //recorridoSectionVentas
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {

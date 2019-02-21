@@ -115,6 +115,19 @@ namespace SisComWeb.Aplication.Controllers
             }).ToList();
             return lista;
         }
+        
+        private static List<DestinoRuta> _ListaDestinosRuta(JToken list)
+        {
+            List<DestinoRuta> lista = list.Select(x => new DestinoRuta
+            {
+                CodiSucursal = (short)x["CodiSucursal"],
+                NomOficina = (string)x["NomOficina"],
+                Sigla = (string)x["Sigla"],
+                Color = (long)x["Color"]
+            }).ToList();
+
+            return lista;
+        }
 
         [Route("")]
         public ActionResult Index()
@@ -266,7 +279,8 @@ namespace SisComWeb.Aplication.Controllers
                         CodiChofer = (string)data["CodiChofer"],
                         NombreChofer = (string)data["NombreChofer"],
                         CodiCopiloto = (string)data["CodiCopiloto"],
-                        NombreCopiloto = (string)data["NombreCopiloto"]
+                        NombreCopiloto = (string)data["NombreCopiloto"],
+                        ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"])
                     };
                     return Json(item, JsonRequestBehavior.AllowGet);
                 }
