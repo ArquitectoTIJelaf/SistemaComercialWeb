@@ -10,7 +10,7 @@ namespace SisComWeb.Aplication.Models
         public string ApellidoMaterno { get; set; }
         public string ApellidoPaterno { get; set; }
         public string Codigo { get; set; }
-        public long Color { get; set; }
+        public string Color { get; set; }
         public int Edad { get; set; }
         public string FechaNacimiento { get; set; }
         public string FechaVenta { get; set; }

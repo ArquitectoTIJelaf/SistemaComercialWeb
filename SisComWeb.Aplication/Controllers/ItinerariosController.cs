@@ -90,7 +90,7 @@ namespace SisComWeb.Aplication.Controllers
                 ApellidoMaterno = (string)x["ApellidoMaterno"],
                 ApellidoPaterno = (string)x["ApellidoPaterno"],
                 Codigo = (string)x["Codigo"],
-                Color = (long)x["Color"],
+                Color = (string)x["Color"],
                 Edad = (int)x["Edad"],
                 FechaNacimiento = (string)x["FechaNacimiento"],
                 FechaVenta = (string)x["FechaVenta"],
@@ -124,7 +124,7 @@ namespace SisComWeb.Aplication.Controllers
                 CodiSucursal = (short)x["CodiSucursal"],
                 NomOficina = (string)x["NomOficina"],
                 Sigla = (string)x["Sigla"],
-                Color = (long)x["Color"]
+                Color = (string)x["Color"]
             }).ToList();
 
             return lista;

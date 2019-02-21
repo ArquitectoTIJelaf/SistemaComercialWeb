@@ -204,15 +204,18 @@
 @section scripts{
     <script>
 
+        //Vue.directive('input-mask', {
+        //    params: ['mask'],
+
+        //    bind: function () {
+        //        $(this.el).inputmask({
+        //            mask: this.params.mask
+        //        });
+
+        //    },
+        //});
+
         $(function () {
-
-            if ($('.dp').length) {
-
-                $('#spnFecha').click(function (event) {
-                    event.preventDefault();
-                    $('#txtFecha').focus();
-                });
-            }
 
             //#region RECORRIDO ITINERARIOS
 
@@ -279,10 +282,8 @@
             });
             //#endregion
 
-        });
-
-        Vue.use(VueMask.VueMaskPlugin);
-
+        });       
+       
         Vue.filter('money', function (value) {
             if (typeof value !== 'undefined' && value !== '') {
                 value = parseFloat(value);
@@ -408,6 +409,7 @@
                         });
                 },
                 recorrido: function () {
+                    debugger;
                     var _this = this;
                     if (_this.filtro.CodiOrigen === null) {
                         $('#cboOrigenPas input[type=search]').focus();
@@ -419,6 +421,8 @@
                         $('#txtFecha').focus();
                     } else if (_this.filtro.Hora === '') {
                         $('#txtHora').focus();
+                    } else {
+                        this.search();
                     }
                 },
                 nextStep: function (code) {
@@ -426,14 +430,14 @@
                         case 1:
                             $('#cboDestinoPas input[type=search]').focus();
                             break;
-                        case 2:
+                        case 2:                           
                             $('#cboDestinoBus input[type=search]').focus();
                             break;
                         case 3:
                             $('#txtFecha').focus();
                             break;
                         case 4:
-                            this.filtro.FechaViaje = $('#txtFecha').val();//$('#txtFecha').data('DateTimePicker').date()
+                            this.filtro.FechaViaje = $('#txtFecha').val();
                             $('#txtHora').focus();
                             break;
                         case 5:
@@ -446,12 +450,23 @@
                         case 7:
                             $('#buscar').focus();
                             break;
+                        default:
+                            this.recorrido();
                     }
                 }
             },
             computed: {
             },
             watch: {
+                'filtro.CodiOrigen': function (newVal, oldVal) {
+                    this.nextStep(1);
+                },
+                'filtro.CodiDestino': function (newVal, oldVal) {
+                    this.nextStep(2);
+                },
+                'filtro.CodiRuta': function (newVal, oldVal) {
+                    this.nextStep(3);
+                }
             }
         });
 
@@ -899,40 +914,13 @@
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
                     if (FechaVenta) {
-                        switch (Color) {
-                            case 45074:
-                                return { 'background-color': '#12B000' };
-                                break;
-                            case 11337901:
-                                return { 'background-color': '#AD00AD' };
-                                break;
-                            case 2752511:
-                                return { 'background-color': '#FFFF29' };
-                                break;
-                        }
+                        return { 'background-color': Color};
                     } else {
                         if (NumeAsiento === 0) {
                             if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
                         }
                     }
-                },                
-                bgcVentaBus2: function (Color) {
-                    //TODO: Borrar Método
-                    switch (Color) {
-                        case 65280:
-                            return '#12B000';
-                            break;
-                        case 11141290:
-                            return '#AA00AA';
-                            break;
-                        case 3145727:
-                            return '#FFFF2F';
-                            break;
-                        case 45074:
-                            return '#12B000';
-                            break;
-                    }
-                },
+                },       
                 iconVentaBus: function (Sexo, Edad) {
                     if (Edad < 18) {
                         return '/wwwroot/plugins/images/users/HOMBRE.png';
