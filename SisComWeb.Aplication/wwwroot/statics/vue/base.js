@@ -1272,15 +1272,15 @@ $(function () {
     if ($('.dp').length) {
 
         $('.dp').datetimepicker({
-            //keyBinds: {
-            //    enter: function () {
-            //        if (this.date() === null) {
-            //            this.date(moment());
-            //        }
-            //        this.hide();
-            //    }
-            //},
-            useCurrent: true,
+            keyBinds: {
+                enter: function (e) {
+                    if (!this.date() && !e[0].previousElementSibling.value) {
+                        this.date(moment());
+                    }
+                    this.hide();
+                }
+            },
+            useCurrent: false,
             locale: 'es',
             showTodayButton: false,
             showClose: false,
@@ -1302,10 +1302,8 @@ $(function () {
 
         $('.dph').datetimepicker({
             keyBinds: {
-                enter: function () {
-                    debugger;
-                    var _test = this;
-                    if (this.date() === null) {
+                enter: function (e) {
+                    if (!this.date() && !e[0].previousElementSibling.value) {
                         this.date(moment());
                     }
                     this.hide();
@@ -1464,11 +1462,14 @@ const Autocomplete = {
         document.removeEventListener("click", this.handleClickOutside);
     }
 };
-
 /*!********************* Vue Autocomplete*/
+
+/*********************** Vue Mask *****/
+
+Vue.use(VueMask.VueMaskPlugin);
+/*********************** Vue Mask *****/
 
 /*********************** Vue Select *****/
 
 Vue.component('v-select', VueSelect.VueSelect);
-
 /*!********************* Vue Select *****/

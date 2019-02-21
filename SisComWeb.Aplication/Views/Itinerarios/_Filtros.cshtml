@@ -19,7 +19,7 @@
                                                   :id="'cboOrigenPas'"
                                                   :get-option-label="getLabel"
                                                   :options="list.origenesPas"
-                                                  :placeholder="'ORIGEN PAS.'"
+                                                  :placeholder="'ORIGEN PAS.'"                                                  
                                                   @@keydown.13.native.prevent="nextStep(1)"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -60,10 +60,11 @@
                                     <div class="form-group ">
                                         <div class="input-group input-sm group-strench">
                                             <label class="control-label">Fecha desde:</label>
-                                            <input :value="filtro.FechaViaje"
+                                            <input v-model="filtro.FechaViaje"
+                                                   v-mask="'##/##/####'"
                                                    @@blur="nextStep(4)"
                                                    type="text"
-                                                   id="txtFecha"
+                                                   id="txtFecha"                                                   
                                                    class="form-control input-sm dp"
                                                    placeholder="FECHA"
                                                    autocomplete="off">
@@ -73,8 +74,8 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="control-label">Hora desde:</label>
-                                        <input @*@@blur="filtro.Hora = $event.target.value.trim()"*@
-                                               :value="filtro.Hora"
+                                        <input v-model="filtro.Hora"
+                                               v-mask="'##:## AM'"
                                                @@blur="nextStep(5)"
                                                type="text"
                                                id="txtHora"
@@ -103,7 +104,7 @@
                                 </div>
                             </div>
                             <div class="col-md-1" style="margin-top: 15px;">
-                                <button id="buscar" @@click="search" :disabled="processing" class="btn btn-inverse btn-block waves-effect waves-light">
+                                <button id="buscar" @@click="nextStep(0)" :disabled="processing" class="btn btn-inverse btn-block waves-effect waves-light">
                                     <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
                                 </button>
                             </div>

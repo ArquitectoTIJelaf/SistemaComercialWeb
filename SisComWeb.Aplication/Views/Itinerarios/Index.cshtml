@@ -206,14 +206,6 @@
 
         $(function () {
 
-            if ($('.dp').length) {
-
-                $('#spnFecha').click(function (event) {
-                    event.preventDefault();
-                    $('#txtFecha').focus();
-                });
-            }
-
             //#region RECORRIDO ITINERARIOS
 
             $(document).on('focus active', 'input[type=checkbox]', function () {
@@ -279,10 +271,8 @@
             });
             //#endregion
 
-        });
-
-        Vue.use(VueMask.VueMaskPlugin);
-
+        });       
+       
         Vue.filter('money', function (value) {
             if (typeof value !== 'undefined' && value !== '') {
                 value = parseFloat(value);
@@ -408,6 +398,7 @@
                         });
                 },
                 recorrido: function () {
+                    debugger;
                     var _this = this;
                     if (_this.filtro.CodiOrigen === null) {
                         $('#cboOrigenPas input[type=search]').focus();
@@ -419,6 +410,8 @@
                         $('#txtFecha').focus();
                     } else if (_this.filtro.Hora === '') {
                         $('#txtHora').focus();
+                    } else {
+                        this.search();
                     }
                 },
                 nextStep: function (code) {
@@ -426,14 +419,14 @@
                         case 1:
                             $('#cboDestinoPas input[type=search]').focus();
                             break;
-                        case 2:
+                        case 2:                           
                             $('#cboDestinoBus input[type=search]').focus();
                             break;
                         case 3:
                             $('#txtFecha').focus();
                             break;
                         case 4:
-                            this.filtro.FechaViaje = $('#txtFecha').val();//$('#txtFecha').data('DateTimePicker').date()
+                            this.filtro.FechaViaje = $('#txtFecha').val();
                             $('#txtHora').focus();
                             break;
                         case 5:
@@ -446,12 +439,23 @@
                         case 7:
                             $('#buscar').focus();
                             break;
+                        default:
+                            this.recorrido();
                     }
                 }
             },
             computed: {
             },
             watch: {
+                'filtro.CodiOrigen': function (newVal, oldVal) {
+                    this.nextStep(1);
+                },
+                'filtro.CodiDestino': function (newVal, oldVal) {
+                    this.nextStep(2);
+                },
+                'filtro.CodiRuta': function (newVal, oldVal) {
+                    this.nextStep(3);
+                }
             }
         });
 

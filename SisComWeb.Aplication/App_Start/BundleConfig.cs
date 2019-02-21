@@ -37,6 +37,7 @@ namespace SisComWeb.Aplication
                     "~/wwwroot/statics/vue/lang.js",
                     "~/wwwroot/statics/vue/vue-select.js",
                     "~/wwwroot/statics/vue/vue-paginate.js",
+                    "~/wwwroot/statics/vue/v-mask.min.js",
                     "~/wwwroot/statics/vue/base.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment_2.10.6_locale_es.js",
