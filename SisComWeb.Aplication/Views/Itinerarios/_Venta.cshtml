@@ -214,8 +214,27 @@
                         </div>
                     </div>
                     <div v-show="showPlano" class="container-bus bgc-emp">
-                        <div class="col-md-12" style="background-color: white; height: 40px;margin-bottom: 15px;border-radius: 4px;">
-
+                        <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px;">
+                            <div class="col-md-1" style="margin-top: 5px;">
+                                <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin-right: 10px; "/>
+                                <label>{{objPlano.CodiBus}}</label>                                
+                            </div>
+                            <div class="col-md-1" style="margin-top: 5px;">
+                                <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin-right: 10px; " />
+                                <label>{{objPlano.PlacaBus}}</label>                                
+                            </div>
+                            <div class="col-md-2" style="margin-top: 5px;">
+                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px; " />
+                                <label>{{objPlano.NombreChofer}}</label>
+                                
+                            </div>
+                            <div class="col-md-2" style="margin-top: 5px;">
+                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px; " />
+                                <label>{{objPlano.NombreCopiloto}}</label>
+                                
+                            </div>
+                            <div class="col-md-6" style="margin-top: 5px;">
+                            </div>
                         </div>
                         <div class="img-bus">
                             <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
@@ -226,7 +245,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano1" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                <button class="btn btn-bus" 
+                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                        @@click="bloquearAsiento(item)" 
+                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -246,7 +268,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano2" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                <button class="btn btn-bus"
+                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                        @@click="bloquearAsiento(item)" 
+                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -266,7 +291,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano3" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                <button class="btn btn-bus"
+                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                        @@click="bloquearAsiento(item)" 
+                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -286,7 +314,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano4" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                <button class="btn btn-bus"
+                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                        @@click="bloquearAsiento(item)" 
+                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -306,7 +337,10 @@
                                     <tr>
                                         <td v-for="(item, key) in list.plano5" class="bus-td">
                                             <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" @@click="bloquearAsiento(item)" :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                <button class="btn btn-bus"
+                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                        @@click="bloquearAsiento(item)" 
+                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                     <div class="icons-of-seat" v-if="item.FechaVenta">
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />

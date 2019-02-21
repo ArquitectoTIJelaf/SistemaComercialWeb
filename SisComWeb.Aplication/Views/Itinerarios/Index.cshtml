@@ -548,7 +548,11 @@
                 objPlano: {
                     CodiBus: '',
                     PlacaBus: '',
-                    PlanoBus: ''
+                    PlanoBus: '',
+                    CodiChofer: '',
+                    NombreChofer: '',
+                    CodiCopiloto: '',
+                    NombreCopiloto: ''
                 },
                 objVenta: {
                     IdCliente: 0,
@@ -616,6 +620,15 @@
                                 _this.filtro.CodiProgramacion = res.data.CodiProgramacion;
                                 await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
                                 _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(res.data.CodiPuntoVenta));
+
+                                _this.objPlano.CodiBus = res.data.CodiBus;
+                                _this.objPlano.PlacaBus = res.data.PlacaBus;
+                                _this.objPlano.PlanoBus = res.data.PlanoBus;
+                                _this.objPlano.CodiChofer = res.data.CodiChofer;
+                                _this.objPlano.NombreChofer = res.data.NombreChofer;
+                                _this.objPlano.CodiCopiloto = res.data.CodiCopiloto;
+                                _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
+
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
                                 if (tempList.length > 0 && limpiarAB) {
@@ -903,6 +916,11 @@
                         return '/wwwroot/plugins/images/users/HOMBRE.png';
                     } else {
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png': '/wwwroot/plugins/images/users/NINO.png';
+                    }
+                },
+                showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
+                    if (FechaVenta) {
+                        return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`
                     }
                 }
             },

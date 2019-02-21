@@ -38,6 +38,10 @@ namespace SisComWeb.Aplication.Models
         public List<Punto> ListaArribos { get; set; }
         public List<Punto> ListaEmbarques { get; set; }
         public List<Plano> ListaPlanoBus { get; set; }
+        public string CodiChofer { get; set; }
+        public string NombreChofer { get; set; }
+        public string CodiCopiloto { get; set; }
+        public string NombreCopiloto { get; set; }
     }
 
     public class FiltroItinerario

@@ -262,7 +262,11 @@ namespace SisComWeb.Aplication.Controllers
                         PlanoBus = (string)data["PlanoBus"],
                         ProgramacionCerrada = (bool)data["ProgramacionCerrada"],
                         RazonSocial = (string)data["RazonSocial"],
-                        StOpcional = (string)data["StOpcional"]
+                        StOpcional = (string)data["StOpcional"],
+                        CodiChofer = (string)data["CodiChofer"],
+                        NombreChofer = (string)data["NombreChofer"],
+                        CodiCopiloto = (string)data["CodiCopiloto"],
+                        NombreCopiloto = (string)data["NombreCopiloto"]
                     };
                     return Json(item, JsonRequestBehavior.AllowGet);
                 }
