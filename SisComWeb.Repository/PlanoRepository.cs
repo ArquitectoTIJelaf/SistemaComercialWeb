@@ -120,7 +120,8 @@ namespace SisComWeb.Repository
                             PrecioVenta = Reader.GetRealValue(drlector, "Precio_Venta"),
                             RecogeEn = Reader.GetStringValue(drlector, "Recoge_En"),
                             Color = Reader.GetBigIntValue(drlector, "Color"),
-                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA")
+                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
+                            Sigla = Reader.GetStringValue(drlector, "Sigla")
                         };
                         Lista.Add(entidad);
                     }

@@ -155,6 +155,7 @@ namespace SisComWeb.Business
                                 ele.Edad = ocu.Edad;
                                 ele.Telefono = ocu.Telefono;
                                 ele.Sexo = ocu.Sexo;
+                                ele.Sigla = ocu.Sigla;
                             }
                         }
                     }
