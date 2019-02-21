@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -56,7 +57,106 @@ namespace SisComWeb.Repository
             }
             return response;
         }
-        
+
+        public static Response<List<PuntoEntity>> ListarPuntosEmbarque(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
+        {
+            var response = new Response<List<PuntoEntity>>(false, null, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarPuntosEmbarque";
+                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
+                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
+                db.AddParameter("@Codi_Servicio", DbType.Int16, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
+                db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
+                var Lista = new List<PuntoEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new PuntoEntity
+                        {
+                            CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta"),
+                            Lugar = Reader.GetStringValue(drlector, "Embarque"),
+                            Hora = Reader.GetStringValue(drlector, "Hora_Embarque")
+                        };
+                        Lista.Add(entidad);
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarPuntosEmbarque.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<PuntoEntity>> ListarPuntosArribo(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
+        {
+            var response = new Response<List<PuntoEntity>>(false, null, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarPuntosArribo";
+                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
+                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
+                db.AddParameter("@Codi_Servicio", DbType.Int16, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
+                db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
+                var Lista = new List<PuntoEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new PuntoEntity
+                        {
+                            CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta"),
+                            Lugar = Reader.GetStringValue(drlector, "Arribo"),
+                            Hora = Reader.GetStringValue(drlector, "Hora_Arribo")
+                        };
+                        Lista.Add(entidad);
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarPuntosArribo.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        {
+            var response = new Response<List<DestinoRutaEntity>>(false, null, "", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListaDestinosRuta";
+                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
+                var Lista = new List<DestinoRutaEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new DestinoRutaEntity
+                        {
+                            CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal"),
+                            NomOficina = Reader.GetStringValue(drlector, "Nom_Oficina"),
+                            Sigla = Reader.GetStringValue(drlector, "Sigla"),
+                            Color = Reader.GetBigIntValue(drlector, "Color")
+                        };
+                        Lista.Add(entidad);
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarPuntosArribo.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
         #endregion
     }
 }
