@@ -8,6 +8,6 @@
 
         public string Sigla { get; set; }
 
-        public long Color { get; set; }
+        public string Color { get; set; }
     }
 }

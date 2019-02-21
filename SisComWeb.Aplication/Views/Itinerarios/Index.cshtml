@@ -204,6 +204,17 @@
 @section scripts{
     <script>
 
+        //Vue.directive('input-mask', {
+        //    params: ['mask'],
+
+        //    bind: function () {
+        //        $(this.el).inputmask({
+        //            mask: this.params.mask
+        //        });
+
+        //    },
+        //});
+
         $(function () {
 
             //#region RECORRIDO ITINERARIOS
@@ -545,6 +556,7 @@
                     tiposDoc: [],
                     turnos: [],
                     destinosRuta: [],
+                    embarques: [],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
                         { 'id': 'F', 'label': 'FEMENINO' }
@@ -635,6 +647,7 @@
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
 
                                 _this.list.destinosRuta = res.data.ListaDestinosRuta;
+                                _this.list.embarques = res.data.ListaEmbarques;
 
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
@@ -901,40 +914,13 @@
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
                     if (FechaVenta) {
-                        switch (Color) {
-                            case 45074:
-                                return { 'background-color': '#12B000' };
-                                break;
-                            case 11337901:
-                                return { 'background-color': '#AD00AD' };
-                                break;
-                            case 2752511:
-                                return { 'background-color': '#FFFF29' };
-                                break;
-                        }
+                        return { 'background-color': Color};
                     } else {
                         if (NumeAsiento === 0) {
                             if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
                         }
                     }
-                },                
-                bgcVentaBus2: function (Color) {
-                    //TODO: Borrar Método
-                    switch (Color) {
-                        case 65280:
-                            return '#12B000';
-                            break;
-                        case 11141290:
-                            return '#AA00AA';
-                            break;
-                        case 3145727:
-                            return '#FFFF2F';
-                            break;
-                        case 45074:
-                            return '#12B000';
-                            break;
-                    }
-                },
+                },       
                 iconVentaBus: function (Sexo, Edad) {
                     if (Edad < 18) {
                         return '/wwwroot/plugins/images/users/HOMBRE.png';
@@ -949,6 +935,17 @@
                 }
             },
             computed: {
+                setCadenaEmbarques: function () {
+                    var _this = this;
+                    var cadenaEmbarques = '';
+                    for (i = 0; i < _this.list.embarques.length; i++) {
+                        if (i !== _this.list.embarques.length - 1)
+                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora + ' - ';
+                        else
+                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora;
+                    }
+                    return cadenaEmbarques;
+                }
             },
             watch: {
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {

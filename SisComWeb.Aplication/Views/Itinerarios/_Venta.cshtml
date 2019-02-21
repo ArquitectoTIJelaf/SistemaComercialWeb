@@ -46,8 +46,8 @@
                         <div class="col-md-12">
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
                                 <img src="~/wwwroot/plugins/images/BUS3.png" style="margin-bottom: 3px; " />
-                                <label class="control-label" style="margin-left: 10px; font-size: 12px; ">
-                                    Con embarque en: Lima, Plaza Norte, 9:00 am.
+                                <label class="control-label" style="margin-left: 10px; font-size: 10px; ">
+                                    Con embarque en: {{setCadenaEmbarques}}
                                 </label>
                                 <div class="panel-action">
                                     <button type="button"
@@ -235,7 +235,7 @@
                             </div>
                             <div class="col-md-6 text-right" style="margin-top: 5px;">
                                 <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
-                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: bgcVentaBus2(item.Color)}"></span>
+                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
                                     <label>{{item.Sigla}}</label>
                                 </div>
                             </div>

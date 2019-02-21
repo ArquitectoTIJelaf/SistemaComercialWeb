@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Utility;
 using System.Collections.Generic;
 using System.Data;
 
@@ -144,7 +145,7 @@ namespace SisComWeb.Repository
                             CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal"),
                             NomOficina = Reader.GetStringValue(drlector, "Nom_Oficina"),
                             Sigla = Reader.GetStringValue(drlector, "Sigla"),
-                            Color = Reader.GetBigIntValue(drlector, "Color")
+                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color"))
                         };
                         Lista.Add(entidad);
                     }
