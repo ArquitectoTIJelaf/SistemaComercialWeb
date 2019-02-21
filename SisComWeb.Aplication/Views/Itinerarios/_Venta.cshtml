@@ -215,28 +215,28 @@
                     </div>
                     <div v-show="showPlano" class="container-bus bgc-emp">
                         <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px;">
-                            <div class="col-md-1" style="margin-top: 5px;">
+                            <div class="col-md-1" style="margin-top: 10px;">
                                 <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin-right: 10px;"/>
                                 <label>{{objPlano.CodiBus}}</label>                                
                             </div>
-                            <div class="col-md-1" style="margin-top: 5px;">
+                            <div class="col-md-1" style="margin-top: 10px;">
                                 <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin-right: 10px;" />
                                 <label>{{objPlano.PlacaBus}}</label>                                
                             </div>
-                            <div class="col-md-2" style="margin-top: 5px;">
+                            <div class="col-md-2" style="margin-top: 10px;">
                                 <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px;" />
                                 <label>{{objPlano.NombreChofer}}</label>
                                 
                             </div>
-                            <div class="col-md-2" style="margin-top: 5px;">
+                            <div class="col-md-2" style="margin-top: 10px;">
                                 <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px;" />
                                 <label>{{objPlano.NombreCopiloto}}</label>
                                 
                             </div>
-                            <div class="col-md-6" style="margin-top: 5px;">
-                                <div v-for="item in list.destinosRuta" style="margin-right: 7px; display: inline-block;">
-                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
-                                    {{item.Sigla}}
+                            <div class="col-md-6 text-right" style="margin-top: 5px;">
+                                <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
+                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: bgcVentaBus2(item.Color)}"></span>
+                                    <label>{{item.Sigla}}</label>
                                 </div>
                             </div>
                         </div>
@@ -257,7 +257,7 @@
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                         </span>
-                                                        <span class="ios-right">TE</span>
+                                                        <span class="ios-right">{{item.Sigla}}</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -280,7 +280,7 @@
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                         </span>
-                                                        <span class="ios-right">TE</span>
+                                                        <span class="ios-right">{{item.Sigla}}</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -303,7 +303,7 @@
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                         </span>
-                                                        <span class="ios-right">TE</span>
+                                                        <span class="ios-right">{{item.Sigla}}</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -326,7 +326,7 @@
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                         </span>
-                                                        <span class="ios-right">TE</span>
+                                                        <span class="ios-right">{{item.Sigla}}</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}
@@ -349,7 +349,7 @@
                                                         <span class="ios-left">
                                                             <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                         </span>
-                                                        <span class="ios-right">TE</span>
+                                                        <span class="ios-right">{{item.Sigla}}</span>
                                                     </div>
                                                     <div class="number-of-seat">
                                                         {{item.Tipo}}

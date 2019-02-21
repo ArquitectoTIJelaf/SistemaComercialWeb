@@ -33,6 +33,7 @@ namespace SisComWeb.Aplication.Models
         public string TipoDocumento { get; set; }
         public int IDS { get; set; } // Para 'BloqueoAsiento'
         public string Sexo { get; set; }
+        public string Sigla { get; set; }
     }
 
     public class FiltroPlano

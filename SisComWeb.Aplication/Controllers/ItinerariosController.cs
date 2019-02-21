@@ -111,7 +111,8 @@ namespace SisComWeb.Aplication.Controllers
                 Telefono = (string)x["Telefono"],
                 Tipo = (string)x["Tipo"],
                 TipoDocumento = (string)x["TipoDocumento"],
-                Sexo = (string)x["Sexo"]
+                Sexo = (string)x["Sexo"],
+                Sigla = (string)x["Sigla"]
             }).ToList();
             return lista;
         }

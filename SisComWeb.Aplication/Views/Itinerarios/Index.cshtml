@@ -301,21 +301,6 @@
             }
         });
 
-        //customColor
-        Vue.filter('customColor', function (value) {
-            switch (value) {
-                case 16741749:
-                    return '#7575FF';
-                    break;
-                case 6184703:
-                    return '#FF5E5E';
-                    break;
-                case 32768:
-                    return '#008000';
-                    break;
-            }
-        });
-
         var selectAll = {
             id: 0,
             label: 'TODOS'
@@ -927,6 +912,23 @@
                         if (NumeAsiento === 0) {
                             if (IDS !== 0) return { 'background-color': 'darkgoldenrod' };
                         }
+                    }
+                },                
+                bgcVentaBus2: function (Color) {
+                    //TODO: Borrar Método
+                    switch (Color) {
+                        case 65280:
+                            return '#12B000';
+                            break;
+                        case 11141290:
+                            return '#AA00AA';
+                            break;
+                        case 3145727:
+                            return '#FFFF2F';
+                            break;
+                        case 45074:
+                            return '#12B000';
+                            break;
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
