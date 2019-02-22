@@ -582,8 +582,12 @@
                                 _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
                                 _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
                                 _this.$nextTick(() => {
-                                    if (!_this.firstCharge)
-                                        $('#btnDesplegar').click();
+                                    if (!_this.firstCharge) {
+                                        if ($("#panelWrapperV").hasClass("in"))
+                                            $('#btnDesplegar').click();
+                                    } else {
+                                        _this.firstCharge = false;
+                                    }
                                     _this.showPlano = true;
                                 });
                             } else {
@@ -746,7 +750,6 @@
                 return respuesta;
             },
             recorridoSectionFilter: function () {
-                debugger;
                 var _this = this;
                 if (!_this.filtro.CodiEmpresa) {
                     $('#cboEmpresa input[type=search]').focus();
@@ -878,9 +881,9 @@
             },
             nextStep: function (code) {
                 switch (code) {
-                    case 1: $('#cboSucursal input[type=search]').focus(); break;
+                    case 1: if (!$("#panelWrapperV").hasClass("in")) $('#btnDesplegar').click(); $('#cboSucursal input[type=search]').focus(); break;
                     case 2: $('#cboOrigenBus input[type=search]').focus(); break;
-                    case 3: $('#cboPVOrigenBus input[type=search]').focus(); break;
+                    case 3: this.$nextTick(() => { $('#cboPVOrigenBus input[type=search]').focus();}); break;
                     case 4: $('#cboDestinoBus_2 input[type=search]').focus(); break;
                     case 5: $('#cboServicio input[type=search]').focus(); break;
                     case 6: $('#cboDestinoPas_2 input[type=search]').focus(); break;
@@ -908,6 +911,14 @@
             }
         },
         watch: {
+            'filtro.CodiEmpresa': function (newVal, oldVal) {
+                if (!this.firstCharge)
+                    this.nextStep(1);
+            },
+            'filtro.CodiSucursal': function (newVal, oldVal) {
+                if (!this.firstCharge)
+                    this.nextStep(2);
+            },
             'filtro.CodiOrigenBus': function (newVal, oldVal) {
                 if (newVal) {
                     if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
@@ -918,6 +929,23 @@
                     this.list.pvOrigenesBus = [];
                     this.filtro.CodiPVOrigenBus = null;
                 }
+                if (!this.firstCharge)
+                    this.nextStep(3);
+            },
+            //'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
+            //    this.nextStep(4);
+            //},
+            'filtro.CodiDestinoBus': function (newVal, oldVal) {
+                if (!this.firstCharge)
+                    this.nextStep(5);
+            },
+            'filtro.CodiServicio': function (newVal, oldVal) {
+                if (!this.firstCharge)
+                    this.nextStep(6);
+            },
+            'filtro.CodiDestinoPas': function (newVal, oldVal) {
+                if (!this.firstCharge)
+                    this.nextStep(7);
             },
             'filtro.Fecha': function (newVal, oldVal) {
                 if (newVal) {
@@ -957,7 +985,7 @@
             tarjeta: null,
             embarque: null,
             arribo: null,
-            list: {                
+            list: {
                 tiposPago: [
                     { 'id': '1', 'label': 'TARJETA DE CREDITO' },
                     { 'id': '2', 'label': 'CONTADO' },
