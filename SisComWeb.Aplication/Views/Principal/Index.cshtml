@@ -3,119 +3,163 @@
     Layout = "~/Views/Shared/_LayoutPrincipal.cshtml";
 }
 
-<style>
-    #principal {
-        text-align: center;
-        margin-top: 5%;
-    }
-
-        #principal .item {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-bottom: 5px solid #999999;
-            display: inline-block;
-            height: 175px;
-            margin-right: 10px;
-            margin-left: 10px;
-            margin-bottom: 20px;
+@section styles{
+    <style>
+        #principal {
             text-align: center;
-            width: 150px;
+            margin-top: 5%;
         }
 
-        #principal img {
-            margin-top: 30px;
-            margin-bottom: 10px;
-        }
+            #principal .item {
+                background: #fff;
+                border: 1px solid #e8e8e8;
+                border-bottom: 5px solid #999999;
+                display: inline-block;
+                height: 175px;
+                margin-right: 10px;
+                margin-left: 10px;
+                margin-bottom: 20px;
+                text-align: center;
+                width: 150px;
+            }
 
-        #principal h5 {
-            font-weight: 500;
-        }
+            #principal img {
+                margin-top: 30px;
+                margin-bottom: 10px;
+            }
 
-        #principal .item:hover {
-            border-bottom: 5px solid #009cff !important;
-        }
+            #principal h5 {
+                font-weight: 500;
+            }
 
-    @@media(max-width: 600px) {
-        #principal .item {
-            height: 140px;
-        }
+            #principal .item:hover {
+                border-bottom: 5px solid #009cff !important;
+            }
 
-        #principal img {
-            margin-top: 20px;
+        @@media(max-width: 600px) {
+            #principal .item {
+                height: 140px;
+            }
+
+            #principal img {
+                margin-top: 20px;
+            }
         }
-    }
-    
-</style>
+    </style>
+}
+
 
 <div id="principal">
 
     <a href="@Url.Action("Index","Itinerarios")">
-        <div class="item" onmouseover="hoverV();" onmouseout="unhoverV();" >
-            <img id="ventas" src="~/wwwroot/plugins/images/VENTA1.png"/>
+        <div id="itemVentas" class="item" onmouseover="hoverV();" onmouseout="unhoverV();">
+            <img id="ventas" src="~/wwwroot/plugins/images/VENTA1.png" />
             <h5>Ventas</h5>
         </div>
     </a>
 
-    <div class="item" onmouseover="hoverC();" onmouseout="unhoverC();">
-        <img id="clientes" src="~/wwwroot/plugins/images/CLIENTE1.png" />
-        <h5>Clientes</h5>
-    </div>
+    <a href="javascript:void(0);">
+        <div id="itemClientes" class="item" onmouseover="hoverC();" onmouseout="unhoverC();">
+            <img id="clientes" src="~/wwwroot/plugins/images/CLIENTE1.png" />
+            <h5>Clientes</h5>
+        </div>
+    </a>
 
-    <div class="item" onmouseover="hoverCo();" onmouseout="unhoverCo();">
-        <img id="correlativos" src="~/wwwroot/plugins/images/CORELA1.png" />
-        <h5>Correlativos</h5>
-    </div>
+    <a href="javascript:void(0);">
+        <div id="itemCorrelativos" class="item" onmouseover="hoverCo();" onmouseout="unhoverCo();">
+            <img id="correlativos" src="~/wwwroot/plugins/images/CORELA1.png" />
+            <h5>Correlativos</h5>
+        </div>
+    </a>
 
-    <div class="item" onmouseover="hoverR();" onmouseout="unhoverR();">
-        <img id="rutas" src="~/wwwroot/plugins/images/RUTAS1.png" />
-        <h5>Rutas y precios</h5>
-    </div>
+    <a href="javascript:void(0);">
+        <div id="itemRutas" class="item" onmouseover="hoverR();" onmouseout="unhoverR();">
+            <img id="rutas" src="~/wwwroot/plugins/images/RUTAS1.png" />
+            <h5>Rutas y precios</h5>
+        </div>
+    </a>
 
-    <div class="item" onmouseover="hoverL();" onmouseout="unhoverL();">
-        <img id="liquidaciones" src="~/wwwroot/plugins/images/LIQ1.png" />
-        <h5>Liquidación</h5>
-    </div>
+    <a href="javascript:void(0);">
+        <div id="itemLiquidaciones" class="item" onmouseover="hoverL();" onmouseout="unhoverL();">
+            <img id="liquidaciones" src="~/wwwroot/plugins/images/LIQ1.png" />
+            <h5>Liquidación</h5>
+        </div>
+    </a>
 
 </div>
 
-<script>
-    function unhoverV() {
-        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA1.png");
-    }
+@section scripts{
+    <script>
+        function unhoverV() {
+            $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA1.png");
+        }
 
-    function hoverV() {
-        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA2.png");
-    }
+        function hoverV() {
+            $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA2.png");
+            $('#itemVentas').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass().addClass('item');
+            });
+        }
 
-    function unhoverC() {
-        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTE1.png");
-    }
+        function unhoverC() {
+            $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTE1.png");
+        }
 
-    function hoverC() {
-        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTES2.png");
-    }
+        function hoverC() {
+            $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTES2.png");
+            $('#itemClientes').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass().addClass('item');
+            });
+        }
 
-    function unhoverCo() {
-        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA1.png");
-    }
+        function unhoverCo() {
+            $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA1.png");
+        }
 
-    function hoverCo() {
-        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA2.png");
-    }
+        function hoverCo() {
+            $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA2.png");
+            $('#itemCorrelativos').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass().addClass('item');
+            });
+        }
 
-    function unhoverR() {
-        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS1.png");
-    }
+        function unhoverR() {
+            $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS1.png");
+        }
 
-    function hoverR() {
-        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS2.png");
-    }
+        function hoverR() {
+            $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS2.png");
+            $('#itemRutas').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass().addClass('item');
+            });
+        }
 
-    function unhoverL() {
-        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQ1.png");
-    }
+        function unhoverL() {
+            $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQ1.png");
+        }
 
-    function hoverL() {
-        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQU2.png");
-    }
-</script>
+        function hoverL() {
+            $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQU2.png");
+            $('#itemLiquidaciones').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                $(this).removeClass().addClass('item');
+            });
+        }
+
+        var Principal = new Vue({
+            el: '#principal',
+            data: {
+            },
+            mounted: function () {
+                window.addEventListener('keyup', function (event) {
+                    if (event.keyCode == 49 || event.keyCode == 97) { $('#itemVentas').click(); }
+                    else if (event.keyCode == 50 || event.keyCode == 98) { }
+                    else if (event.keyCode == 51 || event.keyCode == 99) { }
+                    else if (event.keyCode == 52 || event.keyCode == 100) { }
+                    else if (event.keyCode == 53 || event.keyCode == 101) { }
+                });
+            },
+            methods: {
+            }
+        });
+    </script>
+}
