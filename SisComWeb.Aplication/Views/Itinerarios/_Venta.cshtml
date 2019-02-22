@@ -45,8 +45,8 @@
                         </div>
                         <div class="col-md-12">
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
-                                <img src="~/wwwroot/plugins/images/BUS3.png" style="margin-bottom: 3px; " />
-                                <label class="control-label" style="margin-left: 10px; font-size: 10px; ">
+                                <img src="~/wwwroot/plugins/images/BUS3.png" />
+                                <label class="control-label" style="margin-left: 5px; font-size: 12px; ">
                                     Con embarque en: {{setCadenaEmbarques}}
                                 </label>
                                 <div class="panel-action">
@@ -189,7 +189,7 @@
                                     <div class="col-md-2" style="text-align: center; margin-top: 27px; ">
                                         <label id="lblNameDay_Fecha"
                                                class="control-label"
-                                               style="color: #ff7601; font-size: 14px; ">
+                                               style="color: var(--emp-color); font-size: 14px; font-weight: 500; ">
                                         </label>
                                     </div>
                                     <div class="col-md-2">
@@ -214,26 +214,25 @@
                         </div>
                     </div>
                     <div v-show="showPlano" class="container-bus bgc-emp">
-                        <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px;">
-                            <div class="col-md-1" style="margin-top: 10px;">
-                                <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin-right: 10px;"/>
-                                <label>{{objPlano.CodiBus}}</label>                                
+                        <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px; display: flex; align-items: center; ">
+                            <div class="col-md-1">
+                                <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin: 0px 10px 2px; "/>
+                                <label style="margin-bottom: 0px; ">{{objPlano.CodiBus}}</label>                                
                             </div>
-                            <div class="col-md-1" style="margin-top: 10px;">
-                                <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin-right: 10px;" />
-                                <label>{{objPlano.PlacaBus}}</label>                                
+                            <div class="col-md-1">
+                                <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin: 0px 10px 2px; " />
+                                <label style="margin-bottom: 0px; ">{{objPlano.PlacaBus}}</label>                                
                             </div>
-                            <div class="col-md-2" style="margin-top: 10px;">
-                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px;" />
-                                <label>{{objPlano.NombreChofer}}</label>
+                            <div class="col-md-2">
+                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                <label style="margin-bottom: 0px; ">{{objPlano.NombreChofer}}</label>
                                 
                             </div>
-                            <div class="col-md-2" style="margin-top: 10px;">
-                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin-right: 10px;" />
-                                <label>{{objPlano.NombreCopiloto}}</label>
-                                
+                            <div class="col-md-2">
+                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                <label style="margin-bottom: 0px; ">{{objPlano.NombreCopiloto}}</label>
                             </div>
-                            <div class="col-md-6 text-right" style="margin-top: 5px;">
+                            <div class="col-md-6 text-right">
                                 <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
                                     <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
                                     <label>{{item.Sigla}}</label>
@@ -366,8 +365,12 @@
                         </div>
                     </div>
                     <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
-                        <div class="col-md-1" style="height: 200px; width: 50px; ">
-                            <img src="~/wwwroot/plugins/images/chevron-left.png" />
+                        <div class="col-md-1" style="height: 235px; width: 50px; padding-left: 0px; display: flex; align-items: center; ">
+                            <div
+                                 class="bgc-emp"
+                                 style="border-radius: 0px 10px 10px 0px; ">
+                                <img src="~/wwwroot/plugins/images/chevron-left.png" />
+                            </div>
                         </div>
                         <div class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; ">
                             <div class="col-md-1">
@@ -620,8 +623,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-1" style="height: 200px; width: 50px; ">
-                            <img src="~/wwwroot/plugins/images/chevron-right.png" />
+                        <div class="col-md-1" style="height: 235px; width: 50px; padding: 0px 0px 0px 2px; display: flex; align-items: center; ">
+                            <div
+                                 class="bgc-emp"
+                                 style="border-radius: 10px 0px 0px 10px; ">
+                                <img src="~/wwwroot/plugins/images/chevron-right.png" />
+                            </div>
                         </div>
                     </div>
                 </div>
