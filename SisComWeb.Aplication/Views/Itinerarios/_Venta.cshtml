@@ -16,6 +16,7 @@
                                               :get-option-label="getLabel"
                                               :options="list.empresas"
                                               :placeholder="'EMPRESA'"
+                                              @@keydown.13.native.prevent="nextStep(1)"
                                               ref="select">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -27,12 +28,12 @@
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
                                 <label class="control-label">Nº Programación: {{filtro.CodiProgramacion}}</label>
                             </div>
-                            <div @@click="clear" class="col-md-4" style="text-align: right; ">
-                                <div style="display: inline-block; cursor: pointer; ">
+                            <div class="col-md-4" style="text-align: right; font-size: 15px;">
+                                <a @@click="nextStep(10)" href="javascript:void(0);" id="btnActualizar" style="display: inline-block; cursor: pointer; margin-right: 10px;">
                                     <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer; ">Actualizar</label>
-                                </div>
-                                <div @@click="hideVentas" style="display: inline-block; cursor: pointer;">
+                                </a>
+                                <div @@click="hideVentas" style="display: inline-block; cursor: pointer; margin-right: 10px;">
                                     <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer; ">Atrás</label>
                                 </div>
@@ -78,7 +79,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.sucursales"
                                                       :placeholder="'SUCURSAL'"
-                                                      v-on:keyup.enter="test($event)"
+                                                      @@keydown.13.native.prevent="nextStep(2)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -92,6 +93,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.origenesBus"
                                                       :placeholder="'ORIGEN BUS'"
+                                                      @@keydown.13.native.prevent="nextStep(3)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -105,6 +107,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.pvOrigenesBus"
                                                       :placeholder="'P.V. ORIGEN BUS'"
+                                                      @@keydown.13.native.prevent="nextStep(4)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -118,6 +121,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.destinosBus"
                                                       :placeholder="'DESTINO BUS'"
+                                                      @@keydown.13.native.prevent="nextStep(5)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -131,18 +135,19 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.servicios"
                                                       :placeholder="'SERVICIO'"
+                                                      @@keydown.13.native.prevent="nextStep(6)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
                                         </div>
                                     </div>
-                                    <div class="col-md-2" style="float: right;text-align:center;">
-                                        <div style="border-left: 1px solid rgb(228, 231, 234);">
-                                            <label>OTROS TURNOS</label>
+                                    <div class="col-md-2" style="float: right;">
+                                        <div style="border-left: 1px solid rgb(228, 231, 234);padding-left: 15px;">
+                                            <label style="width: calc(100% - 25px);text-align: center;">OTROS TURNOS</label>
                                             <div style="overflow-y:auto;height: 100px;">
                                                 <ul style="list-style-type: none;padding-left: 0;">
                                                     <li v-for="item in list.turnos">
-                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4">{{item.HoraPartida}}. - {{item.NomServicio}}</a>
+                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4" :title="item.HoraPartida + '. - ' + item.NomServicio">{{item.HoraPartida}}. - {{item.NomServicio | maxLenght(12)}}</a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -156,6 +161,7 @@
                                                       :get-option-label="getLabel"
                                                       :options="list.destinosPas"
                                                       :placeholder="'DESTINO PASAJERO'"
+                                                      @@keydown.13.native.prevent="nextStep(7)"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -164,9 +170,9 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="control-label">Turno:</label>
-                                            <input @@blur="filtro.Turno = $event.target.value.trim()"
-                                                   :value="filtro.Turno"
-                                                   @*v-mask="'##:## AM'"*@
+                                            <input v-model="filtro.Turno"
+                                                   v-mask="'##:## AM'"
+                                                   @@blur="nextStep(8)"
                                                    type="text"
                                                    id="txtTurno"
                                                    class="form-control input-sm dph"
@@ -177,8 +183,9 @@
                                     <div class="col-md-2">
                                         <div class="form-group ">
                                             <label class="control-label">Fecha Viaje:</label>
-                                            <input @@blur="filtro.Fecha = $event.target.value.trim()"
-                                                   :value="filtro.Fecha"
+                                            <input v-model="filtro.Fecha"
+                                                   v-mask="'##/##/####'"
+                                                   @@blur="nextStep(9)"
                                                    type="text"
                                                    id="txtFecha_2"
                                                    class="form-control input-sm dp"
@@ -214,7 +221,7 @@
                         </div>
                     </div>
                     <div v-show="showPlano" class="container-bus bgc-emp">
-                        <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px;">
+                        <div class="col-md-12" style="background-color: white; height: 30px;margin-bottom: 15px;border-radius: 4px;display:table;">
                             <div class="col-md-1" style="margin-top: 10px;">
                                 <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin-right: 10px;"/>
                                 <label>{{objPlano.CodiBus}}</label>                                
@@ -549,7 +556,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group ">
                                             <label class="control-label" style="width: 100%; ">&nbsp;</label>
-                                            <button class="btn btn-secondary"
+                                            <button @@click="showTipoPago" class="btn btn-secondary"
                                                     style="width: 100%; ">
                                                 $ Tipo pago
                                             </button>
