@@ -373,13 +373,13 @@
                     </div>
                     <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 235px; width: 50px; padding-left: 0px; display: flex; align-items: center; ">
-                            <div
+                            <div @@click="leftSlider"
                                  class="bgc-emp"
                                  style="border-radius: 0px 10px 10px 0px; ">
                                 <img src="~/wwwroot/plugins/images/chevron-left.png" />
                             </div>
                         </div>
-                        <div class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; ">
+                        <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; background-color: white;">
                             <div class="col-md-1">
                                 <div class="col-md-12">
                                     <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
@@ -631,7 +631,7 @@
                             </div>
                         </div>
                         <div class="col-md-1" style="height: 235px; width: 50px; padding: 0px 0px 0px 2px; display: flex; align-items: center; ">
-                            <div
+                            <div @@click="rightSlider"
                                  class="bgc-emp"
                                  style="border-radius: 10px 0px 0px 10px; ">
                                 <img src="~/wwwroot/plugins/images/chevron-right.png" />
