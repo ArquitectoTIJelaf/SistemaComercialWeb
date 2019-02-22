@@ -123,6 +123,31 @@ Vue.filter("currency", function (value) {
 Vue.filter("currency2", function (value) {
     return numeral(value).format("0,0.0");
 });
+
+Vue.filter('money', function (value) {
+    if (typeof value !== 'undefined' && value !== '') {
+        value = parseFloat(value);
+        return 'S/ ' + value.toFixed(2);
+    } else {
+        return 'S/ 0.00';
+    }
+});
+
+Vue.filter('fixed2', function (value) {
+    if (typeof value !== 'undefined' && value !== '') {
+        value = parseFloat(value);
+        return String(value.toFixed(2));
+    } else {
+        return '0.00';
+    }
+});
+
+Vue.filter('maxLenght', function (value, length) {
+    if (typeof value !== 'undefined' && value !== '') {
+        var final = value.length <= length ? '' : '...';
+        return value.substring(0, length) + final;
+    }
+});
 /*!********************* Filter Vue */
 
 
