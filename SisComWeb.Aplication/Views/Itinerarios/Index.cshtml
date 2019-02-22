@@ -716,11 +716,9 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 liberarAsiento: async function (asientoSel) {
-                    debugger;
                     var _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
-                            debugger;
                             if (res.statusText === "OK") {
                                 if (res.data) {
                                     asientoSel.IDS = 0;
