@@ -215,176 +215,179 @@
                             </div>
                         </div>
                     </div>
-                    <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
-                        <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px;">
+                    <div id="BusVentas">
+                        <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
+                            <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px;">
 
+                            </div>
                         </div>
-                    </div>
-                    <div v-show="showPlano" class="container-bus bgc-emp">
-                        <div class="col-md-12" style="background-color: white; min-height: 30px;margin-bottom: 15px;border-radius: 4px; display: flex; align-items: center; ">
-                            <div class="col-md-1">
-                                <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin: 0px 10px 2px; "/>
-                                <label style="margin-bottom: 0px; ">{{objPlano.CodiBus}}</label>                                
-                            </div>
-                            <div class="col-md-1">
-                                <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin: 0px 10px 2px; " />
-                                <label style="margin-bottom: 0px; ">{{objPlano.PlacaBus}}</label>                                
-                            </div>
-                            <div class="col-md-2">
-                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
-                                <label style="margin-bottom: 0px; ">{{objPlano.NombreChofer}}</label>
-                                
-                            </div>
-                            <div class="col-md-2">
-                                <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
-                                <label style="margin-bottom: 0px; ">{{objPlano.NombreCopiloto}}</label>
-                            </div>
-                            <div class="col-md-6 text-right">
-                                <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
-                                    <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
-                                    <label>{{item.Sigla}}</label>
+                        <div v-show="showPlano" class="container-bus bgc-emp">
+                            <div class="col-md-12" style="background-color: white; min-height: 30px;margin-bottom: 15px;border-radius: 4px; display: flex; align-items: center; ">
+                                <div class="col-md-1">
+                                    <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin: 0px 10px 2px; " />
+                                    <label style="margin-bottom: 0px; ">{{objPlano.CodiBus}}</label>
+                                </div>
+                                <div class="col-md-1">
+                                    <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin: 0px 10px 2px; " />
+                                    <label style="margin-bottom: 0px; ">{{objPlano.PlacaBus}}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                    <label style="margin-bottom: 0px; ">{{objPlano.NombreChofer}}</label>
+
+                                </div>
+                                <div class="col-md-2">
+                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                    <label style="margin-bottom: 0px; ">{{objPlano.NombreCopiloto}}</label>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
+                                        <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                        <label>{{item.Sigla}}</label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="img-bus">
-                            <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
-                        </div>
-                        <div class="table-responsive form-bus">
-                            <table id="tblLista" class="table table-bus">
-                                <tbody>
-                                    <tr>
-                                        <td v-for="(item, key) in list.plano1" class="bus-td">
-                                            <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus" 
-                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                        @@click="bloquearAsiento(item)" 
-                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">
-                                                            <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                        </span>
-                                                        <span class="ios-right">{{item.Sigla}}</span>
-                                                    </div>
-                                                    <div class="number-of-seat">
-                                                        {{item.Tipo}}
-                                                    </div>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <span :class="[item.Tipo]"></span>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td v-for="(item, key) in list.plano2" class="bus-td">
-                                            <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus"
-                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                        @@click="bloquearAsiento(item)" 
-                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">
-                                                            <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                        </span>
-                                                        <span class="ios-right">{{item.Sigla}}</span>
-                                                    </div>
-                                                    <div class="number-of-seat">
-                                                        {{item.Tipo}}
-                                                    </div>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <span :class="[item.Tipo]"></span>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td v-for="(item, key) in list.plano3" class="bus-td">
-                                            <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus"
-                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                        @@click="bloquearAsiento(item)" 
-                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">
-                                                            <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                        </span>
-                                                        <span class="ios-right">{{item.Sigla}}</span>
-                                                    </div>
-                                                    <div class="number-of-seat">
-                                                        {{item.Tipo}}
-                                                    </div>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <span :class="[item.Tipo]"></span>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td v-for="(item, key) in list.plano4" class="bus-td">
-                                            <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus"
-                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                        @@click="bloquearAsiento(item)" 
-                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">
-                                                            <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                        </span>
-                                                        <span class="ios-right">{{item.Sigla}}</span>
-                                                    </div>
-                                                    <div class="number-of-seat">
-                                                        {{item.Tipo}}
-                                                    </div>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <span :class="[item.Tipo]"></span>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td v-for="(item, key) in list.plano5" class="bus-td">
-                                            <template v-if="!isNaN(item.Tipo)">
-                                                <button class="btn btn-bus"
-                                                        :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                        @@click="bloquearAsiento(item)" 
-                                                        :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                    <div class="icons-of-seat" v-if="item.FechaVenta">
-                                                        <span class="ios-left">
-                                                            <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                        </span>
-                                                        <span class="ios-right">{{item.Sigla}}</span>
-                                                    </div>
-                                                    <div class="number-of-seat">
-                                                        {{item.Tipo}}
-                                                    </div>
-                                                </button>
-                                            </template>
-                                            <template v-else>
-                                                <span :class="[item.Tipo]"></span>
-                                            </template>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="img-bus">
+                                <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
+                            </div>
+                            <div class="table-responsive form-bus">
+                                <table id="tblLista" class="table table-bus">
+                                    <tbody>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano1" class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                            @@click="bloquearAsiento(item)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            <span class="ios-left">
+                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                            </span>
+                                                            <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano2" class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                            @@click="bloquearAsiento(item)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            <span class="ios-left">
+                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                            </span>
+                                                            <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano3" class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                            @@click="bloquearAsiento(item)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            <span class="ios-left">
+                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                            </span>
+                                                            <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano4" class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                            @@click="bloquearAsiento(item)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            <span class="ios-left">
+                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                            </span>
+                                                            <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano5" class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
+                                                            @@click="bloquearAsiento(item)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            <span class="ios-left">
+                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                            </span>
+                                                            <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
+                    <div id="TicketsVentas" v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                         <div class="col-md-1" style="height: 235px; width: 50px; padding-left: 0px; display: flex; align-items: center; ">
-                            <div @@click="leftSlider"
+                            <div v-if="indexVenta > 0"
+                                 @@click="leftSlider"
                                  class="bgc-emp"
                                  style="border-radius: 0px 10px 10px 0px; ">
                                 <img src="~/wwwroot/plugins/images/chevron-left.png" />
                             </div>
                         </div>
-                        <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; background-color: white;">
+                        <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 100px); border-radius: 10px; padding: 15px 15px 5px 15px; background-color: white; z-index: 1">
                             <div class="col-md-1">
                                 <div class="col-md-12">
                                     <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
                                         <label class="control-label" style="width: 100%; font-weight: 500; ">Nº ASIENTO</label>
-                                        <input v-model="objVenta.NroAsiento"
+                                        <input v-model="list.ventas[indexVenta].NroAsiento"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="Nº"
@@ -397,16 +400,17 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="control-label" style="width: 100%; ">Tipo de documento:</label>
-                                        <v-select v-model="objVenta.CodiTipoDoc"
+                                        <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
                                                   :id="'cboTipoDoc'"
                                                   label="label"
                                                   :options="list.tiposDoc"
                                                   :placeholder="'TIPO'"
                                                   style="width: 50%; display: inline-block; "
+                                                  @@keydown.13.native.prevent="recorridoSectionVentas"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
-                                        <input v-model="objVenta.Documento"
+                                        <input v-model="list.ventas[indexVenta].Documento"
                                                id="txtDocumento"
                                                type="text"
                                                @@keypress.13.prevent="searchUser"
@@ -416,35 +420,50 @@
                                                autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="control-label">Nombres:</label>
-                                        <input v-model="objVenta.Nombres"
+                                        <input v-model="list.ventas[indexVenta].Nombres"
                                                @@keypress.13.prevent="recorridoSectionVentas"
                                                id="txtNombres"
                                                type="text"
                                                class="form-control input-sm"
+                                               style="font-size: 16px !important; font-weight: 500;"
                                                placeholder="NOMBRES"
                                                autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
-                                        <label class="control-label">Apellidos:</label>
-                                        <input v-model="objVenta.Apellidos"
+                                        <label class="control-label">Paterno:</label>
+                                        <input v-model="list.ventas[indexVenta].ApellidoPaterno"
                                                @@keypress.13.prevent="recorridoSectionVentas"
-                                               id="txtApellidos"
+                                               id="txtApellidoPaterno"
                                                type="text"
                                                class="form-control input-sm"
-                                               placeholder="Apellidos"
+                                               style="font-size: 16px !important; font-weight: 500;"
+                                               placeholder="APELLIDO"
+                                               autocomplete="off">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="control-label">Materno:</label>
+                                        <input v-model="list.ventas[indexVenta].ApellidoMaterno"
+                                               @@keypress.13.prevent="recorridoSectionVentas"
+                                               id="txtApellidoMaterno"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               style="font-size: 16px !important; font-weight: 500;"
+                                               placeholder="APELLIDO"
                                                autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group ">
                                         <label class="control-label">Fecha de nacimiento:</label>
-                                        <input @@blur="objVenta.FechaNac = $event.target.value.trim()"
-                                               :value="objVenta.FechaNac"
+                                        <input @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                               :value="list.ventas[indexVenta].FechaNac"
                                                type="text"
                                                id="txtFechaNac"
                                                class="form-control input-sm dp"
@@ -455,7 +474,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group ">
                                         <label class="control-label">Edad:</label>
-                                        <input :value="objVenta.Edad"
+                                        <input :value="list.ventas[indexVenta].Edad"
                                                @@keypress.13.prevent="recorridoSectionVentas"
                                                type="text"
                                                id="txtEdad"
@@ -471,7 +490,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label">Sexo:</label>
-                                            <v-select v-model="objVenta.Sexo"
+                                            <v-select v-model="list.ventas[indexVenta].Sexo"
                                                       :id="'cboSexo'"
                                                       label="label"
                                                       :options="list.sexos"
@@ -484,7 +503,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label">Teléfono:</label>
-                                            <input v-model="objVenta.Telefono"
+                                            <input v-model="list.ventas[indexVenta].Telefono"
                                                    @@keypress.13.prevent="recorridoSectionVentas"
                                                    id="txtTelefono"
                                                    type="text"
@@ -497,7 +516,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">RUC:</label>
-                                        <input v-model="objVenta.Ruc"
+                                        <input v-model="list.ventas[indexVenta].Ruc"
                                                @@keypress.13.prevent="recorridoSectionVentas"
                                                id="txtRuc"
                                                type="text"
@@ -509,7 +528,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group ">
                                         <label class="control-label">Recoger:</label>
-                                        <input v-model="objVenta.Recoger"
+                                        <input v-model="list.ventas[indexVenta].Recoger"
                                                @@keypress.13.prevent="recorridoSectionVentas"
                                                id="txtRecoger"
                                                type="text"
@@ -521,7 +540,7 @@
                                 <div class="col-md-1">
                                     <div class="form-group ">
                                         <label class="control-label">Reintegro:</label>
-                                        <input v-model="objVenta.Reintegro"
+                                        <input v-model="list.ventas[indexVenta].Reintegro"
                                                @@keypress.13.prevent="saveUser"
                                                id="txtReintegro"
                                                type="text"
@@ -534,7 +553,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group ">
                                         <label class="control-label">Observación:</label>
-                                        <input v-model="objVenta.Observacion"
+                                        <input v-model="list.ventas[indexVenta].Observacion"
                                                id="txtObservacion"
                                                type="text"
                                                class="form-control input-sm"
@@ -547,7 +566,7 @@
                                         <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                         <div class="form-group" style="border: 1px solid #009cff; height: 66px; border-radius: 5px; padding: 5px 0px; ">
                                             <label class="control-label" style="text-align: center; width: 100%; font-weight: 500; ">PRECIO S/</label>
-                                            <input v-model="objVenta.Precio"
+                                            <input v-model="list.ventas[indexVenta].Precio"
                                                    id="txtPrecio"
                                                    type="text"
                                                    class="form-control input-sm"
@@ -595,7 +614,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group" style="text-align: center; ">
                                         <label class="control-label" style="width: 100%; ">Nº Venta</label>
-                                        <input :value="objVenta.NroVenta"
+                                        <input :value="list.ventas[indexVenta].NroVenta"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="Nº VENTA"
@@ -607,7 +626,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group" style="text-align: center; ">
                                         <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
-                                        <input v-model="objVenta.NroSolicitud"
+                                        <input v-model="list.ventas[indexVenta].NroSolicitud"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="Nº SOLICITUD"
@@ -618,8 +637,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group" style="text-align: center; ">
                                         <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                        <input @@blur="objVenta.FechaVen = $event.target.value.trim()"
-                                               :value="objVenta.FechaVen"
+                                        <input @@blur="list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
+                                               :value="list.ventas[indexVenta].FechaVen"
                                                type="text"
                                                id="txtFechaVen"
                                                class="form-control input-sm dp"
@@ -631,7 +650,8 @@
                             </div>
                         </div>
                         <div class="col-md-1" style="height: 235px; width: 50px; padding: 0px 0px 0px 2px; display: flex; align-items: center; ">
-                            <div @@click="rightSlider"
+                            <div v-if="indexVenta < list.ventas.length - 1"
+                                 @@click="rightSlider"
                                  class="bgc-emp"
                                  style="border-radius: 10px 0px 0px 10px; ">
                                 <img src="~/wwwroot/plugins/images/chevron-right.png" />
