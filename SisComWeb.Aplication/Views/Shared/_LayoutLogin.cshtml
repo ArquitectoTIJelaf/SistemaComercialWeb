@@ -30,25 +30,28 @@
     <style>
         html {
             background: url("/wwwroot/plugins/images/users/FONDO.jpg") no-repeat center center fixed;
-            -webkit-background-size: cover;
+            background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
-            background-size: cover;
-        }
-
-        .form-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px, 0px, 10px, 0px, #000;
-        }
-
-        .container-fluid {
-            min-height: 600px;
+            -webkit-background-size: cover;
         }
 
         body {
             background: unset;
+        }
+
+        .form-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .container-fluid {
+            align-items: center;
+            display: flex;
+            height: calc(100vh - 140px);
+            margin-left: calc(50% - 150px);
+            padding: 0px;
         }
     </style>
 </head>
@@ -67,17 +70,7 @@
     </nav>
 
     <div class="container-fluid py-5">
-        <div class="row justify-content-end">
-            <aside class="col-sm-offset-4 col-sm-4">
-                <center>
-                    <div class="card">
-                        <article class="card-body">
-                            @RenderBody()
-                        </article>
-                    </div>
-                </center>
-            </aside>
-        </div>
+        @RenderBody()
     </div>
 
     @Html.Partial("_LayoutFooter")
