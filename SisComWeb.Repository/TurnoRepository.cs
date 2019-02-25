@@ -11,7 +11,7 @@ namespace SisComWeb.Repository
 
         public static Response<ItinerarioEntity> BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
         {
-            var response = new Response<ItinerarioEntity>(false, null, "", false);
+            var response = new Response<ItinerarioEntity>(false, null, "Error: BuscarTurno.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarTurno";
@@ -52,7 +52,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscarTurno. ";
+                    response.Mensaje = "Correcto: BuscarTurno.";
                     response.Estado = true;
                 }
             }
@@ -61,7 +61,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<PuntoEntity>> ListarPuntosEmbarque(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
         {
-            var response = new Response<List<PuntoEntity>>(false, null, "", false);
+            var response = new Response<List<PuntoEntity>>(false, null, "Error: ListarPuntosEmbarque.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosEmbarque";
@@ -95,7 +95,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<PuntoEntity>> ListarPuntosArribo(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
         {
-            var response = new Response<List<PuntoEntity>>(false, null, "", false);
+            var response = new Response<List<PuntoEntity>>(false, null, "Error: ListarPuntosArribo.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosArribo";
@@ -129,7 +129,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
         {
-            var response = new Response<List<DestinoRutaEntity>>(false, null, "", false);
+            var response = new Response<List<DestinoRutaEntity>>(false, null, "Error: ListaDestinosRuta.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaDestinosRuta";
@@ -151,7 +151,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarPuntosArribo.";
+                    response.Mensaje = "Correcto: ListaDestinosRuta.";
                     response.Estado = true;
                 }
             }

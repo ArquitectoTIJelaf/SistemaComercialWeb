@@ -9,7 +9,7 @@ namespace SisComWeb.Repository
 
         public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
-            var response = new Response<ClientePasajeEntity>(false, null, "", false);
+            var response = new Response<ClientePasajeEntity>(false, null, "Error: BuscaPasajero.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPasajero";
@@ -44,7 +44,7 @@ namespace SisComWeb.Repository
 
         public static Response<RucEntity> BuscarEmpresa(string RucCliente)
         {
-            var response = new Response<RucEntity>(false, null, "", false);
+            var response = new Response<RucEntity>(false, null, "Error: BuscarEmpresa.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarEmpresa";
@@ -75,7 +75,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> GrabarPasajero(ClientePasajeEntity entidad)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: GrabarPasajero.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarPasajero";
@@ -106,7 +106,7 @@ namespace SisComWeb.Repository
 
         public static Response<bool> ModificarPasajero(ClientePasajeEntity entidad)
         {
-            var response = new Response<bool>(false, false, "", false);
+            var response = new Response<bool>(false, false, "Error: ModificarPasajero.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ModificarPasajero";
@@ -135,7 +135,7 @@ namespace SisComWeb.Repository
 
         public static Response<bool> GrabarEmpresa(RucEntity entidad)
         {
-            var response = new Response<bool>(false, false, "", false);
+            var response = new Response<bool>(false, false, "Error: GrabarEmpresa.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarEmpresa";
@@ -156,7 +156,7 @@ namespace SisComWeb.Repository
 
         public static Response<bool> ModificarEmpresa(RucEntity entidad)
         {
-            var response = new Response<bool>(false, false, "", false);
+            var response = new Response<bool>(false, false, "Error: ModificarEmpresa.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ModificarEmpresa";

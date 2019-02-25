@@ -12,9 +12,11 @@ namespace SisComWeb.Business
         {
             try
             {
-                Seguridad seguridad = new Seguridad();
                 var response = UsuarioRepository.ValidaUsuario(CodiUsuario);
+                if (!response.Estado)
+                    return response;
 
+                Seguridad seguridad = new Seguridad();
                 var desencriptaPassword = seguridad.Desencripta(response.Valor.Password, Constantes.UnaLlave);
 
                 if (response.Valor.CodiUsuario != 0 && (Password == desencriptaPassword || Password == response.Valor.Password))

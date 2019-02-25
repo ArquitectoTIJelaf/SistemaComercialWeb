@@ -10,7 +10,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<ItinerarioEntity>> BuscarItinerarios(short CodiOrigen, short CodiDestino, short CodiRuta, string Hora)
         {
-            var response = new Response<List<ItinerarioEntity>>(false, null, "", false);
+            var response = new Response<List<ItinerarioEntity>>(false, null, "Error: BuscarItinerarios.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarItinerarios";
@@ -60,7 +60,7 @@ namespace SisComWeb.Repository
 
         public static Response<TurnoViajeEntity> VerificaCambiosTurnoViaje(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<TurnoViajeEntity>(false, null, "", false);
+            var response = new Response<TurnoViajeEntity>(false, null, "Error: VerificaCambiosTurnoViaje.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje";
@@ -86,7 +86,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> BuscarProgramacionViaje(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: BuscarProgramacionViaje.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarProgramacionViaje";
@@ -110,7 +110,7 @@ namespace SisComWeb.Repository
 
         public static Response<BusEntity> ObtenerBusEstandar(byte CodiEmpresa, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
         {
-            var response = new Response<BusEntity>(false, null, "", false);
+            var response = new Response<BusEntity>(false, null, "Error: ObtenerBusEstandar.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerBusEstandar";
@@ -140,7 +140,7 @@ namespace SisComWeb.Repository
 
         public static Response<BusEntity> ObtenerBusProgramacion(int CodiProgramacion)
         {
-            var response = new Response<BusEntity>(false, null, "", false);
+            var response = new Response<BusEntity>(false, null, "Error: ObtenerBusProgramacion.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerBusProgramacion";
@@ -170,7 +170,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> ValidarTurnoAdicional(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: ValidarTurnoAdicional.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarTurnoAdicional";
@@ -195,7 +195,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> ValidarProgrmacionCerrada(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: ValidarProgrmacionCerrada.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarProgrmacionCerrada";
@@ -220,7 +220,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> ObtenerTotalVentas(int CodiProgramacion, short CodiOrigen, short CodiDestino)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: ObtenerTotalVentas.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerTotalVentas";

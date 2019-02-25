@@ -12,7 +12,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = new Response<List<ItinerarioEntity>>(false, null, "", false);
+                var response = new Response<List<ItinerarioEntity>>(false, null, "Error: BuscaItinerarios.", false);
                 Response<BusEntity> resObtenerBus;
 
                 // Validar 'TodosTurnos'
@@ -22,7 +22,7 @@ namespace SisComWeb.Business
                 var resBuscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
                 if (!resBuscarItinerarios.Estado)
                 {
-                    response.Mensaje += "Error: BuscarItinerarios.";
+                    response.Mensaje = resBuscarItinerarios.Mensaje;
                     return response;
                 }
 
@@ -49,7 +49,7 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        response.Mensaje += "Error: VerificaCambiosTurnoViaje.";
+                        response.Mensaje = resVerificaCambiosTurnoViaje.Mensaje;
                         return response;
                     }
 
@@ -70,7 +70,7 @@ namespace SisComWeb.Business
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerBusProgramacion.";
+                            response.Mensaje = resObtenerBus.Mensaje;
                             return response;
                         }
                     }
@@ -117,25 +117,25 @@ namespace SisComWeb.Business
                                 }
                                 else
                                 {
-                                    response.Mensaje += "Error: ObtenerBusEstandar sin hora y con CodiRuta igual a 0.";
+                                    response.Mensaje = resObtenerBus.Mensaje;
                                     return response;
                                 }
                             }
                             else
                             {
-                                response.Mensaje += "Error: ObtenerBusEstandar sin hora.";
+                                response.Mensaje = resObtenerBus.Mensaje;
                                 return response;
                             }
                         }
                         else
                         {
-                            response.Mensaje += "Error: ObtenerBusEstandar con hora.";
+                            response.Mensaje = resObtenerBus.Mensaje;
                             return response;
                         }
                     }
                     else
                     {
-                        response.Mensaje += "Error: BuscarProgramacionViaje.";
+                        response.Mensaje = resBuscarProgramacionViaje.Mensaje;
                         return response;
                     }
 
@@ -148,19 +148,19 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        response.Mensaje += "Error: ValidarProgrmacionCerrada.";
+                        response.Mensaje = resValidarProgrmacionCerrada.Mensaje;
                         return response;
                     }
 
                     // Obtiene 'TotalVentas'
                     if (resBuscarItinerarios.Valor[i].CodiProgramacion != 0)
                     {
-                        Response<int> resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarItinerarios.Valor[i].CodiProgramacion, resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino);
+                        var resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarItinerarios.Valor[i].CodiProgramacion, resBuscarItinerarios.Valor[i].CodiOrigen, resBuscarItinerarios.Valor[i].CodiDestino);
                         if (resObtenerTotalVentas.Estado)
                             resBuscarItinerarios.Valor[i].AsientosVendidos = resObtenerTotalVentas.Valor;
                         else
                         {
-                            response.Mensaje += "Error: ObtenerTotalVentas.";
+                            response.Mensaje = resObtenerTotalVentas.Mensaje;
                             return response;
                         }
                     }
@@ -168,7 +168,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = resBuscarItinerarios.Valor;
-                response.Mensaje += "Correcto: BuscaItinerarios.";
+                response.Mensaje = Message.MsgCorrectoBuscaItinerarios;
                 response.Estado = true;
 
                 return response;

@@ -11,7 +11,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<PlanoEntity>> BuscarPlanoBus(string CodiPlano)
         {
-            var response = new Response<List<PlanoEntity>>(false, null, "", false);
+            var response = new Response<List<PlanoEntity>>(false, null, "Error: BuscarPlanoBus.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPlanoBus";
@@ -31,7 +31,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: BuscarPlanoBus. ";
+                    response.Mensaje = "Correcto: BuscarPlanoBus.";
                     response.Estado = true;
                 }
             }
@@ -40,7 +40,7 @@ namespace SisComWeb.Repository
 
         public static Response<string> ObtenerNivelAsiento(string CodiBus, int NumeAsiento)
         {
-            var response = new Response<string>(false, null, "", false);
+            var response = new Response<string>(false, null, "Error: ObtenerNivelAsiento.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerNivelAsiento";
@@ -55,7 +55,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = valor;
-                    response.Mensaje = "Correcto: ObtenerNivelAsiento. ";
+                    response.Mensaje = "Correcto: ObtenerNivelAsiento.";
                     response.Estado = true;
                 }
             }
@@ -64,7 +64,7 @@ namespace SisComWeb.Repository
 
         public static Response<PlanoEntity> ObtenerPrecioAsiento(short CodiOrigen, short CodiDestino, string Hora, string Fecha, short CodiServicio, byte CodiEmpresa, string Nivel)
         {
-            var response = new Response<PlanoEntity>(false, null, "", false);
+            var response = new Response<PlanoEntity>(false, null, "Error: ObtenerPrecioAsiento.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerPrecioAsiento";
@@ -86,7 +86,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerPrecioAsiento. ";
+                    response.Mensaje = "Correcto: ObtenerPrecioAsiento.";
                     response.Estado = true;
                 }
             }
@@ -95,7 +95,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<PlanoEntity>> ListarAsientosOcupados(int CodiProgramacion, string FechaProgramacion, int NroViajem, short CodiOrigen, short CodiDestino)
         {
-            var response = new Response<List<PlanoEntity>>(false, null, "", false);
+            var response = new Response<List<PlanoEntity>>(false, null, "Error: ListarAsientosOcupados.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarAsientosOcupados";
@@ -128,7 +128,7 @@ namespace SisComWeb.Repository
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarAsientosOcupados. ";
+                    response.Mensaje = "Correcto: ListarAsientosOcupados.";
                     response.Estado = true;
                 }
             }

@@ -11,14 +11,14 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = new Response<int>(false, 0, "", false);
+                var response = new Response<int>(false, 0, "Error: BloqueoAsiento.", false);
                 Response<decimal> resBloquearAsiento;
 
                 // Validar 'BloqueoAsiento'
                 var resValidarBloqueoAsiento = BloqueoAsientoRepository.ValidarBloqueoAsiento(request.CodiProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino, request.NumeAsiento.ToString(), request.FechaProgramacion);
                 if (!resValidarBloqueoAsiento.Estado)
                 {
-                    response.Mensaje += "Error: BuscarPlanoBus.";
+                    response.Mensaje = resValidarBloqueoAsiento.Mensaje;
                     return response;
                 }
 
@@ -40,7 +40,7 @@ namespace SisComWeb.Business
                         resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoProgramacion(request.CodiProgramacion, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
                         if (!resBloquearAsiento.Estado)
                         {
-                            response.Mensaje += "Error: BloquearAsientoProgramacion.";
+                            response.Mensaje = resBloquearAsiento.Mensaje;
                             return response;
                         }
                     }
@@ -50,7 +50,7 @@ namespace SisComWeb.Business
                         resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoViaje(request.NroViaje, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());
                         if (!resBloquearAsiento.Estado)
                         {
-                            response.Mensaje += "Error: BloquearAsientoViaje.";
+                            response.Mensaje = resBloquearAsiento.Mensaje;
                             return response;
                         }
                     }
@@ -58,7 +58,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = int.Parse(resBloquearAsiento.Valor.ToString());
-                response.Mensaje += "Correcto: BloqueoAsiento.";
+                response.Mensaje = Message.MsgCorrectoBloqueoAsiento;
                 response.Estado = true;
 
                 return response;
@@ -74,19 +74,19 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = new Response<bool>(false, false, "", false);
+                var response = new Response<bool>(false, false, "Error: LiberaAsiento.", false);
 
                 // Validar 'LiberaAsiento'
                 var resLiberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
                 if (!resLiberaAsiento.Estado)
                 {
-                    response.Mensaje += "Error: LiberaAsiento.";
+                    response.Mensaje = resLiberaAsiento.Mensaje;
                     return response;
                 }
 
                 response.EsCorrecto = true;
                 response.Valor = resLiberaAsiento.Valor;
-                response.Mensaje += "Correcto: LiberaAsiento.";
+                response.Mensaje = Message.MsgCorrectoLiberaAsiento;
                 response.Estado = true;
 
                 return response;
