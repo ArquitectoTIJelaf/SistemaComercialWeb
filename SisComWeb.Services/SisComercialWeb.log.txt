@@ -721,6 +721,7 @@ Nombre del parámetro: index
    en System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
    en System.Collections.Generic.List`1.get_Item(Int32 index)
    en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 113
+<<<<<<< HEAD
 2019-02-25 11:42:31,569 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
 System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
    en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 210
@@ -730,3 +731,180 @@ System.NullReferenceException: Referencia a objeto no establecida como instancia
 2019-02-25 11:50:32,535 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
 System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
    en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 207
+=======
+2019-02-25 12:26:04,667 ERROR SisComWeb.Repository.DatabaseSql - Open
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 28
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:04,667 ERROR SisComWeb.Repository.DatabaseSql - Open
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   en System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 28
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:04,667 ERROR SisComWeb.Repository.DatabaseSql - Open
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 28
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:04,823 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   en System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 33
+   en SisComWeb.Repository.DatabaseSql.set_ProcedureName(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 101
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:04,823 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 33
+   en SisComWeb.Repository.DatabaseSql.set_ProcedureName(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 101
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:04,823 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 33
+   en SisComWeb.Repository.DatabaseSql.set_ProcedureName(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 101
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:6042e52a-e324-46f8-a012-078ac1b18d6e
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:51,766 ERROR SisComWeb.Repository.DatabaseSql - Open
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   en System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 28
+ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:51,766 ERROR SisComWeb.Repository.DatabaseSql - Open
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 28
+ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:51,797 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   en System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 33
+   en SisComWeb.Repository.DatabaseSql.set_ProcedureName(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 101
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
+Error Number:4060,State:1,Class:11
+2019-02-25 12:26:51,797 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
+Error de inicio de sesión del usuario 'sa'.
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   en System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   en System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   en System.Data.SqlClient.SqlConnection.Open()
+   en SisComWeb.Repository.DatabaseSql.Open() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 33
+   en SisComWeb.Repository.DatabaseSql.set_ProcedureName(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 101
+   en SisComWeb.Repository.BaseRepository.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 95
+   en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
+ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
+Error Number:4060,State:1,Class:11
+>>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
