@@ -4,7 +4,7 @@
 }
 
 @section styles{
-    <style>
+    <style type="text/css">
         #principal {
             text-align: center;
             width: 100%;
@@ -52,36 +52,36 @@
 <div id="principal">
 
     <a href="@Url.Action("Index","Itinerarios")">
-        <div id="itemVentas" class="item" onmouseover="hoverV();" onmouseout="unhoverV();">
-            <img id="ventas" src="~/wwwroot/plugins/images/VENTA1.png" />
+        <div id="itemVentas" class="item" @@mouseover="changeImg1(0)" @@mouseout="changeImg1(1)">
+            <img id="ventas" :src="img1" />
             <h5>Ventas</h5>
         </div>
     </a>
 
     <a href="javascript:void(0);">
-        <div id="itemClientes" class="item" onmouseover="hoverC();" onmouseout="unhoverC();">
-            <img id="clientes" src="~/wwwroot/plugins/images/CLIENTE1.png" />
+        <div id="itemClientes" class="item" @@mouseover="changeImg2(0)" @@mouseout="changeImg2(1)">
+            <img id="clientes" :src="img2" />
             <h5>Clientes</h5>
         </div>
     </a>
 
     <a href="javascript:void(0);">
-        <div id="itemCorrelativos" class="item" onmouseover="hoverCo();" onmouseout="unhoverCo();">
-            <img id="correlativos" src="~/wwwroot/plugins/images/CORELA1.png" />
+        <div id="itemCorrelativos" class="item" @@mouseover="changeImg3(0)" @@mouseout="changeImg3(1)">
+            <img id="correlativos" :src="img3" />
             <h5>Correlativos</h5>
         </div>
     </a>
 
     <a href="javascript:void(0);">
-        <div id="itemRutas" class="item" onmouseover="hoverR();" onmouseout="unhoverR();">
-            <img id="rutas" src="~/wwwroot/plugins/images/RUTAS1.png" />
+        <div id="itemRutas" class="item" @@mouseover="changeImg4(0)" @@mouseout="changeImg4(1)">
+            <img id="rutas" :src="img4" />
             <h5>Rutas y precios</h5>
         </div>
     </a>
 
     <a href="javascript:void(0);">
-        <div id="itemLiquidaciones" class="item" onmouseover="hoverL();" onmouseout="unhoverL();">
-            <img id="liquidaciones" src="~/wwwroot/plugins/images/LIQ1.png" />
+        <div id="itemLiquidaciones" class="item" @@mouseover="changeImg5(0)" @@mouseout="changeImg5(1)">
+            <img id="liquidaciones" :src="img5" />
             <h5>Liquidación</h5>
         </div>
     </a>
@@ -89,65 +89,18 @@
 </div>
 
 @section scripts{
-    <script>
-        function unhoverV() {
-            $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA1.png");
-        }
-
-        function hoverV() {
-            $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA2.png");
-            $('#itemVentas').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                $(this).removeClass().addClass('item');
-            });
-        }
-
-        function unhoverC() {
-            $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTE1.png");
-        }
-
-        function hoverC() {
-            $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTES2.png");
-            $('#itemClientes').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                $(this).removeClass().addClass('item');
-            });
-        }
-
-        function unhoverCo() {
-            $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA1.png");
-        }
-
-        function hoverCo() {
-            $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA2.png");
-            $('#itemCorrelativos').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                $(this).removeClass().addClass('item');
-            });
-        }
-
-        function unhoverR() {
-            $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS1.png");
-        }
-
-        function hoverR() {
-            $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS2.png");
-            $('#itemRutas').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                $(this).removeClass().addClass('item');
-            });
-        }
-
-        function unhoverL() {
-            $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQ1.png");
-        }
-
-        function hoverL() {
-            $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQU2.png");
-            $('#itemLiquidaciones').removeClass().addClass('item pulse animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-                $(this).removeClass().addClass('item');
-            });
-        }
+    <script type="text/javascript">
+        var classOne = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        var Class = 'item pulse animated';
 
         var Principal = new Vue({
             el: '#principal',
             data: {
+                img1: '/wwwroot/plugins/images/VENTA1.png',
+                img2: '/wwwroot/plugins/images/CLIENTE1.png',
+                img3: '/wwwroot/plugins/images/CORELA1.png',
+                img4: '/wwwroot/plugins/images/RUTAS1.png',
+                img5: '/wwwroot/plugins/images/LIQ1.png',
             },
             mounted: function () {
                 window.addEventListener('keyup', function (event) {
@@ -159,6 +112,56 @@
                 });
             },
             methods: {
+                changeImg1: function (index) {
+                    if (index === 0) {
+                        this.img1 = '/wwwroot/plugins/images/VENTA2.png';
+                        $('#itemVentas').removeClass().addClass(Class).one(classOne, function () {
+                            $(this).removeClass().addClass('item');
+                        });
+                    } else {
+                        this.img1 = '/wwwroot/plugins/images/VENTA1.png';
+                    }
+                },
+                changeImg2: function (index) {
+                    if (index === 0) {
+                        this.img2 = '/wwwroot/plugins/images/CLIENTES2.png';
+                        $('#itemClientes').removeClass().addClass(Class).one(classOne, function () {
+                            $(this).removeClass().addClass('item');
+                        });
+                    } else {
+                        this.img2 = '/wwwroot/plugins/images/CLIENTE1.png';
+                    }
+                },
+                changeImg3: function (index) {
+                    if (index === 0) {
+                        this.img3 = '/wwwroot/plugins/images/CORELA2.png';
+                        $('#itemCorrelativos').removeClass().addClass(Class).one(classOne, function () {
+                            $(this).removeClass().addClass('item');
+                        });
+                    } else {
+                        this.img3 = '/wwwroot/plugins/images/CORELA1.png';
+                    }
+                },
+                changeImg4: function (index) {
+                    if (index === 0) {
+                        this.img4 = '/wwwroot/plugins/images/RUTAS2.png';
+                        $('#itemRutas').removeClass().addClass(Class).one(classOne, function () {
+                            $(this).removeClass().addClass('item');
+                        });
+                    } else {
+                        this.img4 = '/wwwroot/plugins/images/RUTAS1.png';
+                    }
+                },
+                changeImg5: function (index) {
+                    if (index === 0) {
+                        this.img5 = '/wwwroot/plugins/images/LIQU2.png';
+                        $('#itemLiquidaciones').removeClass().addClass(Class).one(classOne, function () {
+                            $(this).removeClass().addClass('item');
+                        });
+                    } else {
+                        this.img5 = '/wwwroot/plugins/images/LIQ1.png';
+                    }
+                },
             }
         });
     </script>
