@@ -9,7 +9,7 @@ namespace SisComWeb.Repository
 
         public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario)
         {
-            var response = new Response<UsuarioEntity>(false, null, "", false);
+            var response = new Response<UsuarioEntity>(false, null, "Error: ValidaUsuario.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarUsuario";

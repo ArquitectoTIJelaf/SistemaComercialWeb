@@ -44,7 +44,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaOficinas()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaOficinas.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarSucursales";
@@ -66,7 +66,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaPuntosVenta(short CodiSucursal)
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaPuntosVenta.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosVenta";
@@ -89,7 +89,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaUsuarios()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaUsuarios.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarUsuarios";
@@ -111,7 +111,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaServicios()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaServicios.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarServicios";
@@ -133,7 +133,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaEmpresas()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaEmpresas.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarEmpresas";
@@ -155,7 +155,7 @@ namespace SisComWeb.Repository
 
         public static Response<List<BaseEntity>> ListaTiposDoc()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "", false);
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTiposDoc.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaTipoDocumento";
