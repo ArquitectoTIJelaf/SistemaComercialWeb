@@ -626,7 +626,7 @@ ul.pagination {
     padding: 0;
     margin: 0;
     background-color: white;
-    padding: 3px !important; 
+    padding: 3px !important;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -693,7 +693,12 @@ ul.pagination {
     background-image: linear-gradient(#F2F2F2, #DADADA);
 }
 
-.btn-ticket-venta:hover {
-    color: #2a97f4;
-    opacity: 0.6;
-}
+    .btn-ticket-venta:hover {
+        color: #2a97f4;
+        opacity: 0.6;
+    }
+
+    .btn-ticket-venta:focus {
+        color: #2a97f4;
+        opacity: 0.8;
+    }
