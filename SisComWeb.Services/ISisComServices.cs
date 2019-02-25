@@ -35,6 +35,18 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListaTiposDoc", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaTiposDoc();
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaTipoPago", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaTipoPago();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaTarjetaCredito", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaTarjetaCredito();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaCiudad", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaCiudad();
+
         #endregion
 
         #region LOGIN

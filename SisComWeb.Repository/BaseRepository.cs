@@ -36,6 +36,18 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Documento"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Documento"]).ToUpper();
                     break;
+                case 7:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Tipo_Pago"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Tipo_Pago"]).ToUpper();
+                    break;
+                case 8:
+                    item.id = DataUtility.ObjectToString(reader["Cod_TarjetaCredito"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_TarjetaCredito"]).ToUpper();
+                    break;
+                case 9:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Zona"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Zona"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -169,6 +181,72 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = Lista;
                     response.Mensaje = "Correcto: ListaTiposDoc.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListaTipoPago()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTipoPago.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarTipoPago";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 7));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListaTipoPago.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListaTarjetaCredito()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTarjetaCredito.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarTarjetaCredito";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 8));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListaTarjetaCredito.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListaCiudad()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaCiudad.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListaDistrito";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 9));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListaCiudad.";
                     response.Estado = true;
                 }
             }

@@ -21,6 +21,15 @@
         // Tipos de documento
         public const string MsgErrExcListTipoDoc = "Ocurrió una excepción al listar todos los tipos de documento.";
 
+        // Tipos de pago
+        public const string MsgErrExcListTipoPago = "Ocurrió una excepción al listar todos los tipos de pago.";
+
+        // Tarjeta de Crédito
+        public const string MsgErrExcListTarjetaCredito = "Ocurrió una excepción al listar todas las tarjetas de créditos.";
+
+        // Ciudad
+        public const string MsgErrExcListCiudad = "Ocurrió una excepción al listar todas las ciudades.";
+
         // Cliente Pasaje
         public const string MsgCorrectoGrabarClientePasaje = "Correcto: GrabarClientePasaje.";
         public const string MsgErrExcListClientePasaje = "Ocurrió una excepción al listar todos los clientes.";
