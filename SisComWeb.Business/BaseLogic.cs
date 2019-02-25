@@ -91,5 +91,47 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoDoc, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListaTipoPago()
+        {
+            try
+            {
+                var response = BaseRepository.ListaTipoPago();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoPago, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaTarjetaCredito()
+        {
+            try
+            {
+                var response = BaseRepository.ListaTarjetaCredito();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTarjetaCredito, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaCiudad()
+        {
+            try
+            {
+                var response = BaseRepository.ListaCiudad();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
     }
 }
