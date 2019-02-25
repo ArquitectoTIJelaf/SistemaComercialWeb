@@ -19,7 +19,7 @@
                                                   :id="'cboOrigenPas'"
                                                   :get-option-label="getLabel"
                                                   :options="list.origenesPas"
-                                                  :placeholder="'ORIGEN PAS.'"                                                  
+                                                  :placeholder="'ORIGEN PAS.'"
                                                   @@keydown.13.native.prevent="nextStep(1)"
                                                   ref="select">
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -55,8 +55,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-5">
-                                <div class="col-md-3">
+                            <div class="col-md-6" style="padding: 0 !important;">
+                                <div class="col-md-2" style="padding: 0 !important;">
                                     <div class="form-group ">
                                         <div class="input-group input-sm group-strench">
                                             <label class="control-label">Fecha desde:</label>
@@ -64,14 +64,14 @@
                                                    v-mask="'##/##/####'"
                                                    @@blur="nextStep(4)"
                                                    type="text"
-                                                   id="txtFecha"                                                   
+                                                   id="txtFecha"
                                                    class="form-control input-sm dp"
                                                    placeholder="DD/MM/YYYY"
                                                    autocomplete="off">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="control-label">Hora desde:</label>
                                         <input v-model="filtro.Hora"
@@ -84,29 +84,27 @@
                                                autocomplete="off">
                                     </div>
                                 </div>
-                                <div class="col-md-6" style="margin-top: 15px;">
+                                <div class="col-md-8" style="margin-top: 15px;">
                                     <div class="form-group">
-                                        <div class="checkbox-list">
-                                            <div class="col-md-6">
-                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(6)">
+                                        <div class="col-md-7 checkbox-list">
+                                            <div style="width: 100%">
+                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(6)" style="display: inline-block; margin: 0 25px 15px 0;">
                                                     <input id="chckTodos" type="checkbox" class="check-with-label" v-model="filtro.TodosTurnos">
                                                     <label for="chckTodos" class="label-for-check">TODOS</label>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(7)">
+                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(7)" style="display: inline-block;">
                                                     <input id="chckProgramados" type="checkbox" class="check-with-label" v-model="filtro.SoloProgramados">
                                                     <label for="chckProgramados" class="label-for-check">PROGRAMADOS</label>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-5">
+                                            <button id="buscar" @@click="nextStep(0)" :disabled="processing" class="btn btn-inverse btn-block waves-effect waves-light">
+                                                <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-1" style="margin-top: 15px;">
-                                <button id="buscar" @@click="nextStep(0)" :disabled="processing" class="btn btn-inverse btn-block waves-effect waves-light">
-                                    <span><i class="fa fa-search fa-1.5x fa-fw"></i>BUSCAR</span>
-                                </button>
                             </div>
                         </div>
                     </div>
