@@ -217,6 +217,105 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-tipoPago")]
+        public async Task<JsonResult> GetTipoPago()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaTipoPago");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaTipoPago");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-tarjetasCredito")]
+        public async Task<JsonResult> GetTarjetasCredito()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaTarjetaCredito");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaTarjetaCredito");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-cuidades")]
+        public async Task<JsonResult> GetCuidades()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaCiudad");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaCiudad");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }
