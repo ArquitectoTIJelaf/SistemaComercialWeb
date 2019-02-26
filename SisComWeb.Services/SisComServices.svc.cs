@@ -274,18 +274,18 @@ namespace SisComWeb.Services
 
         #region GRABA VENTA
 
-        //public Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, short CodiSucursal, short CodiPuntoVenta, short CodiTerminal)
-        //{
-        //    try
-        //    {
-        //        return VentaLogic.BuscaCorrelativo(CodiEmpresa, CodiSucursal, CodiPuntoVenta, CodiTerminal);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new Response<CorrelativoEntity>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
-        //    }
-        //}
+        public Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal)
+        {
+            try
+            {
+                return VentaLogic.BuscaCorrelativo(CodiEmpresa, CodiDocumento, CodiSucursal, CodiPuntoVenta, CodiTerminal);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<CorrelativoEntity>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+            }
+        }
 
         public Response<string> GrabaVenta(VentaEntity entidad)
         {

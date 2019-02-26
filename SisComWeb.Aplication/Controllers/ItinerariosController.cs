@@ -417,7 +417,7 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"NumeAsiento\" : " + filtro.NumeAsiento +
                                 ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
                                 ",\"Precio\" : " + filtro.Precio +
-                                ",\"CodiTerminal\" : " + filtro.CodiTerminal + " }";
+                                ",\"CodiTerminal\" : " + Convert.ToInt32(CodiTerminal) + " }";
                     HttpResponseMessage response = await client.PostAsync("BloqueoAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -521,7 +521,7 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"CodiArribo\" : " + filtro.CodiArribo +
                                 ",\"Hora_Embarque\" : \"" + filtro.Hora_Embarque + "\"" +
                                 ",\"NivelAsiento\" : " + filtro.NivelAsiento +
-                                ",\"CodiTerminal\" : " + Convert.ToInt16(CodiTerminal) + //TODO
+                                ",\"CodiTerminal\" : " + CodiTerminal + //TODO
                                 ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" + //
                                 ",\"NomPuntoVenta\" : \"" + usuario.NomPuntoVenta + "\"" + //
                                 ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" + " }";

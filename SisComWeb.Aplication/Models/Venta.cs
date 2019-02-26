@@ -42,7 +42,7 @@ namespace SisComWeb.Aplication.Models
         public short CodiArribo { get; set; }
         public string Hora_Embarque { get; set; }
         public byte NivelAsiento { get; set; }
-        public short CodiTerminal { get; set; }
+        public string CodiTerminal { get; set; }
         public string NomOficina { get; set; }
         public string NomPuntoVenta { get; set; }
         public string NomDestino { get; set; }

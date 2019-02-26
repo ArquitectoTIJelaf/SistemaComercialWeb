@@ -750,7 +750,6 @@
                     input.NumeAsiento = asientoSel.Tipo;
                     input.FechaProgramacion = _this.filtro.Fecha;
                     input.Precio = asientoSel.PrecioVenta;
-                    input.CodiTerminal = 0; // TODO.
                     APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
                         .then(res => {
                             if (res.statusText === "OK") {

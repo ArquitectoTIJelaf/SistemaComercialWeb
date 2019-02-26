@@ -9,36 +9,18 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
-        //public static Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, short CodiSucursal, short CodiPuntoVenta, short CodiTerminal)
-        //{
-        //    try
-        //    {
-        //        var response = new Response<string>(false, null, "Error: BuscaCorrelativo.", false);
-
-                
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        return new Response<CorrelativoEntity>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
-        //    }
-        //}
-
-        public static Response<string> GrabaVenta(VentaEntity entidad)
+        public static Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal)
         {
             try
             {
-                var response = new Response<string>(false, null, "Error: GrabaVenta.", false);
-                entidad.UserWebSUNAT = "WEBPASAJES";
+                var response = new Response<CorrelativoEntity>(false, null, "Error: BuscaCorrelativo.", false);
 
                 // Valida 'TerminalElectronico'
-                var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal);
+                var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(CodiEmpresa, CodiSucursal, CodiPuntoVenta, short.Parse(CodiTerminal));
                 if (resValidarTerminalElectronico.Estado)
                 {
-                    if (!string.IsNullOrEmpty(entidad.RucCliente))
-                        entidad.CodiDocumento = 17.ToString();
-                    else
-                        entidad.CodiDocumento = 16.ToString();
+                    if (!string.IsNullOrEmpty(resValidarTerminalElectronico.Valor.Tipo))
+                        resValidarTerminalElectronico.Valor.Tipo = "M";
                 }
                 else
                 {
@@ -47,7 +29,55 @@ namespace SisComWeb.Business
                 }
 
                 // Busca 'Correlativo'
-                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.CodiDocumento, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, short.Parse(resValidarTerminalElectronico.Valor.Tipo));
+                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(CodiEmpresa, CodiDocumento, CodiSucursal, CodiPuntoVenta, CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                if (!resValidarTerminalElectronico.Estado)
+                {
+                    response.Mensaje = resValidarTerminalElectronico.Mensaje;
+                    return response;
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = resBuscarCorrelativo.Valor;
+                response.Mensaje = "Correct : BuscaCorrelativo.";
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<CorrelativoEntity>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+            }
+        }
+
+        public static Response<string> GrabaVenta(VentaEntity entidad)
+        {
+            try
+            {
+                var response = new Response<string>(false, null, "Error: GrabaVenta.", false);
+                entidad.UserWebSUNAT = "WEBPASAJES";
+
+                // Seteo 'CodiDocumento'
+                if (!string.IsNullOrEmpty(entidad.RucCliente))
+                    entidad.CodiDocumento = 17.ToString();
+                else
+                    entidad.CodiDocumento = 16.ToString();
+
+                // Valida 'TerminalElectronico'
+                var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
+                if (resValidarTerminalElectronico.Estado)
+                {
+                    if (string.IsNullOrEmpty(resValidarTerminalElectronico.Valor.Tipo))
+                        resValidarTerminalElectronico.Valor.Tipo = "M";
+                }
+                else
+                {
+                    response.Mensaje = resValidarTerminalElectronico.Mensaje;
+                    return response;
+                }
+
+                // Busca 'Correlativo'
+                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.CodiDocumento, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
                 if (!resValidarTerminalElectronico.Estado)
                 {
                     response.Mensaje = resValidarTerminalElectronico.Mensaje;
@@ -69,15 +99,17 @@ namespace SisComWeb.Business
                         {
                             if (entidad.CodiDocumento == 17.ToString() && (resBuscarCorrelativo.Valor.SerieBoleto == 0 || resBuscarCorrelativo.Valor.NumeBoleto == 0))
                             {
-                                resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, 16.ToString(), entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, short.Parse(resValidarTerminalElectronico.Valor.Tipo));
-                                if (!resValidarTerminalElectronico.Estado)
+                                resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, 16.ToString(), entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                                if (resValidarTerminalElectronico.Estado)
                                 {
                                     if (resBuscarCorrelativo.Valor.SerieBoleto == 0 || resBuscarCorrelativo.Valor.NumeBoleto == 0)
                                     {
                                         response.Mensaje = "Error: SerieBoleto o NumeBoleto nulo.";
                                         return response;
                                     }
-
+                                }
+                                else
+                                {
                                     response.Mensaje = resValidarTerminalElectronico.Mensaje;
                                     return response;
                                 }

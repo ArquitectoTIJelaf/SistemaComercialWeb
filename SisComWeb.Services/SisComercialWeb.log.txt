@@ -908,3 +908,31 @@ Error de inicio de sesión del usuario 'sa'.
 ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
 Error Number:4060,State:1,Class:11
 >>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
+2019-02-26 17:30:09,670 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.ArgumentNullException: El valor no puede ser nulo.
+Nombre del parámetro: String
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int16.Parse(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int16.Parse(String s)
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 50
+2019-02-26 17:44:56,480 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): El procedimiento o la función 'scwsp_BuscarCorrelativo' esperaba el parámetro '@Terminal', que no se ha especificado.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.VentaRepository.BuscarCorrelativo(Byte CodiEmpresa, String CodiDocumento, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiTerminal, String Tipo) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 50
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 53
+ClientConnectionId:0bb041a1-5277-4b52-a126-05d18fd9b175
+Error Number:201,State:4,Class:16

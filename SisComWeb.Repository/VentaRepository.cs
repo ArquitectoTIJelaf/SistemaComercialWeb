@@ -34,9 +34,9 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<VentaEntity> BuscarCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, short CodiTerminal, short Tipo)
+        public static Response<CorrelativoEntity> BuscarCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal, string Tipo)
         {
-            var response = new Response<VentaEntity>(false, null, "Error: BuscarCorrelativo.", false);
+            var response = new Response<CorrelativoEntity>(false, null, "Error: BuscarCorrelativo.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarCorrelativo";
@@ -44,9 +44,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, CodiDocumento);
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
-                db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, CodiTerminal);
-                db.AddParameter("@Tipo", DbType.Int16, ParameterDirection.Input, Tipo);
-                var entidad = new VentaEntity();
+                db.AddParameter("@Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+                var entidad = new CorrelativoEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

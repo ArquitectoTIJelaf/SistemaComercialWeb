@@ -64,7 +64,7 @@
 
         public byte NivelAsiento { get; set; }
 
-        public short CodiTerminal { get; set; }
+        public string CodiTerminal { get; set; }
 
         public string NomOficina { get; set; } // Del Usuario
 
