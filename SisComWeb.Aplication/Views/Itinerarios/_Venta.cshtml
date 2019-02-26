@@ -1,6 +1,63 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{ var usuario = DataSession.UsuarioLogueado; }
 
+<style type="text/css">
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+        position: absolute;
+        left: -9999px;
+    }
+
+        [type="radio"]:checked + label,
+        [type="radio"]:not(:checked) + label {
+            position: relative;
+            padding-left: 20px;
+            cursor: pointer;
+            line-height: 20px;
+            display: inline-block;
+            color: #f7fafc;
+        }
+
+            [type="radio"]:checked + label:before,
+            [type="radio"]:not(:checked) + label:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16px;
+                height: 16px;
+                border: 2px solid white;
+                border-radius: 100%;
+                background: #ff7601;
+            }
+
+            [type="radio"]:checked + label:after,
+            [type="radio"]:not(:checked) + label:after {
+                content: '';
+                width: 12px;
+                height: 12px;
+                background: #2e9fef;
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                border-radius: 100%;
+                -webkit-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+            }
+
+            [type="radio"]:not(:checked) + label:after {
+                opacity: 0;
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            [type="radio"]:checked + label:after {
+                opacity: 1;
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+</style>
+
 <div id="appVueVenta" v-show="showVentas" class="row">
     <div class="col-md-12">
         <div class="white-box" style="padding: 10px 0 15px 0;">
@@ -37,7 +94,7 @@
                                     <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer; ">Atrás</label>
                                 </div>
-                                <a href="@Url.Action("Index","Principal")"> 
+                                <a href="@Url.Action("Index","Principal")">
                                     <div style="display: inline-block; cursor: pointer;">
                                         <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px; " />
                                     </div>
@@ -219,7 +276,7 @@
                         <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
                             <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px; display: flex; align-items: center; color: white;">
                                 <div class="col-md-3">
-                                    <input type="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
+                                    <input type="radio" name="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
                                     <label for="ventaBV" class="align-label-radio">VentaV</label>
                                 </div>
                                 <div class="col-md-3">
@@ -232,7 +289,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <input type="radio" id="fecAbiertaBV" value="" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="fecAbiertaBV" class="align-label-radio">Fec. Abierta</label>
+                                    <label for="fecAbiertaBV" class="align-label-radio">Fec.&nbsp;Abierta</label>
                                 </div>
                             </div>
                         </div>
@@ -395,7 +452,7 @@
                                      @@click="leftSlider"
                                      class="bgc-emp"
                                      style="border-radius: 0px 10px 10px 0px; ">
-                                    <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%"/>
+                                    <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" />
                                 </div>
                             </div>
                             <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 5px 15px; background-color: white; z-index: 1">
@@ -670,7 +727,7 @@
                                      @@click="rightSlider"
                                      class="bgc-emp"
                                      style="border-radius: 10px 0px 0px 10px; ">
-                                    <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%"/>
+                                    <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%" />
                                 </div>
                             </div>
                         </div>

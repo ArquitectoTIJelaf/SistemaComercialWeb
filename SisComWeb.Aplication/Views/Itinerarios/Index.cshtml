@@ -11,7 +11,7 @@
 @Html.Partial("_TipoPago")
 
 @section styles{
-    <style>
+    <style type="text/css">
         .panel-default .panel-heading {
             height: 35px;
             min-height: 35px;
@@ -240,6 +240,16 @@
             margin-bottom: 4px;
         }
 
+        #appVueTable {
+            height: calc(100vh - 265px);
+            display: flex;
+            /*align-items: center;*/
+        }
+
+        .content {
+            text-align: center;
+            width: 100%;
+        }
     </style>
 }
 
