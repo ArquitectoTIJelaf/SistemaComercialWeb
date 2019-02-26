@@ -915,6 +915,7 @@
                     }
                 },
                 searchUser: function () {
+                    debugger;
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                         tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
@@ -946,7 +947,7 @@
                 passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento) {
                     this.list.ventas[this.indexVenta].Precio = _precioNormal;
                     this.list.ventas[this.indexVenta].NroAsiento = _nroAsiento;
-                    this.list.ventas[this.indexVenta].NivelAsiento = _nivelAsiento;                    
+                    this.list.ventas[this.indexVenta].NivelAsiento = _nivelAsiento;
                     this.list.ventas[this.indexVenta].NroVenta = 'N° 02-???' + this.indexVenta;
                     this.recorridoSectionVentas();
                 },
@@ -1032,7 +1033,7 @@
                     input.FechaViaje = _this.filtro.Fecha;
                     input.HoraViaje = _this.filtro.Turno;
                     input.CodiServicio = _this.filtro.CodiServicio.id;
-                    input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;       
+                    input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;
                     input.NomDestino = _this.filtro.CodiDestinoPas.label;
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
@@ -1056,7 +1057,6 @@
                     this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
                 },
                 limpiarVenta: function () {
-                    debugger;
                     var _this = this;
                     _this.list.ventas = [];
                     this.list.ventas.push({
@@ -1082,28 +1082,12 @@
                         FechaVen: ''
                     });
                 },
-                bloquearPago: function (indexVenta) {
-                    debugger;
-                    var _this = this;
-                    return (_this.list.ventas[indexVenta].CodiTipoDoc !== null && _this.list.ventas[indexVenta].Documento !== '' &&
-                        _this.list.ventas[indexVenta].Nombres !== '' && _this.list.ventas[indexVenta].ApellidoPaterno !== '' &&
-                        _this.list.ventas[indexVenta].ApellidoMaterno !== '' && _this.list.ventas[indexVenta].FechaNac !== '' &&
-                        _this.list.ventas[indexVenta].Edad > 0 && _this.list.ventas[indexVenta].Sexo !== null);
-                },
                 changeMaskedTipoDoc: function (value) {
                     var _this = this
-                    if (value) {
-                        id = value.id;
-                        if (id === "1") {
-                            //DNI
-                            _this.mask.documento = "#".repeat(8)
-                        } else if (id === "4") {
-                            //PASAPORTE
-                            _this.mask.documento = "#".repeat(9)
-                        } else if (id === "7") {
-                            //CARNET EXTRANJERIA
-                            _this.mask.documento = "#".repeat(12)
-                        }
+                    if (value !== null) {id = value.id;
+                        if (id === "1") { _this.mask.documento = "#".repeat(8) }//DNI
+                        else if (id === "4") { _this.mask.documento = "#".repeat(9) }//PASAPORTE
+                        else if (id === "7") {_this.mask.documento = "#".repeat(12)}//CARNET EXTRANJERIA
                     }
                 }
             },
@@ -1118,7 +1102,14 @@
                             cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora;
                     }
                     return cadenaEmbarques;
-                }
+                },
+                bloquearPago: function () {
+                    var _this = this;
+                    return (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].Documento !== '' &&
+                        _this.list.ventas[_this.indexVenta].Nombres !== '' && _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
+                        _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' && _this.list.ventas[_this.indexVenta].FechaNac !== '' &&
+                        _this.list.ventas[_this.indexVenta].Edad > 0 && _this.list.ventas[_this.indexVenta].Sexo !== null);
+                },
             },
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
@@ -1248,8 +1239,8 @@
                     input.CodiEmbarque = _this.embarque.CodiPuntoVenta;//
                     input.CodiArribo = _this.arribo.CodiPuntoVenta;//
                     input.Hora_Embarque = _this.embarque.Hora;//
-                    input.NivelAsiento = _this.ticketVenta.NivelAsiento;             
-                    input.NomDestino = _this.ticketVenta.NomDestino;	
+                    input.NivelAsiento = _this.ticketVenta.NivelAsiento;
+                    input.NomDestino = _this.ticketVenta.NomDestino;
                     APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                         .then(res => {
                             APP.msg.info('Se procedió la venta con código: ' + res.data);
