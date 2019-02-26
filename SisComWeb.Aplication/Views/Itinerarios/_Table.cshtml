@@ -1,91 +1,95 @@
-﻿
-<div id="appVueTable" v-show="!showVentas" class="row">
-    <div class="col-md-12">
-        <div class="white-box" style="background: transparent;padding: 15px 0 15px 0;">
-            <div style="width:100%;overflow:auto;padding-bottom:10px;">
-                <div class="col-sm-1">
-                    <span class="mdi mdi-checkbox-blank-circle" style="color:#FFFFFF;"></span> Sin ventas
+﻿<div id="appVueTable" v-show="!showVentas" @*class="row"*@>
+    <template v-if="true">
+        <div class="col-md-12">
+            <div class="white-box" style="background: transparent;padding: 15px 0 15px 0;">
+                <div style="width:100%;overflow:auto;padding-bottom:10px;">
+                    <div class="col-sm-1">
+                        <span class="mdi mdi-checkbox-blank-circle" style="color:#FFFFFF;"></span> Sin ventas
+                    </div>
+                    <div class="col-sm-1">
+                        <span class="mdi mdi-checkbox-blank-circle" style="color:#A9E36A;"></span> Con ventas
+                    </div>
+                    <div class="col-sm-1">
+                        <span class="mdi mdi-checkbox-blank-circle" style="color:#E26B67;"></span> Bus lleno
+                    </div>
+                    <div class="col-sm-1">
+                        <span class="mdi mdi-checkbox-blank-circle" style="color:#169BFF;"></span> Prog. Cerrada
+                    </div>
+                    <div class="col-sm-1">
+                        <span class="mdi mdi-checkbox-blank-circle" style="color:#F7C06E;"></span> Adicional
+                    </div>
+                    <div class="col-sm-7">
+                    </div>
                 </div>
-                <div class="col-sm-1">
-                    <span class="mdi mdi-checkbox-blank-circle" style="color:#A9E36A;"></span> Con ventas
-                </div>
-                <div class="col-sm-1">
-                    <span class="mdi mdi-checkbox-blank-circle" style="color:#E26B67;"></span> Bus lleno
-                </div>
-                <div class="col-sm-1">
-                    <span class="mdi mdi-checkbox-blank-circle" style="color:#169BFF;"></span> Prog. Cerrada
-                </div>
-                <div class="col-sm-1">
-                    <span class="mdi mdi-checkbox-blank-circle" style="color:#F7C06E;"></span> Adicional
-                </div>
-                <div class="col-sm-7">
-                </div>
-            </div>
-            <div class="custom-scroll-container">
-                <div class="table-responsive" style="background-color: #616e7e;">
-                    <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
-                        <thead>
-                            <tr>
-                                <th class="custom-th" width="%">Estado</th>
-                                <th class="custom-th" width="%">N° VIAJE</th>
-                                <th class="custom-th" width="%">EMPRESA</th>
-                                <th class="custom-th" width="%">SALIDA BUS</th>
-                                <th class="custom-th" width="%">ORIGEN PAS.</th>
-                                <th class="custom-th" width="%">DESTINO BUS</th>
-                                <th class="custom-th" width="%">SERVICIO</th>
-                                <th class="custom-th" width="%">HORA</th>
-                                <th class="custom-th" width="%">BUS</th>
-                                <th class="custom-th" width="%">PLACA</th>
-                                <th class="custom-th" width="%">T.A.</th>
-                                <th class="custom-th" width="%">C.B.</th>
-                                <th class="custom-th" width="%">N°PRG</th>
-                                <th class="custom-th" width="%">TURNO</th>
-                                <th class="custom-th" width="%">COD. PUNTO VENTA</th>
-                                <th class="custom-th" width="%">COD. EMP.</th>
-                                <th class="custom-th" width="%">COD. DEST. BUS</th>
-                                <th class="custom-th" width="%">COD. SERV.</th>
-                                <th class="custom-th" width="%">FECHA PROG.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <paginate name="items" :list="list.itinerarios" :per="10">
-                                <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                    <td class="custom-td">
-                                        <template v-if="item.Color === '#FFFFFF'">
-                                            <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
-                                        </template>
-                                        <template v-else>
-                                            <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
-                                        </template>
-                                        <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
-                                    </td>
-                                    <td class="custom-td">{{item.NroViaje}}</td>
-                                    <td class="custom-td">{{item.RazonSocial}}</td>
-                                    <td class="custom-td">{{item.NomSucursal}}</td>
-                                    <td class="custom-td">{{item.NomOrigen}}</td>
-                                    <td class="custom-td">{{item.NomRuta}}</td>
-                                    <td class="custom-td">{{item.NomServicio}}</td>
-                                    <td class="custom-td">{{item.HoraProgramacion}}</td>
-                                    <td class="custom-td">{{item.CodiBus}}</td>
-                                    <td class="custom-td">{{item.PlacaBus}}</td>
-                                    <td class="custom-td">{{item.AsientosVendidos}}</td>
-                                    <td class="custom-td">{{item.CapacidadBus}}</td>
-                                    <td class="custom-td">{{item.CodiProgramacion}}</td>
-                                    <td class="custom-td">{{item.HoraPartida}}</td>
-                                    <td class="custom-td">{{item.CodiPuntoVenta}}</td>
-                                    <td class="custom-td">{{item.CodiEmpresa}}</td>
-                                    <td class="custom-td">{{item.CodiRuta}}</td>
-                                    <td class="custom-td">{{item.CodiServicio}}</td>
-                                    <td class="custom-td">{{item.FechaProgramacion}}</td>
+                <div class="custom-scroll-container">
+                    <div class="table-responsive" style="background-color: #616e7e;">
+                        <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                            <thead>
+                                <tr>
+                                    <th class="custom-th" width="%">Estado</th>
+                                    <th class="custom-th" width="%">N° VIAJE</th>
+                                    <th class="custom-th" width="%">EMPRESA</th>
+                                    <th class="custom-th" width="%">SALIDA BUS</th>
+                                    <th class="custom-th" width="%">ORIGEN PAS.</th>
+                                    <th class="custom-th" width="%">DESTINO BUS</th>
+                                    <th class="custom-th" width="%">SERVICIO</th>
+                                    <th class="custom-th" width="%">HORA</th>
+                                    <th class="custom-th" width="%">BUS</th>
+                                    <th class="custom-th" width="%">PLACA</th>
+                                    <th class="custom-th" width="%">T.A.</th>
+                                    <th class="custom-th" width="%">C.B.</th>
+                                    <th class="custom-th" width="%">N°PRG</th>
+                                    <th class="custom-th" width="%">TURNO</th>
+                                    <th class="custom-th" width="%">COD. PUNTO VENTA</th>
+                                    <th class="custom-th" width="%">COD. EMP.</th>
+                                    <th class="custom-th" width="%">COD. DEST. BUS</th>
+                                    <th class="custom-th" width="%">COD. SERV.</th>
+                                    <th class="custom-th" width="%">FECHA PROG.</th>
                                 </tr>
-                            </paginate>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <paginate name="items" :list="list.itinerarios" :per="10">
+                                    <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
+                                        <td class="custom-td">
+                                            <template v-if="item.Color === '#FFFFFF'">
+                                                <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
+                                            </template>
+                                            <template v-else>
+                                                <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                            </template>
+                                            <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
+                                        </td>
+                                        <td class="custom-td">{{item.NroViaje}}</td>
+                                        <td class="custom-td">{{item.RazonSocial}}</td>
+                                        <td class="custom-td">{{item.NomSucursal}}</td>
+                                        <td class="custom-td">{{item.NomOrigen}}</td>
+                                        <td class="custom-td">{{item.NomRuta}}</td>
+                                        <td class="custom-td">{{item.NomServicio}}</td>
+                                        <td class="custom-td">{{item.HoraProgramacion}}</td>
+                                        <td class="custom-td">{{item.CodiBus}}</td>
+                                        <td class="custom-td">{{item.PlacaBus}}</td>
+                                        <td class="custom-td">{{item.AsientosVendidos}}</td>
+                                        <td class="custom-td">{{item.CapacidadBus}}</td>
+                                        <td class="custom-td">{{item.CodiProgramacion}}</td>
+                                        <td class="custom-td">{{item.HoraPartida}}</td>
+                                        <td class="custom-td">{{item.CodiPuntoVenta}}</td>
+                                        <td class="custom-td">{{item.CodiEmpresa}}</td>
+                                        <td class="custom-td">{{item.CodiRuta}}</td>
+                                        <td class="custom-td">{{item.CodiServicio}}</td>
+                                        <td class="custom-td">{{item.FechaProgramacion}}</td>
+                                    </tr>
+                                </paginate>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                <center>
+                    <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                </center>
             </div>
-            <center>
-                <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
-            </center>            
         </div>
-    </div>
+    </template>
+    <template v-else>
+        @Html.Partial("_WithoutResult")
+    </template>
 </div>
