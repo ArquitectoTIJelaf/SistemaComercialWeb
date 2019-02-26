@@ -9,7 +9,7 @@ namespace SisComWeb.Repository
 
         public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario)
         {
-            var response = new Response<UsuarioEntity>(false, null, "", false);
+            var response = new Response<UsuarioEntity>(false, null, "Error: ValidaUsuario.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarUsuario";
@@ -26,6 +26,8 @@ namespace SisComWeb.Repository
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta");
                         entidad.Password = Reader.GetStringValue(drlector, "Pws");
                         entidad.Nivel = Reader.GetTinyIntValue(drlector, "Nivel");
+                        entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
+                        entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;

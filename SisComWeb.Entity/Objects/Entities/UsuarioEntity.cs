@@ -15,5 +15,9 @@
         public string Password { get; set; }
 
         public byte Nivel { get; set; }
+
+        public string NomSucursal { get; set; }
+
+        public string NomPuntoVenta { get; set; }
     }
 }

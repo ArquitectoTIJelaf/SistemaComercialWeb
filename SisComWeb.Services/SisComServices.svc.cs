@@ -90,6 +90,45 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaTipoPago()
+        {
+            try
+            {
+                return BaseLogic.ListaTipoPago();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoPago, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaTarjetaCredito()
+        {
+            try
+            {
+                return BaseLogic.ListaTarjetaCredito();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTarjetaCredito, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaCiudad()
+        {
+            try
+            {
+                return BaseLogic.ListaCiudad();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN
@@ -109,7 +148,7 @@ namespace SisComWeb.Services
 
         #endregion
 
-        #region REGISTRO CLIENTE PASAJERO
+        #region GRABA PASAJERO
 
         public Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
@@ -134,6 +173,19 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgErrExcGrabarClientePasaje, false);
+            }
+        }
+
+        public Response<string> ConsultaSUNAT(string RucContacto)
+        {
+            try
+            {
+                return ClientePasajeLogic.ConsultaSUNAT(RucContacto);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrExcConsultaSUNAT, false);
             }
         }
 
@@ -215,6 +267,23 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgErrExcLiberaAsiento, false);
+            }
+        }
+
+        #endregion
+
+        #region GRABA VENTA
+
+        public Response<string> GrabaVenta(VentaEntity entidad)
+        {
+            try
+            {
+                return VentaLogic.GrabaVenta(entidad);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrExcGrabaVenta, false);
             }
         }
 

@@ -12,9 +12,30 @@ namespace SisComWeb.Utility
 {
     public class DataUtility
     {
+        public static string ConvertListToXml<T>(T lista, string nombreXmlRoot)
+        {
+            string cadenaXml = string.Empty;
+
+            Encoding utf8noBOM = new UTF8Encoding(false);
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = utf8noBOM
+            };
+            XmlSerializer ser = new XmlSerializer(typeof(T), new XmlRootAttribute(nombreXmlRoot));
+            StringBuilder sb = new StringBuilder();
+            using (XmlWriter xml = XmlWriter.Create(sb, settings))
+            {
+                ser.Serialize(xml, lista);
+            };
+            cadenaXml = sb.ToString();
+
+            return cadenaXml;
+        }
+
         public static string ObtenerColorHexadecimal(string _Color)
         {
-            string colorHexadecimal = "";
+            string colorHexadecimal = string.Empty;
 
             var auxColor = long.Parse(_Color);
             int b = (int)(auxColor / 65536);

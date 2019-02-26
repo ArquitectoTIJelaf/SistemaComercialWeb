@@ -9,7 +9,7 @@ namespace SisComWeb.Repository
 
         public static Response<int> ValidarBloqueoAsiento(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string NumeAsiento, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "", false);
+            var response = new Response<int>(false, 0, "Error: ValidarBloqueoAsiento.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarBloqueoAsiento";
@@ -42,7 +42,7 @@ namespace SisComWeb.Repository
 
         public static Response<decimal> BloquearAsientoProgramacion(int CodiProgramacion, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
         {
-            var response = new Response<decimal>(false, 0, "", false);
+            var response = new Response<decimal>(false, 0, "Error: BloquearAsientoProgramacion.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BloquearAsientobyProgramacion";
@@ -70,7 +70,7 @@ namespace SisComWeb.Repository
 
         public static Response<decimal> BloquearAsientoViaje(int NroViaje, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
         {
-            var response = new Response<decimal>(false, 0, "", false);
+            var response = new Response<decimal>(false, 0, "Error: BloquearAsientoViaje.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BloquearAsientobyViaje";
@@ -98,7 +98,7 @@ namespace SisComWeb.Repository
 
         public static Response<bool> LiberaAsiento(int IDS)
         {
-            var response = new Response<bool>(false, false, "", false);
+            var response = new Response<bool>(false, false, "Error: LiberaAsiento.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_LiberarAsiento";

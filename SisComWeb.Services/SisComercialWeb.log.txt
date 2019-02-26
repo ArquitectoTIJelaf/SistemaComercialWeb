@@ -721,6 +721,17 @@ Nombre del parámetro: index
    en System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
    en System.Collections.Generic.List`1.get_Item(Int32 index)
    en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 113
+<<<<<<< HEAD
+2019-02-25 11:42:31,569 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 210
+2019-02-25 11:43:47,738 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 210
+2019-02-25 11:50:32,535 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 207
+=======
 2019-02-25 12:26:04,667 ERROR SisComWeb.Repository.DatabaseSql - Open
 System.Data.SqlClient.SqlException (0x80131904): No se puede abrir la base de datos "BDPASAJE_N" solicitada por el inicio de sesión. Error de inicio de sesión.
 Error de inicio de sesión del usuario 'sa'.
@@ -896,3 +907,4 @@ Error de inicio de sesión del usuario 'sa'.
    en SisComWeb.Business.BaseLogic.ListaUsuarios() en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 43
 ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
 Error Number:4060,State:1,Class:11
+>>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
