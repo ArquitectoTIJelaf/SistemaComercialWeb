@@ -13,5 +13,8 @@ namespace SisComWeb.Aplication.Models
         public int CodiUsuario { get; set; }
         public string Nombre { get; set; }
         public int Nivel { get; set; }
+        public string NomSucursal { get; set; }
+        public string NomPuntoVenta { get; set; }
+
     }
 }
