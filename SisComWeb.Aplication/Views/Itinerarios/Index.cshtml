@@ -574,7 +574,10 @@
                 indexVenta: 0,
                 oldPeople: [],
                 firstAsiento: true,
-                pickedBusVenta: 'V'
+                pickedBusVenta: 'V',
+                mask: {
+                    documento: ''
+                }
             },
             mounted: function () {
                 this.getEmpresas();
@@ -1026,6 +1029,7 @@
                     this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
                 },
                 limpiarVenta: function () {
+                    debugger;
                     var _this = this;
                     _this.list.ventas = [];
                     this.list.ventas.push({
@@ -1045,6 +1049,7 @@
                         Observacion: '',
                         Precio: '',
                         NroAsiento: '',
+                        NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
                         FechaVen: ''
@@ -1057,6 +1062,22 @@
                         _this.list.ventas[indexVenta].Nombres !== '' && _this.list.ventas[indexVenta].ApellidoPaterno !== '' &&
                         _this.list.ventas[indexVenta].ApellidoMaterno !== '' && _this.list.ventas[indexVenta].FechaNac !== '' &&
                         _this.list.ventas[indexVenta].Edad > 0 && _this.list.ventas[indexVenta].Sexo !== null);
+                },
+                changeMaskedTipoDoc: function (value) {
+                    var _this = this
+                    if (value) {
+                        id = value.id;
+                        if (id === "1") {
+                            //DNI
+                            _this.mask.documento = "#".repeat(8)
+                        } else if (id === "4") {
+                            //PASAPORTE
+                            _this.mask.documento = "#".repeat(9)
+                        } else if (id === "7") {
+                            //CARNET EXTRANJERIA
+                            _this.mask.documento = "#".repeat(12)
+                        }
+                    }
                 }
             },
             computed: {

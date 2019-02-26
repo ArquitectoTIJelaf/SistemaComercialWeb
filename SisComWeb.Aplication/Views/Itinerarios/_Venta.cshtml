@@ -480,6 +480,7 @@
                                                       :placeholder="'TIPO'"
                                                       style="width: 50%; display: inline-block; "
                                                       @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                      @*:on-change="changeMaskedTipoDoc"*@
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -490,8 +491,8 @@
                                                    class="form-control input-sm"
                                                    placeholder="DOCUMENTO"
                                                    style="width: 50%; display: inline-block; float: right; "
-                                                   autocomplete="off"
-                                                   maxlenght="8">
+                                                   autocomplete="off"                                                   
+                                                   @*v-mask="mask.documento"*@>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
