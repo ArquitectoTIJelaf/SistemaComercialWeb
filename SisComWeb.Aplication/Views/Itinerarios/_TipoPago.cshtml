@@ -22,7 +22,7 @@
                             </div>
                         </div>
 
-                        <template v-if="tipoPago === '1'">
+                        <template v-if="tipoPago === '03'">
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Tipo:</label>
                                 <div class="col-md-10">
@@ -42,9 +42,9 @@
                                 </div>
                             </div>
                         </template>
-                        <template v-else-if="tipoPago === '2'">
+                        <template v-else-if="tipoPago === '01'">
                         </template>
-                        <template v-else-if="tipoPago === '3'">
+                        <template v-else-if="tipoPago === '04'">
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Distrito:</label>
                                 <div class="col-md-10">
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="saveVenta" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">

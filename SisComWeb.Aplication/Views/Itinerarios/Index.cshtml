@@ -144,7 +144,9 @@
         }
 
         .EE {
-            background: url("/wwwroot/plugins/images/users/ESCALERAS.png") no-repeat center center;
+            background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
+            background-color: #B2B2B2;
+            border-radius: 4px;
             display: block;
             height: 95%;
             min-width: 40px;
@@ -310,8 +312,8 @@
                     item.FechaViaje = appVueVenta.filtro.Fecha;
                     appVueVenta.getTurno(item, item.FechaViaje);
                 },
-                showTipoPago: function (_embarque, _arribos) {
-                    appVueTipoPago.show(_embarque, _arribos);
+                showTipoPago: function (_embarque, _arribos, _ticketVenta) {
+                    appVueTipoPago.show(_embarque, _arribos, _ticketVenta);
                 }
             };
         })();
@@ -520,7 +522,7 @@
                             ApellidoMaterno: '',
                             FechaNac: '',
                             Edad: '',
-                            Sexo: '',
+                            Sexo: null,
                             Telefono: '',
                             Ruc: '',
                             Recoger: '',
@@ -546,27 +548,27 @@
                     CodiCopiloto: '',
                     NombreCopiloto: ''
                 },
-                objVenta: {
-                    IdCliente: 0,
-                    CodiTipoDoc: null,
-                    Documento: '',
-                    Nombres: '',
-                    ApellidoPaterno: '',
-                    ApellidoMaterno: '',
-                    FechaNac: '',
-                    Edad: '',
-                    Sexo: '',
-                    Telefono: '',
-                    Ruc: '',
-                    Recoger: '',
-                    Reintegro: '',
-                    Observacion: '',
-                    Precio: '',
-                    NroAsiento: '',
-                    NroVenta: '',
-                    NroSolicitud: '',
-                    FechaVen: ''
-                },
+                //objVenta: {
+                //    IdCliente: 0,
+                //    CodiTipoDoc: null,
+                //    Documento: '',
+                //    Nombres: '',
+                //    ApellidoPaterno: '',
+                //    ApellidoMaterno: '',
+                //    FechaNac: '',
+                //    Edad: '',
+                //    Sexo: '',
+                //    Telefono: '',
+                //    Ruc: '',
+                //    Recoger: '',
+                //    Reintegro: '',
+                //    Observacion: '',
+                //    Precio: '',
+                //    NroAsiento: '',
+                //    NroVenta: '',
+                //    NroSolicitud: '',
+                //    FechaVen: ''
+                //},
                 showVentas: false,
                 showPlano: false,
                 showTextTurnos: false,
@@ -760,7 +762,7 @@
                                     APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
                                     if (!_this.firstAsiento)
                                         _this.createElementInList();
-                                    _this.passSectionVentas(asientoSel.Tipo);
+                                    _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel);
                                     _this.firstAsiento = false;
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
                                 }
@@ -781,7 +783,7 @@
                         ApellidoMaterno: '',
                         FechaNac: '',
                         Edad: '',
-                        Sexo: '',
+                        Sexo: null,
                         Telefono: '',
                         Ruc: '',
                         Recoger: '',
@@ -789,6 +791,7 @@
                         Observacion: '',
                         Precio: '',
                         NroAsiento: '',
+                        NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
                         FechaVen: ''
@@ -814,7 +817,7 @@
                                         _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
                                         _this.list.ventas[_this.indexVenta].FechaNac = '';
                                         _this.list.ventas[_this.indexVenta].Edad = '';
-                                        _this.list.ventas[_this.indexVenta].Sexo = '';
+                                        _this.list.ventas[_this.indexVenta].Sexo = null;
                                         _this.list.ventas[_this.indexVenta].Telefono = '';
                                         _this.list.ventas[_this.indexVenta].Ruc = '';
                                         _this.list.ventas[_this.indexVenta].Recoger = '';
@@ -822,6 +825,7 @@
                                         _this.list.ventas[_this.indexVenta].Observacion = '';
                                         _this.list.ventas[_this.indexVenta].Precio = '';
                                         _this.list.ventas[_this.indexVenta].NroAsiento = '';
+                                        _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
                                         _this.list.ventas[_this.indexVenta].NroVenta = '';
                                         _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                                         _this.list.ventas[_this.indexVenta].FechaVen = '';
@@ -941,8 +945,10 @@
                             _this.recorridoSectionVentas();
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                passSectionVentas: function (_nroAsiento) {
+                passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento) {
+                    this.list.ventas[this.indexVenta].Precio = _precioNormal;
                     this.list.ventas[this.indexVenta].NroAsiento = _nroAsiento;
+                    this.list.ventas[this.indexVenta].NivelAsiento = _nivelAsiento;                    
                     this.list.ventas[this.indexVenta].NroVenta = 'N° 02-???' + this.indexVenta;
                     this.recorridoSectionVentas();
                 },
@@ -965,7 +971,7 @@
                     input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
                     input.Email = ''; //TODO
                     input.RucContacto = _this.list.ventas[_this.indexVenta].Ruc;
-                    input.Sexo = _this.list.ventas[_this.indexVenta].Sexo;
+                    input.Sexo = _this.list.ventas[_this.indexVenta].Sexo.id;
                     APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', input)
                         .then(res => {
                             APP.msg.info(res.data);
@@ -1007,7 +1013,30 @@
                     }
                 },
                 showTipoPago: function () {
-                    appController.showTipoPago(this.list.embarques, this.list.embarques);
+                    var _this = this;
+                    var input = {};
+                    input.CodiEmpresa = _this.filtro.CodiEmpresa.id;
+                    input.CodiOrigen = _this.filtro.CodiOrigenBus.id;
+                    input.CodiDestino = _this.filtro.CodiDestinoPas.id;
+                    input.CodiProgramacion = _this.filtro.CodiProgramacion;
+                    input.RucCliente = _this.list.ventas[_this.indexVenta].Ruc;
+                    input.NumeAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
+                    input.FlagVenta = _this.pickedBusVenta;
+                    input.PrecioVenta = _this.list.ventas[_this.indexVenta].Precio;
+                    input.Nombre = _this.list.ventas[_this.indexVenta].Nombres + ',' +
+                        _this.list.ventas[_this.indexVenta].ApellidoPaterno + ',' +
+                        _this.list.ventas[_this.indexVenta].ApellidoMaterno;
+                    input.Edad = _this.list.ventas[_this.indexVenta].Edad;
+                    input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
+                    input.Dni = _this.list.ventas[_this.indexVenta].Documento;
+                    input.TipoDocumento = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
+                    input.Sexo = _this.list.ventas[_this.indexVenta].Sexo;
+                    input.FechaViaje = _this.filtro.Fecha;
+                    input.HoraViaje = _this.filtro.Turno;
+                    input.CodiServicio = _this.filtro.CodiServicio.id;
+                    input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;       
+                    input.NomDestino = _this.filtro.CodiDestinoPas.label;
+                    appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
                 leftSlider: function () {
                     if (this.indexVenta > 0)
@@ -1091,10 +1120,6 @@
                             cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora;
                     }
                     return cadenaEmbarques;
-                },
-                list_ventas_length: function () {
-                    //debugger;
-                    return this.battle_logs.length;
                 }
             },
             watch: {
@@ -1159,32 +1184,86 @@
                 embarque: null,
                 arribo: null,
                 list: {
-                    tiposPago: [
-                        { 'id': '1', 'label': 'TARJETA DE CREDITO' },
-                        { 'id': '2', 'label': 'CONTADO' },
-                        { 'id': '3', 'label': 'DELIVERY' }
-                    ],
-                    distritos: [
-                        { 'id': '1', 'label': 'CENTRO' },
-                        { 'id': '2', 'label': 'NORTE' },
-                        { 'id': '3', 'label': 'NORTE TUMBES-PIURA' }
-                    ],
-                    tarjetas: [
-                        { 'id': '1', 'label': 'MAESTRO' },
-                        { 'id': '2', 'label': 'VISA' },
-                        { 'id': '3', 'label': 'MASTERCARD' }
-                    ],
+                    tiposPago: [],
+                    distritos: [],
+                    tarjetas: [],
                     embarques: [],
                     arribos: []
-                }
+                },
+                ticketVenta: {}
             },
             mounted: function () {
+                this.getTipoPago();
+                this.getTarjetasCredito();
+                this.getCuidades();
             },
             methods: {
-                show: function (embarques, arribos) {
+                show: function (embarques, arribos, ticketVenta) {
+                    this.limpiarCampos();
                     this.list.embarques = embarques;
                     this.list.arribos = arribos;
+                    this.ticketVenta = ticketVenta;
                     $('#appVueTipoPago').modal('show');
+                },
+                getTipoPago: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-tipoPago')
+                        .then(res => {
+                            _this.list.tiposPago = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getTarjetasCredito: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-tarjetasCredito')
+                        .then(res => {
+                            _this.list.tarjetas = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getCuidades: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-cuidades')
+                        .then(res => {
+                            _this.list.distritos = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                saveVenta: function () {
+                    var _this = this;
+                    var input = {};
+                    input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
+                    input.CodiOrigen = _this.ticketVenta.CodiOrigen;
+                    input.CodiDestino = _this.ticketVenta.CodiDestino;
+                    input.CodiProgramacion = _this.ticketVenta.CodiProgramacion;
+                    input.RucCliente = _this.ticketVenta.RucCliente;
+                    input.NumeAsiento = _this.ticketVenta.NumeAsiento;
+                    input.FlagVenta = _this.ticketVenta.FlagVenta;
+                    input.PrecioVenta = _this.ticketVenta.PrecioVenta;
+                    input.Nombre = _this.ticketVenta.Nombre;
+                    input.Edad = _this.ticketVenta.Edad;
+                    input.Telefono = _this.ticketVenta.Telefono;
+                    input.Dni = _this.ticketVenta.Dni;
+                    input.TipoDocumento = _this.ticketVenta.TipoDocumento.id;
+                    input.Sexo = _this.ticketVenta.Sexo.id;
+                    input.TipoPago = _this.tipoPago;//
+                    input.FechaViaje = _this.ticketVenta.FechaViaje;
+                    input.HoraViaje = _this.ticketVenta.HoraViaje;
+                    input.CodiServicio = _this.ticketVenta.CodiServicio;
+                    input.CodiEmbarque = _this.embarque.CodiPuntoVenta;//
+                    input.CodiArribo = _this.arribo.CodiPuntoVenta;//
+                    input.Hora_Embarque = _this.embarque.Hora;//
+                    input.NivelAsiento = _this.ticketVenta.NivelAsiento;             
+                    input.NomDestino = _this.ticketVenta.NomDestino;	
+                    APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
+                        .then(res => {
+                            APP.msg.info('Se procedió la venta con código: ' + res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                limpiarCampos: function () {
+                    var _this = this;
+                    _this.tipoPago = '0';
+                    _this.distrito = null;
+                    _this.tarjeta = null;
+                    _this.embarque = null;
+                    _this.arribo = null;
                 }
             },
             computed: {

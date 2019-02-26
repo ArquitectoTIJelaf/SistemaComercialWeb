@@ -16,6 +16,10 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
+        private static readonly string CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
+        readonly Usuario usuario = DataSession.UsuarioLogueado;
+
+
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
             var color = "";
@@ -462,6 +466,77 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     bool valor = (bool)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        //FiltroVenta
+        [HttpPost]
+        [Route("grabar-venta")]
+        public async Task<ActionResult> SendVenta(FiltroVenta filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"SerieBoleto\" : " + 0 + //TODO
+                                ",\"NumeBoleto\" : " + 0 + //TODO
+                                ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                ",\"CodiOficina\" : " + usuario.CodiSucursal + //
+                                ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta + //
+                                ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                ",\"RucCliente\" : \"" + filtro.RucCliente + "\"" +
+                                ",\"NumeAsiento\" : " + filtro.NumeAsiento +
+                                ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
+                                ",\"PrecioVenta\" : " + filtro.PrecioVenta +
+                                ",\"Nombre\" : \"" + filtro.Nombre + "\"" +
+                                ",\"Edad\" : " + filtro.Edad +
+                                ",\"Telefono\" : \"" + filtro.Telefono + "\"" +
+                                ",\"CodiUsuario\" : \"" + usuario.CodiUsuario + "\"" + //
+                                ",\"Dni\" : \"" + filtro.Dni + "\"" +
+                                ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" + //
+                                ",\"TipoDocumento\" : \"" + filtro.TipoDocumento + "\"" +
+                                ",\"CodiDocumento\" : \"" + "" + "\"" + //TODO
+                                ",\"Tipo\" : \"" + "" + "\"" + //TODO
+                                ",\"Sexo\" : \"" + filtro.Sexo + "\"" +
+                                ",\"TipoPago\" : \"" + filtro.TipoPago + "\"" +
+                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                ",\"Nacionalidad\" : \"" + "Peruana" + "\"" + //TODO
+                                ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                ",\"CodiEmbarque\" : " + filtro.CodiEmbarque +
+                                ",\"CodiArribo\" : " + filtro.CodiArribo +
+                                ",\"Hora_Embarque\" : \"" + filtro.Hora_Embarque + "\"" +
+                                ",\"NivelAsiento\" : " + filtro.NivelAsiento +
+                                ",\"CodiTerminal\" : " + Convert.ToInt16(CodiTerminal) + //TODO
+                                ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" + //
+                                ",\"NomPuntoVenta\" : \"" + usuario.NomPuntoVenta + "\"" + //
+                                ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" + " }";
+                    HttpResponseMessage response = await client.PostAsync("GrabaVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    string valor = (string)tmpResult["Valor"];
                     return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else

@@ -276,8 +276,8 @@
                         <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
                             <div class="col-md-4 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px; display: flex; align-items: center; color: white;">
                                 <div class="col-md-3">
-                                    <input type="radio" name="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="ventaBV" class="align-label-radio">VentaV</label>
+                                    <input type="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="ventaBV" class="align-label-radio">Venta</label>
                                 </div>
                                 <div class="col-md-3">
                                     <input type="radio" id="bloqueoBV" value="X" v-model="pickedBusVenta" class="align-radio">
@@ -653,7 +653,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group ">
                                                 <label class="control-label" style="width: 100%; ">&nbsp;</label>
-                                                <button @@click="showTipoPago" class="btn btn-secondary"
+                                                <button @@click="showTipoPago" class="btn btn-secondary btn-ticket-venta"
                                                         style="width: 100%;"
                                                         v-bind:disabled="!bloquearPago(indexVenta)">
                                                     $ Tipo pago
@@ -668,7 +668,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <button class="btn btn-secondary"
+                                                <button class="btn btn-secondary btn-ticket-venta"
                                                         style="width: 100%; "
                                                         v-bind:disabled="!bloquearPago(indexVenta)">
                                                     <img src="~/wwwroot/plugins/images/PAGO.png" />
@@ -712,7 +712,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="form-group" style="text-align: center; ">
+                                        <div class="form-group" style="text-align: center;">
                                             <label class="control-label" style="width: 100%; ">Fecha de venta</label>
                                             <input @@blur="list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
                                                    :value="list.ventas[indexVenta].FechaVen"
@@ -722,6 +722,14 @@
                                                    placeholder="FECHA VENTA"
                                                    style="text-align: center; "
                                                    autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" v-if="list.ventas.length > 1 && indexVenta === list.ventas.length - 1">
+                                        <div class="form-group" style="text-align: center;">
+                                            <button @@click="showTipoPago" class="btn btn-secondary btn-ticket-venta"
+                                                    style="width: 100%; ">
+                                                $ Pago total
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
