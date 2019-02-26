@@ -1,64 +1,62 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{ var usuario = DataSession.UsuarioLogueado; }
 
-@section styles{
-    <style type="text/css">
-        [type="radio"]:checked,
-        [type="radio"]:not(:checked) {
-            position: absolute;
-            left: -9999px;
+<style type="text/css">
+    [type="radio"]:checked,
+    [type="radio"]:not(:checked) {
+        position: absolute;
+        left: -9999px;
+    }
+
+        [type="radio"]:checked + label,
+        [type="radio"]:not(:checked) + label {
+            position: relative;
+            padding-left: 20px;
+            cursor: pointer;
+            line-height: 20px;
+            display: inline-block;
+            color: #f7fafc;
         }
 
-            [type="radio"]:checked + label,
-            [type="radio"]:not(:checked) + label {
-                position: relative;
-                padding-left: 20px;
-                cursor: pointer;
-                line-height: 20px;
-                display: inline-block;
-                color: #f7fafc;
+            [type="radio"]:checked + label:before,
+            [type="radio"]:not(:checked) + label:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16px;
+                height: 16px;
+                border: 2px solid white;
+                border-radius: 100%;
+                background: #ff7601;
             }
 
-                [type="radio"]:checked + label:before,
-                [type="radio"]:not(:checked) + label:before {
-                    content: '';
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 16px;
-                    height: 16px;
-                    border: 2px solid white;
-                    border-radius: 100%;
-                    background: #ff7601;
-                }
+            [type="radio"]:checked + label:after,
+            [type="radio"]:not(:checked) + label:after {
+                content: '';
+                width: 12px;
+                height: 12px;
+                background: #2e9fef;
+                position: absolute;
+                top: 2px;
+                left: 2px;
+                border-radius: 100%;
+                -webkit-transition: all 0.2s ease;
+                transition: all 0.2s ease;
+            }
 
-                [type="radio"]:checked + label:after,
-                [type="radio"]:not(:checked) + label:after {
-                    content: '';
-                    width: 12px;
-                    height: 12px;
-                    background: #2e9fef;
-                    position: absolute;
-                    top: 2px;
-                    left: 2px;
-                    border-radius: 100%;
-                    -webkit-transition: all 0.2s ease;
-                    transition: all 0.2s ease;
-                }
+            [type="radio"]:not(:checked) + label:after {
+                opacity: 0;
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
 
-                [type="radio"]:not(:checked) + label:after {
-                    opacity: 0;
-                    -webkit-transform: scale(0);
-                    transform: scale(0);
-                }
-
-                [type="radio"]:checked + label:after {
-                    opacity: 1;
-                    -webkit-transform: scale(1);
-                    transform: scale(1);
-                }
-    </style>
-}
+            [type="radio"]:checked + label:after {
+                opacity: 1;
+                -webkit-transform: scale(1);
+                transform: scale(1);
+            }
+</style>
 
 <div id="appVueVenta" v-show="showVentas" class="row">
     <div class="col-md-12">
