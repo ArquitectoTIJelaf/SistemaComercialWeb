@@ -61,7 +61,9 @@ namespace SisComWeb.Aplication.Controllers
                         CodiSucursal = (int)data["CodiSucursal"],
                         CodiUsuario = (int)data["CodiUsuario"],
                         Nombre = (string)data["Login"],
-                        Nivel = (int)data["Nivel"]
+                        Nivel = (int)data["Nivel"],
+                        NomSucursal = (string)data["NomSucursal"],
+                        NomPuntoVenta = (string)data["NomPuntoVenta"]
                     };
                     DataSession.UsuarioLogueado = user;
                     return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
