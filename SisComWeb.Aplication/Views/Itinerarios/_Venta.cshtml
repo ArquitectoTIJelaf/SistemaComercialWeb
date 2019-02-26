@@ -1,62 +1,64 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{ var usuario = DataSession.UsuarioLogueado; }
 
-<style type="text/css">
-    [type="radio"]:checked,
-    [type="radio"]:not(:checked) {
-        position: absolute;
-        left: -9999px;
-    }
-
-        [type="radio"]:checked + label,
-        [type="radio"]:not(:checked) + label {
-            position: relative;
-            padding-left: 20px;
-            cursor: pointer;
-            line-height: 20px;
-            display: inline-block;
-            color: #f7fafc;
+@section styles{
+    <style type="text/css">
+        [type="radio"]:checked,
+        [type="radio"]:not(:checked) {
+            position: absolute;
+            left: -9999px;
         }
 
-            [type="radio"]:checked + label:before,
-            [type="radio"]:not(:checked) + label:before {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 16px;
-                height: 16px;
-                border: 2px solid white;
-                border-radius: 100%;
-                background: #ff7601;
+            [type="radio"]:checked + label,
+            [type="radio"]:not(:checked) + label {
+                position: relative;
+                padding-left: 20px;
+                cursor: pointer;
+                line-height: 20px;
+                display: inline-block;
+                color: #f7fafc;
             }
 
-            [type="radio"]:checked + label:after,
-            [type="radio"]:not(:checked) + label:after {
-                content: '';
-                width: 12px;
-                height: 12px;
-                background: #2e9fef;
-                position: absolute;
-                top: 2px;
-                left: 2px;
-                border-radius: 100%;
-                -webkit-transition: all 0.2s ease;
-                transition: all 0.2s ease;
-            }
+                [type="radio"]:checked + label:before,
+                [type="radio"]:not(:checked) + label:before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid white;
+                    border-radius: 100%;
+                    background: #ff7601;
+                }
 
-            [type="radio"]:not(:checked) + label:after {
-                opacity: 0;
-                -webkit-transform: scale(0);
-                transform: scale(0);
-            }
+                [type="radio"]:checked + label:after,
+                [type="radio"]:not(:checked) + label:after {
+                    content: '';
+                    width: 12px;
+                    height: 12px;
+                    background: #2e9fef;
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    border-radius: 100%;
+                    -webkit-transition: all 0.2s ease;
+                    transition: all 0.2s ease;
+                }
 
-            [type="radio"]:checked + label:after {
-                opacity: 1;
-                -webkit-transform: scale(1);
-                transform: scale(1);
-            }
-</style>
+                [type="radio"]:not(:checked) + label:after {
+                    opacity: 0;
+                    -webkit-transform: scale(0);
+                    transform: scale(0);
+                }
+
+                [type="radio"]:checked + label:after {
+                    opacity: 1;
+                    -webkit-transform: scale(1);
+                    transform: scale(1);
+                }
+    </style>
+}
 
 <div id="appVueVenta" v-show="showVentas" class="row">
     <div class="col-md-12">
@@ -490,7 +492,8 @@
                                                    class="form-control input-sm"
                                                    placeholder="DOCUMENTO"
                                                    style="width: 50%; display: inline-block; float: right; "
-                                                   autocomplete="off">
+                                                   autocomplete="off"
+                                                   maxlenght="8">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -652,7 +655,8 @@
                                             <div class="form-group ">
                                                 <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                 <button @@click="showTipoPago" class="btn btn-secondary"
-                                                        style="width: 100%; ">
+                                                        style="width: 100%;"
+                                                        v-bind:disabled="!bloquearPago(indexVenta)">
                                                     $ Tipo pago
                                                 </button>
                                             </div>
@@ -666,7 +670,8 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <button class="btn btn-secondary"
-                                                        style="width: 100%; ">
+                                                        style="width: 100%; "
+                                                        v-bind:disabled="!bloquearPago(indexVenta)">
                                                     <img src="~/wwwroot/plugins/images/PAGO.png" />
                                                     Pago mult.
                                                 </button>

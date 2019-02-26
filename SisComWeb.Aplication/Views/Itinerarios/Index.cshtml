@@ -241,14 +241,14 @@
         }
 
         #appVueTable {
-            height: calc(100vh - 265px);
-            display: flex;
+            /*height: calc(100vh - 265px);
+            display: flex;*/
             /*align-items: center;*/
         }
 
         .content {
-            text-align: center;
-            width: 100%;
+            /*text-align: center;
+            width: 100%;*/
         }
     </style>
 }
@@ -259,7 +259,6 @@
         $(function () {
 
             //#region RECORRIDO ITINERARIOS
-
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
@@ -638,7 +637,7 @@
                                             if ($("#panelWrapperV").hasClass("in"))
                                                 $('#btnDesplegar').click();
                                         } else {
-                                            _this.firstCharge = false;                                            
+                                            _this.firstCharge = false;
                                         }
                                         _this.showPlano = true;
                                     });
@@ -654,6 +653,8 @@
                                         APP.msg.error('No se pudo cargar el plano');
                                     });
                                 }
+                                _this.indexVenta = 0;
+                                _this.limpiarVenta();
                             } else {
                                 _this.showPlano = false;
                                 APP.msg.error('No se cargó resultados');
@@ -753,7 +754,7 @@
                                     asientoSel.IDS = res.data;
                                     APP.msg.info('Asiento bloqueado');
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
-                                    APP.util.createCookie(nameCookie, asientoSel.IDS, 7);                              
+                                    APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
                                     if (!_this.firstAsiento)
                                         _this.createElementInList();
                                     _this.passSectionVentas(asientoSel.Tipo);
@@ -799,7 +800,7 @@
                                     asientoSel.IDS = 0;
                                     APP.msg.info('Asiento liberado');
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
-                                    APP.util.deleteCookie(nameCookie);                                    
+                                    APP.util.deleteCookie(nameCookie);
                                     if (_this.list.ventas.length === 1) {
                                         _this.indexVenta = 0;
                                         _this.list.ventas[_this.indexVenta].IdCliente = 0;
@@ -824,7 +825,7 @@
                                         _this.firstAsiento = true;
                                     } else {
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
-                                        _this.list.ventas.splice(auxIndex, 1);  
+                                        _this.list.ventas.splice(auxIndex, 1);
                                         _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
                                         //_this.indexVenta--;
                                     }
@@ -1023,6 +1024,39 @@
                     this.list.ventas[this.indexVenta].FechaNac = dateString;
                     var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                     this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
+                },
+                limpiarVenta: function () {
+                    var _this = this;
+                    _this.list.ventas = [];
+                    this.list.ventas.push({
+                        IdCliente: 0,
+                        CodiTipoDoc: null,
+                        Documento: '',
+                        Nombres: '',
+                        ApellidoPaterno: '',
+                        ApellidoMaterno: '',
+                        FechaNac: '',
+                        Edad: '',
+                        Sexo: null,
+                        Telefono: '',
+                        Ruc: '',
+                        Recoger: '',
+                        Reintegro: '',
+                        Observacion: '',
+                        Precio: '',
+                        NroAsiento: '',
+                        NroVenta: '',
+                        NroSolicitud: '',
+                        FechaVen: ''
+                    });
+                },
+                bloquearPago: function (indexVenta) {
+                    debugger;
+                    var _this = this;
+                    return (_this.list.ventas[indexVenta].CodiTipoDoc !== null && _this.list.ventas[indexVenta].Documento !== '' &&
+                        _this.list.ventas[indexVenta].Nombres !== '' && _this.list.ventas[indexVenta].ApellidoPaterno !== '' &&
+                        _this.list.ventas[indexVenta].ApellidoMaterno !== '' && _this.list.ventas[indexVenta].FechaNac !== '' &&
+                        _this.list.ventas[indexVenta].Edad > 0 && _this.list.ventas[indexVenta].Sexo !== null);
                 }
             },
             computed: {
