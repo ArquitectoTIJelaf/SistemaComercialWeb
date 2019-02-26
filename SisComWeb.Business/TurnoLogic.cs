@@ -34,7 +34,7 @@ namespace SisComWeb.Business
                 var resVerificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
                 if (resVerificaCambiosTurnoViaje.Estado)
                 {
-                    if (resVerificaCambiosTurnoViaje.Valor.CodiEmpresa != 0)
+                    if (resVerificaCambiosTurnoViaje.Valor.CodiEmpresa > 0)
                     {
                         resBuscarTurno.Valor.CodiServicio = resVerificaCambiosTurnoViaje.Valor.CodiServicio;
                         resBuscarTurno.Valor.NomServicio = resVerificaCambiosTurnoViaje.Valor.NomServicio;
@@ -49,7 +49,7 @@ namespace SisComWeb.Business
 
                 // Busca 'ProgramacionViaje'
                 var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(resBuscarTurno.Valor.NroViaje, resBuscarTurno.Valor.FechaProgramacion);
-                if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor != 0)
+                if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor > 0)
                 {
                     resBuscarTurno.Valor.CodiProgramacion = resBuscarProgramacionViaje.Valor;
 
@@ -155,7 +155,7 @@ namespace SisComWeb.Business
                 }
 
                 // Obtiene 'TotalVentas'
-                if (resBuscarTurno.Valor.CodiProgramacion != 0)
+                if (resBuscarTurno.Valor.CodiProgramacion > 0)
                 {
                     var resObtenerTotalVentas = ItinerarioRepository.ObtenerTotalVentas(resBuscarTurno.Valor.CodiProgramacion, resBuscarTurno.Valor.CodiOrigen, resBuscarTurno.Valor.CodiDestino);
                     if (resObtenerTotalVentas.Estado)

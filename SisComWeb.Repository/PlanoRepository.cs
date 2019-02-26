@@ -46,7 +46,7 @@ namespace SisComWeb.Repository
                 db.ProcedureName = "scwsp_ObtenerNivelAsiento";
                 db.AddParameter("@Codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
                 db.AddParameter("@Nume_Asiento", DbType.Int32, ParameterDirection.Input, NumeAsiento);
-                var valor = "";
+                var valor = string.Empty;
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

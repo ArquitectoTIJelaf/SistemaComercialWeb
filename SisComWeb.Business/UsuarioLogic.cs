@@ -19,7 +19,7 @@ namespace SisComWeb.Business
                 Seguridad seguridad = new Seguridad();
                 var desencriptaPassword = seguridad.Desencripta(response.Valor.Password, Constantes.UnaLlave);
 
-                if (response.Valor.CodiUsuario != 0 && (Password == desencriptaPassword || Password == response.Valor.Password))
+                if (response.Valor.CodiUsuario > 0 && (Password == desencriptaPassword || Password == response.Valor.Password))
                     return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
                 else
                     return new Response<UsuarioEntity>(false, null, "Las credenciales ingresadas son inválidas.", false);

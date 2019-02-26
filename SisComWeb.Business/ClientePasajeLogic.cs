@@ -187,6 +187,7 @@ namespace SisComWeb.Business
             try
             {
                 var response = new Response<string>(false, null, "Error: ConsultaSUNAT.", false);
+                string Valor = "";
 
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
@@ -206,15 +207,14 @@ namespace SisComWeb.Business
                 foreach (XmlNode xn in xnList)
                 {
                     response.Estado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
-                    response.Valor = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText;
+                    Valor = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText;
                 };
 
                 if (response.Estado)
                 {
-                    response.Mensaje = Message.MsgCorrectoConsultaSUNAT;
                     response.EsCorrecto = true;
-
-                    return response;
+                    response.Valor = Valor;
+                    response.Mensaje = Message.MsgCorrectoConsultaSUNAT;
                 }
 
                 return response;
@@ -228,7 +228,7 @@ namespace SisComWeb.Business
 
         public static Response<string[]> ConsultaRENIEC(string NumeroDoc)
         {
-            string[] arrayNombreCompleto = null;
+            var response = new Response<string[]>(false, null, "Error: ConsultaRENIEC.", false);
 
             try
             {
@@ -236,21 +236,26 @@ namespace SisComWeb.Business
                 {
                     BaseAddress = new Uri("http://aplicaciones007.jne.gob.pe/srop_publico/Consulta/Afiliado/")
                 };
-                var response = client.GetAsync("GetNombresCiudadano?DNI=" + NumeroDoc).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    arrayNombreCompleto = result.Split('|');
 
-                    return new Response<string[]>(true, arrayNombreCompleto, Message.MsgCorrectoConsultaRENIEC, true);
+                var res = client.GetAsync("GetNombresCiudadano?DNI=" + NumeroDoc).Result;
+
+                if (res.IsSuccessStatusCode)
+                {
+                    var result = res.Content.ReadAsStringAsync().Result;
+                    string[] arrayNombreCompleto = result.Split('|');
+
+                    response.EsCorrecto = true;
+                    response.Valor = arrayNombreCompleto;
+                    response.Mensaje = "Correcto: ConsultaRENIEC.";
+                    response.Estado = true;
                 }
-                else
-                    return new Response<string[]>(false, arrayNombreCompleto, arrayNombreCompleto[3], false);
+
+                return response;
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string[]>(false, null, Message.MsgErrExcConsultaRENIEC, false);
+                return new Response<string[]>(false, null, "Error: ConsultaRENIEC.", false);
             }
         }
     }
