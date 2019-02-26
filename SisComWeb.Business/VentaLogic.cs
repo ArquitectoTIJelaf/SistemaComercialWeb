@@ -77,6 +77,16 @@ namespace SisComWeb.Business
                     return response;
                 }
 
+
+
+                //// Graba 'Facturacion Electrónica'
+                //if (resValidarTerminalElectronico.Valor.Tipo == "E")
+                //{
+
+                //}
+
+
+
                 // Valida 'LiquidacionVentas'
                 var resValidarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DateTime.Now.ToString("dd/MM/yyyy"));
                 if (!resValidarLiquidacionVentas.Estado)

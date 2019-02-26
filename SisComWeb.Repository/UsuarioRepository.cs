@@ -26,6 +26,8 @@ namespace SisComWeb.Repository
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta");
                         entidad.Password = Reader.GetStringValue(drlector, "Pws");
                         entidad.Nivel = Reader.GetTinyIntValue(drlector, "Nivel");
+                        entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
+                        entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
