@@ -1059,7 +1059,6 @@
                     this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
                 },
                 limpiarVenta: function () {
-                    debugger;
                     var _this = this;
                     _this.list.ventas = [];
                     this.list.ventas.push({
@@ -1086,7 +1085,6 @@
                     });
                 },
                 changeMaskedTipoDoc: function (value) {
-                    debugger;
                     var _this = this
                     if (value !== null) {id = value.id;
                         if (id === "1") { _this.mask.documento = "#".repeat(8) }//DNI
@@ -1108,7 +1106,6 @@
                     return cadenaEmbarques;
                 },
                 bloquearPago: function () {
-                    debugger;
                     var _this = this;
                     return (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].Documento !== '' &&
                         _this.list.ventas[_this.indexVenta].Nombres !== '' && _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
