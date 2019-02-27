@@ -483,7 +483,8 @@
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
-                                            <input v-model="list.ventas[indexVenta].Documento"
+                                            <input :value="list.ventas[indexVenta].Documento.toUpperCase()" 
+                                                   @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
                                                    id="txtDocumento"
                                                    type="text"
                                                    @@keypress.13.prevent="searchUser"

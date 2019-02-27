@@ -814,7 +814,6 @@
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
                                         _this.list.ventas.splice(auxIndex, 1);
                                         _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
-                                        //_this.indexVenta--;
                                     }
                                 }
                             } else {
@@ -916,6 +915,8 @@
                                     _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto;
                                 } else {
                                     _this.list.ventas[_this.indexVenta].Nombres = '';
+                                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
                                     _this.list.ventas[_this.indexVenta].FechaNac = '';
                                     $('#txtFechaNac').data("DateTimePicker").clear();
                                     _this.list.ventas[_this.indexVenta].Edad = '';
