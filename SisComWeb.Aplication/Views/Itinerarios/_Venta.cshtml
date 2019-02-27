@@ -480,7 +480,6 @@
                                                       :placeholder="'TIPO'"
                                                       style="width: 50%; display: inline-block; "
                                                       @@keydown.13.native.prevent="recorridoSectionVentas"
-                                                      @*:on-change="changeMaskedTipoDoc"*@
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -491,8 +490,8 @@
                                                    class="form-control input-sm"
                                                    placeholder="DOCUMENTO"
                                                    style="width: 50%; display: inline-block; float: right; "
-                                                   autocomplete="off"                                                   
-                                                   @*v-mask="mask.documento"*@>
+                                                   autocomplete="off"
+                                                   v-mask="mask.documento">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -655,7 +654,7 @@
                                                 <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                 <button @@click="showTipoPago" class="btn btn-secondary btn-ticket-venta"
                                                         style="width: 100%;"
-                                                        v-bind:disabled="!bloquearPago(indexVenta)">
+                                                        v-bind:disabled="!bloquearPago">
                                                     $ Tipo pago
                                                 </button>
                                             </div>
@@ -670,7 +669,7 @@
                                             <div class="form-group">
                                                 <button class="btn btn-secondary btn-ticket-venta"
                                                         style="width: 100%; "
-                                                        v-bind:disabled="!bloquearPago(indexVenta)">
+                                                        v-bind:disabled="!bloquearPago">
                                                     <img src="~/wwwroot/plugins/images/PAGO.png" />
                                                     Pago mult.
                                                 </button>
