@@ -38,7 +38,7 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Número:</label>
                                 <div class="col-md-10">
-                                    <input id="txtNumeroTP" class="form-control input-sm" />
+                                    <input v-model="numeroTarjeta" id="txtNumeroTP" class="form-control input-sm" />
                                 </div>
                             </div>
                         </template>
@@ -60,13 +60,13 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Dirección:</label>
                                 <div class="col-md-10">
-                                    <input id="txtDireccionTP" class="form-control input-sm" />
+                                    <input v-model="direccion" id="txtDireccionTP" class="form-control input-sm" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Observ.:</label>
                                 <div class="col-md-10">
-                                    <input id="txtObservTP" class="form-control input-sm" />
+                                    <input v-model="observacion" id="txtObservTP" class="form-control input-sm" />
                                 </div>
                             </div>
                         </template>
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="saveVenta" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="saveVenta" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">

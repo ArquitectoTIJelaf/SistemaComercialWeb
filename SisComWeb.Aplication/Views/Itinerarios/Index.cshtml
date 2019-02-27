@@ -530,6 +530,7 @@
                             Observacion: '',
                             Precio: '',
                             NroAsiento: '',
+                            NivelAsiento: 0,
                             NroVenta: '',
                             NroSolicitud: '',
                             FechaVen: ''
@@ -1179,8 +1180,11 @@
             el: '#appVueTipoPago',
             data: {
                 tipoPago: '0',
-                distrito: null,
                 tarjeta: null,
+                numeroTarjeta: '',
+                distrito: null,
+                direccion: '',
+                observacion: '',
                 embarque: null,
                 arribo: null,
                 list: {
@@ -1279,6 +1283,15 @@
                         } else {
                             this.tipoPago = '';
                         }
+                    }
+                },
+                filledCampos: function () {
+                    var _this = this;
+                    switch (this.tipoPago) {                        
+                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.arribo;
+                        case '01': return _this.embarque && _this.arribo;
+                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.arribo;
+                        default: return false;
                     }
                 }
             },
