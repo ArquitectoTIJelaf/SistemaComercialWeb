@@ -36,15 +36,6 @@
                           ref="select">
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
-                @*<v-select v-model="filtro.Nombre"
-                              :id="'cboUsuario'"
-                              label="label"
-                              :get-option-label="getLabel"
-                              :options="list.usuarios"
-                              :placeholder="'Cajero'"
-                              ref="select">
-                        <span slot="no-options" class="text-danger">No hay resultados</span>
-                    </v-select>*@
             </div>
             <div v-show="filtro.Codigo !== null && filtro.Codigo === '@JLMrootCode'">
                 <div class="separate-in-form">
@@ -112,7 +103,6 @@
             },
             methods: {
                 confirmUsuario(filtro) {
-                    debugger;
                     var input = {};
                     input.Codigo = filtro.Codigo;
                     input.Clave = filtro.Clave;

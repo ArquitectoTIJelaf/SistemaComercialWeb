@@ -533,11 +533,13 @@
                             NivelAsiento: 0,
                             NroVenta: '',
                             NroSolicitud: '',
-                            FechaVen: ''
+                            FechaVen: '',
+                            RazonSocial: '',
+                            Direccion : ''
                         }],
                     sexos: [
-                        { 'id': 'M', 'label': 'MASCULINO' },
-                        { 'id': 'F', 'label': 'FEMENINO' }
+                        { 'id': 'M', 'label': 'M' },
+                        { 'id': 'F', 'label': 'F' }
                     ]
                 },
                 objPlano: {
@@ -1087,10 +1089,16 @@
                 },
                 bloquearPago: function () {
                     var _this = this;
-                    return (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].Documento !== '' &&
-                        _this.list.ventas[_this.indexVenta].Nombres !== '' && _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
-                        _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' && _this.list.ventas[_this.indexVenta].FechaNac !== '' &&
-                        _this.list.ventas[_this.indexVenta].Edad > 0 && _this.list.ventas[_this.indexVenta].Sexo !== null);
+                    return (
+                        _this.list.ventas[_this.indexVenta].CodiTipoDoc !== null &&
+                        _this.list.ventas[_this.indexVenta].Documento.length >=8 &&
+                        _this.list.ventas[_this.indexVenta].Nombres !== '' &&
+                        _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
+                        _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' &&
+                        _this.list.ventas[_this.indexVenta].FechaNac.length === 10 &&
+                        _this.list.ventas[_this.indexVenta].Edad > 0 &&
+                        _this.list.ventas[_this.indexVenta].Sexo !== null
+                    );
                 }
             },
             watch: {
@@ -1266,7 +1274,7 @@
                 },
                 filledCampos: function () {
                     var _this = this;
-                    switch (this.tipoPago) {                        
+                    switch (this.tipoPago) {
                         case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.arribo;
                         case '01': return _this.embarque && _this.arribo;
                         case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.arribo;
