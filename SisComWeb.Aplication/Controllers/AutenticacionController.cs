@@ -32,7 +32,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("post-usuario")]
-        public async Task<ActionResult> POST(short Nombre, string Clave, string Sucursal, string PuntoVenta)
+        public async Task<ActionResult> POST(short Codigo, string Clave, string Sucursal, string PuntoVenta)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiUsuario\" : " + Nombre + ", \"Password\" : \"" + Clave + "\" }";
+                    var _body = "{ \"CodiUsuario\" : " + Codigo + ", \"Password\" : \"" + Clave + "\" }";
                     HttpResponseMessage response = await client.PostAsync("ValidaUsuario", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {

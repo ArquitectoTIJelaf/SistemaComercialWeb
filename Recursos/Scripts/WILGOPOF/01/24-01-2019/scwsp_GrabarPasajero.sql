@@ -1,4 +1,4 @@
-ALTER PROCEDURE scwsp_GrabarPasajero (
+CREATE PROCEDURE scwsp_GrabarPasajero (
 	@Tipo_Doc_Id CHAR(1)
 	,@Numero_Doc VARCHAR(15)
 	,@Nombre_Clientes VARCHAR(100)
@@ -10,6 +10,7 @@ ALTER PROCEDURE scwsp_GrabarPasajero (
 	,@telefono VARCHAR(15)
 	,@ruc_contacto VARCHAR(11)
 	,@Id_Clientes INT OUTPUT
+	,@sexo CHAR(1)
 	)
 AS
 BEGIN
@@ -26,6 +27,7 @@ BEGIN
 		,Direccion
 		,telefono
 		,ruc_contacto
+		,sexo
 		)
 	VALUES (
 		@Tipo_Doc_Id
@@ -38,6 +40,7 @@ BEGIN
 		,@Direccion
 		,@telefono
 		,@ruc_contacto
+		,@sexo
 		)
 
 	SET @Id_Clientes = SCOPE_IDENTITY()

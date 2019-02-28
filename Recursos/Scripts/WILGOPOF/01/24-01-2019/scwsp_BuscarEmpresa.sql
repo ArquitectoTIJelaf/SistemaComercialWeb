@@ -1,6 +1,4 @@
-ALTER PROCEDURE scwsp_BuscarEmpresa (
-	@Ruc_Cliente VARCHAR(11)
-)
+CREATE PROCEDURE scwsp_BuscarEmpresa (@Ruc_Cliente VARCHAR(11))
 AS
 BEGIN
 	SELECT Ruc_Cliente

@@ -1,5 +1,6 @@
 ﻿using SisComWeb.Entity;
 using System.Collections.Generic;
+using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -20,8 +21,8 @@ namespace SisComWeb.Services
         Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaUsuarios();
+        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios/{value}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuarios(string value);
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaServicios", ResponseFormat = WebMessageFormat.Json)]

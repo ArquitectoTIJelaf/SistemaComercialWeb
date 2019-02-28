@@ -1,4 +1,4 @@
-ALTER PROCEDURE scwsp_ModificarPasajero (
+CREATE PROCEDURE scwsp_ModificarPasajero (
 	@Id_Clientes INT
 	,@Tipo_Doc_Id CHAR(1)
 	,@Numero_Doc VARCHAR(15)
@@ -10,6 +10,7 @@ ALTER PROCEDURE scwsp_ModificarPasajero (
 	,@Direccion VARCHAR(100)
 	,@telefono VARCHAR(15)
 	,@ruc_contacto VARCHAR(11)
+	,@sexo CHAR(1)
 	)
 AS
 BEGIN
@@ -26,6 +27,7 @@ BEGIN
 		,Direccion = @Direccion
 		,telefono = @telefono
 		,ruc_contacto = @ruc_contacto
+		,sexo = @sexo
 	WHERE Id_Clientes = @Id_Clientes
 
 	IF @@ERROR <> 0

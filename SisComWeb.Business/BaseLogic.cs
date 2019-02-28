@@ -36,11 +36,13 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<BaseEntity>> ListaUsuarios()
+        public static Response<List<BaseEntity>> ListaUsuarios(string value)
         {
             try
             {
-                var response = BaseRepository.ListaUsuarios();
+                if (value == "NULL") { value = string.Empty; }
+
+                var response = BaseRepository.ListaUsuariosAutocomplete(value);
                 return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
             }
             catch (Exception ex)

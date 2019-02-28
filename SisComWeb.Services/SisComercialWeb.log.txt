@@ -908,3 +908,19 @@ Error de inicio de sesión del usuario 'sa'.
 ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
 Error Number:4060,State:1,Class:11
 >>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
+2019-02-27 14:24:03,155 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.IndexOutOfRangeException: Codi_Usuario
+   en System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
+   en System.Data.SqlClient.SqlDataReader.GetOrdinal(String name)
+   en System.Data.SqlClient.SqlDataReader.get_Item(String name)
+   en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
+   en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
+   en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
+2019-02-27 14:24:44,323 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.IndexOutOfRangeException: Codi_Usuario
+   en System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
+   en System.Data.SqlClient.SqlDataReader.GetOrdinal(String name)
+   en System.Data.SqlClient.SqlDataReader.get_Item(String name)
+   en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
+   en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
+   en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
