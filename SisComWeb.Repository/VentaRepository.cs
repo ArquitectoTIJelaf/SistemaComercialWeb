@@ -70,7 +70,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ValidarLiquidacionVentas";
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
-                db.AddParameter("@Fecha", DbType.DateTime, ParameterDirection.Input, Fecha);
+                db.AddParameter("@Fecha", DbType.String, ParameterDirection.Input, Fecha);
                 var Valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -81,6 +81,29 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = Valor;
                     response.Mensaje = "Correcto: ValidarLiquidacionVentas.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<string> BuscarRucEmpresa(byte CodiEmpresa)
+        {
+            var response = new Response<string>(false, null, "Error: BuscarRucEmpresa.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarRucEmpresa";
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                var valor = string.Empty;
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "Ruc"); ;
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = valor;
+                    response.Mensaje = "Correcto: BuscarRucEmpresa.";
                     response.Estado = true;
                 }
             }
@@ -119,7 +142,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
                 db.AddParameter("@Sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
                 db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, entidad.TipoPago);
-                db.AddParameter("@Fecha_Viaje", DbType.DateTime, ParameterDirection.Input, entidad.FechaViaje);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
                 db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, entidad.HoraViaje);
                 db.AddParameter("@Nacionalidad", DbType.String, ParameterDirection.Input, entidad.Nacionalidad);
                 db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, entidad.CodiServicio);
@@ -185,7 +208,6 @@ namespace SisComWeb.Repository
             return response;
         }
 
-
         public static Response<bool> GrabarLiquidacionVentas(int NroLiq, byte CodiEmpresa, short CodiSucursal, short CodiPuntoVenta, short CodiUsuario, decimal ImpTur)
         {
             var response = new Response<bool>(false, false, "Error: GrabarLiquidacionVentas.", false);
@@ -225,7 +247,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nom_Oficina", DbType.String, ParameterDirection.Input, entidad.NomOficina);
                 db.AddParameter("@Nom_PuntoVenta", DbType.String, ParameterDirection.Input, entidad.NomPuntoVenta);
                 db.AddParameter("@Pasajero", DbType.String, ParameterDirection.Input, entidad.Pasajero);
-                db.AddParameter("@Fecha_Viaje", DbType.DateTime, ParameterDirection.Input, entidad.FechaViaje);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
                 db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, entidad.HoraViaje);
                 db.AddParameter("@Nom_Destino", DbType.String, ParameterDirection.Input, entidad.NomDestino);
                 db.AddParameter("@Precio", DbType.Decimal, ParameterDirection.Input, entidad.Precio);

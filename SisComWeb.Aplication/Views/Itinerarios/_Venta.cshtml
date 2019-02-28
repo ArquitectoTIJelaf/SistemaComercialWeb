@@ -588,15 +588,39 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="control-label">RUC:</label>
                                             <input v-model="list.ventas[indexVenta].Ruc"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   @@keypress.13.prevent="searchEmpresa"
                                                    id="txtRuc"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="RUC"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="control-label">Razón social:</label>
+                                            <input v-model="list.ventas[indexVenta].RazonSocial"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtRazonSocial"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="RAZÓN SOCIAL"
+                                                   autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="control-label">Dirección fiscal:</label>
+                                            <input v-model="list.ventas[indexVenta].DireccionFiscal"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtDireccionFiscal"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="DIRECCIÓN FISCAL"
                                                    autocomplete="off">
                                         </div>
                                     </div>

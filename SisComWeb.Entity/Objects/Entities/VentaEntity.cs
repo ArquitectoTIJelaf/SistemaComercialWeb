@@ -70,21 +70,19 @@
 
         public string NomPuntoVenta { get; set; } // Del Usuario
 
-        public string NomDestino { get; set; } // Del Usuario
+        public string NomDestino { get; set; }
 
         public int IdVenta { get; set; }
 
         public string UserWebSUNAT { get; set; }
 
-        public string NomEmpresa { get; set; }
+        public string NomEmpresaRuc { get; set; } 
 
-        public string DirEmpresa { get; set; }
+        public string DirEmpresaRuc { get; set; }
 
         public string NomServicio { get; set; }
 
-        public string NomOrigenPas { get; set; }
-
-        public string NomDestinoPas { get; set; }
+        public string NomOrigen { get; set; }
 
         public string DescripcionProducto
         {
@@ -92,7 +90,7 @@
             {
                 string[] splitNombre = Nombre.Split(',');
 
-                return "POR EL SERVICIO DE TRANPORTE DE LA RUTA " + NomOrigenPas + " - " + NomDestinoPas + " / SERVICIO : " + NomServicio + " NRO ASIENTO: " + NumeAsiento.ToString("0#") + " / PASAJERO: " + splitNombre[0] + " " + splitNombre[1] + " " + splitNombre[2] + " /DNI: " + Dni + " FECHA VIAJE: " + FechaViaje + " / HORA VIAJE: " + HoraViaje + "/1/" + PrecioVenta.ToString("F2");
+                return "POR EL SERVICIO DE TRANPORTE DE LA RUTA " + NomOrigen + " - " + NomDestino + " / SERVICIO : " + NomServicio + " NRO ASIENTO: " + NumeAsiento.ToString("0#") + " / PASAJERO: " + splitNombre[0] + " " + splitNombre[1] + " " + splitNombre[2] + " /DNI: " + Dni + " FECHA VIAJE: " + FechaViaje + " / HORA VIAJE: " + HoraViaje + "/1/" + PrecioVenta.ToString("F2");
             }
         }
     }

@@ -43,8 +43,12 @@ namespace SisComWeb.Aplication.Models
         public string Hora_Embarque { get; set; }
         public byte NivelAsiento { get; set; }
         public string CodiTerminal { get; set; }
-        public string NomOficina { get; set; }
-        public string NomPuntoVenta { get; set; }
+        public string NomOficina { get; set; } // Del Usuario
+        public string NomPuntoVenta { get; set; } // Del Usuario
         public string NomDestino { get; set; }
+        public string NomEmpresaRuc { get; set; }
+        public string DirEmpresaRuc { get; set; }
+        public string NomServicio { get; set; }
+        public string NomOrigen { get; set; }
     }
 }

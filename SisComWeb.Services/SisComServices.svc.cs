@@ -176,16 +176,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> ConsultaSUNAT(string RucContacto)
+        public Response<RucEntity> ConsultarSUNAT(string RucContacto)
         {
             try
             {
-                return ClientePasajeLogic.ConsultaSUNAT(RucContacto);
+                return ClientePasajeLogic.ConsultarSUNAT(RucContacto);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrExcConsultaSUNAT, false);
+                return new Response<RucEntity>(false, null, Message.MsgErrExcConsultarSUNAT, false);
             }
         }
 

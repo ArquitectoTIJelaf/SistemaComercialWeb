@@ -95,7 +95,6 @@
                 }
             },
             mounted: function () {
-                //this.$refs.select.open = true
                 $(".preloader").fadeIn();
                 this.getUsuarios();
                 this.$nextTick(() => {
@@ -185,22 +184,10 @@
                     } else {
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
-                        //this.list.usuarios = [];
-                        //this.filtro.Nombre = null;
-                        //this.filtro.Clave = '';
                     }
                     this.recorrido();
                 },
                 'filtro.PuntoVenta': function (newVal, oldVal) {
-                    //if (newVal) {
-                    //    if (String(newVal.id).replace(/\s/g, '').length > 0) {
-                    //        this.getUsuarios(newVal.id);
-                    //    }
-                    //} else {
-                    //    this.list.usuarios = [];
-                    //    this.filtro.Nombre = null;
-                    //    this.filtro.Clave = '';
-                    //}
                     this.recorrido();
                 },
                 'filtro.Nombre': function (newVal, oldVal) {

@@ -61,7 +61,7 @@
         public const string MsgErrExcGrabaVenta = "Ocurrió una excepción al grabar venta.";
 
         // SUNAT
-        public const string MsgCorrectoConsultaSUNAT = "Correcto: ConsultaSUNAT.";
-        public const string MsgErrExcConsultaSUNAT = "Ocurrió una excepción al consultar a la SUNAT.";
+        public const string MsgCorrectoConsultarSUNAT = "Correcto: ConsultarSUNAT.";
+        public const string MsgErrExcConsultarSUNAT = "Ocurrió una excepción al consultar a la SUNAT.";
     }
 }

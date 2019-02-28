@@ -374,6 +374,7 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"Direccion\" : \"" + filtro.Direccion + "\"" +
                                 ",\"Telefono\" : \"" + filtro.Telefono + "\"" +
                                 ",\"Email\" : \"" + filtro.Email + "\"" +
+                                ",\"Sexo\" :  \"" + filtro.Sexo + "\"" +
                                 ",\"RucContacto\" :  \"" + filtro.RucContacto + "\"" + " }";
                     HttpResponseMessage response = await client.PostAsync("GrabarPasajero", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -515,7 +516,7 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"TipoPago\" : \"" + filtro.TipoPago + "\"" +
                                 ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                 ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
-                                ",\"Nacionalidad\" : \"" + "Peruana" + "\"" + //TODO
+                                ",\"Nacionalidad\" : \"" + "PERUANO" + "\"" + //TODO
                                 ",\"CodiServicio\" : " + filtro.CodiServicio +
                                 ",\"CodiEmbarque\" : " + filtro.CodiEmbarque +
                                 ",\"CodiArribo\" : " + filtro.CodiArribo +
@@ -524,7 +525,11 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"CodiTerminal\" : " + CodiTerminal + //TODO
                                 ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" + //
                                 ",\"NomPuntoVenta\" : \"" + usuario.NomPuntoVenta + "\"" + //
-                                ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" + " }";
+                                ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" +
+                                ",\"NomEmpresaRuc\" : \"" + filtro.NomEmpresaRuc + "\"" +
+                                ",\"DirEmpresaRuc\" : \"" + filtro.DirEmpresaRuc + "\"" +
+                                ",\"NomServicio\" : \"" + filtro.NomServicio + "\"" +
+                                ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" + " }";
                     HttpResponseMessage response = await client.PostAsync("GrabaVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -538,6 +543,49 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     string valor = (string)tmpResult["Valor"];
                     return Json(valor, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("consultar-empresa")]
+        public async Task<ActionResult> SearchEmpresa(string rucContacto)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"RucContacto\" :  \"" + rucContacto + "\"" + " }";
+                    HttpResponseMessage response = await client.PostAsync("ConsultarSUNAT", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+                    Ruc item = new Ruc
+                    {
+                        RucCliente = (string)data["RucCliente"],
+                        RazonSocial = (string)data["RazonSocial"],
+                        Direccion = (string)data["Direccion"],
+                        Telefono = (string)data["Telefono"]
+                    };
+                    return Json(item, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

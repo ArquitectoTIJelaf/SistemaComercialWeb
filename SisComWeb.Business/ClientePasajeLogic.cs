@@ -17,19 +17,22 @@ namespace SisComWeb.Business
             {
                 var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
                 if (!resBuscaPasajero.Estado)
-                {
                     return resBuscaPasajero;
-                }
 
                 // Consulta 'RENIEC'
-                var resConsultaRENIEC = ConsultaRENIEC(NumeroDoc);
-                if (resConsultaRENIEC.Estado)
+                if (TipoDoc == "1" && string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
                 {
-                    if (resConsultaRENIEC.Valor[0] != "" && resConsultaRENIEC.Valor[1] != "" && resConsultaRENIEC.Valor[2] != "")
+                    var resConsultaRENIEC = ConsultaRENIEC(NumeroDoc);
+                    if (resConsultaRENIEC.Estado)
                     {
-                        resBuscaPasajero.Valor.ApellidoPaterno = resConsultaRENIEC.Valor[0];
-                        resBuscaPasajero.Valor.ApellidoMaterno = resConsultaRENIEC.Valor[1];
-                        resBuscaPasajero.Valor.NombreCliente = resConsultaRENIEC.Valor[2];
+                        if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
+                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
+                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
+                        {
+                            resBuscaPasajero.Valor.ApellidoPaterno = resConsultaRENIEC.Valor[0];
+                            resBuscaPasajero.Valor.ApellidoMaterno = resConsultaRENIEC.Valor[1];
+                            resBuscaPasajero.Valor.NombreCliente = resConsultaRENIEC.Valor[2];
+                        }
                     }
                 }
 
@@ -47,13 +50,6 @@ namespace SisComWeb.Business
             try
             {
                 var response = new Response<bool>(false, false, "Error: GrabarPasajero.", false);
-
-                // Valida 'TipoDoc' y 'NumeroDoc'
-                if (string.IsNullOrEmpty(entidad.TipoDoc) || string.IsNullOrEmpty(entidad.NumeroDoc))
-                {
-                    response.Mensaje = "Error: TipoDoc o NumeroDoc nulo o vacío.";
-                    return response;
-                }
 
                 // Busca 'Pasajero'
                 var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
@@ -91,17 +87,20 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    // Consulta 'RENIEC'
-                    var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
-                    if (resConsultaRENIEC.Estado)
+                    if (entidad.TipoDoc == "1" && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
                     {
-                        if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
-                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
-                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
+                        // Consulta 'RENIEC'
+                        var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
+                        if (resConsultaRENIEC.Estado)
                         {
-                            objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
-                            objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
-                            objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
+                            if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
+                                !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
+                                !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
+                            {
+                                objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
+                                objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
+                                objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
+                            }
                         }
                     }
 
@@ -182,6 +181,32 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<RucEntity> ConsultarSUNAT(string RucContacto)
+        {
+            try
+            {
+                // Busca 'Empresa'
+                var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(RucContacto);
+                if (!resBuscarEmpresa.Estado)
+                    return resBuscarEmpresa;
+
+                if (string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
+                {
+                    // Consulta 'SUNAT'
+                    var resConsultaSUNAT = ConsultaSUNAT(RucContacto);
+                    if (resConsultaSUNAT.Estado)
+                        resBuscarEmpresa.Valor.RazonSocial = resConsultaSUNAT.Valor;
+                }
+
+                return new Response<RucEntity>(resBuscarEmpresa.EsCorrecto, resBuscarEmpresa.Valor, resBuscarEmpresa.Mensaje, resBuscarEmpresa.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<RucEntity>(false, null, Message.MsgErrExcConsultarSUNAT, false);
+            }
+        }
+
         public static Response<string> ConsultaSUNAT(string RucContacto)
         {
             try
@@ -214,7 +239,7 @@ namespace SisComWeb.Business
                 {
                     response.EsCorrecto = true;
                     response.Valor = Valor;
-                    response.Mensaje = Message.MsgCorrectoConsultaSUNAT;
+                    response.Mensaje = "Correcto: ConsultaSUNAT.";
                 }
 
                 return response;
@@ -222,7 +247,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrExcConsultaSUNAT, false);
+                return new Response<string>(false, null, "Error: ConsultaSUNAT.", false);
             }
         }
 

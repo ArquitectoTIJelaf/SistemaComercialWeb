@@ -28,7 +28,14 @@ APP.rest = '/api/rest';
 /*!********************* Inicializacion APP */
 
 
-
+/*!********************* Funciones Generales */
+function formatToChar2(value) {
+    var auxValue = parseFloat(value);
+    if (!isNaN(auxValue)) {
+        return (auxValue <= 9) ? '0' + auxValue : '' + auxValue;
+    }
+    else return '00';
+}
 
 /*!********************* Prototype Vue */
 Vue.prototype.tran = function (key) {

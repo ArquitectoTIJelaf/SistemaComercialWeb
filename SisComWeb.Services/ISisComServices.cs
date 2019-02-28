@@ -68,8 +68,8 @@ namespace SisComWeb.Services
         Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ConsultaSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<string> ConsultaSUNAT(string RucContacto);
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultarSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<RucEntity> ConsultarSUNAT(string RucContacto);
 
         #endregion
 

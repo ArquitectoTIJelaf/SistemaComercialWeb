@@ -100,7 +100,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ListarAsientosOcupados";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViajem);
                 db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
