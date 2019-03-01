@@ -924,3 +924,6 @@ System.IndexOutOfRangeException: Codi_Usuario
    en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
    en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
    en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
+2019-02-28 14:17:28,491 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 209
