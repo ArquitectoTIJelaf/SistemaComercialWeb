@@ -48,6 +48,7 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Zona"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Zona"]).ToUpper();
                     break;
+
             }
             return item;
         }
@@ -105,6 +106,29 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarUsuarios";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 3));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListaUsuarios.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListaUsuariosAutocomplete(string value)
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaUsuarios.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Usuario_Autocomplete";
+                db.AddParameter("@LOGIN", DbType.String, ParameterDirection.Input, value);
                 var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {

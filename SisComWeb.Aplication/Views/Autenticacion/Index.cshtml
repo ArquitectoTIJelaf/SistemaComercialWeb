@@ -26,17 +26,18 @@
                 </center>
             </div>
             <div class="separate-in-form">
-                <v-select v-model="filtro.Nombre"
-                          :id="'cboUsuario'"
+                <v-select v-model="codigoUsuario"
+                          :id="'txtUsuario'"
                           label="label"
                           :get-option-label="getLabel"
                           :options="list.usuarios"
-                          :placeholder="'Cajero'"
+                          :placeholder="'--- Seleccione usuario ---'"
+                          @@search="getUsuarios"
                           ref="select">
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
-            <div v-show="filtro.Nombre !== null && filtro.Nombre.id === '@JLMrootCode'">
+            <div v-show="filtro.Codigo !== null && filtro.Codigo === '@JLMrootCode'">
                 <div class="separate-in-form">
                     <v-select v-model="filtro.Sucursal"
                               :id="'cboSucursal'"
@@ -83,7 +84,7 @@
             el: '#appVueLogin',
             data: {
                 filtro: {
-                    Nombre: null,
+                    Codigo: 0,
                     Clave: '',
                     Sucursal: null,
                     PuntoVenta: null
@@ -95,21 +96,19 @@
                 }
             },
             mounted: function () {
-                $(".preloader").fadeIn();
-                this.getUsuarios();
+                this.getUsuarios('', null);
                 this.$nextTick(() => {
-                    $('#cboUsuario input[type=search]').focus();
-                    $(".preloader").fadeOut();
+                    $('#txtUsuario input[type=search]').focus();
                 });
             },
             methods: {
                 confirmUsuario(filtro) {
                     var input = {};
-                    input.Nombre = filtro.Nombre.id;
+                    input.Codigo = filtro.Codigo;
                     input.Clave = filtro.Clave;
-                    input.Sucursal = filtro.Nombre.id === '@JLMrootCode' ? filtro.Sucursal.id : '0';
-                    input.PuntoVenta = filtro.Nombre.id === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
-                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)                  
+                    input.Sucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.id : '0';
+                    input.PuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
+                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
                             if (res.data.mensaje === 'Log success') {
                                 $('#frmLogin').submit();
@@ -132,11 +131,17 @@
                             _this.list.puntosventa = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                getUsuarios() {
+                getUsuarios: async function (search, loading) {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-usuarios')
+                    if (loading)
+                        loading(true);
+                    await APP.rq.axios2.get(APP.base + '/base/get-usuarios' + APP.util.getQueryParamByObject({ value: search }))
                         .then(res => {
-                            _this.list.usuarios = res.data;
+                            if (res.data) {
+                                if (loading)
+                                    loading(false);
+                                _this.list.usuarios = res.data;
+                            }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getLabel(option) {
@@ -144,11 +149,11 @@
                 },
                 recorrido() {
                     var _this = this;
-                    if (_this.filtro.Nombre.id === '@JLMrootCode' && _this.filtro.Sucursal === null)
+                    if (_this.filtro.Codigo === '@JLMrootCode' && _this.filtro.Sucursal === null)
                         $('#cboSucursal input[type=search]').focus();
-                    else if (_this.filtro.Nombre.id === '@JLMrootCode' && _this.filtro.PuntoVenta === null)
+                    else if (_this.filtro.Codigo === '@JLMrootCode' && _this.filtro.PuntoVenta === null)
                         $('#cboPuntoVenta input[type=search]').focus();
-                    else if (_this.filtro.Nombre === null)
+                    else if (_this.filtro.Codigo === 0)
                         $('#cboUsuario input[type=search]').focus();
                     else if (_this.filtro.Clave === '')
                         document.getElementById("txtContrasena").focus();
@@ -157,21 +162,37 @@
                 }
             },
             computed: {
-                filledFiltro: function () {
+                filledFiltro: function() {
                     var _this = this;
-                    if (_this.filtro.Nombre !== null && _this.filtro.Nombre.id === '@JLMrootCode')
+                    if (_this.filtro.Codigo !== null && _this.filtro.Codigo === '@JLMrootCode')
                     {
                         return (
                             _this.filtro.Sucursal !== null &&
                             _this.filtro.PuntoVenta !== null &&
-                            _this.filtro.Nombre !== null &&
+                            _this.filtro.Codigo !== 0 &&
                             _this.filtro.Clave) ? true : false;
                     }
                     else
                     {
                         return (
-                            _this.filtro.Nombre !== null &&
+                            _this.filtro.Codigo !== 0 &&
                             _this.filtro.Clave) ? true : false;
+                    }
+                },
+                codigoUsuario: {
+                    get: function () {
+                        if (this.list.usuarios.length > 0 && this.list.usuarios.find(x => x.id === parseInt(this.filtro.Codigo)))
+                            return this.list.usuarios.find(x => x.id === parseInt(this.filtro.Codigo))
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.usuarios.find(x => x.id === value.id)) {
+                                this.filtro.Codigo = value.id;
+                                this.recorrido();
+                            }
+                        } else {
+                            this.filtro.Codigo = '';
+                        }
                     }
                 }
             },
@@ -190,8 +211,8 @@
                 'filtro.PuntoVenta': function (newVal, oldVal) {
                     this.recorrido();
                 },
-                'filtro.Nombre': function (newVal, oldVal) {
-                    if (this.filtro.Nombre.id === '@JLMrootCode' && this.list.sucursales.length === 0)
+                'filtro.Codigo': function (newVal, oldVal) {
+                    if (this.filtro.Codigo === '@JLMrootCode' && this.list.sucursales.length === 0)
                         this.getSucursales();
                     this.$nextTick(function () {
                         this.recorrido();

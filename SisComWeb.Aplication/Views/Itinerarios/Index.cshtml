@@ -524,20 +524,22 @@
                         Sexo: null,
                         Telefono: '',
                         Ruc: '',
-                        RazonSocial: '',
-                        DireccionFiscal: '',
                         Recoger: '',
                         Reintegro: '',
                         Observacion: '',
                         Precio: '',
                         NroAsiento: '',
+                        NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: ''
+                        FechaVen: '',
+                        RazonSocial: '',
+                        Direccion: '',
+                        Nacionalidad: '',
                     }],
                     sexos: [
-                        { 'id': 'M', 'label': 'MASCULINO' },
-                        { 'id': 'F', 'label': 'FEMENINO' }
+                        { 'id': 'M', 'label': 'M' },
+                        { 'id': 'F', 'label': 'F' }
                     ]
                 },
                 objPlano: {
@@ -766,7 +768,7 @@
                         Telefono: '',
                         Ruc: '',
                         RazonSocial: '',
-                        DireccionFiscal: '',
+                        Direccion: '',
                         Recoger: '',
                         Reintegro: '',
                         Observacion: '',
@@ -775,7 +777,8 @@
                         NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: ''
+                        FechaVen: '',
+                        Nacionalidad: ''
                     });
                 },
                 liberarAsiento: async function (asientoSel) {
@@ -802,7 +805,7 @@
                                         _this.list.ventas[_this.indexVenta].Telefono = '';
                                         _this.list.ventas[_this.indexVenta].Ruc = '';
                                         _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                                        _this.list.ventas[_this.indexVenta].DireccionFiscal = '';
+                                        _this.list.ventas[_this.indexVenta].Direccion = '';
                                         _this.list.ventas[_this.indexVenta].Recoger = '';
                                         _this.list.ventas[_this.indexVenta].Reintegro = '';
                                         _this.list.ventas[_this.indexVenta].Observacion = '';
@@ -812,12 +815,12 @@
                                         _this.list.ventas[_this.indexVenta].NroVenta = '';
                                         _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                                         _this.list.ventas[_this.indexVenta].FechaVen = '';
+                                        _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                                         _this.firstAsiento = true;
                                     } else {
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
                                         _this.list.ventas.splice(auxIndex, 1);
                                         _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
-                                        //_this.indexVenta--;
                                     }
                                 }
                             } else {
@@ -899,83 +902,99 @@
                     else if (_this.list.ventas[_this.indexVenta].Telefono === '') {
                         $('#txtTelefono').focus();
                     }
+                    else if (_this.list.ventas[_this.indexVenta].Recoger === '') {
+                        $('#txtRecoger').focus();
+                    }
+                    else if (_this.list.ventas[_this.indexVenta].Reintegro === '') {
+                        $('#txtReintegro').focus();
+                    }
+                    else if (_this.list.ventas[_this.indexVenta].NroSolicitud === '') {
+                        $('#txtNroSolicitud').focus();
+                    }
                     else if (_this.list.ventas[_this.indexVenta].Ruc === '') {
                         $('#txtRuc').focus();
                     }
                     else if (_this.list.ventas[_this.indexVenta].RazonSocial === '') {
                         $('#txtRazonSocial').focus();
                     }
-                    else if (_this.list.ventas[_this.indexVenta].DireccionFiscal === '') {
-                        $('#txtDireccionFiscal').focus();
+                    else if (_this.list.ventas[_this.indexVenta].Direccion === '') {
+                        $('#txtDireccion').focus();
                     }
-                    else if (_this.list.ventas[_this.indexVenta].Recoger === '') {
-                        $('#txtRecoger').focus();
+                    else if (_this.list.ventas[_this.indexVenta].FechaVen === '') {
+                        $('#txtFechaVen').focus();
                     }
-                    else if (_this.list.ventas[_this.indexVenta].Reintegro === '')
-                    {
-                        $('#txtReintegro').focus();
+                    else if (_this.list.ventas[_this.indexVenta].Nacionalidad === '') {
+                        $('#txtNacionalidad').focus();
+                    }
+                    else if (_this.list.ventas[_this.indexVenta].Observacion === '') {
+                        $('#txtObservacion').focus();
+                    }
+                    else {
+                        $('#txtPrecio').focus();
                     }
                 },
                 searchUser: function () {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
-                        tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
-                        numeroDoc: _this.list.ventas[_this.indexVenta].Documento
-                    }))
-                        .then(res => {
-                            if (res.data.IdCliente !== 0) {
-                                _this.list.ventas[_this.indexVenta].IdCliente = res.data.IdCliente;
-                                _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
-                                _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.ApellidoPaterno;
-                                _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.ApellidoMaterno;
-                                _this.list.ventas[_this.indexVenta].FechaNac = res.data.FechaNacimiento;
-                                _this.list.ventas[_this.indexVenta].Edad = res.data.Edad;
-                                _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Sexo);
-                                _this.list.ventas[_this.indexVenta].Telefono = res.data.Telefono;
-                                _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto;
-                            }
-                            else {
-                                if (res.data.NombreCliente && res.data.ApellidoPaterno && res.data.ApellidoPaterno) {
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1') {
+                        APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                            tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
+                            numeroDoc: _this.list.ventas[_this.indexVenta].Documento
+                        }))
+                            .then(res => {
+                                if (res.data.IdCliente !== 0) {
+                                    _this.list.ventas[_this.indexVenta].IdCliente = res.data.IdCliente;
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
                                     _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.ApellidoPaterno;
                                     _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.ApellidoMaterno;
+                                    _this.list.ventas[_this.indexVenta].FechaNac = res.data.FechaNacimiento;
+                                    _this.list.ventas[_this.indexVenta].Edad = res.data.Edad;
+                                    _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Sexo);
+                                    _this.list.ventas[_this.indexVenta].Telefono = res.data.Telefono;
+                                    _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto;
+                                } else {
+                                    if (res.data.NombreCliente && res.data.ApellidoPaterno && res.data.ApellidoPaterno) {
+                                        _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
+                                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.ApellidoPaterno;
+                                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.ApellidoMaterno;
+                                    } else {
+                                        _this.list.ventas[_this.indexVenta].Nombres = '';
+                                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                                    }
+                                    _this.list.ventas[_this.indexVenta].IdCliente = 0;
+                                    _this.list.ventas[_this.indexVenta].FechaNac = '';
+                                    $('#txtFechaNac').data("DateTimePicker").clear();
+                                    _this.list.ventas[_this.indexVenta].Edad = '';
+                                    _this.list.ventas[_this.indexVenta].Sexo = null;
+                                    _this.list.ventas[_this.indexVenta].Telefono = '';
+                                    _this.list.ventas[_this.indexVenta].Ruc = '';
                                 }
-                                else {
-                                    _this.list.ventas[_this.indexVenta].Nombres = '';
-                                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                                }
-                                _this.list.ventas[_this.indexVenta].IdCliente = 0;
-                                _this.list.ventas[_this.indexVenta].FechaNac = '';
-                                $('#txtFechaNac').data("DateTimePicker").clear();
-                                _this.list.ventas[_this.indexVenta].Edad = '';
-                                _this.list.ventas[_this.indexVenta].Sexo = null;
-                                _this.list.ventas[_this.indexVenta].Telefono = '';
-                                _this.list.ventas[_this.indexVenta].Ruc = '';
-                            }
-                            _this.recorridoSectionVentas();
-                        }).catch(APP.rq.axios_handler_error_alert);
+                                _this.recorridoSectionVentas();
+                            }).catch(APP.rq.axios_handler_error_alert);
+                    }
                 },
                 searchEmpresa: function () {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
-                        rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                    }))
-                        .then(res => {
-                            if (res.data.RucCliente) {
-                                _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial;
-                                _this.list.ventas[_this.indexVenta].DireccionFiscal = res.data.Direccion;
-                            }
-                            else {
-                                if (res.data.RazonSocial)
+                    if (_this.list.ventas[_this.indexVenta].Ruc !== '') {
+                        APP.rq.axios2.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
+                            rucContacto: _this.list.ventas[_this.indexVenta].Ruc
+                        }))
+                            .then(res => {
+                                if (res.data.RucCliente) {
                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial;
-                                else
-                                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Direccion;
+                                }
+                                else {
+                                    if (res.data.RazonSocial)
+                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial;
+                                    else
+                                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
 
-                                _this.list.ventas[_this.indexVenta].DireccionFiscal = '';
-                            }
-                            _this.recorridoSectionVentas();
-                        }).catch(APP.rq.axios_handler_error_alert);
+                                    _this.list.ventas[_this.indexVenta].Direccion = '';
+                                }
+                                _this.recorridoSectionVentas();
+                            }).catch(APP.rq.axios_handler_error_alert);
+                    }
                 },
                 passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento) {
                     this.list.ventas[this.indexVenta].Precio = _precioNormal;
@@ -999,7 +1018,7 @@
                     input.ApellidoMaterno = _this.list.ventas[_this.indexVenta].ApellidoMaterno;
                     input.FechaNacimiento = _this.list.ventas[_this.indexVenta].FechaNac;
                     input.Edad = _this.list.ventas[_this.indexVenta].Edad;
-                    input.Direccion = _this.list.ventas[_this.indexVenta].DireccionFiscal;
+                    input.Direccion = _this.list.ventas[_this.indexVenta].Direccion;
                     input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
                     input.Email = ''; //TODO
                     input.RucContacto = _this.list.ventas[_this.indexVenta].Ruc;
@@ -1019,11 +1038,10 @@
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
-                    if (Edad < 18) {
-                        return '/wwwroot/plugins/images/users/HOMBRE.png';
-                    } else {
+                    if (Edad < 0 && Edad <= 18)
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/NINO.png';
-                    }
+                    else
+                        return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
                     if (FechaVenta) {
@@ -1053,7 +1071,7 @@
                     input.CodiProgramacion = _this.filtro.CodiProgramacion;
                     input.RucCliente = _this.list.ventas[_this.indexVenta].Ruc;
                     input.NomEmpresaRuc = _this.list.ventas[_this.indexVenta].RazonSocial;
-                    input.DirEmpresaRuc = _this.list.ventas[_this.indexVenta].DireccionFiscal;
+                    input.DirEmpresaRuc = _this.list.ventas[_this.indexVenta].Direccion;
                     input.NumeAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
                     input.FlagVenta = _this.pickedBusVenta;
                     input.PrecioVenta = _this.list.ventas[_this.indexVenta].Precio;
@@ -1072,6 +1090,7 @@
                     input.NomDestino = _this.filtro.CodiDestinoPas.label;
                     input.NomServicio = _this.filtro.CodiServicio.label;
                     input.NomOrigen = _this.filtro.CodiSucursal.label;
+                    input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
                 leftSlider: function () {
@@ -1093,6 +1112,7 @@
                         this.list.ventas[this.indexVenta].FechaNac = dateString;
                         var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                         this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
+                        this.recorridoSectionVentas();
                     }
                     else
                         this.list.ventas[this.indexVenta].Edad = '';
@@ -1113,7 +1133,7 @@
                         Telefono: '',
                         Ruc: '',
                         RazonSocial: '',
-                        DireccionFiscal: '',
+                        Direccion: '',
                         Recoger: '',
                         Reintegro: '',
                         Observacion: '',
@@ -1122,16 +1142,12 @@
                         NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: ''
+                        FechaVen: '',
+                        Nacionalidad: ''
                     });
                 },
-                changeMaskedTipoDoc: function (value) {
-                    var _this = this
-                    if (value !== null) {id = value.id;
-                        if (id === "1") { _this.mask.documento = "#".repeat(8) }//DNI
-                        else if (id === "4") { _this.mask.documento = "#".repeat(9) }//PASAPORTE
-                        else if (id === "7") {_this.mask.documento = "#".repeat(12)}//CARNET EXTRANJERIA
-                    }
+                test: function () {
+                    APP.msg.ShowSaveAfterSale();
                 }
             },
             computed: {
@@ -1148,11 +1164,17 @@
                 },
                 bloquearPago: function () {
                     var _this = this;
-                    return (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].Documento !== '' &&
-                        _this.list.ventas[_this.indexVenta].Nombres !== '' && _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
-                        _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' && _this.list.ventas[_this.indexVenta].FechaNac !== '' &&
-                        _this.list.ventas[_this.indexVenta].Edad > 0 && _this.list.ventas[_this.indexVenta].Sexo !== null);
-                },
+                    return (
+                        _this.list.ventas[_this.indexVenta].CodiTipoDoc !== null &&
+                        _this.list.ventas[_this.indexVenta].Documento.length >=8 &&
+                        _this.list.ventas[_this.indexVenta].Nombres !== '' &&
+                        _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
+                        _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' &&
+                        _this.list.ventas[_this.indexVenta].FechaNac.length === 10 &&
+                        _this.list.ventas[_this.indexVenta].Edad > 0 &&
+                        _this.list.ventas[_this.indexVenta].Sexo !== null
+                    );
+                }
             },
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
@@ -1200,6 +1222,14 @@
                 },
                 'list.ventas': {
                     handler: function (after, before) {
+                        var _this = this;
+                        var codiTipoDoc = after[_this.indexVenta].CodiTipoDoc;
+                        if (codiTipoDoc) {
+                            id = codiTipoDoc.id;
+                            if (id === "1") { _this.mask.documento = "#".repeat(8) }//DNI
+                            else if (id === "4") { _this.mask.documento = "#".repeat(9) }//PASAPORTE
+                            else if (id === "7") { _this.mask.documento = "N".repeat(12) }//CARNET EXTRANJERIA
+                        }
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
@@ -1211,8 +1241,11 @@
             el: '#appVueTipoPago',
             data: {
                 tipoPago: '0',
-                distrito: null,
                 tarjeta: null,
+                numeroTarjeta: '',
+                distrito: null,
+                direccion: '',
+                observacion: '',
                 embarque: null,
                 arribo: null,
                 list: {
@@ -1288,9 +1321,10 @@
                     input.NomDestino = _this.ticketVenta.NomDestino;
                     input.NomServicio = _this.ticketVenta.NomServicio;
                     input.NomOrigen = _this.ticketVenta.NomOrigen;
+                    input.Nacionalidad = _this.ticketVenta.Nacionalidad;
                     APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                         .then(res => {
-                            APP.msg.info('Se procedió la venta con código: ' + res.data);
+                            APP.msg.ShowSaveAfterSale('Se procedió la venta con código: ' + res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
@@ -1300,7 +1334,7 @@
                     _this.tarjeta = null;
                     _this.embarque = null;
                     _this.arribo = null;
-                }
+                },
             },
             computed: {
                 computedTipoPago: {
@@ -1315,6 +1349,15 @@
                         } else {
                             this.tipoPago = '';
                         }
+                    }
+                },
+                filledCampos: function () {
+                    var _this = this;
+                    switch (this.tipoPago) {
+                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.arribo;
+                        case '01': return _this.embarque && _this.arribo;
+                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.arribo;
+                        default: return false;
                     }
                 }
             },

@@ -1,4 +1,4 @@
-ALTER PROCEDURE scwsp_GrabarEmpresa (
+CREATE PROCEDURE scwsp_GrabarEmpresa (
 	@Ruc_Cliente VARCHAR(11)
 	,@Razon_Social VARCHAR(50)
 	,@Direccion VARCHAR(50)

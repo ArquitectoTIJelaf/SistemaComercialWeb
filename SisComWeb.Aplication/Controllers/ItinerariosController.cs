@@ -516,7 +516,7 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"TipoPago\" : \"" + filtro.TipoPago + "\"" +
                                 ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                 ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
-                                ",\"Nacionalidad\" : \"" + "PERUANO" + "\"" + //TODO
+                                ",\"Nacionalidad\" : \"" + filtro.Nacionalidad + "\"" + //TODO
                                 ",\"CodiServicio\" : " + filtro.CodiServicio +
                                 ",\"CodiEmbarque\" : " + filtro.CodiEmbarque +
                                 ",\"CodiArribo\" : " + filtro.CodiArribo +

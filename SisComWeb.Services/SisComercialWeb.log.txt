@@ -908,6 +908,7 @@ Error de inicio de sesión del usuario 'sa'.
 ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
 Error Number:4060,State:1,Class:11
 >>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
+<<<<<<< HEAD
 2019-02-26 17:30:09,670 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
 System.ArgumentNullException: El valor no puede ser nulo.
 Nombre del parámetro: String
@@ -1640,3 +1641,21 @@ System.AggregateException: Se han producido uno o varios errores. ---> System.Th
 2019-02-28 14:45:36,833 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
 System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
    en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+=======
+2019-02-27 14:24:03,155 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.IndexOutOfRangeException: Codi_Usuario
+   en System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
+   en System.Data.SqlClient.SqlDataReader.GetOrdinal(String name)
+   en System.Data.SqlClient.SqlDataReader.get_Item(String name)
+   en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
+   en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
+   en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
+2019-02-27 14:24:44,323 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
+System.IndexOutOfRangeException: Codi_Usuario
+   en System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
+   en System.Data.SqlClient.SqlDataReader.GetOrdinal(String name)
+   en System.Data.SqlClient.SqlDataReader.get_Item(String name)
+   en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
+   en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
+   en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
+>>>>>>> f040fb91497173b3ec1fc2c6f19c806573f9d463

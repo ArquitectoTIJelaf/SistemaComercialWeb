@@ -1,4 +1,4 @@
-ALTER PROCEDURE scwsp_ModificarEmpresa (
+CREATE PROCEDURE scwsp_ModificarEmpresa (
 	@Ruc_Cliente VARCHAR(11)
 	,@Razon_Social VARCHAR(50)
 	,@Direccion VARCHAR(50)
@@ -20,5 +20,3 @@ BEGIN
 		COMMIT TRANSACTION
 END
 GO
-
-
