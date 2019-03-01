@@ -908,6 +908,740 @@ Error de inicio de sesión del usuario 'sa'.
 ClientConnectionId:73a8c0fe-293b-4481-a0fd-2521e6aa9fc1
 Error Number:4060,State:1,Class:11
 >>>>>>> 8fa27c97cff861a6cfe468d634d10c7d38200b67
+<<<<<<< HEAD
+2019-02-26 17:30:09,670 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.ArgumentNullException: El valor no puede ser nulo.
+Nombre del parámetro: String
+   en System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   en System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int16.Parse(String s, NumberStyles style, NumberFormatInfo info)
+   en System.Int16.Parse(String s)
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 50
+2019-02-26 17:44:56,480 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): El procedimiento o la función 'scwsp_BuscarCorrelativo' esperaba el parámetro '@Terminal', que no se ha especificado.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   en System.Data.SqlClient.SqlDataReader.get_MetaData()
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior, String method)
+   en System.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   en System.Data.Common.DbCommand.ExecuteReader(CommandBehavior behavior)
+   en SisComWeb.Repository.DatabaseSql.GetDataReader(Boolean close) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 211
+   en SisComWeb.Repository.VentaRepository.BuscarCorrelativo(Byte CodiEmpresa, String CodiDocumento, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiTerminal, String Tipo) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 50
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 53
+ClientConnectionId:0bb041a1-5277-4b52-a126-05d18fd9b175
+Error Number:201,State:4,Class:16
+2019-02-26 19:06:00,460 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 122
+ClientConnectionId:552c4c49-c956-46fa-a5bd-17009abc8185
+Error Number:3903,State:1,Class:16
+2019-02-26 19:07:09,571 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 122
+ClientConnectionId:552c4c49-c956-46fa-a5bd-17009abc8185
+Error Number:3903,State:1,Class:16
+2019-02-26 19:14:10,578 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 122
+ClientConnectionId:c485a460-d8f2-4f4e-90fc-b4d401c104e1
+Error Number:3903,State:1,Class:16
+2019-02-26 19:21:40,514 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 122
+ClientConnectionId:c485a460-d8f2-4f4e-90fc-b4d401c104e1
+Error Number:3903,State:1,Class:16
+2019-02-26 19:27:47,780 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 129
+ClientConnectionId:c6b36267-3136-4e56-a465-9e5cf378022b
+Error Number:3903,State:1,Class:16
+2019-02-26 19:37:28,350 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 129
+ClientConnectionId:c6b36267-3136-4e56-a465-9e5cf378022b
+Error Number:3903,State:1,Class:16
+2019-02-26 20:08:31,540 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 201
+ClientConnectionId:82deec16-d71b-4446-b93d-def8ff5ab17b
+Error Number:8152,State:14,Class:16
+2019-02-26 20:32:53,153 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:ba8de15d-7d1a-4498-98c8-079700bbf34d
+Error Number:8152,State:14,Class:16
+2019-02-26 20:33:18,456 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:ba8de15d-7d1a-4498-98c8-079700bbf34d
+Error Number:8152,State:14,Class:16
+2019-02-27 10:31:11,291 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:72643e66-b4c0-4814-927b-9182bd93c7ef
+Error Number:8152,State:14,Class:16
+2019-02-27 10:47:25,050 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:8aca301e-8c8d-447c-9de0-2acd48d83f76
+Error Number:8152,State:14,Class:16
+2019-02-27 10:57:27,116 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute()
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur)
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:8aca301e-8c8d-447c-9de0-2acd48d83f76
+Error Number:8152,State:14,Class:16
+2019-02-27 11:34:14,104 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:bebb4de2-cbf8-4848-81cb-9b49ca0cc610
+Error Number:8152,State:14,Class:16
+2019-02-27 11:46:53,867 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:338f7dc4-3aee-493d-8a58-a4fe423572d2
+Error Number:8152,State:14,Class:16
+2019-02-27 12:34:14,306 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:35:54,646 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:40:11,999 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:43:07,762 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:44:50,720 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:47:59,491 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:48:09,394 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:50:23,489 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:51:01,486 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:51:58,067 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:52:47,444 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 12:55:53,459 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:e2004744-1f29-4594-8e22-69174ca4d336
+Error Number:8152,State:14,Class:16
+2019-02-27 14:04:34,526 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 140
+ClientConnectionId:73a82298-6a79-4324-81cc-327efe854ba7
+Error Number:3903,State:1,Class:16
+2019-02-27 14:08:02,371 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 140
+ClientConnectionId:73a82298-6a79-4324-81cc-327efe854ba7
+Error Number:3903,State:1,Class:16
+2019-02-27 14:14:16,104 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): La solicitud ROLLBACK TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+243
+La solicitud COMMIT TRANSACTION no tiene la correspondiente BEGIN TRANSACTION.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 133
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 140
+ClientConnectionId:73a82298-6a79-4324-81cc-327efe854ba7
+Error Number:3903,State:1,Class:16
+2019-02-27 14:16:02,209 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:73a82298-6a79-4324-81cc-327efe854ba7
+Error Number:8152,State:14,Class:16
+2019-02-27 14:39:47,076 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+ 
+ 
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarLiquidacionVentas(Int32 NroLiq, Byte CodiEmpresa, Int16 CodiSucursal, Int16 CodiPuntoVenta, Int16 CodiUsuario, Decimal ImpTur) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 202
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 206
+ClientConnectionId:73a82298-6a79-4324-81cc-327efe854ba7
+Error Number:8152,State:14,Class:16
+2019-02-27 15:31:24,713 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 207
+2019-02-27 18:44:19,443 ERROR SisComWeb.Business.VentaLogic - ValidarDocumentoSUNAT
+System.InvalidOperationException: No se encontró el elemento de extremo predeterminado que hace referencia al contrato 'ServiceFE.Ws_SeeFacteSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo correspondiente a este contrato en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor()
+   en SisComWeb.Business.ServiceFE.Ws_SeeFacteSoapClient..ctor() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\Connected Services\ServiceFE\Reference.cs:línea 1455
+   en SisComWeb.Business.VentaLogic.ValidarDocumentoSUNAT(VentaEntity entidad, SetInvoiceRequestBody& bodyDocumentoSUNAT) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 265
+2019-02-27 18:45:27,794 ERROR SisComWeb.Business.VentaLogic - ValidarDocumentoSUNAT
+System.InvalidOperationException: No se encontró el elemento de extremo predeterminado que hace referencia al contrato 'ServiceFE.Ws_SeeFacteSoap' en la sección de configuración de cliente de ServiceModel. La razón puede ser que no se encontró ningún archivo de configuración para la aplicación o que no se encontró ningún elemento de extremo correspondiente a este contrato en el elemento de cliente.
+   en System.ServiceModel.Description.ConfigLoader.LoadChannelBehaviors(ServiceEndpoint serviceEndpoint, String configurationName)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName, Configuration configuration)
+   en System.ServiceModel.ChannelFactory.ApplyConfiguration(String configurationName)
+   en System.ServiceModel.ChannelFactory.InitializeEndpoint(String configurationName, EndpointAddress address)
+   en System.ServiceModel.ChannelFactory`1..ctor(String endpointConfigurationName, EndpointAddress remoteAddress)
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateSimplexFactory()
+   en System.ServiceModel.ConfigurationEndpointTrait`1.CreateChannelFactory()
+   en System.ServiceModel.ClientBase`1.CreateChannelFactoryRef(EndpointTrait`1 endpointTrait)
+   en System.ServiceModel.ClientBase`1.InitializeChannelFactoryRef()
+   en System.ServiceModel.ClientBase`1..ctor()
+   en SisComWeb.Business.ServiceFE.Ws_SeeFacteSoapClient..ctor() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\Connected Services\ServiceFE\Reference.cs:línea 1455
+   en SisComWeb.Business.VentaLogic.ValidarDocumentoSUNAT(VentaEntity entidad, SetInvoiceRequestBody& bodyDocumentoSUNAT) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 265
+2019-02-27 18:45:27,818 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 155
+2019-02-27 19:14:30,920 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 405
+2019-02-27 19:15:17,348 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 405
+2019-02-27 19:45:05,305 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+2019-02-27 19:45:08,497 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+2019-02-27 19:47:56,115 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+2019-02-27 19:49:45,745 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+2019-02-27 20:16:21,510 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 405
+2019-02-27 20:43:44,081 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 408
+2019-02-27 20:53:27,696 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 155
+2019-02-27 20:55:10,820 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-27 20:56:40,532 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-27 20:57:19,310 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-27 20:59:55,013 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-27 21:01:06,405 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-27 21:04:02,241 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: startIndex no puede ser mayor que la longitud de la cadena.
+Nombre del parámetro: startIndex
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-28 10:15:57,835 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: El índice y la longitud deben hacer referencia a una ubicación en la cadena.
+Nombre del parámetro: length
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-28 10:22:45,174 ERROR SisComWeb.Business.VentaLogic - generarCabecera
+System.ArgumentOutOfRangeException: El índice y la longitud deben hacer referencia a una ubicación en la cadena.
+Nombre del parámetro: length
+   en System.String.Substring(Int32 startIndex, Int32 length)
+   en SisComWeb.Utility.DataUtility.MontoSolesALetras(String numero) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Utility\DataUtility\DataUtility.cs:línea 404
+   en SisComWeb.Business.VentaLogic.generarCabecera(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 413
+2019-02-28 14:40:49,904 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.AggregateException: Se han producido uno o varios errores. ---> System.Threading.Tasks.TaskCanceledException: Se canceló una tarea.
+   --- Fin del seguimiento de la pila de la excepción interna ---
+   en System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   en System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   en System.Threading.Tasks.Task`1.get_Result()
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 201
+---> (Nº de excepción interna 0) System.Threading.Tasks.TaskCanceledException: Se canceló una tarea.<---
+
+2019-02-28 14:44:39,933 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.AggregateException: Se han producido uno o varios errores. ---> System.Threading.Tasks.TaskCanceledException: Se canceló una tarea.
+   --- Fin del seguimiento de la pila de la excepción interna ---
+   en System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   en System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   en System.Threading.Tasks.Task`1.get_Result()
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 201
+---> (Nº de excepción interna 0) System.Threading.Tasks.TaskCanceledException: Se canceló una tarea.<---
+
+2019-02-28 14:45:36,833 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 211
+=======
 2019-02-27 14:24:03,155 ERROR SisComWeb.Business.BaseLogic - ListaUsuarios
 System.IndexOutOfRangeException: Codi_Usuario
    en System.Data.ProviderBase.FieldNameLookup.GetOrdinal(String fieldName)
@@ -924,6 +1658,10 @@ System.IndexOutOfRangeException: Codi_Usuario
    en SisComWeb.Repository.BaseRepository.GetItem(IDataReader reader, Byte type) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 24
    en SisComWeb.Repository.BaseRepository.ListaUsuariosAutocomplete(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Repository\BaseRepository.cs:línea 137
    en SisComWeb.Business.BaseLogic.ListaUsuarios(String value) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\BaseLogic.cs:línea 45
+<<<<<<< HEAD
 2019-02-28 14:17:28,491 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
 System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
    en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 209
+=======
+>>>>>>> f040fb91497173b3ec1fc2c6f19c806573f9d463
+>>>>>>> 28f2846d429a60f4ae3724e9ee39204e4c409f32

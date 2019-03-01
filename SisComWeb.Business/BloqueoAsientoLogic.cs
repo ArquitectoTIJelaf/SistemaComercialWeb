@@ -34,7 +34,7 @@ namespace SisComWeb.Business
                 else
                 {
                     // ¿Existe Programación?
-                    if (request.CodiProgramacion != 0)
+                    if (request.CodiProgramacion > 0)
                     {
                         // Bloquear 'AsientoProgramacion'
                         resBloquearAsiento = BloqueoAsientoRepository.BloquearAsientoProgramacion(request.CodiProgramacion, request.NumeAsiento.ToString(), decimal.Parse(request.Precio.ToString()), request.FechaProgramacion, request.CodiTerminal.ToString());

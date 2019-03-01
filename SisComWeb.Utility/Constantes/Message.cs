@@ -55,15 +55,13 @@
         public const string MsgErrExcLiberaAsiento = "Ocurrió una excepción al liberar asiento.";
 
         // Venta
+        public const string MsgCorrectoBuscaCorrelativo = "Correcto: BuscaCorrelativo.";
+        public const string MsgErrExcBuscaCorrelativo = "Ocurrió una excepción al buscar correlativo.";
         public const string MsgCorrectoGrabaVenta = "Correcto: GrabaVenta.";
         public const string MsgErrExcGrabaVenta = "Ocurrió una excepción al grabar venta.";
 
         // SUNAT
-        public const string MsgCorrectoConsultaSUNAT = "Correcto: ConsultaSUNAT.";
-        public const string MsgErrExcConsultaSUNAT = "Ocurrió una excepción al consultar a la SUNAT.";
-
-        // RENIEC
-        public const string MsgCorrectoConsultaRENIEC = "Correcto: ConsultaRENIEC.";
-        public const string MsgErrExcConsultaRENIEC = "Ocurrió una excepción al consultar a la RENIEC.";
+        public const string MsgCorrectoConsultarSUNAT = "Correcto: ConsultarSUNAT.";
+        public const string MsgErrExcConsultarSUNAT = "Ocurrió una excepción al consultar a la SUNAT.";
     }
 }

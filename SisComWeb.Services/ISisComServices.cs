@@ -69,8 +69,8 @@ namespace SisComWeb.Services
         Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ConsultaSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<string> ConsultaSUNAT(string RucContacto);
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultarSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<RucEntity> ConsultarSUNAT(string RucContacto);
 
         #endregion
 
@@ -111,6 +111,10 @@ namespace SisComWeb.Services
         #endregion
 
         #region GRABA VENTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaCorrelativo", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="integradores.jelaf.pe" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="integradores.jelaf.pe" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="integradores.jelaf.pe">
+      <s:element name="SetValueInvoice">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="Persona" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CInvoice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DetInvoice" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="DocInvoice" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="Aditional" type="tns:ArrayOfString" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="Security">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="ID" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="User" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SetValueInvoiceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetValueInvoiceResult" type="tns:ResponseW" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResponseW">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Estado" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodError" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MensajeError" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstadoSunat" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MensajeSunat" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="XmlCert" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="XmlSUNAT" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreArchivo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SignatureValue" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PdfValue" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SetInvoice">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="Persona" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="CInvoice" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DetInvoice" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="DocInvoice" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="Aditional" type="tns:ArrayOfString" />
+            <s:element minOccurs="1" maxOccurs="1" name="EnvioAsync" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetInvoiceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetInvoiceResult" type="tns:ResponseW" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetValidarDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="TipoDoc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Serie" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="NroDocument" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetValidarDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetValidarDocumentResult" type="tns:ResponseDocument" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ResponseDocument">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Estado" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="Mensaje" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="ExisteDocument" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="EstadoDocument" type="s:short" />
+          <s:element minOccurs="0" maxOccurs="1" name="EstadoRespuestaSunat" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SignatureValue" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="SetDocumentNote">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="Persona" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DocumentNote" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="DetDocumentNote" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="DocDocumentNote" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="Aditional" type="tns:ArrayOfString" />
+            <s:element minOccurs="1" maxOccurs="1" name="EnvioAsync" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetDocumentNoteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetDocumentNoteResult" type="tns:ResponseW" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetVoidedDocument">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="VoidedDocument" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetVoidedDocumentResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetVoidedDocumentResult" type="tns:ResponseW" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetComprobanteRet">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+            <s:element minOccurs="0" maxOccurs="1" name="Persona" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ComprobanteC" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ComprobanteD" type="tns:ArrayOfString" />
+            <s:element minOccurs="0" maxOccurs="1" name="Aditional" type="tns:ArrayOfString" />
+            <s:element minOccurs="1" maxOccurs="1" name="EnvioAsync" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SetComprobanteRetResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SetComprobanteRetResult" type="tns:ResponseW" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetParametro">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="Security" type="tns:Security" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetParametroResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetParametroResult" type="tns:RParametro" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="RParametro">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Estado" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="MensajeError" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Rempresa" type="tns:Rempresa" />
+          <s:element minOccurs="0" maxOccurs="1" name="RDocumentNote" type="tns:ArrayOfFE_TipoDocumentNote" />
+          <s:element minOccurs="0" maxOccurs="1" name="RUnidadMedida" type="tns:ArrayOfFE_UnidadMedidaSUNAT" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Rempresa">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="RucEmpresa" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DirFiscal" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UbigeoSunat" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Departamento" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Provincia" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Distrito" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="ResolucionAutorizado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="PaginaWebEmisor" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFE_TipoDocumentNote">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FE_TipoDocumentNote" nillable="true" type="tns:FE_TipoDocumentNote" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FE_TipoDocumentNote">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodMotivo" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="CodDoc" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfFE_UnidadMedidaSUNAT">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="FE_UnidadMedidaSUNAT" nillable="true" type="tns:FE_UnidadMedidaSUNAT" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="FE_UnidadMedidaSUNAT">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="CodUniv" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Abrev" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="SetValueInvoiceSoapIn">
+    <wsdl:part name="parameters" element="tns:SetValueInvoice" />
+  </wsdl:message>
+  <wsdl:message name="SetValueInvoiceSoapOut">
+    <wsdl:part name="parameters" element="tns:SetValueInvoiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetInvoiceSoapIn">
+    <wsdl:part name="parameters" element="tns:SetInvoice" />
+  </wsdl:message>
+  <wsdl:message name="SetInvoiceSoapOut">
+    <wsdl:part name="parameters" element="tns:SetInvoiceResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetValidarDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:GetValidarDocument" />
+  </wsdl:message>
+  <wsdl:message name="GetValidarDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:GetValidarDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetDocumentNoteSoapIn">
+    <wsdl:part name="parameters" element="tns:SetDocumentNote" />
+  </wsdl:message>
+  <wsdl:message name="SetDocumentNoteSoapOut">
+    <wsdl:part name="parameters" element="tns:SetDocumentNoteResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetVoidedDocumentSoapIn">
+    <wsdl:part name="parameters" element="tns:SetVoidedDocument" />
+  </wsdl:message>
+  <wsdl:message name="SetVoidedDocumentSoapOut">
+    <wsdl:part name="parameters" element="tns:SetVoidedDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetComprobanteRetSoapIn">
+    <wsdl:part name="parameters" element="tns:SetComprobanteRet" />
+  </wsdl:message>
+  <wsdl:message name="SetComprobanteRetSoapOut">
+    <wsdl:part name="parameters" element="tns:SetComprobanteRetResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetParametroSoapIn">
+    <wsdl:part name="parameters" element="tns:GetParametro" />
+  </wsdl:message>
+  <wsdl:message name="GetParametroSoapOut">
+    <wsdl:part name="parameters" element="tns:GetParametroResponse" />
+  </wsdl:message>
+  <wsdl:portType name="Ws_SeeFacteSoap">
+    <wsdl:operation name="SetValueInvoice">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Validación formato comprobante electrónico Factura - Boleta</wsdl:documentation>
+      <wsdl:input message="tns:SetValueInvoiceSoapIn" />
+      <wsdl:output message="tns:SetValueInvoiceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetInvoice">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registro del comprobante electrónico Factura - Boleta</wsdl:documentation>
+      <wsdl:input message="tns:SetInvoiceSoapIn" />
+      <wsdl:output message="tns:SetInvoiceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetValidarDocument">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Información de comprobante electrónico</wsdl:documentation>
+      <wsdl:input message="tns:GetValidarDocumentSoapIn" />
+      <wsdl:output message="tns:GetValidarDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetDocumentNote">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registro del comprobante electrónico Nota crédito-débito</wsdl:documentation>
+      <wsdl:input message="tns:SetDocumentNoteSoapIn" />
+      <wsdl:output message="tns:SetDocumentNoteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetVoidedDocument">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registro del comprobante anulado</wsdl:documentation>
+      <wsdl:input message="tns:SetVoidedDocumentSoapIn" />
+      <wsdl:output message="tns:SetVoidedDocumentSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetComprobanteRet">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Registro del comprobante electrónico Retención/Percepción</wsdl:documentation>
+      <wsdl:input message="tns:SetComprobanteRetSoapIn" />
+      <wsdl:output message="tns:SetComprobanteRetSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetParametro">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Informacion de Parametro por Empresa registrada</wsdl:documentation>
+      <wsdl:input message="tns:GetParametroSoapIn" />
+      <wsdl:output message="tns:GetParametroSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Ws_SeeFacteSoap" type="tns:Ws_SeeFacteSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SetValueInvoice">
+      <soap:operation soapAction="integradores.jelaf.pe/SetValueInvoice" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetInvoice">
+      <soap:operation soapAction="integradores.jelaf.pe/SetInvoice" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetValidarDocument">
+      <soap:operation soapAction="integradores.jelaf.pe/GetValidarDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetDocumentNote">
+      <soap:operation soapAction="integradores.jelaf.pe/SetDocumentNote" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetVoidedDocument">
+      <soap:operation soapAction="integradores.jelaf.pe/SetVoidedDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetComprobanteRet">
+      <soap:operation soapAction="integradores.jelaf.pe/SetComprobanteRet" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParametro">
+      <soap:operation soapAction="integradores.jelaf.pe/GetParametro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="Ws_SeeFacteSoap12" type="tns:Ws_SeeFacteSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="SetValueInvoice">
+      <soap12:operation soapAction="integradores.jelaf.pe/SetValueInvoice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetInvoice">
+      <soap12:operation soapAction="integradores.jelaf.pe/SetInvoice" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetValidarDocument">
+      <soap12:operation soapAction="integradores.jelaf.pe/GetValidarDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetDocumentNote">
+      <soap12:operation soapAction="integradores.jelaf.pe/SetDocumentNote" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetVoidedDocument">
+      <soap12:operation soapAction="integradores.jelaf.pe/SetVoidedDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetComprobanteRet">
+      <soap12:operation soapAction="integradores.jelaf.pe/SetComprobanteRet" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetParametro">
+      <soap12:operation soapAction="integradores.jelaf.pe/GetParametro" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Ws_SeeFacte">
+    <wsdl:port name="Ws_SeeFacteSoap" binding="tns:Ws_SeeFacteSoap">
+      <soap:address location="http://integradores.jelaf.pe/WsFacte_Prueba/Ws_SeeFacte.asmx" />
+    </wsdl:port>
+    <wsdl:port name="Ws_SeeFacteSoap12" binding="tns:Ws_SeeFacteSoap12">
+      <soap12:address location="http://integradores.jelaf.pe/WsFacte_Prueba/Ws_SeeFacte.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

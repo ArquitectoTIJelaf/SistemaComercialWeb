@@ -84,7 +84,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nombre_Clientes", DbType.String, ParameterDirection.Input, entidad.NombreCliente);
                 db.AddParameter("@Apellido_P", DbType.String, ParameterDirection.Input, entidad.ApellidoPaterno);
                 db.AddParameter("@Apellido_M", DbType.String, ParameterDirection.Input, entidad.ApellidoMaterno);
-                db.AddParameter("@fec_nac", DbType.DateTime, ParameterDirection.Input, entidad.FechaNacimiento);
+                db.AddParameter("@fec_nac", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
                 db.AddParameter("@edad", DbType.Byte, ParameterDirection.Input, entidad.Edad);
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
@@ -116,7 +116,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nombre_Clientes", DbType.String, ParameterDirection.Input, entidad.NombreCliente);
                 db.AddParameter("@Apellido_P", DbType.String, ParameterDirection.Input, entidad.ApellidoPaterno);
                 db.AddParameter("@Apellido_M", DbType.String, ParameterDirection.Input, entidad.ApellidoMaterno);
-                db.AddParameter("@fec_nac", DbType.DateTime, ParameterDirection.Input, entidad.FechaNacimiento);
+                db.AddParameter("@fec_nac", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
                 db.AddParameter("@edad", DbType.Byte, ParameterDirection.Input, entidad.Edad);
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);

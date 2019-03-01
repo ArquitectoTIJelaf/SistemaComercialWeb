@@ -65,7 +65,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@FechaProgramacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@FechaProgramacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 var entidad = new TurnoViajeEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -91,7 +91,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarProgramacionViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -175,7 +175,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ValidarTurnoAdicional";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -200,7 +200,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ValidarProgrmacionCerrada";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {

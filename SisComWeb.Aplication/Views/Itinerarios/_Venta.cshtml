@@ -75,7 +75,7 @@
 <div id="appVueVenta" v-show="showVentas" class="row">
     <div class="col-md-12">
         <div class="white-box" style="padding: 10px 0 15px 0;">
-            <div @*class="custom-scroll-container"*@>
+            <div>
                 <div class="row">
                     <div id="FiltersVentas" class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
                         <div class="col-md-12">
@@ -118,14 +118,14 @@
                         <div class="col-md-12">
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
                                 <img src="~/wwwroot/plugins/images/BUS3.png" />
-                                <label class="control-label color-blue" style="margin-left: 5px; font-size: 12px; ">
+                                <label class="control-label color-blue" style="margin-left: 5px; font-size: 12px; display: inline; ">
                                     Con embarque en: {{setCadenaEmbarques}}
                                 </label>
                                 <div class="panel-action">
                                     <button type="button"
                                             id="btnDesplegar"
                                             class="btn btn-default btn-sm waves-effect waves-light btn-emp"
-                                            style="color: #fff; font-weight: 400;padding: 1px 10px;"
+                                            style="color: #fff; font-weight: 400;padding: 0px 10px 1px 10px;"
                                             href="#"
                                             data-perform="panel-collapse"
                                             @@click="showTextTurnos = !showTextTurnos">
@@ -469,125 +469,108 @@
                                     <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" />
                                 </div>
                             </div>
-                            <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 5px 15px; background-color: white; z-index: 1">
+                            <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
                                 <div class="row">
+                                    
                                     <div class="col-md-1">
-                                        <div class="col-md-12">
-                                            <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
-                                                <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
-                                                <input v-model="list.ventas[indexVenta].NroAsiento"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="Nº"
-                                                       style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
-                                                       autocomplete="off">
-                                            </div>
+                                        <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
+                                            <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
+                                            <input v-model="list.ventas[indexVenta].NroAsiento"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="Nº"
+                                                   style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
+                                                   autocomplete="off">
                                         </div>
                                     </div>
-                                    <div class="col-md-11">
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Tipo doc.</label>
-                                                <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                                          :id="'cboTipoDoc'"
-                                                          label="label"
-                                                          :options="list.tiposDoc"
-                                                          :placeholder="'TIPO'"
-                                                          @@keydown.13.native.prevent="recorridoSectionVentas"
-                                                          ref="select">
-                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                                </v-select>
-                                            </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label class="control-label">Tipo doc.</label>
+                                            <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                      :id="'cboTipoDoc'"
+                                                      label="label"
+                                                      :options="list.tiposDoc"
+                                                      :placeholder="'TIPO'"
+                                                      @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                      ref="select">
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>
                                         </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="control-label">Número</label>
-                                                <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
-                                                       @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
-                                                       id="txtDocumento"
-                                                       type="text"
-                                                       @@keypress.13.prevent="searchUser"
-                                                       class="form-control input-sm"
-                                                       placeholder="DOCUMENTO"
-                                                       autocomplete="off"
-                                                       v-mask="mask.documento">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label class="control-label">Número</label>
+                                            <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
+                                                   @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
+                                                   id="txtDocumento"
+                                                   type="text"
+                                                   @@keypress.13.prevent="searchUser"
+                                                   class="form-control input-sm"
+                                                   placeholder="DOCUMENTO"
+                                                   autocomplete="off"
+                                                   v-mask="mask.documento">
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="control-label">Nombres</label>
-                                                <input v-model="list.ventas[indexVenta].Nombres"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtNombres"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="NOMBRES"
-                                                       autocomplete="off">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="control-label">Nombres</label>
+                                            <input v-model="list.ventas[indexVenta].Nombres"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtNombres"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   style="font-size: 16px !important; font-weight: 500;"
+                                                   placeholder="NOMBRES"
+                                                   autocomplete="off">
                                         </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="control-label">Apellido paterno</label>
-                                                <input v-model="list.ventas[indexVenta].ApellidoPaterno"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtApellidoPaterno"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="PATERNO"
-                                                       autocomplete="off">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="control-label">Apellido paterno</label>
+                                            <input v-model="list.ventas[indexVenta].ApellidoPaterno"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtApellidoPaterno"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   style="font-size: 16px !important; font-weight: 500;"
+                                                   placeholder="PATERNO"
+                                                   autocomplete="off">
                                         </div>
-                                        <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="control-label">Apellido materno</label>
-                                                <input v-model="list.ventas[indexVenta].ApellidoMaterno"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtApellidoMaterno"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="MATERNO"
-                                                       autocomplete="off">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="control-label">Apellido materno</label>
+                                            <input v-model="list.ventas[indexVenta].ApellidoMaterno"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtApellidoMaterno"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   style="font-size: 16px !important; font-weight: 500;"
+                                                   placeholder="MATERNO"
+                                                   autocomplete="off">
                                         </div>
-                                        @*<div class="col-md-2">
-                                                <div class="form-group text-center">
-                                                    <label class="control-label"
-                                                           style="font-size: 16px !important; font-weight: 500; color: #004e90;">N° 02-0000015</label>
-                                                </div>
-                                            </div>*@
-                                        <div class="col-md-2 text-center">
-                                            <div class="form-group">
-                                                @*<label class="control-label">&nbsp;</label>*@
-                                                <label class="control-label" style="font-size: 16px !important; font-weight: 500; color: #004e90;">{{list.ventas[indexVenta].NroVenta}}</label>
-                                                @*<input :value="list.ventas[indexVenta].NroVenta"
-                                                    type="text"
-                                                    class="form-control input-sm"
-                                                    placeholder="Nº VENTA"
-                                                    readonly="readonly"
-                                                    style="font-size: 16px !important; font-weight: 500; color: #004e90;"
-                                                    autocomplete="off">*@
-                                            </div>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <div class="form-group">
+                                            <label class="control-label" style="font-size: 16px !important; font-weight: 500; color: #004e90;">{{list.ventas[indexVenta].NroVenta}}</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group ">
-                                            <label class="control-label">Fecha de nacimiento</label>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label class="control-label">Fecha nac.</label>
                                             <input @@blur="setDateAndCalcYears($event.target.value.trim())"
                                                    :value="list.ventas[indexVenta].FechaNac"
                                                    type="text"
                                                    id="txtFechaNac"
                                                    class="form-control input-sm dp"
-                                                   placeholder="FECHA NACIMIENTO"
+                                                   placeholder="FECHA NAC."
                                                    autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group ">
+                                        <div class="form-group">
                                             <label class="control-label">Edad</label>
                                             <input :value="list.ventas[indexVenta].Edad"
                                                    @@keypress.13.prevent="recorridoSectionVentas"
@@ -608,6 +591,7 @@
                                                       label="label"
                                                       :options="list.sexos"
                                                       :placeholder="'SEXO'"
+                                                      @@keydown.13.native.prevent="recorridoSectionVentas"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
@@ -626,9 +610,8 @@
                                                    v-mask="'#########'">
                                         </div>
                                     </div>
-                                    <div class="col-md-7">
-                                        <div class="col-md-4">
-                                            <div class="form-group ">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                                 <label class="control-label">Recoger</label>
                                                 <input v-model="list.ventas[indexVenta].Recoger"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
@@ -638,37 +621,38 @@
                                                        placeholder="RECOGER"
                                                        autocomplete="off">
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group ">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
                                                 <label class="control-label">Reintegro</label>
                                                 <input v-model="list.ventas[indexVenta].Reintegro"
-                                                       @@keypress.13.prevent="saveUser"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtReintegro"
                                                        type="text"
                                                        class="form-control input-sm"
                                                        placeholder="REINTEGRO"
                                                        autocomplete="off">
                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtNroSolicitud"
                                                        type="text"
                                                        class="form-control input-sm"
                                                        placeholder="Nº SOLICITUD"
                                                        autocomplete="off">
                                             </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <div class="form-group">
                                             <label class="control-label">RUC</label>
                                             <input v-model="list.ventas[indexVenta].Ruc"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   @@keypress.13.prevent="searchEmpresa"
                                                    id="txtRuc"
                                                    type="text"
                                                    class="form-control input-sm"
@@ -677,39 +661,36 @@
                                                    v-mask="'###########'">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                                 <label class="control-label">Razón social</label>
                                                 <input v-model="list.ventas[indexVenta].RazonSocial"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtTelefono"
+                                                       id="txtRazonSocial"
                                                        type="text"
                                                        class="form-control input-sm"
                                                        placeholder="RAZÓN SOCIAL"
                                                        autocomplete="off">
                                             </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                                 <label class="control-label">Dirección</label>
                                                 <input v-model="list.ventas[indexVenta].Direccion"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtTelefono"
+                                                       id="txtDireccion"
                                                        type="text"
                                                        class="form-control input-sm"
                                                        placeholder="DIRECCIÓN"
                                                        autocomplete="off">
                                             </div>
-                                        </div>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-1">
                                         <div class="form-group">
                                             <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                            <input @@blur="list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
-                                                   :value="list.ventas[indexVenta].FechaVen"
-                                                   type="text"
+                                            <input @@blur="recorridoSectionVentas(); list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
                                                    id="txtFechaVen"
+                                                   type="text"
                                                    class="form-control input-sm dp"
                                                    placeholder="FECHA VENTA"
                                                    autocomplete="off">
@@ -718,9 +699,9 @@
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="control-label">Nacionalidad</label>
-                                            <input v-model="list.ventas[indexVenta].Direccion"
+                                            <input v-model="list.ventas[indexVenta].Nacionalidad"
                                                    @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtTelefono"
+                                                   id="txtNacionalidad"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="NACIONALIDAD"
@@ -729,10 +710,11 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group ">
+                                    <div class="col-md-5">
+                                        <div class="form-group">
                                             <label class="control-label">Observación</label>
                                             <input v-model="list.ventas[indexVenta].Observacion"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
                                                    id="txtObservacion"
                                                    type="text"
                                                    class="form-control input-sm"
@@ -741,7 +723,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div class="form-group ">
+                                        <div class="form-group">
                                             <label class="control-label">&nbsp;</label>
                                             <button class="btn btn-secondary btn-ticket-venta"
                                                     style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white; ">
@@ -752,8 +734,9 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group text-center">
-                                            <label class="control-label">Precio S/.</label>
+                                            <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
                                             <input v-model="list.ventas[indexVenta].Precio"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
                                                    id="txtPrecio"
                                                    type="text"
                                                    class="form-control input-sm"
@@ -764,10 +747,11 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <div v-if="list.ventas.length > 1 && indexVenta === list.ventas.length - 1">
-                                            <label class="control-label">&nbsp;</label>
-                                            <div class="form-group" style="text-align: center;">
-                                                <button @@click="showTipoPago" class="btn btn-secondary btn-ticket-venta"
+                                        <div class="form-group" style="text-align: center;">
+                                            <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
+                                                <label class="control-label">&nbsp;</label>
+                                                <button @@click="showTipoPago"
+                                                        class="btn btn-secondary btn-ticket-venta"
                                                         style="width: 100%; color:white;">
                                                     $ &ensp; Pago total
                                                 </button>

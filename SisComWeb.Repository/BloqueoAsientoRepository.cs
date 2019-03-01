@@ -49,7 +49,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
                 db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
                 db.AddParameter("@Costo", DbType.Decimal, ParameterDirection.Input, Costo);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 db.AddParameter("@Codi_Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
                 var valor = new decimal();
                 using (IDataReader drlector = db.GetDataReader())
@@ -77,7 +77,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
                 db.AddParameter("@Costo", DbType.Decimal, ParameterDirection.Input, Costo);
-                db.AddParameter("@Fecha_Programacion", DbType.DateTime, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 db.AddParameter("@Codi_Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
                 var valor = new decimal();
                 using (IDataReader drlector = db.GetDataReader())
