@@ -59,6 +59,54 @@ namespace SisComWeb.Business
                 string auxCodigoBF_Interno = string.Empty;
                 entidad.UserWebSUNAT = "WEBPASAJES";
 
+                // Busca 'ProgramacionViaje'
+                var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
+                if (resBuscarProgramacionViaje.Estado)
+                {
+                    if (resBuscarProgramacionViaje.Valor == 0)
+                    {
+                        // Genera 'CorrelativoAuxilia'
+                        var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                        if (resGenerarCorrelativoAuxiliar.Estado)
+                            entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor);
+                        else
+                        {
+                            response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
+                            return response;
+                        }
+
+                        var objProgramacion = new ProgramacionEntity
+                        {
+                            CodiProgramacion = entidad.CodiProgramacion,
+                            CodiEmpresa = entidad.CodiEmpresa,
+                            CodiSucursal = entidad.CodiSucursal,
+                            CodiRuta = entidad.CodiRuta,
+                            CodiBus = entidad.CodiBus,
+                            FechaProgramacion = entidad.FechaProgramacion,
+                            HoraProgramacion = entidad.HoraProgramacion,
+                            CodiServicio = entidad.CodiServicio
+                        };
+
+                        // Graba 'Programacion'
+                        var resGrabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
+                        if (!resGrabarProgramacion.Estado)
+                        {
+                            response.Mensaje = resGrabarProgramacion.Mensaje;
+                            return response;
+                        }
+
+                        // Graba 'ViajeProgramacion'
+                        var resGrabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
+                        if (!resGrabarViajeProgramacion.Estado)
+                        {
+                            response.Mensaje = resGrabarViajeProgramacion.Mensaje;
+                            return response;
+                        }
+                    }
+                }
+                else
+                    return response;
+
                 // Valida 'TerminalElectronico'
                 var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
                 if (resValidarTerminalElectronico.Estado)
@@ -220,8 +268,8 @@ namespace SisComWeb.Business
                 // Graba 'LiquidacionVentas'
                 else
                 {
-                    // Genera 'Correlativo'
-                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("LIQ_CAJA", "999", string.Empty);
+                    // Genera 'CorrelativoAuxiliar'
+                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("LIQ_CAJA", "", "999", string.Empty);
                     if (!resGenerarCorrelativoAuxiliar.Estado)
                     {
                         response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;

@@ -561,6 +561,10 @@
                 pickedBusVenta: 'V',
                 mask: {
                     documento: ''
+                },
+                objTurno: {
+                    FechaProgramacion: '',
+                    HoraProgramacion: ''
                 }
             },
             mounted: function () {
@@ -573,6 +577,8 @@
                 chargeVentas: function (item, fechaViaje, turnos) {
                     this.firstCharge = true;
                     this.list.turnos = turnos;
+                    this.objTurno.FechaProgramacion = item.FechaProgramacion;
+                    this.objTurno.HoraProgramacion = item.HoraProgramacion;
                     this.getTurno(item, fechaViaje);
                 },
                 getTurno: function (item, fechaViaje) {
@@ -611,6 +617,8 @@
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
                                 _this.list.destinosRuta = res.data.ListaDestinosRuta;
                                 _this.list.embarques = res.data.ListaEmbarques;
+                                _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
+                                _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
                                 if (tempList.length > 0 && limpiarAB) {
@@ -1091,6 +1099,12 @@
                     input.NomServicio = _this.filtro.CodiServicio.label;
                     input.NomOrigen = _this.filtro.CodiSucursal.label;
                     input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
+                    input.NroViaje = _this.filtro.NroViaje;
+                    input.FechaProgramacion = _this.objTurno.FechaProgramacion;
+                    input.HoraProgramacion = _this.objTurno.HoraProgramacion;
+                    input.CodiBus = _this.objPlano.CodiBus;
+                    input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
+                    input.CodiRuta = _this.filtro.CodiDestinoBus.id;
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
                 leftSlider: function () {
@@ -1322,9 +1336,14 @@
                     input.NomServicio = _this.ticketVenta.NomServicio;
                     input.NomOrigen = _this.ticketVenta.NomOrigen;
                     input.Nacionalidad = _this.ticketVenta.Nacionalidad;
+                    input.NroViaje = _this.ticketVenta.NroViaje;
+                    input.FechaProgramacion = _this.ticketVenta.FechaProgramacion;
+                    input.HoraProgramacion = _this.ticketVenta.HoraProgramacion;
+                    input.CodiBus = _this.ticketVenta.CodiBus;
+                    input.CodiSucursal = _this.ticketVenta.CodiSucursal;
+                    input.CodiRuta = _this.ticketVenta.CodiRuta;
                     APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                         .then(async res => {
-                            debugger;
                             var aux = await APP.msg.ShowSaveAfterSale('Se procedió la venta', res.data);
                             if (aux) appController.chargeTurnos();
                         }).catch(APP.rq.axios_handler_error_alert);

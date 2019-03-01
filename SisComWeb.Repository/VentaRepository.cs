@@ -185,7 +185,7 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string Oficina, string Correlativo)
+        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string Oficina, string FlagVenta, string Correlativo)
         {
             var response = new Response<string>(false, null, "Error: GenerarCorrelativoAuxiliar.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -193,6 +193,7 @@ namespace SisComWeb.Repository
                 db.ProcedureName = "scwsp_GenerarCorrelativoAuxiliar";
                 db.AddParameter("@Tabla", DbType.String, ParameterDirection.Input, Tabla);
                 db.AddParameter("@Oficina", DbType.String, ParameterDirection.Input, Oficina);
+                db.AddParameter("@Flag_Venta", DbType.String, ParameterDirection.Input, FlagVenta);
                 db.AddParameter("@Correlativo", DbType.String, ParameterDirection.Output, Correlativo);
 
                 db.Execute();
@@ -268,6 +269,54 @@ namespace SisComWeb.Repository
             return response;
         }
 
+        public static Response<bool> GrabarProgramacion(ProgramacionEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "Error: GrabarProgramacion.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarProgramacion";
+                db.AddParameter("@Codi_programacion", DbType.Int32, ParameterDirection.Input, entidad.CodiProgramacion);
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, entidad.CodiSucursal);
+                db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, entidad.CodiRuta);
+                db.AddParameter("@Codi_bus", DbType.String, ParameterDirection.Input, entidad.CodiBus);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, entidad.FechaProgramacion);
+                db.AddParameter("@Hora_Programacion", DbType.String, ParameterDirection.Input, entidad.HoraProgramacion);
+                db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, entidad.CodiServicio);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarProgramacion.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<bool> GrabarViajeProgramacion(int NroViaje, int CodiProgramacion, string FechaProgramacion, string CodiBus)
+        {
+            var response = new Response<bool>(false, false, "Error: GrabarViajeProgramacion.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarViajeProgramacion";
+                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
+                db.AddParameter("@Codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarViajeProgramacion.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+        
         #endregion
     }
 }
