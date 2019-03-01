@@ -1323,8 +1323,10 @@
                     input.NomOrigen = _this.ticketVenta.NomOrigen;
                     input.Nacionalidad = _this.ticketVenta.Nacionalidad;
                     APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
-                        .then(res => {
-                            APP.msg.ShowSaveAfterSale('Se procedió la venta con código: ' + res.data);
+                        .then(async res => {
+                            debugger;
+                            var aux = await APP.msg.ShowSaveAfterSale('Se procedió la venta', res.data);
+                            if (aux) appController.chargeTurnos();
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
