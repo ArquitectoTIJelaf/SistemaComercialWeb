@@ -363,8 +363,8 @@
                     item.FechaViaje = appVueVenta.filtro.Fecha;
                     appVueVenta.getTurno(item, item.FechaViaje);
                 },
-                showTipoPago: function (_embarque, _arribos, _ticketVenta) {
-                    appVueTipoPago.show(_embarque, _arribos, _ticketVenta);
+                showTipoPago: function (_embarque, _arribos, _ticketVenta, _listaVenta) {
+                    appVueTipoPago.show(_embarque, _arribos, _ticketVenta, _listaVenta);
                 }
             };
         })();
@@ -1171,7 +1171,7 @@
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
 
-                    appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
+                    appController.showTipoPago(_this.list.embarques, _this.list.embarques, input, _this.list.ventas);
                 },
                 leftSlider: function () {
                     if (this.indexVenta > 0)
@@ -1233,14 +1233,14 @@
                  var _this = this;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
-                    var max = _this.list.ventas[_this.indexVenta].PrecioMax;
-                    var min = _this.list.ventas[_this.indexVenta].PrecioMin;
+                    var max = parseInt(_this.list.ventas[_this.indexVenta].PrecioMax);
+                    var min = parseInt(_this.list.ventas[_this.indexVenta].PrecioMin);
 
-                    if (_.max([actual, max]) === actual) {
-                        APP.msg.info('El precio no puede exceder a ' + max);
+                    if (actual > max) {
+                        APP.msg.info('EL PRECIO NO PUEDE EXEDER A ' + max);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
-                    } else if (_.min([actual, min]) === actual) {
-                        APP.msg.info('El precio no puede ser menor a ' + min);
+                    } else if (actual < min) {
+                        APP.msg.info('EL PRECIO NO PUEDE SER MENOR A ' + min);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
                     }
                 }
@@ -1348,9 +1348,12 @@
                     distritos: [],
                     tarjetas: [],
                     embarques: [],
-                    arribos: []
+                    arribos: [],
+                    ventas: []
                 },
-                ticketVenta: {}
+                ticketVenta: {},
+                sumaTotal: 0,
+                cantAsientos: 0
             },
             mounted: function () {
                 this.getTipoPago();
@@ -1358,11 +1361,14 @@
                 this.getCuidades();
             },
             methods: {
-                show: function (embarques, arribos, ticketVenta) {
+                show: function (embarques, arribos, ticketVenta, listaVentas) {
                     this.limpiarCampos();
                     this.list.embarques = embarques;
                     this.list.arribos = arribos;
                     this.ticketVenta = ticketVenta;
+                    this.list.ventas = listaVentas;
+                    this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
+                    this.cantAsientos = this.list.ventas.length;
                     $('#appVueTipoPago').modal('show');
                 },
                 getTipoPago: function () {
@@ -1387,9 +1393,8 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    var _this = this;
-                    var boletos = '';
-                    appVueVenta.list.ventas.forEach(async function (objVenta) {
+                    var _this = this, boletos = '';
+                    for (const objVenta of _this.list.ventas) { //Todo
                         var input = {};
                         input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
                         input.CodiOrigen = _this.ticketVenta.CodiOrigen;
@@ -1425,14 +1430,18 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
+                        input.Credito = _this.sumaTotal;
 
                         await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                             .then(res => {
                                 boletos = boletos + res.data + ', ';
                             }).catch(APP.rq.axios_handler_error_alert);
+                    };
 
-                        APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS: ', boletos.slice(0, -2) + '.');
-                    });
+                    if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
+                        $("#appVueTipoPago").modal('hide');
+                        appController.chargeTurnos();
+                    }
                 },
                 limpiarCampos: function () {
                     var _this = this;
@@ -1441,7 +1450,7 @@
                     _this.tarjeta = null;
                     _this.embarque = null;
                     _this.arribo = null;
-                },
+                }
             },
             computed: {
                 computedTipoPago: {

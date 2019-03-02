@@ -289,8 +289,12 @@ APP.msg.ShowSaveAfterSale = async function (_title, _message) {
         title: _title || "Buen trabajo!",
         text: _message || "Hiciste clic en el botón!",
         type: "success"
-    }).then(res => { if (res.value) auxBool = res.value; })
-        .catch(error => { APP.msg.error(error); });
+    }).then(res => {
+        if (res.value) auxBool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
     return auxBool;
 };
 
