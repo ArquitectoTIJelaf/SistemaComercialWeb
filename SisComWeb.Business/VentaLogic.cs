@@ -57,6 +57,8 @@ namespace SisComWeb.Business
             {
                 var response = new Response<string>(false, null, "Error: GrabaVenta.", false);
                 string auxCodigoBF_Interno = string.Empty;
+                string auxBoletoCompleto = string.Empty;
+                string auxNumeCaja = string.Empty;
                 entidad.UserWebSUNAT = "WEBPASAJES";
 
                 // Busca 'ProgramacionViaje'
@@ -206,11 +208,18 @@ namespace SisComWeb.Business
 
                 // Graba 'Venta'
                 var resGrabarVenta = VentaRepository.GrabarVenta(entidad);
-                if (!resGrabarVenta.Estado)
+                if (resGrabarVenta.Estado)
+                {
+                    entidad.IdVenta = resGrabarVenta.Valor;
+                }
+                else
                 {
                     response.Mensaje = resGrabarVenta.Mensaje;
                     return response;
                 }
+
+                // Seteo 'auxBoletoCompleto'
+                auxBoletoCompleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto + "-" + entidad.NumeBoleto;
 
                 // Graba 'Facturacion Electrónica'
                 if (resValidarTerminalElectronico.Valor.Tipo == "E")
@@ -269,7 +278,7 @@ namespace SisComWeb.Business
                 else
                 {
                     // Genera 'CorrelativoAuxiliar'
-                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("LIQ_CAJA", "", "999", string.Empty);
+                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("Venta_Correlativo", "999", "", string.Empty);
                     if (!resGenerarCorrelativoAuxiliar.Estado)
                     {
                         response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
@@ -284,6 +293,105 @@ namespace SisComWeb.Business
                     }
                 }
 
+                // Valida 'TipoPago'
+                switch (entidad.TipoPago)
+                {
+                    case "01": // Contado
+                        {
+                            break;
+                        }
+                    case "02":
+                    case "03": // Tarjeta de crédito    // Múltiple pago ("02")
+                        {
+                            //  Genera 'CorrelativoAuxiliar'
+                            var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
+                            if (resGenerarCorrelativoAuxiliar.Estado)
+                            {
+                                if (!string.IsNullOrEmpty(resGenerarCorrelativoAuxiliar.Valor))
+                                {
+                                    // Seteo 'NumeCaja'
+                                    auxNumeCaja = entidad.CodiOficina + entidad.CodiPuntoVenta + resGenerarCorrelativoAuxiliar.Valor;
+
+                                    // Graba 'Caja'
+                                    var objCajaEntity = new CajaEntity
+                                    {
+                                        NumeCaja = auxNumeCaja,
+                                        CodiEmpresa = entidad.CodiEmpresa,
+                                        CodiSucursal = entidad.CodiOficina,
+                                        Boleto = auxBoletoCompleto,
+                                        Monto = entidad.TipoPago == "03" ? entidad.PrecioVenta : entidad.Credito,
+                                        CodiUsuario = entidad.CodiUsuario,
+                                        Recibe = entidad.TipoPago == "03" ? "" : "MULTIPLE PAGO PARCIAL",
+                                        FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy"),
+                                        HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : "",
+                                        CodiPuntoVenta = entidad.CodiPuntoVenta,
+                                        IdVenta = entidad.IdVenta,
+                                        Origen = entidad.TipoPago == "03" ? "VT" : "PA",
+                                        Modulo = entidad.TipoPago == "03" ? "PV" : "VT",
+                                        Tipo = entidad.Tipo,
+                                        IdCaja = 0
+                                    };
+
+                                    var resGrabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
+                                    if (resGrabarCaja.Estado)
+                                    {
+                                        if (resGrabarCaja.Valor != 0)
+                                        {
+                                            // Graba 'PagoTarjetaCredito'
+                                            var objTarjetaCreditoEntity = new TarjetaCreditoEntity
+                                            {
+                                                IdVenta = entidad.IdVenta,
+                                                Boleto = auxBoletoCompleto,
+                                                CodiTarjetaCredito = entidad.TipoPago,
+                                                NumeTarjetaCredito = entidad.NumeTarjetaCredito,
+                                                Vale = auxNumeCaja,
+                                                IdCaja = resGrabarCaja.Valor,
+                                                Tipo = entidad.Tipo
+                                            };
+                                            var resGrabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
+                                            if (!resGrabarPagoTarjetaCredito.Estado)
+                                            {
+                                                response.Mensaje = resGrabarPagoTarjetaCredito.Mensaje;
+                                                return response;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            response.Mensaje = "Error: resGrabarCaja.Valor -> 0.";
+                                            return response;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        response.Mensaje = resGrabarCaja.Mensaje;
+                                        return response;
+                                    }
+                                }
+                                else
+                                {
+                                    response.Mensaje = "Error: resGenerarCorrelativoAuxiliar.Valor -> Nulo o vacío.";
+                                    return response;
+                                }
+                            }
+                            else
+                            {
+                                response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
+                                return response;
+                            }
+                            break;
+                        }
+                    case "04": // Delivery
+                        {
+                            var resGrabarPagoDelivery = VentaRepository.GrabarPagoDelivery(entidad.IdVenta, entidad.CodiZona, entidad.Direccion, entidad.Observacion);
+                            if (!resGrabarPagoDelivery.Estado)
+                            {
+                                response.Mensaje = resGrabarPagoDelivery.Mensaje;
+                                return response;
+                            }
+                            break;
+                        }
+                }
+
                 // Graba 'Auditoria'
                 var objAuditoriaEntity = new AuditoriaEntity
                 {
@@ -291,7 +399,7 @@ namespace SisComWeb.Business
                     NomUsuario = entidad.NomUsuario,
                     Tabla = "VENTA",
                     TipoMovimiento = "ADICION",
-                    Boleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto + "-" + entidad.NumeBoleto,
+                    Boleto = auxBoletoCompleto,
                     NumeAsiento = entidad.NumeAsiento.ToString(),
                     NomOficina = entidad.NomOficina,
                     NomPuntoVenta = entidad.NomPuntoVenta,
@@ -315,7 +423,7 @@ namespace SisComWeb.Business
                 }
 
                 response.EsCorrecto = true;
-                response.Valor = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto + "-" + entidad.NumeBoleto;
+                response.Valor = auxBoletoCompleto;
                 response.Mensaje = Message.MsgCorrectoGrabaVenta;
                 response.Estado = true;
 
