@@ -471,7 +471,7 @@
                             </div>
                             <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
                                 <div class="row">
-                                    
+
                                     <div class="col-md-1">
                                         <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
                                             <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
@@ -612,39 +612,40 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                                <label class="control-label">Recoger</label>
-                                                <input v-model="list.ventas[indexVenta].Recoger"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtRecoger"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="RECOGER"
-                                                       autocomplete="off">
-                                            </div>
+                                            <label class="control-label">Recoger</label>
+                                            <input v-model="list.ventas[indexVenta].Recoger"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtRecoger"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="RECOGER"
+                                                   autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                                <label class="control-label">Reintegro</label>
-                                                <input v-model="list.ventas[indexVenta].Reintegro"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtReintegro"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="REINTEGRO"
-                                                       autocomplete="off">
-                                            </div>
+                                            <label class="control-label">Reintegro</label>
+                                            <input v-model="list.ventas[indexVenta].Reintegro"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtReintegro"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="REINTEGRO"
+                                                   autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                                <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
-                                                <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtNroSolicitud"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="Nº SOLICITUD"
-                                                       autocomplete="off">
-                                            </div>
+                                            <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
+                                            <input v-model="list.ventas[indexVenta].NroSolicitud"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtNroSolicitud"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="Nº SOLICITUD"
+                                                   autocomplete="off"
+                                                   v-mask="'###############'">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -663,27 +664,27 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                                <label class="control-label">Razón social</label>
-                                                <input v-model="list.ventas[indexVenta].RazonSocial"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtRazonSocial"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="RAZÓN SOCIAL"
-                                                       autocomplete="off">
-                                            </div>
+                                            <label class="control-label">Razón social</label>
+                                            <input v-model="list.ventas[indexVenta].RazonSocial"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtRazonSocial"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="RAZÓN SOCIAL"
+                                                   autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                                <label class="control-label">Dirección</label>
-                                                <input v-model="list.ventas[indexVenta].Direccion"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       id="txtDireccion"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="DIRECCIÓN"
-                                                       autocomplete="off">
-                                            </div>
+                                            <label class="control-label">Dirección</label>
+                                            <input v-model="list.ventas[indexVenta].Direccion"
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   id="txtDireccion"
+                                                   type="text"
+                                                   class="form-control input-sm"
+                                                   placeholder="DIRECCIÓN"
+                                                   autocomplete="off">
+                                        </div>
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group">
@@ -743,7 +744,7 @@
                                                    placeholder="0.00"
                                                    style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                    autocomplete="off"
-                                                  onkeypress="return validateFloatKeyPress(this, event);">
+                                                   @@blur="validateRangePrice">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -752,7 +753,8 @@
                                                 <label class="control-label">&nbsp;</label>
                                                 <button @@click="showTipoPago"
                                                         class="btn btn-secondary btn-ticket-venta"
-                                                        style="width: 100%; color:white;">
+                                                        style="width: 100%; color:white;"
+                                                        v-bind:disabled="!bloquearPago">
                                                     $ &ensp; Pago total
                                                 </button>
                                             </div>

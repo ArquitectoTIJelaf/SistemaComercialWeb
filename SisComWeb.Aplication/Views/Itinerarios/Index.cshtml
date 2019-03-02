@@ -258,7 +258,6 @@
     <script>
 
         $(function () {
-
             //#region RECORRIDO ITINERARIOS
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
@@ -268,11 +267,34 @@
             });
             //#endregion
 
+            $('#txtprecio').on('keypress', function (e) {
+                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
+                var field = $(this);
+                key = e.keycode ? e.keycode : e.which;
+
+                if (key == 8) return true;
+                if (key > 47 && key < 58) {
+                    if (field.val() === "") return true;
+                    var existepto = (/[.]/).test(field.val());
+                    if (existepto === false) {
+                        regexp = /.[0-9]{10}$/; //parte entera 10
+                    }
+                    else {
+                        regexp = /.[0-9]{2}$/; //parte decimal2
+                    }
+                    return !(regexp.test(field.val()));
+                }
+                if (key == 46) {
+                    if (field.val() === "") return false;
+                    regexp = /^[0-9]+$/;
+
+                    return regexp.test(field.val());
+                }
+                return false;
+            });
         });
 
-
         function validateFloatKeyPress(el, evt) {
-            debugger;
             var charCode = (evt.which) ? evt.which : event.keyCode;
             var number = el.value.split('.');
             if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -558,6 +580,9 @@
                         Reintegro: '',
                         Observacion: '',
                         Precio: '',
+                        PrecioNormal: '',
+                        PrecioMin: '',
+                        PrecioMax: '',
                         NroAsiento: '',
                         NivelAsiento: 0,
                         NroVenta: '',
@@ -591,7 +616,7 @@
                 pickedBusVenta: 'V',
                 mask: {
                     documento: ''
-                }
+                },
             },
             mounted: function () {
                 this.getEmpresas();
@@ -774,7 +799,7 @@
                                     APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
                                     if (!_this.firstAsiento)
                                         _this.createElementInList();
-                                    _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel);
+                                    _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel, asientoSel.PrecioMinimo, asientoSel.PrecioMaximo);
                                     _this.firstAsiento = false;
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
                                 }
@@ -804,6 +829,9 @@
                         Reintegro: '',
                         Observacion: '',
                         Precio: '',
+                        PrecioNormal: '',
+                        PrecioMin: '',
+                        PrecioMax: '',
                         NroAsiento: '',
                         NivelAsiento: 0,
                         NroVenta: '',
@@ -841,6 +869,9 @@
                                         _this.list.ventas[_this.indexVenta].Reintegro = '';
                                         _this.list.ventas[_this.indexVenta].Observacion = '';
                                         _this.list.ventas[_this.indexVenta].Precio = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
                                         _this.list.ventas[_this.indexVenta].NroAsiento = '';
                                         _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
                                         _this.list.ventas[_this.indexVenta].NroVenta = '';
@@ -1027,8 +1058,11 @@
                             }).catch(APP.rq.axios_handler_error_alert);
                     }
                 },
-                passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento) {
+                passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento, _precioMin, _precioMax) {
                     this.list.ventas[this.indexVenta].Precio = _precioNormal;
+                    this.list.ventas[this.indexVenta].PrecioNormal = _precioNormal;
+                    this.list.ventas[this.indexVenta].PrecioMin = _precioMin;
+                    this.list.ventas[this.indexVenta].PrecioMax = _precioMax;
                     this.list.ventas[this.indexVenta].NroAsiento = _nroAsiento;
                     this.list.ventas[this.indexVenta].NivelAsiento = _nivelAsiento;
                     this.list.ventas[this.indexVenta].NroVenta = 'N° 02-???' + this.indexVenta;
@@ -1094,34 +1128,35 @@
                     }
                 },
                 showTipoPago: function () {
+                    debugger;
                     var _this = this;
                     var input = {};
                     input.CodiEmpresa = _this.filtro.CodiEmpresa.id;
                     input.CodiOrigen = _this.filtro.CodiOrigenBus.id;
                     input.CodiDestino = _this.filtro.CodiDestinoPas.id;
                     input.CodiProgramacion = _this.filtro.CodiProgramacion;
-                    input.RucCliente = _this.list.ventas[_this.indexVenta].Ruc;
-                    input.NomEmpresaRuc = _this.list.ventas[_this.indexVenta].RazonSocial;
-                    input.DirEmpresaRuc = _this.list.ventas[_this.indexVenta].Direccion;
-                    input.NumeAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
+                    //input.RucCliente = _this.list.ventas[_this.indexVenta].Ruc;
+                    //input.NomEmpresaRuc = _this.list.ventas[_this.indexVenta].RazonSocial;
+                    //input.DirEmpresaRuc = _this.list.ventas[_this.indexVenta].Direccion;
+                    //input.NumeAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
                     input.FlagVenta = _this.pickedBusVenta;
-                    input.PrecioVenta = _this.list.ventas[_this.indexVenta].Precio;
-                    input.Nombre = _this.list.ventas[_this.indexVenta].Nombres + ',' +
-                        _this.list.ventas[_this.indexVenta].ApellidoPaterno + ',' +
-                        _this.list.ventas[_this.indexVenta].ApellidoMaterno;
-                    input.Edad = _this.list.ventas[_this.indexVenta].Edad;
-                    input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
-                    input.Dni = _this.list.ventas[_this.indexVenta].Documento;
-                    input.TipoDocumento = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
-                    input.Sexo = _this.list.ventas[_this.indexVenta].Sexo;
+                    //input.PrecioVenta = _this.list.ventas[_this.indexVenta].Precio;
+                    //input.Nombre = _this.list.ventas[_this.indexVenta].Nombres + ',' +
+                    //    _this.list.ventas[_this.indexVenta].ApellidoPaterno + ',' +
+                    //    _this.list.ventas[_this.indexVenta].ApellidoMaterno;
+                    //input.Edad = _this.list.ventas[_this.indexVenta].Edad;
+                    //input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
+                    //input.Dni = _this.list.ventas[_this.indexVenta].Documento;
+                    //input.TipoDocumento = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
+                    //input.Sexo = _this.list.ventas[_this.indexVenta].Sexo;
                     input.FechaViaje = _this.filtro.Fecha;
                     input.HoraViaje = _this.filtro.Turno;
                     input.CodiServicio = _this.filtro.CodiServicio.id;
-                    input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;
+                    //input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;
                     input.NomDestino = _this.filtro.CodiDestinoPas.label;
                     input.NomServicio = _this.filtro.CodiServicio.label;
                     input.NomOrigen = _this.filtro.CodiSucursal.label;
-                    input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
+                    //input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
                 leftSlider: function () {
@@ -1169,6 +1204,9 @@
                         Reintegro: '',
                         Observacion: '',
                         Precio: '',
+                        PrecioNormal: '',
+                        PrecioMin: '',
+                        PrecioMax: '',
                         NroAsiento: '',
                         NivelAsiento: 0,
                         NroVenta: '',
@@ -1177,30 +1215,21 @@
                         Nacionalidad: ''
                     });
                 },
-                test: function () {
-                    APP.msg.ShowSaveAfterSale();
-                },
-                validateFloatKeyPress: function (el, evt) {
-                    debugger;
-                    var charCode = (evt.which) ? evt.which : event.keyCode;
-                    var number = el.value.split('.');
-                    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-                        return false;
-                    }
-                    //just one dot
-                    if (number.length > 1 && charCode == 46) {
-                        return false;
-                    }
-                    //get the carat position
-                    var caratPos = getSelectionStart(el);
-                    var dotPos = el.value.indexOf(".");
-                    if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
-                        return false;
-                    }
-                    return true;
-                },
                 validateRangePrice: function () {
+                 var _this = this;
+                    debugger;
+                    var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
+                    var actual = _this.list.ventas[_this.indexVenta].Precio;
+                    var max = _this.list.ventas[_this.indexVenta].PrecioMax;
+                    var min = _this.list.ventas[_this.indexVenta].PrecioMin;
 
+                    if (_.max([actual, max]) === actual) {
+                        APP.msg.info('El precio no puede exceder a ' + max);
+                        _this.list.ventas[_this.indexVenta].Precio = normal;
+                    } else if (_.min([actual, min]) === actual) {
+                        APP.msg.info('El precio no puede ser menor a ' + min);
+                        _this.list.ventas[_this.indexVenta].Precio = normal;
+                    }
                 }
             },
             computed: {
@@ -1346,39 +1375,46 @@
                 },
                 saveVenta: function () {
                     var _this = this;
-                    var input = {};
-                    input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
-                    input.CodiOrigen = _this.ticketVenta.CodiOrigen;
-                    input.CodiDestino = _this.ticketVenta.CodiDestino;
-                    input.CodiProgramacion = _this.ticketVenta.CodiProgramacion;
-                    input.RucCliente = _this.ticketVenta.RucCliente;
-                    input.NomEmpresaRuc = _this.ticketVenta.NomEmpresaRuc;
-                    input.DirEmpresaRuc = _this.ticketVenta.DirEmpresaRuc;
-                    input.NumeAsiento = _this.ticketVenta.NumeAsiento;
-                    input.FlagVenta = _this.ticketVenta.FlagVenta;
-                    input.PrecioVenta = _this.ticketVenta.PrecioVenta;
-                    input.Nombre = _this.ticketVenta.Nombre;
-                    input.Edad = _this.ticketVenta.Edad;
-                    input.Telefono = _this.ticketVenta.Telefono;
-                    input.Dni = _this.ticketVenta.Dni;
-                    input.TipoDocumento = formatToChar2(_this.ticketVenta.TipoDocumento.id);
-                    input.Sexo = _this.ticketVenta.Sexo.id;
-                    input.TipoPago = _this.tipoPago;//
-                    input.FechaViaje = _this.ticketVenta.FechaViaje;
-                    input.HoraViaje = _this.ticketVenta.HoraViaje;
-                    input.CodiServicio = _this.ticketVenta.CodiServicio;
-                    input.CodiEmbarque = _this.embarque.CodiPuntoVenta;//
-                    input.CodiArribo = _this.arribo.CodiPuntoVenta;//
-                    input.Hora_Embarque = _this.embarque.Hora;//
-                    input.NivelAsiento = _this.ticketVenta.NivelAsiento;
-                    input.NomDestino = _this.ticketVenta.NomDestino;
-                    input.NomServicio = _this.ticketVenta.NomServicio;
-                    input.NomOrigen = _this.ticketVenta.NomOrigen;
-                    input.Nacionalidad = _this.ticketVenta.Nacionalidad;
-                    APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
-                        .then(res => {
-                            APP.msg.ShowSaveAfterSale('Se procedió la venta con código: ' + res.data);
-                        }).catch(APP.rq.axios_handler_error_alert);
+                    var boletos = '';
+                    appVueVenta.list.ventas.forEach(function (objVenta) {
+                        debugger;
+                        var input = {};
+                        input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
+                        input.CodiOrigen = _this.ticketVenta.CodiOrigen;
+                        input.CodiDestino = _this.ticketVenta.CodiDestino;
+                        input.CodiProgramacion = _this.ticketVenta.CodiProgramacion;
+                        input.RucCliente = objVenta.Ruc;
+                        input.NomEmpresaRuc = objVenta.RazonSocial;
+                        input.DirEmpresaRuc = objVenta.Direccion;
+                        input.NumeAsiento = objVenta.NroAsiento;
+                        input.FlagVenta = _this.ticketVenta.FlagVenta;
+                        input.PrecioVenta = objVenta.Precio;
+                        input.Nombre = objVenta.Nombres + ',' + objVenta.ApellidoPaterno + ',' + objVenta.ApellidoMaterno;
+                        input.Edad = objVenta.Edad;
+                        input.Telefono = objVenta.Telefono;
+                        input.Dni = objVenta.Documento;
+                        input.TipoDocumento = formatToChar2(objVenta.CodiTipoDoc.id);
+                        input.Sexo = objVenta.Sexo.id;
+                        input.TipoPago = _this.tipoPago;//To Do
+                        input.FechaViaje = _this.ticketVenta.FechaViaje;
+                        input.HoraViaje = _this.ticketVenta.HoraViaje;
+                        input.CodiServicio = _this.ticketVenta.CodiServicio;
+                        input.CodiEmbarque = _this.embarque.CodiPuntoVenta;//
+                        input.CodiArribo = _this.arribo.CodiPuntoVenta;//To Do
+                        input.Hora_Embarque = _this.embarque.Hora;//To Do
+                        input.NivelAsiento = objVenta.NivelAsiento;
+                        input.NomDestino = _this.ticketVenta.NomDestino;
+                        input.NomServicio = _this.ticketVenta.NomServicio;
+                        input.NomOrigen = _this.ticketVenta.NomOrigen;
+                        input.Nacionalidad = objVenta.Nacionalidad;
+                        APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
+                            .then(res => {
+                                debugger;
+                                boletos += res.data + ',';
+                            }).catch(APP.rq.axios_handler_error_alert);
+                    });
+
+                    APP.msg.ShowSaveAfterSale(boletos.slice(0, -1) + '.');
                 },
                 limpiarCampos: function () {
                     var _this = this;
