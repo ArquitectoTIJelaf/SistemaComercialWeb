@@ -529,7 +529,13 @@ namespace SisComWeb.Aplication.Controllers
                                 ",\"NomEmpresaRuc\" : \"" + filtro.NomEmpresaRuc + "\"" +
                                 ",\"DirEmpresaRuc\" : \"" + filtro.DirEmpresaRuc + "\"" +
                                 ",\"NomServicio\" : \"" + filtro.NomServicio + "\"" +
-                                ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" + " }";
+                                ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" +
+                                ",\"NroViaje\" : " + filtro.NroViaje +
+                                ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                ",\"HoraProgramacion\" : \"" + filtro.HoraProgramacion + "\"" +
+                                ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
+                                ",\"CodiSucursal\" : " + filtro.CodiSucursal +
+                                ",\"CodiRuta\" : " + filtro.CodiRuta + " }";
                     HttpResponseMessage response = await client.PostAsync("GrabaVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {

@@ -617,6 +617,10 @@
                 mask: {
                     documento: ''
                 },
+                objTurno: {
+                    FechaProgramacion: '',
+                    HoraProgramacion: ''
+                }
             },
             mounted: function () {
                 this.getEmpresas();
@@ -629,6 +633,8 @@
                 chargeVentas: function (item, fechaViaje, turnos) {
                     this.firstCharge = true;
                     this.list.turnos = turnos;
+                    this.objTurno.FechaProgramacion = item.FechaProgramacion;
+                    this.objTurno.HoraProgramacion = item.HoraProgramacion;
                     this.getTurno(item, fechaViaje);
                 },
                 getTurno: function (item, fechaViaje) {
@@ -667,6 +673,8 @@
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
                                 _this.list.destinosRuta = res.data.ListaDestinosRuta;
                                 _this.list.embarques = res.data.ListaEmbarques;
+                                _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
+                                _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 var tempList = _.cloneDeep(res.data.ListaPlanoBus);
                                 var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
                                 if (tempList.length > 0 && limpiarAB) {
@@ -1128,7 +1136,6 @@
                     }
                 },
                 showTipoPago: function () {
-                    debugger;
                     var _this = this;
                     var input = {};
                     input.CodiEmpresa = _this.filtro.CodiEmpresa.id;
@@ -1157,6 +1164,13 @@
                     input.NomServicio = _this.filtro.CodiServicio.label;
                     input.NomOrigen = _this.filtro.CodiSucursal.label;
                     //input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
+                    input.NroViaje = _this.filtro.NroViaje;
+                    input.FechaProgramacion = _this.objTurno.FechaProgramacion;
+                    input.HoraProgramacion = _this.objTurno.HoraProgramacion;
+                    input.CodiBus = _this.objPlano.CodiBus;
+                    input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
+                    input.CodiRuta = _this.filtro.CodiDestinoBus.id;
+
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input);
                 },
                 leftSlider: function () {
@@ -1217,7 +1231,6 @@
                 },
                 validateRangePrice: function () {
                  var _this = this;
-                    debugger;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
                     var max = _this.list.ventas[_this.indexVenta].PrecioMax;
@@ -1373,11 +1386,10 @@
                             _this.list.distritos = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                saveVenta: function () {
+                saveVenta: async function () {
                     var _this = this;
                     var boletos = '';
-                    appVueVenta.list.ventas.forEach(function (objVenta) {
-                        debugger;
+                    appVueVenta.list.ventas.forEach(async function (objVenta) {
                         var input = {};
                         input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
                         input.CodiOrigen = _this.ticketVenta.CodiOrigen;
@@ -1407,14 +1419,20 @@
                         input.NomServicio = _this.ticketVenta.NomServicio;
                         input.NomOrigen = _this.ticketVenta.NomOrigen;
                         input.Nacionalidad = objVenta.Nacionalidad;
-                        APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
-                            .then(res => {
-                                debugger;
-                                boletos += res.data + ',';
-                            }).catch(APP.rq.axios_handler_error_alert);
-                    });
+                        input.NroViaje = _this.ticketVenta.NroViaje;
+                        input.FechaProgramacion = _this.ticketVenta.FechaProgramacion;
+                        input.HoraProgramacion = _this.ticketVenta.HoraProgramacion;
+                        input.CodiBus = _this.ticketVenta.CodiBus;
+                        input.CodiSucursal = _this.ticketVenta.CodiSucursal;
+                        input.CodiRuta = _this.ticketVenta.CodiRuta;
 
-                    APP.msg.ShowSaveAfterSale(boletos.slice(0, -1) + '.');
+                        await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
+                            .then(res => {
+                                boletos = boletos + res.data + ', ';
+                            }).catch(APP.rq.axios_handler_error_alert);
+
+                        APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS: ', boletos.slice(0, -2) + '.');
+                    });
                 },
                 limpiarCampos: function () {
                     var _this = this;

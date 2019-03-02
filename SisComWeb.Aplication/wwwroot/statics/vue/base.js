@@ -283,15 +283,15 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
     return _bool;
 };
 
-APP.msg.ShowSaveAfterSale = function(_title, _message){
-    var _bool = false;
-    swal.fire({
+APP.msg.ShowSaveAfterSale = async function (_title, _message) {
+    var auxBool = false;
+    await swal.fire({
         title: _title || "Buen trabajo!",
         text: _message || "Hiciste clic en el botón!",
         type: "success"
-    }).then(res => { if (res.value) _bool = res.value; })
+    }).then(res => { if (res.value) auxBool = res.value; })
         .catch(error => { APP.msg.error(error); });
-    return _bool;
+    return auxBool;
 };
 
 /*!********************* Messages */
