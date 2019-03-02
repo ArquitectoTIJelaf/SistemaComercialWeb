@@ -1353,6 +1353,8 @@
                 },
                 ticketVenta: {},
                 sumaTotal: 0,
+                efectivo: 0,
+                tarjeta: 0,
                 cantAsientos: 0
             },
             mounted: function () {
@@ -1376,6 +1378,10 @@
                     APP.rq.axios2.get(APP.base + '/base/get-tipoPago')
                         .then(res => {
                             _this.list.tiposPago = _.cloneDeep(res.data);
+                            _this.list.tiposPago.push({
+                                id: '02',
+                                label: 'Multiple pago'
+                            });
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getTarjetasCredito: function () {
@@ -1430,7 +1436,7 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
-                        input.Credito = _this.sumaTotal;
+                        input.Credito = (_this.tarjeta / _this.cantAsientos);
 
                         await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                             .then(res => {
