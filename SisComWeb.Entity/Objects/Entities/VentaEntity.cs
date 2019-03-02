@@ -105,5 +105,16 @@
         public short CodiSucursal { get; set; } // Bus (Origen)
 
         public short CodiRuta { get; set; } // Bus (Destino)
+
+
+        public string NumeTarjetaCredito { get; set; }
+
+        public string CodiZona { get; set; }
+
+        public string Direccion { get; set; }
+
+        public string Observacion { get; set; }
+
+        public decimal Credito { get; set; }
     }
 }

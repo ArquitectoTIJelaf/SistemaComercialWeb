@@ -151,6 +151,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Hora_Embarque", DbType.String, ParameterDirection.Input, entidad.Hora_Embarque);
                 db.AddParameter("@Nivel_Asiento", DbType.Byte, ParameterDirection.Input, entidad.NivelAsiento);
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
+                db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 
                 db.Execute();
@@ -316,7 +317,89 @@ namespace SisComWeb.Repository
 
             return response;
         }
-        
+
+        public static Response<int> GrabarCaja(CajaEntity entidad)
+        {
+            var response = new Response<int>(false, 0, "Error: GrabarCaja.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarCaja";
+                db.AddParameter("@Nume_Caja", DbType.String, ParameterDirection.Input, entidad.NumeCaja);
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, entidad.CodiSucursal);
+                db.AddParameter("@Boleto", DbType.String, ParameterDirection.Input, entidad.Boleto);
+                db.AddParameter("@Monto", DbType.Decimal, ParameterDirection.Input, entidad.Monto);
+                db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, entidad.CodiUsuario);
+                db.AddParameter("@Recibe", DbType.String, ParameterDirection.Input, entidad.Recibe);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
+                db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, entidad.HoraViaje);
+                db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, entidad.CodiPuntoVenta);
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, entidad.IdVenta);
+                db.AddParameter("@Origen", DbType.String, ParameterDirection.Input, entidad.Origen);
+                db.AddParameter("@Modulo", DbType.String, ParameterDirection.Input, entidad.Modulo);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
+                db.AddParameter("@IdCaja", DbType.Int32, ParameterDirection.Output, entidad.IdCaja);
+
+                db.Execute();
+
+                int _outputIdCaja = int.Parse(db.GetParameter("@IdCaja").ToString());
+
+                response.EsCorrecto = true;
+                response.Valor = _outputIdCaja;
+                response.Mensaje = "Correcto: GrabarCaja.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<bool> GrabarPagoTarjetaCredito(TarjetaCreditoEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "Error: GrabarPagoTarjetaCredito.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarPagoTarjetaCredito";
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, entidad.IdVenta);
+                db.AddParameter("@Boleto", DbType.String, ParameterDirection.Input, entidad.Boleto);
+                db.AddParameter("@Codi_TarjetaCredito", DbType.String, ParameterDirection.Input, entidad.CodiTarjetaCredito);
+                db.AddParameter("@Nume_TarjetaCredito", DbType.String, ParameterDirection.Input, entidad.NumeTarjetaCredito);
+                db.AddParameter("@Vale", DbType.String, ParameterDirection.Input, entidad.Vale);
+                db.AddParameter("@IdCaja", DbType.Int32, ParameterDirection.Input, entidad.IdCaja);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarPagoTarjetaCredito.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<bool> GrabarPagoDelivery(int IdVenta, string CodiZona, string Direccion, string Observacion)
+        {
+            var response = new Response<bool>(false, false, "Error: GrabarPagoDelivery.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarPagoDelivery";
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_Zona", DbType.String, ParameterDirection.Input, CodiZona);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, Direccion);
+                db.AddParameter("@Observacion", DbType.String, ParameterDirection.Input, Observacion);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarPagoDelivery.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }
