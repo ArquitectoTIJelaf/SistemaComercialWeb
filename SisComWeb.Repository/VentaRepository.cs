@@ -331,6 +331,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Monto", DbType.Decimal, ParameterDirection.Input, entidad.Monto);
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, entidad.CodiUsuario);
                 db.AddParameter("@Recibe", DbType.String, ParameterDirection.Input, entidad.Recibe);
+                db.AddParameter("@Codi_Destino", DbType.String, ParameterDirection.Input, entidad.CodiDestino);
                 db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
                 db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, entidad.HoraViaje);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, entidad.CodiPuntoVenta);

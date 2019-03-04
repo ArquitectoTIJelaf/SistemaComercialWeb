@@ -1354,7 +1354,7 @@
                 ticketVenta: {},
                 sumaTotal: 0,
                 efectivo: 0,
-                tarjeta: 0,
+                tarjetaCant: 0,
                 cantAsientos: 0
             },
             mounted: function () {
@@ -1371,6 +1371,7 @@
                     this.list.ventas = listaVentas;
                     this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
                     this.cantAsientos = this.list.ventas.length;
+
                     $('#appVueTipoPago').modal('show');
                 },
                 getTipoPago: function () {
@@ -1380,7 +1381,7 @@
                             _this.list.tiposPago = _.cloneDeep(res.data);
                             _this.list.tiposPago.push({
                                 id: '02',
-                                label: 'Multiple pago'
+                                label: 'MULTIPLE PAGO'
                             });
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
@@ -1436,7 +1437,12 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
-                        input.Credito = (_this.tarjeta / _this.cantAsientos);
+                        input.CodiTarjetaCredito = _this.tarjeta.id;
+                        input.NumeTarjetaCredito = _this.numeroTarjeta;
+                        input.CodiZona = _this.distrito != null ? _this.distrito.id : '';
+                        input.Direccion = _this.direccion;
+                        input.Observacion = _this.observacion;
+                        input.Credito = (_this.tarjetaCant / _this.cantAsientos);
 
                         await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                             .then(res => {

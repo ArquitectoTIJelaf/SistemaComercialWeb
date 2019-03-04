@@ -16,6 +16,8 @@
 
         public string Recibe { get; set; }
 
+        public string CodiDestino { get; set; }
+
         public string FechaViaje { get; set; }
 
         public string HoraViaje { get; set; }

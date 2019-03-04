@@ -107,6 +107,8 @@
         public short CodiRuta { get; set; } // Bus (Destino)
 
 
+        public string CodiTarjetaCredito { get; set; }
+
         public string NumeTarjetaCredito { get; set; }
 
         public string CodiZona { get; set; }

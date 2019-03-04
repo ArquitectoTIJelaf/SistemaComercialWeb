@@ -105,6 +105,8 @@ namespace SisComWeb.Business
                             return response;
                         }
                     }
+                    else
+                        entidad.CodiProgramacion = resBuscarProgramacionViaje.Valor;
                 }
                 else
                     return response;
@@ -278,7 +280,7 @@ namespace SisComWeb.Business
                 else
                 {
                     // Genera 'CorrelativoAuxiliar'
-                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("Venta_Correlativo", "999", "", string.Empty);
+                    var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("Liq_Caja", "999", "", string.Empty);
                     if (!resGenerarCorrelativoAuxiliar.Estado)
                     {
                         response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
@@ -310,19 +312,20 @@ namespace SisComWeb.Business
                                 if (!string.IsNullOrEmpty(resGenerarCorrelativoAuxiliar.Valor))
                                 {
                                     // Seteo 'NumeCaja'
-                                    auxNumeCaja = entidad.CodiOficina + entidad.CodiPuntoVenta + resGenerarCorrelativoAuxiliar.Valor;
+                                    auxNumeCaja = entidad.CodiOficina.ToString() + entidad.CodiPuntoVenta.ToString() + resGenerarCorrelativoAuxiliar.Valor;
 
                                     // Graba 'Caja'
                                     var objCajaEntity = new CajaEntity
                                     {
-                                        NumeCaja = auxNumeCaja,
+                                        NumeCaja = resGenerarCorrelativoAuxiliar.Valor,
                                         CodiEmpresa = entidad.CodiEmpresa,
                                         CodiSucursal = entidad.CodiOficina,
                                         Boleto = auxBoletoCompleto,
                                         Monto = entidad.TipoPago == "03" ? entidad.PrecioVenta : entidad.Credito,
                                         CodiUsuario = entidad.CodiUsuario,
                                         Recibe = entidad.TipoPago == "03" ? "" : "MULTIPLE PAGO PARCIAL",
-                                        FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy"),
+                                        CodiDestino = entidad.CodiDestino.ToString(),
+                                        FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy"), 
                                         HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : "",
                                         CodiPuntoVenta = entidad.CodiPuntoVenta,
                                         IdVenta = entidad.IdVenta,
@@ -342,7 +345,7 @@ namespace SisComWeb.Business
                                             {
                                                 IdVenta = entidad.IdVenta,
                                                 Boleto = auxBoletoCompleto,
-                                                CodiTarjetaCredito = entidad.TipoPago,
+                                                CodiTarjetaCredito = entidad.CodiTarjetaCredito,
                                                 NumeTarjetaCredito = entidad.NumeTarjetaCredito,
                                                 Vale = auxNumeCaja,
                                                 IdCaja = resGrabarCaja.Valor,

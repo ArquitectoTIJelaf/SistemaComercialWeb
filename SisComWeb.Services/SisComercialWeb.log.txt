@@ -1884,3 +1884,164 @@ System.NullReferenceException: Referencia a objeto no establecida como instancia
 2019-03-02 13:05:35,789 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
 System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
    en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 235
+2019-03-02 16:03:20,289 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): El procedimiento o la función 'scwsp_GrabarCaja' esperaba el parámetro '@Codi_Destino', que no se ha especificado.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 343
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad)
+ClientConnectionId:9d5956bd-39a5-4ee3-8a97-074afedd041f
+Error Number:201,State:4,Class:16
+2019-03-02 16:24:39,615 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (9726142, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:c52c3bbd-491f-4758-9abd-2770793432e7
+Error Number:2627,State:1,Class:14
+2019-03-02 16:24:43,019 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (9726142, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:4389fafb-c10e-423b-86c5-df80e89ff256
+Error Number:2627,State:1,Class:14
+2019-03-02 16:33:02,964 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (9726142, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:faf8698d-41cd-4390-aac1-f53f3ccda2df
+Error Number:2627,State:1,Class:14
+2019-03-02 16:33:06,385 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (9726142, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:faf8698d-41cd-4390-aac1-f53f3ccda2df
+Error Number:2627,State:1,Class:14
+2019-03-02 16:42:51,204 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (6966614, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:1c049f8d-4438-4ddd-bda4-5fe9cb13d759
+Error Number:2627,State:1,Class:14
+2019-03-02 16:44:49,660 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PkCaja'. No se puede insertar una clave duplicada en el objeto 'dbo.CAJA'. El valor de la clave duplicada es (6966614, 6, 966).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:1c049f8d-4438-4ddd-bda4-5fe9cb13d759
+Error Number:2627,State:1,Class:14
+2019-03-02 16:55:32,153 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:1c049f8d-4438-4ddd-bda4-5fe9cb13d759
+Error Number:8152,State:14,Class:16
+2019-03-02 16:58:19,818 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Los datos de cadena o binarios se truncarían.
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarCaja(CajaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 344
+   en SisComWeb.Business.VentaLogic.GrabaVenta(VentaEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 336
+ClientConnectionId:72b373a8-48aa-410e-865e-2884fb97fe58
+Error Number:8152,State:14,Class:16
+2019-03-04 11:13:06,772 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 235
+2019-03-04 11:13:07,468 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 235
+2019-03-04 11:13:11,413 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 235
