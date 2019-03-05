@@ -135,27 +135,31 @@ namespace SisComWeb.Business
                     {
                         foreach (PlanoEntity ocu in resListarAsientosOcupados.Valor)
                         {
-                            if (ocu.NumeAsiento == auxValue && !string.IsNullOrEmpty(ocu.TipoDocumento) && !string.IsNullOrEmpty(ocu.NumeroDocumento))
+                            if (ocu.NumeAsiento == auxValue)
                             {
                                 ele.NumeAsiento = ocu.NumeAsiento;
-                                ele.TipoDocumento = ocu.TipoDocumento;
-                                ele.NumeroDocumento = ocu.NumeroDocumento;
-                                ele.RucContacto = ocu.RucContacto;
-                                ele.FechaViaje = ocu.FechaViaje;
-                                ele.FechaVenta = ocu.FechaVenta;
-                                ele.Nacionalidad = ocu.Nacionalidad;
-                                ele.PrecioVenta = ocu.PrecioVenta;
-                                ele.RecogeEn = ocu.RecogeEn;
-                                ele.Color = ocu.Color;
-                                ele.FlagVenta = ocu.FlagVenta;
-                                ele.Nombres = ocu.Nombres;
-                                ele.ApellidoPaterno = ocu.ApellidoPaterno;
-                                ele.ApellidoMaterno = ocu.ApellidoMaterno;
-                                ele.FechaNacimiento = ocu.FechaNacimiento;
-                                ele.Edad = ocu.Edad;
-                                ele.Telefono = ocu.Telefono;
-                                ele.Sexo = ocu.Sexo;
-                                ele.Sigla = ocu.Sigla;
+
+                                if (!string.IsNullOrEmpty(ocu.TipoDocumento) && !string.IsNullOrEmpty(ocu.NumeroDocumento))
+                                {
+                                    ele.TipoDocumento = ocu.TipoDocumento;
+                                    ele.NumeroDocumento = ocu.NumeroDocumento;
+                                    ele.RucContacto = ocu.RucContacto;
+                                    ele.FechaViaje = ocu.FechaViaje;
+                                    ele.FechaVenta = ocu.FechaVenta;
+                                    ele.Nacionalidad = ocu.Nacionalidad;
+                                    ele.PrecioVenta = ocu.PrecioVenta;
+                                    ele.RecogeEn = ocu.RecogeEn;
+                                    ele.Color = ocu.Color;
+                                    ele.FlagVenta = ocu.FlagVenta;
+                                    ele.Nombres = ocu.Nombres;
+                                    ele.ApellidoPaterno = ocu.ApellidoPaterno;
+                                    ele.ApellidoMaterno = ocu.ApellidoMaterno;
+                                    ele.FechaNacimiento = ocu.FechaNacimiento;
+                                    ele.Edad = ocu.Edad;
+                                    ele.Telefono = ocu.Telefono;
+                                    ele.Sexo = ocu.Sexo;
+                                    ele.Sigla = ocu.Sigla;
+                                }
                             }
                         }
                     }

@@ -1,6 +1,5 @@
 ﻿using SisComWeb.Entity;
 using System.Collections.Generic;
-using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
@@ -66,7 +65,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> GrabarPasajero(ClientePasajeEntity entidad);
+        Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultarSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
@@ -118,7 +117,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]
-        Response<string> GrabaVenta(VentaEntity entidad);
+        Response<string> GrabaVenta(List<VentaEntity> listado);
 
         #endregion
     }

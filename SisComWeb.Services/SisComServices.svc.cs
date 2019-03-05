@@ -163,11 +163,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<bool> GrabarPasajero(ClientePasajeEntity entidad)
+        public Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista)
         {
             try
             {
-                return ClientePasajeLogic.GrabarPasajero(entidad);
+                return ClientePasajeLogic.GrabarPasajero(lista);
             }
             catch (Exception ex)
             {
@@ -287,11 +287,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> GrabaVenta(VentaEntity entidad)
+        public Response<string> GrabaVenta(List<VentaEntity> listado)
         {
             try
             {
-                return VentaLogic.GrabaVenta(entidad);
+                return VentaLogic.GrabaVenta(listado);
             }
             catch (Exception ex)
             {

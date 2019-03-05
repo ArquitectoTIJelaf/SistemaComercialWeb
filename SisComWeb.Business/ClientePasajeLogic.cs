@@ -2,6 +2,7 @@
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -45,125 +46,122 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<bool> GrabarPasajero(ClientePasajeEntity entidad)
+        public static Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista)
         {
             try
             {
                 var response = new Response<bool>(false, false, "Error: GrabarPasajero.", false);
 
-                // Busca 'Pasajero'
-                var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
-                if (!resBuscaPasajero.Estado)
+                foreach (var entidad in lista)
                 {
-                    response.Mensaje = resBuscaPasajero.Mensaje;
-                    return response;
-                }
-
-                var objClientePasajeEntity = new ClientePasajeEntity
-                {
-                    IdCliente = resBuscaPasajero.Valor.IdCliente,
-                    TipoDoc = entidad.TipoDoc,
-                    NumeroDoc = entidad.NumeroDoc,
-                    NombreCliente = entidad.NombreCliente,
-                    ApellidoPaterno = entidad.ApellidoPaterno,
-                    ApellidoMaterno = entidad.ApellidoMaterno,
-                    FechaNacimiento = entidad.FechaNacimiento,
-                    Edad = entidad.Edad,
-                    Direccion = entidad.Direccion ?? string.Empty,
-                    Telefono = entidad.Telefono ?? string.Empty,
-                    RucContacto = entidad.RucContacto ?? string.Empty,
-                    Sexo = entidad.Sexo ?? string.Empty
-                };
-
-                if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.TipoDoc) && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
-                {
-                    // Modifica 'Pasajero'
-                    var resModificarPasajero = ClientePasajeRepository.ModificarPasajero(objClientePasajeEntity);
-                    if (!resModificarPasajero.Estado)
+                    // Busca 'Pasajero'
+                    var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
+                    if (!resBuscaPasajero.Estado)
                     {
-                        response.Mensaje = resModificarPasajero.Mensaje;
+                        response.Mensaje = resBuscaPasajero.Mensaje;
                         return response;
                     }
-                }
-                else
-                {
-                    if (entidad.TipoDoc == "1" && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
+
+                    var objClientePasajeEntity = new ClientePasajeEntity
                     {
-                        // Consulta 'RENIEC'
-                        var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
-                        if (resConsultaRENIEC.Estado)
+                        IdCliente = resBuscaPasajero.Valor.IdCliente,
+                        TipoDoc = entidad.TipoDoc,
+                        NumeroDoc = entidad.NumeroDoc,
+                        NombreCliente = entidad.NombreCliente,
+                        ApellidoPaterno = entidad.ApellidoPaterno,
+                        ApellidoMaterno = entidad.ApellidoMaterno,
+                        FechaNacimiento = entidad.FechaNacimiento,
+                        Edad = entidad.Edad,
+                        Direccion = entidad.Direccion ?? string.Empty,
+                        Telefono = entidad.Telefono ?? string.Empty,
+                        RucContacto = entidad.RucContacto ?? string.Empty,
+                        Sexo = entidad.Sexo ?? string.Empty
+                    };
+
+                    if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.TipoDoc) && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
+                    {
+                        // Modifica 'Pasajero'
+                        var resModificarPasajero = ClientePasajeRepository.ModificarPasajero(objClientePasajeEntity);
+                        if (!resModificarPasajero.Estado)
                         {
-                            if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
-                                !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
-                                !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
+                            response.Mensaje = resModificarPasajero.Mensaje;
+                            return response;
+                        }
+                    }
+                    else
+                    {
+                        if (entidad.TipoDoc == "1" && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
+                        {
+                            // Consulta 'RENIEC'
+                            var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
+                            if (resConsultaRENIEC.Estado)
                             {
-                                objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
-                                objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
-                                objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
+                                if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
+                                    !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
+                                    !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
+                                {
+                                    objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
+                                    objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
+                                    objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
+                                }
                             }
+                        }
+
+                        // Graba 'Pasajero'
+                        var resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
+                        if (!resGrabarPasajero.Estado)
+                        {
+                            response.Mensaje = resGrabarPasajero.Mensaje;
+                            return response;
                         }
                     }
 
-                    // Graba 'Pasajero'
-                    var resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
-                    if (!resGrabarPasajero.Estado)
+                    // Valida 'RucContacto'
+                    if (string.IsNullOrEmpty(entidad.RucContacto))
+                        continue;
+
+                    // Busca 'Empresa'
+                    var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+                    if (!resBuscarEmpresa.Estado)
                     {
-                        response.Mensaje = resGrabarPasajero.Mensaje;
+                        response.Mensaje = resBuscarEmpresa.Mensaje;
                         return response;
                     }
-                }
 
-                // Valida 'RucContacto'
-                if (string.IsNullOrEmpty(entidad.RucContacto))
-                {
-                    response.EsCorrecto = true;
-                    response.Valor = true;
-                    response.Mensaje = Message.MsgCorrectoGrabarClientePasaje;
-                    response.Estado = true;
-                    return response;
-                }
-
-                // Busca 'Empresa'
-                var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
-                if (!resBuscarEmpresa.Estado)
-                {
-                    response.Mensaje = resBuscarEmpresa.Mensaje;
-                    return response;
-                }
-
-                var objEmpresa = new RucEntity
-                {
-                    RucCliente = entidad.RucContacto,
-                    RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? "",
-                    Direccion = entidad.Direccion,
-                    Telefono = entidad.Telefono
-                };
-
-                if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
-                {
-                    // Modifica 'Empresa'
-                    var resModificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
-                    if (!resModificarEmpresa.Estado)
+                    var objEmpresa = new RucEntity
                     {
-                        response.Mensaje = resModificarEmpresa.Mensaje;
-                        return response;
+                        RucCliente = entidad.RucContacto,
+                        RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? "",
+                        Direccion = entidad.Direccion,
+                        Telefono = entidad.Telefono
+                    };
+
+                    if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
+                    {
+                        // Modifica 'Empresa'
+                        var resModificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
+                        if (!resModificarEmpresa.Estado)
+                        {
+                            response.Mensaje = resModificarEmpresa.Mensaje;
+                            return response;
+                        }
                     }
-                }
-                else
-                {
-                    // Consulta 'SUNAT'
-                    var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
-                    if (resConsultaSUNAT.Estado)
+                    else
                     {
-                        objEmpresa.RazonSocial = resConsultaSUNAT.Valor;
-                    }
+                        // Consulta 'SUNAT'
+                        var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
+                        if (resConsultaSUNAT.Estado)
+                        {
+                            objEmpresa.RazonSocial = resConsultaSUNAT.Valor;
+                        }
 
-                    // Graba 'Empresa'
-                    var resGrabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
-                    if (!resGrabarEmpresa.Estado)
-                    {
-                        response.Mensaje = resGrabarEmpresa.Mensaje;
-                        return response;
+                        // Graba 'Empresa'
+                        var resGrabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
+                        if (!resGrabarEmpresa.Estado)
+                        {
+                            response.Mensaje = resGrabarEmpresa.Mensaje;
+                            return response;
+                        }
                     }
                 }
 

@@ -777,11 +777,6 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
-                styleBloquearAsiento: function (NumeAsiento, IDS) {
-                    if (NumeAsiento === 0) {
-                        if (IDS !== 0) return { 'background-color': '#ffc36d' };
-                    }
-                },
                 bloquearAsiento: async function (asientoSel) {
                     var _this = this;
                     // TODO: Validación 'liberarAsiento'
@@ -802,9 +797,12 @@
                             if (res.statusText === "OK") {
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
+                                    asientoSel.NumeAsiento = parseFloat(asientoSel.Tipo);
                                     APP.msg.info('Asiento bloqueado');
-                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
+
+                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
                                     APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
+
                                     if (!_this.firstAsiento)
                                         _this.createElementInList();
                                     _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel, asientoSel.PrecioMinimo, asientoSel.PrecioMaximo);
@@ -855,9 +853,12 @@
                             if (res.statusText === "OK") {
                                 if (res.data) {
                                     asientoSel.IDS = 0;
+                                    asientoSel.NumeAsiento = 0;
                                     APP.msg.info('Asiento liberado');
-                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + asientoSel.Tipo;
+
+                                    var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
                                     APP.util.deleteCookie(nameCookie);
+
                                     if (_this.list.ventas.length === 1) {
                                         _this.indexVenta = 0;
                                         _this.list.ventas[_this.indexVenta].IdCliente = 0;
@@ -901,18 +902,30 @@
                 limpiarAsientosBloqueados: async function (tempList) {
                     var _this = this;
                     var respuesta = true;
-                    var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_';
+                    var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
+                    // Caso: Luego de generar el 'CodiProgramacion'
+                    var partNameCookie2 = 'asientoBloqueado_' + (_this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
 
                     tempList.forEach(async function (e) {
                         if (!isNaN(e.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + e.Tipo);
+                            var valueCookie2 = APP.util.readCookie(partNameCookie2 + e.Tipo);
                             if (valueCookie !== null) {
                                 APP.util.deleteCookie(partNameCookie + e.Tipo);
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
                                     .then(res => {
-                                        if (res.statusText === "OK") {
+                                        if (res.statusText === "OK")
                                             e.NumeAsiento = 0;
-                                        }
+                                        else
+                                            return false;
+                                    }).catch(APP.rq.axios_handler_error_alert);
+                            }
+                            else if (valueCookie2 !== null) {
+                                APP.util.deleteCookie(partNameCookie2 + e.Tipo);
+                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie2 })
+                                    .then(res => {
+                                        if (res.statusText === "OK")
+                                            e.NumeAsiento = 0;
                                         else
                                             return false;
                                     }).catch(APP.rq.axios_handler_error_alert);
@@ -1082,32 +1095,37 @@
                 },
                 saveUser: function () {
                     var _this = this;
-                    var input = {};
-                    input.IdCliente = _this.list.ventas[_this.indexVenta].IdCliente;
-                    input.TipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc.id;
-                    input.NumeroDoc = _this.list.ventas[_this.indexVenta].Documento;
-                    input.NombreCliente = _this.list.ventas[_this.indexVenta].Nombres;
-                    input.ApellidoPaterno = _this.list.ventas[_this.indexVenta].ApellidoPaterno;
-                    input.ApellidoMaterno = _this.list.ventas[_this.indexVenta].ApellidoMaterno;
-                    input.FechaNacimiento = _this.list.ventas[_this.indexVenta].FechaNac;
-                    input.Edad = _this.list.ventas[_this.indexVenta].Edad;
-                    input.Direccion = _this.list.ventas[_this.indexVenta].Direccion;
-                    input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
-                    input.Email = ''; //TODO
-                    input.RucContacto = _this.list.ventas[_this.indexVenta].Ruc;
-                    input.Sexo = _this.list.ventas[_this.indexVenta].Sexo.id;
-                    APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', input)
+                    var listado = [];
+
+                    _this.list.ventas.forEach(function (obj) {
+                        var input = {};
+                        input.IdCliente = obj.IdCliente;
+                        input.TipoDoc = obj.CodiTipoDoc.id;
+                        input.NumeroDoc = obj.Documento;
+                        input.NombreCliente = obj.Nombres;
+                        input.ApellidoPaterno = obj.ApellidoPaterno;
+                        input.ApellidoMaterno = obj.ApellidoMaterno;
+                        input.FechaNacimiento = obj.FechaNac;
+                        input.Edad = obj.Edad;
+                        input.Direccion = obj.Direccion;
+                        input.Telefono = obj.Telefono;
+                        input.Email = ''; //TODO
+                        input.RucContacto = obj.Ruc;
+                        input.Sexo = obj.Sexo.id;
+
+                        listado.push(input);
+                    });
+
+                    APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', listado)
                         .then(res => {
-                            APP.msg.info(res.data);
+                            //APP.msg.info(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
+                bgcVentaBus: function (FechaVenta, Color, NumeAsiento) {
                     if (FechaVenta) {
                         return { 'background-color': Color };
                     } else {
-                        if (NumeAsiento === 0) {
-                            if (IDS !== 0) return { 'background-color': '#ffc36d' };
-                        }
+                        if (NumeAsiento !== 0) return { 'background-color': '#ffc36d' };
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
@@ -1170,6 +1188,8 @@
                     input.CodiBus = _this.objPlano.CodiBus;
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
+
+                    _this.saveUser();
 
                     appController.showTipoPago(_this.list.embarques, _this.list.embarques, input, _this.list.ventas);
                 },
@@ -1401,6 +1421,8 @@
                 },
                 saveVenta: async function () {
                     var _this = this, boletos = '';
+                    var listado = [];
+
                     for (const objVenta of _this.list.ventas) { //Todo
                         var input = {};
                         input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
@@ -1437,21 +1459,24 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
-                        input.CodiTarjetaCredito = _this.tarjeta.id;
+                        input.CodiTarjetaCredito = _this.tarjeta ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
-                        input.CodiZona = _this.distrito != null ? _this.distrito.id : '';
+                        input.CodiZona = _this.distrito ? _this.distrito.id : '';
                         input.Direccion = _this.direccion;
                         input.Observacion = _this.observacion;
                         input.Credito = (_this.tarjetaCant / _this.cantAsientos);
 
-                        await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
-                            .then(res => {
-                                boletos = boletos + res.data + ', ';
-                            }).catch(APP.rq.axios_handler_error_alert);
+                        listado.push(input);
                     };
 
+                    await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', listado)
+                        .then(res => {
+                            boletos = res.data;
+                        }).catch(APP.rq.axios_handler_error_alert);
+
+                    $("#appVueTipoPago").modal('hide');
+
                     if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
-                        $("#appVueTipoPago").modal('hide');
                         appController.chargeTurnos();
                     }
                 },
