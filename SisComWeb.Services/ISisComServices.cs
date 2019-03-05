@@ -112,8 +112,8 @@ namespace SisComWeb.Services
         #region GRABA VENTA
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscaCorrelativo", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaCorrelativo", ResponseFormat = WebMessageFormat.Json)]
+        Response<CorrelativoEntity> BuscaCorrelativo(CorrelativoRequest request);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]

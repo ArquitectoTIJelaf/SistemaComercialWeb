@@ -2128,3 +2128,96 @@ Se terminó la instrucción.
    en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 295
 ClientConnectionId:c228824a-9674-4186-8ae3-fdabff0abfa1
 Error Number:2627,State:1,Class:14
+2019-03-05 14:44:26,060 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:39,408 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:41,322 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:43,397 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:45,553 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:47,427 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:49,578 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:52,448 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:54,692 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:06:57,348 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:09:04,576 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:09:15,889 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PK__Tb_Programacion__24FD51B3'. No se puede insertar una clave duplicada en el objeto 'dbo.Tb_Programacion'. El valor de la clave duplicada es (2089016).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarProgramacion(ProgramacionEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 288
+   en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 98
+ClientConnectionId:11b324a0-d82a-4f71-8a39-90eb8efd2a95
+Error Number:2627,State:1,Class:14
+2019-03-05 15:15:08,118 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:16:39,697 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:16:52,894 ERROR SisComWeb.Business.ClientePasajeLogic - ConsultaSUNAT
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.ClientePasajeLogic.ConsultaSUNAT(String RucContacto) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\ClientePasajeLogic.cs:línea 233
+2019-03-05 15:41:29,074 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PK__Tb_Programacion__24FD51B3'. No se puede insertar una clave duplicada en el objeto 'dbo.Tb_Programacion'. El valor de la clave duplicada es (2089021).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarProgramacion(ProgramacionEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 288
+   en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 98
+ClientConnectionId:53e744ed-cbf8-4095-bea7-4968adc783e7
+Error Number:2627,State:1,Class:14
+2019-03-05 15:53:45,496 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.Data.SqlClient.SqlException (0x80131904): Infracción de la restricción PRIMARY KEY 'PK__Tb_Programacion__24FD51B3'. No se puede insertar una clave duplicada en el objeto 'dbo.Tb_Programacion'. El valor de la clave duplicada es (2089024).
+Se terminó la instrucción.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   en System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   en System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   en SisComWeb.Repository.DatabaseSql.Execute() en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\DBUtility\DatabaseSql.cs:línea 217
+   en SisComWeb.Repository.VentaRepository.GrabarProgramacion(ProgramacionEntity entidad) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\VentaRepository.cs:línea 288
+   en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 98
+ClientConnectionId:00bfc912-5c53-43f5-8a00-7118fa081d5d
+Error Number:2627,State:1,Class:14

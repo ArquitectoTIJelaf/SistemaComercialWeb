@@ -274,11 +274,11 @@ namespace SisComWeb.Services
 
         #region GRABA VENTA
 
-        public Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal)
+        public Response<CorrelativoEntity> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
             {
-                return VentaLogic.BuscaCorrelativo(CodiEmpresa, CodiDocumento, CodiSucursal, CodiPuntoVenta, CodiTerminal);
+                return VentaLogic.BuscaCorrelativo(request);
             }
             catch (Exception ex)
             {

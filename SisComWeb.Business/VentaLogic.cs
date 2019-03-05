@@ -11,14 +11,14 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
-        public static Response<CorrelativoEntity> BuscaCorrelativo(byte CodiEmpresa, string CodiDocumento, short CodiSucursal, short CodiPuntoVenta, string CodiTerminal)
+        public static Response<CorrelativoEntity> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
             {
                 var response = new Response<CorrelativoEntity>(false, null, "Error: BuscaCorrelativo.", false);
 
                 // Valida 'TerminalElectronico'
-                var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(CodiEmpresa, CodiSucursal, CodiPuntoVenta, short.Parse(CodiTerminal));
+                var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
                 if (resValidarTerminalElectronico.Estado)
                 {
                     if (!string.IsNullOrEmpty(resValidarTerminalElectronico.Valor.Tipo))
@@ -31,7 +31,7 @@ namespace SisComWeb.Business
                 }
 
                 // Busca 'Correlativo'
-                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(CodiEmpresa, CodiDocumento, CodiSucursal, CodiPuntoVenta, CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, request.CodiDocumento, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
                 if (!resValidarTerminalElectronico.Estado)
                 {
                     response.Mensaje = resValidarTerminalElectronico.Mensaje;
@@ -518,7 +518,7 @@ namespace SisComWeb.Business
                 sb.Append("[IdTipoDocIdentidad]|[NumDocIdentidad]|[RazonNombres]|[RazonComercial]|[DireccionFiscal]|[UbigeoSUNAT]|[Departamento]|[Provincia]|[Distrito]|[Urbanizacion]|[PaisCodSUNAT]");
                 if (entidad.CodiDocumento == "03")
                 {
-                    if (entidad.TipoDocumento == "1")
+                    if (entidad.TipoDocumento == "01")
                         sb = sb.Replace("[IdTipoDocIdentidad]", "1");
                     else
                         sb = sb.Replace("[IdTipoDocIdentidad]", "4");
@@ -568,7 +568,7 @@ namespace SisComWeb.Business
                 sb.Append("|[SumOtrosTrib]|[SumOtrosCargos]|[TDescuentos]|[ImportePercepcionN]|[ValorRefServTransp]|[NombEmbarcacionPesq]|[MatEmbarcacionPesq]");
                 sb.Append("|[DTipoEspVend]|[LugarDescargar]|[FechDescarga]|[NumeroRegMTC]|[ConfigVehicular]|[PuntoOrigen]|[PuntoDestino]|[ValorReferncialPrel]");
                 sb.Append("|[FechConsumo]|[TVentaGratuita]|[DescuentoGlobal]|[MontoLetras]");
-                sb = sb.Replace("[TDocumento]", entidad.TipoDocumento);
+                sb = sb.Replace("[TDocumento]", entidad.CodiDocumento);
                 sb = sb.Replace("[Serie]", entidad.Tipo + entidad.SerieBoleto.ToString());
                 sb = sb.Replace("[Numero]", entidad.NumeBoleto.ToString("0######"));
                 sb = sb.Replace("[FecEmision]", DateTime.Now.ToString("dd/MM/yyyy"));

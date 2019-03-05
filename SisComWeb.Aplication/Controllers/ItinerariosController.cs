@@ -628,5 +628,52 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("busca-correlativo")]
+        public async Task<ActionResult> BuscaCorrelativo(CorrelativoFiltro filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                ",\"CodiDocumento\" : \"" + "16" + "\"" + // TODO
+                                ",\"CodiSucursal\" : " + usuario.CodiSucursal +
+                                ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
+                                ",\"CodiTerminal\" : \"" + CodiTerminal + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscaCorrelativo", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+                    Correlativo item = new Correlativo
+                    {
+                        SerieBoleto = (short)data["SerieBoleto"],
+                        NumeBoleto = (int)data["NumeBoleto"]
+                    };
+                    return Json(item, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

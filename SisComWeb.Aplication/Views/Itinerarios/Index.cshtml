@@ -620,7 +620,8 @@
                 objTurno: {
                     FechaProgramacion: '',
                     HoraProgramacion: ''
-                }
+                },
+                Correlativo: ''
             },
             mounted: function () {
                 this.getEmpresas();
@@ -637,7 +638,7 @@
                     this.objTurno.HoraProgramacion = item.HoraProgramacion;
                     this.getTurno(item, fechaViaje);
                 },
-                getTurno: function (item, fechaViaje) {
+                getTurno: async function (item, fechaViaje) {
                     var _this = this;
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
@@ -649,6 +650,13 @@
                     input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = fechaViaje;
+                    _this.Correlativo = await _this.getCorrelativo(item.CodiEmpresa);
+                    // Cuando no obtiene 'Correlativo'
+                    if (_this.Correlativo === '0-0') {
+                        _this.showPlano = false;
+                        APP.msg.error('No se cargó resultados');
+                        return;
+                    } 
                     APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.NroViaje) {
@@ -710,7 +718,6 @@
                                 _this.showPlano = false;
                                 APP.msg.error('No se cargó resultados');
                             }
-
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getEmpresas: function () {
@@ -1018,7 +1025,9 @@
                 },
                 searchUser: function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1') {
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null
+                        && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1'
+                        && _this.list.ventas[_this.indexVenta].Documento !== '') {
                         APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
@@ -1079,19 +1088,29 @@
                             }).catch(APP.rq.axios_handler_error_alert);
                     }
                 },
-                passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento, _precioMin, _precioMax) {
+                passSectionVentas: async function (_nroAsiento, _precioNormal, _nivelAsiento, _precioMin, _precioMax) {
                     this.list.ventas[this.indexVenta].Precio = _precioNormal;
                     this.list.ventas[this.indexVenta].PrecioNormal = _precioNormal;
                     this.list.ventas[this.indexVenta].PrecioMin = _precioMin;
                     this.list.ventas[this.indexVenta].PrecioMax = _precioMax;
                     this.list.ventas[this.indexVenta].NroAsiento = _nroAsiento;
                     this.list.ventas[this.indexVenta].NivelAsiento = _nivelAsiento;
-                    this.list.ventas[this.indexVenta].NroVenta = 'N° 02-???' + this.indexVenta;
+                    this.list.ventas[this.indexVenta].NroVenta = 'N° ' + this.Correlativo;
                     this.recorridoSectionVentas();
                 },
                 clearSectionVentas: function () {
                     this.list.ventas[this.indexVenta].NroAsiento = '';
                     this.list.ventas[this.indexVenta].NroVenta = '';
+                },
+                getCorrelativo: async function (_CodiEmpresa) {
+                    var axuNroVenta = '';
+                    var input = {};
+                    input.CodiEmpresa = _CodiEmpresa;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
+                        .then(res => {
+                             axuNroVenta = String(res.data.SerieBoleto) + '-' + String(res.data.NumeBoleto);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                    return axuNroVenta;
                 },
                 saveUser: function () {
                     var _this = this;
@@ -1420,7 +1439,8 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    var _this = this, boletos = '';
+                    var _this = this;
+                    var boletos = '';
                     var listado = [];
 
                     for (const objVenta of _this.list.ventas) { //Todo
@@ -1470,15 +1490,15 @@
                     };
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', listado)
-                        .then(res => {
+                        .then(async res => {
                             boletos = res.data;
+
+                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
+                                $("#appVueTipoPago").modal('hide');
+                                appController.chargeTurnos();
+                            }
+
                         }).catch(APP.rq.axios_handler_error_alert);
-
-                    $("#appVueTipoPago").modal('hide');
-
-                    if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
-                        appController.chargeTurnos();
-                    }
                 },
                 limpiarCampos: function () {
                     var _this = this;
