@@ -345,7 +345,7 @@
                                                     <button class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -368,7 +368,7 @@
                                                     <button class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -391,7 +391,7 @@
                                                     <button class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -414,7 +414,7 @@
                                                     <button class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -437,7 +437,7 @@
                                                     <button class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -477,6 +477,7 @@
                                             <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
                                             <input v-model="list.ventas[indexVenta].NroAsiento"
                                                    type="text"
+                                                   id="txtNroAsientoVenta"
                                                    class="form-control input-sm"
                                                    placeholder="Nº"
                                                    style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
@@ -628,13 +629,13 @@
                                         <div class="form-group">
                                             <label class="control-label">Reintegro</label>
                                             <input v-model="list.ventas[indexVenta].Reintegro"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   @*@@keypress.13.prevent="recorridoSectionVentas"*@
                                                    id="txtReintegro"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="REINTEGRO"
                                                    autocomplete="off"
-                                                   @*readonly*@>
+                                                   readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -673,6 +674,8 @@
                                                        @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtRazonSocial"
                                                        type="text"
+                                                       min="3"
+                                                       max="100"
                                                        class="form-control input-sm"
                                                        placeholder="RAZÓN SOCIAL"
                                                        autocomplete="off" required>
@@ -685,6 +688,7 @@
                                                        @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtDireccion"
                                                        type="text"
+                                                       max="200"
                                                        class="form-control input-sm"
                                                        placeholder="DIRECCIÓN"
                                                        autocomplete="off">
@@ -720,13 +724,13 @@
                                         <div class="form-group">
                                             <label class="control-label">Observación</label>
                                             <input v-model="list.ventas[indexVenta].Observacion"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
+                                                   @*@@keypress.13.prevent="recorridoSectionVentas"*@
                                                    id="txtObservacion"
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="OBSERVACIÓN"
                                                    autocomplete="off"
-                                                   @*readonly*@>
+                                                   readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-7">
@@ -737,7 +741,7 @@
                                                     <button @@click="showRegistrarParentesco"
                                                             class="btn btn-secondary btn-ticket-venta"
                                                             style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
-                                                            v-bind:disabled="!bloquearpago">
+                                                            @*v-bind:disabled="!bloquearpago"*@>
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
                                                         Registrar Nino
                                                     </button>
