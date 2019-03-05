@@ -8,6 +8,7 @@
 @Html.Partial("_Filtros")
 @Html.Partial("_Table")
 @Html.Partial("_Venta")
+@Html.Partial("_RegistrarInfante")
 @Html.Partial("_TipoPago")
 
 @section styles{
@@ -257,7 +258,7 @@
 @section scripts{
     <script>
 
-        $(function () {
+        $(document).ready(function () {
             //#region RECORRIDO ITINERARIOS
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
@@ -267,7 +268,7 @@
             });
             //#endregion
 
-            $('#txtprecio').on('keypress', function (e) {
+            $('#txtPrecio').on('keypress', function (e) {
                 // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
                 var field = $(this);
                 key = e.keycode ? e.keycode : e.which;
@@ -292,35 +293,89 @@
                 }
                 return false;
             });
+
+            $('#txtTtarjetaCantTP').on('keypress', function (e) {
+                debugger;
+                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
+                var field = $(this);
+                key = e.keycode ? e.keycode : e.which;
+
+                if (key == 8) return true;
+                if (key > 47 && key < 58) {
+                    if (field.val() === "") return true;
+                    var existepto = (/[.]/).test(field.val());
+                    if (existepto === false) {
+                        regexp = /.[0-9]{10}$/; //parte entera 10
+                    }
+                    else {
+                        regexp = /.[0-9]{2}$/; //parte decimal2
+                    }
+                    return !(regexp.test(field.val()));
+                }
+                if (key == 46) {
+                    if (field.val() === "") return false;
+                    regexp = /^[0-9]+$/;
+
+                    return regexp.test(field.val());
+                }
+                return false;
+            });
+
+            $('#txtEfectivoTP').on('keypress', function (e) {
+                debugger;
+                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
+                var field = $(this);
+                key = e.keycode ? e.keycode : e.which;
+
+                if (key == 8) return true;
+                if (key > 47 && key < 58) {
+                    if (field.val() === "") return true;
+                    var existepto = (/[.]/).test(field.val());
+                    if (existepto === false) {
+                        regexp = /.[0-9]{10}$/; //parte entera 10
+                    }
+                    else {
+                        regexp = /.[0-9]{2}$/; //parte decimal2
+                    }
+                    return !(regexp.test(field.val()));
+                }
+                if (key == 46) {
+                    if (field.val() === "") return false;
+                    regexp = /^[0-9]+$/;
+
+                    return regexp.test(field.val());
+                }
+                return false;
+            });
+
+            function validateFloatKeyPress(el, evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                var number = el.value.split('.');
+                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                //just one dot
+                if (number.length > 1 && charCode == 46) {
+                    return false;
+                }
+                //get the carat position
+                var caratPos = getSelectionStart(el);
+                var dotPos = el.value.indexOf(".");
+                if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
+                    return false;
+                }
+                return true;
+            }
+
+            function getSelectionStart(o) {
+                if (o.createTextRange) {
+                    var r = document.selection.createRange().duplicate()
+                    r.moveEnd('character', o.value.length)
+                    if (r.text == '') return o.value.length
+                    return o.value.lastIndexOf(r.text)
+                } else return o.selectionStart
+            }
         });
-
-        function validateFloatKeyPress(el, evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode;
-            var number = el.value.split('.');
-            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            //just one dot
-            if (number.length > 1 && charCode == 46) {
-                return false;
-            }
-            //get the carat position
-            var caratPos = getSelectionStart(el);
-            var dotPos = el.value.indexOf(".");
-            if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
-                return false;
-            }
-            return true;
-        }
-
-        function getSelectionStart(o) {
-            if (o.createTextRange) {
-                var r = document.selection.createRange().duplicate()
-                r.moveEnd('character', o.value.length)
-                if (r.text == '') return o.value.length
-                return o.value.lastIndexOf(r.text)
-            } else return o.selectionStart
-        }
 
         var selectAll = {
             id: 0,
@@ -365,6 +420,9 @@
                 },
                 showTipoPago: function (_embarque, _arribos, _ticketVenta, _listaVenta) {
                     appVueTipoPago.show(_embarque, _arribos, _ticketVenta, _listaVenta);
+                },
+                showRegistrarInfante: function (/*_embarque, _arribos, _ticketVenta, _listaVenta*/) {
+                    appRegistrarInfante.show(/*_embarque, _arribos, _ticketVenta, _listaVenta*/);
                 }
             };
         })();
@@ -1005,7 +1063,7 @@
                 },
                 searchUser: function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1') {
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc !== null && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1' && _this.list.ventas[_this.indexVenta].Documento !== '') {
                         APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
@@ -1171,7 +1229,12 @@
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
 
-                    appController.showTipoPago(_this.list.embarques, _this.list.embarques, input, _this.list.ventas);
+                    appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
+                },
+                showRegistrarInfante: function () {
+                    debugger;
+                    var _this = this;
+                    appController.showRegistrarInfante(/*_this.list.embarques, _this.list.arribos, input, _this.list.ventas*/);
                 },
                 leftSlider: function () {
                     if (this.indexVenta > 0)
@@ -1243,6 +1306,9 @@
                         APP.msg.info('EL PRECIO NO PUEDE SER MENOR A ' + min);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
                     }
+                },
+                test: function () {
+                    debugger;
                 }
             },
             computed: {
@@ -1267,7 +1333,8 @@
                         _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' &&
                         _this.list.ventas[_this.indexVenta].FechaNac.length === 10 &&
                         _this.list.ventas[_this.indexVenta].Edad > 0 &&
-                        _this.list.ventas[_this.indexVenta].Sexo !== null
+                        _this.list.ventas[_this.indexVenta].Sexo !== null &&
+                        _this.list.ventas[_this.indexVenta].NroAsiento !== ''
                     );
                 }
             },
@@ -1321,14 +1388,56 @@
                         var codiTipoDoc = after[_this.indexVenta].CodiTipoDoc;
                         if (codiTipoDoc) {
                             id = codiTipoDoc.id;
-                            if (id === "1") { _this.mask.documento = "#".repeat(8) }//DNI
-                            else if (id === "4") { _this.mask.documento = "#".repeat(9) }//PASAPORTE
-                            else if (id === "7") { _this.mask.documento = "N".repeat(12) }//CARNET EXTRANJERIA
+                            if (id === "1") {
+                                //DNI
+                                _this.mask.documento = "#".repeat(8);
+                                _this.list.ventas[_this.indexVenta].Nacionalidad = 'PERUANA';
+                            }
+                            else if (id === "4") {
+                                //PASAPORTE
+                                _this.mask.documento = "#".repeat(9);
+                                _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                            }
+                            else if (id === "7") {
+                                //CARNET EXTRANJERIA
+                                _this.mask.documento = "N".repeat(12);
+                                _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                            }
                         }
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
                 }
+            }
+        });
+
+        var appRegistrarInfante = new Vue({
+            el: '#appRegistrarInfante',
+            data: {
+
+            },
+            mounted: function () {
+
+            },
+            methods: {
+                show: function (/*embarques, arribos, ticketVenta, listaVentas*/) {
+                    debugger;
+                    //this.limpiarCampos();
+                    //this.list.embarques = embarques;
+                    //this.list.arribos = arribos;
+                    //this.ticketVenta = ticketVenta;
+                    //this.list.ventas = listaVentas;
+                    //this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
+                    //this.cantAsientos = this.list.ventas.length;
+
+                    $('#appRegistrarInfante').modal('show');
+                }
+            },
+            computed: {
+
+            },
+            watch: {
+
             }
         });
 
@@ -1353,8 +1462,8 @@
                 },
                 ticketVenta: {},
                 sumaTotal: 0,
-                efectivo: 0,
-                tarjetaCant: 0,
+                efectivo: '',
+                tarjetaCant: '',
                 cantAsientos: 0
             },
             mounted: function () {
@@ -1401,7 +1510,8 @@
                 },
                 saveVenta: async function () {
                     var _this = this, boletos = '';
-                    for (const objVenta of _this.list.ventas) { //Todo
+                    for (const objVenta of _this.list.ventas) { //To Do
+                        debugger;
                         var input = {};
                         input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
                         input.CodiOrigen = _this.ticketVenta.CodiOrigen;
@@ -1437,12 +1547,12 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
-                        input.CodiTarjetaCredito = _this.tarjeta.id;
+                        input.CodiTarjetaCredito = (_this.tarjeta !==null) ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
-                        input.CodiZona = _this.distrito != null ? _this.distrito.id : '';
-                        input.Direccion = _this.direccion;
-                        input.Observacion = _this.observacion;
-                        input.Credito = (_this.tarjetaCant / _this.cantAsientos);
+                        input.CodiZona = (_this.distrito !== null) ? _this.distrito : '';
+                        input.Direccion = (_this.direccion !== '') ? _this.direccion : '';
+                        input.Observacion = (_this.observacion !== '') ? _this.observacion : '';
+                        input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
 
                         await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', input)
                             .then(res => {

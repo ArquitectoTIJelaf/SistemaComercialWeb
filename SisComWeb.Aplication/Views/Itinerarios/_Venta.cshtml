@@ -557,72 +557,74 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label">Fecha nac.</label>
-                                            <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                   :value="list.ventas[indexVenta].FechaNac"
-                                                   type="text"
-                                                   id="txtFechaNac"
-                                                   class="form-control input-sm dp"
-                                                   placeholder="FECHA NAC."
-                                                   autocomplete="off">
+                                    <div class="col-md-8">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">Fecha nac.</label>
+                                                <input @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                       :value="list.ventas[indexVenta].FechaNac"
+                                                       type="text"
+                                                       id="txtFechaNac"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA NAC."
+                                                       autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label class="control-label">Edad</label>
+                                                <input :value="list.ventas[indexVenta].Edad"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       type="text"
+                                                       id="txtEdad"
+                                                       class="form-control input-sm"
+                                                       placeholder="EDAD"
+                                                       style="text-align: center; "
+                                                       readonly="readonly"
+                                                       autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">Sexo</label>
+                                                <v-select v-model="list.ventas[indexVenta].Sexo"
+                                                          :id="'cboSexo'"
+                                                          label="label"
+                                                          :options="list.sexos"
+                                                          :placeholder="'SEXO'"
+                                                          @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">Teléfono</label>
+                                                <input v-model="list.ventas[indexVenta].Telefono"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtTelefono"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="TELÉFONO"
+                                                       autocomplete="off"
+                                                       v-mask="'#########'">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label class="control-label">Recoger</label>
+                                                <input v-model="list.ventas[indexVenta].Recoger"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtRecoger"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="RECOGER"
+                                                       autocomplete="off">
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label">Edad</label>
-                                            <input :value="list.ventas[indexVenta].Edad"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   type="text"
-                                                   id="txtEdad"
-                                                   class="form-control input-sm"
-                                                   placeholder="EDAD"
-                                                   style="text-align: center; "
-                                                   readonly="readonly"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label">Sexo</label>
-                                            <v-select v-model="list.ventas[indexVenta].Sexo"
-                                                      :id="'cboSexo'"
-                                                      label="label"
-                                                      :options="list.sexos"
-                                                      :placeholder="'SEXO'"
-                                                      @@keydown.13.native.prevent="recorridoSectionVentas"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label">Teléfono</label>
-                                            <input v-model="list.ventas[indexVenta].Telefono"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtTelefono"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="TELÉFONO"
-                                                   autocomplete="off"
-                                                   v-mask="'#########'">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Recoger</label>
-                                            <input v-model="list.ventas[indexVenta].Recoger"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtRecoger"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="RECOGER"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <div class="form-group">
                                             <label class="control-label">Reintegro</label>
                                             <input v-model="list.ventas[indexVenta].Reintegro"
@@ -631,7 +633,8 @@
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="REINTEGRO"
-                                                   autocomplete="off">
+                                                   autocomplete="off"
+                                                   @*readonly*@>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -649,52 +652,54 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label">RUC</label>
-                                            <input v-model="list.ventas[indexVenta].Ruc"
-                                                   @@keypress.13.prevent="searchEmpresa"
-                                                   id="txtRuc"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="RUC"
-                                                   autocomplete="off"
-                                                   v-mask="'###########'">
+                                    <div class="col-md-10">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">RUC</label>
+                                                <input v-model="list.ventas[indexVenta].Ruc"
+                                                       @@keypress.13.prevent="searchEmpresa"
+                                                       id="txtRuc"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="RUC"
+                                                       autocomplete="off"
+                                                       v-mask="'###########'">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="control-label">Razón social</label>
-                                            <input v-model="list.ventas[indexVenta].RazonSocial"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtRazonSocial"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="RAZÓN SOCIAL"
-                                                   autocomplete="off">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Razón social</label>
+                                                <input v-model="list.ventas[indexVenta].RazonSocial"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtRazonSocial"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="RAZÓN SOCIAL"
+                                                       autocomplete="off" required>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label class="control-label">Dirección</label>
-                                            <input v-model="list.ventas[indexVenta].Direccion"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtDireccion"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="DIRECCIÓN"
-                                                   autocomplete="off">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Dirección</label>
+                                                <input v-model="list.ventas[indexVenta].Direccion"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtDireccion"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="DIRECCIÓN"
+                                                       autocomplete="off">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <div class="form-group">
-                                            <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                            <input @@blur="recorridoSectionVentas(); list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
-                                                   id="txtFechaVen"
-                                                   type="text"
-                                                   class="form-control input-sm dp"
-                                                   placeholder="FECHA VENTA"
-                                                   autocomplete="off">
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label" style="width: 100%; ">Fecha de venta</label>
+                                                <input @@blur="recorridoSectionVentas(); list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
+                                                       id="txtFechaVen"
+                                                       type="text"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA VENTA"
+                                                       autocomplete="off">
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -720,43 +725,50 @@
                                                    type="text"
                                                    class="form-control input-sm"
                                                    placeholder="OBSERVACIÓN"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">&nbsp;</label>
-                                            <button class="btn btn-secondary btn-ticket-venta"
-                                                    style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white; ">
-                                                <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                &ensp; Registrar Niño
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group text-center">
-                                            <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
-                                            <input v-model="list.ventas[indexVenta].Precio"
-                                                   @@keypress.13.prevent="recorridoSectionVentas"
-                                                   id="txtPrecio"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="0.00"
-                                                   style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                    autocomplete="off"
-                                                   @@blur="validateRangePrice">
+                                                   @*readonly*@>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group" style="text-align: center;">
-                                            <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
-                                                <label class="control-label">&nbsp;</label>
-                                                <button @@click="showTipoPago"
-                                                        class="btn btn-secondary btn-ticket-venta"
-                                                        style="width: 100%; color:white;"
-                                                        v-bind:disabled="!bloquearPago">
-                                                    $ &ensp; Pago total
-                                                </button>
+                                    <div class="col-md-7">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
+                                                    <label class="control-label">&nbsp;</label>
+                                                    <button @@click="showRegistrarInfante"
+                                                            class="btn btn-secondary btn-ticket-venta"
+                                                            style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;">
+                                                        @*v-bind:disabled="!bloquearPago"*@
+                                                        <img src="~/wwwroot/plugins/images/NINIO2.png" />
+                                                        Registrar Nino
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group text-center">
+                                                <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
+                                                <input v-model="list.ventas[indexVenta].Precio"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       id="txtPrecio"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="0.00"
+                                                       style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
+                                                       autocomplete="off"
+                                                       @@blur="validateRangePrice">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group" style="text-align: center;">
+                                                <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
+                                                    <label class="control-label">&nbsp;</label>
+                                                    <button @@click="showTipoPago"
+                                                            class="btn btn-secondary btn-ticket-venta"
+                                                            style="width: 100%; color:white;"
+                                                            v-bind:disabled="!bloquearPago">
+                                                        $ &ensp; Pago total
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

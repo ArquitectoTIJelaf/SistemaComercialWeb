@@ -8,13 +8,21 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-md-12">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-6 separate-in-form">
                             <div class="col-md-6">
-                                <label class="col-md-12 control-label label-sm" style="text-align: center; ">Monto Total: &ensp; {{sumaTotal}}</label>
+                                <label class="col-md-12 control-label label-sm" style="text-align:left !important">Monto Total:</label>
                             </div>
                             <div class="col-md-6">
-                                <label class="col-md-12 control-label label-sm" style="text-align: center; ">N° Asiento: &ensp; {{cantAsientos}}</label>
+                                <input class="form-control input-sm" type="text" min="0" :value="sumaTotal | fixed2" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 separate-in-form">
+                            <div class="col-md-6">
+                                <label class="col-md-12 control-label label-sm" style="text-align:right !important">N° Asientos:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control input-sm" type="number" min="0" v-model="cantAsientos" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
                             </div>
                         </div>
                     </div>
@@ -81,6 +89,33 @@
                             </div>
                         </template>
 
+                        <template v-else-if="tipoPago === '02'">
+                            <div class="col-md-12 separate-in-form">
+                                <label class="col-md-2 control-label label-sm">Tipo Tarjeta:</label>
+                                <div class="col-md-10">
+                                    <v-select v-model="tarjeta"
+                                              :id="'cboTipoTargetaTP'"
+                                              :options="list.tarjetas"
+                                              :placeholder="'TIPO'"
+                                              ref="select">
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 separate-in-form">
+                                <label class="col-md-2 control-label label-sm">Monto Targeta:</label>
+                                <div class="col-md-10">
+                                    <input v-model="tarjetaCant" id="txtTtarjetaCantTP" class="form-control input-sm" />
+                                </div>
+                            </div>
+                            <div class="col-md-12 separate-in-form">
+                                <label class="col-md-2 control-label label-sm">Monto Efectivo:</label>
+                                <div class="col-md-10">
+                                    <input v-model="efectivo" id="txtEfectivoTP" class="form-control input-sm" />
+                                </div>
+                            </div>
+                        </template>
+
                         <div class="col-md-12 separate-in-form" style="margin-top: 20px;">
                             <label class="col-md-2 control-label label-sm">Embarques:</label>
                             <div class="col-md-10">
@@ -121,4 +156,3 @@
         </div>
     </div>
 </div>
-
