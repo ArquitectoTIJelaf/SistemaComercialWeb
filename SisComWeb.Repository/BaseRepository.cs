@@ -48,6 +48,10 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Zona"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Zona"]).ToUpper();
                     break;
+                case 10:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Parentesco"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Parentesco"]).ToUpper();
+                    break;
 
             }
             return item;
@@ -271,6 +275,28 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = Lista;
                     response.Mensaje = "Correcto: ListaCiudad.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListarParentesco()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarParentesco.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarParentesco";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 10));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarParentesco.";
                     response.Estado = true;
                 }
             }

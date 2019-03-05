@@ -734,10 +734,10 @@
                                             <div class="form-group">
                                                 <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
                                                     <label class="control-label">&nbsp;</label>
-                                                    <button @@click="showRegistrarInfante"
+                                                    <button @@click="showRegistrarParentesco"
                                                             class="btn btn-secondary btn-ticket-venta"
-                                                            style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;">
-                                                        @*v-bind:disabled="!bloquearPago"*@
+                                                            style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
+                                                            v-bind:disabled="!bloquearpago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
                                                         Registrar Nino
                                                     </button>

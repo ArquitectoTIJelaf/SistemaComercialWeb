@@ -129,6 +129,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListarParentesco()
+        {
+            try
+            {
+                return BaseLogic.ListarParentesco();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN

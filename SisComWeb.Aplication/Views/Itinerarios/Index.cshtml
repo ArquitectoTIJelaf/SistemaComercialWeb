@@ -295,7 +295,6 @@
             });
 
             $('#txtTtarjetaCantTP').on('keypress', function (e) {
-                debugger;
                 // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
                 var field = $(this);
                 key = e.keycode ? e.keycode : e.which;
@@ -322,7 +321,6 @@
             });
 
             $('#txtEfectivoTP').on('keypress', function (e) {
-                debugger;
                 // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
                 var field = $(this);
                 key = e.keycode ? e.keycode : e.which;
@@ -421,8 +419,8 @@
                 showTipoPago: function (_embarque, _arribos, _ticketVenta, _listaVenta) {
                     appVueTipoPago.show(_embarque, _arribos, _ticketVenta, _listaVenta);
                 },
-                showRegistrarInfante: function (/*_embarque, _arribos, _ticketVenta, _listaVenta*/) {
-                    appRegistrarInfante.show(/*_embarque, _arribos, _ticketVenta, _listaVenta*/);
+                showRegistrarParentesco: function (_TipoDoc, _ListSexos) {
+                    appRegistrarParentesco.show(_TipoDoc, _ListSexos);
                 }
             };
         })();
@@ -648,7 +646,7 @@
                         FechaVen: '',
                         RazonSocial: '',
                         Direccion: '',
-                        Nacionalidad: '',
+                        Nacionalidad: ''
                     }],
                     sexos: [
                         { 'id': 'M', 'label': 'M' },
@@ -1200,28 +1198,13 @@
                     input.CodiOrigen = _this.filtro.CodiOrigenBus.id;
                     input.CodiDestino = _this.filtro.CodiDestinoPas.id;
                     input.CodiProgramacion = _this.filtro.CodiProgramacion;
-                    //input.RucCliente = _this.list.ventas[_this.indexVenta].Ruc;
-                    //input.NomEmpresaRuc = _this.list.ventas[_this.indexVenta].RazonSocial;
-                    //input.DirEmpresaRuc = _this.list.ventas[_this.indexVenta].Direccion;
-                    //input.NumeAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
                     input.FlagVenta = _this.pickedBusVenta;
-                    //input.PrecioVenta = _this.list.ventas[_this.indexVenta].Precio;
-                    //input.Nombre = _this.list.ventas[_this.indexVenta].Nombres + ',' +
-                    //    _this.list.ventas[_this.indexVenta].ApellidoPaterno + ',' +
-                    //    _this.list.ventas[_this.indexVenta].ApellidoMaterno;
-                    //input.Edad = _this.list.ventas[_this.indexVenta].Edad;
-                    //input.Telefono = _this.list.ventas[_this.indexVenta].Telefono;
-                    //input.Dni = _this.list.ventas[_this.indexVenta].Documento;
-                    //input.TipoDocumento = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
-                    //input.Sexo = _this.list.ventas[_this.indexVenta].Sexo;
                     input.FechaViaje = _this.filtro.Fecha;
                     input.HoraViaje = _this.filtro.Turno;
                     input.CodiServicio = _this.filtro.CodiServicio.id;
-                    //input.NivelAsiento = _this.list.ventas[_this.indexVenta].NivelAsiento;
                     input.NomDestino = _this.filtro.CodiDestinoPas.label;
                     input.NomServicio = _this.filtro.CodiServicio.label;
                     input.NomOrigen = _this.filtro.CodiSucursal.label;
-                    //input.Nacionalidad = _this.list.ventas[_this.indexVenta].Nacionalidad;
                     input.NroViaje = _this.filtro.NroViaje;
                     input.FechaProgramacion = _this.objTurno.FechaProgramacion;
                     input.HoraProgramacion = _this.objTurno.HoraProgramacion;
@@ -1231,10 +1214,9 @@
 
                     appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
                 },
-                showRegistrarInfante: function () {
-                    debugger;
+                showRegistrarParentesco: function () {
                     var _this = this;
-                    appController.showRegistrarInfante(/*_this.list.embarques, _this.list.arribos, input, _this.list.ventas*/);
+                    appController.showRegistrarParentesco(_this.list.tiposDoc, _this.list.sexos);
                 },
                 leftSlider: function () {
                     if (this.indexVenta > 0)
@@ -1306,9 +1288,6 @@
                         APP.msg.info('EL PRECIO NO PUEDE SER MENOR A ' + min);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
                     }
-                },
-                test: function () {
-                    debugger;
                 }
             },
             computed: {
@@ -1408,36 +1387,6 @@
                     },
                     deep: true,
                 }
-            }
-        });
-
-        var appRegistrarInfante = new Vue({
-            el: '#appRegistrarInfante',
-            data: {
-
-            },
-            mounted: function () {
-
-            },
-            methods: {
-                show: function (/*embarques, arribos, ticketVenta, listaVentas*/) {
-                    debugger;
-                    //this.limpiarCampos();
-                    //this.list.embarques = embarques;
-                    //this.list.arribos = arribos;
-                    //this.ticketVenta = ticketVenta;
-                    //this.list.ventas = listaVentas;
-                    //this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
-                    //this.cantAsientos = this.list.ventas.length;
-
-                    $('#appRegistrarInfante').modal('show');
-                }
-            },
-            computed: {
-
-            },
-            watch: {
-
             }
         });
 
@@ -1598,6 +1547,100 @@
                         default: return false;
                     }
                 }
+            },
+            watch: {
+
+            }
+        });
+
+        var appRegistrarParentesco = new Vue({
+            el: '#appRegistrarInfante',
+            data: {
+                CodiTipoDoc: null,
+                Documento: '',
+                Nombres: '',
+                ApellidoPaterno: '',
+                ApellidoMaterno: '',
+                FechaNac : '',
+                Edad: '',
+                Sexo: '',
+                parentesco : '',
+                list: {
+                    tipoDoc: [],
+                    parentesco: [],
+                    sexos: [],
+                    parentesco: []
+                },
+                mask: {
+                    documento: ''
+                },
+            },
+            mounted: function () {
+                this.getParentesco();
+            },
+            methods: {
+                show: function (_TipoDoc, _listSexos) {
+                    this.limpiarCampos();
+                    this.list.tipoDoc = _TipoDoc;
+                    this.list.sexos = _listSexos;
+                    $('#appRegistrarInfante').modal('show');
+                },
+                getParentesco: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-parentesco')
+                        .then(res => {
+                            _this.list.parentesco = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                limpiarCampos: function () {
+                    var _this = this;
+                    _this.CodiTipoDoc = null;
+                    _this.Documento = '',
+                    _this.Nombres = '',
+                    _this.ApellidoPaterno = '',
+                    _this.ApellidoMaterno = '',
+                    _this.FechaNac = '',
+                    _this.Edad =  '',
+                    _this.Sexo = '',
+                    _this.parentesco = ''
+                    //_this.list = [];
+                },
+                setDateAndCalcYears: function (dateString) {
+                    if (dateString) {
+                        this.FechaNac = dateString;
+                        var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
+                        this.Edad = '' + moment().diff(auxFechaNac, 'years');
+                        this.recorridoSectionParentesco();
+                    }
+                    else
+                        this.Edad = '';
+                },
+                recorridoSectionParentesco: function () {
+                    debugger;
+                    var _this = this;
+                    if (_this.CodiTipoDoc === null) {
+                        $('#cboTipoDocRA input[type=search]').focus();
+                    }else if (_this.Documento === '') {
+                        $('#txtDocumentoRA').focus();
+                    } else if (_this.Nombres === '') {
+                        $('#txtNombresRA').focus();
+                    } else if (_this.ApellidoPaterno === '') {
+                        $('#txtApellidoPaternoRA').focus();
+                    } else if (_this.ApellidoMaterno === '') {
+                        $('#txtApellidoMaternoRA').focus();
+                    } else if (_this.FechaNac === '') {
+                        $('#txtFechaNacRA').focus();
+                    } else if (_this.Sexo === '') {
+                        $('#cboSexoRA input[type=search]').focus();
+                    } else if (_this.parentesco === '') {
+                        $('#cboParentescoRA input[type=search]').focus();
+                    } else {
+                        $('#btnRegistrarAconpaniante').focus();
+                    }
+                }
+            },
+            computed: {
+
             },
             watch: {
 

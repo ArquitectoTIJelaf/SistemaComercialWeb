@@ -9,121 +9,150 @@
             <div class="modal-body">
                 <h5 style="font-family:Rubik, sans-serif;">
                     Los niños acompañantes no pueden ser mayores a los 5 años, caso contrario deben comprar un
-                    propio pasaje o tener la autorizacion de una administrador
+                    propio pasaje o tener la autorizacion de una administrador.
                 </h5>
                 <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="control-label">Documento</label>
-                        <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                  :id="'cboTipoDoc'"
-                                  label="label"
-                                  :options="list.tiposDoc"
-                                  :placeholder="'TIPO'"
-                                  @@keydown.13.native.prevent="recorridoSectionVentas"
-                                  ref="select">
-                            <span slot="no-options" class="text-danger">No hay resultados</span>
-                        </v-select>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Documento:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="CodiTipoDoc"
+                                          :id="'cboTipoDocRA'"
+                                          label="label"
+                                          :options="list.tipoDoc"
+                                          :placeholder="'DOCUMENTO'"
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Número:</label>
+                            <div class="col-md-10">
+                                <input :value="Documento.toUpperCase()"
+                                       @@input="Documento = $event.target.value.toUpperCase()"
+                                       id="txtDocumentoRA"
+                                       type="text"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @*@@keypress.13.prevent="searchUser"*@
+                                       class="form-control input-sm"
+                                       placeholder="NÚMERO"
+                                       autocomplete="off"
+                                       v-mask="mask.documento">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Nombres:</label>
+                            <div class="col-md-10">
+                                <input v-model="Nombres"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       id="txtNombresRA"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="NOMBRES"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">A. Paterno:</label>
+                            <div class="col-md-10">
+                                <input v-model="ApellidoPaterno"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       id="txtApellidoPaternoRA"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="APELLIDO PATERNO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">A. Materno:</label>
+                            <div class="col-md-10">
+                                <input v-model="ApellidoMaterno"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       id="txtApellidoMaternoRA"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="APELLIDO MATERNO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-5">
+                            <label class="col-md-12 label-sm">Fec. Nacimiento:</label>
+                            <div class="col-md-12">
+                                <input @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                       :value="FechaNac"
+                                       type="text"
+                                       id="txtFechaNacRA"
+                                       class="form-control input-sm dp"
+                                       placeholder="FECHA NAC."
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="col-md-12 label-sm">Edad:</label>
+                            <div class="col-md-12">
+                                <input :value="Edad"
+                                       type="text"
+                                       id="txtEdadRA"
+                                       class="form-control input-sm"
+                                       placeholder="EDAD"
+                                       style="text-align: center; "
+                                       readonly="readonly"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="col-md-12 label-sm">Sexo:</label>
+                            <div class="col-md-12">
+                                <v-select v-model="Sexo"
+                                          :id="'cboSexoRA'"
+                                          label="label"
+                                          :options="list.sexos"
+                                          :placeholder="'SEXO'"
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Número</label>
-                        <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
-                               @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
-                               id="txtDocumento"
-                               type="text"
-                               @@keypress.13.prevent="searchUser"
-                               class="form-control input-sm"
-                               placeholder="DOCUMENTO"
-                               autocomplete="off"
-                               v-mask="mask.documento">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Nombres</label>
-                        <input v-model="list.ventas[indexVenta].Nombres"
-                               @@keypress.13.prevent="recorridoSectionVentas"
-                               id="txtNombres"
-                               type="text"
-                               class="form-control input-sm"
-                               style="font-size: 16px !important; font-weight: 500;"
-                               placeholder="NOMBRES"
-                               autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Apellido paterno</label>
-                        <input v-model="list.ventas[indexVenta].ApellidoPaterno"
-                               @@keypress.13.prevent="recorridoSectionVentas"
-                               id="txtApellidoPaterno"
-                               type="text"
-                               class="form-control input-sm"
-                               style="font-size: 16px !important; font-weight: 500;"
-                               placeholder="PATERNO"
-                               autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Apellido materno</label>
-                        <input v-model="list.ventas[indexVenta].ApellidoMaterno"
-                               @@keypress.13.prevent="recorridoSectionVentas"
-                               id="txtApellidoMaterno"
-                               type="text"
-                               class="form-control input-sm"
-                               style="font-size: 16px !important; font-weight: 500;"
-                               placeholder="MATERNO"
-                               autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Fecha nac.</label>
-                        <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                               :value="list.ventas[indexVenta].FechaNac"
-                               type="text"
-                               id="txtFechaNac"
-                               class="form-control input-sm dp"
-                               placeholder="FECHA NAC."
-                               autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Edad</label>
-                        <input :value="list.ventas[indexVenta].Edad"
-                               @@keypress.13.prevent="recorridoSectionVentas"
-                               type="text"
-                               id="txtEdad"
-                               class="form-control input-sm"
-                               placeholder="EDAD"
-                               style="text-align: center; "
-                               readonly="readonly"
-                               autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Sexo</label>
-                        <v-select v-model="list.ventas[indexVenta].Sexo"
-                                  :id="'cboSexo'"
-                                  label="label"
-                                  :options="list.sexos"
-                                  :placeholder="'SEXO'"
-                                  @@keydown.13.native.prevent="recorridoSectionVentas"
-                                  ref="select">
-                            <span slot="no-options" class="text-danger">No hay resultados</span>
-                        </v-select>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Parentesco</label>
-                        <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                  :id="'cboTipoDoc'"
-                                  label="label"
-                                  :options="list.tiposDoc"
-                                  :placeholder="'TIPO'"
-                                  @@keydown.13.native.prevent="recorridoSectionVentas"
-                                  ref="select">
-                            <span slot="no-options" class="text-danger">No hay resultados</span>
-                        </v-select>
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Parentesco</label>
+                            <div class="col-md-10">
+                                <v-select v-model="parentesco"
+                                          :id="'cboParentescoRA'"
+                                          label="label"
+                                          :options="list.parentesco"
+                                          :placeholder="'PARENTESCO'"
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button @*@@click="saveVenta"*@ @*:disabled="!filledCampos"*@ class="btn btn-primary waves-effect waves-light text-left">
-                    <span class="fa fa-save fa-fw"></span>Aceptar
-                </button>
-                <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
-                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
-                </button>
+                <div class="modal-footer">
+                    <button id="btnRegistrarAconpaniante" @*@@click="saveVenta"*@ @*:disabled="!filledCampos"*@ class="btn btn-primary waves-effect waves-light text-left">
+                        <span class="fa fa-save fa-fw"></span>Aceptar
+                    </button>
+                    <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                        <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
