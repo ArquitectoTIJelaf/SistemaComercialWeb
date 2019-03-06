@@ -34,6 +34,7 @@
                                           :id="'cboTipoPagoTP'"
                                           :options="list.tiposPago"
                                           :placeholder="'TIPO PAGO'"
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -48,6 +49,7 @@
                                               :id="'cboTipoTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               ref="select">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -56,7 +58,10 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Número:</label>
                                 <div class="col-md-10">
-                                    <input v-model="numeroTarjeta" id="txtNumeroTP" class="form-control input-sm" />
+                                    <input v-model="numeroTarjeta" 
+                                           id="txtNumeroTP" 
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           class="form-control input-sm" />
                                 </div>
                             </div>
                         </template>
@@ -70,6 +75,7 @@
                                               :id="'cboDistritoTP'"
                                               :options="list.distritos"
                                               :placeholder="'DISTRITO'"
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               ref="select">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -78,13 +84,19 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Dirección:</label>
                                 <div class="col-md-10">
-                                    <input v-model="direccion" id="txtDireccionTP" class="form-control input-sm" />
+                                    <input v-model="direccion" 
+                                           id="txtDireccionTP"
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           class="form-control input-sm" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Observ.:</label>
                                 <div class="col-md-10">
-                                    <input v-model="observacion" id="txtObservTP" class="form-control input-sm" />
+                                    <input v-model="observacion" 
+                                           id="txtObservTP"
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           class="form-control input-sm" />
                                 </div>
                             </div>
                         </template>
@@ -97,6 +109,7 @@
                                               :id="'cboTipoTargetaTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               ref="select">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -105,13 +118,19 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Monto Targeta:</label>
                                 <div class="col-md-10">
-                                    <input v-model="tarjetaCant" id="txtTtarjetaCantTP" class="form-control input-sm" />
+                                    <input v-model="tarjetaCant" 
+                                           id="txtTtarjetaCantTP"
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           class="form-control input-sm" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Monto Efectivo:</label>
                                 <div class="col-md-10">
-                                    <input v-model="efectivo" id="txtEfectivoTP" class="form-control input-sm" />
+                                    <input v-model="efectivo" 
+                                           id="txtEfectivoTP"
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           class="form-control input-sm" />
                                 </div>
                             </div>
                         </template>
@@ -124,6 +143,7 @@
                                           label="Lugar"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -137,6 +157,7 @@
                                           label="Lugar"
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -146,7 +167,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="saveVenta" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">

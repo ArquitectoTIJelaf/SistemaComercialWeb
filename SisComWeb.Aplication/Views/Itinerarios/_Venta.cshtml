@@ -509,7 +509,8 @@
                                                    class="form-control input-sm"
                                                    placeholder="DOCUMENTO"
                                                    autocomplete="off"
-                                                   v-mask="mask.documento">
+                                                   v-mask="mask.documento"
+                                                   @*@@keyup.ctrl.76.prevent="searchUser"*@>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -593,7 +594,7 @@
                                                           label="label"
                                                           :options="list.sexos"
                                                           :placeholder="'SEXO'"
-                                                          @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                          @@keydown.13.native.prevent="$refs.refTelefono.focus()"
                                                           ref="select">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
@@ -603,7 +604,8 @@
                                             <div class="form-group">
                                                 <label class="control-label">Teléfono</label>
                                                 <input v-model="list.ventas[indexVenta].Telefono"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       @@keypress.13.prevent="$refs.refRecoger.focus()"
+                                                       ref="refTelefono"
                                                        id="txtTelefono"
                                                        type="text"
                                                        class="form-control input-sm"
@@ -617,6 +619,7 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input v-model="list.ventas[indexVenta].Recoger"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
+                                                       ref="refRecoger"
                                                        id="txtRecoger"
                                                        type="text"
                                                        class="form-control input-sm"
@@ -635,7 +638,7 @@
                                                    class="form-control input-sm"
                                                    placeholder="REINTEGRO"
                                                    autocomplete="off"
-                                                   readonly>
+                                                   disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -730,7 +733,7 @@
                                                    class="form-control input-sm"
                                                    placeholder="OBSERVACIÓN"
                                                    autocomplete="off"
-                                                   readonly>
+                                                   disabled>
                                         </div>
                                     </div>
                                     <div class="col-md-7">
@@ -741,7 +744,7 @@
                                                     <button @@click="showRegistrarParentesco"
                                                             class="btn btn-secondary btn-ticket-venta"
                                                             style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
-                                                            @*v-bind:disabled="!bloquearpago"*@>
+                                                            v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
                                                         Registrar Nino
                                                     </button>
@@ -767,6 +770,7 @@
                                                 <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
                                                     <label class="control-label">&nbsp;</label>
                                                     <button @@click="showTipoPago"
+                                                            id="btnTipoPago"
                                                             class="btn btn-secondary btn-ticket-venta"
                                                             style="width: 100%; color:white;"
                                                             v-bind:disabled="!bloquearPago">
