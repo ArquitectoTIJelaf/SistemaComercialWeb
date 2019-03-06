@@ -63,6 +63,15 @@ Vue.prototype.calculatePagination = function (page) {
 
 
 /*!********************* Filter Vue */
+Vue.filter('concatZero', function (value, length = 8) {
+    if (typeof value !== 'undefined') {
+        value = '0'.repeat(length) + value;
+        return value.substr(value.length - length);
+    } else {
+        return '';
+    }
+});
+
 Vue.filter('capitalize', function (value) {
     if (!value) return '';
     value = value.toString();

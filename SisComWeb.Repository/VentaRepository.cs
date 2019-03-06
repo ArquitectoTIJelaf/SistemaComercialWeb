@@ -411,7 +411,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, entidad.TipoDocumento);
                 db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, entidad.NumeroDocumento);
                 db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, entidad.NombreCompleto);
-                db.AddParameter("@FECHAN", DbType.Int32, ParameterDirection.Input, entidad.FechaNacimiento);
+                db.AddParameter("@FECHAN", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
                 db.AddParameter("@EDAD", DbType.String, ParameterDirection.Input, entidad.Edad);
                 db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, entidad.Sexo);
                 db.AddParameter("@PARENTESCO", DbType.String, ParameterDirection.Input, entidad.Parentesco);

@@ -506,7 +506,8 @@ namespace SisComWeb.Aplication.Controllers
                     _body += "[";
                     for (var i = 0; i < listado.Count; i++)
                     {
-                        _body += "{ \"SerieBoleto\" : " + 0 + //TODO
+                        _body += "{ " +
+                                    "\"SerieBoleto\" : " + 0 + //TODO
                                     ",\"NumeBoleto\" : " + 0 + //TODO
                                     ",\"CodiEmpresa\" : " + listado[i].CodiEmpresa +
                                     ",\"CodiOficina\" : " + usuario.CodiSucursal + //
@@ -555,7 +556,18 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NumeTarjetaCredito\" : \"" + listado[i].NumeTarjetaCredito + "\"" +
                                     ",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
                                     ",\"Observacion\" : \"" + listado[i].Observacion + "\"" +
-                                    ",\"Credito\" : " + listado[i].Credito + " }";
+                                    ",\"Credito\" : " + listado[i].Credito +
+                                    ",\"ObjAcompañante\" : " +
+                                        "{ " +
+                                            "\"TipoDocumento\" : \"" + listado[i].ObjAcompañante.CodiTipoDoc + "\"" +
+                                            ",\"NumeroDocumento\" : \"" + listado[i].ObjAcompañante.Documento + "\"" +
+                                            ",\"NombreCompleto\" : \"" + listado[i].ObjAcompañante.NombreCompleto + "\"" +
+                                            ",\"FechaNacimiento\" : \"" + listado[i].ObjAcompañante.FechaNac + "\"" +
+                                            ",\"Edad\" : \"" + listado[i].ObjAcompañante.Edad + "\"" +
+                                            ",\"Sexo\" : \"" + listado[i].ObjAcompañante.Sexo + "\"" +
+                                            ",\"Parentesco\" : \"" + listado[i].ObjAcompañante.Parentesco + "\"" +
+                                        " }" +
+                                    " }";
                         if (i < listado.Count - 1)
                             _body += ",";
                     }

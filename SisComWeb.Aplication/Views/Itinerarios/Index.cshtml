@@ -651,6 +651,7 @@
                         RazonSocial: '',
                         Direccion: '',
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     }],
                     sexos: [
@@ -918,6 +919,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     });
                 },
@@ -962,6 +964,7 @@
                                         _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                                         _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                                         _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                                        _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
                                         _this.list.ventas[_this.indexVenta].IsDisabled = false;
                                         _this.firstAsiento = true;
                                     } else {
@@ -1085,7 +1088,6 @@
                     else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
                         $('#btnTipoPago').focus();
                     } else {
-                        debugger;
                         _this.rightSlider();
                         $("#cboTipoDoc input[type=search]").focus();
                     }
@@ -1175,7 +1177,7 @@
                     input.CodiEmpresa = _CodiEmpresa;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
                         .then(res => {
-                             axuNroVenta = String(res.data.SerieBoleto) + '-' + String(res.data.NumeBoleto);
+                            axuNroVenta = String(res.data.SerieBoleto) + '-' + (this.$options.filters.concatZero(res.data.NumeBoleto, 7));
                         }).catch(APP.rq.axios_handler_error_alert);
                     return axuNroVenta;
                 },
@@ -1322,6 +1324,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     });
                 },
@@ -1542,7 +1545,6 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    debugger;
                     var _this = this;
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
@@ -1588,9 +1590,10 @@
                         input.CodiTarjetaCredito = (_this.tarjeta !==null) ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
                         input.CodiZona = (_this.distrito !== null) ? _this.distrito : '';
-                        input.Direccion = (_this.direccion !== '') ? _this.direccion : '';
-                        input.Observacion = (_this.observacion !== '') ? _this.observacion : '';
+                        input.Direccion = _this.direccion;
+                        input.Observacion = _this.observacion;
                         input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
+                        input.ObjAcompañante = objVenta.ObjAcompañante;
 
                         listado.push(input);
                     };
@@ -1614,7 +1617,6 @@
                     _this.arribo = null;
                 },
                 recorridoSectionTipoPagos: function () {
-                    debugger;
                     var _this = this;
                     if (_this.computedTipoPago === '') {
                         $('#cboTipoPagoTP input[type=search]').focus();
@@ -1710,13 +1712,12 @@
                 ApellidoMaterno: '',
                 FechaNac : '',
                 Edad: '',
-                Sexo: '',
-                parentesco : '',
+                Sexo: null,
+                parentesco: null,
                 list: {
                     tipoDoc: [],
                     parentesco: [],
-                    sexos: [],
-                    parentesco: []
+                    sexos: []
                 },
                 mask: {
                     documento: ''
@@ -1794,6 +1795,17 @@
                     else {
                         $('#btnRegistrarAconpaniante').focus();
                     }
+                },
+                saveAcompaniante: function () {
+                    var ObjAcompañante = {};
+                    ObjAcompañante.CodiTipoDoc = !this.CodiTipoDoc ? '' : this.CodiTipoDoc.id;
+                    ObjAcompañante.Documento = this.Documento;
+                    ObjAcompañante.NombreCompleto = this.Nombres + ',' + this.ApellidoMaterno + ',' + this.ApellidoPaterno;
+                    ObjAcompañante.FechaNac = this.FechaNac;
+                    ObjAcompañante.Edad = this.Edad;
+                    ObjAcompañante.Sexo = !this.Sexo ? '' : this.Sexo.id;
+                    ObjAcompañante.Parentesco = !this.parentesco ? '' : this.parentesco.id;
+                    appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = ObjAcompañante;
                 }
             },
             computed: {
