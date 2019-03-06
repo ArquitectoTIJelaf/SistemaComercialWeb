@@ -225,6 +225,18 @@ namespace SisComWeb.Business
                         return response;
                     }
 
+                    // Graba 'Acompañante'
+                    if (!string.IsNullOrEmpty(entidad.ObjAcompañante.TipoDocumento)
+                        && !string.IsNullOrEmpty(entidad.ObjAcompañante.NumeroDocumento))
+                    {
+                        var resGrabarAcompañanteVenta = VentaRepository.GrabarAcompañanteVenta(entidad.IdVenta, entidad.ObjAcompañante);
+                        if (!resGrabarAcompañanteVenta.Estado)
+                        {
+                            response.Mensaje = resGrabarAcompañanteVenta.Mensaje;
+                            return response;
+                        }
+                    }
+
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto + "-" + entidad.NumeBoleto;
 

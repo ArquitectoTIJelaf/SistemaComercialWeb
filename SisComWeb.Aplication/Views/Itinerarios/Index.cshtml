@@ -1023,7 +1023,6 @@
                     }
                 },
                 recorridoSectionVentas: function () {
-                    debugger;
                     var _this = this;
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -1343,7 +1342,6 @@
                     if (this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
-
                         for (const obj of this.list.tempList) {
                             if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
                                 if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
@@ -1353,7 +1351,6 @@
                                 }
                             }
                         }
-
                     }
                     
                     if (auxResponse)

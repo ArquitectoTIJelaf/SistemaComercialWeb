@@ -401,6 +401,32 @@ namespace SisComWeb.Repository
             return response;
         }
 
+        public static Response<bool> GrabarAcompañanteVenta(int IdVenta, AcompañanteEntity entidad)
+        {
+            var response = new Response<bool>(false, false, "Error: GrabarAcompañanteVenta.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_GrabarAcompañanteVenta";
+                db.AddParameter("@IDVENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, entidad.TipoDocumento);
+                db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, entidad.NumeroDocumento);
+                db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, entidad.NombreCompleto);
+                db.AddParameter("@FECHAN", DbType.Int32, ParameterDirection.Input, entidad.FechaNacimiento);
+                db.AddParameter("@EDAD", DbType.String, ParameterDirection.Input, entidad.Edad);
+                db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, entidad.Sexo);
+                db.AddParameter("@PARENTESCO", DbType.String, ParameterDirection.Input, entidad.Parentesco);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: GrabarAcompañanteVenta.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
         #endregion
     }
 }
