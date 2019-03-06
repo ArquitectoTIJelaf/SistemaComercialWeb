@@ -1083,8 +1083,11 @@
                     //else if (_this.list.ventas[_this.indexVenta].Observacion === '') {
                     //    $('#txtObservacion').focus();
                     //}
-                    else {
+                    else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
                         $('#btnTipoPago').focus();
+                    } else {
+                        _this.rightSlider();
+                        $("#cboTipoDoc input[type=search]").focus();
                     }
                 },
                 searchUser: function () {
@@ -1355,7 +1358,7 @@
                         }
 
                     }
-                    
+
                     if (auxResponse)
                         $('#cboTipoDoc input[type=search]').focus();
                     else {
@@ -1505,13 +1508,15 @@
                 show: function (embarques, arribos, ticketVenta, listaVentas) {
                     this.limpiarCampos();
                     this.list.embarques = embarques;
-                    this.list.arribos = embarques; //Test >= Modificar con arribos
+                    this.list.arribos = arribos;
                     this.ticketVenta = ticketVenta;
                     this.list.ventas = listaVentas;
                     this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
                     this.cantAsientos = this.list.ventas.length;
                     $('#appVueTipoPago').modal('show');
-                    this.$refs.select.$el.focus();
+                    $('#appVueTipoPago').on('shown.bs.modal', function () {
+                        $("#cboTipoPagoTP input[type=search]").focus();
+                    });
                 },
                 getTipoPago: function () {
                     var _this = this;
@@ -1539,7 +1544,6 @@
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
                     if (!limpiarAB) return;
-
                     var boletos = '';
                     var listado = [];
                     for (const objVenta of _this.list.ventas) { //Todo
@@ -1565,7 +1569,7 @@
                         input.HoraViaje = _this.ticketVenta.HoraViaje;
                         input.CodiServicio = _this.ticketVenta.CodiServicio;
                         input.CodiEmbarque = _this.embarque.CodiPuntoVenta;//
-                        input.CodiArribo = _this.arribo.CodiPuntoVenta;//To Do
+                        input.CodiArribo = (_this.arribo !== null) ? _this.arribo.CodiPuntoVenta : 0;//To Do
                         input.Hora_Embarque = _this.embarque.Hora;//To Do
                         input.NivelAsiento = objVenta.NivelAsiento;
                         input.NomDestino = _this.ticketVenta.NomDestino;
@@ -1611,6 +1615,27 @@
                     if (_this.computedTipoPago === '') {
                         $('#cboTipoPagoTP input[type=search]').focus();
                     }
+                    else if (_this.tipoPago === '01') {
+                        if (_this.embarque === null || _this.embarque === '') {
+                            $('#cboEmbarqueTP input[type=search]').focus();
+                        }
+                        else if (_this.arribo === null || _this.embarque === '') {
+                            $('#cboArriboTP input[type=search]').focus();
+                        }
+                    }
+                    else if (_this.tipoPago === '02') {
+                        if (_this.tarjeta === null || _this.tarjeta === '') {
+                            $('#cboTipoTargetaTP input[type=search]').focus();
+                        } else if (_this.tarjetaCant === '') {
+                            $('#txtTtarjetaCantTP').focus();
+                        } else if (_this.efectivo === '') {
+                            $('#txtEfectivoTP').focus();
+                        } else if (_this.embarque === null || _this.embarque === '') {
+                            $('#cboEmbarqueTP input[type=search]').focus();
+                        } else if (_this.arribo === null || _this.embarque === '') {
+                            $('#cboArriboTP input[type=search]').focus();
+                        }
+                    }
                     else if (_this.tipoPago === '03') {
                         if (_this.tarjeta === null || _this.tarjeta === '') {
                             $('#cboTipoTP input[type=search]').focus();
@@ -1635,27 +1660,9 @@
                             $('#cboArriboTP input[type=search]').focus();
                         }
                     }
-                    else if (_this.tipoPago === '02') {
-                        if (_this.tarjeta === null || _this.tarjeta === '') {
-                            $('#cboTipoTargetaTP input[type=search]').focus();
-                        } else if (_this.tarjetaCant === '') {
-                            $('#txtTtarjetaCantTP').focus();
-                        } else if (_this.efectivo === '') {
-                            $('#txtEfectivoTP').focus();
-                        } else if (_this.embarque === null || _this.embarque === '') {
-                            $('#cboEmbarqueTP input[type=search]').focus();
-                        } else if (_this.arribo === null || _this.embarque === '') {
-                            $('#cboArriboTP input[type=search]').focus();
-                        }
-                    }
-                    else if (_this.embarque === null || _this.embarque === '') {
-                        $('#cboEmbarqueTP input[type=search]').focus();
-                    }
-                    else if (_this.arribo === null || _this.embarque === '') {
-                        $('#cboArriboTP input[type=search]').focus();
-                    } else {
-                        $('#btnSaveVentaTipoPago').focus();
-                    }
+                },
+                nextInput: function() {
+                    $('#btnSaveVentaTipoPago').focus();
                 }
             },
             computed: {
@@ -1676,9 +1683,10 @@
                 filledCampos: function () {
                     var _this = this;
                     switch (this.tipoPago) {
-                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.arribo;
-                        case '01': return _this.embarque && _this.arribo;
-                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.arribo;
+                        case '01': return _this.embarque /*&& _this.arribo*/;
+                        case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
+                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque /*&& _this.arribo*/;
+                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
                         default: return false;
                     }
                 }
@@ -1719,6 +1727,9 @@
                     this.list.tipoDoc = _TipoDoc;
                     this.list.sexos = _listSexos;
                     $('#appRegistrarInfante').modal('show');
+                    $('#appRegistrarInfante').on('shown.bs.modal', function () {
+                        $("#cboTipoDocRA input[type=search]").focus();
+                    });
                 },
                 getParentesco: function () {
                     var _this = this;
@@ -1779,13 +1790,47 @@
                     else {
                         $('#btnRegistrarAconpaniante').focus();
                     }
+                },
+                saveAcompaniante: function () {
+                    $('#appRegistrarInfante').modal('hide');
                 }
             },
             computed: {
-
+                filledCampos: function () {
+                    var _this = this;
+                    return (
+                        _this.CodiTipoDoc !== null &&
+                        _this.Documento !== '' &&
+                        _this.Nombres !== '' &&
+                        _this.ApellidoPaterno !== '' &&
+                        _this.ApellidoMaterno !== '' &&
+                        _this.FechaNac !== '' &&
+                        _this.Edad !== '' &&
+                        _this.Sexo !== '' &&
+                        _this.parentesco !== ''
+                    )
+                }
             },
             watch: {
-
+                'CodiTipoDoc': function (newValue) {
+                    debugger;
+                    var _this = this;
+                    if (newValue) {
+                        var id = newValue.id;
+                        if (id === "1") {
+                            //DNI
+                            _this.mask.documento = "#".repeat(8);
+                        }
+                        else if (id === "4") {
+                            //PASAPORTE
+                            _this.mask.documento = "#".repeat(9);
+                        }
+                        else if (id === "7") {
+                            //CARNET EXTRANJERIA
+                            _this.mask.documento = "N".repeat(12);
+                        }
+                    }
+                }
             }
         });
 
