@@ -506,6 +506,8 @@ namespace SisComWeb.Aplication.Controllers
                     _body += "[";
                     for (var i = 0; i < listado.Count; i++)
                     {
+                        
+
                         _body += "{ " +
                                     "\"SerieBoleto\" : " + 0 + //TODO
                                     ",\"NumeBoleto\" : " + 0 + //TODO
@@ -559,13 +561,13 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Credito\" : " + listado[i].Credito +
                                     ",\"ObjAcompañante\" : " +
                                         "{ " +
-                                            "\"TipoDocumento\" : \"" + listado[i].ObjAcompañante.CodiTipoDoc + "\"" +
-                                            ",\"NumeroDocumento\" : \"" + listado[i].ObjAcompañante.Documento + "\"" +
-                                            ",\"NombreCompleto\" : \"" + listado[i].ObjAcompañante.NombreCompleto + "\"" +
-                                            ",\"FechaNacimiento\" : \"" + listado[i].ObjAcompañante.FechaNac + "\"" +
-                                            ",\"Edad\" : \"" + listado[i].ObjAcompañante.Edad + "\"" +
-                                            ",\"Sexo\" : \"" + listado[i].ObjAcompañante.Sexo + "\"" +
-                                            ",\"Parentesco\" : \"" + listado[i].ObjAcompañante.Parentesco + "\"" +
+                                            "\"TipoDocumento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.CodiTipoDoc) + "\"" +
+                                            ",\"NumeroDocumento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Documento) + "\"" +
+                                            ",\"NombreCompleto\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.NombreCompleto) + "\"" +
+                                            ",\"FechaNacimiento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.FechaNac) + "\"" +
+                                            ",\"Edad\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Edad) + "\"" +
+                                            ",\"Sexo\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Sexo) + "\"" +
+                                            ",\"Parentesco\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Parentesco) + "\"" +
                                         " }" +
                                     " }";
                         if (i < listado.Count - 1)

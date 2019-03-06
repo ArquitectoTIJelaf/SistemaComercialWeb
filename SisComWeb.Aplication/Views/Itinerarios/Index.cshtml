@@ -1396,7 +1396,7 @@
                         _this.list.ventas[_this.indexVenta].Edad > 0 &&
                         _this.list.ventas[_this.indexVenta].Sexo !== null &&
                         _this.list.ventas[_this.indexVenta].NroAsiento !== '' &&
-                        _this.list.ventas[_this.indexVenta].Precio !== ''
+                        parseInt(_this.list.ventas[_this.indexVenta].Precio) > 0
                     );
                 }
             },
