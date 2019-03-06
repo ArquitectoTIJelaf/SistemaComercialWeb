@@ -149,12 +149,13 @@
             border-radius: 4px;
             display: block;
             height: 95%;
-            min-width: 40px;
+            /*min-width: 40px;*/
+            margin: 0 10px 0 10px;
         }
 
         .bus-td {
             padding: 0 !important;
-            height: 50px;
+            height: 48px;
             border-color: transparent !important;
             vertical-align: middle !important;
             align-items: center;
@@ -1023,7 +1024,6 @@
                     }
                 },
                 recorridoSectionVentas: function () {
-                    debugger;
                     var _this = this;
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -1463,11 +1463,7 @@
                                 //_this.recorridoSectionVentas();
                             }
                         }
-
-                        //if (Sexo) {
-                        //    _this.$refs.refTelefono.focus();
-                        //}
-
+                        //if (Sexo) { _this.$refs.refTelefono.focus();}
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
@@ -1539,7 +1535,6 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    debugger;
                     var _this = this;
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
@@ -1612,7 +1607,6 @@
                     _this.arribo = null;
                 },
                 recorridoSectionTipoPagos: function () {
-                    debugger;
                     var _this = this;
                     if (_this.computedTipoPago === '') {
                         $('#cboTipoPagoTP input[type=search]').focus();

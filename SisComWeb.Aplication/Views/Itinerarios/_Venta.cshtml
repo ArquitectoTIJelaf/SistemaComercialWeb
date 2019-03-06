@@ -328,7 +328,7 @@
                                 </div>
                                 <div class="col-md-6 text-right">
                                     <div v-for="item in list.destinosRuta" style="margin-right: 7px;display: inline-block;">
-                                        <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                        <span class="mdi mdi-checkbox-blank-circle"  :style="{color: item.Color}"></span>
                                         <label>{{item.Sigla}}</label>
                                     </div>
                                 </div>
@@ -503,6 +503,7 @@
                                                       :options="list.tiposDoc"
                                                       :placeholder="'TIPO'"
                                                       @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                      @@input="recorridoSectionVentas"
                                                       ref="select">
                                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                                             </v-select>
