@@ -1489,7 +1489,7 @@
                     this.sumaTotal = _.sumBy(this.list.ventas, 'Precio');
                     this.cantAsientos = this.list.ventas.length;
                     $('#appVueTipoPago').modal('show');
-
+                    this.$refs.select.$el.focus();
                 },
                 getTipoPago: function () {
                     var _this = this;
