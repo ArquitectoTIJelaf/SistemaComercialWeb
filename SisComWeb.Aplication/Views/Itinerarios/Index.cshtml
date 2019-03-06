@@ -1085,7 +1085,6 @@
                     else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
                         $('#btnTipoPago').focus();
                     } else {
-                        debugger;
                         _this.rightSlider();
                         $("#cboTipoDoc input[type=search]").focus();
                     }
@@ -1544,7 +1543,6 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    debugger;
                     var _this = this;
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
@@ -1616,7 +1614,6 @@
                     _this.arribo = null;
                 },
                 recorridoSectionTipoPagos: function () {
-                    debugger;
                     var _this = this;
                     if (_this.computedTipoPago === '') {
                         $('#cboTipoPagoTP input[type=search]').focus();
@@ -1796,13 +1793,47 @@
                     else {
                         $('#btnRegistrarAconpaniante').focus();
                     }
+                },
+                saveAcompaniante: function () {
+                    $('#appRegistrarInfante').modal('hide');
                 }
             },
             computed: {
-
+                filledCampos: function () {
+                    var _this = this;
+                    return (
+                        _this.CodiTipoDoc !== null &&
+                        _this.Documento !== '' &&
+                        _this.Nombres !== '' &&
+                        _this.ApellidoPaterno !== '' &&
+                        _this.ApellidoMaterno !== '' &&
+                        _this.FechaNac !== '' &&
+                        _this.Edad !== '' &&
+                        _this.Sexo !== '' &&
+                        _this.parentesco !== ''
+                    )
+                }
             },
             watch: {
-
+                'CodiTipoDoc': function (newValue) {
+                    debugger;
+                    var _this = this;
+                    if (newValue) {
+                        var id = newValue.id;
+                        if (id === "1") {
+                            //DNI
+                            _this.mask.documento = "#".repeat(8);
+                        }
+                        else if (id === "4") {
+                            //PASAPORTE
+                            _this.mask.documento = "#".repeat(9);
+                        }
+                        else if (id === "7") {
+                            //CARNET EXTRANJERIA
+                            _this.mask.documento = "N".repeat(12);
+                        }
+                    }
+                }
             }
         });
 
