@@ -149,12 +149,13 @@
             border-radius: 4px;
             display: block;
             height: 95%;
-            min-width: 40px;
+            /*min-width: 40px;*/
+            margin: 0 10px 0 10px;
         }
 
         .bus-td {
             padding: 0 !important;
-            height: 50px;
+            height: 48px;
             border-color: transparent !important;
             vertical-align: middle !important;
             align-items: center;
@@ -1467,11 +1468,7 @@
                                 //_this.recorridoSectionVentas();
                             }
                         }
-
-                        //if (Sexo) {
-                        //    _this.$refs.refTelefono.focus();
-                        //}
-
+                        //if (Sexo) { _this.$refs.refTelefono.focus();}
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
@@ -1806,13 +1803,46 @@
                     ObjAcompañante.Sexo = !this.Sexo ? '' : this.Sexo.id;
                     ObjAcompañante.Parentesco = !this.parentesco ? '' : this.parentesco.id;
                     appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = ObjAcompañante;
+
+                    $('#appRegistrarInfante').modal('hide');
                 }
             },
             computed: {
-
+                filledCampos: function () {
+                    var _this = this;
+                    return (
+                        _this.CodiTipoDoc !== null &&
+                        _this.Documento !== '' &&
+                        _this.Nombres !== '' &&
+                        _this.ApellidoPaterno !== '' &&
+                        _this.ApellidoMaterno !== '' &&
+                        _this.FechaNac !== '' &&
+                        _this.Edad !== '' &&
+                        _this.Sexo !== '' &&
+                        _this.parentesco !== ''
+                    )
+                }
             },
             watch: {
-
+                'CodiTipoDoc': function (newValue) {
+                    debugger;
+                    var _this = this;
+                    if (newValue) {
+                        var id = newValue.id;
+                        if (id === "1") {
+                            //DNI
+                            _this.mask.documento = "#".repeat(8);
+                        }
+                        else if (id === "4") {
+                            //PASAPORTE
+                            _this.mask.documento = "#".repeat(9);
+                        }
+                        else if (id === "7") {
+                            //CARNET EXTRANJERIA
+                            _this.mask.documento = "N".repeat(12);
+                        }
+                    }
+                }
             }
         });
 
