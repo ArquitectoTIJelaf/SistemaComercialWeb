@@ -643,15 +643,17 @@
                         NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: '',
+                        FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         RazonSocial: '',
                         Direccion: '',
-                        Nacionalidad: ''
+                        Nacionalidad: '',
+                        IsDisabled: false
                     }],
                     sexos: [
                         { 'id': 'M', 'label': 'M' },
                         { 'id': 'F', 'label': 'F' }
-                    ]
+                    ],
+                    tempList: []
                 },
                 objPlano: {
                     CodiBus: '',
@@ -739,14 +741,15 @@
                                 _this.list.embarques = res.data.ListaEmbarques;
                                 _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
-                                var tempList = _.cloneDeep(res.data.ListaPlanoBus);
-                                var limpiarAB = await _this.limpiarAsientosBloqueados(tempList);
-                                if (tempList.length > 0 && limpiarAB) {
-                                    _this.list.plano5 = tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano4 = tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano3 = tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano2 = tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano1 = tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
+
+                                var limpiarAB = await _this.limpiarAsientosBloqueados(_this.list.tempList);
+                                if (_this.list.tempList.length > 0 && limpiarAB) {
+                                    _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano3 = _this.list.tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano2 = _this.list.tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano1 = _this.list.tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
                                     _this.$nextTick(() => {
                                         if (!_this.firstCharge) {
                                             if ($("#panelWrapperV").hasClass("in"))
@@ -861,6 +864,7 @@
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
                                     asientoSel.NumeAsiento = parseFloat(asientoSel.Tipo);
+
                                     APP.msg.info('Asiento bloqueado');
 
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
@@ -870,6 +874,9 @@
                                         _this.createElementInList();
                                     _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel, asientoSel.PrecioMinimo, asientoSel.PrecioMaximo);
                                     _this.firstAsiento = false;
+
+                                    _this.list.ventas[_this.indexVenta].IsDisabled = true;
+
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
                                 }
                             } else {
@@ -905,8 +912,9 @@
                         NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: '',
-                        Nacionalidad: ''
+                        FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
+                        Nacionalidad: '',
+                        IsDisabled: false
                     });
                 },
                 liberarAsiento: async function (asientoSel) {
@@ -948,8 +956,9 @@
                                         _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
                                         _this.list.ventas[_this.indexVenta].NroVenta = '';
                                         _this.list.ventas[_this.indexVenta].NroSolicitud = '';
-                                        _this.list.ventas[_this.indexVenta].FechaVen = '';
+                                        _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                                         _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                                        _this.list.ventas[_this.indexVenta].IsDisabled = false;
                                         _this.firstAsiento = true;
                                     } else {
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
@@ -962,30 +971,17 @@
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                limpiarAsientosBloqueados: async function (tempList) {
+                limpiarAsientosBloqueados: async function () {
                     var _this = this;
                     var respuesta = true;
                     var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
-                    // Caso: Luego de generar el 'CodiProgramacion'
-                    var partNameCookie2 = 'asientoBloqueado_' + (_this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
 
-                    tempList.forEach(async function (e) {
+                    _this.list.tempList.forEach(async function (e) {
                         if (!isNaN(e.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + e.Tipo);
-                            var valueCookie2 = APP.util.readCookie(partNameCookie2 + e.Tipo);
                             if (valueCookie !== null) {
                                 APP.util.deleteCookie(partNameCookie + e.Tipo);
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
-                                    .then(res => {
-                                        if (res.statusText === "OK")
-                                            e.NumeAsiento = 0;
-                                        else
-                                            return false;
-                                    }).catch(APP.rq.axios_handler_error_alert);
-                            }
-                            else if (valueCookie2 !== null) {
-                                APP.util.deleteCookie(partNameCookie2 + e.Tipo);
-                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie2 })
                                     .then(res => {
                                         if (res.statusText === "OK")
                                             e.NumeAsiento = 0;
@@ -1066,9 +1062,9 @@
                     else if (_this.list.ventas[_this.indexVenta].Direccion === '') {
                         $('#txtDireccion').focus();
                     }
-                    else if (_this.list.ventas[_this.indexVenta].FechaVen === '') {
-                        $('#txtFechaVen').focus();
-                    }
+                    //else if (_this.list.ventas[_this.indexVenta].FechaVen === '') {
+                    //    $('#txtFechaVen').focus();
+                    //}
                     else if (_this.list.ventas[_this.indexVenta].Nacionalidad === '') {
                         $('#txtNacionalidad').focus();
                     }
@@ -1312,8 +1308,9 @@
                         NivelAsiento: 0,
                         NroVenta: '',
                         NroSolicitud: '',
-                        FechaVen: '',
-                        Nacionalidad: ''
+                        FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
+                        Nacionalidad: '',
+                        IsDisabled: false
                     });
                 },
                 validateRangePrice: function () {
@@ -1329,6 +1326,34 @@
                     } else if (actual < min) {
                         APP.msg.info('EL PRECIO NO PUEDE SER MENOR A ' + min);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
+                    }
+                },
+                validateTxtNroAsientoVenta: function () {
+                    var auxResponse = false;
+
+                    if (this.list.ventas[this.indexVenta].NroAsiento) {
+                        // Dar formato al 'NroAsiento'
+                        this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+
+                        for (const obj of this.list.tempList) {
+                            if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
+                                if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
+                                    auxResponse = true;
+                                    document.getElementById('btnAsiento_' + obj.Tipo).click();
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+                    
+                    if (auxResponse)
+                        $('#cboTipoDoc input[type=search]').focus();
+                    else {
+                        if (!this.list.ventas[_indexVenta].NroAsiento)
+                            document.getElementById('txtNroAsientoVenta').blur();
+                        else
+                            document.getElementById('txtNroAsientoVenta').focus();
                     }
                 }
             },
@@ -1510,9 +1535,12 @@
                 },
                 saveVenta: async function () {
                     var _this = this;
+                    // Limpiar 'AsientosBloqueados'
+                    var limpiarAB = await _this.limpiarAsientosBloqueados(appVueVenta.list.tempList);
+                    if (!limpiarAB) return;
+
                     var boletos = '';
                     var listado = [];
-
                     for (const objVenta of _this.list.ventas) { //Todo
                         var input = {};
                         input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
@@ -1558,7 +1586,6 @@
 
                         listado.push(input);
                     };
-
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', listado)
                         .then(async res => {
                             boletos = res.data;
@@ -1672,7 +1699,6 @@
                         this.Edad = '';
                 },
                 recorridoSectionParentesco: function () {
-                    debugger;
                     var _this = this;
                     if (_this.CodiTipoDoc === null) {
                         $('#cboTipoDocRA input[type=search]').focus();
