@@ -142,6 +142,32 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListarGerente()
+        {
+            try
+            {
+                return BaseLogic.ListarGerente();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListarSocio()
+        {
+            try
+            {
+                return BaseLogic.ListarSocio();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN
