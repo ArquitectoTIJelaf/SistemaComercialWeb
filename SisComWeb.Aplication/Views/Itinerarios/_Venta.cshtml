@@ -490,7 +490,8 @@
                                                    v-mask="'##'"
                                                    :disabled="list.ventas[indexVenta].IsDisabled"
                                                    @@blur="validateTxtNroAsientoVenta()"
-                                                   @@keydown.13.prevent="$refs.refNroAsientoVenta.blur()"
+                                                   @*@@keydown.13.prevent="$refs.refNroAsientoVenta.blur()"*@
+                                                   @@keypress.13.prevent="recorridoSectionVentas"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -775,6 +776,7 @@
                                                        placeholder="0.00"
                                                        style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                        autocomplete="off"
+                                                       v-bind:disabled="!bloquearPago"
                                                        @@blur="validateRangePrice">
                                             </div>
                                         </div>

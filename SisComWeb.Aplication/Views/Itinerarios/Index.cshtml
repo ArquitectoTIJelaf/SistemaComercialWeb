@@ -1024,6 +1024,7 @@
                     }
                 },
                 recorridoSectionVentas: function () {
+                    debugger;
                     var _this = this;
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -1074,9 +1075,9 @@
                     else if (_this.list.ventas[_this.indexVenta].Nacionalidad === '') {
                         $('#txtNacionalidad').focus();
                     }
-                    else if (_this.list.ventas[_this.indexVenta].Precio === '') {
-                        $('#txtPrecio').focus();
-                    }
+                    //else if (_this.list.ventas[_this.indexVenta].Precio === '') {
+                    //    $('#txtPrecio').focus();
+                    //}
                     else if (_this.list.ventas[_this.indexVenta].NroAsiento === '') {
                         $('#txtNroAsientoVenta').focus();
                     }
@@ -1392,7 +1393,8 @@
                         _this.list.ventas[_this.indexVenta].FechaNac.length === 10 &&
                         _this.list.ventas[_this.indexVenta].Edad > 0 &&
                         _this.list.ventas[_this.indexVenta].Sexo !== null &&
-                        _this.list.ventas[_this.indexVenta].NroAsiento !== ''
+                        _this.list.ventas[_this.indexVenta].NroAsiento !== '' &&
+                        _this.list.ventas[_this.indexVenta].Precio !== ''
                     );
                 }
             },
@@ -1800,12 +1802,12 @@
                     var _this = this;
                     return (
                         _this.CodiTipoDoc !== null &&
-                        _this.Documento !== '' &&
+                        _this.Documento.length >=8 &&
                         _this.Nombres !== '' &&
                         _this.ApellidoPaterno !== '' &&
                         _this.ApellidoMaterno !== '' &&
                         _this.FechaNac !== '' &&
-                        _this.Edad !== '' &&
+                        _this.Edad <=5 &&
                         _this.Sexo !== '' &&
                         _this.parentesco !== ''
                     )
