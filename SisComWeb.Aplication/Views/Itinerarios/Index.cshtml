@@ -1209,9 +1209,9 @@
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento) {
                     if (FechaVenta) {
-                        return { 'background-color': Color };
+                        return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
                     } else {
-                        if (NumeAsiento !== 0) return { 'background-color': '#ffc36d' };
+                        if (NumeAsiento !== 0) return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ffc36d', 0.5)} ,${this.$options.filters.hexToRgb('#ffc36d')}` };
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
