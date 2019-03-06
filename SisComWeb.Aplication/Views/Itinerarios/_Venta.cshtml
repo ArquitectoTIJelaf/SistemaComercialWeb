@@ -751,16 +751,16 @@
                                     <div class="col-md-7">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
-                                                    <label class="control-label">&nbsp;</label>
-                                                    <button @@click="showRegistrarParentesco"
-                                                            class="btn btn-secondary btn-ticket-venta"
-                                                            style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
-                                                            v-bind:disabled="!bloquearPago">
-                                                        <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                        Registrar Nino
-                                                    </button>
-                                                </div>
+                                                @*<div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">*@
+                                                <label class="control-label">&nbsp;</label>
+                                                <button @@click="showRegistrarParentesco"
+                                                        class="btn btn-secondary btn-ticket-venta"
+                                                        style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
+                                                        v-bind:disabled="!bloquearPago">
+                                                    <img src="~/wwwroot/plugins/images/NINIO2.png" />
+                                                    Registrar Nino
+                                                </button>
+                                                @*</div>*@
                                             </div>
                                         </div>
                                         <div class="col-md-4">
