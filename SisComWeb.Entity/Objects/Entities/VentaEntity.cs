@@ -106,7 +106,6 @@
 
         public short CodiRuta { get; set; } // Bus (Destino)
 
-
         public string CodiTarjetaCredito { get; set; }
 
         public string NumeTarjetaCredito { get; set; }
@@ -118,5 +117,7 @@
         public string Observacion { get; set; }
 
         public decimal Credito { get; set; }
+
+        public AcompañanteEntity ObjAcompañante { get; set; }
     }
 }

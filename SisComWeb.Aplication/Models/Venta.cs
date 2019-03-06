@@ -62,5 +62,6 @@ namespace SisComWeb.Aplication.Models
         public string Direccion { get; set; }
         public string Observacion { get; set; }
         public decimal Credito { get; set; }
+        public Acompañante ObjAcompañante { get; set; }
     }
 }

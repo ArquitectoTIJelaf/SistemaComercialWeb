@@ -652,6 +652,7 @@
                         RazonSocial: '',
                         Direccion: '',
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     }],
                     sexos: [
@@ -919,6 +920,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     });
                 },
@@ -963,6 +965,7 @@
                                         _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                                         _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                                         _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                                        _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
                                         _this.list.ventas[_this.indexVenta].IsDisabled = false;
                                         _this.firstAsiento = true;
                                     } else {
@@ -1176,7 +1179,7 @@
                     input.CodiEmpresa = _CodiEmpresa;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
                         .then(res => {
-                             axuNroVenta = String(res.data.SerieBoleto) + '-' + String(res.data.NumeBoleto);
+                            axuNroVenta = String(res.data.SerieBoleto) + '-' + (this.$options.filters.concatZero(res.data.NumeBoleto, 7));
                         }).catch(APP.rq.axios_handler_error_alert);
                     return axuNroVenta;
                 },
@@ -1323,6 +1326,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
+                        ObjAcompañante: {},
                         IsDisabled: false
                     });
                 },
@@ -1347,7 +1351,6 @@
                     if (this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
-
                         for (const obj of this.list.tempList) {
                             if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
                                 if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
@@ -1357,7 +1360,6 @@
                                 }
                             }
                         }
-
                     }
 
                     if (auxResponse)
@@ -1587,9 +1589,10 @@
                         input.CodiTarjetaCredito = (_this.tarjeta !==null) ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
                         input.CodiZona = (_this.distrito !== null) ? _this.distrito : '';
-                        input.Direccion = (_this.direccion !== '') ? _this.direccion : '';
-                        input.Observacion = (_this.observacion !== '') ? _this.observacion : '';
+                        input.Direccion = _this.direccion;
+                        input.Observacion = _this.observacion;
                         input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
+                        input.ObjAcompañante = objVenta.ObjAcompañante;
 
                         listado.push(input);
                     };
@@ -1708,13 +1711,12 @@
                 ApellidoMaterno: '',
                 FechaNac : '',
                 Edad: '',
-                Sexo: '',
-                parentesco : '',
+                Sexo: null,
+                parentesco: null,
                 list: {
                     tipoDoc: [],
                     parentesco: [],
-                    sexos: [],
-                    parentesco: []
+                    sexos: []
                 },
                 mask: {
                     documento: ''
@@ -1794,6 +1796,16 @@
                     }
                 },
                 saveAcompaniante: function () {
+                    var ObjAcompañante = {};
+                    ObjAcompañante.CodiTipoDoc = !this.CodiTipoDoc ? '' : this.CodiTipoDoc.id;
+                    ObjAcompañante.Documento = this.Documento;
+                    ObjAcompañante.NombreCompleto = this.Nombres + ',' + this.ApellidoMaterno + ',' + this.ApellidoPaterno;
+                    ObjAcompañante.FechaNac = this.FechaNac;
+                    ObjAcompañante.Edad = this.Edad;
+                    ObjAcompañante.Sexo = !this.Sexo ? '' : this.Sexo.id;
+                    ObjAcompañante.Parentesco = !this.parentesco ? '' : this.parentesco.id;
+                    appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = ObjAcompañante;
+
                     $('#appRegistrarInfante').modal('hide');
                 }
             },

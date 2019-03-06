@@ -2299,6 +2299,7 @@ Se terminó la instrucción.
    en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 295
 ClientConnectionId:318ae625-8460-4a4b-8c7a-e287c7e09ada
 Error Number:2627,State:1,Class:14
+<<<<<<< HEAD
 2019-03-06 15:22:08,172 ERROR SisComWeb.Business.TurnoLogic - MuestraTurno
 System.Data.SqlClient.SqlException (0x80131904): Error al convertir el tipo de datos nvarchar a smalldatetime.
    en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
@@ -2319,3 +2320,8 @@ System.Data.SqlClient.SqlException (0x80131904): Error al convertir el tipo de d
    en SisComWeb.Business.TurnoLogic.MuestraTurno(TurnoRequest request) en D:\GIT\Sistema Comercial Web\SistemaComercialWeb\SisComWeb.Business\TurnoLogic.cs:línea 34
 ClientConnectionId:56cd38a7-f42a-48b4-b2b4-64c9b00c0303
 Error Number:8114,State:1,Class:16
+=======
+2019-03-06 14:50:44,395 ERROR SisComWeb.Business.VentaLogic - GrabaVenta
+System.NullReferenceException: Referencia a objeto no establecida como instancia de un objeto.
+   en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 229
+>>>>>>> d4b808cb16d9aab88246880fbe2fd6824eba902f
