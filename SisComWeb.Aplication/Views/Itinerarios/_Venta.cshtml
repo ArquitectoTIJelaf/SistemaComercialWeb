@@ -342,7 +342,8 @@
                                         <tr>
                                             <td v-for="(item, key) in list.plano1" class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
+                                                    <button :id="'btnAsiento_' + item.Tipo"
+                                                            class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
@@ -365,7 +366,8 @@
                                         <tr>
                                             <td v-for="(item, key) in list.plano2" class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
+                                                    <button :id="'btnAsiento_' + item.Tipo"
+                                                            class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
@@ -388,7 +390,8 @@
                                         <tr>
                                             <td v-for="(item, key) in list.plano3" class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
+                                                    <button :id="'btnAsiento_' + item.Tipo"
+                                                            class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
@@ -411,7 +414,8 @@
                                         <tr>
                                             <td v-for="(item, key) in list.plano4" class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
+                                                    <button :id="'btnAsiento_' + item.Tipo"
+                                                            class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
@@ -434,7 +438,8 @@
                                         <tr>
                                             <td v-for="(item, key) in list.plano5" class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
+                                                    <button :id="'btnAsiento_' + item.Tipo"
+                                                            class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
@@ -477,10 +482,15 @@
                                             <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
                                             <input v-model="list.ventas[indexVenta].NroAsiento"
                                                    type="text"
+                                                   ref="refNroAsientoVenta"
                                                    id="txtNroAsientoVenta"
                                                    class="form-control input-sm"
                                                    placeholder="Nº"
                                                    style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
+                                                   v-mask="'##'"
+                                                   :disabled="list.ventas[indexVenta].IsDisabled"
+                                                   @@blur="validateTxtNroAsientoVenta()"
+                                                   @@keydown.13.prevent="$refs.refNroAsientoVenta.blur()"
                                                    autocomplete="off">
                                         </div>
                                     </div>
@@ -700,12 +710,14 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                                <input @@blur="recorridoSectionVentas(); list.ventas[indexVenta].FechaVen = $event.target.value.trim()"
+                                                <input @*@@blur="recorridoSectionVentas(); list.ventas[indexVenta].FechaVen = $event.target.value.trim()"*@
+                                                       v-model="list.ventas[indexVenta].FechaVen"
                                                        id="txtFechaVen"
                                                        type="text"
                                                        class="form-control input-sm dp"
                                                        placeholder="FECHA VENTA"
-                                                       autocomplete="off">
+                                                       autocomplete="off"
+                                                       disabled="disabled">
                                             </div>
                                         </div>
                                     </div>
