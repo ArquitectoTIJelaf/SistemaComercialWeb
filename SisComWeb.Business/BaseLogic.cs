@@ -149,5 +149,33 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListarGerente()
+        {
+            try
+            {
+                var response = BaseRepository.ListarGerente();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListarSocio()
+        {
+            try
+            {
+                var response = BaseRepository.ListarSocio();
+                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+            }
+        }
     }
 }

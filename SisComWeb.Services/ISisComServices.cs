@@ -51,6 +51,14 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListarParentesco", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListarParentesco();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListarGerente", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListarGerente();
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListarSocio", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListarSocio();
+
         #endregion
 
         #region LOGIN

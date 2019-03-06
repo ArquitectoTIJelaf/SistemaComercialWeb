@@ -52,6 +52,14 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Parentesco"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Parentesco"]).ToUpper();
                     break;
+                case 11:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Gerente"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Gerente"]).ToUpper();
+                    break;
+                case 12:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Socio"]);
+                    item.label = DataUtility.ObjectToString(reader["Nom_Socio"]).ToUpper();
+                    break;
 
             }
             return item;
@@ -297,6 +305,50 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = Lista;
                     response.Mensaje = "Correcto: ListarParentesco.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListarGerente()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarGerente.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarGerente";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 11));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarGerente.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BaseEntity>> ListarSocio()
+        {
+            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarSocio.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarSocio";
+                var Lista = new List<BaseEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 12));
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = Lista;
+                    response.Mensaje = "Correcto: ListarSocio.";
                     response.Estado = true;
                 }
             }
