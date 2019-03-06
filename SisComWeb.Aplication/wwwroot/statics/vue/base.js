@@ -155,6 +155,12 @@ Vue.filter('maxLenght', function (value, length) {
         return value.substring(0, length) + final;
     }
 });
+
+Vue.filter('hexToRgb', function (value, opacity = 1) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
+    return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${opacity})`
+        : 'rgb(255, 255, 255)'; 
+});
 /*!********************* Filter Vue */
 
 
