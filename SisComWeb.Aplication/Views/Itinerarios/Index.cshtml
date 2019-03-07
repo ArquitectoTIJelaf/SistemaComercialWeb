@@ -13,6 +13,8 @@
 
 @section styles{
     <style type="text/css">
+
+
         #appRegistrarInfante .form-horizontal .control-label {
             text-align: left;
         }
@@ -962,7 +964,6 @@
                     });
                 },
                 liberarAsiento: async function (asientoSel) {
-                    debugger;
                     var _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
@@ -1361,7 +1362,6 @@
                         this.list.ventas[this.indexVenta].Edad = '';
                 },
                 limpiarVenta: function () {
-                    debugger;
                     var _this = this;
                     _this.indexVenta = 0;
                     _this.list.ventas.length = 1;
@@ -1399,7 +1399,6 @@
                     this.auxFocus.precio = true;
                 },
                 validateRangePrice: function () {
-                    debugger;
                     var _this = this;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
@@ -1420,20 +1419,26 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: function () {
-                    debugger;
-                    //var auxResponse = false;
                     if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+
                         for (const obj of this.list.tempList) {
                             if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
                                 if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
-                                    //auxResponse = true;
                                     this.auxFocus.asiento = false;
                                     document.getElementById('btnAsiento_' + obj.Tipo).click();
                                     break;
                                 }
                             }
+                        }
+                        this.auxFocus.asiento = false;
+                        APP.msg.error('Asiento no válido');
+                    }
+                    else {
+                        this.auxFocus.asiento = false;
+                        if (this.list.ventas[this.indexVenta].NroAsiento) {
+                            APP.msg.error('Asiento no válido');
                         }
                     }
                 },
@@ -1462,7 +1467,11 @@
                     this.recorridoSectionVentas();
                 },
                 cancelarBoletos: function () {
-                    this.limpiarAsientosBloqueados();
+                    this.list.ventas.forEach(function (obj) {
+                        if (!isNaN(obj.NroAsiento) && obj.NroAsiento) {
+                            document.getElementById('btnAsiento_' + obj.NroAsiento).click();
+                        }
+                    });
                     this.limpiarVenta();
                 },
                 changePickedBusVenta: async function (value) {
