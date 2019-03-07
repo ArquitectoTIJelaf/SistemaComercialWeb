@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -104,6 +105,36 @@ namespace SisComWeb.Repository
                     response.EsCorrecto = true;
                     response.Valor = valor;
                     response.Mensaje = "Correcto: BuscarRucEmpresa.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        {
+            var response = new Response<List<BeneficiarioEntity>>(false, null, "Error: ListaBeneficiarioPase.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscaBeneficiariosPases";
+                db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, Codi_Socio);
+                var entidad = new List<BeneficiarioEntity>();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.Add(new BeneficiarioEntity
+                        {
+                            Nombre_Beneficiario = Reader.GetStringValue(drlector, "Nombre_Beneficiario"),
+                            Tipo_Documento = Reader.GetStringValue(drlector, "Tipo_Documento"),
+                            Documento = Reader.GetStringValue(drlector, "Documento"),
+                            Numero_Documento = Reader.GetStringValue(drlector, "Numero_Documento"),
+                            Sexo = Reader.GetStringValue(drlector, "Sexo")
+                        });
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = entidad;
+                    response.Mensaje = "Correcto: ListaBeneficiarioPase.";
                     response.Estado = true;
                 }
             }

@@ -339,6 +339,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        {
+            try
+            {
+                return VentaLogic.ListaBeneficiarioPase(Codi_Socio);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BeneficiarioEntity>>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+            }
+        }
+
         #endregion
     }
 }
