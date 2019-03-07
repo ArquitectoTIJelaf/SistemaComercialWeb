@@ -266,6 +266,8 @@
             /*text-align: center;
             width: 100%;*/
         }
+
+
     </style>
 }
 
@@ -1377,34 +1379,29 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: function () {
-                    var auxResponse = false;
-
+                    //var auxResponse = false;
                     if (this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
-
                         for (const obj of this.list.tempList) {
                             if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
                                 if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
-                                    auxResponse = true;
+                                    //auxResponse = true;
+                                    this.auxFocus.asiento = false;
                                     document.getElementById('btnAsiento_' + obj.Tipo).click();
                                     break;
                                 }
                             }
                         }
-
-                    }
-
-                    if (auxResponse)
-                        $('#cboTipoDoc input[type=search]').focus();
-                    else {
-                        if (!this.list.ventas[this.indexVenta].NroAsiento)
-                            document.getElementById('txtNroAsientoVenta').blur();
-                        else
-                            document.getElementById('txtNroAsientoVenta').focus();
-                    }
-
-                    this.auxFocus.asiento = false;
+                    } 
+                    //if (auxResponse)
+                    //    $('#cboTipoDoc input[type=search]').focus();
+                    //else {
+                    //    if (!this.list.ventas[this.indexVenta].NroAsiento)
+                    //        document.getElementById('txtNroAsientoVenta').blur();
+                    //    else
+                    //        document.getElementById('txtNroAsientoVenta').focus();
+                    //}                    
                 },
                 passSolicitudToRuc: function () {
                     if (this.list.ventas[this.indexVenta].NroSolicitud)
