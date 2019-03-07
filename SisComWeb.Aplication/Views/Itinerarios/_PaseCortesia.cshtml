@@ -9,7 +9,63 @@
             <div class="modal-body">
                 <div class="form-horizontal">
                     <div class="form-group m-b-5">
-                        <div class="col-md-12 separate-in-form">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Gerente:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="gerente"
+                                          :id="'cboGerentePC'"
+                                          label="label"
+                                          :options="list.gerente"
+                                          :placeholder="'GERENTE'"
+                                          @*@@keydown.13.native.prevent="recorridoSectionParentesco"*@
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Solicitante:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="gerente"
+                                          :id="'cboSolicitantePC'"
+                                          label="label"
+                                          :options="list.solicitante"
+                                          :placeholder="'SOLICITANTE'"
+                                          @*@@keydown.13.native.prevent="recorridoSectionParentesco"*@
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Concepto:</label>
+                            <div class="col-md-10">
+                                <input v-model="concepto"
+                                       @*@@keypress.13.prevent="recorridoSectionParentesco"*@
+                                       id="txtConceptoPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="CONCEPTO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Beneficiario:</label>
+                            <div class="col-md-10">
+                                <input v-model="beneficiario"
+                                       @*@@keypress.13.prevent="recorridoSectionParentesco"*@
+                                       id="txtBeneficiarioPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="BENEFICIARIO"
+                                       autocomplete="off">
+                            </div>
                         </div>
                     </div>
                 </div>

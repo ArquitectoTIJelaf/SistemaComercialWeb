@@ -10,6 +10,7 @@
 @Html.Partial("_Venta")
 @Html.Partial("_RegistrarInfante")
 @Html.Partial("_TipoPago")
+@Html.Partial("_PaseCortesia")
 
 @section styles{
     <style type="text/css">
@@ -451,6 +452,10 @@
                 },
                 showRegistrarInfante: function (_TipoDoc, _ListSexos) {
                     appRegistrarInfante.show(_TipoDoc, _ListSexos);
+                },
+                showPaseCortesia: function () {
+                    debugger;
+                    appVuePaseCortesia.show();
                 }
             };
         })();
@@ -1342,6 +1347,11 @@
                     var _this = this;
                     appController.showRegistrarInfante(_this.list.tiposDoc, _this.list.sexos);
                 },
+                showPaseCortesia: function () {
+                    debugger;
+                    var _this = this;
+                    appController.showPaseCortesia();
+                },
                 leftSlider: function () {
                     if (this.indexVenta > 0)
                         this.indexVenta--;
@@ -1940,7 +1950,31 @@
         });
 
         var appVuePaseCortesia = new Vue({
+            el: "#appVuePaseCortesia",
+            data: {
+                gerente: null,
+                concepto: '',
+                beneficiario: '',
+                list: {
+                    gerente: [],
+                    solicitante: []
+                },
+            },
+            mounted: function () {
 
+            },
+            methods: {
+                show: function () {
+                    debugger;
+                    $('#appVuePaseCortesia').modal('show');
+                }
+            },
+            computed: {
+
+            },
+            watch: {
+
+            }
         });
 
     </script>
