@@ -13,6 +13,10 @@
 
 @section styles{
     <style type="text/css">
+        a[disabled] {
+            pointer-events: none;
+        }
+
         .panel-default .panel-heading {
             height: auto;
         }
@@ -705,7 +709,8 @@
                 auxFocus: {
                     asiento: false,
                     precio: false
-                }
+                },
+                processing: false
             },
             mounted: function () {
                 this.getEmpresas();
@@ -724,6 +729,8 @@
                 },
                 getTurno: async function (item, fechaViaje) {
                     var _this = this;
+                    _this.processing = true;
+
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -737,6 +744,7 @@
                     _this.Correlativo = await _this.getCorrelativo(item.CodiEmpresa);
                     // Cuando no obtiene 'Correlativo'
                     if (_this.Correlativo === '0-0') {
+                        _this.processing = false;
                         _this.showPlano = false;
                         APP.msg.error('No se cargó resultados');
                         return;
@@ -784,6 +792,7 @@
                                         } else {
                                             _this.firstCharge = false;
                                         }
+                                        _this.processing = false;
                                         _this.showPlano = true;
                                     });
                                     _this.firstAsiento = true;
@@ -794,6 +803,7 @@
                                     _this.list.plano2 = [];
                                     _this.list.plano1 = [];
                                     _this.$nextTick(() => {
+                                        _this.processing = false;
                                         _this.showPlano = false;
                                         APP.msg.error('No se pudo cargar el plano');
                                     });
@@ -801,6 +811,7 @@
                                 _this.indexVenta = 0;
                                 _this.limpiarVenta();
                             } else {
+                                _this.processing = false;
                                 _this.showPlano = false;
                                 APP.msg.error('No se cargó resultados');
                             }
@@ -1274,6 +1285,9 @@
                 },
                 nextStep: function (code) {
                     var _this = this;
+                    // Si está actualizando, no volver a actualizar.
+                    if (_this.processing) return;
+
                     _this.showPlano = false;
                     switch (code) {
                         case 1: if (!$("#panelWrapperV").hasClass("in")) $('#btnDesplegar').click(); $('#cboSucursal input[type=search]').focus(); break;
@@ -1716,7 +1730,7 @@
                 nextInput: function() {
                     $('#btnSaveVentaTipoPago').focus();
                 },
-                getLabel: function (option) {
+                getLabelEmbarqueArribo: function (option) {
                     return `${option.Lugar} - ${option.Hora}`
                 }
             },

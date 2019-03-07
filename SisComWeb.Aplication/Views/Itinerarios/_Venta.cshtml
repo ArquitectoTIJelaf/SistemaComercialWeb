@@ -94,13 +94,17 @@
                                 </div>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label color-blue">Nº Viaje: {{filtro.NroViaje}}</label>
+                                <label class="control-label color-blue">Nº VIAJE: {{filtro.NroViaje}}</label>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label color-blue">Nº Programación: {{filtro.CodiProgramacion}}</label>
+                                <label class="control-label color-blue">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion}}</label>
                             </div>
                             <div class="col-md-4" style="text-align: right; font-size: 15px;">
-                                <a @@click="nextStep(10)" href="javascript:void(0);" id="btnActualizar" style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
+                                <a @@click="nextStep(10)"
+                                   :disabled="processing"
+                                   href="javascript:void(0);"
+                                   id="btnActualizar"
+                                   style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
                                     <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer;">Actualizar</label>
                                 </a>
@@ -119,7 +123,7 @@
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
                                 <img src="~/wwwroot/plugins/images/BUS3.png" />
                                 <label class="control-label color-blue" style="margin-left: 5px; font-size: 12px; display: inline; ">
-                                    Con embarque en: {{setCadenaEmbarques}}
+                                    CON EMBARQUE EN: {{setCadenaEmbarques}}
                                 </label>
                                 <div class="panel-action">
                                     <button type="button"
@@ -142,152 +146,139 @@
                         <div class="col-md-12">
                             <div id="panelWrapperV" class="panel-wrapper collapse in">
                                 <div class="panel-body" style="padding: 15px 0px 0px 0px; ">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Sucursal:</label>
-                                            <v-select v-model="filtro.CodiSucursal"
-                                                      :id="'cboSucursal'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.sucursales"
-                                                      :placeholder="'SUCURSAL'"
-                                                      @@keydown.13.native.prevent="nextStep(2)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
+
+                                    <div class="col-md-9">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Sucursal:</label>
+                                                <v-select v-model="filtro.CodiSucursal"
+                                                          :id="'cboSucursal'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.sucursales"
+                                                          :placeholder="'SUCURSAL'"
+                                                          @@keydown.13.native.prevent="nextStep(2)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Origen bus:</label>
+                                                <v-select v-model="filtro.CodiOrigenBus"
+                                                          :id="'cboOrigenBus'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.origenesBus"
+                                                          :placeholder="'ORIGEN BUS'"
+                                                          @@keydown.13.native.prevent="nextStep(3)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">P.V. Origen bus:</label>
+                                                <v-select v-model="filtro.CodiPVOrigenBus"
+                                                          :id="'cboPVOrigenBus'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.pvOrigenesBus"
+                                                          :placeholder="'P.V. ORIGEN BUS'"
+                                                          @@keydown.13.native.prevent="nextStep(4)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Destino bus:</label>
+                                                <v-select v-model="filtro.CodiDestinoBus"
+                                                          :id="'cboDestinoBus_2'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.destinosBus"
+                                                          :placeholder="'DESTINO BUS'"
+                                                          @@keydown.13.native.prevent="nextStep(5)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Destino pasajero:</label>
+                                                <v-select v-model="filtro.CodiDestinoPas"
+                                                          :id="'cboDestinoPas_2'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.destinosPas"
+                                                          :placeholder="'DESTINO PASAJERO'"
+                                                          @@keydown.13.native.prevent="nextStep(7)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Turno:</label>
+                                                <input v-model="filtro.Turno"
+                                                       v-mask="'##:## AM'"
+                                                       @@blur="nextStep(8)"
+                                                       type="text"
+                                                       id="txtTurno"
+                                                       class="form-control input-sm dph"
+                                                       placeholder="TURNO"
+                                                       autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group ">
+                                                <label class="control-label">Fecha Viaje:</label>
+                                                <input v-model="filtro.Fecha"
+                                                       v-mask="'##/##/####'"
+                                                       @@blur="nextStep(9)"
+                                                       type="text"
+                                                       id="txtFecha_2"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA"
+                                                       autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Servicio:</label>
+                                                <v-select v-model="filtro.CodiServicio"
+                                                          :id="'cboServicio'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.servicios"
+                                                          :placeholder="'SERVICIO'"
+                                                          @@keydown.13.native.prevent="nextStep(6)"
+                                                          ref="select">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Origen bus:</label>
-                                            <v-select v-model="filtro.CodiOrigenBus"
-                                                      :id="'cboOrigenBus'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.origenesBus"
-                                                      :placeholder="'ORIGEN BUS'"
-                                                      @@keydown.13.native.prevent="nextStep(3)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">P.V. Origen bus:</label>
-                                            <v-select v-model="filtro.CodiPVOrigenBus"
-                                                      :id="'cboPVOrigenBus'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.pvOrigenesBus"
-                                                      :placeholder="'P.V. ORIGEN BUS'"
-                                                      @@keydown.13.native.prevent="nextStep(4)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Destino bus:</label>
-                                            <v-select v-model="filtro.CodiDestinoBus"
-                                                      :id="'cboDestinoBus_2'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.destinosBus"
-                                                      :placeholder="'DESTINO BUS'"
-                                                      @@keydown.13.native.prevent="nextStep(5)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Servicio:</label>
-                                            <v-select v-model="filtro.CodiServicio"
-                                                      :id="'cboServicio'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.servicios"
-                                                      :placeholder="'SERVICIO'"
-                                                      @@keydown.13.native.prevent="nextStep(6)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2" style="float: right;">
-                                        <div style="border-left: 1px solid rgb(228, 231, 234);padding-left: 15px;">
+
+                                    <div class="col-md-3" style="float: right;">
+                                        <div style="border-left: 1px solid rgb(228, 231, 234);padding-left: 45px;">
                                             <label style="width: calc(100% - 25px);text-align: center;">OTROS TURNOS</label>
                                             <div style="overflow-y:auto;height: 100px;">
-                                                <ul style="list-style-type: none;padding-left: 0;">
+                                                <ul style="list-style-type: none; padding-left: 0;">
                                                     <li v-for="item in list.turnos">
-                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4" :title="item.HoraPartida + '. - ' + item.NomServicio">{{item.HoraPartida}}. - {{item.NomServicio | maxLenght(12)}}</a>
+                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4" :title="item.HoraPartida + ' - ' + item.NomServicio">{{item.HoraPartida}}  -  {{item.NomServicio}}</a>
                                                     </li>
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Destino pasajero:</label>
-                                            <v-select v-model="filtro.CodiDestinoPas"
-                                                      :id="'cboDestinoPas_2'"
-                                                      :get-option-label="getLabel"
-                                                      :options="list.destinosPas"
-                                                      :placeholder="'DESTINO PASAJERO'"
-                                                      @@keydown.13.native.prevent="nextStep(7)"
-                                                      ref="select">
-                                                <span slot="no-options" class="text-danger">No hay resultados</span>
-                                            </v-select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label class="control-label">Turno:</label>
-                                            <input v-model="filtro.Turno"
-                                                   v-mask="'##:## AM'"
-                                                   @@blur="nextStep(8)"
-                                                   type="text"
-                                                   id="txtTurno"
-                                                   class="form-control input-sm dph"
-                                                   placeholder="TURNO"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group ">
-                                            <label class="control-label">Fecha Viaje:</label>
-                                            <input v-model="filtro.Fecha"
-                                                   v-mask="'##/##/####'"
-                                                   @@blur="nextStep(9)"
-                                                   type="text"
-                                                   id="txtFecha_2"
-                                                   class="form-control input-sm dp"
-                                                   placeholder="FECHA"
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2" style="text-align: center; margin-top: 27px; ">
-                                        <label id="lblNameDay_Fecha"
-                                               class="control-label"
-                                               style="color: var(--emp-color); font-size: 14px; font-weight: 500; ">
-                                        </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group ">
-                                            <label class="control-label">&nbsp;</label>
-                                            <input value="USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()"
-                                                   type="text"
-                                                   class="form-control input-sm"
-                                                   placeholder="USUARIO"
-                                                   readonly="readonly"
-                                                   style="font-weight: 500; background-color: #fff; "
-                                                   autocomplete="off">
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div id="BusVentas">
-                        <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;">
+                        <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;display:flex;">
                             <div class="col-md-8 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px; display: flex; align-items: center; color: white;">
                                 <div class="col-md-1 ancho">
                                     <input type="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
@@ -303,23 +294,42 @@
                                 </div>
                                 <div class="col-md-1 ancho">
                                     <input type="radio" id="fecAbiertaBV" value="" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="fecAbiertaBV" class="align-label-radio">Fecha&nbsp;Abierta</label>
+                                    <label for="fecAbiertaBV" class="align-label-radio">F.&nbsp;Abierta</label>
                                 </div>
                                 <div class="col-md-1 ancho">
-                                    <input type="radio" id="ventaBV" value="7" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="ventaBV" class="align-label-radio">Pase</label>
+                                    <input type="radio" id="paseBV" value="7" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="paseBV" class="align-label-radio">Pase</label>
                                 </div>
                                 <div class="col-md-1 ancho">
-                                    <input type="radio" id="bloqueoBV" value="" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="bloqueoBV" class="align-label-radio">Remoto</label>
+                                    <input type="radio" id="remotoBV" value="" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="remotoBV" class="align-label-radio">Remoto</label>
                                 </div>
                                 <div class="col-md-1 ancho">
-                                    <input type="radio" id="reservaBV" value="" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="reservaBV" class="align-label-radio">Retorno</label>
+                                    <input type="radio" id="retornoBV" value="" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="retornoBV" class="align-label-radio">Retorno</label>
                                 </div>
                                 <div class="col-md-1 ancho">
-                                    <input type="radio" id="fecAbiertaBV" value="" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="fecAbiertaBV" class="align-label-radio">Crédito</label>
+                                    <input type="radio" id="creditoBV" value="" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="creditoBV" class="align-label-radio">Crédito</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-6" style="text-align: center;top: 50%;transform: translateY(-50%);">
+                                    <label id="lblNameDay_Fecha"
+                                           class="control-label"
+                                           style="color: var(--emp-color); font-size: 14px; font-weight: 500; ">
+                                    </label>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        <input value="USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()"
+                                               type="text"
+                                               class="form-control input-sm"
+                                               placeholder="USUARIO"
+                                               readonly="readonly"
+                                               style="font-weight: 500; background-color: #fff; "
+                                               autocomplete="off">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -585,20 +595,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label">Fecha nac.</label>
-                                                    <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                           v-model="list.ventas[indexVenta].FechaNac"
-                                                           v-mask="'##/##/####'"
-                                                           type="text"
-                                                           id="txtFechaNac"
-                                                           class="form-control input-sm dp"
-                                                           placeholder="FECHA NAC.">
-                                                </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label class="control-label">Fecha nac.</label>
+                                                <input @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                       v-model="list.ventas[indexVenta].FechaNac"
+                                                       v-mask="'##/##/####'"
+                                                       type="text"
+                                                       id="txtFechaNac"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA NAC.">
                                             </div>
-                                            <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label class="control-label">Edad</label>
                                                     <input :value="list.ventas[indexVenta].Edad"
@@ -610,7 +620,7 @@
                                                            disabled>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select v-model="list.ventas[indexVenta].Sexo"
@@ -625,7 +635,7 @@
                                                     </v-select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Teléfono</label>
                                                     <input v-model="list.ventas[indexVenta].Telefono"
@@ -638,18 +648,18 @@
                                                            v-mask="'#########'">
                                                 </div>
                                             </div>
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label">Recoger</label>
-                                                    <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
-                                                           @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           ref="refRecoger"
-                                                           id="txtRecoger"
-                                                           type="text"
-                                                           class="form-control input-sm"
-                                                           placeholder="RECOGER">
-                                                </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Recoger</label>
+                                                <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
+                                                       @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       ref="refRecoger"
+                                                       id="txtRecoger"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="RECOGER">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -679,7 +689,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-10">
+                                        <div class="col-md-9" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label class="control-label">RUC</label>
@@ -695,7 +705,7 @@
                                                            v-mask="'###########'">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Razón social</label>
                                                     <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
@@ -704,13 +714,12 @@
                                                            ref="refRazonSocial"
                                                            id="txtRazonSocial"
                                                            type="text"
-                                                           min="3"
                                                            max="100"
                                                            class="form-control input-sm"
                                                            placeholder="RAZÓN SOCIAL">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Dirección</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
@@ -724,16 +733,16 @@
                                                            placeholder="DIRECCIÓN">
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                                    <input :value="list.ventas[indexVenta].FechaVen"
-                                                           id="txtFechaVen"
-                                                           type="text"
-                                                           class="form-control input-sm"
-                                                           placeholder="DD/MM/YYYY"
-                                                           disabled="disabled">
-                                                </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label class="control-label" style="width: 100%; ">Fecha de venta</label>
+                                                <input :value="list.ventas[indexVenta].FechaVen"
+                                                       id="txtFechaVen"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="DD/MM/YYYY"
+                                                       disabled="disabled">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -751,18 +760,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">Observación</label>
-                                                <input :value="list.ventas[indexVenta].Observacion"
-                                                       id="txtObservacion"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="OBSERVACIÓN"
-                                                       disabled>
+                                                <textarea :value="list.ventas[indexVenta].Observacion"
+                                                          id="txtObservacion"
+                                                          type="text"
+                                                          class="form-control input-sm"
+                                                          placeholder="OBSERVACIÓN"
+                                                          style="height: 30px; min-height: 30px; "
+                                                          disabled>
+                                                </textarea>
                                             </div>
                                         </div>
-                                        <div class="col-md-7">
+                                        <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">&nbsp;</label>
@@ -771,7 +782,7 @@
                                                             style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
                                                             v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                        Registrar Nino
+                                                        Registrar Ni&ntilde;o
                                                     </button>
                                                 </div>
                                             </div>
@@ -803,7 +814,7 @@
                                                                     class="btn btn-secondary btn-ticket-venta"
                                                                     style="width: 100%; color:white;"
                                                                     v-bind:disabled="!bloquearPago">
-                                                                $ &ensp; Pago total
+                                                                $ &ensp; Pago Total
                                                             </button>
                                                         </div>
                                                     </div>
@@ -813,6 +824,21 @@
                                                 </template>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">&nbsp;</label>
+                                                <button 
+                                                        @*@@click="showRegistrarParentesco"*@
+                                                        class="btn btn-secondary btn-ticket-venta"
+                                                        style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
+                                                        @*v-bind:disabled="!bloquearPago"*@
+                                                        >
+                                                    Cancelar Todos
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </form>
                             </div>
