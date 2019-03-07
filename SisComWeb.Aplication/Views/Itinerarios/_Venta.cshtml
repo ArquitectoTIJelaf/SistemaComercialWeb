@@ -87,8 +87,7 @@
                                               :get-option-label="getLabel"
                                               :options="list.empresas"
                                               :placeholder="'EMPRESA'"
-                                              @@keydown.13.native.prevent="nextStep(1)"
-                                              ref="select">
+                                              @@keydown.13.native.prevent="nextStep(1)">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -156,8 +155,7 @@
                                                           :get-option-label="getLabel"
                                                           :options="list.sucursales"
                                                           :placeholder="'SUCURSAL'"
-                                                          @@keydown.13.native.prevent="nextStep(2)"
-                                                          ref="select">
+                                                          @@keydown.13.native.prevent="nextStep(2)">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -170,8 +168,7 @@
                                                           :get-option-label="getLabel"
                                                           :options="list.origenesBus"
                                                           :placeholder="'ORIGEN BUS'"
-                                                          @@keydown.13.native.prevent="nextStep(3)"
-                                                          ref="select">
+                                                          @@keydown.13.native.prevent="nextStep(3)">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -184,8 +181,7 @@
                                                           :get-option-label="getLabel"
                                                           :options="list.pvOrigenesBus"
                                                           :placeholder="'P.V. ORIGEN BUS'"
-                                                          @@keydown.13.native.prevent="nextStep(4)"
-                                                          ref="select">
+                                                          @@keydown.13.native.prevent="nextStep(4)">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -198,8 +194,20 @@
                                                           :get-option-label="getLabel"
                                                           :options="list.destinosBus"
                                                           :placeholder="'DESTINO BUS'"
-                                                          @@keydown.13.native.prevent="nextStep(5)"
-                                                          ref="select">
+                                                          @@keydown.13.native.prevent="nextStep(5)">
+                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                </v-select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Servicio:</label>
+                                                <v-select v-model="filtro.CodiServicio"
+                                                          :id="'cboServicio'"
+                                                          :get-option-label="getLabel"
+                                                          :options="list.servicios"
+                                                          :placeholder="'SERVICIO'"
+                                                          @@keydown.13.native.prevent="nextStep(6)">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -212,8 +220,7 @@
                                                           :get-option-label="getLabel"
                                                           :options="list.destinosPas"
                                                           :placeholder="'DESTINO PASAJERO'"
-                                                          @@keydown.13.native.prevent="nextStep(7)"
-                                                          ref="select">
+                                                          @@keydown.13.native.prevent="nextStep(7)">
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -242,20 +249,6 @@
                                                        class="form-control input-sm dp"
                                                        placeholder="FECHA"
                                                        autocomplete="off">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="control-label">Servicio:</label>
-                                                <v-select v-model="filtro.CodiServicio"
-                                                          :id="'cboServicio'"
-                                                          :get-option-label="getLabel"
-                                                          :options="list.servicios"
-                                                          :placeholder="'SERVICIO'"
-                                                          @@keydown.13.native.prevent="nextStep(6)"
-                                                          ref="select">
-                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                                </v-select>
                                             </div>
                                         </div>
                                     </div>

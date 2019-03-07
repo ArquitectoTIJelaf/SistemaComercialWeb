@@ -351,6 +351,72 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-gerentes")]
+        public async Task<JsonResult> GetGerentes()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListarGerente");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListarGerente");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-socios")]
+        public async Task<JsonResult> GetSocios()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListarSocio");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListarSocio");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                JArray data = (JArray)tmpResult["Valor"];
+                List<Base> items = data.Select(x => new Base
+                {
+                    id = (string)x["id"],
+                    label = (string)x["label"]
+                }).ToList();
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }
