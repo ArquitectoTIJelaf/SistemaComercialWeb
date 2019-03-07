@@ -1356,37 +1356,36 @@
                 limpiarVenta: function () {
                     debugger;
                     var _this = this;
-                    _this.list.ventas = [];
-                    this.list.ventas.push({
-                        IdCliente: 0,
-                        CodiTipoDoc: null,
-                        Documento: '',
-                        Nombres: '',
-                        ApellidoPaterno: '',
-                        ApellidoMaterno: '',
-                        FechaNac: '',
-                        Edad: '',
-                        Sexo: null,
-                        Telefono: '',
-                        Ruc: '',
-                        RazonSocial: '',
-                        Direccion: '',
-                        Recoger: '',
-                        Reintegro: '',
-                        Observacion: '',
-                        Precio: '',
-                        PrecioNormal: '',
-                        PrecioMin: '',
-                        PrecioMax: '',
-                        NroAsiento: '',
-                        NivelAsiento: 0,
-                        NroVenta: '',
-                        NroSolicitud: '',
-                        FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
-                        Nacionalidad: '',
-                        ObjAcompañante: {},
-                        IsDisabled: false
-                    });
+                    _this.indexVenta = 0;
+                    _this.list.ventas.length = 1;
+                    _this.list.ventas[0].IdCliente = 0;
+                    _this.list.ventas[0].CodiTipoDoc = null;
+                    _this.list.ventas[0].Documento = '';
+                    _this.list.ventas[0].Nombres = '';
+                    _this.list.ventas[0].ApellidoPaterno = '';
+                    _this.list.ventas[0].ApellidoMaterno = '';
+                    _this.list.ventas[0].FechaNac = '';
+                    _this.list.ventas[0].Edad = '';
+                    _this.list.ventas[0].Sexo = null;
+                    _this.list.ventas[0].Telefono = '';
+                    _this.list.ventas[0].Ruc = '';
+                    _this.list.ventas[0].RazonSocial = '';
+                    _this.list.ventas[0].Direccion = '';
+                    _this.list.ventas[0].Recoger = '';
+                    _this.list.ventas[0].Reintegro = '';
+                    _this.list.ventas[0].Observacion = '';
+                    _this.list.ventas[0].Precio = '';
+                    _this.list.ventas[0].PrecioNormal = '';
+                    _this.list.ventas[0].PrecioMin = '';
+                    _this.list.ventas[0].PrecioMax = '';
+                    _this.list.ventas[0].NroAsiento = '';
+                    _this.list.ventas[0].NivelAsiento = 0;
+                    _this.list.ventas[0].NroVenta = '';
+                    _this.list.ventas[0].NroSolicitud = '';
+                    _this.list.ventas[0].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
+                    _this.list.ventas[0].Nacionalidad = '';
+                    _this.list.ventas[0].ObjAcompañante = {};
+                    _this.list.ventas[0].IsDisabled = false;
                 },
                 focusPrecio: function (event) {
                     event.target.select();
@@ -1414,8 +1413,9 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: function () {
+                    debugger;
                     //var auxResponse = false;
-                    if (this.list.ventas[this.indexVenta].NroAsiento) {
+                    if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
                         for (const obj of this.list.tempList) {
@@ -1455,7 +1455,6 @@
                     this.recorridoSectionVentas();
                 },
                 changePickedBusVenta: async function (value) {
-                    debugger;
                     var _this = this;
                     switch (value) {
                         case '7':
@@ -1465,7 +1464,7 @@
                                     _this.limpiarVenta();
                                     _this.pickedBusVenta = value;
                                 } else {
-                                    
+
                                 }
                             } else {
                                 _this.pickedBusVenta = value;
