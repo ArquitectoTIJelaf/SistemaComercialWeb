@@ -625,6 +625,7 @@
                     turnos: [],
                     destinosRuta: [],
                     embarques: [],
+                    arribos: [],
                     ventas: [{
                         IdCliente: 0,
                         CodiTipoDoc: null,
@@ -745,6 +746,7 @@
                                 _this.objPlano.NombreCopiloto = res.data.NombreCopiloto;
                                 _this.list.destinosRuta = res.data.ListaDestinosRuta;
                                 _this.list.embarques = res.data.ListaEmbarques;
+                                _this.list.arribos = res.data.ListaArribos;
                                 _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
@@ -1006,28 +1008,36 @@
                     var _this = this;
                     if (!_this.filtro.CodiEmpresa) {
                         $('#cboEmpresa input[type=search]').focus();
-                    } else if (!_this.filtro.CodiSucursal) {
+                    }
+                    else if (!_this.filtro.CodiSucursal) {
                         $('#cboSucursal input[type=search]').focus();
-                    } else if (!_this.filtro.CodiOrigenBus) {
+                    }
+                    else if (!_this.filtro.CodiOrigenBus) {
                         $('#cboOrigenBus input[type=search]').focus();
-                    } else if (!_this.filtro.CodiPVOrigenBus) {
+                    }
+                    else if (!_this.filtro.CodiPVOrigenBus) {
                         $('#cboPVOrigenBus input[type=search]').focus();
-                    } else if (!_this.filtro.CodiDestinoBus) {
+                    }
+                    else if (!_this.filtro.CodiDestinoBus) {
                         $('#cboDestinoBus_2 input[type=search]').focus();
-                    } else if (!_this.filtro.CodiServicio) {
+                    }
+                    else if (!_this.filtro.CodiServicio) {
                         $('#cboServicio input[type=search]').focus();
-                    } else if (!_this.filtro.CodiDestinoPas) {
+                    }
+                    else if (!_this.filtro.CodiDestinoPas) {
                         $('#cboDestinoPas_2 input[type=search]').focus();
-                    } else if (_this.filtro.Turno === '') {
+                    }
+                    else if (_this.filtro.Turno === '') {
                         $('#txtTurno').focus();
-                    } else if (_this.filtro.Fecha === '') {
+                    }
+                    else if (_this.filtro.Fecha === '') {
                         $('#txtFecha_2').focus();
-                    } else {
+                    }
+                    else {
                         appController.chargeTurnos();
                     }
                 },
                 recorridoSectionVentas: function () {
-                    debugger;
                     var _this = this;
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -1219,7 +1229,7 @@
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
-                    if (Edad < 0 && Edad <= 18)
+                    if (Edad > 0 && Edad <= 18)
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/NINO.png';
                     else
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
@@ -1230,6 +1240,8 @@
                     }
                 },
                 nextStep: function (code) {
+                    var _this = this;
+                    _this.showPlano = false;
                     switch (code) {
                         case 1: if (!$("#panelWrapperV").hasClass("in")) $('#btnDesplegar').click(); $('#cboSucursal input[type=search]').focus(); break;
                         case 2: $('#cboOrigenBus input[type=search]').focus(); break;
@@ -1668,6 +1680,9 @@
                 },
                 nextInput: function() {
                     $('#btnSaveVentaTipoPago').focus();
+                },
+                getLabel: function (option) {
+                    return `${option.Lugar} - ${option.Hora}`
                 }
             },
             computed: {
@@ -1827,7 +1842,6 @@
             },
             watch: {
                 'CodiTipoDoc': function (newValue) {
-                    debugger;
                     var _this = this;
                     if (newValue) {
                         var id = newValue.id;

@@ -137,6 +137,7 @@
                             <div class="col-md-10">
                                 <v-select v-model="embarque"
                                           :id="'cboEmbarqueTP'"
+                                          :get-option-label="getLabel"
                                           label="Lugar"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
@@ -151,6 +152,7 @@
                             <div class="col-md-10">
                                 <v-select v-model="arribo"
                                           :id="'cboArriboTP'"
+                                          :get-option-label="getLabel"
                                           label="Lugar"
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
