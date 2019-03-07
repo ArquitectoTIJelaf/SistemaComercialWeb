@@ -443,7 +443,7 @@ namespace SisComWeb.Business
                     }
 
                     // Añado 'auxBoletoCompleto'
-                    valor += auxBoletoCompleto + ",";
+                    valor += auxBoletoCompleto + ", ";
                 }
 
                 response.EsCorrecto = true;
@@ -457,6 +457,21 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgErrExcGrabaVenta, false);
+            }
+        }
+
+        public static Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        {
+            try
+            {
+                var resBeneficiarioPase = VentaRepository.ListaBeneficiarioPase(Codi_Socio);
+
+                return new Response<List<BeneficiarioEntity>>(resBeneficiarioPase.EsCorrecto, resBeneficiarioPase.Valor, resBeneficiarioPase.Mensaje, resBeneficiarioPase.Estado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BeneficiarioEntity>>(false, null, Message.MsgErrExcBusqClientePasaje, false);
             }
         }
 

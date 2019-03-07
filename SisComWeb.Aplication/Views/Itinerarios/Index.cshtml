@@ -278,8 +278,6 @@
             /*text-align: center;
             width: 100%;*/
         }
-
-
     </style>
 }
 
@@ -786,7 +784,7 @@
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
 
-                                var limpiarAB = await _this.limpiarAsientosBloqueados(_this.list.tempList);
+                                var limpiarAB = await _this.limpiarAsientosBloqueados();
                                 if (_this.list.tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
@@ -964,6 +962,7 @@
                     });
                 },
                 liberarAsiento: async function (asientoSel) {
+                    debugger;
                     var _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
@@ -996,6 +995,9 @@
                                         _this.list.ventas[_this.indexVenta].Observacion = '';
                                         _this.list.ventas[_this.indexVenta].Precio = '';
                                         _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMin = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMax = '';
                                         _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
                                         _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
                                         _this.list.ventas[_this.indexVenta].NroAsiento = '';
@@ -1359,44 +1361,45 @@
                         this.list.ventas[this.indexVenta].Edad = '';
                 },
                 limpiarVenta: function () {
+                    debugger;
                     var _this = this;
-                    _this.list.ventas = [];
-                    this.list.ventas.push({
-                        IdCliente: 0,
-                        CodiTipoDoc: null,
-                        Documento: '',
-                        Nombres: '',
-                        ApellidoPaterno: '',
-                        ApellidoMaterno: '',
-                        FechaNac: '',
-                        Edad: '',
-                        Sexo: null,
-                        Telefono: '',
-                        Ruc: '',
-                        RazonSocial: '',
-                        Direccion: '',
-                        Recoger: '',
-                        Reintegro: '',
-                        Observacion: '',
-                        Precio: '',
-                        PrecioNormal: '',
-                        PrecioMin: '',
-                        PrecioMax: '',
-                        NroAsiento: '',
-                        NivelAsiento: 0,
-                        NroVenta: '',
-                        NroSolicitud: '',
-                        FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
-                        Nacionalidad: '',
-                        ObjAcompañante: {},
-                        IsDisabled: false
-                    });
+                    _this.indexVenta = 0;
+                    _this.list.ventas.length = 1;
+                    _this.list.ventas[0].IdCliente = 0;
+                    _this.list.ventas[0].CodiTipoDoc = null;
+                    _this.list.ventas[0].Documento = '';
+                    _this.list.ventas[0].Nombres = '';
+                    _this.list.ventas[0].ApellidoPaterno = '';
+                    _this.list.ventas[0].ApellidoMaterno = '';
+                    _this.list.ventas[0].FechaNac = '';
+                    _this.list.ventas[0].Edad = '';
+                    _this.list.ventas[0].Sexo = null;
+                    _this.list.ventas[0].Telefono = '';
+                    _this.list.ventas[0].Ruc = '';
+                    _this.list.ventas[0].RazonSocial = '';
+                    _this.list.ventas[0].Direccion = '';
+                    _this.list.ventas[0].Recoger = '';
+                    _this.list.ventas[0].Reintegro = '';
+                    _this.list.ventas[0].Observacion = '';
+                    _this.list.ventas[0].Precio = '';
+                    _this.list.ventas[0].PrecioNormal = '';
+                    _this.list.ventas[0].PrecioMin = '';
+                    _this.list.ventas[0].PrecioMax = '';
+                    _this.list.ventas[0].NroAsiento = '';
+                    _this.list.ventas[0].NivelAsiento = 0;
+                    _this.list.ventas[0].NroVenta = '';
+                    _this.list.ventas[0].NroSolicitud = '';
+                    _this.list.ventas[0].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
+                    _this.list.ventas[0].Nacionalidad = '';
+                    _this.list.ventas[0].ObjAcompañante = {};
+                    _this.list.ventas[0].IsDisabled = false;
                 },
                 focusPrecio: function (event) {
                     event.target.select();
                     this.auxFocus.precio = true;
                 },
                 validateRangePrice: function () {
+                    debugger;
                     var _this = this;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
@@ -1417,8 +1420,9 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: function () {
+                    debugger;
                     //var auxResponse = false;
-                    if (this.list.ventas[this.indexVenta].NroAsiento) {
+                    if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
                         for (const obj of this.list.tempList) {
@@ -1459,7 +1463,24 @@
                 },
                 cancelarBoletos: function () {
                     this.limpiarAsientosBloqueados();
-                    //this.limpiarVenta();
+                    this.limpiarVenta();
+                },
+                changePickedBusVenta: async function (value) {
+                    var _this = this;
+                    switch (value) {
+                        case '7':
+                            if (_this.list.ventas.length > 1) {
+                                if (await APP.msg.confirm('Confirmar Cambio', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?')) {
+                                    _this.limpiarAsientosBloqueados();
+                                    _this.limpiarVenta();
+                                    _this.pickedBusVenta = value;
+                                } else {
+
+                                }
+                            } else {
+                                _this.pickedBusVenta = value;
+                            }; break;
+                    }
                 }
             },
             computed: {
@@ -1536,7 +1557,6 @@
                 },
                 'list.ventas': {
                     handler: function (after, before) {
-                        var _this = this;
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
@@ -1612,7 +1632,7 @@
                 saveVenta: async function () {
                     var _this = this;
                     // Limpiar 'AsientosBloqueados'
-                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
+                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
                     if (!limpiarAB) return;
                     var boletos = '';
                     var listado = [];
@@ -1666,7 +1686,7 @@
                         .then(async res => {
                             boletos = res.data;
 
-                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
+                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
                                 $("#appVueTipoPago").modal('hide');
                                 appController.chargeTurnos();
                             }
@@ -1914,6 +1934,10 @@
                     }
                 }
             }
+        });
+
+        var appVuePaseCortesia = new Vue({
+
         });
 
     </script>
