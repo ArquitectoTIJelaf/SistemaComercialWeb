@@ -2431,3 +2431,16 @@ Se terminó la instrucción.
    en SisComWeb.Business.VentaLogic.GrabaVenta(List`1 listado) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\VentaLogic.cs:línea 98
 ClientConnectionId:4746850a-bdb5-48a0-9e60-3ce00c4fee8b
 Error Number:2627,State:1,Class:14
+2019-03-07 16:47:13,165 ERROR SisComWeb.Business.PlanoLogic - MuestraPlano
+System.Data.SqlClient.SqlException (0x80131904): La conversión del valor varchar '4041' ha desbordado una columna INT1. Utilice una columna de tipo integer mayor.
+   en System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   en System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   en System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   en System.Data.SqlClient.SqlDataReader.TryHasMoreRows(Boolean& moreRows)
+   en System.Data.SqlClient.SqlDataReader.TryReadInternal(Boolean setTimeout, Boolean& more)
+   en System.Data.SqlClient.SqlDataReader.Read()
+   en SisComWeb.Repository.PlanoRepository.ListarAsientosOcupados(Int32 CodiProgramacion, String FechaProgramacion, Int32 NroViajem, Int16 CodiOrigen, Int16 CodiDestino) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Repository\PlanoRepository.cs:línea 110
+   en SisComWeb.Business.PlanoLogic.MuestraPlano(PlanoRequest request) en D:\GitHub_G\SistemaComercialWeb\SisComWeb.Business\PlanoLogic.cs:línea 96
+ClientConnectionId:6661af88-337e-473f-ae58-7701f903a1d2
+Error Number:244,State:1,Class:16
