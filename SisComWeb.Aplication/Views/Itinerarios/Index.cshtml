@@ -946,6 +946,7 @@
                     });
                 },
                 liberarAsiento: async function (asientoSel) {
+                    debugger;
                     var _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
@@ -978,6 +979,9 @@
                                         _this.list.ventas[_this.indexVenta].Observacion = '';
                                         _this.list.ventas[_this.indexVenta].Precio = '';
                                         _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMin = '';
+                                        _this.list.ventas[_this.indexVenta].PrecioMax = '';
                                         _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
                                         _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
                                         _this.list.ventas[_this.indexVenta].NroAsiento = '';
@@ -1338,6 +1342,7 @@
                         this.list.ventas[this.indexVenta].Edad = '';
                 },
                 limpiarVenta: function () {
+                    debugger;
                     var _this = this;
                     _this.list.ventas = [];
                     this.list.ventas.push({
@@ -1376,6 +1381,7 @@
                     this.auxFocus.precio = true;
                 },
                 validateRangePrice: function () {
+                    debugger;
                     var _this = this;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
@@ -1641,7 +1647,7 @@
                         .then(async res => {
                             boletos = res.data;
 
-                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos)) {
+                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
                                 $("#appVueTipoPago").modal('hide');
                                 appController.chargeTurnos();
                             }

@@ -131,6 +131,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]
         Response<string> GrabaVenta(List<VentaEntity> listado);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaBeneficiarioPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio);
+
         #endregion
     }
 }

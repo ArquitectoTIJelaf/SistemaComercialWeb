@@ -789,7 +789,8 @@
                                                            placeholder="0.00"
                                                            style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                            autocomplete="off"
-                                                           @@blur="validateRangePrice">
+                                                           @@blur="validateRangePrice"
+                                                           @*v-bind:disabled="!bloquearPago"*@>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
