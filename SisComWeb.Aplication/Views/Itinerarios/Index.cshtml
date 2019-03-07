@@ -270,8 +270,6 @@
             /*text-align: center;
             width: 100%;*/
         }
-
-
     </style>
 }
 
@@ -778,7 +776,7 @@
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
 
-                                var limpiarAB = await _this.limpiarAsientosBloqueados(_this.list.tempList);
+                                var limpiarAB = await _this.limpiarAsientosBloqueados();
                                 if (_this.list.tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
@@ -1449,6 +1447,25 @@
                         }
                     }
                     this.recorridoSectionVentas();
+                },
+                changePickedBusVenta: async function (value) {
+                    debugger;
+                    var _this = this;
+                    switch (value) {
+                        case '7':
+                            if (_this.list.ventas.length > 1) {
+                                if (await APP.msg.confirm('Confirmar Cambio', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?')) {
+                                    _this.limpiarAsientosBloqueados();
+                                    _this.limpiarVenta();
+                                    _this.pickedBusVenta = value;
+                                } else {
+                                    
+                                }
+                            } else {
+                                _this.pickedBusVenta = value;
+                            }; break;
+                    }
+
                 }
             },
             computed: {
@@ -1525,7 +1542,6 @@
                 },
                 'list.ventas': {
                     handler: function (after, before) {
-                        var _this = this;
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
@@ -1601,7 +1617,7 @@
                 saveVenta: async function () {
                     var _this = this;
                     // Limpiar 'AsientosBloqueados'
-                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados(appVueVenta.list.tempList);
+                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
                     if (!limpiarAB) return;
                     var boletos = '';
                     var listado = [];
@@ -1903,6 +1919,10 @@
                     }
                 }
             }
+        });
+
+        var appVuePaseCortesia = new Vue({
+
         });
 
     </script>
