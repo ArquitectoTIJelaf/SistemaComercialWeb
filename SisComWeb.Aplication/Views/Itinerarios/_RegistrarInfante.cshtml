@@ -7,7 +7,7 @@
                 <h4 class="modal-title"><b>Datos del Acompañante</b></h4>
             </div>
             <div class="modal-body">
-                <h5 style="font-family:Rubik, sans-serif;">
+                <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
                     Los niños acompañantes no pueden ser mayores a los 5 años, caso contrario deben comprar un
                     propio pasaje o tener la autorizacion de una administrador.
                 </h5>
@@ -128,9 +128,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group m-b-5">
                         <div class="col-md-12">
-                            <label class="col-md-2 control-label label-sm">Parentesco</label>
+                            <label class="col-md-2 control-label label-sm">Parentesco:</label>
                             <div class="col-md-10">
                                 <v-select v-model="parentesco"
                                           :id="'cboParentescoRA'"
@@ -145,14 +145,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btnRegistrarAconpaniante" @@click="saveAcompaniante" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
-                        <span class="fa fa-save fa-fw"></span>Aceptar
-                    </button>
-                    <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
-                        <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnRegistrarAconpaniante" @@click="saveAcompaniante" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
+                    <span class="fa fa-save fa-fw"></span>Aceptar
+                </button>
+                <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
             </div>
         </div>
     </div>

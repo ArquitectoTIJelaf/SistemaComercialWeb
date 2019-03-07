@@ -778,11 +778,11 @@
                                                 <div class="form-group">
                                                     <label class="control-label">&nbsp;</label>
                                                     <button @@click="showRegistrarParentesco"
-                                                            class="btn btn-secondary btn-ticket-venta"
-                                                            style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
+                                                            class="btn btn-secondary btn-ticket btn-venta"
+                                                            style="width: 100%; color:white; "
                                                             v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                        Registrar Ni&ntilde;o
+                                                        &ensp; Registrar Ni&ntilde;o
                                                     </button>
                                                 </div>
                                             </div>
@@ -810,8 +810,8 @@
                                                             <label class="control-label">&nbsp;</label>
                                                             <button @@click="showTipoPago"
                                                                     id="btnTipoPago"
-                                                                    class="btn btn-secondary btn-ticket-venta"
-                                                                    style="width: 100%; color:white;"
+                                                                    class="btn btn-secondary btn-ticket btn-venta"
+                                                                    style="width: 100%; color:white; "
                                                                     v-bind:disabled="!bloquearPago">
                                                                 $ &ensp; Pago Total
                                                             </button>
@@ -828,12 +828,10 @@
                                             <div class="form-group">
                                                 <label class="control-label">&nbsp;</label>
                                                 <button 
-                                                        @*@@click="showRegistrarParentesco"*@
-                                                        class="btn btn-secondary btn-ticket-venta"
-                                                        style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
-                                                        @*v-bind:disabled="!bloquearPago"*@
-                                                        >
-                                                    Cancelar Todos
+                                                        @@click="cancelarBoletos"
+                                                        class="btn btn-secondary btn-ticket btn-cancelar"
+                                                        style="width: 100%; color:white;">
+                                                    Cancelar Boletos
                                                 </button>
                                             </div>
                                         </div>

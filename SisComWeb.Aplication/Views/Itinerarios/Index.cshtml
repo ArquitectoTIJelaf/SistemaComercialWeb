@@ -13,6 +13,14 @@
 
 @section styles{
     <style type="text/css">
+        #appRegistrarInfante .form-horizontal .control-label {
+            text-align: left;
+        }
+
+        #appVueTipoPago .form-horizontal .control-label {
+            text-align: left;
+        }
+
         a[disabled] {
             pointer-events: none;
         }
@@ -792,7 +800,6 @@
                                         } else {
                                             _this.firstCharge = false;
                                         }
-                                        _this.processing = false;
                                         _this.showPlano = true;
                                     });
                                     _this.firstAsiento = true;
@@ -803,11 +810,11 @@
                                     _this.list.plano2 = [];
                                     _this.list.plano1 = [];
                                     _this.$nextTick(() => {
-                                        _this.processing = false;
                                         _this.showPlano = false;
                                         APP.msg.error('No se pudo cargar el plano');
                                     });
                                 }
+                                _this.processing = false;
                                 _this.indexVenta = 0;
                                 _this.limpiarVenta();
                             } else {
@@ -1449,6 +1456,10 @@
                         }
                     }
                     this.recorridoSectionVentas();
+                },
+                cancelarBoletos: function () {
+                    this.limpiarAsientosBloqueados();
+                    //this.limpiarVenta();
                 }
             },
             computed: {
