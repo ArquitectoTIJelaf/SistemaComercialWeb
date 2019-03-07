@@ -100,7 +100,11 @@
                                 <label class="control-label color-blue">Nº Programación: {{filtro.CodiProgramacion}}</label>
                             </div>
                             <div class="col-md-4" style="text-align: right; font-size: 15px;">
-                                <a @@click="nextStep(10)" href="javascript:void(0);" id="btnActualizar" style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
+                                <a @@click="nextStep(10)"
+                                   :disabled="processing"
+                                   href="javascript:void(0);"
+                                   id="btnActualizar"
+                                   style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
                                     <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer;">Actualizar</label>
                                 </a>
@@ -585,20 +589,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-8">
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label">Fecha nac.</label>
-                                                    <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                           v-model="list.ventas[indexVenta].FechaNac"
-                                                           v-mask="'##/##/####'"
-                                                           type="text"
-                                                           id="txtFechaNac"
-                                                           class="form-control input-sm dp"
-                                                           placeholder="FECHA NAC.">
-                                                </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label class="control-label">Fecha nac.</label>
+                                                <input @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                       v-model="list.ventas[indexVenta].FechaNac"
+                                                       v-mask="'##/##/####'"
+                                                       type="text"
+                                                       id="txtFechaNac"
+                                                       class="form-control input-sm dp"
+                                                       placeholder="FECHA NAC.">
                                             </div>
-                                            <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
+                                            <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label class="control-label">Edad</label>
                                                     <input :value="list.ventas[indexVenta].Edad"
@@ -610,7 +614,7 @@
                                                            disabled>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select v-model="list.ventas[indexVenta].Sexo"
@@ -625,7 +629,7 @@
                                                     </v-select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Teléfono</label>
                                                     <input v-model="list.ventas[indexVenta].Telefono"
@@ -638,18 +642,18 @@
                                                            v-mask="'#########'">
                                                 </div>
                                             </div>
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label">Recoger</label>
-                                                    <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
-                                                           @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           ref="refRecoger"
-                                                           id="txtRecoger"
-                                                           type="text"
-                                                           class="form-control input-sm"
-                                                           placeholder="RECOGER">
-                                                </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="control-label">Recoger</label>
+                                                <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
+                                                       @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       ref="refRecoger"
+                                                       id="txtRecoger"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="RECOGER">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -679,7 +683,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-10">
+                                        <div class="col-md-9" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label class="control-label">RUC</label>
@@ -695,7 +699,7 @@
                                                            v-mask="'###########'">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Razón social</label>
                                                     <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
@@ -710,7 +714,7 @@
                                                            placeholder="RAZÓN SOCIAL">
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Dirección</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
@@ -724,16 +728,16 @@
                                                            placeholder="DIRECCIÓN">
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label" style="width: 100%; ">Fecha de venta</label>
-                                                    <input :value="list.ventas[indexVenta].FechaVen"
-                                                           id="txtFechaVen"
-                                                           type="text"
-                                                           class="form-control input-sm"
-                                                           placeholder="DD/MM/YYYY"
-                                                           disabled="disabled">
-                                                </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div class="form-group">
+                                                <label class="control-label" style="width: 100%; ">Fecha de venta</label>
+                                                <input :value="list.ventas[indexVenta].FechaVen"
+                                                       id="txtFechaVen"
+                                                       type="text"
+                                                       class="form-control input-sm"
+                                                       placeholder="DD/MM/YYYY"
+                                                       disabled="disabled">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -751,18 +755,20 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">Observación</label>
-                                                <input :value="list.ventas[indexVenta].Observacion"
-                                                       id="txtObservacion"
-                                                       type="text"
-                                                       class="form-control input-sm"
-                                                       placeholder="OBSERVACIÓN"
-                                                       disabled>
+                                                <textarea :value="list.ventas[indexVenta].Observacion"
+                                                          id="txtObservacion"
+                                                          type="text"
+                                                          class="form-control input-sm"
+                                                          placeholder="OBSERVACIÓN"
+                                                          style="height: 30px; min-height: 30px; "
+                                                          disabled>
+                                                </textarea>
                                             </div>
                                         </div>
-                                        <div class="col-md-7">
+                                        <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">&nbsp;</label>
@@ -771,7 +777,7 @@
                                                             style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
                                                             v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                        Registrar Nino
+                                                        Registrar Ni&ntilde;o
                                                     </button>
                                                 </div>
                                             </div>
@@ -802,7 +808,7 @@
                                                                     class="btn btn-secondary btn-ticket-venta"
                                                                     style="width: 100%; color:white;"
                                                                     v-bind:disabled="!bloquearPago">
-                                                                $ &ensp; Pago total
+                                                                $ &ensp; Pago Total
                                                             </button>
                                                         </div>
                                                     </div>
@@ -812,6 +818,21 @@
                                                 </template>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">&nbsp;</label>
+                                                <button 
+                                                        @*@@click="showRegistrarParentesco"*@
+                                                        class="btn btn-secondary btn-ticket-venta"
+                                                        style="width: 100%; font-weight: 500; background-color: #1082c0; border-color: #009cff; color:white;"
+                                                        @*v-bind:disabled="!bloquearPago"*@
+                                                        >
+                                                    Cancelar Todos
+                                                </button>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </form>
                             </div>
