@@ -458,7 +458,6 @@
                     appRegistrarInfante.show(_TipoDoc, _ListSexos);
                 },
                 showPaseCortesia: function () {
-                    debugger;
                     appVuePaseCortesia.show();
                 }
             };
@@ -935,6 +934,12 @@
                                     this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
 
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
+                                    
+                                    ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                    ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                    ClientSignalR.NroAsiento = asientoSel.Tipo;
+                                    ClientSignalR.Owner = true;
+                                    if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenBloquearBus').click();
                                 }
                             } else {
                                 APP.msg.error('No se pudo bloquear el asiento');
@@ -1030,6 +1035,12 @@
                                             _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
                                         }
                                     }
+                                    
+                                    ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                    ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                    ClientSignalR.NroAsiento = asientoSel.Tipo;
+                                    ClientSignalR.Owner = true;
+                                    if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenLiberarBus').click();
                                 }
                             } else {
                                 APP.msg.error('No se pudo liberar el asiento');
@@ -1298,9 +1309,9 @@
                     } else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#607D8B', 0.5)} ,${this.$options.filters.hexToRgb('#607D8B')}` };
+                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
                             else
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ffc36d', 0.5)} ,${this.$options.filters.hexToRgb('#ffc36d')}` };
+                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno)}` };
                         } 
                     }
                 },
@@ -1360,7 +1371,6 @@
                     }
                 },
                 errorsInTicketsVenta: function () {
-                    debugger;
                     var _this = this;
                     var _indexOfDni = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
                     var _indexOfRazSoc = _.findIndex(_this.list.ventas, o => { return o.Ruc.length === 11 && o.RazonSocial.length < 4; });
@@ -1399,8 +1409,6 @@
                     appController.showRegistrarInfante(_this.list.tiposDoc, _this.list.sexos);
                 },
                 showPaseCortesia: function () {
-                    debugger;
-                    var _this = this;
                     appController.showPaseCortesia();
                 },
                 leftSlider: function () {
@@ -2085,7 +2093,6 @@
             },
             methods: {
                 show: function () {
-                    debugger;
                     $('#appVuePaseCortesia').modal('show');
                     this.listaBeneficiarios();
                 },
@@ -2105,12 +2112,10 @@
                     }
                 },
                 listaBeneficiarios: function () {
-                    debugger;
                     var _this = this;
 
                     APP.rq.axios.post(APP.base + '/itinerarios/listaBeneficiarioPase', { params: { Codi_Socio: '01', año: '2019', mes: '03' } })
                         .then(res => {
-                            debugger;
                             if (res.data.value) {
                                 //_this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
                             }
