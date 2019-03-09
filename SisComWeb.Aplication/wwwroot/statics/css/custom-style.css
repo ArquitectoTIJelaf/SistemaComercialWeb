@@ -687,21 +687,29 @@ ul.pagination {
     font-weight: 400;
 }
 
-.btn-ticket-venta {
-    color: #2a97f4;
+.btn-ticket {
     font-weight: 500;
-    background-image: linear-gradient(#1082c0, #004e90);
 }
 
-    .btn-ticket-venta:hover {
-        color: #2a97f4;
+    .btn-ticket:hover {
         opacity: 0.6;
     }
 
-    .btn-ticket-venta:focus {
-        color: #2a97f4;
+    .btn-ticket:focus {
         opacity: 0.8;
     }
+
+.btn-venta {
+    background-color: #004e90;
+    background-image: linear-gradient(#1082c0, #004e90);
+    border-color: #004e90;
+}
+
+.btn-cancelar {
+    background-color: #c50000;
+    background-image: linear-gradient(#ffffff63, #c50000);
+    border-color: #c50000;
+}
 
 .btn-ticket-venta-success {
     color: white;
@@ -722,5 +730,5 @@ ul.pagination {
     }
 
 .swal2-popup .swal2-content {
-    font-size: 13px;
+    font-size: 13px !important;
 }

@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div class="form-group m-b-5">
-                        <div class="col-md-12 separate-in-form" style="margin-bottom: 20px;">
+                        <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Tipo Pago:</label>
                             <div class="col-md-10">
                                 <v-select v-model="computedTipoPago"
@@ -44,8 +44,8 @@
                         </template>
                         <template v-else-if="tipoPago === '02'">
                             <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Tipo Tarjeta:</label>
-                                <div class="col-md-10">
+                                <label class="col-md-3 control-label label-sm">Tipo Tarjeta:</label>
+                                <div class="col-md-9">
                                     <v-select v-model="tarjeta"
                                               :id="'cboTipoTargetaTP'"
                                               :options="list.tarjetas"
@@ -57,8 +57,8 @@
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Monto Targeta:</label>
-                                <div class="col-md-10">
+                                <label class="col-md-3 control-label label-sm">Monto Tarjeta:</label>
+                                <div class="col-md-9">
                                     <input v-model="tarjetaCant"
                                            id="txtTtarjetaCantTP"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
@@ -66,8 +66,8 @@
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Monto Efectivo:</label>
-                                <div class="col-md-10">
+                                <label class="col-md-3 control-label label-sm">Monto Efectivo:</label>
+                                <div class="col-md-9">
                                     <input v-model="efectivo"
                                            id="txtEfectivoTP"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                         </template>
-                        <div class="col-md-12 separate-in-form" style="margin-top: 20px;">
+                        <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Embarques:</label>
                             <div class="col-md-10">
                                 <v-select v-model="embarque"
