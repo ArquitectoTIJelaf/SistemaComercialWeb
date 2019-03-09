@@ -111,19 +111,19 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        public static List<BeneficiarioEntity> ListaBeneficiarios(string Codi_Socio)
         {
-            var response = new Response<List<BeneficiarioEntity>>(false, null, "Error: ListaBeneficiarioPase.", false);
+            List<BeneficiarioEntity> lista = null;
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscaBeneficiariosPases";
                 db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, Codi_Socio);
-                var entidad = new List<BeneficiarioEntity>();
+                lista = new List<BeneficiarioEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        entidad.Add(new BeneficiarioEntity
+                        lista.Add(new BeneficiarioEntity
                         {
                             Nombre_Beneficiario = Reader.GetStringValue(drlector, "Nombre_Beneficiario"),
                             Tipo_Documento = Reader.GetStringValue(drlector, "Tipo_Documento"),
@@ -132,13 +132,35 @@ namespace SisComWeb.Repository
                             Sexo = Reader.GetStringValue(drlector, "Sexo")
                         });
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: ListaBeneficiarioPase.";
-                    response.Estado = true;
                 }
             }
-            return response;
+            return lista;
+        }
+
+        public static BoletosCortesiaEntity ObjetoBoletosCortesia(string Codi_Socio, string año, string mes)
+        {
+            BoletosCortesiaEntity entidad = null;
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarSaldoBoletosCortesia";
+                db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, Codi_Socio);
+                db.AddParameter("@Anno", DbType.String, ParameterDirection.Input, año);
+                db.AddParameter("@Mes", DbType.String, ParameterDirection.Input, mes);
+                entidad = new BoletosCortesiaEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad = new BoletosCortesiaEntity
+                        {
+                            Total_Boletos = Reader.GetDecimalValue(drlector, "Total_Boletos"),
+                            Boletos_Libres = Reader.GetDecimalValue(drlector, "Boletos_Libres"),
+                            Boletos_Precio = Reader.GetDecimalValue(drlector, "Boletos_Precio")
+                        };
+                    }
+                }
+            }
+            return entidad;
         }
 
         #endregion

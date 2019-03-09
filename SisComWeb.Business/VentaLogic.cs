@@ -1,5 +1,6 @@
 ﻿using SisComWeb.Business.ServiceFE;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Peticiones.Response;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
@@ -460,18 +461,30 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        public static Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
         {
             try
             {
-                var resBeneficiarioPase = VentaRepository.ListaBeneficiarioPase(Codi_Socio);
+                var response = new Response<PaseCortesiaResponse>(false, new PaseCortesiaResponse(), "Error: ListaBeneficiarioPase.", false);
+                var ListaBeneficiario = VentaRepository.ListaBeneficiarios(Codi_Socio);
+                var objBoletosCortesia = VentaRepository.ObjetoBoletosCortesia(Codi_Socio, año, mes);
 
-                return new Response<List<BeneficiarioEntity>>(resBeneficiarioPase.EsCorrecto, resBeneficiarioPase.Valor, resBeneficiarioPase.Mensaje, resBeneficiarioPase.Estado);
+                response.Valor.BoletoLibre = objBoletosCortesia.Boletos_Libres;
+                response.Valor.BoletoPrecio = objBoletosCortesia.Boletos_Precio;
+                response.Valor.BoletoTotal = objBoletosCortesia.Total_Boletos;
+                response.Valor.Beneficiarios = ListaBeneficiario;
+
+                response.EsCorrecto = true;
+                response.Valor = response.Valor;
+                response.Mensaje = Message.MsgErrCorrectoBeneficiarioPase;
+                response.Estado = true;
+
+                return response;
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BeneficiarioEntity>>(false, null, Message.MsgErrExcBusqClientePasaje, false);
+                return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
             }
         }
 

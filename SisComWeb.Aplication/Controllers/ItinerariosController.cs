@@ -120,7 +120,7 @@ namespace SisComWeb.Aplication.Controllers
             }).ToList();
             return lista;
         }
-        
+
         private static List<DestinoRuta> _ListaDestinosRuta(JToken list)
         {
             List<DestinoRuta> lista = list.Select(x => new DestinoRuta
@@ -506,8 +506,6 @@ namespace SisComWeb.Aplication.Controllers
                     _body += "[";
                     for (var i = 0; i < listado.Count; i++)
                     {
-                        
-
                         _body += "{ " +
                                     "\"SerieBoleto\" : " + 0 + //TODO
                                     ",\"NumeBoleto\" : " + 0 + //TODO
@@ -692,7 +690,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("listaBeneficiarioPase")]
-        public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio)
+        public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
         {
             try
             {
@@ -700,7 +698,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Socio\" : " + Codi_Socio + " }";
+                    var _body = "{ \"Codi_Socio\" : " + Codi_Socio + "," + "\"año\" : " + año + "," + "\"mes\" : " + mes + " }";
                     HttpResponseMessage response = await client.PostAsync("ListaBeneficiarioPase", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -712,8 +710,16 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    bool valor = (bool)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
+                    JObject data = (JObject)tmpResult["Valor"];
+                    PaseCortesia item = new PaseCortesia
+                    {
+                        Nombre_Beneficiario = (string)data["Nombre_Beneficiario"],
+                        Tipo_Documento = (string)data["Tipo_Documento"],
+                        Documento = (string)data["Documento"],
+                        Numero_Documento = (string)data["Numero_Documento"],
+                        Sexo = (string)data["Sexo"],
+                    };
+                    return Json(item, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

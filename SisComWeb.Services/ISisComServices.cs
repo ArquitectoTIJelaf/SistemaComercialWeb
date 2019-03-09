@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Peticiones.Response;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -133,7 +134,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaBeneficiarioPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio);
+        Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes);
 
         #endregion
     }

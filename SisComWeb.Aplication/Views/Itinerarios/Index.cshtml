@@ -1940,8 +1940,12 @@
             el: "#appVuePaseCortesia",
             data: {
                 gerente: null,
+                solicitante: null,
                 concepto: '',
                 beneficiario: '',
+                boletosLibres: '',
+                boletosByPrecio: '',
+                totalBoletos: '',
                 list: {
                     gerente: [],
                     solicitante: []
@@ -1954,10 +1958,46 @@
                 show: function () {
                     debugger;
                     $('#appVuePaseCortesia').modal('show');
-                }
+                    this.listaBeneficiarios();
+                },
+                recorridoPaseCortesia: function () {
+                    var _this = this;
+                    if (_this.gerente === null) {
+                        $('#cboGerentePC input[type=search]').focus();
+                    }
+                    else if (_this.solicitante === '') {
+                        $('#cboSolicitantePC input[type=search]').focus();
+                    }
+                    else if (_this.concepto === '') {
+                        $('#txtConceptoPC').focus();
+                    }
+                    else if (_this.beneficiario === '') {
+                        $('#txtBeneficiarioPC').focus();
+                    }
+                },
+                listaBeneficiarios: function () {
+                    debugger;
+                    var _this = this;
+
+                    APP.rq.axios.post(APP.base + '/itinerarios/listaBeneficiarioPase', { params: { Codi_Socio: '01', año: '2019', mes: '03' } })
+                        .then(res => {
+                            debugger;
+                            if (res.data.value) {
+                                //_this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
             },
             computed: {
-
+                filledCampos: function () {
+                    var _this = this;
+                    return (
+                        _this.gerente !== null &&
+                        _this.solicitante !== null &&
+                        _this.concepto !== '' &&
+                        _this.beneficiario !== ''
+                    )
+                }
             },
             watch: {
 
