@@ -27,13 +27,17 @@
             </div>
             <div class="separate-in-form">
                 <v-select v-model="codigoUsuario"
-                          :id="'txtUsuario'"
-                          label="label"
-                          :get-option-label="getLabel"
                           :options="list.usuarios"
                           :placeholder="'--- Seleccione usuario ---'"
+                          :filterable="false"
                           @@search="getUsuarios"
-                          ref="select">
+                          :select-on-tab="true"
+                          :id="'txtUsuario'"
+                          label="label"
+                          ref="usuario">
+                    <template slot="option" slot-scope="option">
+                        <div>{{ option.id }} - {{ option.label }}</div>
+                    </template>
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
@@ -113,6 +117,7 @@
                             if (res.data.mensaje === 'Log success') {
                                 $('#frmLogin').submit();
                             } else {
+                                document.getElementById("txtContrasena").focus();
                                 APP.msg.warning(res.data.mensaje);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);

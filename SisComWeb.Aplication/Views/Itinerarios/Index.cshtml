@@ -14,6 +14,8 @@
 
 @section styles{
     <style type="text/css">
+
+
         #appRegistrarInfante .form-horizontal .control-label {
             text-align: left;
         }
@@ -486,6 +488,8 @@
                 this.$nextTick(() => {
                     $('#cboDestinoPas input[type=search]').focus();
                     $(".preloader").fadeOut();
+                    //this.$refs.refOrigenPas.open = true
+                    //const input = this.$refs.refOrigenPas.$el.querySelector('input').focus();
                 });
             },
             methods: {
@@ -497,11 +501,13 @@
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
                             _this.list.origenesPas = _.cloneDeep(res.data);
-                            _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === CodiSucursal);
                             _this.list.destinosPas = _.cloneDeep(res.data);
                             _this.list.destinosPas.unshift(selectAll);
                             _this.list.destinosBus = _.cloneDeep(res.data);
                             _this.list.destinosBus.unshift(selectAll);
+                            _this.$nextTick(() => {
+                                _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === CodiSucursal);
+                            });
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 search() {
@@ -553,17 +559,18 @@
                     }
                 }
             },
-            computed: {
-            },
             watch: {
                 'filtro.CodiOrigen': function (newVal, oldVal) {
-                    this.nextStep(1);
+                    if (this.filtro.CodiOrigen)
+                        this.$refs.refOrigenPas._data.typeAheadPointer = _.findIndex(this.list.origenesPas, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label });
                 },
                 'filtro.CodiDestino': function (newVal, oldVal) {
-                    this.nextStep(2);
+                    if (this.filtro.CodiDestino)
+                        this.$refs.refDestinoPas._data.typeAheadPointer = _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestino.id, 'label': this.filtro.CodiDestino.label });
                 },
                 'filtro.CodiRuta': function (newVal, oldVal) {
-                    this.nextStep(3);
+                    if (this.filtro.CodiRuta)
+                        this.$refs.refDestinoBus._data.typeAheadPointer = _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiRuta.id, 'label': this.filtro.CodiRuta.label });
                 }
             }
         });
@@ -721,7 +728,8 @@
                     asiento: false,
                     precio: false
                 },
-                processing: false
+                processing: false,
+                empresas: []
             },
             mounted: function () {
                 this.getEmpresas();
@@ -832,6 +840,7 @@
                     APP.rq.axios2.get(APP.base + '/base/get-empresas')
                         .then(res => {
                             _this.list.empresas = _.cloneDeep(res.data);
+                            _this.empresas = _.cloneDeep(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 getSucursales: function () {
@@ -1338,10 +1347,45 @@
                     input.CodiBus = _this.objPlano.CodiBus;
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
-
-                    _this.saveUser();
-
-                    appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
+                    if (!_this.errorsInTicketsVenta()) {
+                        _this.saveUser();
+                        appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
+                    }
+                },
+                errorsInTicketsVenta: function () {
+                    debugger;
+                    var _this = this;
+                    var _indexOfDni = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
+                    var _indexOfRazSoc = _.findIndex(_this.list.ventas, o => { return o.Ruc.length === 11 && o.RazonSocial.length < 4; });
+                    if (_indexOfDni !== -1 || _indexOfRazSoc !== -1) {
+                        if (_indexOfDni !== -1) {
+                            _this.indexVenta = _indexOfDni;
+                            _this.$nextTick(() => { $('#txtDocumento').focus();});
+                            APP.msg.error('El DNI no puede tener menos de 8 caracteres');
+                            return true;
+                        }
+                        if (_indexOfRazSoc !== -1) {
+                            _this.indexVenta = _indexOfRazSoc;
+                            _this.$nextTick(() => { $('#txtRazonSocial').focus(); });
+                            APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
+                            return true;
+                        }
+                    }
+                    else
+                        return false;
+                },
+                clearUser: function () {
+                    var _this = this;
+                    if (_this.list.ventas[_this.indexVenta].Documento.length === 7) {
+                        _this.list.ventas[_this.indexVenta].Nombres = '';
+                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                    }
+                },
+                clearRazSoc: function () {
+                    var _this = this;
+                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                    _this.list.ventas[_this.indexVenta].Direccion = '';
                 },
                 showRegistrarParentesco: function () {
                     var _this = this;
@@ -1434,19 +1478,26 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: function () {
-                    //var auxResponse = false;
                     if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento) {
                         // Dar formato al 'NroAsiento'
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+
                         for (const obj of this.list.tempList) {
                             if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
                                 if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
-                                    //auxResponse = true;
                                     this.auxFocus.asiento = false;
                                     document.getElementById('btnAsiento_' + obj.Tipo).click();
                                     break;
                                 }
                             }
+                        }
+                        this.auxFocus.asiento = false;
+                        APP.msg.error('Asiento no válido');
+                    }
+                    else {
+                        this.auxFocus.asiento = false;
+                        if (this.list.ventas[this.indexVenta].NroAsiento) {
+                            APP.msg.error('Asiento no válido');
                         }
                     }
                 },
@@ -1475,7 +1526,11 @@
                     this.recorridoSectionVentas();
                 },
                 cancelarBoletos: function () {
-                    this.limpiarAsientosBloqueados();
+                    this.list.ventas.forEach(function (obj) {
+                        if (!isNaN(obj.NroAsiento) && obj.NroAsiento) {
+                            document.getElementById('btnAsiento_' + obj.NroAsiento).click();
+                        }
+                    });
                     this.limpiarVenta();
                 },
                 changePickedBusVenta: async function (value) {
@@ -1512,7 +1567,7 @@
                     var _this = this;
                     return (
                         _this.list.ventas[_this.indexVenta].CodiTipoDoc !== null &&
-                        _this.list.ventas[_this.indexVenta].Documento.length >=8 &&
+                        _this.list.ventas[_this.indexVenta].Documento.length > 0 &&
                         _this.list.ventas[_this.indexVenta].Nombres !== '' &&
                         _this.list.ventas[_this.indexVenta].ApellidoPaterno !== '' &&
                         _this.list.ventas[_this.indexVenta].ApellidoMaterno !== '' &&
@@ -1526,12 +1581,12 @@
             },
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
-                    if (!this.firstCharge)
-                        this.nextStep(1);
+                    if (this.filtro.CodiEmpresa)
+                        this.$refs.refEmpresa._data.typeAheadPointer = _.findIndex(this.list.empresas, { 'id': this.filtro.CodiEmpresa.id, 'label': this.filtro.CodiEmpresa.label });
                 },
                 'filtro.CodiSucursal': function (newVal, oldVal) {
-                    if (!this.firstCharge)
-                        this.nextStep(2);
+                    if (this.filtro.CodiSucursal)
+                        this.$refs.refSucursal._data.typeAheadPointer = _.findIndex(this.list.sucursales, { 'id': this.filtro.CodiSucursal.id, 'label': this.filtro.CodiSucursal.label });
                 },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
@@ -1543,20 +1598,24 @@
                         this.list.pvOrigenesBus = [];
                         this.filtro.CodiPVOrigenBus = null;
                     }
-                    if (!this.firstCharge)
-                        this.nextStep(3);
+                    if (this.filtro.CodiOrigenBus)
+                        this.$refs.refOrigenBus._data.typeAheadPointer = _.findIndex(this.list.origenesBus, { 'id': this.filtro.CodiOrigenBus.id, 'label': this.filtro.CodiOrigenBus.label });
+                },
+                'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
+                    if (this.filtro.CodiPVOrigenBus)
+                        this.$refs.refPVOrigenBus._data.typeAheadPointer = _.findIndex(this.list.pvOrigenesBus, { 'id': this.filtro.CodiPVOrigenBus.id, 'label': this.filtro.CodiPVOrigenBus.label });
                 },
                 'filtro.CodiDestinoBus': function (newVal, oldVal) {
-                    if (!this.firstCharge)
-                        this.nextStep(5);
+                    if (this.filtro.CodiDestinoBus)
+                        this.$refs.refDestinoBus_2._data.typeAheadPointer = _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiDestinoBus.id, 'label': this.filtro.CodiDestinoBus.label });
                 },
                 'filtro.CodiServicio': function (newVal, oldVal) {
-                    if (!this.firstCharge)
-                        this.nextStep(6);
+                    if (this.filtro.CodiServicio)
+                        this.$refs.refServicio._data.typeAheadPointer = _.findIndex(this.list.servicios, { 'id': this.filtro.CodiServicio.id, 'label': this.filtro.CodiServicio.label });
                 },
                 'filtro.CodiDestinoPas': function (newVal, oldVal) {
-                    if (!this.firstCharge)
-                        this.nextStep(7);
+                    if (this.filtro.CodiDestinoPas)
+                        this.$refs.refDestinoPas_2._data.typeAheadPointer = _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestinoPas.id, 'label': this.filtro.CodiDestinoPas.label });
                 },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
