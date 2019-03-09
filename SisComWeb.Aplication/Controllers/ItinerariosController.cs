@@ -671,13 +671,8 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    Correlativo item = new Correlativo
-                    {
-                        SerieBoleto = (short)data["SerieBoleto"],
-                        NumeBoleto = (int)data["NumeBoleto"]
-                    };
-                    return Json(item, JsonRequestBehavior.AllowGet);
+                    string valor = (string)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

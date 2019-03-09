@@ -11,11 +11,12 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
-        public static Response<CorrelativoEntity> BuscaCorrelativo(CorrelativoRequest request)
+        public static Response<string> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
             {
-                var response = new Response<CorrelativoEntity>(false, null, "Error: BuscaCorrelativo.", false);
+                var response = new Response<string>(false, null, "Error: BuscaCorrelativo.", false);
+                var auxBoletoCompleto = string.Empty;
 
                 // Valida 'TerminalElectronico'
                 var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
@@ -38,8 +39,19 @@ namespace SisComWeb.Business
                     return response;
                 }
 
+                // Seteo 'auxBoletoCompleto'
+                switch (request.CodiDocumento)
+                {
+                    case "17":
+                        auxBoletoCompleto = "F" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + resBuscarCorrelativo.Valor.NumeBoleto.ToString("D7").ToString();
+                        break;
+                    case "16":
+                        auxBoletoCompleto = "B" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + resBuscarCorrelativo.Valor.NumeBoleto.ToString("D7").ToString();
+                        break;
+                }
+
                 response.EsCorrecto = true;
-                response.Valor = resBuscarCorrelativo.Valor;
+                response.Valor = auxBoletoCompleto;
                 response.Mensaje = "Correct : BuscaCorrelativo.";
                 response.Estado = true;
 
@@ -48,7 +60,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<CorrelativoEntity>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+                return new Response<string>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
             }
         }
 
@@ -238,7 +250,7 @@ namespace SisComWeb.Business
                     }
 
                     // Seteo 'auxBoletoCompleto'
-                    auxBoletoCompleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto + "-" + entidad.NumeBoleto.ToString("D7").ToString();
+                    auxBoletoCompleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto.ToString("D3").ToString() + "-" + entidad.NumeBoleto.ToString("D7").ToString();
 
                     // Graba 'Facturacion Electrónica'
                     if (resValidarTerminalElectronico.Valor.Tipo == "E")

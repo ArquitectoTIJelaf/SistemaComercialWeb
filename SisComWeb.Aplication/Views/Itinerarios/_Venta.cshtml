@@ -260,7 +260,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-3" style="float: right;">
+                                    <div class="col-md-3" id="divOtrosTurnos" style="float: right;">
                                         <div style="border-left: 1px solid rgb(228, 231, 234);padding-left: 45px;">
                                             <label style="width: calc(100% - 25px);text-align: center;">OTROS TURNOS</label>
                                             <div style="overflow-y:auto;height: 100px;">
@@ -371,8 +371,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                            @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
+                                                            @@click="bloquearAsiento(item, true)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -395,8 +395,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                            @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
+                                                            @@click="bloquearAsiento(item, true)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -419,8 +419,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                            @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
+                                                            @@click="bloquearAsiento(item, true)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -443,8 +443,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                            @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
+                                                            @@click="bloquearAsiento(item, true)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -467,8 +467,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
-                                                            @@click="bloquearAsiento(item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento)">
+                                                            @@click="bloquearAsiento(item, true)"
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
@@ -515,10 +515,9 @@
                                                        placeholder="Nº"
                                                        style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                        v-mask="'##'"
-                                                       :disabled="list.ventas[indexVenta].IsDisabled"
                                                        @@focus="focusAsiento($event)"
-                                                       @@blur="validateTxtNroAsientoVenta()"
-                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta()">
+                                                       @@blur="validateTxtNroAsientoVenta($event)"
+                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -855,7 +854,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12" style="margin-top: 5px; text-align: center;">
+                        <div v-show="showPlano" class="col-md-12" style="margin-top: 5px; text-align: center;">
                             <div @@click="indexVenta = index" v-for="(item, index) in list.ventas" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
                                 <span class="label label-rouded btn-emp" style="cursor: pointer;">{{item.NroAsiento}}</span>
                             </div>

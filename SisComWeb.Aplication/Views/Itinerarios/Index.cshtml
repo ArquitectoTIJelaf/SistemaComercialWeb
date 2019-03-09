@@ -13,7 +13,9 @@
 
 @section styles{
     <style type="text/css">
-
+        #divOtrosTurnos ul {
+            margin-left: calc(100% - 225px);
+        }
 
         #appRegistrarInfante .form-horizontal .control-label {
             text-align: left;
@@ -681,7 +683,7 @@
                         Direccion: '',
                         Nacionalidad: '',
                         ObjAcompañante: {},
-                        IsDisabled: false
+                        OldNroAsiento: ''
                     }],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
@@ -751,10 +753,10 @@
                     input.FechaViaje = fechaViaje;
                     _this.Correlativo = await _this.getCorrelativo(item.CodiEmpresa);
                     // Cuando no obtiene 'Correlativo'
-                    if (_this.Correlativo === '0-0') {
+                    if (_this.Correlativo === 'B000-0000000') {
                         _this.processing = false;
                         _this.showPlano = false;
-                        APP.msg.error('No se cargó resultados');
+                        APP.msg.error('No se pudo cargar Correlativo');
                         return;
                     }
                     APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
@@ -785,7 +787,6 @@
                                 _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
-
                                 var limpiarAB = await _this.limpiarAsientosBloqueados();
                                 if (_this.list.tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
@@ -888,11 +889,11 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
-                bloquearAsiento: async function (asientoSel) {
+                bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
                     // TODO: Validación 'liberarAsiento'
                     if (asientoSel.IDS !== 0) {
-                        await _this.liberarAsiento(asientoSel);
+                        await _this.liberarAsiento(asientoSel, true);
                         return;
                     }
                     var input = {};
@@ -909,18 +910,17 @@
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
                                     asientoSel.NumeAsiento = parseFloat(asientoSel.Tipo);
-
-                                    APP.msg.info('Asiento bloqueado');
-
+                                    //APP.msg.info('Asiento bloqueado');
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
                                     APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
 
-                                    if (!_this.firstAsiento)
-                                        _this.createElementInList();
-                                    _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel, asientoSel.PrecioMinimo, asientoSel.PrecioMaximo);
-                                    _this.firstAsiento = false;
+                                    if (auxBool_Click_Key) {
+                                        if (!_this.firstAsiento) _this.createElementInList();
+                                        _this.passSectionVentas(asientoSel.Tipo, asientoSel.PrecioNormal, asientoSel.Nivel, asientoSel.PrecioMinimo, asientoSel.PrecioMaximo);
+                                        _this.firstAsiento = false;
+                                    }
 
-                                    _this.list.ventas[_this.indexVenta].IsDisabled = true;
+                                    this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
 
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
                                 }
@@ -960,10 +960,10 @@
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
                         ObjAcompañante: {},
-                        IsDisabled: false
+                        OldNroAsiento: ''
                     });
                 },
-                liberarAsiento: async function (asientoSel) {
+                liberarAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
@@ -971,49 +971,52 @@
                                 if (res.data) {
                                     asientoSel.IDS = 0;
                                     asientoSel.NumeAsiento = 0;
-                                    APP.msg.info('Asiento liberado');
+                                    //APP.msg.info('Asiento liberado');
 
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
                                     APP.util.deleteCookie(nameCookie);
 
-                                    if (_this.list.ventas.length === 1) {
-                                        _this.indexVenta = 0;
-                                        _this.list.ventas[_this.indexVenta].IdCliente = 0;
-                                        _this.list.ventas[_this.indexVenta].CodiTipoDoc = null;
-                                        _this.list.ventas[_this.indexVenta].Documento = '';
-                                        _this.list.ventas[_this.indexVenta].Nombres = '';
-                                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                                        _this.list.ventas[_this.indexVenta].FechaNac = '';
-                                        _this.list.ventas[_this.indexVenta].Edad = '';
-                                        _this.list.ventas[_this.indexVenta].Sexo = null;
-                                        _this.list.ventas[_this.indexVenta].Telefono = '';
-                                        _this.list.ventas[_this.indexVenta].Ruc = '';
-                                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                                        _this.list.ventas[_this.indexVenta].Direccion = '';
-                                        _this.list.ventas[_this.indexVenta].Recoger = '';
-                                        _this.list.ventas[_this.indexVenta].Reintegro = '';
-                                        _this.list.ventas[_this.indexVenta].Observacion = '';
-                                        _this.list.ventas[_this.indexVenta].Precio = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioNormal = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioNormal = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioMin = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioMax = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
-                                        _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
-                                        _this.list.ventas[_this.indexVenta].NroAsiento = '';
-                                        _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
-                                        _this.list.ventas[_this.indexVenta].NroVenta = '';
-                                        _this.list.ventas[_this.indexVenta].NroSolicitud = '';
-                                        _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
-                                        _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                                        _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
-                                        _this.list.ventas[_this.indexVenta].IsDisabled = false;
-                                        _this.firstAsiento = true;
-                                    } else {
-                                        var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
-                                        _this.list.ventas.splice(auxIndex, 1);
-                                        _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
+                                    if (auxBool_Click_Key) {
+                                        if (_this.list.ventas.length === 1) {
+                                            _this.indexVenta = 0;
+                                            _this.list.ventas[_this.indexVenta].IdCliente = 0;
+                                            _this.list.ventas[_this.indexVenta].CodiTipoDoc = null;
+                                            _this.list.ventas[_this.indexVenta].Documento = '';
+                                            _this.list.ventas[_this.indexVenta].Nombres = '';
+                                            _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                                            _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                                            _this.list.ventas[_this.indexVenta].FechaNac = '';
+                                            _this.list.ventas[_this.indexVenta].Edad = '';
+                                            _this.list.ventas[_this.indexVenta].Sexo = null;
+                                            _this.list.ventas[_this.indexVenta].Telefono = '';
+                                            _this.list.ventas[_this.indexVenta].Ruc = '';
+                                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                                            _this.list.ventas[_this.indexVenta].Direccion = '';
+                                            _this.list.ventas[_this.indexVenta].Recoger = '';
+                                            _this.list.ventas[_this.indexVenta].Reintegro = '';
+                                            _this.list.ventas[_this.indexVenta].Observacion = '';
+                                            _this.list.ventas[_this.indexVenta].Precio = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioMin = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioMax = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
+                                            _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
+                                            _this.list.ventas[_this.indexVenta].NroAsiento = '';
+                                            _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
+                                            _this.list.ventas[_this.indexVenta].NroVenta = '';
+                                            _this.list.ventas[_this.indexVenta].NroSolicitud = '';
+                                            _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
+                                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                                            _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
+                                            _this.list.ventas[_this.indexVenta].OldNroAsiento = '';
+                                            _this.firstAsiento = true;
+                                        }
+                                        else {
+                                            var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
+                                            _this.list.ventas.splice(auxIndex, 1);
+                                            _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
+                                        }
                                     }
                                 }
                             } else {
@@ -1026,7 +1029,7 @@
                     var respuesta = true;
                     var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
 
-                    _this.list.tempList.forEach(async function (e) {
+                    for (var e of _this.list.tempList) {
                         if (!isNaN(e.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + e.Tipo);
                             if (valueCookie !== null) {
@@ -1040,8 +1043,7 @@
                                     }).catch(APP.rq.axios_handler_error_alert);
                             }
                         }
-                    });
-
+                    }
                     return respuesta;
                 },
                 recorridoSectionFilter: function () {
@@ -1234,14 +1236,14 @@
                     this.list.ventas[this.indexVenta].NroVenta = '';
                 },
                 getCorrelativo: async function (_CodiEmpresa) {
-                    var axuNroVenta = '';
+                    var auxNroVenta = '';
                     var input = {};
                     input.CodiEmpresa = _CodiEmpresa;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
                         .then(res => {
-                            axuNroVenta = String(res.data.SerieBoleto) + '-' + (this.$options.filters.concatZero(res.data.NumeBoleto, 7));
+                            auxNroVenta = res.data;
                         }).catch(APP.rq.axios_handler_error_alert);
-                    return axuNroVenta;
+                    return auxNroVenta;
                 },
                 saveUser: function () {
                     var _this = this;
@@ -1271,11 +1273,16 @@
                             //APP.msg.info(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                bgcVentaBus: function (FechaVenta, Color, NumeAsiento) {
+                bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
                     if (FechaVenta) {
                         return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
                     } else {
-                        if (NumeAsiento !== 0) return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ffc36d', 0.5)} ,${this.$options.filters.hexToRgb('#ffc36d')}` };
+                        if (NumeAsiento !== 0) {
+                            if (IDS === 0)
+                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#607D8B', 0.5)} ,${this.$options.filters.hexToRgb('#607D8B')}` };
+                            else
+                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ffc36d', 0.5)} ,${this.$options.filters.hexToRgb('#ffc36d')}` };
+                        } 
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
@@ -1392,7 +1399,7 @@
                     _this.list.ventas[0].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                     _this.list.ventas[0].Nacionalidad = '';
                     _this.list.ventas[0].ObjAcompañante = {};
-                    _this.list.ventas[0].IsDisabled = false;
+                    _this.list.ventas[0].OldNroAsiento = '';
                 },
                 focusPrecio: function (event) {
                     event.target.select();
@@ -1418,29 +1425,79 @@
                     event.target.select();
                     this.auxFocus.asiento = true;
                 },
-                validateTxtNroAsientoVenta: function () {
-                    if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento) {
-                        // Dar formato al 'NroAsiento'
+                validateTxtNroAsientoVenta: function (e) {
+                    if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
-                        for (const obj of this.list.tempList) {
-                            if (!isNaN(obj.Tipo) && !obj.FechaVenta && obj.NumeAsiento === 0) {
-                                if (this.list.ventas[this.indexVenta].NroAsiento === obj.Tipo) {
+                        var auxObj = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].NroAsiento);
+                        if (!auxObj) {
+                            this.auxFocus.asiento = false;
+                            APP.msg.error('Asiento ' + _NroAsiento + ' no encontrado');
+                            return;
+                        }
+
+                        if (!auxObj.FechaVenta && auxObj.NumeAsiento === 0) {
+                            this.bloquearAsiento(auxObj, true);
+                            this.auxFocus.asiento = false;
+                        }
+                        else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
+                    }
+                    else if (this.list.ventas[this.indexVenta].NroVenta) {
+                        this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+
+                        if (this.list.ventas[this.indexVenta].NroAsiento !== this.list.ventas[this.indexVenta].OldNroAsiento) {
+                            var auxObj = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].NroAsiento);
+                            if (!auxObj) {
+                                this.auxFocus.asiento = false;
+                                APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' no encontrado');
+                                this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
+                                return;
+                            }
+
+                            if (!auxObj.FechaVenta && auxObj.NumeAsiento === 0) {
+                                var auxObjOld = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].OldNroAsiento);
+                                if (!auxObjOld) {
                                     this.auxFocus.asiento = false;
-                                    document.getElementById('btnAsiento_' + obj.Tipo).click();
-                                    break;
+                                    APP.msg.error('Asiento Old ' + this.list.ventas[this.indexVenta].OldNroAsiento + ' no encontrado');
+                                    return;
+                                }
+                                this.liberarAsiento(auxObjOld, false);
+
+                                this.$nextTick(function () {
+                                    this.bloquearAsiento(auxObj, false);
+                                    this.recorridoSectionVentas();
+                                    this.auxFocus.asiento = false;
+                                });
+                            }
+                            else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
+                        }
+                        else this.recorridoSectionVentas();
+                    }
+                    else {
+                        if (e && e.keyCode !== 13) this.auxFocus.asiento = false;
+                    }
+                },
+                recorridoValidateNroAsiento: function (_NroAsiento) {
+                    var auxObj = {};
+
+                    auxObj = _.find(this.list.plano1, { 'Tipo': _NroAsiento });
+                    if (!auxObj) {
+                        auxObj = _.find(this.list.plano2, { 'Tipo': _NroAsiento });
+                        if (!auxObj) {
+                            auxObj = _.find(this.list.plano3, { 'Tipo': _NroAsiento });
+                            if (!auxObj) {
+                                auxObj = _.find(this.list.plano4, { 'Tipo': _NroAsiento });
+                                if (!auxObj) {
+                                    auxObj = _.find(this.list.plano5, { 'Tipo': _NroAsiento });
+                                    if (!auxObj) {
+                                        return null;
+                                    }
                                 }
                             }
                         }
-                        this.auxFocus.asiento = false;
-                        APP.msg.error('Asiento no válido');
                     }
-                    else {
-                        this.auxFocus.asiento = false;
-                        if (this.list.ventas[this.indexVenta].NroAsiento) {
-                            APP.msg.error('Asiento no válido');
-                        }
-                    }
+
+                    return auxObj;
                 },
                 passSolicitudToRuc: function () {
                     if (this.list.ventas[this.indexVenta].NroSolicitud)
