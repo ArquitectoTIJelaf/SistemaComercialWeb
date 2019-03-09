@@ -1,5 +1,6 @@
 ﻿using SisComWeb.Business;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Peticiones.Response;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
@@ -339,16 +340,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<BeneficiarioEntity>> ListaBeneficiarioPase(string Codi_Socio)
+        public Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
         {
             try
             {
-                return VentaLogic.ListaBeneficiarioPase(Codi_Socio);
+                return VentaLogic.ListaBeneficiarioPase(Codi_Socio, año, mes);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BeneficiarioEntity>>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+                return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
             }
         }
 

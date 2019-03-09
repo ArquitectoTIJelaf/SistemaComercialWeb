@@ -1,5 +1,4 @@
-﻿
-<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static">
+﻿<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static">
     <div class="modal-dialog" style="width: 500px; top:10%">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,13 +8,113 @@
             <div class="modal-body">
                 <div class="form-horizontal">
                     <div class="form-group m-b-5">
-                        <div class="col-md-12 separate-in-form">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Gerente:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="gerente"
+                                          :id="'cboGerentePC'"
+                                          label="label"
+                                          :options="list.gerente"
+                                          :placeholder="'GERENTE'"
+                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Solicitante:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="solicitante"
+                                          :id="'cboSolicitantePC'"
+                                          label="label"
+                                          :options="list.solicitante"
+                                          :placeholder="'SOLICITANTE'"
+                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Concepto:</label>
+                            <div class="col-md-10">
+                                <input v-model="concepto"
+                                       @@keypress.13.prevent="recorridoPaseCortesia"
+                                       id="txtConceptoPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="CONCEPTO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Beneficiario:</label>
+                            <div class="col-md-10">
+                                <input v-model="beneficiario"
+                                       @@keypress.13.prevent="recorridoPaseCortesia"
+                                       id="txtBeneficiarioPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="BENEFICIARIO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="custom-scroll-container">
+                            <div class="table-responsive" style="background-color: #616e7e;">
+                                <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                                    <thead>
+                                        <tr>
+                                            <th class="custom-th" width="%">Nombre</th>
+                                            <th class="custom-th" width="%">Documento</th>
+                                            <th class="custom-th" width="%">N° Documento</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-4 separate-in-form">
+                            <div class="col-md-6">
+                                <label class="col-md-12 control-label label-sm" style="text-align:left !important">Boletos Libres:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control input-sm" type="text" min="0" :value="boletosLibres" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 separate-in-form">
+                            <div class="col-md-6">
+                                <label class="col-md-12 control-label label-sm" style="text-align:right !important">B. con Precio:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control input-sm" type="number" min="0" v-model="boletosByPrecio" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 separate-in-form">
+                            <div class="col-md-6">
+                                <label class="col-md-12 control-label label-sm" style="text-align:right !important">Total Boletos:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control input-sm" type="number" min="0" v-model="totalBoletos" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="" id="btnSaveVentaTipoPago" :disabled="'false'" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="" id="btnAsignaPC" :disabled="'!filledCampos'" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>
                 <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">

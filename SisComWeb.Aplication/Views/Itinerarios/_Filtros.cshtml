@@ -15,12 +15,16 @@
                                     <div class="form-group">
                                         <label class="control-label">Origen pasajero:</label>
                                         <v-select v-model="filtro.CodiOrigen"
-                                                  :id="'cboOrigenPas'"
-                                                  :get-option-label="getLabel"
                                                   :options="list.origenesPas"
                                                   :placeholder="'ORIGEN PAS.'"
-                                                  @@keydown.13.native.prevent="nextStep(1)"
-                                                  ref="select">
+                                                  :select-on-tab="true"
+                                                  :id="'cboOrigenPas'"
+                                                  :get-option-label="getLabel"
+                                                  @@keydown.13.native.prevent="nextStep(1)"                                                  
+                                                  ref="refOrigenPas">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="nextStep(1)">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
                                     </div>
@@ -29,12 +33,16 @@
                                     <div class="form-group">
                                         <label class="control-label">Destino pasajero:</label>
                                         <v-select v-model="filtro.CodiDestino"
-                                                  :id="'cboDestinoPas'"
-                                                  :get-option-label="getLabel"
                                                   :options="list.destinosPas"
                                                   :placeholder="'DESTINO PAS.'"
+                                                  :select-on-tab="true"
+                                                  :id="'cboDestinoPas'"
+                                                  :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(2)"
-                                                  ref="select">
+                                                  ref="refDestinoPas">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="nextStep(2)">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
                                     </div>
@@ -43,12 +51,16 @@
                                     <div class="form-group">
                                         <label class="control-label">Destino bus:</label>
                                         <v-select v-model="filtro.CodiRuta"
+                                                  :options="list.destinosBus"
+                                                  :placeholder="'DESTINO BUS'"
+                                                  :select-on-tab="true"
                                                   :id="'cboDestinoBus'"
                                                   :get-option-label="getLabel"
-                                                  :options="list.destinosBus"
-                                                  :placeholder="'DESTINO BUS.'"
                                                   @@keydown.13.native.prevent="nextStep(3)"
-                                                  ref="select">
+                                                  ref="refDestinoBus">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="nextStep(3)">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
                                     </div>
@@ -60,7 +72,8 @@
                                         <div class="input-group input-sm group-strench">
                                             <label class="control-label">Fecha desde:</label>
                                             <input v-model="filtro.FechaViaje"
-                                                   v-mask="'##/##/####'"
+                                                   v-mask="'##/##/####'"                                                   
+                                                   @@focus="$event.target.select()"
                                                    @@blur="nextStep(4)"
                                                    type="text"
                                                    id="txtFecha"
@@ -75,6 +88,7 @@
                                         <label class="control-label">Hora desde:</label>
                                         <input v-model="filtro.Hora"
                                                v-mask="'##:## AM'"
+                                               @@focus="$event.target.select()"
                                                @@blur="nextStep(5)"
                                                type="text"
                                                id="txtHora"
