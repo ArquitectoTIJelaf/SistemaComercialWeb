@@ -1,7 +1,7 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{
     var usuario = DataSession.UsuarioLogueado;
-
+    var CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
 }
 
 <style>
@@ -13,8 +13,8 @@
 
     #appVueNavarHeader .navbar-top-links > li > a {
         font-weight: 400;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
     #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
@@ -36,6 +36,10 @@
     #appVueNavarHeader .borderBottom.active a, .borderBottom:hover a {
         color: #009cff;
     }
+
+    .container-fluid {
+        margin-top: 25px;
+    }
 </style>
 
 <script>
@@ -55,7 +59,6 @@
     window.onload = function () {
         setClassActiveToBorderBottom();
     };
-
 </script>
 
 <nav class="navbar navbar-default navbar-static-top m-b-0">
@@ -135,16 +138,24 @@
             </li>
         </ul>
         <ul class="nav navbar-top-links navbar-right pull-right">
-            <li>
-                <a>
-                    <i class="fa fa-user fa-fw"></i>@usuario.Nombre &ensp;
+            <li style="text-align: right; margin-right: 30px; ">
+                <a style="min-height: 30px; height: 30px; line-height: 40px; ">
+                    <i class="fa fa-user fa-fw"></i>
+                    @usuario.Nombre
                 </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Logout", "Autenticacion")">
-                    <i class="fa fa-sign-out"></i> Cerrar Sesión
+                <a href="@Url.Action("Logout", "Autenticacion")" style="min-height: 30px; height: 30px; line-height: 25px; ">
+                    <i class="fa fa-sign-out"></i>
+                    Cerrar sesión
                 </a>
             </li>
         </ul>
+        <div class="top-left-part" style="width: 100% !important; height: 20px; background-color: #0e2843; font-size: 11px; ">
+            <p style="color: white; margin-left: 30px; display: inline; line-height: 22px; ">
+                -- / -- / --
+            </p>
+            <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
+                TERMINAL @CodiTerminal / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToShortDateString()
+            </p>
+        </div>
     </div>
 </nav>
