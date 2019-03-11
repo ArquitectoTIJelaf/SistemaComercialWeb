@@ -112,6 +112,8 @@
                     input.Clave = filtro.Clave;
                     input.Sucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.id : '0';
                     input.PuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
+                    input.NomSucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.label : '';
+                    input.NomPuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.label : '';
                     APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
                             if (res.data.mensaje === 'Log success') {

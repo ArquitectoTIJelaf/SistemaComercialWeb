@@ -15,6 +15,7 @@ namespace SisComWeb.Aplication.Controllers
     public class AutenticacionController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
+        readonly string JLMrootCode = System.Configuration.ConfigurationManager.AppSettings["JLMrootCode"].ToString();
 
         [HttpGet]
         public ActionResult Index()
@@ -32,7 +33,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("post-usuario")]
-        public async Task<ActionResult> POST(short Codigo, string Clave, string Sucursal, string PuntoVenta)
+        public async Task<ActionResult> POST(short Codigo, string Clave, string Sucursal, string PuntoVenta, string NomSucursal, string NomPuntoVenta)
         {
             try
             {
@@ -65,6 +66,16 @@ namespace SisComWeb.Aplication.Controllers
                         NomSucursal = (string)data["NomSucursal"],
                         NomPuntoVenta = (string)data["NomPuntoVenta"]
                     };
+
+                    // Caso: JLMrootCode
+                    if (user.CodiUsuario == int.Parse(JLMrootCode))
+                    {
+                        user.CodiSucursal = int.Parse(Sucursal);
+                        user.CodiPuntoVenta = int.Parse(PuntoVenta);
+                        user.NomSucursal = NomSucursal;
+                        user.NomPuntoVenta = NomPuntoVenta;
+                    }
+
                     DataSession.UsuarioLogueado = user;
                     return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
                 }
