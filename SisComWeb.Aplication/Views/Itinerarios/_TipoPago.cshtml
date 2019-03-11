@@ -14,7 +14,7 @@
                                 <label class="col-md-12 control-label label-sm" style="text-align:left !important">Monto Total:</label>
                             </div>
                             <div class="col-md-6">
-                                <input class="form-control input-sm" type="text" min="0" :value="sumaTotal | fixed2" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                                <input class="form-control input-sm" type="text" min="0" :value="sumaTotal | fixed2" readonly disabled style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:right;" />
                             </div>
                         </div>
                         <div class="col-md-6 separate-in-form">
@@ -22,7 +22,7 @@
                                 <label class="col-md-12 control-label label-sm" style="text-align:right !important">N° Asientos:</label>
                             </div>
                             <div class="col-md-6">
-                                <input class="form-control input-sm" type="number" min="0" v-model="cantAsientos" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
+                                <input class="form-control input-sm" type="number" min="0" v-model="cantAsientos" readonly disabled style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:center;" />
                             </div>
                         </div>
                     </div>
@@ -43,9 +43,9 @@
                         <template v-if="tipoPago === '01'">
                         </template>
                         <template v-else-if="tipoPago === '02'">
-                            <div class="col-md-12 separate-in-form">
-                                <label class="col-md-3 control-label label-sm">Tipo Tarjeta:</label>
-                                <div class="col-md-9">
+                            <div class="col-md-6 separate-in-form">
+                                <label class="col-md-12 control-label label-sm">Tipo Tarjeta:</label>
+                                <div class="col-md-12">
                                     <v-select v-model="tarjeta"
                                               :id="'cboTipoTargetaTP'"
                                               :options="list.tarjetas"
@@ -56,23 +56,68 @@
                                     </v-select>
                                 </div>
                             </div>
-                            <div class="col-md-12 separate-in-form">
-                                <label class="col-md-3 control-label label-sm">Monto Tarjeta:</label>
-                                <div class="col-md-9">
-                                    <input v-model="tarjetaCant"
-                                           id="txtTtarjetaCantTP"
+                            <div class="col-md-6 separate-in-form">
+                                <label class="col-md-12 control-label label-sm">Número:</label>
+                                <div class="col-md-12">
+                                    <input v-model="numeroTarjeta"
+                                           id="txtNumeroTP"
+                                           @@keydown.13.native.prevent="nextInput('ARRIBOS')"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm" />
+                                           class="form-control input-sm" 
+                                           v-mask="'####-####-####-####'"/>
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
-                                <label class="col-md-3 control-label label-sm">Monto Efectivo:</label>
-                                <div class="col-md-9">
-                                    <input v-model="efectivo"
-                                           id="txtEfectivoTP"
-                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm" />
+                                <div class="col-md-3">
+                                    <label class="col-md-12 control-label label-sm">Monto Tarjeta:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="tarjetaCant"
+                                               id="txtTtarjetaCantTP"
+                                               @@input="calcMontos('T')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               v-validate="'between:1, '+(sumaTotal-1)"
+                                               class="form-control input-sm"
+                                               name="monto tarjeta"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                                    </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <label class="col-md-12 control-label label-sm">Monto Efectivo:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="efectivo"
+                                               id="txtEfectivoTP"
+                                               @@input="calcMontos('E')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               v-validate="'between:1, '+sumaTotal"
+                                               class="form-control input-sm"
+                                               name="monto efectivo"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="col-md-12 control-label label-sm">Imp. Pagado:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="importePagado"
+                                               id="txtImportePagdoTP"
+                                               @@input="calcMontos('IP')"
+                                               @@keypress.13.prevent="nextInput('NUMERO')"
+                                               class="form-control input-sm"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="col-md-12 control-label label-sm">Vuelto:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="vuelto"
+                                               id="txtEfectivoTP"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               class="form-control input-sm"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <span v-show="errors.has('monto tarjeta')" class="text-danger m-l-15">{{errors.first('monto tarjeta')}}</span>
+                                <span v-show="errors.has('monto efectivo')" class="text-danger m-l-15">{{errors.first('monto efectivo')}}</span>
                             </div>
                         </template>
                         <template v-if="tipoPago === '03'">
@@ -141,7 +186,8 @@
                                           label="Lugar"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
-                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')"
+                                          @*@@keydown.13.native.prevent="recorridoSectionTipoPagos"*@
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -156,7 +202,7 @@
                                           label="Lugar"
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
-                                          @@keydown.13.native.prevent="nextInput"
+                                          @@keydown.13.native.prevent="nextInput('ARRIBOS')"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>

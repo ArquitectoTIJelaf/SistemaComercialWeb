@@ -934,7 +934,7 @@
                                     this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
 
                                     $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
-                                    
+
                                     ClientSignalR.NroViaje = _this.filtro.NroViaje;
                                     ClientSignalR.FechaViaje = _this.filtro.Fecha;
                                     ClientSignalR.NroAsiento = asientoSel.Tipo;
@@ -1035,7 +1035,7 @@
                                             _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
                                         }
                                     }
-                                    
+
                                     ClientSignalR.NroViaje = _this.filtro.NroViaje;
                                     ClientSignalR.FechaViaje = _this.filtro.Fecha;
                                     ClientSignalR.NroAsiento = asientoSel.Tipo;
@@ -1312,7 +1312,7 @@
                                 return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
                             else
                                 return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno)}` };
-                        } 
+                        }
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
@@ -1724,7 +1724,9 @@
                 sumaTotal: 0,
                 efectivo: '',
                 tarjetaCant: '',
-                cantAsientos: 0
+                cantAsientos: 0,
+                importePagado: 0,
+                vuelto: ''
             },
             mounted: function () {
                 this.getTipoPago();
@@ -1809,7 +1811,7 @@
                         input.CodiBus = _this.ticketVenta.CodiBus;
                         input.CodiSucursal = _this.ticketVenta.CodiSucursal;
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
-                        input.CodiTarjetaCredito = (_this.tarjeta !==null) ? _this.tarjeta.id : '';
+                        input.CodiTarjetaCredito = (_this.tarjeta !== null) ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
                         input.CodiZona = (_this.distrito !== null) ? _this.distrito : '';
                         input.Direccion = _this.direccion;
@@ -1854,13 +1856,19 @@
                     else if (_this.tipoPago === '02') {
                         if (_this.tarjeta === null || _this.tarjeta === '') {
                             $('#cboTipoTargetaTP input[type=search]').focus();
+                        } else if (_this.numeroTarjeta === '') {
+                            $('#txtNumeroTP').focus();
                         } else if (_this.tarjetaCant === '') {
                             $('#txtTtarjetaCantTP').focus();
                         } else if (_this.efectivo === '') {
                             $('#txtEfectivoTP').focus();
-                        } else if (_this.embarque === null || _this.embarque === '') {
-                            $('#cboEmbarqueTP input[type=search]').focus();
-                        } else if (_this.arribo === null || _this.embarque === '') {
+                        } else if (_this.importePagado <= 0) {
+                            $('#txtImportePagdoTP').focus();
+                        }
+                        //else if (_this.embarque === null || _this.embarque === '') {
+                        //    $('#cboEmbarqueTP input[type=search]').focus();
+                        //}
+                        else if (_this.arribo === null || _this.embarque === '') {
                             $('#cboArriboTP input[type=search]').focus();
                         }
                     }
@@ -1889,11 +1897,45 @@
                         }
                     }
                 },
-                nextInput: function() {
-                    $('#btnSaveVentaTipoPago').focus();
+                nextInput: function (input) {
+                    if (input === 'ARRIBOS') {
+                        $('#btnSaveVentaTipoPago').focus();
+                    } else if (input === 'NUMERO') {
+                        $('#cboEmbarqueTP input[type=search]').focus();
+                    } else if (input === "EMBARQUE") {
+                        $('#cboArriboTP input[type=search]').focus();
+                    }
                 },
                 getLabelEmbarqueArribo: function (option) {
                     return `${option.Lugar} - ${option.Hora}`
+                },
+                calcMontos: function (tipo) {
+                    var _this = this;
+                    var sumaTotal = parseFloat(_this.sumaTotal);
+                    var efectivo = parseFloat(_this.efectivo);
+                    var tarjetaCant = parseFloat(_this.tarjetaCant);
+                    var importePagado = parseFloat(_this.importePagado);
+
+                    if (tipo === 'T') {
+                        if (sumaTotal >= tarjetaCant) {
+                            _this.efectivo = sumaTotal - tarjetaCant;
+                        } else {
+                            _this.efectivo = '';
+                        }
+                    } else if (tipo === 'E') {
+                        if (sumaTotal >= efectivo) {
+                            _this.tarjetaCant = sumaTotal - efectivo;
+                        } else {
+                            _this.tarjetaCant = '';
+                        }
+                    } else if (tipo === 'IP') {
+                        debugger;
+                        if (importePagado >= efectivo) {
+                            _this.vuelto = importePagado - efectivo;
+                        } else {
+                            _this.vuelto = '';
+                        }
+                    }
                 }
             },
             computed: {
@@ -1917,13 +1959,13 @@
                         case '01': return _this.embarque /*&& _this.arribo*/;
                         case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
                         case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque /*&& _this.arribo*/;
-                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
+                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
                         default: return false;
                     }
                 }
             },
             watch: {
-
+                
             }
         });
 
@@ -2080,28 +2122,48 @@
                 solicitante: null,
                 concepto: '',
                 beneficiario: '',
+                list: {
+                    gerentes: [],
+                    solicitantes: [],
+                    beneficiarios: []
+                },
+                paginate: ['items'],
                 boletosLibres: '',
                 boletosByPrecio: '',
-                totalBoletos: '',
-                list: {
-                    gerente: [],
-                    solicitante: []
-                },
+                totalBoletos: ''
             },
             mounted: function () {
-
             },
             methods: {
                 show: function () {
-                    $('#appVuePaseCortesia').modal('show');
                     this.listaBeneficiarios();
+                    this.getGerentes();
+                    this.getSocios();
+                    $('#appVuePaseCortesia').modal('show');
+                    $('#appVuePaseCortesia').on('shown.bs.modal', function () {
+                        $("#cboGerentePC input[type=search]").focus();
+                    });
+                },
+                getGerentes() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-gerentes')
+                        .then(res => {
+                            _this.list.gerentes = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                },
+                getSocios() {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-socios')
+                        .then(res => {
+                            _this.list.solicitantes = _.cloneDeep(res.data);
+                        }).catch(APP.rq.axios_handler_error_alert);
                 },
                 recorridoPaseCortesia: function () {
                     var _this = this;
                     if (_this.gerente === null) {
                         $('#cboGerentePC input[type=search]').focus();
                     }
-                    else if (_this.solicitante === '') {
+                    else if (_this.solicitante === null) {
                         $('#cboSolicitantePC input[type=search]').focus();
                     }
                     else if (_this.concepto === '') {
@@ -2109,18 +2171,30 @@
                     }
                     else if (_this.beneficiario === '') {
                         $('#txtBeneficiarioPC').focus();
+                    } else {
+                        $('#btnAsignaPC').focus();
                     }
                 },
                 listaBeneficiarios: function () {
                     var _this = this;
-
-                    APP.rq.axios.post(APP.base + '/itinerarios/listaBeneficiarioPase', { params: { Codi_Socio: '01', año: '2019', mes: '03' } })
+                    APP.rq.axios2.post(APP.base + '/itinerarios/listaBeneficiarioPase', { Codi_Socio: '01', año: '2019', mes: '03' })
                         .then(res => {
-                            if (res.data.value) {
-                                //_this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
+                            if (res.data) {
+                                _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
+                                _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
+                                _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
+                                _this.list.beneficiarios = res.data.ListaBeneficiarios;
+                                //_this.list.beneficiarios = _.flatten(_.times(30, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
+                limpiarPaseCortesia: function () {
+                    var _this = this;
+                    _this.gerente = null;
+                    _this.solicitante = null;
+                    _this.concepto = '';
+                    _this.beneficiario = ''
+                }
             },
             computed: {
                 filledCampos: function () {
@@ -2129,7 +2203,8 @@
                         _this.gerente !== null &&
                         _this.solicitante !== null &&
                         _this.concepto !== '' &&
-                        _this.beneficiario !== ''
+                        _this.beneficiario !== '' &&
+                        parseFloat(_this.efectivo) + parseFloat(_this.tarjetaCant) === _this.sumaTotal
                     )
                 }
             },

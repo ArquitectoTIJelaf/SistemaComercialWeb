@@ -683,6 +683,20 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        private static List<Beneficiario> _listaBeneficiario(JToken list)
+        {
+            List<Beneficiario> lista = list.Select(x => new Beneficiario
+            {
+                Nombre_Beneficiario = (string)x["Nombre_Beneficiario"],
+                Tipo_Documento = (string)x["Tipo_Documento"],
+                Documento = (string)x["Documento"],
+                Numero_Documento = (string)x["Numero_Documento"],
+                Sexo = (string)x["Sexo"]
+            }).ToList();
+
+            return lista;
+        }
+
         [HttpPost]
         [Route("listaBeneficiarioPase")]
         public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
@@ -706,14 +720,14 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     JObject data = (JObject)tmpResult["Valor"];
-                    PaseCortesia item = new PaseCortesia
+                    BoletosCortesia item = new BoletosCortesia
                     {
-                        Nombre_Beneficiario = (string)data["Nombre_Beneficiario"],
-                        Tipo_Documento = (string)data["Tipo_Documento"],
-                        Documento = (string)data["Documento"],
-                        Numero_Documento = (string)data["Numero_Documento"],
-                        Sexo = (string)data["Sexo"],
+                        BoletoTotal = (decimal)data["BoletoTotal"],
+                        BoletoLibre = (decimal)data["BoletoLibre"],
+                        BoletoPrecio = (decimal)data["BoletoPrecio"],
+                        ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
                     };
+
                     return Json(item, JsonRequestBehavior.AllowGet);
                 }
                 else
