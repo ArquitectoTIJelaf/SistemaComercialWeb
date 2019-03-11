@@ -49,6 +49,47 @@
         </div>
     </div>
     @Scripts.Render("~/bundles/js")
+    <script src="~/wwwroot/plugins/bower_components/signalR/jquery.signalR-2.4.0.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+
+        var ClientSignalR = {};
+        ClientSignalR.NroViaje = '';
+        ClientSignalR.FechaViaje = '';
+        ClientSignalR.NroAsiento = '';
+        ClientSignalR.Owner = false;
+
+
+        $(function () {
+            
+            var notification = $.connection.notificationHub;
+
+            notification.client.bloquearBus = function (nroViaje, fechaViaje, nroAsiento) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner)
+                    $('#btnAsiento_' + nroAsiento).css('background-image', `radial-gradient(circle, ${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}`);
+                ClientSignalR.Owner = false;
+            };
+
+            notification.client.liberarBus = function (nroViaje, fechaViaje, nroAsiento) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner)
+                    $('#btnAsiento_' + nroAsiento).css('background-image', '');
+                ClientSignalR.Owner = false;
+            };
+
+            $.connection.hub.start().done(function () {
+                $('#btnHiddenBloquearBus').click(function () {
+                    notification.server.bloquear(ClientSignalR.NroViaje, ClientSignalR.FechaViaje, ClientSignalR.NroAsiento);
+                });
+
+                $('#btnHiddenLiberarBus').click(function () {
+                    notification.server.liberar(ClientSignalR.NroViaje, ClientSignalR.FechaViaje, ClientSignalR.NroAsiento);
+                });
+            });
+
+            $.connection.hub.logging = true;
+
+        });
+    </script>
     <!-- CDNJS -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-focus/2.1.0/vue-focus.js"></script> -->
     <!-- example: http://jsfiddle.net/8y70Lmz3/2/ -->

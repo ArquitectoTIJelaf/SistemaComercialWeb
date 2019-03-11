@@ -1540,3 +1540,9 @@ Vue.use(VueMask.VueMaskPlugin);
 
 Vue.component('v-select', VueSelect.VueSelect);
 /*!********************* Vue Select *****/
+
+/*************** Variables Generales ****/
+APP.ventas = {};
+APP.ventas.colorBloqueoInterno = '#FFC36D';
+APP.ventas.colorBloqueoExterno = '#607D8B';
+/****************************************/
