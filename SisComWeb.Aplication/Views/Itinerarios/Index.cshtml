@@ -433,6 +433,7 @@
                     appVueFilter.showVentas = false;
                     appVueTable.showVentas = false;
                     appVueVenta.showVentas = false;
+                    //appVueFilter.nextStep(0);
                 },
                 chargeItinerarios: function () {
                     appVueFilter.search();
@@ -485,6 +486,8 @@
                 processing: false
             },
             mounted: function () {
+                document.getElementsByClassName("borderBottom")[0].classList.add("active");
+
                 $(".preloader").fadeIn();
                 this.getSucursales();
                 this.$nextTick(() => {
@@ -829,7 +832,8 @@
                                 _this.processing = false;
                                 _this.indexVenta = 0;
                                 _this.limpiarVenta();
-                            } else {
+                            }
+                            else {
                                 _this.processing = false;
                                 _this.showPlano = false;
                                 APP.msg.error('No se cargó resultados');
@@ -934,9 +938,10 @@
 
                                     this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
 
-                                    $("html, body").animate({ scrollTop: $(document).height() - 770 }, 800);
+                                    animateScrollTop(360);
                                 }
-                            } else {
+                            }
+                            else {
                                 APP.msg.error('No se pudo bloquear el asiento');
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -1331,7 +1336,7 @@
                         case 7: $('#txtTurno').focus(); break;
                         case 8: this.filtro.Turno = $('#txtTurno').val(); $('#txtFecha_2').focus(); break;
                         case 9: this.filtro.Fecha = $('#txtFecha_2').val(); $('#btnActualizar').focus(); this.nextStep(10); break;
-                        default: this.recorridoSectionFilter();
+                        default: this.recorridoSectionFilter(); $('#btnActualizar').blur()
                     }
                 },
                 showTipoPago: function () {
@@ -1488,7 +1493,7 @@
                     if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
-                        var auxObj = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].NroAsiento);
+                        var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                         if (!auxObj) {
                             this.auxFocus.asiento = false;
                             APP.msg.error('Asiento ' + _NroAsiento + ' no encontrado');
@@ -1505,7 +1510,7 @@
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
                         if (this.list.ventas[this.indexVenta].NroAsiento !== this.list.ventas[this.indexVenta].OldNroAsiento) {
-                            var auxObj = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].NroAsiento);
+                            var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                             if (!auxObj) {
                                 this.auxFocus.asiento = false;
                                 APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' no encontrado');
@@ -1514,7 +1519,7 @@
                             }
 
                             if (!auxObj.FechaVenta && auxObj.NumeAsiento === 0) {
-                                var auxObjOld = this.recorridoValidateNroAsiento(this.list.ventas[this.indexVenta].OldNroAsiento);
+                                var auxObjOld = this.findObjectAsiento(this.list.ventas[this.indexVenta].OldNroAsiento);
                                 if (!auxObjOld) {
                                     this.auxFocus.asiento = false;
                                     APP.msg.error('Asiento Old ' + this.list.ventas[this.indexVenta].OldNroAsiento + ' no encontrado');
@@ -1536,7 +1541,7 @@
                         if (e && e.keyCode !== 13) this.auxFocus.asiento = false;
                     }
                 },
-                recorridoValidateNroAsiento: function (_NroAsiento) {
+                findObjectAsiento: function (_NroAsiento) {
                     var auxObj = {};
 
                     auxObj = _.find(this.list.plano1, { 'Tipo': _NroAsiento });
@@ -1583,12 +1588,15 @@
                     this.recorridoSectionVentas();
                 },
                 cancelarBoletos: function () {
-                    this.list.ventas.forEach(function (obj) {
-                        if (!isNaN(obj.NroAsiento) && obj.NroAsiento) {
-                            document.getElementById('btnAsiento_' + obj.NroAsiento).click();
-                        }
-                    });
+                    for (var obj of this.list.ventas) {
+                        var auxObj = this.findObjectAsiento(obj.NroAsiento);
+                        this.liberarAsiento(auxObj, false);
+                    }
                     this.limpiarVenta();
+                    this.$nextTick(function () {
+                        document.getElementById('txtNroAsientoVenta').focus();
+                        animateScrollTop(360);
+                    });
                 },
                 changePickedBusVenta: async function (value) {
                     var _this = this;

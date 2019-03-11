@@ -37,6 +37,14 @@ function formatToChar2(value) {
     else return '00';
 }
 
+function animateScrollTop(value) {
+    var auxValue = parseFloat(value);
+    if (!isNaN(auxValue)) {
+        $("html, body").animate({ scrollTop: value }, 800);
+    }
+    else return '00';
+}
+
 /*!********************* Prototype Vue */
 Vue.prototype.tran = function (key) {
     return APP.tran(key);
