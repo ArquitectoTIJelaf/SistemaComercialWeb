@@ -137,5 +137,17 @@ namespace SisComWeb.Services
         Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes);
 
         #endregion
+
+        #region GRABA PASE
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabaPase", ResponseFormat = WebMessageFormat.Json)]
+        Response<string> GrabaPase(List<PaseEntity> listado);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno);
+
+        #endregion
     }
 }
