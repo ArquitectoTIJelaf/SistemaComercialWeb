@@ -424,7 +424,7 @@ namespace SisComWeb.Business
 
                 response.EsCorrecto = true;
                 response.Valor = valor;
-                response.Mensaje = Message.MsgCorrectoGrabaVenta;
+                response.Mensaje = Message.MsgCorrectoGrabaPase;
                 response.Estado = true;
 
                 return response;

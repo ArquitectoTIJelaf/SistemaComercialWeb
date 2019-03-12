@@ -354,5 +354,22 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region GRABA PASE
+
+        public Response<string> GrabaPase(List<PaseEntity> listado)
+        {
+            try
+            {
+                return PaseLogic.GrabaPase(listado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrExcGrabaPase, false);
+            }
+        }
+
+        #endregion
     }
 }
