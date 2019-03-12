@@ -460,6 +460,10 @@
                 },
                 showPaseCortesia: function () {
                     appVuePaseCortesia.show();
+                },
+                sendPaseCortesia: function (_beneficiario) {
+                    debugger;
+                    appVueVenta.setPaseCortesia(_beneficiario);
                 }
             };
         })();
@@ -1619,6 +1623,17 @@
                                 _this.pickedBusVenta = value;
                             }; break;
                     }
+                },
+                setPaseCortesia: function (_beneficiario) {
+                    debugger;
+                    var _this = this;
+                    var nomBen = (_beneficiario.Nombre_Beneficiario) ? _beneficiario.Nombre_Beneficiario.split(',') : [];
+                    _this.list.ventas[_this.indexVenta].CodiTipoDoc = _.find(_this.list.tiposDoc, { 'id': _beneficiario.Tipo_Documento.replace(/0/g,'')}) || null;
+                    _this.list.ventas[_this.indexVenta].Documento = _beneficiario.Numero_Documento;
+                    _this.list.ventas[_this.indexVenta].Nombres = nomBen[2];
+                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = nomBen[0];
+                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = nomBen[1];    
+                    _this.list.ventas[_this.indexVenta].Sexo = _.find(_this.list.sexos, { 'id': _beneficiario.Sexo.replace(/0/g, '') }) || null;
                 }
             },
             computed: {
@@ -2135,7 +2150,8 @@
                 paginate: ['items'],
                 boletosLibres: '',
                 boletosByPrecio: '',
-                totalBoletos: ''
+                totalBoletos: '',
+                selectBen: false
             },
             mounted: function () {
             },
@@ -2199,6 +2215,15 @@
                     _this.solicitante = null;
                     _this.concepto = '';
                     _this.beneficiario = ''
+                },
+                sendRow: function (data, index) {
+                    debugger;
+                    var _this = this;
+                    if (data) {
+                        _this.limpiarPaseCortesia();
+                        appController.sendPaseCortesia(data);
+                        $('#appVuePaseCortesia').modal('hide');
+                    }
                 }
             },
             computed: {
