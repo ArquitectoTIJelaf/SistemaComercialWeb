@@ -65,5 +65,9 @@
         // SUNAT
         public const string MsgCorrectoConsultarSUNAT = "Correcto: ConsultarSUNAT.";
         public const string MsgErrExcConsultarSUNAT = "Ocurrió una excepción al consultar a la SUNAT.";
+
+        // Pase
+        public const string MsgCorrectoGrabaPase = "Correcto: GrabaPase.";
+        public const string MsgErrExcGrabaPase = "Ocurrió una excepción al grabar pase.";
     }
 }
