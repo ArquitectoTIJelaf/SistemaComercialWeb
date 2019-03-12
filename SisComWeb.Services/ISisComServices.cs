@@ -145,7 +145,7 @@ namespace SisComWeb.Services
         Response<string> GrabaPase(List<PaseEntity> listado);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno);
 
         #endregion
