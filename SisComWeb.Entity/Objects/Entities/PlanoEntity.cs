@@ -53,5 +53,21 @@
         public string Sexo { get; set; }
 
         public string Sigla { get; set; }
+
+        public string RazonSocial { get; set; }
+
+        public string Direccion { get; set; }
+
+        public string Boleto { get; set; }
+
+        public string TipoBoleto { get; set; }
+
+        public string AuxBoletoCompleto
+        {
+            get
+            {
+                return (TipoBoleto == "M" ? "" : TipoBoleto) + Boleto.ToString();
+            }
+        }
     }
 }

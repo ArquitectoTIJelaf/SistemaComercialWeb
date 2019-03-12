@@ -131,9 +131,9 @@ namespace SisComWeb.Business
                     var objEmpresa = new RucEntity
                     {
                         RucCliente = entidad.RucContacto,
-                        RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? "",
-                        Direccion = entidad.Direccion,
-                        Telefono = entidad.Telefono
+                        RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty,
+                        Direccion = entidad.Direccion ?? string.Empty,
+                        Telefono = entidad.Telefono ?? string.Empty
                     };
 
                     if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))

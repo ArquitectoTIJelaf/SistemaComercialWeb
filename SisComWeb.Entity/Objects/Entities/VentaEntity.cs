@@ -119,5 +119,7 @@
         public decimal Credito { get; set; }
 
         public AcompañanteEntity ObjAcompañante { get; set; }
+
+        public string RecoVenta { get; set; }
     }
 }

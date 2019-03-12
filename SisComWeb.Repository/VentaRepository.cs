@@ -205,6 +205,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nivel_Asiento", DbType.Byte, ParameterDirection.Input, entidad.NivelAsiento);
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
+                db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.RecoVenta ?? "");
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 
                 db.Execute();

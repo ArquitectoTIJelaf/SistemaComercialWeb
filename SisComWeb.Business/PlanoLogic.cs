@@ -118,6 +118,20 @@ namespace SisComWeb.Business
                             resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
                             resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
                             resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo;
+
+                            if (!string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].RucContacto))
+                            {
+                                var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resListarAsientosOcupados.Valor[i].RucContacto);
+                                if (resBuscarEmpresa.Estado)
+                                {
+                                    if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
+                                    {
+                                        resListarAsientosOcupados.Valor[i].RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
+                                        resListarAsientosOcupados.Valor[i].Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
+                                    }
+                                }
+                            }
+
                         }
                         else
                         {
@@ -159,6 +173,10 @@ namespace SisComWeb.Business
                                     ele.Telefono = ocu.Telefono;
                                     ele.Sexo = ocu.Sexo;
                                     ele.Sigla = ocu.Sigla;
+                                    ele.RazonSocial = ocu.RazonSocial;
+                                    ele.Direccion = ocu.Direccion;
+                                    ele.Boleto = ocu.Boleto;
+                                    ele.TipoBoleto = ocu.TipoBoleto;
                                 }
                             }
                         }
