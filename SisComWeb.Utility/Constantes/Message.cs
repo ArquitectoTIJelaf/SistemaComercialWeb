@@ -69,5 +69,6 @@
         // Pase
         public const string MsgCorrectoGrabaPase = "Correcto: GrabaPase.";
         public const string MsgErrExcGrabaPase = "Ocurrió una excepción al grabar pase.";
+        public const string MsgErrExcValidarPase = "Ocurrió una excepción al validar pase.";
     }
 }

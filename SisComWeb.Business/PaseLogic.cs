@@ -463,6 +463,27 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<bool> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: No cuenta con saldo.", false);
+                var resValidarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(CodiSocio, Mes, Anno);
+                if(resValidarSaldoPaseCortesia.Estado) {
+                    response.EsCorrecto = true;
+                    response.Valor = true;
+                    response.Mensaje = Message.MsgErrCorrectoBeneficiarioPase;
+                    response.Estado = true;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(PaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcValidarPase, false);
+            }
+        }
+
         #region FACTURACIÓN ELETRÓNICA
 
         public static ResponseW ValidarDocumentoSUNAT(PaseEntity entidad, ref SetInvoiceRequestBody bodyDocumentoSUNAT)

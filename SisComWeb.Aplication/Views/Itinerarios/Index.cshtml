@@ -566,15 +566,16 @@
             watch: {
                 'filtro.CodiOrigen': function (newVal, oldVal) {
                     if (this.filtro.CodiOrigen)
-                        this.$refs.refOrigenPas._data.typeAheadPointer = _.findIndex(this.list.origenesPas, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label });
+                        this.$refs.refOrigenPas._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.origenesPas, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label }); });
                 },
                 'filtro.CodiDestino': function (newVal, oldVal) {
                     if (this.filtro.CodiDestino)
-                        this.$refs.refDestinoPas._data.typeAheadPointer = _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestino.id, 'label': this.filtro.CodiDestino.label });
+                        this.$refs.refDestinoPas._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestino.id, 'label': this.filtro.CodiDestino.label }); });
                 },
                 'filtro.CodiRuta': function (newVal, oldVal) {
                     if (this.filtro.CodiRuta)
-                        this.$refs.refDestinoBus._data.typeAheadPointer = _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiRuta.id, 'label': this.filtro.CodiRuta.label });
+                        this.$refs.refDestinoBus._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiRuta.id, 'label': this.filtro.CodiRuta.label });
+                });
                 }
             }
         });
@@ -1708,11 +1709,11 @@
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
                     if (this.filtro.CodiEmpresa)
-                        this.$refs.refEmpresa._data.typeAheadPointer = _.findIndex(this.list.empresas, { 'id': this.filtro.CodiEmpresa.id, 'label': this.filtro.CodiEmpresa.label });
+                        this.$refs.refEmpresa._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.empresas, { 'id': this.filtro.CodiEmpresa.id, 'label': this.filtro.CodiEmpresa.label }); });
                 },
                 'filtro.CodiSucursal': function (newVal, oldVal) {
                     if (this.filtro.CodiSucursal)
-                        this.$refs.refSucursal._data.typeAheadPointer = _.findIndex(this.list.sucursales, { 'id': this.filtro.CodiSucursal.id, 'label': this.filtro.CodiSucursal.label });
+                        this.$refs.refSucursal._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.sucursales, { 'id': this.filtro.CodiSucursal.id, 'label': this.filtro.CodiSucursal.label }); });
                 },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     if (newVal) {
@@ -1725,23 +1726,23 @@
                         this.filtro.CodiPVOrigenBus = null;
                     }
                     if (this.filtro.CodiOrigenBus)
-                        this.$refs.refOrigenBus._data.typeAheadPointer = _.findIndex(this.list.origenesBus, { 'id': this.filtro.CodiOrigenBus.id, 'label': this.filtro.CodiOrigenBus.label });
+                        this.$refs.refOrigenBus._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.origenesBus, { 'id': this.filtro.CodiOrigenBus.id, 'label': this.filtro.CodiOrigenBus.label }); });
                 },
                 'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
                     if (this.filtro.CodiPVOrigenBus)
-                        this.$refs.refPVOrigenBus._data.typeAheadPointer = _.findIndex(this.list.pvOrigenesBus, { 'id': this.filtro.CodiPVOrigenBus.id, 'label': this.filtro.CodiPVOrigenBus.label });
+                        this.$refs.refPVOrigenBus._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.pvOrigenesBus, { 'id': this.filtro.CodiPVOrigenBus.id, 'label': this.filtro.CodiPVOrigenBus.label }); });
                 },
                 'filtro.CodiDestinoBus': function (newVal, oldVal) {
                     if (this.filtro.CodiDestinoBus)
-                        this.$refs.refDestinoBus_2._data.typeAheadPointer = _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiDestinoBus.id, 'label': this.filtro.CodiDestinoBus.label });
+                        this.$refs.refDestinoBus_2._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiDestinoBus.id, 'label': this.filtro.CodiDestinoBus.label }); });
                 },
                 'filtro.CodiServicio': function (newVal, oldVal) {
                     if (this.filtro.CodiServicio)
-                        this.$refs.refServicio._data.typeAheadPointer = _.findIndex(this.list.servicios, { 'id': this.filtro.CodiServicio.id, 'label': this.filtro.CodiServicio.label });
+                        this.$refs.refServicio._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.servicios, { 'id': this.filtro.CodiServicio.id, 'label': this.filtro.CodiServicio.label }); });
                 },
                 'filtro.CodiDestinoPas': function (newVal, oldVal) {
                     if (this.filtro.CodiDestinoPas)
-                        this.$refs.refDestinoPas_2._data.typeAheadPointer = _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestinoPas.id, 'label': this.filtro.CodiDestinoPas.label });
+                        this.$refs.refDestinoPas_2._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestinoPas.id, 'label': this.filtro.CodiDestinoPas.label }); });
                 },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
