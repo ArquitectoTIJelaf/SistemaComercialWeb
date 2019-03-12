@@ -76,7 +76,7 @@ namespace SisComWeb.Business
                     }
                     else if (resBuscarProgramacionViaje.Estado && resBuscarProgramacionViaje.Valor == 0)
                     {
-                        // Valida 'SoloProgramados' : No está en el flujo, se añadió luego.
+                        // Valida 'SoloProgramados': No está en el flujo, se añadió luego.
                         if (request.SoloProgramados)
                         {
                             resBuscarItinerarios.Valor.RemoveAt(i);
@@ -137,6 +137,26 @@ namespace SisComWeb.Business
                     {
                         response.Mensaje = resBuscarProgramacionViaje.Mensaje;
                         return response;
+                    }
+
+                    // Verifica cambios 'ValidarTurnoAdicional'
+                    if (resBuscarItinerarios.Valor[i].StOpcional == "1" && DateTime.Parse(resBuscarItinerarios.Valor[i].FechaProgramacion) >= DateTime.Now)
+                    {
+                        var resValidarTurnoAdicional = ItinerarioRepository.ValidarTurnoAdicional(resBuscarItinerarios.Valor[i].NroViaje, resBuscarItinerarios.Valor[i].FechaProgramacion);
+                        if (resValidarTurnoAdicional.Estado)
+                        {
+                            if (resValidarTurnoAdicional.Valor != 1)
+                            {
+                                resBuscarItinerarios.Valor.RemoveAt(i);
+                                i--;
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            response.Mensaje = resValidarTurnoAdicional.Mensaje;
+                            return response;
+                        }
                     }
 
                     // Valida 'ProgramacionCerrada'

@@ -1,7 +1,65 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{
     var usuario = DataSession.UsuarioLogueado;
+    var CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
 }
+
+<style>
+    #appVueNavarHeader .nav .open > a {
+        background: #ffffff !important;
+        color: #337ab7;
+        font-weight: 500;
+    }
+
+    #appVueNavarHeader .navbar-top-links > li > a {
+        font-weight: 400;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
+        font-size: 14px;
+    }
+
+        #appVueNavarHeader ul.nav.navbar-top-links.navbar-left > li {
+            border-right: 1px solid #0e2843;
+        }
+
+    #appVueNavarHeader .dropdown-menu > li > a > span {
+        float: right;
+    }
+
+    #appVueNavarHeader .borderBottom.active, .borderBottom:hover {
+        border-bottom: 4px solid #009cff;
+    }
+
+    #appVueNavarHeader .borderBottom.active a, .borderBottom:hover a {
+        color: #009cff;
+    }
+
+    .container-fluid {
+        margin-top: 25px;
+    }
+</style>
+
+<script>
+    function setClassActiveToBorderBottom() {
+        var elements = document.getElementsByClassName("borderBottom");
+        if (elements) {
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].addEventListener("click", function () {
+                    var current = document.getElementsByClassName("active");
+                    current[0].className = current[0].className.replace(" active", "");
+                    this.className += " active";
+                });
+            }
+        }
+    }
+
+    window.onload = function () {
+        setClassActiveToBorderBottom();
+    };
+</script>
 
 <nav class="navbar navbar-default navbar-static-top m-b-0">
     <div class="navbar-header" id="appVueNavarHeader">
@@ -16,11 +74,14 @@
         </div>
         <ul class="nav navbar-top-links navbar-left">
             <li class="dropdown">
-                <a href="javascript:void(0);" class="dropdown-toggle" style="font-size:14px !important;"
-                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    <i id="herramientas" class="ti-close ti-menu fa-fw"></i>Herramientas
+                <a href="javascript:void(0);"
+                   class="dropdown-toggle"
+                   data-toggle="dropdown"
+                   role="button" aria-haspopup="true" aria-expanded="false">
+                    <i id="herramientas" class="ti-close ti-menu-alt fa-fw"></i>
+                    Herramientas
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style="padding: 9px 0px; left: -1px; ">
                     <li>
                         <a href="javascript:void(0);">
                             Mantenimiento
@@ -50,90 +111,51 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;" onmouseover="hoverV();" onmouseout="unhoverV();">
-                    @*<img id="ventas" src="~/wwwroot/plugins/images/VENTA1.png" width="20" height="20" />*@
-                    &ensp; Ventas
+            <li class="borderBottom">
+                <a href="@Url.Action("Index","Itinerarios")" class="open-close waves-effect waves-light hidden-xs">
+                    Ventas
                 </a>
             </li>
-            <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;" onmouseover="hoverC();" onmouseout="unhoverC();">
-                    @*<img id="clientes" src="~/wwwroot/plugins/images/CLIENTE1.png" width="20" height="20" />*@
-                    &ensp; Clientes
+            <li class="borderBottom">
+                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                    Clientes
                 </a>
             </li>
-            <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;" onmouseover="hoverCo();" onmouseout="unhoverCo();">
-                    @*<img id="correlativos" src="~/wwwroot/plugins/images/CORELA1.png" width="20" height="20" />*@
-                    &ensp; Correlativos
+            <li class="borderBottom">
+                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                    Correlativos
                 </a>
             </li>
-            <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;" onmouseover="hoverR();" onmouseout="unhoverR();">
-                    @*<img id="rutas" src="~/wwwroot/plugins/images/RUTAS1.png" width="20" height="20" />*@
-                    &ensp; Rutas/Precios
+            <li class="borderBottom">
+                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                    Rutas/Precios
                 </a>
             </li>
-            <li>
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs" style="font-size:14px !important;" onmouseover="hoverL();" onmouseout="unhoverL();">
-                    @*<img id="liquidaciones" src="~/wwwroot/plugins/images/LIQ1.png" width="20" height="20" />*@
-                    &ensp; Liquidaciones
+            <li class="borderBottom">
+                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                    Liquidaciones
                 </a>
             </li>
         </ul>
         <ul class="nav navbar-top-links navbar-right pull-right">
-            <li>
-                <a>
-                    <i class="fa fa-user fa-fw"></i>@usuario.Nombre &ensp;
+            <li style="text-align: right; margin-right: 30px; ">
+                <a style="min-height: 30px; height: 30px; line-height: 40px; ">
+                    <i class="fa fa-user fa-fw"></i>
+                    @usuario.Nombre
                 </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Logout", "Autenticacion")">
-                    <i class="fa fa-sign-out"></i> Cerrar Sesión
+                <a href="@Url.Action("Logout", "Autenticacion")" style="min-height: 30px; height: 30px; line-height: 25px; ">
+                    <i class="fa fa-sign-out"></i>
+                    Cerrar sesión
                 </a>
             </li>
         </ul>
+        <div class="top-left-part" style="width: 100% !important; height: 20px; background-color: #0e2843; font-size: 11px; ">
+            <p style="color: white; margin-left: 30px; display: inline; line-height: 22px; ">
+                -- / -- / --
+            </p>
+            <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
+                TERMINAL @CodiTerminal / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToShortDateString()
+            </p>
+        </div>
     </div>
 </nav>
-
-<script>
-    function unhoverV() {
-        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA1.png");
-    }
-
-    function hoverV() {
-        $("#ventas").attr("src", "/wwwroot/plugins/images/VENTA2.png");
-    }
-
-    function unhoverC() {
-        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTE1.png");
-    }
-
-    function hoverC() {
-        $("#clientes").attr("src", "/wwwroot/plugins/images/CLIENTES2.png");
-    }
-
-    function unhoverCo() {
-        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA1.png");
-    }
-
-    function hoverCo() {
-        $("#correlativos").attr("src", "/wwwroot/plugins/images/CORELA2.png");
-    }
-
-    function unhoverR() {
-        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS1.png");
-    }
-
-    function hoverR() {
-        $("#rutas").attr("src", "/wwwroot/plugins/images/RUTAS2.png");
-    }
-
-    function unhoverL() {
-        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQ1.png");
-    }
-
-    function hoverL() {
-        $("#liquidaciones").attr("src", "/wwwroot/plugins/images/LIQU2.png");
-    }
-</script>

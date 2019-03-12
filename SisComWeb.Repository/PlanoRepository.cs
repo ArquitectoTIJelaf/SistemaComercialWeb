@@ -122,7 +122,9 @@ namespace SisComWeb.Repository
                             RecogeEn = Reader.GetStringValue(drlector, "Recoge_En"),
                             Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")),
                             FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
-                            Sigla = Reader.GetStringValue(drlector, "Sigla")
+                            Sigla = Reader.GetStringValue(drlector, "Sigla"),
+                            Boleto = Reader.GetStringValue(drlector, "Boleto"),
+                            TipoBoleto = Reader.GetStringValue(drlector, "tipo")
                         };
                         Lista.Add(entidad);
                     }
