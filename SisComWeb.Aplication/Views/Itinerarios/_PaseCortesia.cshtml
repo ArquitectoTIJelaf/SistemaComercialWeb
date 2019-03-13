@@ -1,5 +1,5 @@
 ﻿<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static">
-    <div class="modal-dialog" style="width: 500px; top:5%">
+    <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -27,13 +27,26 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Solicitante:</label>
                             <div class="col-md-10">
-                                <v-select v-model="solicitante"
+                                @*<v-select v-model="solicitante"
                                           :id="'cboSolicitantePC'"
                                           label="label"
                                           :options="list.solicitantes"
                                           :placeholder="'SOLICITANTE'"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
                                           ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>*@
+                                <v-select v-model="solicitante"
+                                          :options="list.solicitantes"
+                                          :placeholder="'SOLICITANTE'"
+                                          :select-on-tab="true"
+                                          :id="'cboSolicitantePC'"
+                                          label="label"
+                                          @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
+                                          ref="refSolicitantePC">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
