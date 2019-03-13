@@ -949,7 +949,8 @@
                                 .then(async res => {
                                     debugger;
                                     if (res.statusText === "OK") {
-                                        animateScrollTop($(".img-bus")[0].getBoundingClientRect().top - 85);
+                                        var alturaAnimeteScrollTop = $(".img-bus")[0].getBoundingClientRect().top > 85 ? $(".img-bus")[0].getBoundingClientRect().top - 85 : 0;
+                                        animateScrollTop(alturaAnimeteScrollTop);
 
                                         if (res.data !== 0) {
                                             asientoSel.IDS = res.data;
