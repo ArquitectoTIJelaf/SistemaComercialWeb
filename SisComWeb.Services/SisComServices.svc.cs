@@ -370,6 +370,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno)
+        {
+            try
+            {
+                return PaseLogic.ValidarSaldoPaseCortesia(CodiSocio, Mes, Anno);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcValidarPase, false);
+            }
+        }
+
         #endregion
     }
 }

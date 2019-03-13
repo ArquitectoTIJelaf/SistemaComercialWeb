@@ -683,9 +683,23 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        private static List<Beneficiario> _listaBeneficiario(JToken list)
+        {
+            List<Beneficiario> lista = list.Select(x => new Beneficiario
+            {
+                Nombre_Beneficiario = (string)x["Nombre_Beneficiario"],
+                Tipo_Documento = (string)x["Tipo_Documento"],
+                Documento = (string)x["Documento"],
+                Numero_Documento = (string)x["Numero_Documento"],
+                Sexo = (string)x["Sexo"]
+            }).ToList();
+
+            return lista;
+        }
+
         [HttpPost]
         [Route("listaBeneficiarioPase")]
-        public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
+        public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio)
         {
             try
             {
@@ -693,7 +707,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Socio\" : " + Codi_Socio + "," + "\"año\" : " + año + "," + "\"mes\" : " + mes + " }";
+                    var _body = "{ \"Codi_Socio\" : " + Codi_Socio + "," + "\"año\" : " + DateTime.Now.ToString("yyyy") + "," + "\"mes\" : " + DateTime.Now.ToString("MM") + " }";
                     HttpResponseMessage response = await client.PostAsync("ListaBeneficiarioPase", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -706,15 +720,135 @@ namespace SisComWeb.Aplication.Controllers
                 if (estado)
                 {
                     JObject data = (JObject)tmpResult["Valor"];
-                    PaseCortesia item = new PaseCortesia
+                    BoletosCortesia item = new BoletosCortesia
                     {
-                        Nombre_Beneficiario = (string)data["Nombre_Beneficiario"],
-                        Tipo_Documento = (string)data["Tipo_Documento"],
-                        Documento = (string)data["Documento"],
-                        Numero_Documento = (string)data["Numero_Documento"],
-                        Sexo = (string)data["Sexo"],
+                        BoletoTotal = (decimal)data["BoletoTotal"],
+                        BoletoLibre = (decimal)data["BoletoLibre"],
+                        BoletoPrecio = (decimal)data["BoletoPrecio"],
+                        ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
                     };
+
                     return Json(item, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        //FiltroVenta
+        [HttpPost]
+        [Route("grabar-pase")]
+        public async Task<ActionResult> SendPase(List<Pase> listado)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    string _body = string.Empty;
+
+                    _body += "[";
+                    for (var i = 0; i < listado.Count; i++)
+                    {
+                        _body += "{ " +
+                                    "\"SerieBoleto\" : " + 0 + //TODO
+                                    ",\"NumeBoleto\" : " + 0 + //TODO
+                                    ",\"CodiEmpresa\" : " + listado[i].CodiEmpresa +
+                                    ",\"CodiOficina\" : " + usuario.CodiSucursal + //
+                                    ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta + //
+                                    ",\"CodiOrigen\" : " + listado[i].CodiOrigen +
+                                    ",\"CodiDestino\" : " + listado[i].CodiDestino +
+                                    ",\"CodiRuta\" : " + listado[i].CodiRuta +
+                                    ",\"CodiProgramacion\" : " + listado[i].CodiProgramacion +
+                                    ",\"RucCliente\" : \"" + listado[i].RucCliente + "\"" +
+                                    ",\"NumeAsiento\" : " + listado[i].NumeAsiento +
+                                    ",\"FlagVenta\" : \"" + listado[i].FlagVenta + "\"" +
+                                    ",\"PrecioVenta\" : " + listado[i].PrecioVenta +
+                                    ",\"Nombre\" : \"" + listado[i].Nombre + "\"" +
+                                    ",\"Edad\" : " + listado[i].Edad +
+                                    ",\"Telefono\" : \"" + listado[i].Telefono + "\"" +
+                                    ",\"CodiUsuario\" : \"" + usuario.CodiUsuario + "\"" + //
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" + //
+                                    ",\"TipoDocumento\" : \"" + listado[i].TipoDocumento + "\"" +
+                                    ",\"Dni\" : \"" + listado[i].Dni + "\"" +
+                                    ",\"CodiDocumento\" : \"" + "" + "\"" + //TODO
+                                    ",\"Tipo\" : \"" + "" + "\"" + //TODO
+                                    ",\"Sexo\" : \"" + listado[i].Sexo + "\"" +
+                                    ",\"TipoPago\" : \"" + listado[i].TipoPago + "\"" +
+                                    ",\"FechaViaje\" : \"" + listado[i].FechaViaje + "\"" +
+                                    ",\"HoraViaje\" : \"" + listado[i].HoraViaje + "\"" +
+                                    ",\"Nacionalidad\" : \"" + listado[i].Nacionalidad + "\"" + //TODO
+                                    ",\"CodiServicio\" : " + listado[i].CodiServicio +
+                                    ",\"CodiEmbarque\" : " + listado[i].CodiEmbarque +
+                                    ",\"CodiArribo\" : " + listado[i].CodiArribo +
+                                    ",\"Hora_Embarque\" : \"" + listado[i].Hora_Embarque + "\"" +
+                                    ",\"NivelAsiento\" : " + listado[i].NivelAsiento +
+                                    ",\"CodiTerminal\" : " + CodiTerminal + //TODO
+                                    ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" + //
+                                    ",\"NomPuntoVenta\" : \"" + usuario.NomPuntoVenta + "\"" + //
+                                    ",\"NomDestino\" : \"" + listado[i].NomDestino + "\"" +
+                                    #region LOS QUE NO ESTAN EN EL WORD 01
+                                    //",\"NomEmpresaRuc\" : \"" + listado[i].NomEmpresaRuc + "\"" +
+                                    //",\"DirEmpresaRuc\" : \"" + listado[i].DirEmpresaRuc + "\"" +
+                                    //",\"NomServicio\" : \"" + listado[i].NomServicio + "\"" +
+                                    //",\"NomOrigen\" : \"" + listado[i].NomOrigen + "\"" +
+                                    #endregion
+                                    ",\"NroViaje\" : " + listado[i].NroViaje +
+                                    ",\"FechaProgramacion\" : \"" + listado[i].FechaProgramacion + "\"" +
+                                    ",\"HoraProgramacion\" : \"" + listado[i].HoraProgramacion + "\"" +
+                                    ",\"CodiBus\" : \"" + listado[i].CodiBus + "\"" +
+                                    //Pase Cortesia
+                                    "\"CodiGerente\" : \"" + listado[i].CodiGerente + "\"" +
+                                    ",\"CodiSocio\" : \"" + listado[i].CodiSocio + "\"" +
+                                    ",\"Mes\" : \"" + listado[i].Mes + "\"" +
+                                    ",\"Año\" : \"" + listado[i].Año + "\"" +
+                                    ",\"Concepto\" : \"" + listado[i].Concepto + "\"" +
+                                    ",\"FechaAbierta\" : \"" + listado[i].FechaAbierta + "\"" +
+                                    #region LOS QUE NO ESTAN EN EL WORD 02
+                                    //",\"CodiSucursal\" : " + listado[i].CodiSucursal +
+                                    //",\"CodiTarjetaCredito\" : \"" + listado[i].CodiTarjetaCredito + "\"" +
+                                    //",\"NumeTarjetaCredito\" : \"" + listado[i].NumeTarjetaCredito + "\"" +
+                                    //",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
+                                    //",\"Observacion\" : \"" + listado[i].Observacion + "\"" +
+                                    //",\"Credito\" : " + listado[i].Credito +
+                                    #endregion
+                                    //Compañante
+                                    ",\"ObjAcompañante\" : " +
+                                        "{ " +
+                                            "\"TipoDocumento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.CodiTipoDoc) + "\"" +
+                                            ",\"NumeroDocumento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Documento) + "\"" +
+                                            ",\"NombreCompleto\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.NombreCompleto) + "\"" +
+                                            ",\"FechaNacimiento\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.FechaNac) + "\"" +
+                                            ",\"Edad\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Edad) + "\"" +
+                                            ",\"Sexo\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Sexo) + "\"" +
+                                            ",\"Parentesco\" : \"" + (listado[i].ObjAcompañante == null ? "" : listado[i].ObjAcompañante.Parentesco) + "\"" +
+                                        " }" +
+                                    " }";
+                        if (i < listado.Count - 1)
+                            _body += ",";
+                    }
+                    _body += "]";
+
+                    HttpResponseMessage response = await client.PostAsync("GrabaPase", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    string valor = (string)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

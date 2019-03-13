@@ -550,13 +550,16 @@
                                             <div class="form-group">
                                                 <label class="control-label">Tipo doc.</label>
                                                 <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                                          :id="'cboTipoDoc'"
-                                                          label="label"
                                                           :options="list.tiposDoc"
                                                           :placeholder="'TIPO'"
+                                                          :select-on-tab="true"
+                                                          :id="'cboTipoDoc'"
+                                                          label="label"
                                                           @@keydown.13.native.prevent="passNumDocToDocumento"
-                                                          @@input="passNumDocToDocumento"
-                                                          ref="select">
+                                                          ref="refTipoDoc">
+                                                    <template slot="option" slot-scope="option">
+                                                        <div @@click="passNumDocToDocumento">{{ option.label }}</div>
+                                                    </template>
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
@@ -569,6 +572,7 @@
                                                        id="txtDocumento"
                                                        type="text"
                                                        @@keypress.13.prevent="searchUser"
+                                                       @@keydown.9.prevent="searchUser"
                                                        @@keyup.backspace="clearUser"
                                                        class="form-control input-sm"
                                                        placeholder="DOCUMENTO"
@@ -581,6 +585,7 @@
                                                 <input :value="list.ventas[indexVenta].Nombres.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nombres = $event.target.value.toUpperCase()"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
+                                                       ref="refNombres"
                                                        id="txtNombres"
                                                        type="text"
                                                        class="form-control input-sm"
@@ -650,13 +655,16 @@
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select v-model="list.ventas[indexVenta].Sexo"
-                                                              :id="'cboSexo'"
-                                                              label="label"
                                                               :options="list.sexos"
                                                               :placeholder="'SEXO'"
+                                                              :select-on-tab="true"
+                                                              :id="'cboSexo'"
+                                                              label="label"
                                                               @@keydown.13.native.prevent="$refs.refTelefono.focus()"
-                                                              @@input="$refs.refTelefono.focus()"
-                                                              ref="select">
+                                                              ref="refSexo">
+                                                        <template slot="option" slot-scope="option">
+                                                            <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
+                                                        </template>
                                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                                     </v-select>
                                                 </div>
@@ -680,7 +688,9 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
+                                                       @*@@keypress.13.prevent="recorridoSectionVentas"*@
+                                                       @@keypress.13.prevent="$refs.refNroSolicitud.focus()"
+                                                       @@keypress.9.prevent="$refs.refNroSolicitud.focus()"
                                                        ref="refRecoger"
                                                        id="txtRecoger"
                                                        type="text"
@@ -703,8 +713,11 @@
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keypress.13.prevent="passSolicitudToRuc"
-                                                       @@keypress.9.prevent="passSolicitudToRuc"
+                                                       @*@@keypress.13.prevent="passSolicitudToRuc"
+                                                       @@keypress.9.prevent="passSolicitudToRuc"*@
+                                                       @@keypress.13.prevent="$refs.refRuc.focus()"
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
+                                                       ref="refNroSolicitud"
                                                        id="txtNroSolicitud"
                                                        type="text"
                                                        class="form-control input-sm"
@@ -814,7 +827,7 @@
                                                     <label class="control-label">&nbsp;</label>
                                                     <button @@click="showRegistrarParentesco"
                                                             class="btn btn-secondary btn-ticket btn-venta"
-                                                            style="width: 100%; color:white; "
+                                                            style="width: 100%;"
                                                             v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
                                                         &ensp; Registrar Ni&ntilde;o
@@ -847,9 +860,9 @@
                                                             <button @@click="showTipoPago"
                                                                     id="btnTipoPago"
                                                                     class="btn btn-secondary btn-ticket btn-venta"
-                                                                    style="width: 100%; color:white; "
+                                                                    style="width: 100%;"
                                                                     v-bind:disabled="!bloquearPago">
-                                                                $ &ensp; Pago Total
+                                                                $&ensp;Pago&ensp;Total
                                                             </button>
                                                         </div>
                                                     </div>
@@ -859,10 +872,10 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="control-label">&nbsp;</label>
-                                                        <button @@click="showPaseCortesia"
+                                                        <button @@click=""
                                                                 class="btn btn-secondary btn-ticket-venta-success"
                                                                 style="width: 100%;">
-                                                            Generar Boletos
+                                                            Grabar&ensp;Pases
                                                         </button>
                                                     </div>
                                                 </div>

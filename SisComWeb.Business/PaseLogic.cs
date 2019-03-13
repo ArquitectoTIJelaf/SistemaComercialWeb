@@ -440,11 +440,11 @@ namespace SisComWeb.Business
                 response.Valor.BoletoLibre = objBoletosCortesia.Boletos_Libres;
                 response.Valor.BoletoPrecio = objBoletosCortesia.Boletos_Precio;
                 response.Valor.BoletoTotal = objBoletosCortesia.Total_Boletos;
-                response.Valor.Beneficiarios = ListaBeneficiario;
+                response.Valor.ListaBeneficiarios = ListaBeneficiario;
 
                 response.EsCorrecto = true;
                 response.Valor = response.Valor;
-                response.Mensaje = Message.MsgErrCorrectoBeneficiarioPase;
+                response.Mensaje = Message.MsgCorrectoBeneficiarioPase;
                 response.Estado = true;
 
                 return response;
@@ -453,6 +453,27 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(PaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
+            }
+        }
+
+        public static Response<bool> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: No cuenta con saldo.", false);
+                var resValidarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(CodiSocio, Mes, Anno);
+                if(resValidarSaldoPaseCortesia.Estado) {
+                    response.EsCorrecto = true;
+                    response.Valor = true;
+                    response.Mensaje = Message.MsgCorrectoBeneficiarioPase;
+                    response.Estado = true;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(PaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcValidarPase, false);
             }
         }
 

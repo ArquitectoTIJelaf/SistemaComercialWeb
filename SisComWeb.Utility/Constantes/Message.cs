@@ -59,7 +59,7 @@
         public const string MsgErrExcBuscaCorrelativo = "Ocurrió una excepción al buscar correlativo.";
         public const string MsgCorrectoGrabaVenta = "Correcto: GrabaVenta.";
         public const string MsgErrExcGrabaVenta = "Ocurrió una excepción al grabar venta.";
-        public const string MsgErrCorrectoBeneficiarioPase = "Correcto : Lista beneficiario pase.";
+        public const string MsgCorrectoBeneficiarioPase = "Correcto : Lista beneficiario pase.";
         public const string MsgErrExcBeneficiarioPase = "Ocurrió una excepción en la lista beneficiario pase.";
 
         // SUNAT
@@ -69,5 +69,6 @@
         // Pase
         public const string MsgCorrectoGrabaPase = "Correcto: GrabaPase.";
         public const string MsgErrExcGrabaPase = "Ocurrió una excepción al grabar pase.";
+        public const string MsgErrExcValidarPase = "Ocurrió una excepción al validar pase.";
     }
 }

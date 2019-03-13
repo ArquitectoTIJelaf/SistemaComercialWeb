@@ -496,11 +496,11 @@ namespace SisComWeb.Business
                 response.Valor.BoletoLibre = objBoletosCortesia.Boletos_Libres;
                 response.Valor.BoletoPrecio = objBoletosCortesia.Boletos_Precio;
                 response.Valor.BoletoTotal = objBoletosCortesia.Total_Boletos;
-                response.Valor.Beneficiarios = ListaBeneficiario;
+                response.Valor.ListaBeneficiarios = ListaBeneficiario;
 
                 response.EsCorrecto = true;
                 response.Valor = response.Valor;
-                response.Mensaje = Message.MsgErrCorrectoBeneficiarioPase;
+                response.Mensaje = Message.MsgCorrectoBeneficiarioPase;
                 response.Estado = true;
 
                 return response;

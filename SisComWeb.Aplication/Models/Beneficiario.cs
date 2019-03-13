@@ -1,6 +1,6 @@
 ﻿namespace SisComWeb.Aplication.Models
 {
-    public class PaseCortesia
+    public class Beneficiario
     {
         public string Nombre_Beneficiario { get; set; }
         public string Tipo_Documento { get; set; }

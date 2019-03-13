@@ -1,5 +1,5 @@
 ﻿<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static">
-    <div class="modal-dialog" style="width: 500px; top:10%">
+    <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -14,7 +14,7 @@
                                 <v-select v-model="gerente"
                                           :id="'cboGerentePC'"
                                           label="label"
-                                          :options="list.gerente"
+                                          :options="list.gerentes"
                                           :placeholder="'GERENTE'"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
                                           ref="select">
@@ -27,13 +27,26 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Solicitante:</label>
                             <div class="col-md-10">
-                                <v-select v-model="solicitante"
+                                @*<v-select v-model="solicitante"
                                           :id="'cboSolicitantePC'"
                                           label="label"
-                                          :options="list.solicitante"
+                                          :options="list.solicitantes"
                                           :placeholder="'SOLICITANTE'"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
                                           ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>*@
+                                <v-select v-model="solicitante"
+                                          :options="list.solicitantes"
+                                          :placeholder="'SOLICITANTE'"
+                                          :select-on-tab="true"
+                                          :id="'cboSolicitantePC'"
+                                          label="label"
+                                          @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
+                                          ref="refSolicitantePC">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -73,51 +86,62 @@
                                 <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
                                     <thead>
                                         <tr>
-                                            <th class="custom-th" width="%">Nombre</th>
-                                            <th class="custom-th" width="%">Documento</th>
-                                            <th class="custom-th" width="%">N° Documento</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Nombre</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Documento</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">N° Documento</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Sexo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
+                                        <paginate name="items" :list="list.beneficiarios" :per="5">
+                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td class="custom-td">{{item.Nombre_Beneficiario}}</td>
+                                                <td class="custom-td">{{item.Documento}}</td>
+                                                <td class="custom-td">{{item.Numero_Documento}}</td>
+                                                <td class="custom-td">{{item.Sexo}}</td>
+                                            </tr>
+                                        </paginate>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        <center>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                        </center>
                     </div>
                     <div class="form-group m-b-5">
                         <div class="col-md-4 separate-in-form">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="col-md-12 control-label label-sm" style="text-align:left !important">Boletos Libres:</label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <input class="form-control input-sm" type="text" min="0" :value="boletosLibres" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                             </div>
                         </div>
                         <div class="col-md-4 separate-in-form">
-                            <div class="col-md-6">
-                                <label class="col-md-12 control-label label-sm" style="text-align:right !important">B. con Precio:</label>
+                            <div class="col-md-12">
+                                <label class="col-md-12 control-label label-sm" style="text-align:left !important">Boletos con Precio:</label>
                             </div>
-                            <div class="col-md-6">
-                                <input class="form-control input-sm" type="number" min="0" v-model="boletosByPrecio" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
+                            <div class="col-md-12">
+                                <input class="form-control input-sm" type="number" min="0" v-model="boletosByPrecio" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                             </div>
                         </div>
                         <div class="col-md-4 separate-in-form">
-                            <div class="col-md-6">
-                                <label class="col-md-12 control-label label-sm" style="text-align:right !important">Total Boletos:</label>
+                            <div class="col-md-12">
+                                <label class="col-md-12 control-label label-sm" style="text-align:left !important">Total Boletos:</label>
                             </div>
-                            <div class="col-md-6">
-                                <input class="form-control input-sm" type="number" min="0" v-model="totalBoletos" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:center;" />
+                            <div class="col-md-12">
+                                <input class="form-control input-sm" type="number" min="0" v-model="totalBoletos" readonly disabled style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="" id="btnAsignaPC" :disabled="'!filledCampos'" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="" id="btnAsignaPC" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>
-                <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                <button @@click="limpiarPaseCortesia" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>
