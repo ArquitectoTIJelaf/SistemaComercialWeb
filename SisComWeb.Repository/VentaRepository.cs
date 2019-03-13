@@ -191,7 +191,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, entidad.CodiUsuario);
                 db.AddParameter("@Dni", DbType.String, ParameterDirection.Input, entidad.Dni);
                 db.AddParameter("@Tipo_Documento", DbType.String, ParameterDirection.Input, entidad.TipoDocumento);
-                db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, entidad.CodiDocumento);
+                db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, entidad.AuxCodigoBF_Interno);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
                 db.AddParameter("@Sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
                 db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, entidad.TipoPago);

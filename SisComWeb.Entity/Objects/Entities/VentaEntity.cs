@@ -42,6 +42,8 @@
 
         public string CodiDocumento { get; set; }
 
+        public string AuxCodigoBF_Interno { get; set; } // Auxiliar.
+
         public string Tipo { get; set; }
 
         public string Sexo { get; set; }
