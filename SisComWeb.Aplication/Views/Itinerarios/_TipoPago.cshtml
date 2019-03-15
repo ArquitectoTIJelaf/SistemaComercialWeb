@@ -30,7 +30,8 @@
                         <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Tipo Pago:</label>
                             <div class="col-md-10">
-                                <v-select v-model="computedTipoPago"
+                                <v-select :disabled="disabledTipoPago"
+                                          v-model="computedTipoPago"
                                           :id="'cboTipoPagoTP'"
                                           :options="list.tiposPago"
                                           :placeholder="'TIPO PAGO'"

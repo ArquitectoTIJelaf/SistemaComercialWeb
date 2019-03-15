@@ -122,6 +122,17 @@
 
         public AcompañanteEntity ObjAcompañante { get; set; }
 
-        public string RecoVenta { get; set; }
+        // PASE DE CORTESÍA
+        public string CodiGerente { get; set; }
+
+        public string CodiSocio { get; set; }
+
+        public string Mes { get; set; }
+
+        public string Año { get; set; }
+
+        public bool FechaAbierta { get; set; }
+
+        public string Concepto { get; set; } // @Reco_Venta en el store.
     }
 }

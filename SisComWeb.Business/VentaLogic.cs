@@ -65,7 +65,7 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<string> GrabaVenta(List<VentaEntity> listado)
+        public static Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
         {
             try
             {
@@ -77,6 +77,9 @@ namespace SisComWeb.Business
                     string auxBoletoCompleto = string.Empty;
                     string auxNumeCaja = string.Empty;
                     entidad.UserWebSUNAT = "WEBPASAJES";
+
+                    Response<int> resGrabarVentaFechaAbierta = new Response<int>(false, 0, "Error: GrabarVentaFechaAbierta.", false);
+                    Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabarVenta.", false);
 
                     // Busca 'ProgramacionViaje'
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
@@ -141,18 +144,54 @@ namespace SisComWeb.Business
                         return response;
                     }
 
+                    // PASE DE CORTESÍA
+                    if (FlagVenta == "7")
+                    {
+                        // Valida 'SaldoPaseCortesia'
+                        var resValidarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Año);
+                        if (resValidarSaldoPaseCortesia.Estado)
+                        {
+                            if (resValidarSaldoPaseCortesia.Valor != 1)
+                            {
+                                response.EsCorrecto = true;
+                                response.Valor = valor;
+                                response.Mensaje = Message.MsgCorrectoGrabaPase;
+                                response.Estado = true;
+
+                                return response;
+                            }
+                        }
+                        else
+                        {
+                            response.Mensaje = resValidarSaldoPaseCortesia.Mensaje;
+                            return response;
+                        }
+                    }
+
                     // Seteo 'CodiDocumento'
                     if (!string.IsNullOrEmpty(entidad.RucCliente))
                     {
-                        // Seteo 'CodiBF Interno'
-                        entidad.AuxCodigoBF_Interno = "17";
+                        // Seteo 'AuxCodigoBF_Interno'
+                        switch (FlagVenta)
+                        {
+                            // VENTA
+                            case "V": entidad.AuxCodigoBF_Interno = "17"; break;
+                            // PASE DE CORETESÍA
+                            case "7": entidad.AuxCodigoBF_Interno = "78"; break;
+                        }
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "01"; // Factura
                     }
                     else
                     {
-                        // Seteo 'CodiBF Interno'
-                        entidad.AuxCodigoBF_Interno = "16";
+                        // Seteo 'AuxCodigoBF_Interno'
+                        switch (FlagVenta)
+                        {
+                            // VENTA
+                            case "V": entidad.AuxCodigoBF_Interno = "16"; break;
+                            // PASE DE CORETESÍA
+                            case "7": entidad.AuxCodigoBF_Interno = "77"; break;
+                        }
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "03"; // Boleta
                     }
@@ -180,38 +219,84 @@ namespace SisComWeb.Business
                                     {
                                         case "01": // Factura
                                             {
-                                                // Seteo 'CodiBF Interno'
-                                                entidad.AuxCodigoBF_Interno = "16";
-                                                // Seteo 'CodiDocumento'
-                                                entidad.CodiDocumento = "03"; // Boleta
-
-                                                // Busca 'Correlativo'
-                                                resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
-                                                if (resBuscarCorrelativo.Estado)
+                                                if (FlagVenta == "7")
                                                 {
-                                                    if (resBuscarCorrelativo.Valor.SerieBoleto == 0)
+                                                    // Seteo 'CodiBF Interno'
+                                                    entidad.AuxCodigoBF_Interno = "77";
+                                                    // Seteo 'CodiDocumento'
+                                                    entidad.CodiDocumento = "03"; // Boleta
+                                                    // Busca 'Correlativo'
+                                                    resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                                                    if (!resBuscarCorrelativo.Estado)
                                                     {
-                                                        response.Mensaje = "Error: SerieBoleto igual a 0.";
+                                                        response.Mensaje = resBuscarCorrelativo.Mensaje;
                                                         return response;
+                                                    }
+                                                }
+
+                                                if (resBuscarCorrelativo.Valor.SerieBoleto == 0)
+                                                {
+                                                    // Seteo 'CodiBF Interno'
+                                                    entidad.AuxCodigoBF_Interno = "16";
+                                                    // Seteo 'CodiDocumento'
+                                                    entidad.CodiDocumento = "03"; // Boleta
+
+                                                    // Busca 'Correlativo'
+                                                    resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                                                    if (resBuscarCorrelativo.Estado)
+                                                    {
+                                                        if (resBuscarCorrelativo.Valor.SerieBoleto == 0)
+                                                        {
+                                                            response.Mensaje = "Error: SerieBoleto igual a 0.";
+                                                            return response;
+                                                        }
+                                                        else
+                                                        {
+                                                            entidad.SerieBoleto = resBuscarCorrelativo.Valor.SerieBoleto;
+                                                            entidad.NumeBoleto = resBuscarCorrelativo.Valor.NumeBoleto + 1;
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        entidad.SerieBoleto = resBuscarCorrelativo.Valor.SerieBoleto;
-                                                        entidad.NumeBoleto = resBuscarCorrelativo.Valor.NumeBoleto + 1;
+                                                        response.Mensaje = resBuscarCorrelativo.Mensaje;
+                                                        return response;
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    response.Mensaje = resBuscarCorrelativo.Mensaje;
-                                                    return response;
+                                                    entidad.SerieBoleto = resBuscarCorrelativo.Valor.SerieBoleto;
+                                                    entidad.NumeBoleto = resBuscarCorrelativo.Valor.NumeBoleto + 1;
                                                 }
 
                                                 break;
                                             }
                                         case "03": // Boleta
                                             {
-                                                response.Mensaje = resBuscarCorrelativo.Mensaje;
-                                                return response;
+                                                if (FlagVenta == "7")
+                                                {
+                                                    // Seteo 'CodiBF Interno'
+                                                    entidad.AuxCodigoBF_Interno = "16";
+                                                    // Busca 'Correlativo'
+                                                    resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                                                    if (!resBuscarCorrelativo.Estado)
+                                                    {
+                                                        response.Mensaje = resBuscarCorrelativo.Mensaje;
+                                                        return response;
+                                                    }
+                                                }
+
+                                                if (resBuscarCorrelativo.Valor.SerieBoleto == 0)
+                                                {
+                                                    response.Mensaje = "Error: SerieBoleto igual a 0.";
+                                                    return response;
+                                                }
+                                                else
+                                                {
+                                                    entidad.SerieBoleto = resBuscarCorrelativo.Valor.SerieBoleto;
+                                                    entidad.NumeBoleto = resBuscarCorrelativo.Valor.NumeBoleto + 1;
+                                                }
+
+                                                break;
                                             }
                                     }
 
@@ -254,14 +339,35 @@ namespace SisComWeb.Business
                         var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
                         if (resValidarDocumentoSUNAT.Estado && resValidarDocumentoSUNAT != null)
                         {
-                            // Graba 'Venta'
-                            var resGrabarVenta = VentaRepository.GrabarVenta(entidad);
-                            if (resGrabarVenta.Estado)
-                                entidad.IdVenta = resGrabarVenta.Valor;
+                            // Valida 'FechaAbierta'
+                            if (entidad.FechaAbierta)
+                            {
+                                var auxCodiProgramacion = entidad.CodiProgramacion;
+                                entidad.CodiProgramacion = 0;
+
+                                // Graba 'VentaFechaAbierta'
+                                resGrabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
+                                if (resGrabarVentaFechaAbierta.Estado)
+                                    entidad.IdVenta = resGrabarVentaFechaAbierta.Valor;
+                                else
+                                {
+                                    response.Mensaje = resGrabarVentaFechaAbierta.Mensaje;
+                                    return response;
+                                }
+
+                                entidad.CodiProgramacion = auxCodiProgramacion;
+                            }
                             else
                             {
-                                response.Mensaje = resGrabarVenta.Mensaje;
-                                return response;
+                                // Graba 'Venta'
+                                resGrabarVenta = VentaRepository.GrabarVenta(entidad);
+                                if (resGrabarVenta.Estado)
+                                    entidad.IdVenta = resGrabarVenta.Valor;
+                                else
+                                {
+                                    response.Mensaje = resGrabarVenta.Mensaje;
+                                    return response;
+                                }
                             }
 
                             // Graba 'Acompañante'
@@ -276,7 +382,7 @@ namespace SisComWeb.Business
                                 }
                             }
 
-                            if (resGrabarVenta.Valor > 0)
+                            if (resGrabarVenta.Valor > 0 || resGrabarVentaFechaAbierta.Valor > 0)
                             {
                                 // Registra 'DocumentoSUNAT'
                                 var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
@@ -288,7 +394,7 @@ namespace SisComWeb.Business
                             }
                             else
                             {
-                                response.Mensaje = resValidarDocumentoSUNAT.MensajeError;
+                                response.Mensaje = "Error: resGrabarVenta o resGrabarVentaFechaAbierta.";
                                 return response;
                             }
                         }
@@ -301,6 +407,25 @@ namespace SisComWeb.Business
 
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = (entidad.Tipo == "M" ? "" : entidad.Tipo) + entidad.SerieBoleto.ToString("D3").ToString() + "-" + entidad.NumeBoleto.ToString("D7").ToString();
+
+                    if (FlagVenta == "7")
+                    {
+                        // Modifica 'SaldoPaseCortesia'
+                        var resModificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Año);
+                        if (!resModificarSaldoPaseCortesia.Estado)
+                        {
+                            response.Mensaje = resModificarSaldoPaseCortesia.Mensaje;
+                            return response;
+                        }
+
+                        // Graba 'PaseSocio'
+                        var resGrabarPaseSocio = PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
+                        if (!resGrabarPaseSocio.Estado)
+                        {
+                            response.Mensaje = resGrabarPaseSocio.Mensaje;
+                            return response;
+                        }
+                    }
 
                     // Valida 'LiquidacionVentas'
                     var resValidarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DateTime.Now.ToString("dd/MM/yyyy"));

@@ -327,11 +327,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> GrabaVenta(List<VentaEntity> listado)
+        public Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
         {
             try
             {
-                return VentaLogic.GrabaVenta(listado);
+                return VentaLogic.GrabaVenta(listado, FlagVenta);
             }
             catch (Exception ex)
             {
@@ -350,23 +350,6 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
-            }
-        }
-
-        #endregion
-
-        #region GRABA PASE
-
-        public Response<string> GrabaPase(List<PaseEntity> listado)
-        {
-            try
-            {
-                return PaseLogic.GrabaPase(listado);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrExcGrabaPase, false);
             }
         }
 

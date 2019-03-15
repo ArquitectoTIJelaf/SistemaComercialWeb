@@ -38,7 +38,7 @@ namespace SisComWeb.Repository
 
         #region Métodos Transaccionales
 
-        public static Response<int> GrabarVentaFechaAbierta(PaseEntity entidad)
+        public static Response<int> GrabarVentaFechaAbierta(VentaEntity entidad)
         {
             var response = new Response<int>(false, 0, "Error: GrabarVentaFechaAbierta.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -62,7 +62,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, entidad.CodiUsuario);
                 db.AddParameter("@Dni", DbType.String, ParameterDirection.Input, entidad.Dni);
                 db.AddParameter("@Tipo_Documento", DbType.String, ParameterDirection.Input, entidad.TipoDocumento);
-                db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, entidad.CodiDocumento);
+                db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, entidad.AuxCodigoBF_Interno);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
                 db.AddParameter("@Sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
                 db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, entidad.TipoPago);
@@ -76,7 +76,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nivel_Asiento", DbType.Byte, ParameterDirection.Input, entidad.NivelAsiento);
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
-                db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.RecoVenta);
+                db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.Concepto);
                 db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, entidad.CodiRuta);
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 

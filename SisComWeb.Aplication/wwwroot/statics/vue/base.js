@@ -1355,7 +1355,7 @@ $(function () {
             keepOpen: false,
             toolbarPlacement: 'top',
             format: 'DD/MM/YYYY',
-            //defaultDate: new Date(),
+            //defaultDate: moment(),
             //maxDate: moment(),
             tooltips: {
                 today: 'Ir a la fecha actual',
