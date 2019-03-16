@@ -116,7 +116,6 @@
                     input.NomPuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.label : '';
                     APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
-                            debugger;
                             if (res.data.mensaje === 'Log success') {
                                 $('#frmLogin').submit();
                             } else {
