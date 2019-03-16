@@ -820,30 +820,19 @@
                                         </div>
                                         <div class="col-md-8" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-3">
-                                                <div class="form-group">
-
-
-                                                    <label class="control-label">&nbsp;</label>
-                                                    <div class="checkbox checkbox-info checkbox-circle" @*@@keypress.13.prevent="nextStep(6)"*@ style="display: inline-block; width: 100%; margin-top: 8px; text-align: center; ">
-                                                        <input id="chckRegistrarNiño" type="checkbox" class="check-with-label" @*v-model="filtro.TodosTurnos"*@>
-                                                        <label for="chckRegistrarNiño" class="label-for-check">
-                                                            <a style="text-decoration: underline; color: #1082c0; ">
-                                                                Registrar Niño
-                                                            </a>
+                                                <div class="form-group text-center">
+                                                    <label class="control-label" style="width: 100%; ">&nbsp;</label>
+                                                    <div id="checkRegistrarNino"
+                                                         class="checkbox checkbox-info checkbox-circle"
+                                                         @*@@keypress.13.prevent="nextStep(6)"*@>
+                                                        <input id="chckRegistrarNiño"
+                                                               class="check-with-label"
+                                                               type="checkbox"
+                                                               @*v-model="filtro.TodosTurnos"*@>
+                                                        <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
+                                                            REGISTRAR NI&Ntilde;O
                                                         </label>
                                                     </div>
-
-
-                                                    @*<label class="control-label">&nbsp;</label>
-                                                    <button @@click="showRegistrarParentesco"
-                                                            class="btn btn-secondary btn-ticket btn-venta"
-                                                            style="width: 100%;"
-                                                            v-bind:disabled="!bloquearPago">
-                                                        <img src="~/wwwroot/plugins/images/NINIO2.png" />
-                                                        &ensp; Registrar Ni&ntilde;o
-                                                    </button>*@
-
-
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
