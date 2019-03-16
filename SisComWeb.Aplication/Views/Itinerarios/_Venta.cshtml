@@ -621,7 +621,7 @@
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <div class="form-group">
-                                                <label class="control-label" style="font-size: 16px !important; font-weight: 500; color: #004e90;">{{list.ventas[indexVenta].NroVenta}}</label>
+                                                <label class="control-label" style="font-size: 16px !important; font-weight: 500; color: #004e90;">{{Correlativo}}</label>
                                             </div>
                                         </div>
                                     </div>
@@ -688,7 +688,6 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @*@@keypress.13.prevent="recorridoSectionVentas"*@
                                                        @@keypress.13.prevent="$refs.refNroSolicitud.focus()"
                                                        @@keypress.9.prevent="$refs.refNroSolicitud.focus()"
                                                        ref="refRecoger"
@@ -713,8 +712,6 @@
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @*@@keypress.13.prevent="passSolicitudToRuc"
-                                                       @@keypress.9.prevent="passSolicitudToRuc"*@
                                                        @@keypress.13.prevent="$refs.refRuc.focus()"
                                                        @@keypress.9.prevent="$refs.refRuc.focus()"
                                                        ref="refNroSolicitud"
@@ -824,14 +821,29 @@
                                         <div class="col-md-8" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-3">
                                                 <div class="form-group">
+
+
                                                     <label class="control-label">&nbsp;</label>
+                                                    <div class="checkbox checkbox-info checkbox-circle" @*@@keypress.13.prevent="nextStep(6)"*@ style="display: inline-block; width: 100%; margin-top: 8px; text-align: center; ">
+                                                        <input id="chckRegistrarNiño" type="checkbox" class="check-with-label" @*v-model="filtro.TodosTurnos"*@>
+                                                        <label for="chckRegistrarNiño" class="label-for-check">
+                                                            <a style="text-decoration: underline; color: #1082c0; ">
+                                                                Registrar Niño
+                                                            </a>
+                                                        </label>
+                                                    </div>
+
+
+                                                    @*<label class="control-label">&nbsp;</label>
                                                     <button @@click="showRegistrarParentesco"
                                                             class="btn btn-secondary btn-ticket btn-venta"
                                                             style="width: 100%;"
                                                             v-bind:disabled="!bloquearPago">
                                                         <img src="~/wwwroot/plugins/images/NINIO2.png" />
                                                         &ensp; Registrar Ni&ntilde;o
-                                                    </button>
+                                                    </button>*@
+
+
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -848,12 +860,11 @@
                                                            placeholder="0.00"
                                                            style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
                                                            autocomplete="off"
-                                                           @@blur="validateRangePrice"
-                                                           @*v-bind:disabled="!bloquearPago"*@>
+                                                           @@blur="validateRangePrice">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <div class="form-group" style="text-align: center;">
+                                                <div class="form-group">
                                                     <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
                                                         <label class="control-label">&nbsp;</label>
                                                         <button @@click="showTipoPago"

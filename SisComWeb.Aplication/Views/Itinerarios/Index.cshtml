@@ -766,7 +766,7 @@
                     input.FechaViaje = fechaViaje;
                     _this.Correlativo = await _this.getCorrelativo(item.CodiEmpresa);
                     // Cuando no obtiene 'Correlativo'
-                    if (_this.Correlativo === 'B000-0000000') {
+                    if (_this.Correlativo === '0000-0000001') {
                         _this.processing = false;
                         _this.showPlano = false;
                         APP.msg.error('No se pudo cargar Correlativo');
@@ -918,12 +918,15 @@
                         await _this.liberarAsiento(asientoSel, true);
                         return;
                     }
-                    debugger;
+
                     // Validar 'AsientoSel' vendido
                     if (asientoSel.FlagVenta) {
                         await _this.fillDataAsientoVendido(asientoSel);
                         return;
                     }
+
+                    // Limpiar si el asiento anterior era solo vista
+                    if (_this.list.ventas[_this.indexVenta].FlagVenta) _this.limpiarVenta();
 
                     var input = {};
                     input.CodiProgramacion = _this.filtro.CodiProgramacion;
@@ -983,7 +986,7 @@
                         case '7': // Pase de cortesía
                             {
                                 // Si hay 2 o más boletos.
-                                if (_this.list.ventas.length > 1 || !_this.list.ventas[_this.indexVenta].FlagVenta) {
+                                if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                                     _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
                                     if (_fillData) {
                                         await _this.cancelarBoletos();
@@ -991,13 +994,12 @@
                                     }
                                 }
                                 else {
-                                    // Si ya se está visualizando la data de un 'Asiento Vendido'
-                                    if (_this.list.ventas[_this.indexVenta].FlagVenta === 'V') {
+                                    if (_this.list.ventas[_this.indexVenta].FlagVenta) {
                                         _this.limpiarVenta();
                                         _fillData = false;
                                     }
                                     else {
-                                        if (_this.list.ventas[_this.indexVenta].NroAsiento !== '') {
+                                        if (_this.list.ventas[_this.indexVenta].NroAsiento) {
                                             await _this.cancelarBoletos();
                                         }
                                         _fillData = true;
