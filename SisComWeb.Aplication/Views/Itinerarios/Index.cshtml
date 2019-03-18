@@ -393,6 +393,11 @@
                 return false;
             });
 
+            $('#appRegistrarInfante').on('hidden.bs.modal', function () {
+                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                    appVueVenta.checkRegistrarNino = false;
+            });
+
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 var number = el.value.split('.');
@@ -746,7 +751,8 @@
                     precio: false
                 },
                 processing: false,
-                empresas: []
+                empresas: [],
+                checkRegistrarNino: false
             },
             mounted: function () {
                 this.getEmpresas();
@@ -765,6 +771,7 @@
                 getTurno: async function (item, fechaViaje) {
                     var _this = this;
                     _this.processing = true;
+                    _this.checkRegistrarNino = false;
                     _this.pickedBusVenta = 'V';
 
                     var input = {};
@@ -993,8 +1000,7 @@
                     var _this = this;
                     var _fillData = false;
 
-                    switch (asientoSel.FlagVenta)
-                    {
+                    switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
                             {
@@ -1069,7 +1075,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
-                        ObjAcompañante: {},
+                        ObjAcompañante: null,
                         OldNroAsiento: '',
                         FlagVenta: ''
                     });
@@ -1119,7 +1125,7 @@
                                             _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                                             _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                                            _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
+                                            _this.list.ventas[_this.indexVenta].ObjAcompañante = null;
                                             _this.list.ventas[_this.indexVenta].OldNroAsiento = '';
                                             _this.list.ventas[_this.indexVenta].FlagVenta = '';
                                             _this.firstAsiento = true;
@@ -1345,7 +1351,7 @@
                                     } else {
                                         APP.rq.axios_handler_error_alert;
                                     }
-                                    });
+                                });
                         }
                     } else {
                         _this.list.ventas[_this.indexVenta].RazonSocial = '';
@@ -1487,7 +1493,7 @@
                     if (_indexOfDni !== -1 || _indexOfRazSoc !== -1) {
                         if (_indexOfDni !== -1) {
                             _this.indexVenta = _indexOfDni;
-                            _this.$nextTick(() => { $('#txtDocumento').focus();});
+                            _this.$nextTick(() => { $('#txtDocumento').focus(); });
                             APP.msg.error('El DNI no puede tener menos de 8 caracteres');
                             return true;
                         }
@@ -1572,7 +1578,7 @@
                     _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                     _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                     _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                    _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
+                    _this.list.ventas[_this.indexVenta].ObjAcompañante = null;
                     _this.list.ventas[_this.indexVenta].OldNroAsiento = '';
                     _this.list.ventas[_this.indexVenta].FlagVenta = '';
                 },
@@ -1762,6 +1768,25 @@
                         _this.list.ventas[_this.indexVenta].NroAsiento !== '' &&
                         parseInt(_this.list.ventas[_this.indexVenta].Precio) > 0
                     );
+                },
+                checkedRegistrarNino: {
+                    get: function () {
+                        return this.checkRegistrarNino;
+                    },
+                    set: function (value) {
+                        if (value) {
+                            this.showRegistrarParentesco();
+                            this.checkRegistrarNino = value;
+                        }
+                        else {
+                            if (this.list.ventas[this.indexVenta].ObjAcompañante) {
+                                this.showRegistrarParentesco();
+                                this.checkRegistrarNino = !value;
+                            }
+                            else
+                                this.checkRegistrarNino = value;
+                        }
+                    }
                 }
             },
             watch: {
@@ -2143,19 +2168,23 @@
                 },
                 mask: {
                     documento: ''
-                },
+                }
             },
             mounted: function () {
                 this.getParentesco();
             },
             methods: {
                 show: function (_TipoDoc, _listSexos) {
-                    this.limpiarCampos();
+                    if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                        this.limpiarCampos();
                     this.list.tipoDoc = _TipoDoc;
                     this.list.sexos = _listSexos;
                     $('#appRegistrarInfante').modal('show');
                     $('#appRegistrarInfante').on('shown.bs.modal', function () {
-                        $("#cboTipoDocRA input[type=search]").focus();
+                        if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                            document.getElementById("chckRegistrarNiño").checked = true;
+                        else
+                            $("#cboTipoDocRA input[type=search]").focus();
                     });
                 },
                 getParentesco: function () {
@@ -2174,8 +2203,8 @@
                     _this.ApellidoMaterno = '';
                     _this.FechaNac = '';
                     _this.Edad = '';
-                    _this.Sexo = '';
-                    _this.parentesco = '';
+                    _this.Sexo = ''; // null
+                    _this.parentesco = ''; // null
                 },
                 setDateAndCalcYears: function (dateString) {
                     if (dateString) {
@@ -2229,6 +2258,9 @@
                     appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = ObjAcompañante;
 
                     $('#appRegistrarInfante').modal('hide');
+                },
+                eliminarAcompaniante: function () {
+                    appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = null;
                 }
             },
             computed: {

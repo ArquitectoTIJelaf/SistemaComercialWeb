@@ -823,12 +823,11 @@
                                                 <div class="form-group text-center">
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino"
-                                                         class="checkbox checkbox-info checkbox-circle"
-                                                         @*@@keypress.13.prevent="nextStep(6)"*@>
+                                                         class="checkbox checkbox-info checkbox-circle">
                                                         <input id="chckRegistrarNiño"
                                                                class="check-with-label"
                                                                type="checkbox"
-                                                               @*v-model="filtro.TodosTurnos"*@>
+                                                               v-model="checkedRegistrarNino">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -872,6 +871,7 @@
                                                     <button @@click="cancelarBoletos"
                                                             class="btn btn-secondary btn-ticket btn-cancelar"
                                                             style="width: 100%; color:white;">
+                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
                                                         Cancelar
                                                     </button>
                                                 </div>

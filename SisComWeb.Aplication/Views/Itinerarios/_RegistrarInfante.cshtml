@@ -37,7 +37,6 @@
                                        id="txtDocumentoRA"
                                        type="text"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keypress.13.prevent="searchUser"*@
                                        class="form-control input-sm"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
@@ -147,6 +146,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button data-dismiss="modal" @@click="eliminarAcompaniante" class="btn btn-danger waves-effect waves-light text-left" style="float: left; ">
+                    <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>Eliminar
+                </button>
                 <button id="btnRegistrarAconpaniante" @@click="saveAcompaniante" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
