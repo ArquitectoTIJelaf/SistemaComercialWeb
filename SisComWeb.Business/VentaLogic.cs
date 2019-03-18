@@ -352,7 +352,15 @@ namespace SisComWeb.Business
                                 // Graba 'Venta'
                                 resGrabarVenta = VentaRepository.GrabarVenta(entidad);
                                 if (resGrabarVenta.Estado)
-                                    entidad.IdVenta = resGrabarVenta.Valor;
+                                {
+                                    if (resGrabarVenta.Valor != -1)
+                                        entidad.IdVenta = resGrabarVenta.Valor;
+                                    else
+                                    {
+                                        response.Mensaje = resGrabarVenta.Mensaje;
+                                        return response;
+                                    }
+                                }
                                 else
                                 {
                                     response.Mensaje = resGrabarVenta.Mensaje;

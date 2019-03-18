@@ -37,12 +37,10 @@ function formatToChar2(value) {
     else return '00';
 }
 
-function animateScrollTop(value) {
-    var auxValue = parseFloat(value);
-    if (!isNaN(auxValue)) {
-        $("html, body").animate({ scrollTop: value }, 800);
+function animateScrollTop(value, duration = 800) {
+    if (!isNaN(value)) {
+        $("html, body").animate({ scrollTop: value }, duration);
     }
-    else return '00';
 }
 
 /*!********************* Prototype Vue */
@@ -176,7 +174,7 @@ Vue.filter('maxLenght', function (value, length) {
 Vue.filter('hexToRgb', function (value, opacity = 1) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(value);
     return result ? `rgb(${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}, ${opacity})`
-        : 'rgb(255, 255, 255)'; 
+        : 'rgb(255, 255, 255)';
 });
 /*!********************* Filter Vue */
 
@@ -1355,8 +1353,6 @@ $(function () {
             keepOpen: false,
             toolbarPlacement: 'top',
             format: 'DD/MM/YYYY',
-            //defaultDate: moment(),
-            //maxDate: moment(),
             tooltips: {
                 today: 'Ir a la fecha actual',
                 clear: 'Borrar fecha',
@@ -1389,6 +1385,36 @@ $(function () {
             tooltips: {
                 today: 'Ir a la hora actual',
                 clear: 'Borrar hora',
+                close: 'Cerrar selector'
+            }
+        });
+    }
+
+    if ($('.dpyear').length) {
+
+        $('.dpyear').datetimepicker({
+            keyBinds: {
+                enter: function (e) {
+                    if (!e[0].previousElementSibling.value) {
+                        this.date(moment().subtract(1, 'years').format('DD/MM/YYYY'));
+                    }
+                    this.hide();
+                }
+            },
+            useCurrent: false,
+            locale: 'es',
+            showTodayButton: false,
+            showClose: false,
+            showClear: false,
+            keepOpen: false,
+            toolbarPlacement: 'top',
+            format: 'DD/MM/YYYY',
+            defaultDate: moment().subtract(1, 'years'),
+            maxDate: moment().subtract(1, 'years'),
+            minDate: moment().subtract(150, 'years'),
+            tooltips: {
+                today: 'Ir a la fecha actual',
+                clear: 'Borrar fecha',
                 close: 'Cerrar selector'
             }
         });
@@ -1546,3 +1572,33 @@ APP.ventas = {};
 APP.ventas.colorBloqueoInterno = '#FFC36D';
 APP.ventas.colorBloqueoExterno = '#607D8B';
 /****************************************/
+
+
+/***************************************/
+
+//Vue.directive('numericOnly', function (el, binding, vnode) {
+//    el.type = 'number';
+//    el.addEventListener('input', (e) => {
+//        return el.validity.valid || (el.value = '');
+//    });
+//    el.addEventListener('keypress', (e) => {
+//        let charCode = (e.which) ? e.which : e.keyCode;
+//        if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+//            e.preventDefault();
+//        } else {
+//            return true;
+//        }
+//    });
+//});
+
+Vue.directive('numb-or-lett', function (el, binding, vnode) {
+    el.addEventListener('keypress', (e) => {
+        var inp = String.fromCharCode(e.keyCode);
+        if (/[a-zA-Z0-9]/.test(inp))
+            return true;
+        else {
+            e.preventDefault();
+        }
+    });
+});
+/**************************************/

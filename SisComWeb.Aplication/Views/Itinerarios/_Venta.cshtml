@@ -576,6 +576,7 @@
                                                        ref="refDocumento"
                                                        class="form-control input-sm"
                                                        placeholder="DOCUMENTO"
+                                                       v-numb-or-lett
                                                        v-mask="mask.documento">
                                             </div>
                                         </div>
@@ -629,27 +630,33 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label">Fecha nac.</label>
-                                                    <input v-model="list.ventas[indexVenta].FechaNac"
-                                                           @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                           id="txtFechaNac"
-                                                           ref="refFechaNac"
-                                                           class="form-control input-sm dp"
-                                                           placeholder="FECHA NAC."
-                                                           v-mask="'##/##/####'">
+                                            <div class="col-md-7 p-0">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Fecha nac.</label>
+                                                        <input v-model="list.ventas[indexVenta].FechaNac"
+                                                               @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                               id="txtFechaNac"
+                                                               ref="refFechaNac"
+                                                               class="form-control input-sm dpyear"
+                                                               placeholder="FECHA NAC."
+                                                               v-mask="'##/##/####'">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label">Edad</label>
-                                                    <input :value="list.ventas[indexVenta].Edad"
-                                                           id="txtEdad"
-                                                           class="form-control input-sm text-center"
-                                                           placeholder="E"
-                                                           disabled>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Edad</label>
+                                                        <input :value="list.ventas[indexVenta].Edad"
+                                                               id="txtEdad"
+                                                               name="Edad"
+                                                               class="form-control input-sm text-center"
+                                                               placeholder="E"
+                                                               v-validate="'min_value: 1'"
+                                                               style="cursor: not-allowed;"
+                                                               readonly>
+                                                    </div>
                                                 </div>
+                                                <span v-show="errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -731,14 +738,15 @@
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keypress.13.prevent="searchEmpresa"
                                                                @@keypress.9.prevent="searchEmpresa"
-                                                               @@focus="$event.target.select()"
-                                                               @*@@keyup.backspace="clearRazSoc"*@                                                               
+                                                               @@keyup.backspace="clearRazSoc"
+                                                               @@focus="$event.target.select()"                                                               
                                                                id="txtRuc"
                                                                ref="refRuc"
-                                                               name="número de ruc"
+                                                               name="ruc"
                                                                class="form-control input-sm"
                                                                placeholder="RUC"
                                                                v-validate="'min: 11'"
+                                                               data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)">
                                                     </div>
                                                 </div>
@@ -751,15 +759,16 @@
                                                                @@keypress.9.prevent="$refs.refDireccion.focus()"
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
-                                                               name="razón social"                                                               
+                                                               name="razon_social"                                                               
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
-                                                               v-validate="'min: 3'">
+                                                               v-validate="'min: 3'"
+                                                               data-vv-as="Razón social">
                                                     </div>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].Ruc.length < 11 && errors.has('número de ruc')" class="text-danger m-l-15">{{ errors.first('número de ruc') }}</span>
-                                                <span v-show="list.ventas[indexVenta].RazonSocial.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razón social')" class="text-danger m-l-15">{{ errors.first('razón social') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
+                                                <span v-show="list.ventas[indexVenta].RazonSocial.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -819,16 +828,14 @@
                                             <div class="col-md-3">
                                                 <div class="form-group text-center">
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
-                                                    <div id="checkRegistrarNino"
-                                                         class="checkbox checkbox-info checkbox-circle"
-                                                         @*@@keypress.13.prevent="nextStep(6)"*@>
-                                                        <input @@keypress.13.prevent="$refs.refPrecio.focus()" 
+                                                    <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
+                                                        <input v-model="checkedRegistrarNino"
+                                                                @@keypress.13.prevent="$refs.refPrecio.focus()" 
                                                                 @@keypress.9.prevent="$refs.refPrecio.focus()"
                                                                 id="chckRegistrarNiño"
                                                                 ref="refRegistrarNiño"
                                                                 class="check-with-label"
-                                                                type="checkbox"
-                                                                @*v-model="filtro.TodosTurnos"*@>
+                                                                type="checkbox">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -871,6 +878,7 @@
                                                     <button @@click="cancelarBoletos"
                                                             class="btn btn-secondary btn-ticket btn-cancelar"
                                                             style="width: 100%; color:white;">
+                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
                                                         Cancelar
                                                     </button>
                                                 </div>

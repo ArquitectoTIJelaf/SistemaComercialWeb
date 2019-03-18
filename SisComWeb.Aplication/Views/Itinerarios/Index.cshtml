@@ -393,6 +393,16 @@
                 return false;
             });
 
+            $('#appRegistrarInfante').on('hidden.bs.modal', function () {
+                appVueVenta.$refs.refRegistrarNiño.focus();
+                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                    appVueVenta.checkRegistrarNino = false;
+            });
+
+            $('#appVueTipoPago').on('hidden.bs.modal', function () {
+                $('#btnTipoPago').focus();
+            });
+
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 var number = el.value.split('.');
@@ -746,7 +756,8 @@
                     precio: false
                 },
                 processing: false,
-                empresas: []
+                empresas: [],
+                checkRegistrarNino: false
             },
             mounted: function () {
                 this.getEmpresas();
@@ -765,6 +776,7 @@
                 getTurno: async function (item, fechaViaje) {
                     var _this = this;
                     _this.processing = true;
+                    _this.checkRegistrarNino = false;
                     _this.pickedBusVenta = 'V';
 
                     var input = {};
@@ -923,8 +935,11 @@
                     var _this = this;
 
                     // Animación 'ScrollTop'
-                    var alturaAnimeteScrollTop = _this.showTextTurnos ? 110 : 245;
-                    animateScrollTop(alturaAnimeteScrollTop);
+                    //var alturaAnimeteScrollTop = _this.showTextTurnos ? 110 : 245;
+                    //animateScrollTop(alturaAnimeteScrollTop, 800);
+                    var _topOfBus = $('.img-bus').offset().top;
+                    var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
+                    $("html, body").animate({ scrollTop: _topOfBus - _heightOfHeader }, 800);
 
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS !== 0) {
@@ -993,8 +1008,7 @@
                     var _this = this;
                     var _fillData = false;
 
-                    switch (asientoSel.FlagVenta)
-                    {
+                    switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
                             {
@@ -1069,7 +1083,7 @@
                         NroSolicitud: '',
                         FechaVen: moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY"),
                         Nacionalidad: '',
-                        ObjAcompañante: {},
+                        ObjAcompañante: null,
                         OldNroAsiento: '',
                         FlagVenta: ''
                     });
@@ -1089,40 +1103,41 @@
 
                                     if (auxBool_Click_Key) {
                                         if (_this.list.ventas.length === 1) {
-                                            _this.indexVenta = 0;
-                                            _this.list.ventas[_this.indexVenta].IdCliente = 0;
-                                            _this.list.ventas[_this.indexVenta].CodiTipoDoc = null;
-                                            _this.list.ventas[_this.indexVenta].Documento = '';
-                                            _this.list.ventas[_this.indexVenta].Nombres = '';
-                                            _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                                            _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                                            _this.list.ventas[_this.indexVenta].FechaNac = '';
-                                            _this.list.ventas[_this.indexVenta].Edad = '';
-                                            _this.list.ventas[_this.indexVenta].Sexo = null;
-                                            _this.list.ventas[_this.indexVenta].Telefono = '';
-                                            _this.list.ventas[_this.indexVenta].Ruc = '';
-                                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                                            _this.list.ventas[_this.indexVenta].Direccion = '';
-                                            _this.list.ventas[_this.indexVenta].Recoger = '';
-                                            _this.list.ventas[_this.indexVenta].Reintegro = '';
-                                            _this.list.ventas[_this.indexVenta].Observacion = '';
-                                            _this.list.ventas[_this.indexVenta].Precio = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioNormal = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioNormal = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioMin = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioMax = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioMinimo = '';
-                                            _this.list.ventas[_this.indexVenta].PrecioMaximo = '';
-                                            _this.list.ventas[_this.indexVenta].NroAsiento = '';
-                                            _this.list.ventas[_this.indexVenta].NivelAsiento = 0;
-                                            _this.list.ventas[_this.indexVenta].NroVenta = '';
-                                            _this.list.ventas[_this.indexVenta].NroSolicitud = '';
-                                            _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
-                                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                                            _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
-                                            _this.list.ventas[_this.indexVenta].OldNroAsiento = '';
-                                            _this.list.ventas[_this.indexVenta].FlagVenta = '';
-                                            _this.firstAsiento = true;
+                                            //_this.indexVenta = 0;
+                                            //_this.list.ventas[_this.indexVenta].IdCliente = 0;
+                                            //_this.list.ventas[_this.indexVenta].CodiTipoDoc = null;
+                                            //_this.list.ventas[_this.indexVenta].Documento = '';
+                                            //_this.list.ventas[_this.indexVenta].Nombres = '';
+                                            //_this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                                            //_this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                                            //_this.list.ventas[_this.indexVenta].FechaNac = '';
+                                            //_this.list.ventas[_this.indexVenta].Edad = '';
+                                            //_this.list.ventas[_this.indexVenta].Sexo = null;
+                                            //_this.list.ventas[_this.indexVenta].Telefono = '';
+                                            //_this.list.ventas[_this.indexVenta].Ruc = '';
+                                            //_this.list.ventas[_this.indexVenta].RazonSocial = '';
+                                            //_this.list.ventas[_this.indexVenta].Direccion = '';
+                                            //_this.list.ventas[_this.indexVenta].Recoger = '';
+                                            //_this.list.ventas[_this.indexVenta].Reintegro = '';
+                                            //_this.list.ventas[_this.indexVenta].Observacion = '';
+                                            //_this.list.ventas[_this.indexVenta].Precio = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioNormal = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioMin = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioMax = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioMinimo = '';
+                                            //_this.list.ventas[_this.indexVenta].PrecioMaximo = '';
+                                            //_this.list.ventas[_this.indexVenta].NroAsiento = '';
+                                            //_this.list.ventas[_this.indexVenta].NivelAsiento = 0;
+                                            //_this.list.ventas[_this.indexVenta].NroVenta = '';
+                                            //_this.list.ventas[_this.indexVenta].NroSolicitud = '';
+                                            //_this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
+                                            //_this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                                            //_this.list.ventas[_this.indexVenta].ObjAcompañante = null;
+                                            //_this.list.ventas[_this.indexVenta].OldNroAsiento = '';
+                                            //_this.list.ventas[_this.indexVenta].FlagVenta = '';
+                                            _this.limpiarVenta();
+                                            _this.firstAsiento = true;                                            
                                         }
                                         else {
                                             var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
@@ -1279,6 +1294,7 @@
                                     _this.list.ventas[_this.indexVenta].Ruc = '';
                                 }
                                 _this.$nextTick(() => {
+                                    _this.$validator.validate('Edad');
                                     if (!_this.list.ventas[_this.indexVenta].Nombres ||
                                         !_this.list.ventas[_this.indexVenta].ApellidoPaterno ||
                                         !_this.list.ventas[_this.indexVenta].ApellidoMaterno ||
@@ -1344,7 +1360,8 @@
                                     } else if (!_this.list.ventas[_this.indexVenta].Direccion) {
                                         _this.$refs.refDireccion.focus();
                                     } else {
-                                        _this.recorridoSectionVentas();
+                                        //_this.recorridoSectionVentas();
+                                        _this.$refs.refNacionalidad.focus();
                                     }
                                 }).catch(err => {
                                     if (err.code === "ECONNABORTED") {
@@ -1353,7 +1370,7 @@
                                     } else {
                                         APP.rq.axios_handler_error_alert;
                                     }
-                                    });
+                                });
                         }
                     } else {
                         _this.list.ventas[_this.indexVenta].RazonSocial = '';
@@ -1495,7 +1512,7 @@
                     if (_indexOfDni !== -1 || _indexOfRazSoc !== -1) {
                         if (_indexOfDni !== -1) {
                             _this.indexVenta = _indexOfDni;
-                            _this.$nextTick(() => { $('#txtDocumento').focus();});
+                            _this.$nextTick(() => { $('#txtDocumento').focus(); });
                             APP.msg.error('El DNI no puede tener menos de 8 caracteres');
                             return true;
                         }
@@ -1518,6 +1535,7 @@
                     }
                 },
                 clearRazSoc: function () {
+                    debugger;
                     var _this = this;
                     _this.list.ventas[_this.indexVenta].RazonSocial = '';
                     _this.list.ventas[_this.indexVenta].Direccion = '';
@@ -1546,6 +1564,7 @@
                         var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                         this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
                         this.$nextTick(() => {
+                            this.$validator.validate('Edad');
                             if (!this.list.ventas[this.indexVenta].Sexo)
                                 this.recorridoSectionVentas();
                             else
@@ -1585,15 +1604,18 @@
                     _this.list.ventas[_this.indexVenta].NroSolicitud = '';
                     _this.list.ventas[_this.indexVenta].FechaVen = moment(new Date, 'DD/MM/YYYY').format("DD/MM/YYYY");
                     _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                    _this.list.ventas[_this.indexVenta].ObjAcompañante = {};
+                    _this.list.ventas[_this.indexVenta].ObjAcompañante = null;
                     _this.list.ventas[_this.indexVenta].OldNroAsiento = '';
                     _this.list.ventas[_this.indexVenta].FlagVenta = '';
+                    _this.errors.clear();
                 },
                 focusPrecio: function (event) {
-                    event.target.select();
-                    this.auxFocus.precio = true;
+                    this.$nextTick(() => {
+                        event.target.select();
+                        this.auxFocus.precio = true;
+                    });
                 },
-                validateRangePrice: function () {
+                validateRangePrice: function (event) {
                     var _this = this;
                     var normal = _this.list.ventas[_this.indexVenta].PrecioNormal;
                     var actual = _this.list.ventas[_this.indexVenta].Precio;
@@ -1603,9 +1625,12 @@
                     if (actual > max) {
                         APP.msg.info('EL PRECIO NO PUEDE EXEDER A ' + max);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
+                        _this.focusPrecio(event);
+
                     } else if (actual < min) {
                         APP.msg.info('EL PRECIO NO PUEDE SER MENOR A ' + min);
                         _this.list.ventas[_this.indexVenta].Precio = normal;
+                        _this.focusPrecio(event);
                     }
                     this.auxFocus.precio = false;
                 },
@@ -1776,6 +1801,25 @@
                         _this.list.ventas[_this.indexVenta].NroAsiento !== '' &&
                         parseInt(_this.list.ventas[_this.indexVenta].Precio) > 0
                     );
+                },
+                checkedRegistrarNino: {
+                    get: function () {
+                        return this.checkRegistrarNino;
+                    },
+                    set: function (value) {
+                        if (value) {
+                            this.showRegistrarParentesco();
+                            this.checkRegistrarNino = value;
+                        }
+                        else {
+                            if (this.list.ventas[this.indexVenta].ObjAcompañante) {
+                                this.showRegistrarParentesco();
+                                this.checkRegistrarNino = !value;
+                            }
+                            else
+                                this.checkRegistrarNino = value;
+                        }
+                    }
                 }
             },
             watch: {
@@ -2157,19 +2201,23 @@
                 },
                 mask: {
                     documento: ''
-                },
+                }
             },
             mounted: function () {
                 this.getParentesco();
             },
             methods: {
                 show: function (_TipoDoc, _listSexos) {
-                    this.limpiarCampos();
+                    if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                        this.limpiarCampos();
                     this.list.tipoDoc = _TipoDoc;
                     this.list.sexos = _listSexos;
                     $('#appRegistrarInfante').modal('show');
                     $('#appRegistrarInfante').on('shown.bs.modal', function () {
-                        $("#cboTipoDocRA input[type=search]").focus();
+                        if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
+                            document.getElementById("chckRegistrarNiño").checked = true;
+                        else
+                            $("#cboTipoDocRA input[type=search]").focus();
                     });
                 },
                 getParentesco: function () {
@@ -2188,8 +2236,8 @@
                     _this.ApellidoMaterno = '';
                     _this.FechaNac = '';
                     _this.Edad = '';
-                    _this.Sexo = '';
-                    _this.parentesco = '';
+                    _this.Sexo = ''; // null
+                    _this.parentesco = ''; // null
                 },
                 setDateAndCalcYears: function (dateString) {
                     this.$nextTick(() => {
@@ -2245,6 +2293,9 @@
                     appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = ObjAcompañante;
 
                     $('#appRegistrarInfante').modal('hide');
+                },
+                eliminarAcompaniante: function () {
+                    appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante = null;
                 }
             },
             computed: {
@@ -2356,7 +2407,7 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;                                
+                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;
                                 //_this.list.beneficiarios = _.flatten(_.times(2, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
                                 _this.list.beneficiarios.push(
                                     { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
@@ -2424,7 +2475,6 @@
             },
             watch: {
                 searchInTable: function (newVal) {
-                    debugger;
                     var _this = this;
                     if (String(newVal).replace(/\s/g, '').length > 0) {
                         return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
