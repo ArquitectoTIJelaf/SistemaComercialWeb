@@ -1341,7 +1341,7 @@ $(function () {
         $('.dp').datetimepicker({
             keyBinds: {
                 enter: function (e) {
-                    if (!this.date() && !e[0].previousElementSibling.value) {
+                    if (!e[0].previousElementSibling.value) {
                         this.date(moment());
                     }
                     this.hide();
@@ -1370,7 +1370,7 @@ $(function () {
         $('.dph').datetimepicker({
             keyBinds: {
                 enter: function (e) {
-                    if (!this.date() && !e[0].previousElementSibling.value) {
+                    if (!e[0].previousElementSibling.value) {
                         this.date(moment());
                     }
                     this.hide();

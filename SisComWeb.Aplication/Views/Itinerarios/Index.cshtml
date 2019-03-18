@@ -474,7 +474,7 @@
                     appRegistrarInfante.show(_TipoDoc, _ListSexos);
                 },
                 showPaseCortesia: function () {
-                    appVuePaseCortesia.show();                    
+                    appVuePaseCortesia.show();
                 },
                 sendPaseCortesia: function (_beneficiario) {
                     appVueVenta.setPaseCortesia(_beneficiario);
@@ -1203,39 +1203,41 @@
                 },
                 recorridoSectionVentas: function () {
                     var _this = this;
-                    if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
-                        $('#cboTipoDoc input[type=search]').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].Documento === '') {
-                        $('#txtDocumento').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].Nombres === '') {
-                        $('#txtNombres').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].ApellidoPaterno === '') {
-                        $('#txtApellidoPaterno').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].ApellidoMaterno === '') {
-                        $('#txtApellidoMaterno').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].FechaNac === '') {
-                        $('#txtFechaNac').focus();
-                    }
-                    else if (!_this.list.ventas[_this.indexVenta].Sexo) {
-                        $('#cboSexo input[type=search]').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].Nacionalidad === '') {
-                        $('#txtNacionalidad').focus();
-                    }
-                    else if (_this.list.ventas[_this.indexVenta].NroAsiento === '') {
-                        $('#txtNroAsientoVenta').focus();
-                    }
-                    else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
-                        $('#btnTipoPago').focus();
-                    } else {
-                        _this.rightSlider();
-                        $("#cboTipoDoc input[type=search]").focus();
-                    }
+                    _this.$nextTick(() => {
+                        if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
+                            $('#cboTipoDoc input[type=search]').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].Documento === '') {
+                            $('#txtDocumento').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].Nombres === '') {
+                            $('#txtNombres').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].ApellidoPaterno === '') {
+                            $('#txtApellidoPaterno').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].ApellidoMaterno === '') {
+                            $('#txtApellidoMaterno').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].FechaNac === '') {
+                            $('#txtFechaNac').focus();
+                        }
+                        else if (!_this.list.ventas[_this.indexVenta].Sexo) {
+                            $('#cboSexo input[type=search]').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].Nacionalidad === '') {
+                            $('#txtNacionalidad').focus();
+                        }
+                        else if (_this.list.ventas[_this.indexVenta].NroAsiento === '') {
+                            $('#txtNroAsientoVenta').focus();
+                        }
+                        else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
+                            $('#btnTipoPago').focus();
+                        } else {
+                            _this.rightSlider();
+                            $("#cboTipoDoc input[type=search]").focus();
+                        }
+                    });
                 },
                 searchUser: function () {
                     var _this = this;
@@ -1281,10 +1283,14 @@
                                         !_this.list.ventas[_this.indexVenta].ApellidoPaterno ||
                                         !_this.list.ventas[_this.indexVenta].ApellidoMaterno ||
                                         !_this.list.ventas[_this.indexVenta].FechaNac ||
-                                        !_this.list.ventas[_this.indexVenta].Sexo)
+                                        !_this.list.ventas[_this.indexVenta].Sexo) {
                                         _this.recorridoSectionVentas();
-                                    else
-                                        _this.$refs.refTelefono.focus();
+                                    } else {
+                                        if (!_this.list.ventas[_this.indexVenta].Telefono)
+                                            _this.$refs.refTelefono.focus();
+                                        else
+                                            _this.$refs.refRecoger.focus();
+                                    }
                                 });
                             }).catch(err => {
                                 if (err.code === "ECONNABORTED") {
@@ -1307,7 +1313,9 @@
                         _this.list.ventas[_this.indexVenta].Sexo = null;
                         _this.list.ventas[_this.indexVenta].Telefono = '';
                         _this.list.ventas[_this.indexVenta].Ruc = '';
-                        _this.$nextTick(() => { _this.recorridoSectionVentas(); });
+                        _this.$nextTick(() => {
+                            _this.recorridoSectionVentas();
+                        });
                     }
                 },
                 searchEmpresa: function () {
@@ -1537,7 +1545,10 @@
                         this.list.ventas[this.indexVenta].FechaNac = dateString;
                         var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                         this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
-                        this.recorridoSectionVentas();
+                        if (!this.list.ventas[this.indexVenta].Sexo)
+                            this.recorridoSectionVentas();
+                        else
+                            this.$refs.refTelefono.focus();
                     }
                     else
                         this.list.ventas[this.indexVenta].Edad = '';
@@ -1692,6 +1703,7 @@
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                     }
+                    //this.$refs.refDocumento.focus();
                     this.recorridoSectionVentas();
                 },
                 cancelarBoletos: async function () {
@@ -1962,7 +1974,7 @@
                         input.Observacion = _this.observacion;
                         input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
                         input.ObjAcompañante = objVenta.ObjAcompañante;
-                        
+
                         // TIPOS DE VENTA
                         var auxNameMethod = '';
                         switch (appVueVenta.pickedBusVenta) {
@@ -2178,14 +2190,16 @@
                     _this.parentesco = '';
                 },
                 setDateAndCalcYears: function (dateString) {
-                    if (dateString) {
-                        this.FechaNac = dateString;
-                        var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
-                        this.Edad = '' + moment().diff(auxFechaNac, 'years');
-                        this.recorridoSectionParentesco();
-                    }
-                    else
-                        this.Edad = '';
+                    this.$nextTick(() => {
+                        if (dateString) {
+                            this.FechaNac = dateString;
+                            var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
+                            this.Edad = '' + moment().diff(auxFechaNac, 'years');
+                            this.recorridoSectionParentesco();
+                        }
+                        else
+                            this.Edad = '';
+                    });
                 },
                 recorridoSectionParentesco: function () {
                     var _this = this;
