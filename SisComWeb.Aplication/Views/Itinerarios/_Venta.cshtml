@@ -689,8 +689,8 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refNroSolicitud.focus()"
-                                                       @@keypress.9.prevent="$refs.refNroSolicitud.focus()"                                                       
+                                                       @@keypress.13.prevent="$refs.refRuc.focus()"
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
@@ -710,7 +710,7 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
-                                                <input v-model="list.ventas[indexVenta].NroSolicitud"
+                                                <input :value="list.ventas[indexVenta].NroSolicitud"
                                                        @@keypress.13.prevent="$refs.refRuc.focus()"
                                                        @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
                                                        id="txtNroSolicitud"
@@ -730,8 +730,9 @@
                                                         <label class="control-label">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keypress.13.prevent="searchEmpresa"
+                                                               @@keypress.9.prevent="searchEmpresa"
                                                                @@focus="$event.target.select()"
-                                                               @@keyup.backspace="clearRazSoc"                                                               
+                                                               @*@@keyup.backspace="clearRazSoc"*@                                                               
                                                                id="txtRuc"
                                                                ref="refRuc"
                                                                name="número de ruc"
@@ -746,7 +747,8 @@
                                                         <label class="control-label">Razón social</label>
                                                         <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
                                                                @@input="list.ventas[indexVenta].RazonSocial = $event.target.value.toUpperCase()"
-                                                               @@keypress.13.prevent="$refs.refDireccion.focus()"                                                               
+                                                               @@keypress.13.prevent="$refs.refDireccion.focus()"
+                                                               @@keypress.9.prevent="$refs.refDireccion.focus()"
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
                                                                name="razón social"                                                               
@@ -764,7 +766,8 @@
                                                     <label class="control-label">Dirección</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"                                                           
+                                                           @@keypress.13.prevent="$refs.refNacionalidad.focus()"
+                                                           @@keypress.9.prevent="$refs.refNacionalidad.focus()"
                                                            id="txtDireccion"
                                                            ref="refDireccion"
                                                            max="200"
@@ -788,7 +791,9 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"                                                       
+                                                       @@keypress.13.prevent="$refs.refRegistrarNiño.focus()" 
+                                                       @@keypress.9.prevent="$refs.refRegistrarNiño.focus()"
+                                                       @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
                                                        class="form-control input-sm"
@@ -817,10 +822,13 @@
                                                     <div id="checkRegistrarNino"
                                                          class="checkbox checkbox-info checkbox-circle"
                                                          @*@@keypress.13.prevent="nextStep(6)"*@>
-                                                        <input id="chckRegistrarNiño"
-                                                               class="check-with-label"
-                                                               type="checkbox"
-                                                               @*v-model="filtro.TodosTurnos"*@>
+                                                        <input @@keypress.13.prevent="$refs.refPrecio.focus()" 
+                                                                @@keypress.9.prevent="$refs.refPrecio.focus()"
+                                                                id="chckRegistrarNiño"
+                                                                ref="refRegistrarNiño"
+                                                                class="check-with-label"
+                                                                type="checkbox"
+                                                                @*v-model="filtro.TodosTurnos"*@>
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -832,6 +840,7 @@
                                                     <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
                                                     <input v-model="list.ventas[indexVenta].Precio"
                                                            @@keypress.13.prevent="recorridoSectionVentas"
+                                                           @@keypress.9.prevent="recorridoSectionVentas"
                                                            @@focus="focusPrecio($event)"
                                                            @@blur="validateRangePrice"
                                                            id="txtPrecio"

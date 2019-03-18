@@ -1358,7 +1358,7 @@
                     } else {
                         _this.list.ventas[_this.indexVenta].RazonSocial = '';
                         _this.list.ventas[_this.indexVenta].Direccion = '';
-                        _this.recorridoSectionVentas();
+                        _this.$refs.refNacionalidad.focus();
                     }
                 },
                 passSectionVentas: async function (_nroAsiento, _precioNormal, _nivelAsiento, _precioMin, _precioMax) {
@@ -1545,10 +1545,12 @@
                         this.list.ventas[this.indexVenta].FechaNac = dateString;
                         var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                         this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
-                        if (!this.list.ventas[this.indexVenta].Sexo)
-                            this.recorridoSectionVentas();
-                        else
-                            this.$refs.refTelefono.focus();
+                        this.$nextTick(() => {
+                            if (!this.list.ventas[this.indexVenta].Sexo)
+                                this.recorridoSectionVentas();
+                            else
+                                this.$refs.refTelefono.focus();
+                        });
                     }
                     else
                         this.list.ventas[this.indexVenta].Edad = '';
