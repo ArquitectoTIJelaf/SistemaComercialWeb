@@ -356,10 +356,7 @@ namespace SisComWeb.Business
                                     if (resGrabarVenta.Valor != -1)
                                         entidad.IdVenta = resGrabarVenta.Valor;
                                     else
-                                    {
-                                        response.Mensaje = resGrabarVenta.Mensaje;
                                         return response;
-                                    }
                                 }
                                 else
                                 {
