@@ -70,7 +70,7 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Beneficiario:</label>
                             <div class="col-md-10">
-                                <input v-model="beneficiario"
+                                <input v-model="searchInTable"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
                                        id="txtBeneficiarioPC"
                                        type="text"
@@ -93,7 +93,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <paginate name="items" :list="list.beneficiarios" :per="5">
+                                        <paginate name="items" :list="list.filterBeneficiarios" :per="4">
                                             <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                                 <td class="custom-td">{{item.Nombre_Beneficiario}}</td>
                                                 <td class="custom-td">{{item.Documento}}</td>

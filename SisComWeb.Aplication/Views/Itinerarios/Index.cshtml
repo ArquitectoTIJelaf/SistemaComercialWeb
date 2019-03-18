@@ -479,7 +479,7 @@
                     appRegistrarInfante.show(_TipoDoc, _ListSexos);
                 },
                 showPaseCortesia: function () {
-                    appVuePaseCortesia.show();                    
+                    appVuePaseCortesia.show();
                 },
                 sendPaseCortesia: function (_beneficiario) {
                     appVueVenta.setPaseCortesia(_beneficiario);
@@ -1987,7 +1987,7 @@
                         input.Observacion = _this.observacion;
                         input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
                         input.ObjAcompañante = objVenta.ObjAcompañante;
-                        
+
                         // TIPOS DE VENTA
                         var auxNameMethod = '';
                         switch (appVueVenta.pickedBusVenta) {
@@ -2311,14 +2311,16 @@
                 list: {
                     gerentes: [],
                     solicitantes: [],
-                    beneficiarios: []
+                    beneficiarios: [],
+                    filterBeneficiarios: []
                 },
                 paginate: ['items'],
                 boletosLibres: '',
                 boletosByPrecio: '',
                 totalBoletos: '',
                 selectBen: false,
-                fechaAbierta: false
+                fechaAbierta: false,
+                searchInTable: ''
             },
             mounted: function () {},
             methods: {
@@ -2370,8 +2372,15 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                _this.list.beneficiarios = res.data.ListaBeneficiarios;
-                                _this.list.beneficiarios = _.flatten(_.times(30, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
+                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;                                
+                                //_this.list.beneficiarios = _.flatten(_.times(2, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
+                                _this.list.beneficiarios.push(
+                                    { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
+                                    { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
+                                    { Documento: 'DNI', Nombre_Beneficiario: 'GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
+                                    { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
+                                );
+                                _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
@@ -2388,6 +2397,7 @@
                     _this.concepto = '';
                     _this.beneficiario = '';
                     _this.fechaAbierta = false;
+                    _this.list.beneficiarios = [];
                 },
                 validateSend: function () {
                     var _this = this;
@@ -2428,7 +2438,21 @@
                     )
                 }
             },
-            watch: {}
+            watch: {
+                searchInTable: function (newVal) {
+                    debugger;
+                    var _this = this;
+                    if (String(newVal).replace(/\s/g, '').length > 0) {
+                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
+                            return _.some(item.Nombre_Beneficiario, function (tag) {
+                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
+                            });
+                        });
+                    } else {
+                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    }
+                }
+            }
         });
 
     </script>
