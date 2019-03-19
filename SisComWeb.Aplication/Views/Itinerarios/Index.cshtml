@@ -304,7 +304,7 @@
 }
 
 @section scripts{
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             //#region RECORRIDO ITINERARIOS
             $(document).on('focus active', 'input[type=checkbox]', function () {
@@ -342,6 +342,7 @@
             });
 
             $('#txtTtarjetaCantTP').on('keypress', function (e) {
+                debugger;
                 // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
                 var field = $(this);
                 key = e.keycode ? e.keycode : e.which;
@@ -948,13 +949,18 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
+                labelOfDocumento: function (option) {
+                    return option.label.substring(0, 8);
+                },
                 bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
 
                     // Animación 'ScrollTop'
-                    var _topOfBus = $('.img-bus').offset().top;
-                    var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
-                    $("html, body").animate({ scrollTop: _topOfBus - _heightOfHeader }, 800);
+                    if ($(".img-bus")[0].getBoundingClientRect().top !== $("#appVueNavarHeader")[0].getBoundingClientRect().height) {
+                        var _topOfBus = $('.img-bus').offset().top;
+                        var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
+                        animateScrollTop(_topOfBus - _heightOfHeader, 800);
+                    }
 
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS !== 0) {
@@ -1140,7 +1146,7 @@
                                     if (auxBool_Click_Key) {
                                         if (_this.list.ventas.length === 1) {
                                             _this.limpiarVenta();
-                                            _this.firstAsiento = true;                                            
+                                            _this.firstAsiento = true;
                                         }
                                         else {
                                             var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
@@ -1499,6 +1505,7 @@
                     input.CodiBus = _this.objPlano.CodiBus;
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
+
                     if (!_this.errorsInTicketsVenta()) {
                         _this.saveUser();
                         appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
@@ -1516,8 +1523,13 @@
                             return true;
                         }
                         if (_indexOfRazSoc !== -1) {
-                            _this.indexVenta = _indexOfRazSoc;
-                            _this.$nextTick(() => { $('#txtRazonSocial').focus(); });
+                            debugger;
+                            _this.indexVenta = _indexOfRazSoc;                            
+                            _this.$nextTick(() => {
+                                $('#txtRazonSocial').focus();
+                                _this.$validator.validate('ruc');
+                                _this.$validator.validate('razon_social'); 
+                            });
                             APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
                             return true;
                         }
@@ -1527,11 +1539,16 @@
                 },
                 clearUser: function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].Documento.length === 7) {
-                        _this.list.ventas[_this.indexVenta].Nombres = '';
-                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                    }
+                    _this.list.ventas[_this.indexVenta].Nombres = '';
+                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                    _this.list.ventas[_this.indexVenta].FechaNac = '';
+                    _this.list.ventas[_this.indexVenta].Edad = '';
+                    _this.list.ventas[_this.indexVenta].Sexo = '';
+                    _this.list.ventas[_this.indexVenta].Telefono = '';
+                    _this.list.ventas[_this.indexVenta].Ruc = '';
+                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                    _this.list.ventas[_this.indexVenta].Direccion = '';
                 },
                 clearRazSoc: function () {
                     var _this = this;
@@ -1682,17 +1699,37 @@
 
                                 this.$nextTick(function () {
                                     this.bloquearAsiento(auxObj, false);
-                                    this.recorridoSectionVentas();
+                                    if (this.camposObligatorios())
+                                        this.$refs.refPrecio.focus();
+                                    else
+                                        this.recorridoSectionVentas();
                                     this.auxFocus.asiento = false;
                                 });
                             }
                             else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
                         }
-                        else this.recorridoSectionVentas();
+                        else {
+                            if (this.camposObligatorios())
+                                this.$refs.refPrecio.focus();
+                            else
+                                this.recorridoSectionVentas();
+                        }
                     }
                     else {
                         if (e && e.keyCode !== 13) this.auxFocus.asiento = false;
                     }
+                },
+                camposObligatorios: function () {
+                    return (this.list.ventas[this.indexVenta].NroAsiento &&
+                        this.list.ventas[this.indexVenta].CodiTipoDoc &&
+                        this.list.ventas[this.indexVenta].Documento &&
+                        this.list.ventas[this.indexVenta].Nombres &&
+                        this.list.ventas[this.indexVenta].ApellidoPaterno &&
+                        this.list.ventas[this.indexVenta].ApellidoMaterno &&
+                        this.list.ventas[this.indexVenta].FechaNac &&
+                        this.list.ventas[this.indexVenta].Sexo &&
+                        this.list.ventas[this.indexVenta].Nacionalidad &&
+                        this.list.ventas[this.indexVenta].Precio);
                 },
                 findObjectAsiento: function (_NroAsiento) {
                     var auxObj = {};
@@ -1917,7 +1954,7 @@
                 efectivo: '',
                 tarjetaCant: '',
                 cantAsientos: 0,
-                importePagado: 0,
+                importePagado: '',
                 vuelto: '',
                 disabledTipoPago: false
             },
@@ -2045,15 +2082,11 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
                         .then(async res => {
-                            if (!res.data.mensaje) {
-                                boletos = res.data;
-                                if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
-                                    $("#appVueTipoPago").modal('hide');
-                                    appController.chargeTurnos();
-                                }
+                            boletos = res.data;
+                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
+                                $("#appVueTipoPago").modal('hide');
+                                appController.chargeTurnos();
                             }
-                            else
-                                APP.msg.error(res.data.mensaje);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
@@ -2086,7 +2119,7 @@
                             $('#txtTtarjetaCantTP').focus();
                         } else if (_this.efectivo === '') {
                             $('#txtEfectivoTP').focus();
-                        } else if (_this.importePagado <= 0) {
+                        } else if (_this.importePagado === '') {
                             $('#txtImportePagdoTP').focus();
                         }
                         //else if (_this.embarque === null || _this.embarque === '') {
@@ -2153,10 +2186,19 @@
                             _this.tarjetaCant = '';
                         }
                     } else if (tipo === 'IP') {
+                        debugger;
+
                         if (importePagado >= efectivo) {
                             _this.vuelto = importePagado - efectivo;
                         } else {
-                            _this.vuelto = '';
+                            if (importePagado === NaN) {
+                                _this.vuelto = '';
+                            }
+                            else if (importePagado < (tarjetaCant + efectivo) || importePagado > sumaTotal) {
+                                //APP.msg.info("El <strong style='color:white'>IMPORTE PAGADO</strong> debe ser mayor al <strong style='color:white'>MONTO TOTAL</strong>.");
+                                _this.vuelto = '';
+                            }
+                            //_this.importePagado = '';
                         }
                     }
                 }
@@ -2439,7 +2481,7 @@
                                     { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
-                                );
+                                );//BORRAR
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -2501,15 +2543,25 @@
             watch: {
                 searchInTable: function (newVal) {
                     var _this = this;
-                    if (String(newVal).replace(/\s/g, '').length > 0) {
-                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
-                            return _.some(item.Nombre_Beneficiario, function (tag) {
-                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
-                            });
-                        });
-                    } else {
-                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    var Nombre_Beneficiario = 'Nombre_Beneficiario';
+
+                    //const result = _this.list.filterBeneficiarios.find(beneficiario => beneficiario.Nombre_Beneficiario === newVal)
+
+                    for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
+                        if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
+                            return _this.list.filterBeneficiarios[i];
+                        }
                     }
+
+                    //if (String(newVal).replace(/\s/g, '').length > 0) {
+                    //    return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
+                    //        return _.some(item.Nombre_Beneficiario, function (tag) {
+                    //            return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
+                    //        });
+                    //    });
+                    //} else {
+                    //    _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    //}
                 }
             }
         });
