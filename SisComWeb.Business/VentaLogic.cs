@@ -645,7 +645,7 @@ namespace SisComWeb.Business
                     // Añado 'auxBoletoCompleto'
                     auxBoletoCompleto = (entidad.Tipo == "M" ? "0" : entidad.Tipo) + entidad.SerieBoleto.ToString("D3").ToString() + "-" + entidad.NumeBoleto.ToString("D7").ToString();
 
-                    valor += auxBoletoCompleto + ", ";
+                    valor += auxBoletoCompleto + ",";
                 }
 
                 response.EsCorrecto = true;

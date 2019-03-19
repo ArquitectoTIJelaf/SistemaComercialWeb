@@ -11,6 +11,7 @@
 @Html.Partial("_RegistrarInfante")
 @Html.Partial("_TipoPago")
 @Html.Partial("_PaseCortesia")
+@Html.Partial("_BoletosVendidos")
 
 @section styles{
     <style type="text/css">
@@ -300,6 +301,37 @@
             /*text-align: center;
             width: 100%;*/
         }
+
+        .boletosVendidos {
+            font-size: 16px !important;
+            font-weight: 500;
+            color: #004e90;
+            line-height: 0.5;
+            text-align: center;
+        }
+
+        .boletosVendidosTitle {
+            font-weight: 500;
+            color: #6c7282;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: monospace;
+            line-height: 15px;
+        }
+
+        .faImgTitle {
+            font-size: 6em;
+            color: var(--emp-color);
+        }
+
+        .colorHr {
+            margin-top: 5px;
+            background-color: cadetblue;
+        }
+
+        .mfBoletosVendidos {
+            text-align: center;
+        }
     </style>
 }
 
@@ -489,6 +521,9 @@
                 },
                 sendPaseCortesia: function (_beneficiario) {
                     appVueVenta.setPaseCortesia(_beneficiario);
+                },
+                showBoletosVendidos: function (_boletosVendidos) {
+                    appBoletosVendidos.show(_boletosVendidos);
                 }
             };
         })();
@@ -1139,7 +1174,7 @@
                                             //_this.list.ventas[_this.indexVenta].OldNroAsiento = '';
                                             //_this.list.ventas[_this.indexVenta].FlagVenta = '';
                                             _this.limpiarVenta();
-                                            _this.firstAsiento = true;                                            
+                                            _this.firstAsiento = true;
                                         }
                                         else {
                                             var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
@@ -2043,11 +2078,8 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
                         .then(async res => {
-                            boletos = res.data;
-                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
-                                $("#appVueTipoPago").modal('hide');
-                                appController.chargeTurnos();
-                            }
+                            debugger;
+                            appController.showBoletosVendidos(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
@@ -2148,9 +2180,8 @@
                         }
                     } else if (tipo === 'IP') {
                         debugger;
-
-                        if (importePagado >= efectivo) {
-                            _this.vuelto = importePagado - efectivo;
+                        if (importePagado > sumaTotal) {
+                            _this.vuelto = importePagado - sumaTotal;
                         } else {
                             if (importePagado === NaN) {
                                 _this.vuelto = '';
@@ -2510,5 +2541,39 @@
             }
         });
 
+        var appBoletosVendidos = new Vue({
+            el: "#appBoletosVendidos",
+            data: {
+                boletos: []
+            },
+            methods: {
+                show: function (_boletosVendidos) {
+                    debugger;
+                    var _this = this;
+                    _this.boletos = _boletosVendidos.split(',');
+                    _this.boletos.pop();
+                    $("#appVueTipoPago").modal('hide');
+                    $('#appBoletosVendidos').modal('show');
+                    $('#appBoletosVendidos').on('shown.bs.modal', function () {
+                        //window.addEventListener('keyup', function (e) {
+                        //    _this.closeModal(e);
+                        //});
+                        $('#btnCerrarVenta').focus();
+                    });
+                },
+                closeModal(event) {
+                    debugger;
+                    if (event.keyCode == 27) {
+                        alert('esc press');
+                        window.removeEventListener('keyup', this.closeModal());
+                    }
+                },
+                cerrarVenta: function () {
+                    debugger;
+                    $('#appBoletosVendidos').modal('hide');
+                    appController.chargeTurnos();
+                }
+            }
+        });
     </script>
 }
