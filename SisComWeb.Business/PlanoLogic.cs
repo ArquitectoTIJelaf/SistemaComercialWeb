@@ -110,32 +110,43 @@ namespace SisComWeb.Business
                         {
                             resListarAsientosOcupados.Valor[i].TipoDocumento = resBuscaPasajero.Valor.TipoDoc;
                             resListarAsientosOcupados.Valor[i].NumeroDocumento = resBuscaPasajero.Valor.NumeroDoc;
-                            resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto;
+                            resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto ?? string.Empty;
                             resListarAsientosOcupados.Valor[i].Nombres = resBuscaPasajero.Valor.NombreCliente;
                             resListarAsientosOcupados.Valor[i].ApellidoPaterno = resBuscaPasajero.Valor.ApellidoPaterno;
                             resListarAsientosOcupados.Valor[i].ApellidoMaterno = resBuscaPasajero.Valor.ApellidoMaterno;
                             resListarAsientosOcupados.Valor[i].FechaNacimiento = resBuscaPasajero.Valor.FechaNacimiento;
                             resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
-                            resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
-                            resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo;
+                            resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono ?? string.Empty;
+                            resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo ?? string.Empty;
 
                             if (!string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].RucContacto))
                             {
                                 var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resListarAsientosOcupados.Valor[i].RucContacto);
                                 if (resBuscarEmpresa.Estado)
                                 {
-                                    if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
-                                    {
-                                        resListarAsientosOcupados.Valor[i].RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
-                                        resListarAsientosOcupados.Valor[i].Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
-                                    }
+                                    resListarAsientosOcupados.Valor[i].RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
+                                    resListarAsientosOcupados.Valor[i].Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
                                 }
                             }
-
                         }
                         else
                         {
                             response.Mensaje = resBuscaPasajero.Mensaje;
+                            return response;
+                        }
+                    }
+
+                    // Busca 'Acompaniante'
+                    if (!string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].IdVenta) && resListarAsientosOcupados.Valor[i].IdVenta != "-1")
+                    {
+                        var resBuscaAcompaniante = PlanoRepository.BuscaAcompaniante(resListarAsientosOcupados.Valor[i].IdVenta);
+                        if (resBuscaAcompaniante.Estado)
+                        {
+                            resListarAsientosOcupados.Valor[i].ObjAcompanianate = resBuscaAcompaniante.Valor;
+                        }
+                        else
+                        {
+                            response.Mensaje = resBuscaAcompaniante.Mensaje;
                             return response;
                         }
                     }
@@ -152,32 +163,30 @@ namespace SisComWeb.Business
                             if (ocu.NumeAsiento == auxValue)
                             {
                                 ele.NumeAsiento = ocu.NumeAsiento;
-
-                                if (!string.IsNullOrEmpty(ocu.TipoDocumento) && !string.IsNullOrEmpty(ocu.NumeroDocumento))
-                                {
-                                    ele.TipoDocumento = ocu.TipoDocumento;
-                                    ele.NumeroDocumento = ocu.NumeroDocumento;
-                                    ele.RucContacto = ocu.RucContacto;
-                                    ele.FechaViaje = ocu.FechaViaje;
-                                    ele.FechaVenta = ocu.FechaVenta;
-                                    ele.Nacionalidad = ocu.Nacionalidad;
-                                    ele.PrecioVenta = ocu.PrecioVenta;
-                                    ele.RecogeEn = ocu.RecogeEn;
-                                    ele.Color = ocu.Color;
-                                    ele.FlagVenta = ocu.FlagVenta;
-                                    ele.Nombres = ocu.Nombres;
-                                    ele.ApellidoPaterno = ocu.ApellidoPaterno;
-                                    ele.ApellidoMaterno = ocu.ApellidoMaterno;
-                                    ele.FechaNacimiento = ocu.FechaNacimiento;
-                                    ele.Edad = ocu.Edad;
-                                    ele.Telefono = ocu.Telefono;
-                                    ele.Sexo = ocu.Sexo;
-                                    ele.Sigla = ocu.Sigla;
-                                    ele.RazonSocial = ocu.RazonSocial;
-                                    ele.Direccion = ocu.Direccion;
-                                    ele.Boleto = ocu.Boleto;
-                                    ele.TipoBoleto = ocu.TipoBoleto;
-                                }
+                                ele.TipoDocumento = ocu.TipoDocumento;
+                                ele.NumeroDocumento = ocu.NumeroDocumento;
+                                ele.RucContacto = ocu.RucContacto;
+                                ele.FechaViaje = ocu.FechaViaje;
+                                ele.FechaVenta = ocu.FechaVenta;
+                                ele.Nacionalidad = ocu.Nacionalidad;
+                                ele.PrecioVenta = ocu.PrecioVenta;
+                                ele.RecogeEn = ocu.RecogeEn;
+                                ele.Color = ocu.Color;
+                                ele.FlagVenta = ocu.FlagVenta;
+                                ele.Nombres = ocu.Nombres;
+                                ele.ApellidoPaterno = ocu.ApellidoPaterno;
+                                ele.ApellidoMaterno = ocu.ApellidoMaterno;
+                                ele.FechaNacimiento = ocu.FechaNacimiento;
+                                ele.Edad = ocu.Edad;
+                                ele.Telefono = ocu.Telefono;
+                                ele.Sexo = ocu.Sexo;
+                                ele.Sigla = ocu.Sigla;
+                                ele.RazonSocial = ocu.RazonSocial;
+                                ele.Direccion = ocu.Direccion;
+                                ele.Boleto = ocu.Boleto;
+                                ele.TipoBoleto = ocu.TipoBoleto;
+                                ele.IdVenta = ocu.IdVenta;
+                                ele.ObjAcompanianate = ocu.ObjAcompanianate;
                             }
                         }
                     }

@@ -116,9 +116,39 @@ namespace SisComWeb.Aplication.Controllers
                 Tipo = (string)x["Tipo"],
                 TipoDocumento = (string)x["TipoDocumento"],
                 Sexo = (string)x["Sexo"],
-                Sigla = (string)x["Sigla"]
+                Sigla = (string)x["Sigla"],
+
+                RazonSocial = (string)x["RazonSocial"],
+                Direccion = (string)x["Direccion"],
+                Boleto = (string)x["Boleto"],
+                TipoBoleto = (string)x["TipoBoleto"],
+                IdVenta = (string)x["Boleto"],
+                ObjAcompanianate = _ObjetoAcompaniante(x["ObjAcompanianate"])
             }).ToList();
+
             return lista;
+        }
+
+        private static Acompañante _ObjetoAcompaniante(JToken obj)
+        {
+            Acompañante objeto = new Acompañante();
+
+            // Valida 'obj'
+            var auxValidator = obj.ToString();
+            if (string.IsNullOrEmpty(auxValidator)) return objeto;
+            // ------------
+
+            JObject data = (JObject)obj;
+            
+            objeto.CodiTipoDoc = (string)data["TipoDocumento"];
+            objeto.Documento = (string)data["NumeroDocumento"];
+            objeto.NombreCompleto = (string)data["NombreCompleto"];
+            objeto.FechaNac = (string)data["FechaNacimiento"];
+            objeto.Edad = (string)data["Edad"];
+            objeto.Sexo = (string)data["Sexo"];
+            objeto.Parentesco = (string)data["Parentesco"];
+
+            return objeto;
         }
 
         private static List<DestinoRuta> _ListaDestinosRuta(JToken list)

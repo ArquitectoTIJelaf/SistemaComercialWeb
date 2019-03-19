@@ -62,12 +62,8 @@
 
         public string TipoBoleto { get; set; }
 
-        public string AuxBoletoCompleto
-        {
-            get
-            {
-                return (TipoBoleto == "M" ? "" : TipoBoleto) + Boleto.ToString();
-            }
-        }
+        public string IdVenta { get; set; }
+
+        public AcompañanteEntity ObjAcompanianate { get; set; }
     }
 }
