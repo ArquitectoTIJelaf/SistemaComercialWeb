@@ -533,30 +533,30 @@
                                             <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
                                                 <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
                                                 <input v-model="list.ventas[indexVenta].NroAsiento"
-                                                       type="text"
-                                                       ref="refNroAsientoVenta"
-                                                       id="txtNroAsientoVenta"
-                                                       class="form-control input-sm"
-                                                       :class="{'placeh-ticket-venta': auxFocus.asiento}"
-                                                       placeholder="Nº"
-                                                       style="text-align: center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
-                                                       v-mask="'##'"
                                                        @@focus="focusAsiento($event)"
                                                        @@blur="validateTxtNroAsientoVenta($event)"
-                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)">
+                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"                                                       
+                                                       id="txtNroAsientoVenta"
+                                                       ref="refNroAsientoVenta"
+                                                       class="form-control input-sm"                                                       
+                                                       placeholder="Nº"
+                                                       style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
+                                                       v-bind:class="{'placeh-ticket-venta': auxFocus.asiento}"
+                                                       v-mask="'##'">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label">Tipo doc.</label>
                                                 <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                          @@keydown.13.native.prevent="passNumDocToDocumento"
+                                                          @@keydown.9.native.prevent="passNumDocToDocumento"
                                                           :options="list.tiposDoc"
                                                           :placeholder="'TIPO'"
                                                           :select-on-tab="true"
                                                           :id="'cboTipoDoc'"
-                                                          label="label"
-                                                          @@keydown.13.native.prevent="passNumDocToDocumento"
-                                                          ref="refTipoDoc">
+                                                          ref="refTipoDoc"                                                          
+                                                          label="label">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="passNumDocToDocumento">{{ option.label }}</div>
                                                     </template>
@@ -569,13 +569,14 @@
                                                 <label class="control-label">Número</label>
                                                 <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
-                                                       id="txtDocumento"
-                                                       type="text"
                                                        @@keypress.13.prevent="searchUser"
                                                        @@keydown.9.prevent="searchUser"
                                                        @@keyup.backspace="clearUser"
+                                                       id="txtDocumento"
+                                                       ref="refDocumento"
                                                        class="form-control input-sm"
                                                        placeholder="DOCUMENTO"
+                                                       v-numb-or-lett
                                                        v-mask="mask.documento">
                                             </div>
                                         </div>
@@ -584,13 +585,13 @@
                                                 <label class="control-label">Nombres</label>
                                                 <input :value="list.ventas[indexVenta].Nombres.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nombres = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       ref="refNombres"
+                                                       @@keypress.13.prevent="recorridoSectionVentas"                                                       
                                                        id="txtNombres"
-                                                       type="text"
+                                                       ref="refNombres"
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="NOMBRES">
+                                                       placeholder="NOMBRES"
+                                                       v-mask="'A'.repeat(100)">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -600,10 +601,11 @@
                                                        @@input="list.ventas[indexVenta].ApellidoPaterno = $event.target.value.toUpperCase()"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtApellidoPaterno"
-                                                       type="text"
+                                                       ref="refApellidoPaterno"
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="PATERNO">
+                                                       placeholder="PATERNO"
+                                                       v-mask="'A'.repeat(50)">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -613,10 +615,11 @@
                                                        @@input="list.ventas[indexVenta].ApellidoMaterno = $event.target.value.toUpperCase()"
                                                        @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtApellidoMaterno"
-                                                       type="text"
+                                                       ref="refApellidoMaterno"
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
-                                                       placeholder="MATERNO">
+                                                       placeholder="MATERNO"
+                                                       v-mask="'A'.repeat(50)">
                                             </div>
                                         </div>
                                         <div class="col-md-2 text-center">
@@ -627,41 +630,46 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
-                                            <div class="col-md-5">
-                                                <div class="form-group">
-                                                    <label class="control-label">Fecha nac.</label>
-                                                    <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                           v-model="list.ventas[indexVenta].FechaNac"
-                                                           v-mask="'##/##/####'"
-                                                           type="text"
-                                                           id="txtFechaNac"
-                                                           class="form-control input-sm dp"
-                                                           placeholder="FECHA NAC.">
+                                            <div class="col-md-7 p-0">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Fecha nac.</label>
+                                                        <input v-model="list.ventas[indexVenta].FechaNac"
+                                                               @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                               id="txtFechaNac"
+                                                               ref="refFechaNac"
+                                                               class="form-control input-sm dpyear"
+                                                               placeholder="FECHA NAC."
+                                                               v-mask="'##/##/####'">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    <label class="control-label">Edad</label>
-                                                    <input :value="list.ventas[indexVenta].Edad"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           type="text"
-                                                           id="txtEdad"
-                                                           class="form-control input-sm text-center"
-                                                           placeholder="EDAD"
-                                                           disabled>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Edad</label>
+                                                        <input :value="list.ventas[indexVenta].Edad"
+                                                               id="txtEdad"
+                                                               name="Edad"
+                                                               class="form-control input-sm text-center"
+                                                               placeholder="E"
+                                                               v-validate="'min_value: 1'"
+                                                               style="cursor: not-allowed;"
+                                                               readonly>
+                                                    </div>
                                                 </div>
+                                                <span v-show="errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select v-model="list.ventas[indexVenta].Sexo"
+                                                              @@keydown.13.native.prevent="$refs.refTelefono.focus()"
+                                                              @@keypress.9.prevent="$refs.refTelefono.focus()"
                                                               :options="list.sexos"
                                                               :placeholder="'SEXO'"
                                                               :select-on-tab="true"
                                                               :id="'cboSexo'"
-                                                              label="label"
-                                                              @@keydown.13.native.prevent="$refs.refTelefono.focus()"
-                                                              ref="refSexo">
+                                                              ref="refSexo"
+                                                              label="label">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
                                                         </template>
@@ -675,12 +683,12 @@
                                                 <label class="control-label">Teléfono</label>
                                                 <input v-model="list.ventas[indexVenta].Telefono"
                                                        @@keypress.13.prevent="$refs.refRecoger.focus()"
-                                                       ref="refTelefono"
+                                                       @@keypress.9.prevent="$refs.refRecoger.focus()"
                                                        id="txtTelefono"
-                                                       type="text"
+                                                       ref="refTelefono"
                                                        class="form-control input-sm"
                                                        placeholder="TELÉFONO"
-                                                       v-mask="'#########'">
+                                                       v-mask="'#'.repeat(9)">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -688,11 +696,10 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refNroSolicitud.focus()"
-                                                       @@keypress.9.prevent="$refs.refNroSolicitud.focus()"
-                                                       ref="refRecoger"
+                                                       @@keypress.13.prevent="$refs.refRuc.focus()"
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
                                                        id="txtRecoger"
-                                                       type="text"
+                                                       ref="refRecoger"
                                                        class="form-control input-sm"
                                                        placeholder="RECOGER">
                                             </div>
@@ -702,7 +709,6 @@
                                                 <label class="control-label">Reintegro</label>
                                                 <input :value="list.ventas[indexVenta].Reintegro"
                                                        id="txtReintegro"
-                                                       type="text"
                                                        class="form-control input-sm"
                                                        placeholder="REINTEGRO"
                                                        disabled>
@@ -711,16 +717,15 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
-                                                <input v-model="list.ventas[indexVenta].NroSolicitud"
+                                                <input :value="list.ventas[indexVenta].NroSolicitud"
                                                        @@keypress.13.prevent="$refs.refRuc.focus()"
-                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
-                                                       ref="refNroSolicitud"
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
                                                        id="txtNroSolicitud"
-                                                       type="text"
+                                                       ref="refNroSolicitud"
                                                        class="form-control input-sm"
                                                        placeholder="Nº SOLICITUD"
-                                                       autocomplete="off"
-                                                       v-mask="'###############'">
+                                                       v-mask="'#'.repeat(15)"
+                                                       disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -732,17 +737,17 @@
                                                         <label class="control-label">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keypress.13.prevent="searchEmpresa"
-                                                               @@focus="$event.target.select()"
+                                                               @@keypress.9.prevent="searchEmpresa"
                                                                @@keyup.backspace="clearRazSoc"
-                                                               ref="refRuc"
+                                                               @@focus="$event.target.select()"                                                               
                                                                id="txtRuc"
-                                                               name="número de ruc"
-                                                               v-validate="'min: 11'"
-                                                               type="text"
+                                                               ref="refRuc"
+                                                               name="ruc"
                                                                class="form-control input-sm"
                                                                placeholder="RUC"
-                                                               autocomplete="off"
-                                                               v-mask="'###########'">
+                                                               v-validate="'min: 11'"
+                                                               data-vv-as="RUC"
+                                                               v-mask="'#'.repeat(11)">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8">
@@ -751,28 +756,29 @@
                                                         <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
                                                                @@input="list.ventas[indexVenta].RazonSocial = $event.target.value.toUpperCase()"
                                                                @@keypress.13.prevent="$refs.refDireccion.focus()"
-                                                               ref="refRazonSocial"
+                                                               @@keypress.9.prevent="$refs.refDireccion.focus()"
                                                                id="txtRazonSocial"
-                                                               name="razón social"
-                                                               type="text"
-                                                               v-validate="'min:3'"
+                                                               ref="refRazonSocial"
+                                                               name="razon_social"                                                               
                                                                max="100"
                                                                class="form-control input-sm"
-                                                               placeholder="RAZÓN SOCIAL">
+                                                               placeholder="RAZÓN SOCIAL"
+                                                               v-validate="'min: 3'"
+                                                               data-vv-as="Razón social">
                                                     </div>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].Ruc.length < 11 && errors.has('número de ruc')" class="text-danger m-l-15">{{ errors.first('número de ruc') }}</span>
-                                                <span v-show="list.ventas[indexVenta].RazonSocial.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razón social')" class="text-danger m-l-15">{{ errors.first('razón social') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
+                                                <span v-show="list.ventas[indexVenta].RazonSocial.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Dirección</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           ref="refDireccion"
+                                                           @@keypress.13.prevent="$refs.refNacionalidad.focus()"
+                                                           @@keypress.9.prevent="$refs.refNacionalidad.focus()"
                                                            id="txtDireccion"
-                                                           type="text"
+                                                           ref="refDireccion"
                                                            max="200"
                                                            class="form-control input-sm"
                                                            placeholder="DIRECCIÓN">
@@ -784,10 +790,9 @@
                                                 <label class="control-label" style="width: 100%; ">Fecha de venta</label>
                                                 <input :value="list.ventas[indexVenta].FechaVen"
                                                        id="txtFechaVen"
-                                                       type="text"
                                                        class="form-control input-sm"
                                                        placeholder="DD/MM/YYYY"
-                                                       disabled="disabled">
+                                                       disabled>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -795,12 +800,14 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       v-mask="'A'.repeat(30)"
+                                                       @@keypress.13.prevent="$refs.refRegistrarNiño.focus()" 
+                                                       @@keypress.9.prevent="$refs.refRegistrarNiño.focus()"
+                                                       @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
-                                                       type="text"
+                                                       ref="refNacionalidad"
                                                        class="form-control input-sm"
-                                                       placeholder="NACIONALIDAD">
+                                                       placeholder="NACIONALIDAD"
+                                                       v-mask="'A'.repeat(30)">
                                             </div>
                                         </div>
                                     </div>
@@ -810,7 +817,6 @@
                                                 <label class="control-label">Observación</label>
                                                 <textarea :value="list.ventas[indexVenta].Observacion"
                                                           id="txtObservacion"
-                                                          type="text"
                                                           class="form-control input-sm"
                                                           placeholder="OBSERVACIÓN"
                                                           style="height: 30px; min-height: 30px; "
@@ -822,12 +828,14 @@
                                             <div class="col-md-3">
                                                 <div class="form-group text-center">
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
-                                                    <div id="checkRegistrarNino"
-                                                         class="checkbox checkbox-info checkbox-circle">
-                                                        <input id="chckRegistrarNiño"
-                                                               class="check-with-label"
-                                                               type="checkbox"
-                                                               v-model="checkedRegistrarNino">
+                                                    <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
+                                                        <input v-model="checkedRegistrarNino"
+                                                                @@keypress.13.prevent="$refs.refPrecio.focus()" 
+                                                                @@keypress.9.prevent="$refs.refPrecio.focus()"
+                                                                id="chckRegistrarNiño"
+                                                                ref="refRegistrarNiño"
+                                                                class="check-with-label"
+                                                                type="checkbox">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -839,16 +847,15 @@
                                                     <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
                                                     <input v-model="list.ventas[indexVenta].Precio"
                                                            @@keypress.13.prevent="recorridoSectionVentas"
+                                                           @@keypress.9.prevent="recorridoSectionVentas"
                                                            @@focus="focusPrecio($event)"
-                                                           ref="refPrecio"
+                                                           @@blur="validateRangePrice"
                                                            id="txtPrecio"
-                                                           type="text"
-                                                           class="form-control input-sm"
-                                                           :class="{'placeh-ticket-venta': auxFocus.precio}"
+                                                           ref="refPrecio"
+                                                           class="form-control input-sm"                                                           
                                                            placeholder="0.00"
-                                                           style="text-align:center; border-color: #fff; font-size: 38px !important; font-weight: 500; color: #004e90 "
-                                                           autocomplete="off"
-                                                           @@blur="validateRangePrice">
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90;"
+                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -890,7 +897,9 @@
                             </div>
                         </div>
                         <div v-show="showPlano" class="col-md-12" style="margin-top: 5px; text-align: center;">
-                            <div @@click="indexVenta = index" v-for="(item, index) in list.ventas" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                            <div @@click="indexVenta = index" 
+                                 v-for="(item, index) in list.ventas" 
+                                 style="display: inline-block; vertical-align: middle; margin-right: 5px;">
                                 <span class="label label-rouded btn-emp" style="cursor: pointer;">{{item.NroAsiento}}</span>
                             </div>
                         </div>
