@@ -110,22 +110,22 @@ namespace SisComWeb.Business
                         {
                             resListarAsientosOcupados.Valor[i].TipoDocumento = resBuscaPasajero.Valor.TipoDoc;
                             resListarAsientosOcupados.Valor[i].NumeroDocumento = resBuscaPasajero.Valor.NumeroDoc;
-                            resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto ?? string.Empty;
+                            resListarAsientosOcupados.Valor[i].RucContacto = resBuscaPasajero.Valor.RucContacto;
                             resListarAsientosOcupados.Valor[i].Nombres = resBuscaPasajero.Valor.NombreCliente;
                             resListarAsientosOcupados.Valor[i].ApellidoPaterno = resBuscaPasajero.Valor.ApellidoPaterno;
                             resListarAsientosOcupados.Valor[i].ApellidoMaterno = resBuscaPasajero.Valor.ApellidoMaterno;
                             resListarAsientosOcupados.Valor[i].FechaNacimiento = resBuscaPasajero.Valor.FechaNacimiento;
                             resListarAsientosOcupados.Valor[i].Edad = resBuscaPasajero.Valor.Edad;
-                            resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono ?? string.Empty;
-                            resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo ?? string.Empty;
+                            resListarAsientosOcupados.Valor[i].Telefono = resBuscaPasajero.Valor.Telefono;
+                            resListarAsientosOcupados.Valor[i].Sexo = resBuscaPasajero.Valor.Sexo;
 
                             if (!string.IsNullOrEmpty(resListarAsientosOcupados.Valor[i].RucContacto))
                             {
                                 var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resListarAsientosOcupados.Valor[i].RucContacto);
                                 if (resBuscarEmpresa.Estado)
                                 {
-                                    resListarAsientosOcupados.Valor[i].RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
-                                    resListarAsientosOcupados.Valor[i].Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
+                                    resListarAsientosOcupados.Valor[i].RazonSocial = resBuscarEmpresa.Valor.RazonSocial;
+                                    resListarAsientosOcupados.Valor[i].Direccion = resBuscarEmpresa.Valor.Direccion;
                                 }
                             }
                         }
@@ -142,7 +142,18 @@ namespace SisComWeb.Business
                         var resBuscaAcompaniante = PlanoRepository.BuscaAcompaniante(resListarAsientosOcupados.Valor[i].IdVenta);
                         if (resBuscaAcompaniante.Estado)
                         {
-                            resListarAsientosOcupados.Valor[i].ObjAcompanianate = resBuscaAcompaniante.Valor;
+                            AcompañanteEntity objetoAcompanianteEntity = new AcompañanteEntity
+                            {
+                                TipoDocumento = resBuscaAcompaniante.Valor.TipoDocumento ?? "",
+                                NumeroDocumento = resBuscaAcompaniante.Valor.NumeroDocumento ?? "",
+                                NombreCompleto = resBuscaAcompaniante.Valor.NombreCompleto ?? "",
+                                FechaNacimiento = resBuscaAcompaniante.Valor.FechaNacimiento ?? "",
+                                Edad = resBuscaAcompaniante.Valor.Edad ?? "",
+                                Sexo = resBuscaAcompaniante.Valor.Sexo ?? "",
+                                Parentesco = resBuscaAcompaniante.Valor.Parentesco ?? ""
+                            };
+
+                            resListarAsientosOcupados.Valor[i].ObjAcompanianate = objetoAcompanianteEntity;
                         }
                         else
                         {
@@ -165,7 +176,7 @@ namespace SisComWeb.Business
                                 ele.NumeAsiento = ocu.NumeAsiento;
                                 ele.TipoDocumento = ocu.TipoDocumento;
                                 ele.NumeroDocumento = ocu.NumeroDocumento;
-                                ele.RucContacto = ocu.RucContacto;
+                                ele.RucContacto = ocu.RucContacto ?? string.Empty;
                                 ele.FechaViaje = ocu.FechaViaje;
                                 ele.FechaVenta = ocu.FechaVenta;
                                 ele.Nacionalidad = ocu.Nacionalidad;
@@ -178,11 +189,11 @@ namespace SisComWeb.Business
                                 ele.ApellidoMaterno = ocu.ApellidoMaterno;
                                 ele.FechaNacimiento = ocu.FechaNacimiento;
                                 ele.Edad = ocu.Edad;
-                                ele.Telefono = ocu.Telefono;
-                                ele.Sexo = ocu.Sexo;
+                                ele.Telefono = ocu.Telefono ?? string.Empty;
+                                ele.Sexo = ocu.Sexo ?? string.Empty;
                                 ele.Sigla = ocu.Sigla;
-                                ele.RazonSocial = ocu.RazonSocial;
-                                ele.Direccion = ocu.Direccion;
+                                ele.RazonSocial = ocu.RazonSocial ?? string.Empty;
+                                ele.Direccion = ocu.Direccion ?? string.Empty;
                                 ele.Boleto = ocu.Boleto;
                                 ele.TipoBoleto = ocu.TipoBoleto;
                                 ele.IdVenta = ocu.IdVenta;

@@ -117,12 +117,11 @@ namespace SisComWeb.Aplication.Controllers
                 TipoDocumento = (string)x["TipoDocumento"],
                 Sexo = (string)x["Sexo"],
                 Sigla = (string)x["Sigla"],
-
                 RazonSocial = (string)x["RazonSocial"],
                 Direccion = (string)x["Direccion"],
                 Boleto = (string)x["Boleto"],
                 TipoBoleto = (string)x["TipoBoleto"],
-                IdVenta = (string)x["Boleto"],
+                IdVenta = (string)x["IdVenta"],
                 ObjAcompanianate = _ObjetoAcompaniante(x["ObjAcompanianate"])
             }).ToList();
 
