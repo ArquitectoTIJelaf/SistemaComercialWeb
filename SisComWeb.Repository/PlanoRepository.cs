@@ -124,13 +124,43 @@ namespace SisComWeb.Repository
                             FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
                             Sigla = Reader.GetStringValue(drlector, "Sigla"),
                             Boleto = Reader.GetStringValue(drlector, "Boleto"),
-                            TipoBoleto = Reader.GetStringValue(drlector, "tipo")
+                            TipoBoleto = Reader.GetStringValue(drlector, "tipo"),
+                            IdVenta = Reader.GetStringValue(drlector, "id_venta")
                         };
                         Lista.Add(entidad);
                     }
                     response.EsCorrecto = true;
                     response.Valor = Lista;
                     response.Mensaje = "Correcto: ListarAsientosOcupados.";
+                    response.Estado = true;
+                }
+            }
+            return response;
+        }
+
+        public static Response<AcompañanteEntity> BuscaAcompaniante(string IdVenta)
+        {
+            var response = new Response<AcompañanteEntity>(false, null, "Error: BuscaAcompaniante.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarAcompaniante";
+                db.AddParameter("@IdVenta", DbType.String, ParameterDirection.Input, IdVenta);
+                var entidad = new AcompañanteEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
+                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI");
+                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE");
+                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "FECHAN").ToString("dd/MM/yyyy"));
+                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD");
+                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO");
+                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO");
+                    }
+                    response.EsCorrecto = true;
+                    response.Valor = entidad;
+                    response.Mensaje = "Correcto: BuscaAcompaniante.";
                     response.Estado = true;
                 }
             }

@@ -34,6 +34,12 @@ namespace SisComWeb.Aplication.Models
         public int IDS { get; set; } // Para 'BloqueoAsiento'
         public string Sexo { get; set; }
         public string Sigla { get; set; }
+        public string RazonSocial { get; set; }
+        public string Direccion { get; set; }
+        public string Boleto { get; set; }
+        public string TipoBoleto { get; set; }
+        public string IdVenta { get; set; }
+        public Acompañante ObjAcompanianate { get; set; }
     }
 
     public class FiltroPlano
