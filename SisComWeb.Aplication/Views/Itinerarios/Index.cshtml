@@ -937,10 +937,11 @@
                     // Animación 'ScrollTop'
                     //var alturaAnimeteScrollTop = _this.showTextTurnos ? 110 : 245;
                     //animateScrollTop(alturaAnimeteScrollTop, 800);
-                    var _topOfBus = $('.img-bus').offset().top;
-                    var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
-                    $("html, body").animate({ scrollTop: _topOfBus - _heightOfHeader }, 800);
-
+                    if ($(".img-bus")[0].getBoundingClientRect().top !== $("#appVueNavarHeader")[0].getBoundingClientRect().height) {
+                        var _topOfBus = $('.img-bus').offset().top;
+                        var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
+                        animateScrollTop(_topOfBus - _heightOfHeader, 800);
+                    }
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS !== 0) {
                         await _this.liberarAsiento(asientoSel, true);
@@ -2041,15 +2042,11 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
                         .then(async res => {
-                            if (!res.data.mensaje) {
-                                boletos = res.data;
-                                if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
-                                    $("#appVueTipoPago").modal('hide');
-                                    appController.chargeTurnos();
-                                }
+                            boletos = res.data;
+                            if (await APP.msg.ShowSaveAfterSale('BOLETOS VENDIDOS:', boletos.slice(0, -2) + '.')) {
+                                $("#appVueTipoPago").modal('hide');
+                                appController.chargeTurnos();
                             }
-                            else
-                                APP.msg.error(res.data.mensaje);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
