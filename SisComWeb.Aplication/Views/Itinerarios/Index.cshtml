@@ -304,7 +304,7 @@
 }
 
 @section scripts{
-    <script>
+    <script type="text/javascript">
         $(document).ready(function () {
             //#region RECORRIDO ITINERARIOS
             $(document).on('focus active', 'input[type=checkbox]', function () {
@@ -342,6 +342,7 @@
             });
 
             $('#txtTtarjetaCantTP').on('keypress', function (e) {
+                debugger;
                 // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
                 var field = $(this);
                 key = e.keycode ? e.keycode : e.which;
@@ -1880,7 +1881,7 @@
                 efectivo: '',
                 tarjetaCant: '',
                 cantAsientos: 0,
-                importePagado: 0,
+                importePagado: '',
                 vuelto: '',
                 disabledTipoPago: false
             },
@@ -2045,7 +2046,7 @@
                             $('#txtTtarjetaCantTP').focus();
                         } else if (_this.efectivo === '') {
                             $('#txtEfectivoTP').focus();
-                        } else if (_this.importePagado <= 0) {
+                        } else if (_this.importePagado === '') {
                             $('#txtImportePagdoTP').focus();
                         }
                         //else if (_this.embarque === null || _this.embarque === '') {
@@ -2112,10 +2113,19 @@
                             _this.tarjetaCant = '';
                         }
                     } else if (tipo === 'IP') {
+                        debugger;
+
                         if (importePagado >= efectivo) {
                             _this.vuelto = importePagado - efectivo;
                         } else {
-                            _this.vuelto = '';
+                            if (importePagado === NaN) {
+                                _this.vuelto = '';
+                            }
+                            else if (importePagado < (tarjetaCant + efectivo) || importePagado > sumaTotal) {
+                                //APP.msg.info("El <strong style='color:white'>IMPORTE PAGADO</strong> debe ser mayor al <strong style='color:white'>MONTO TOTAL</strong>.");
+                                _this.vuelto = '';
+                            }
+                            //_this.importePagado = '';
                         }
                     }
                 }
@@ -2372,14 +2382,14 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;                                
+                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;
                                 //_this.list.beneficiarios = _.flatten(_.times(2, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
                                 _this.list.beneficiarios.push(
                                     { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
-                                );
+                                );//BORRAR
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -2440,17 +2450,26 @@
             },
             watch: {
                 searchInTable: function (newVal) {
-                    debugger;
                     var _this = this;
-                    if (String(newVal).replace(/\s/g, '').length > 0) {
-                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
-                            return _.some(item.Nombre_Beneficiario, function (tag) {
-                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
-                            });
-                        });
-                    } else {
-                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    var Nombre_Beneficiario = 'Nombre_Beneficiario';
+
+                    //const result = _this.list.filterBeneficiarios.find(beneficiario => beneficiario.Nombre_Beneficiario === newVal)
+
+                    for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
+                        if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
+                            return _this.list.filterBeneficiarios[i];
+                        }
                     }
+
+                    //if (String(newVal).replace(/\s/g, '').length > 0) {
+                    //    return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
+                    //        return _.some(item.Nombre_Beneficiario, function (tag) {
+                    //            return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
+                    //        });
+                    //    });
+                    //} else {
+                    //    _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    //}
                 }
             }
         });
