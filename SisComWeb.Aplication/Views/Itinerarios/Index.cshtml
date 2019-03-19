@@ -3,6 +3,8 @@
 @{
     ViewBag.Title = "Ventas";
     var usuario = DataSession.UsuarioLogueado;
+    var fechaActual = DateTime.Now.ToString("dd/MM/yyyy");
+    var horaActual = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
 }
 
 @Html.Partial("_Filtros")
@@ -444,7 +446,70 @@
             function keyPress(field, evt) {
 
             }
+
+            if ($('.dpyear').length) {
+
+                $('.dpyear').datetimepicker({
+                    keyBinds: {
+                        enter: function (e) {
+                            if (!e[0].previousElementSibling.value) {
+                                this.date(moment().subtract(1, 'years').format('DD/MM/YYYY'));
+                            }
+                            this.hide();
+                        }
+                    },
+                    useCurrent: false,
+                    locale: 'es',
+                    showTodayButton: false,
+                    showClose: false,
+                    showClear: false,
+                    keepOpen: false,
+                    toolbarPlacement: 'top',
+                    format: 'DD/MM/YYYY',
+                    defaultDate: moment().subtract(1, 'years'),
+                    maxDate: moment().subtract(1, 'years'),
+                    minDate: moment().subtract(150, 'years'),
+                    tooltips: {
+                        today: 'Ir a la fecha actual',
+                        clear: 'Borrar fecha',
+                        close: 'Cerrar selector'
+                    }
+                });
+            }
+
+            if ($('.dpyearnino').length) {
+
+                $('.dpyearnino').datetimepicker({
+                    keyBinds: {
+                        enter: function (e) {
+                            if (!e[0].previousElementSibling.value) {
+                                this.date(moment().subtract(2, 'days').format('DD/MM/YYYY'));
+                            }
+                            this.hide();
+                        }
+                    },
+                    useCurrent: false,
+                    locale: 'es',
+                    showTodayButton: false,
+                    showClose: false,
+                    showClear: false,
+                    keepOpen: false,
+                    toolbarPlacement: 'top',
+                    format: 'DD/MM/YYYY',
+                    defaultDate: moment().subtract(2, 'days'),
+                    maxDate: moment().subtract(2, 'days'),
+                    minDate: moment().subtract(5, 'years'),
+                    tooltips: {
+                        today: 'Ir a la fecha actual',
+                        clear: 'Borrar fecha',
+                        close: 'Cerrar selector'
+                    }
+                });
+            }
         });
+
+        var fechaActual = '@fechaActual';
+        var horaActual = '@horaActual';
 
         var selectAll = {
             id: 0,
@@ -511,9 +576,9 @@
                 filtro: {
                     CodiOrigen: null,
                     CodiDestino: null,
-                    CodiRuta: null,
-                    FechaViaje: '',
-                    Hora: '',
+                    CodiRuta: selectAll,
+                    FechaViaje: fechaActual,
+                    Hora: horaActual,
                     TodosTurnos: false,
                     SoloProgramados: false
                 },
@@ -925,6 +990,10 @@
                 },
                 hideVentas: function () {
                     this.showPlano = false;
+                    this.firstCharge = false;
+                    if (!$("#panelWrapperV").hasClass("in")) {
+                        $('#btnDesplegar').click();
+                    }
                     appController.hideVentas();
                 },
                 changeTurno: function (item) {
@@ -1443,6 +1512,9 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
+                    debugger;
+                    if (FechaVenta === "1/01/1990 00:00:00")
+                        Color = APP.ventas.colorBloqueoExterno;
                     if (FechaVenta) {
                         return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
                     } else {
@@ -1462,6 +1534,7 @@
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
+                    debugger;
                     if (FechaVenta) {
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`
                     }
@@ -1773,6 +1846,13 @@
                     }
                     //this.$refs.refDocumento.focus();
                     this.recorridoSectionVentas();
+                },
+                passSinceRegistrarNino: function () {
+                    var _this = this;
+                    if (_this.list.ventas[_this.indexVenta].NroAsiento)
+                        _this.$refs.refPrecio.focus();
+                    else
+                        _this.$refs.refNroAsientoVenta.focus();
                 },
                 cancelarBoletos: async function () {
                     for (i = 0; i < this.list.ventas.length; i++) {

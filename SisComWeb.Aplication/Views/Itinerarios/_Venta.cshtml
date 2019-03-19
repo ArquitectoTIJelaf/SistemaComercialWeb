@@ -265,7 +265,9 @@
                                                 <label class="control-label">Turno:</label>
                                                 <input v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
-                                                       @@keydown.13.prevent="nextStep(8)"
+                                                       @*@@keydown.13.prevent="nextStep(8)"*@
+                                                       @@focus="$event.target.select()"
+                                                       @@blur="nextStep(8)"
                                                        type="text"
                                                        id="txtTurno"
                                                        class="form-control input-sm dph"
@@ -278,7 +280,9 @@
                                                 <label class="control-label">Fecha Viaje:</label>
                                                 <input v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
-                                                       @@keydown.13.prevent="nextStep(9)"
+                                                       @*@@keydown.13.prevent="nextStep(9)"*@
+                                                       @@focus="$event.target.select()"
+                                                       @@blur="nextStep(9)"
                                                        type="text"
                                                        id="txtFecha_2"
                                                        class="form-control input-sm dp"
@@ -839,8 +843,8 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="checkedRegistrarNino"
-                                                                @@keypress.13.prevent="$refs.refNroAsientoVenta.focus()" 
-                                                                @@keypress.9.prevent="$refs.refNroAsientoVenta.focus()"
+                                                                @@keypress.13.prevent="passSinceRegistrarNino" 
+                                                                @@keypress.9.prevent="passSinceRegistrarNino"
                                                                 id="chckRegistrarNiño"
                                                                 ref="refRegistrarNiño"
                                                                 class="check-with-label"

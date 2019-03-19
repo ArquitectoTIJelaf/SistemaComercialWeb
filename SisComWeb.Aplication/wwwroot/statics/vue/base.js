@@ -1390,36 +1390,6 @@ $(function () {
         });
     }
 
-    if ($('.dpyear').length) {
-
-        $('.dpyear').datetimepicker({
-            keyBinds: {
-                enter: function (e) {
-                    if (!e[0].previousElementSibling.value) {
-                        this.date(moment().subtract(1, 'years').format('DD/MM/YYYY'));
-                    }
-                    this.hide();
-                }
-            },
-            useCurrent: false,
-            locale: 'es',
-            showTodayButton: false,
-            showClose: false,
-            showClear: false,
-            keepOpen: false,
-            toolbarPlacement: 'top',
-            format: 'DD/MM/YYYY',
-            defaultDate: moment().subtract(1, 'years'),
-            maxDate: moment().subtract(1, 'years'),
-            minDate: moment().subtract(150, 'years'),
-            tooltips: {
-                today: 'Ir a la fecha actual',
-                clear: 'Borrar fecha',
-                close: 'Cerrar selector'
-            }
-        });
-    }
-
 });
 /*!********************* Document ready */
 
