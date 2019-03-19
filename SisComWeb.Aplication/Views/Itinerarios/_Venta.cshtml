@@ -532,10 +532,11 @@
                                         <div class="col-md-1">
                                             <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
                                                 <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
-                                                <input v-model="list.ventas[indexVenta].NroAsiento"
+                                                <input v-model="list.ventas[indexVenta].NroAsiento"                                                       
+                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"                                                       
+                                                       @@keydown.9.prevent="validateTxtNroAsientoVenta($event)" 
                                                        @@focus="focusAsiento($event)"
                                                        @@blur="validateTxtNroAsientoVenta($event)"
-                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"                                                       
                                                        id="txtNroAsientoVenta"
                                                        ref="refNroAsientoVenta"
                                                        class="form-control input-sm"                                                       
@@ -555,8 +556,8 @@
                                                           :placeholder="'TIPO'"
                                                           :select-on-tab="true"
                                                           :id="'cboTipoDoc'"
-                                                          ref="refTipoDoc"                                                          
-                                                          label="label">
+                                                          ref="refTipoDoc"
+                                                          :get-option-label="labelOfDocumento">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="passNumDocToDocumento">{{ option.label }}</div>
                                                     </template>
@@ -650,12 +651,12 @@
                                                                name="Edad"
                                                                class="form-control input-sm text-center"
                                                                placeholder="E"
-                                                               v-validate="'min_value: 1'"
+                                                               v-validate="'required|min_value: 1'"
                                                                style="cursor: not-allowed;"
                                                                readonly>
                                                     </div>
                                                 </div>
-                                                <span v-show="errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -736,7 +737,7 @@
                                                         <label class="control-label">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keypress.13.prevent="searchEmpresa"
-                                                               @@keypress.9.prevent="searchEmpresa"
+                                                               @@keydown.9.prevent="searchEmpresa"
                                                                @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"                                                               
                                                                id="txtRuc"
@@ -762,12 +763,12 @@
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
-                                                               v-validate="'min: 3'"
+                                                               v-validate="'required|min: 3'"
                                                                data-vv-as="Razón social">
                                                     </div>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
-                                                <span v-show="list.ventas[indexVenta].RazonSocial.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -829,8 +830,8 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="checkedRegistrarNino"
-                                                                @@keypress.13.prevent="$refs.refPrecio.focus()" 
-                                                                @@keypress.9.prevent="$refs.refPrecio.focus()"
+                                                                @@keypress.13.prevent="$refs.refNroAsientoVenta.focus()" 
+                                                                @@keypress.9.prevent="$refs.refNroAsientoVenta.focus()"
                                                                 id="chckRegistrarNiño"
                                                                 ref="refRegistrarNiño"
                                                                 class="check-with-label"

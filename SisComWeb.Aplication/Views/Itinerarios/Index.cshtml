@@ -932,6 +932,9 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
+                labelOfDocumento: function (option) {
+                    return option.label.substring(0, 8);
+                },
                 bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
 
@@ -1139,7 +1142,7 @@
                                             //_this.list.ventas[_this.indexVenta].OldNroAsiento = '';
                                             //_this.list.ventas[_this.indexVenta].FlagVenta = '';
                                             _this.limpiarVenta();
-                                            _this.firstAsiento = true;                                            
+                                            _this.firstAsiento = true;
                                         }
                                         else {
                                             var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
@@ -1502,6 +1505,7 @@
                     input.CodiBus = _this.objPlano.CodiBus;
                     input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = _this.filtro.CodiDestinoBus.id;
+
                     if (!_this.errorsInTicketsVenta()) {
                         _this.saveUser();
                         appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
@@ -1519,8 +1523,13 @@
                             return true;
                         }
                         if (_indexOfRazSoc !== -1) {
-                            _this.indexVenta = _indexOfRazSoc;
-                            _this.$nextTick(() => { $('#txtRazonSocial').focus(); });
+                            debugger;
+                            _this.indexVenta = _indexOfRazSoc;                            
+                            _this.$nextTick(() => {
+                                $('#txtRazonSocial').focus();
+                                _this.$validator.validate('ruc');
+                                _this.$validator.validate('razon_social'); 
+                            });
                             APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
                             return true;
                         }
@@ -1530,14 +1539,18 @@
                 },
                 clearUser: function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].Documento.length === 7) {
-                        _this.list.ventas[_this.indexVenta].Nombres = '';
-                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                    }
+                    _this.list.ventas[_this.indexVenta].Nombres = '';
+                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
+                    _this.list.ventas[_this.indexVenta].FechaNac = '';
+                    _this.list.ventas[_this.indexVenta].Edad = '';
+                    _this.list.ventas[_this.indexVenta].Sexo = '';
+                    _this.list.ventas[_this.indexVenta].Telefono = '';
+                    _this.list.ventas[_this.indexVenta].Ruc = '';
+                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                    _this.list.ventas[_this.indexVenta].Direccion = '';
                 },
                 clearRazSoc: function () {
-                    debugger;
                     var _this = this;
                     _this.list.ventas[_this.indexVenta].RazonSocial = '';
                     _this.list.ventas[_this.indexVenta].Direccion = '';
@@ -1680,17 +1693,37 @@
 
                                 this.$nextTick(function () {
                                     this.bloquearAsiento(auxObj, false);
-                                    this.recorridoSectionVentas();
+                                    if (this.camposObligatorios())
+                                        this.$refs.refPrecio.focus();
+                                    else
+                                        this.recorridoSectionVentas();
                                     this.auxFocus.asiento = false;
                                 });
                             }
                             else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
                         }
-                        else this.recorridoSectionVentas();
+                        else {
+                            if (this.camposObligatorios())
+                                this.$refs.refPrecio.focus();
+                            else
+                                this.recorridoSectionVentas();
+                        }
                     }
                     else {
                         if (e && e.keyCode !== 13) this.auxFocus.asiento = false;
                     }
+                },
+                camposObligatorios: function () {
+                    return (this.list.ventas[this.indexVenta].NroAsiento &&
+                        this.list.ventas[this.indexVenta].CodiTipoDoc &&
+                        this.list.ventas[this.indexVenta].Documento &&
+                        this.list.ventas[this.indexVenta].Nombres &&
+                        this.list.ventas[this.indexVenta].ApellidoPaterno &&
+                        this.list.ventas[this.indexVenta].ApellidoMaterno &&
+                        this.list.ventas[this.indexVenta].FechaNac &&
+                        this.list.ventas[this.indexVenta].Sexo &&
+                        this.list.ventas[this.indexVenta].Nacionalidad &&
+                        this.list.ventas[this.indexVenta].Precio);
                 },
                 findObjectAsiento: function (_NroAsiento) {
                     var auxObj = {};
