@@ -914,7 +914,7 @@
                         APP.msg.error('No se pudo cargar Correlativo');
                         return;
                     }
-                    APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
+                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.NroViaje) {
                                 _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
@@ -1088,8 +1088,8 @@
                     input.NumeAsiento = asientoSel.Tipo;
                     input.FechaProgramacion = _this.filtro.Fecha;
                     input.Precio = asientoSel.PrecioVenta;
-                    APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
-                        .then(async res => {
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
+                        .then(res => {
                             if (res.statusText === "OK") {
                                 if (res.data !== 0) {
                                     asientoSel.IDS = res.data;
@@ -1121,8 +1121,6 @@
                                         case '7': appController.showPaseCortesia(); break;
                                     }
                                 }
-                                else
-                                    APP.msg.error('No se pudo bloquear el asiento');
                             }
                             else
                                 APP.msg.error('No se pudo bloquear el asiento');
@@ -1283,8 +1281,14 @@
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
                                     .then(res => {
                                         if (res.statusText === "OK") {
+                                            // Luego de liberar, dejar 'Asiento' como libre
+                                            objAsiento.Color = "";
+                                            //objAsiento.FechaVenta = "";
+                                            objAsiento.FechaViaje = "";
+                                            objAsiento.FlagVenta = "";
                                             objAsiento.IDS = 0;
                                             objAsiento.NumeAsiento = 0;
+                                            objAsiento.TipoDocumento = "";
                                         }
                                         else
                                             return false;
@@ -1551,11 +1555,9 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
-                    if (FechaVenta === "1/01/1990 00:00:00" || FechaVenta === "01/01/1990")
-                        Color = APP.ventas.colorBloqueoExterno;
-                    if (FechaVenta) {
+                    if (FechaVenta)
                         return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
-                    } else {
+                    else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
                                 return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
@@ -1565,17 +1567,20 @@
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
-                    if (Edad > 0 && Edad <= 18)
+                    if (Edad <= 18)
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/NINO.png';
                     else
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
-                    if (FechaVenta && FechaVenta !== "1/01/1990 00:00:00" && FechaVenta !== "01/01/1990") {
+                    if (FechaVenta)
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
-                    } else if (FechaVenta === "1/01/1990 00:00:00" || FechaVenta === "01/01/1990") {
-                        return 'Se esta vendiendo en otra terminal';
-                    }
+                    //else {
+                    //    if (NumeAsiento !== 0) {
+                    //        if (IDS === 0)
+                    //            return 'Se está vendiendo en otra terminal';
+                    //    }
+                    //}
                 },
                 nextStep: function (code) {
                     var _this = this;
@@ -1850,7 +1855,7 @@
                     event.target.select();
                     this.auxFocus.asiento = true;
                 },
-                validateTxtNroAsientoVenta: function (e) {
+                validateTxtNroAsientoVenta: async function (e) {
                     if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
@@ -1862,14 +1867,13 @@
                         }
 
                         if (!auxObj.FechaVenta && auxObj.NumeAsiento === 0) {
-                            this.bloquearAsiento(auxObj, true);
+                            await this.bloquearAsiento(auxObj, true);
                             this.auxFocus.asiento = false;
                         }
                         else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
                     }
                     else if (this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
-
                         if (this.list.ventas[this.indexVenta].NroAsiento !== this.list.ventas[this.indexVenta].OldNroAsiento) {
                             var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                             if (!auxObj) {
@@ -1886,16 +1890,16 @@
                                     APP.msg.error('Asiento Old ' + this.list.ventas[this.indexVenta].OldNroAsiento + ' no encontrado');
                                     return;
                                 }
-                                this.liberarAsiento(auxObjOld, false);
 
-                                this.$nextTick(function () {
-                                    this.bloquearAsiento(auxObj, false);
-                                    if (this.camposObligatorios())
-                                        this.$refs.refPrecio.focus();
-                                    else
-                                        this.recorridoSectionVentas();
-                                    this.auxFocus.asiento = false;
-                                });
+                                await this.liberarAsiento(auxObjOld, false);
+                                await this.bloquearAsiento(auxObj, false);
+
+                                if (this.camposObligatorios())
+                                    this.$refs.refPrecio.focus();
+                                else
+                                    this.recorridoSectionVentas();
+
+                                this.auxFocus.asiento = false;
                             }
                             else APP.msg.error('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
                         }
@@ -1962,7 +1966,6 @@
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                     }
-                    //this.$refs.refDocumento.focus();
                     this.recorridoSectionVentas();
                 },
                 passSinceRegistrarNino: function () {
@@ -2182,7 +2185,8 @@
                 cantAsientos: 0,
                 importePagado: '',
                 vuelto: '',
-                disabledTipoPago: false
+                disabledTipoPago: false,
+                processing: false
             },
             mounted: function () {
                 this.getTipoPago();
@@ -2192,6 +2196,7 @@
             methods: {
                 show: function (embarques, arribos, ticketVenta, listaVentas) {
                     var _this = this;
+                    _this.processing = false;
                     _this.limpiarCampos();
                     _this.list.embarques = embarques;
                     _this.list.arribos = arribos;
@@ -2239,6 +2244,8 @@
                 },
                 saveVenta: async function () {
                     var _this = this;
+                    _this.processing = true;
+
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
                     if (!limpiarAB) return;
@@ -2311,7 +2318,11 @@
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
                         .then(async res => {
                             appController.showBoletosVendidos(res.data);
-                        }).catch(APP.rq.axios_handler_error_alert);
+                            _this.processing = false;
+                        }).catch(err => {
+                            _this.processing = false;
+                            APP.rq.axios_handler_error_alert;
+                        });
                 },
                 limpiarCampos: function () {
                     var _this = this;
