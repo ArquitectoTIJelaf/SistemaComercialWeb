@@ -14,6 +14,7 @@
 @Html.Partial("_TipoPago")
 @Html.Partial("_PaseCortesia")
 @Html.Partial("_BoletosVendidos")
+@Html.Partial("_Postergacion")
 
 @section styles{
     <style type="text/css">
@@ -1630,15 +1631,15 @@
                 errorsInTicketsVenta: function () {
                     var _this = this;
                     var _indexOfTipoDoc = -1;
-                    var _indexOfDocumento = -1;                    
-                    var _indexOfNombres = -1;                    
-                    var _indexOfApellidoPaterno = -1;                    
-                    var _indexOfApellidoMaterno = -1;   
-                    var _indexOfEdad = -1;   
-                    var _indexOfSexo = -1;  
-                    var _indexOfRuc = -1;  
+                    var _indexOfDocumento = -1;
+                    var _indexOfNombres = -1;
+                    var _indexOfApellidoPaterno = -1;
+                    var _indexOfApellidoMaterno = -1;
+                    var _indexOfEdad = -1;
+                    var _indexOfSexo = -1;
+                    var _indexOfRuc = -1;
                     var _indexOfRazSoc = -1;
-                    var _indexOfNacionalidad = -1;                      
+                    var _indexOfNacionalidad = -1;
                     //Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null });
                     if (_indexOfTipoDoc !== -1) {
@@ -1647,7 +1648,7 @@
                         APP.msg.error('Debe seleccionar un tipo de documento');
                         return true;
                     }
-                    //número de documento, caso DNI                    
+                    //número de documento, caso DNI
                     _indexOfDocumento = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
                     if (_indexOfDocumento !== -1) {
                         _this.indexVenta = _indexOfDocumento;
@@ -1678,7 +1679,7 @@
                         APP.msg.error('Debe rellenar apellido materno');
                         _this.$nextTick(() => {
                             $('#txtApellidoMaterno').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Edad
@@ -1688,7 +1689,7 @@
                         APP.msg.error('Debe seleccionar una fecha válida, la edad no puede ser 0');
                         _this.$nextTick(() => {
                             $('#txtFechaNac').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Tipo de sexo
@@ -1707,7 +1708,7 @@
                         _this.$nextTick(() => {
                             $('#txtRuc').focus();
                             _this.$validator.validate('ruc');
-                        });                        
+                        });
                         return true;
                     }
                     //Razón social
@@ -1716,9 +1717,9 @@
                         _this.indexVenta = _indexOfRazSoc;
                         APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
                         _this.$nextTick(() => {
-                            $('#txtRazonSocial').focus();                            
+                            $('#txtRazonSocial').focus();
                             _this.$validator.validate('razon_social');
-                        });                        
+                        });
                         return true;
                     }
                     //Nacionalidad

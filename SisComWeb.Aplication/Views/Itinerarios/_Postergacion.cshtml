@@ -1,0 +1,80 @@
+﻿<div id="appVuePostergacion" class="modal fade" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" @@click="">&times;</button>
+                <h4 class="modal-title"><b>Buscar Pasajero</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Gerente:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="gerente"
+                                          :id="'cboGerentePC'"
+                                          label="label"
+                                          :options="list.gerentes"
+                                          :placeholder="'GERENTE'"
+                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Solicitante:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="solicitante"
+                                          :options="list.solicitantes"
+                                          :placeholder="'SOLICITANTE'"
+                                          :select-on-tab="true"
+                                          :id="'cboSolicitantePC'"
+                                          label="label"
+                                          @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
+                                          ref="refSolicitantePC">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Concepto:</label>
+                            <div class="col-md-10">
+                                <input v-model="concepto"
+                                       @@keypress.13.prevent="recorridoPaseCortesia"
+                                       id="txtConceptoPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="CONCEPTO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Beneficiario:</label>
+                            <div class="col-md-10">
+                                <input v-model="searchInTable"
+                                       @@keypress.13.prevent="recorridoPaseCortesia"
+                                       id="txtBeneficiarioPC"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       placeholder="BENEFICIARIO"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
+                        <span class="fa fa-save fa-fw"></span>Asignar
+                    </button>
+                <button @@click="" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
