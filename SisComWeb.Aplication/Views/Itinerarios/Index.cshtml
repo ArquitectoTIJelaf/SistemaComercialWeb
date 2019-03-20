@@ -914,7 +914,7 @@
                         APP.msg.error('No se pudo cargar Correlativo');
                         return;
                     }
-                    APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
+                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.NroViaje) {
                                 _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
@@ -1106,12 +1106,12 @@
 
                                     this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
 
-                                    //// SignalR
-                                    //ClientSignalR.NroViaje = _this.filtro.NroViaje;
-                                    //ClientSignalR.FechaViaje = _this.filtro.Fecha;
-                                    //ClientSignalR.NroAsiento = asientoSel.Tipo;
-                                    //ClientSignalR.Owner = true;
-                                    //if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenBloquearBus').click();
+                                    // SignalR
+                                    ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                    ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                    ClientSignalR.NroAsiento = asientoSel.Tipo;
+                                    ClientSignalR.Owner = true;
+                                    if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenBloquearBus').click();
 
                                     // Acción según 'pickedBusVenta'
                                     switch (_this.pickedBusVenta) {
@@ -1257,11 +1257,11 @@
                                     }
 
                                     // SignalR
-                                    //ClientSignalR.NroViaje = _this.filtro.NroViaje;
-                                    //ClientSignalR.FechaViaje = _this.filtro.Fecha;
-                                    //ClientSignalR.NroAsiento = asientoSel.Tipo;
-                                    //ClientSignalR.Owner = true;
-                                    //if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenLiberarBus').click();
+                                    ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                    ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                    ClientSignalR.NroAsiento = asientoSel.Tipo;
+                                    ClientSignalR.Owner = true;
+                                    if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenLiberarBus').click();
                                 }
                             }
                             else
@@ -1281,8 +1281,14 @@
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
                                     .then(res => {
                                         if (res.statusText === "OK") {
+                                            // Luego de liberar, dejar 'Asiento' como libre
+                                            objAsiento.Color = "";
+                                            //objAsiento.FechaVenta = "";
+                                            objAsiento.FechaViaje = "";
+                                            objAsiento.FlagVenta = "";
                                             objAsiento.IDS = 0;
                                             objAsiento.NumeAsiento = 0;
+                                            objAsiento.TipoDocumento = "";
                                         }
                                         else
                                             return false;
@@ -1548,11 +1554,9 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
-                    if (FechaVenta === "1/01/1990 00:00:00" || FechaVenta === "01/01/1990")
-                        Color = APP.ventas.colorBloqueoExterno;
-                    if (FechaVenta) {
+                    if (FechaVenta)
                         return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
-                    } else {
+                    else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
                                 return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
@@ -1562,17 +1566,20 @@
                     }
                 },
                 iconVentaBus: function (Sexo, Edad) {
-                    if (Edad > 0 && Edad <= 18)
+                    if (Edad <= 18)
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/NINO.png';
                     else
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
-                    if (FechaVenta && FechaVenta !== "1/01/1990 00:00:00" && FechaVenta !== "01/01/1990") {
+                    if (FechaVenta)
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
-                    } else if (FechaVenta === "1/01/1990 00:00:00" || FechaVenta === "01/01/1990") {
-                        return 'Se esta vendiendo en otra terminal';
-                    }
+                    //else {
+                    //    if (NumeAsiento !== 0) {
+                    //        if (IDS === 0)
+                    //            return 'Se está vendiendo en otra terminal';
+                    //    }
+                    //}
                 },
                 nextStep: function (code) {
                     var _this = this;

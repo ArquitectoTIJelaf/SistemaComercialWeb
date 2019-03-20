@@ -23,9 +23,31 @@ namespace SisComWeb.Repository
                     {
                         var entidad = new PlanoEntity
                         {
-                            Codigo = Reader.GetStringValue(drlector, "Codigo"),
-                            Tipo = Reader.GetStringValue(drlector, "Tipo"),
-                            Indice = Reader.GetIntValue(drlector, "Indice")
+                            Codigo = Reader.GetStringValue(drlector, "Codigo") ?? "",
+                            Tipo = Reader.GetStringValue(drlector, "Tipo") ?? "",
+                            Indice = Reader.GetIntValue(drlector, "Indice"),
+                            // Para evitar Null's
+                            ApellidoMaterno = "",
+                            ApellidoPaterno = "",
+                            Boleto = "",
+                            Color = "",
+                            Direccion = "",
+                            FechaNacimiento = "",
+                            FechaVenta = "",
+                            FechaViaje = "",
+                            FlagVenta = "",
+                            IdVenta = "",
+                            Nacionalidad = "",
+                            Nombres = "",
+                            NumeroDocumento = "",
+                            RazonSocial = "",
+                            RecogeEn = "",
+                            RucContacto = "",
+                            Sexo = "",
+                            Sigla = "",
+                            Telefono = "",
+                            TipoBoleto = "",
+                            TipoDocumento = ""
                         };
                         Lista.Add(entidad);
                     }
@@ -112,20 +134,29 @@ namespace SisComWeb.Repository
                         var entidad = new PlanoEntity
                         {
                             NumeAsiento = Reader.GetTinyIntValue(drlector, "NUME_ASIENTO"),
-                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento"),
-                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento"),
-                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto"),
-                            FechaViaje = Reader.GetStringValue(drlector, "Fecha_Viaje"),
-                            FechaVenta = Reader.GetStringValue(drlector, "Fecha_Venta"),
-                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad"),
+                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento") ?? "",
+                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento") ?? "",
+                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto") ?? "",
+                            FechaViaje = Reader.GetStringValue(drlector, "Fecha_Viaje") ?? "",
+                            FechaVenta = Reader.GetStringValue(drlector, "Fecha_Venta") ?? "",
+                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad") ?? "",
                             PrecioVenta = Reader.GetRealValue(drlector, "Precio_Venta"),
-                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En"),
-                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")),
-                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
-                            Sigla = Reader.GetStringValue(drlector, "Sigla"),
-                            Boleto = Reader.GetStringValue(drlector, "Boleto"),
-                            TipoBoleto = Reader.GetStringValue(drlector, "tipo"),
-                            IdVenta = Reader.GetStringValue(drlector, "id_venta")
+                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En") ?? "",
+                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")) ?? "",
+                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? "",
+                            Sigla = Reader.GetStringValue(drlector, "Sigla") ?? "",
+                            Boleto = Reader.GetStringValue(drlector, "Boleto") ?? "",
+                            TipoBoleto = Reader.GetStringValue(drlector, "tipo") ?? "",
+                            IdVenta = Reader.GetStringValue(drlector, "id_venta") ?? "",
+                            // Para evitar Null's
+                            Nombres = "",
+                            ApellidoPaterno = "",
+                            ApellidoMaterno = "",
+                            FechaNacimiento = "",
+                            Telefono = "",
+                            Sexo = "",
+                            RazonSocial = "",
+                            Direccion = ""
                         };
                         Lista.Add(entidad);
                     }
@@ -145,18 +176,27 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarAcompaniante";
                 db.AddParameter("@IdVenta", DbType.String, ParameterDirection.Input, IdVenta);
-                var entidad = new AcompañanteEntity();
+                var entidad = new AcompañanteEntity
+                {
+                    TipoDocumento = "",
+                    NumeroDocumento = "",
+                    NombreCompleto = "",
+                    FechaNacimiento = "",
+                    Edad = "",
+                    Sexo = "",
+                    Parentesco = ""
+                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
-                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI");
-                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE");
-                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "FECHAN").ToString("dd/MM/yyyy"));
-                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD");
-                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO");
-                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO");
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? "";
+                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI") ?? "";
+                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE") ?? "";
+                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "FECHAN").ToString("dd/MM/yyyy")) ?? "";
+                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD") ?? "";
+                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO") ?? "";
+                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO") ?? "";
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
