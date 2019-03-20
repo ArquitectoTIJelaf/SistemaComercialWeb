@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -32,7 +31,7 @@ namespace SisComWeb.Repository
                 }
             }
             return response;
-        }        
+        }
 
         #endregion
 

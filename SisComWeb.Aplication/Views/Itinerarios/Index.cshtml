@@ -1381,6 +1381,7 @@
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
                         }), { timeout: 3000 })
                             .then(res => {
+                                debugger;
                                 if (res.data.IdCliente !== 0) {
                                     _this.list.ventas[_this.indexVenta].IdCliente = res.data.IdCliente;
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
@@ -1389,10 +1390,10 @@
                                     _this.list.ventas[_this.indexVenta].FechaNac = res.data.FechaNacimiento;
                                     _this.list.ventas[_this.indexVenta].Edad = res.data.Edad;
                                     _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Sexo);
-                                    _this.list.ventas[_this.indexVenta].Telefono = res.data.Telefono;
-                                    _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto;
-                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Direccion;
-                                    _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial;
+                                    _this.list.ventas[_this.indexVenta].Telefono = res.data.Telefono || '';
+                                    _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto || '';
+                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Direccion || '';
+                                    _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial || '';
                                 } else {
                                     if (res.data.NombreCliente && res.data.ApellidoPaterno && res.data.ApellidoPaterno) {
                                         _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
@@ -2248,8 +2249,6 @@
                     // Limpiar 'AsientosBloqueados'
                     var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
                     if (!limpiarAB) return;
-
-                    var boletos = '';
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2312,6 +2311,8 @@
                         // --------------
 
                         listado.push(input);
+                        //Cerrar modal de tipo pago
+                        $("#appVueTipoPago").modal('hide');
                     };
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
@@ -2826,7 +2827,6 @@
                     var _this = this;
                     _this.boletos = _boletosVendidos.split(',');
                     _this.boletos.pop();
-                    $("#appVueTipoPago").modal('hide');
                     $('#appBoletosVendidos').modal('show');
                     $('#appBoletosVendidos').on('shown.bs.modal', function () {
                         //window.addEventListener('keyup', function (e) {

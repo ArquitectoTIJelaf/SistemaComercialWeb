@@ -140,6 +140,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ClavesInternas", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo);
+
         #endregion
     }
 }
