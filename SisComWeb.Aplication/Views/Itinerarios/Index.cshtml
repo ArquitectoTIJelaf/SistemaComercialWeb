@@ -1387,6 +1387,8 @@
                                     _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Sexo);
                                     _this.list.ventas[_this.indexVenta].Telefono = res.data.Telefono;
                                     _this.list.ventas[_this.indexVenta].Ruc = res.data.RucContacto;
+                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Direccion;
+                                    _this.list.ventas[_this.indexVenta].RazonSocial = res.data.RazonSocial;
                                 } else {
                                     if (res.data.NombreCliente && res.data.ApellidoPaterno && res.data.ApellidoPaterno) {
                                         _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
@@ -1404,6 +1406,8 @@
                                     _this.list.ventas[_this.indexVenta].Sexo = null;
                                     _this.list.ventas[_this.indexVenta].Telefono = '';
                                     _this.list.ventas[_this.indexVenta].Ruc = '';
+                                    _this.list.ventas[_this.indexVenta].Direccion = '';
+                                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
                                 }
                                 _this.$nextTick(() => {
                                     _this.$validator.validate('Edad');

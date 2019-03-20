@@ -367,7 +367,8 @@ namespace SisComWeb.Aplication.Controllers
                         RucContacto = (string)data["RucContacto"],
                         Telefono = (string)data["Telefono"],
                         TipoDoc = (string)data["TipoDoc"],
-                        Sexo = (string)data["Sexo"]
+                        Sexo = (string)data["Sexo"],
+                        RazonSocial = (string)data["RazonSocial"]
                     };
                     return Json(item, JsonRequestBehavior.AllowGet);
                 }
