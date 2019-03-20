@@ -42,8 +42,8 @@ namespace SisComWeb.Business
                     var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resBuscaPasajero.Valor.RucContacto);
                     if (resBuscarEmpresa.Estado)
                     {
-                        resBuscaPasajero.Valor.RazonSocial = resBuscarEmpresa.Valor.RazonSocial;
-                        resBuscaPasajero.Valor.Direccion = resBuscarEmpresa.Valor.Direccion;
+                        resBuscaPasajero.Valor.RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
+                        resBuscaPasajero.Valor.Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
                     }
                 }
 

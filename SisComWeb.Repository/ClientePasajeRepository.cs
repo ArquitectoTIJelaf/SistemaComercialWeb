@@ -28,7 +28,8 @@ namespace SisComWeb.Repository
                     Direccion = "",
                     Telefono = "",
                     RucContacto = "",
-                    Sexo = ""
+                    Sexo = "",
+                    RazonSocial = ""
                 };
                 using (IDataReader drlector = db.GetDataReader())
                 {
