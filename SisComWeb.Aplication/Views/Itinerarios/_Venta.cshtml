@@ -309,14 +309,14 @@
                     </div>
                     <div id="BusVentas">
                         <div v-show="showPlano" class="col-md-12" style="background-color:white;height:40px;display:flex;">
-                            <div class="col-md-8 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px; display: flex; align-items: center; color: white;">
+                            <div class="col-md-9 bgc-emp" style="height:100%;border-radius: 8px 8px 0 0;margin-left: 20px; display: flex; align-items: center; color: white;">
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('V')">
                                     <input type="radio" id="ventaBV" value="V" v-model="pickedBusVenta" class="align-radio">
                                     <label for="ventaBV" class="align-label-radio">Venta</label>
                                 </div>
-                                <div class="col-md-1 ancho" @@click="changePickedBusVenta('X')">
+                                <div class="col-md-1 ancho" @@click="changePickedBusVenta('AN')">
                                     <input type="radio" id="bloqueoBV" value="X" v-model="pickedBusVenta" class="align-radio">
-                                    <label for="bloqueoBV" class="align-label-radio">Bloqueo</label>
+                                    <label for="bloqueoBV" class="align-label-radio">Anulación</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('R')">
                                     <input type="radio" id="reservaBV" value="R" v-model="pickedBusVenta" class="align-radio">
@@ -342,8 +342,12 @@
                                     <input type="radio" id="creditoBV" value="NV" v-model="pickedBusVenta" class="align-radio">
                                     <label for="creditoBV" class="align-label-radio">Crédito</label>
                                 </div>
+                                <div class="col-md-1 ancho" @@click="changePickedBusVenta('PO')">
+                                    <input type="radio" id="creditoBV" value="NV" v-model="pickedBusVenta" class="align-radio">
+                                    <label for="creditoBV" class="align-label-radio">Postergación</label>
+                                </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="col-md-6" style="text-align: center;top: 50%;transform: translateY(-50%);">
                                     <label id="lblNameDay_Fecha"
                                            class="control-label"
