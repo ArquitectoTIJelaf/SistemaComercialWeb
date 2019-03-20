@@ -1382,7 +1382,6 @@
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
                         }), { timeout: 3000 })
                             .then(res => {
-                                debugger;
                                 if (res.data.IdCliente !== 0) {
                                     _this.list.ventas[_this.indexVenta].IdCliente = res.data.IdCliente;
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.NombreCliente;
@@ -1604,7 +1603,6 @@
                 },
                 showTipoPago: function () {
                     var _this = this;
-                    debugger;
                     if (!_this.errorsInTicketsVenta()) {
                         _this.saveUser();
                         var input = {};
