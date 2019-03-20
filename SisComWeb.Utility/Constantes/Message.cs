@@ -70,5 +70,10 @@
         public const string MsgCorrectoGrabaPase = "Correcto: GrabaPase.";
         public const string MsgErrExcGrabaPase = "Ocurrió una excepción al grabar pase.";
         public const string MsgErrExcValidarPase = "Ocurrió una excepción al validar pase.";
+
+        //Claves Internas
+        public const string MsgCorrectoClavesInternas = "Correcto: ClavesInternas.";
+        public const string MsgErrExcClavesInternas = "Ocurrió una excepción en las claves internas.";
+
     }
 }

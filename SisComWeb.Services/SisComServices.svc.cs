@@ -366,6 +366,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo)
+        {
+            try
+            {
+                return VentaLogic.ClavesInternas(Codi_Oficina, Password, Codi_Tipo);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
+            }
+        }
+
         #endregion
     }
 }

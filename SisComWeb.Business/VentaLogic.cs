@@ -689,6 +689,30 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo)
+        {
+            try
+            {
+                var response = new Response<ClavesInternasResponse>(false, new ClavesInternasResponse(), "Error: ListaBeneficiarioPase.", false);
+
+                var objClavesInternas = ClavesInternasRepository.ClavesInternas(Codi_Oficina, Password, Codi_Tipo);
+
+                response.Valor.ClavesInternas = objClavesInternas.Valor;
+
+                response.EsCorrecto = true;
+                response.Valor = response.Valor;
+                response.Mensaje = Message.MsgCorrectoClavesInternas;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
+            }
+        }
+
         #region FACTURACIÓN ELETRÓNICA
 
         public static ResponseW ValidarDocumentoSUNAT(VentaEntity entidad, ref SetInvoiceRequestBody bodyDocumentoSUNAT)
