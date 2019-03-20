@@ -217,7 +217,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos || processing" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
