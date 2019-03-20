@@ -3,7 +3,7 @@
     <div class="modal-dialog" style="width: 500px; top:10%">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" @@click="limpiarCampos" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title"><b>Tipo de Pago</b></h4>
             </div>
             <div class="modal-body">
@@ -42,6 +42,34 @@
                             </div>
                         </div>
                         <template v-if="tipoPago === '01'">
+                            <div class="col-md-12 separate-in-form">
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label label-sm">Imp. Pagado:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="importePagado"
+                                               id="txtImportePagdoC"
+                                               @@input="calcMontos('IPC')"
+                                               @@keypress.13.prevent="nextInput('NUMERO')"
+                                               v-validate="'min_value:' + (sumaTotal + 1)"
+                                               data-vv-as="Imp. Pagado:"
+                                               class="form-control input-sm"
+                                               name="Imp Pagado"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="col-md-12 control-label label-sm">Vuelto:</label>
+                                    <div class="col-md-12">
+                                        <input v-model="vuelto"
+                                               id="txtEfectivoC"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               class="form-control input-sm"
+                                               style="background-color: #fdf9cd; font-weight: 500; text-align:right;"
+                                               disabled />
+                                    </div>
+                                </div>
+                            </div>
+                            <span v-show="errors.has('Imp Pagado')" class="text-danger m-l-15">{{errors.first('Imp Pagado')}}</span>
                         </template>
                         <template v-else-if="tipoPago === '02'">
                             <div class="col-md-6 separate-in-form">
@@ -220,7 +248,7 @@
                 <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos" class="btn btn-primary waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
-                <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                <button data-dismiss="modal" @@click="limpiarCampos" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>

@@ -1546,7 +1546,6 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
-                    debugger;
                     if (FechaVenta === "1/01/1990 00:00:00")
                         Color = APP.ventas.colorBloqueoExterno;
                     if (FechaVenta) {
@@ -1568,7 +1567,6 @@
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
-                    debugger;
                     if (FechaVenta) {
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`
                     }
@@ -2112,7 +2110,8 @@
                     _this.list.arribos = arribos;
                     _this.ticketVenta = ticketVenta;
                     _this.list.ventas = listaVentas;
-                    _this.sumaTotal = _.sumBy(_this.list.ventas, 'Precio');
+                    //_this.sumaTotal = _.sumBy(_this.list.ventas, 'Precio');
+                    _this.sumaTotal = _.sumBy(_this.list.ventas, o => { return parseFloat(o.Precio); });
                     _this.cantAsientos = _this.list.ventas.length;
                     $('#appVueTipoPago').modal('show');
                     $('#appVueTipoPago').on('shown.bs.modal', function () {
@@ -2224,7 +2223,6 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: appVueVenta.pickedBusVenta })
                         .then(async res => {
-                            debugger;
                             appController.showBoletosVendidos(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
@@ -2233,8 +2231,14 @@
                     _this.tipoPago = '';
                     _this.distrito = null;
                     _this.tarjeta = null;
+                    _this.direccion = '';
+                    _this.observacion = '';
                     _this.embarque = null;
                     _this.arribo = null;
+                    _this.efectivo = '';
+                    _this.tarjetaCant = '';
+                    _this.importePagado = '';
+                    _this.vuelto = '';
                 },
                 recorridoSectionTipoPagos: function () {
                     var _this = this;
@@ -2242,7 +2246,10 @@
                         $('#cboTipoPagoTP input[type=search]').focus();
                     }
                     else if (_this.tipoPago === '01') {
-                        if (_this.embarque === null || _this.embarque === '') {
+                        if (_this.importePagado === '') {
+                            $('#txtImportePagdoC').focus();
+                        }
+                        else if (_this.embarque === null || _this.embarque === '') {
                             $('#cboEmbarqueTP input[type=search]').focus();
                         }
                         else if (_this.arribo === null || _this.embarque === '') {
@@ -2312,7 +2319,13 @@
                     var tarjetaCant = parseFloat(_this.tarjetaCant);
                     var importePagado = parseFloat(_this.importePagado);
 
-                    if (tipo === 'T') {
+                    if (tipo === 'IPC') {
+                        if (importePagado > sumaTotal) {
+                            _this.vuelto = importePagado - sumaTotal;
+                        } else {
+                            _this.vuelto = '';
+                        }
+                    }else if (tipo === 'T') {
                         if (sumaTotal >= tarjetaCant) {
                             _this.efectivo = sumaTotal - tarjetaCant;
                         } else {
@@ -2361,7 +2374,7 @@
                 filledCampos: function () {
                     var _this = this;
                     switch (this.tipoPago) {
-                        case '01': return _this.embarque /*&& _this.arribo*/;
+                        case '01': return _this.embarque && _this.importePagado /*&& _this.arribo*/;
                         case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
                         case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque /*&& _this.arribo*/;
                         case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
@@ -2400,7 +2413,7 @@
             methods: {
                 show: function (_TipoDoc, _listSexos) {
                     if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
-                        this.limpiarCampos();
+                    this.limpiarCampos();
                     this.list.tipoDoc = _TipoDoc;
                     this.list.sexos = _listSexos;
                     $('#appRegistrarInfante').modal('show');
@@ -2713,7 +2726,6 @@
             },
             methods: {
                 show: function (_boletosVendidos) {
-                    debugger;
                     var _this = this;
                     _this.boletos = _boletosVendidos.split(',');
                     _this.boletos.pop();
@@ -2727,14 +2739,12 @@
                     });
                 },
                 closeModal(event) {
-                    debugger;
                     if (event.keyCode == 27) {
                         alert('esc press');
                         window.removeEventListener('keyup', this.closeModal());
                     }
                 },
                 cerrarVenta: function () {
-                    debugger;
                     $('#appBoletosVendidos').modal('hide');
                     appController.chargeTurnos();
                 }
