@@ -1570,16 +1570,10 @@
                         return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
-<<<<<<< HEAD
-                    if (FechaVenta) {
-                        return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`
-=======
-                    debugger;
                     if (FechaVenta && FechaVenta !== "1/01/1990 00:00:00" && FechaVenta !== "01/01/1990") {
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
                     } else if (FechaVenta === "1/01/1990 00:00:00" || FechaVenta === "01/01/1990") {
                         return 'Se esta vendiendo en otra terminal';
->>>>>>> 43cbc981d2fa39baa6af9b4feafb058d211b5be5
                     }
                 },
                 nextStep: function (code) {
