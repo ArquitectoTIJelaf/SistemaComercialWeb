@@ -37,6 +37,16 @@ namespace SisComWeb.Business
                     }
                 }
 
+                if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.RucContacto))
+                {
+                    var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resBuscaPasajero.Valor.RucContacto);
+                    if (resBuscarEmpresa.Estado)
+                    {
+                        resBuscaPasajero.Valor.RazonSocial = resBuscarEmpresa.Valor.RazonSocial;
+                        resBuscaPasajero.Valor.Direccion = resBuscarEmpresa.Valor.Direccion;
+                    }
+                }
+
                 return new Response<ClientePasajeEntity>(resBuscaPasajero.EsCorrecto, resBuscaPasajero.Valor, resBuscaPasajero.Mensaje, resBuscaPasajero.Estado);
             }
             catch (Exception ex)

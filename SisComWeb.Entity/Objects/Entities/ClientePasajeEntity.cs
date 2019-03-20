@@ -27,5 +27,7 @@
         public string RucContacto { get; set; }
 
         public string Sexo { get; set; }
+
+        public string RazonSocial { get; set; }
     }
 }
