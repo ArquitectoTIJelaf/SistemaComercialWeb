@@ -15,23 +15,37 @@ namespace SisComWeb.Repository
                 db.ProcedureName = "scwsp_BuscarPasajero";
                 db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, TipoDoc);
                 db.AddParameter("@Numero_Doc", DbType.String, ParameterDirection.Input, NumeroDoc);
-                var entidad = new ClientePasajeEntity();
+                var entidad = new ClientePasajeEntity
+                {
+                    IdCliente = 0,
+                    TipoDoc = "",
+                    NumeroDoc = "",
+                    NombreCliente = "",
+                    ApellidoPaterno = "",
+                    ApellidoMaterno = "",
+                    FechaNacimiento = "",
+                    Edad = 0,
+                    Direccion = "",
+                    Telefono = "",
+                    RucContacto = "",
+                    Sexo = ""
+                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         entidad.IdCliente = Reader.GetIntValue(drlector, "Id_Clientes");
-                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id");
-                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc");
-                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes");
-                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P");
-                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M");
-                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "fec_nac").ToString("dd/MM/yyyy"));
+                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id") ?? "";
+                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? "";
+                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? "";
+                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P") ?? "";
+                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? "";
+                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "fec_nac").ToString("dd/MM/yyyy")) ?? "";
                         entidad.Edad = Reader.GetTinyIntValue(drlector, "edad");
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
-                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono");
-                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto");
-                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo");
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? "";
+                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? "";
+                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? "";
+                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? "";
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
@@ -49,15 +63,21 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarEmpresa";
                 db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, RucCliente);
-                var entidad = new RucEntity();
+                var entidad = new RucEntity
+                {
+                    RucCliente = "",
+                    RazonSocial = "",
+                    Direccion = "",
+                    Telefono = ""
+                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente");
-                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
-                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono");
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente") ?? "";
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? "";
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? "";
+                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono") ?? "";
                     }
 
                     response.EsCorrecto = true;

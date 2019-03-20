@@ -141,20 +141,7 @@ namespace SisComWeb.Business
                     {
                         var resBuscaAcompaniante = PlanoRepository.BuscaAcompaniante(resListarAsientosOcupados.Valor[i].IdVenta);
                         if (resBuscaAcompaniante.Estado)
-                        {
-                            AcompañanteEntity objetoAcompanianteEntity = new AcompañanteEntity
-                            {
-                                TipoDocumento = resBuscaAcompaniante.Valor.TipoDocumento ?? "",
-                                NumeroDocumento = resBuscaAcompaniante.Valor.NumeroDocumento ?? "",
-                                NombreCompleto = resBuscaAcompaniante.Valor.NombreCompleto ?? "",
-                                FechaNacimiento = resBuscaAcompaniante.Valor.FechaNacimiento ?? "",
-                                Edad = resBuscaAcompaniante.Valor.Edad ?? "",
-                                Sexo = resBuscaAcompaniante.Valor.Sexo ?? "",
-                                Parentesco = resBuscaAcompaniante.Valor.Parentesco ?? ""
-                            };
-
-                            resListarAsientosOcupados.Valor[i].ObjAcompanianate = objetoAcompanianteEntity;
-                        }
+                            resListarAsientosOcupados.Valor[i].ObjAcompanianate = resBuscaAcompaniante.Valor;
                         else
                         {
                             response.Mensaje = resBuscaAcompaniante.Mensaje;
@@ -176,9 +163,14 @@ namespace SisComWeb.Business
                                 ele.NumeAsiento = ocu.NumeAsiento;
                                 ele.TipoDocumento = ocu.TipoDocumento;
                                 ele.NumeroDocumento = ocu.NumeroDocumento;
-                                ele.RucContacto = ocu.RucContacto ?? string.Empty;
+                                ele.RucContacto = ocu.RucContacto;
                                 ele.FechaViaje = ocu.FechaViaje;
-                                ele.FechaVenta = ocu.FechaVenta;
+                                // Para 'bgcVentaBus', 'iconVentaBus' y 'showNombrePasajero'
+                                if (ocu.FlagVenta == "AB") // Asiento bloqueado
+                                    ele.FechaVenta = string.Empty;
+                                else
+                                    ele.FechaVenta = ocu.FechaVenta;
+                                // ------------------
                                 ele.Nacionalidad = ocu.Nacionalidad;
                                 ele.PrecioVenta = ocu.PrecioVenta;
                                 ele.RecogeEn = ocu.RecogeEn;
@@ -189,11 +181,11 @@ namespace SisComWeb.Business
                                 ele.ApellidoMaterno = ocu.ApellidoMaterno;
                                 ele.FechaNacimiento = ocu.FechaNacimiento;
                                 ele.Edad = ocu.Edad;
-                                ele.Telefono = ocu.Telefono ?? string.Empty;
-                                ele.Sexo = ocu.Sexo ?? string.Empty;
+                                ele.Telefono = ocu.Telefono;
+                                ele.Sexo = ocu.Sexo;
                                 ele.Sigla = ocu.Sigla;
-                                ele.RazonSocial = ocu.RazonSocial ?? string.Empty;
-                                ele.Direccion = ocu.Direccion ?? string.Empty;
+                                ele.RazonSocial = ocu.RazonSocial;
+                                ele.Direccion = ocu.Direccion;
                                 ele.Boleto = ocu.Boleto;
                                 ele.TipoBoleto = ocu.TipoBoleto;
                                 ele.IdVenta = ocu.IdVenta;
