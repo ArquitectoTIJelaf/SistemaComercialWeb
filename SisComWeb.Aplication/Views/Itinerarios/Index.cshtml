@@ -1283,6 +1283,7 @@
                         if (!isNaN(objAsiento.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie !== null) {
+                                objAsiento.IDS = valueCookie;
                                 APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
                                 await this.liberarAsiento(objAsiento, true);
                             }
@@ -2312,7 +2313,7 @@
                         });
 
                     // Limpiar 'AsientosBloqueados'
-                    await appVueVenta.limpiarAsientosBloqueados();
+                    await appVueVenta.cancelarBoletos();
                 },
                 limpiarCampos: function () {
                     var _this = this;
