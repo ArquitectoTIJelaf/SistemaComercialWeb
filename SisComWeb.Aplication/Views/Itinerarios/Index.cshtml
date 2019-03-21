@@ -600,6 +600,9 @@
                 },
                 chargeInfante: function (_ObjAcompanianate) {
                     appRegistrarInfante.setMostrarInfante(_ObjAcompanianate);
+                },
+                showRegistrarWithClave: function (_oficina, _password, _codiTipo) {
+                    appClaveAutorizacion.show(_oficina, _password, _codiTipo);
                 }
             };
         })();
@@ -942,8 +945,8 @@
                                 _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
-                                await _this.limpiarAsientosBloqueados();
-                                if (_this.list.tempList.length > 0) {
+                                var limpiarAB = await _this.limpiarAsientosBloqueados();
+                                if (_this.list.tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano3 = _this.list.tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -1237,15 +1240,8 @@
                         .then(res => {
                             if (res.statusText === "OK") {
                                 if (res.data) {
-                                    // Luego de liberar, dejar 'Asiento' como libre
-                                    asientoSel.Color = "";
-                                    //asientoSel.FechaVenta = "";
-                                    asientoSel.FechaViaje = "";
-                                    asientoSel.FlagVenta = "";
                                     asientoSel.IDS = 0;
                                     asientoSel.NumeAsiento = 0;
-                                    asientoSel.TipoDocumento = "";
-
                                     //APP.msg.info('Asiento liberado');
 
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
@@ -1277,16 +1273,34 @@
                 },
                 limpiarAsientosBloqueados: async function () {
                     var _this = this;
+                    var respuesta = true;
                     var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
+
                     for (var objAsiento of _this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie !== null) {
                                 APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
-                                await this.liberarAsiento(objAsiento, true);
+                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
+                                    .then(res => {
+                                        if (res.statusText === "OK") {
+                                            // Luego de liberar, dejar 'Asiento' como libre
+                                            objAsiento.Color = "";
+                                            //objAsiento.FechaVenta = "";
+                                            objAsiento.FechaViaje = "";
+                                            objAsiento.FlagVenta = "";
+                                            objAsiento.IDS = 0;
+                                            objAsiento.NumeAsiento = 0;
+                                            objAsiento.TipoDocumento = "";
+                                        }
+                                        else
+                                            return false;
+                                    }).catch(APP.rq.axios_handler_error_alert);
                             }
                         }
                     }
+
+                    return respuesta;
                 },
                 recorridoSectionFilter: function () {
                     var _this = this;
@@ -2234,8 +2248,8 @@
                     _this.processing = true;
 
                     // Limpiar 'AsientosBloqueados'
-                    await appVueVenta.limpiarAsientosBloqueados();
-
+                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
+                    if (!limpiarAB) return;
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2490,7 +2504,10 @@
                 mask: {
                     documento: ''
                 },
-                disabledBotones: false
+                disabledBotones: false,
+                oficina: '',
+                password: '',
+                codiTipo: ''
             },
             mounted: function () {
                 this.getParentesco();
@@ -2602,6 +2619,10 @@
                     }
                     // Desactiva botones 'Eliminar' y 'Aceptar'.
                     this.disabledBotones = true;
+                },
+                showRegistrarWithClave: function () {
+                    var _this = this;
+                    appController.showRegistrarWithClave(_this.oficina, _this.password, _this.codiTipo);
                 }
             },
             computed: {
@@ -2842,26 +2863,15 @@
                 password: ''
             },
             methods: {
-                show: function (_boletosVendidos) {
+                show: function (_oficina, _password, _codiTipo) {
                     var _this = this;
-                    _this.boletos = _boletosVendidos.split(',');
-                    _this.boletos.pop();
-                    $('#appBoletosVendidos').modal('show');
-                    $('#appBoletosVendidos').on('shown.bs.modal', function () {
-                        //window.addEventListener('keyup', function (e) {
-                        //    _this.closeModal(e);
-                        //});
-                        $('#btnCerrarVenta').focus();
+                    $('#appClaveAutorizacion').modal('show');
+                    $('#appClaveAutorizacion').on('shown.bs.modal', function () {
+                        //$('#btnCerrarVenta').focus();
                     });
                 },
-                closeModal(event) {
-                    if (event.keyCode == 27) {
-                        alert('esc press');
-                        window.removeEventListener('keyup', this.closeModal());
-                    }
-                },
                 cerrarVenta: function () {
-                    $('#appBoletosVendidos').modal('hide');
+                    $('#appClaveAutorizacion').modal('hide');
                     appController.chargeTurnos();
                 }
             }
