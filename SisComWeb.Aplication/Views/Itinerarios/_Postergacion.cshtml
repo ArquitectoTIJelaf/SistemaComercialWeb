@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 separate-in-form">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label class="control-label label-sm" for="txtSeriePos">Serie:</label>
                                 <input v-model="filtro.serie"
                                        @@keypress.13.prevent="$refs.refNumeroPos.focus()"
@@ -37,7 +37,7 @@
                                        class="form-control input-sm"
                                        placeholder="0000">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
                                 <input v-model="filtro.documento"
                                        @@keypress.13.prevent="recorrido"
@@ -46,7 +46,7 @@
                                        class="form-control input-sm"
                                        placeholder="00000000">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label>&nbsp;</label>
                                 <button @@click="" class="btn btn-primary waves-effect waves-light">
                                     <span class="fa fa-search fa-fw"></span>Buscar

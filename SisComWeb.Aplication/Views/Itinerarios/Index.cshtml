@@ -2851,6 +2851,9 @@
                 }
             },
             methods: {
+                show: function () {
+                    $('#appVuePostergacion').modal('show');
+                },
                 filledCampos: function () {
                     return this.filtro.empresa && this.filtro.serie && this.filtro.documento;
                 }
