@@ -19,7 +19,6 @@ namespace SisComWeb.Aplication.Controllers
         private static readonly string CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
         readonly Usuario usuario = DataSession.UsuarioLogueado;
 
-
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
             var color = "";
@@ -786,6 +785,43 @@ namespace SisComWeb.Aplication.Controllers
                     };
 
                     return Json(item, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("clave-autorizacion")]
+        public async Task<ActionResult> claveAutorizacion(string password)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"Codi_Oficina\" : " + usuario.CodiPuntoVenta + "," + "\"Password\" : " + password + "," + "\"Codi_Tipo\" : " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD + " }";
+                    HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+
+                    return Json(data, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

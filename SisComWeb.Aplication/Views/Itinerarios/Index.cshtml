@@ -14,6 +14,7 @@
 @Html.Partial("_TipoPago")
 @Html.Partial("_PaseCortesia")
 @Html.Partial("_BoletosVendidos")
+@Html.Partial("_ClaveAutorizacion")
 
 @section styles{
     <style type="text/css">
@@ -600,6 +601,12 @@
                 },
                 chargeInfante: function (_ObjAcompanianate) {
                     appRegistrarInfante.setMostrarInfante(_ObjAcompanianate);
+                },
+                showRegistrarWithClave: function () {
+                    appClaveAutorizacion.show();
+                },
+                sendClaveAutorizacion: function (_password) {
+                    appRegistrarInfante.sendClaveAutorizacion(_password);
                 }
             };
         })();
@@ -942,8 +949,8 @@
                                 _this.objTurno.FechaProgramacion = res.data.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.HoraProgramacion;
                                 _this.list.tempList = _.cloneDeep(res.data.ListaPlanoBus);
-                                await _this.limpiarAsientosBloqueados();
-                                if (_this.list.tempList.length > 0) {
+                                var limpiarAB = await _this.limpiarAsientosBloqueados();
+                                if (_this.list.tempList.length > 0 && limpiarAB) {
                                     _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano3 = _this.list.tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -1237,15 +1244,8 @@
                         .then(res => {
                             if (res.statusText === "OK") {
                                 if (res.data) {
-                                    // Luego de liberar, dejar 'Asiento' como libre
-                                    asientoSel.Color = "";
-                                    //asientoSel.FechaVenta = "";
-                                    asientoSel.FechaViaje = "";
-                                    asientoSel.FlagVenta = "";
                                     asientoSel.IDS = 0;
                                     asientoSel.NumeAsiento = 0;
-                                    asientoSel.TipoDocumento = "";
-
                                     //APP.msg.info('Asiento liberado');
 
                                     var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
@@ -1277,17 +1277,71 @@
                 },
                 limpiarAsientosBloqueados: async function () {
                     var _this = this;
+                    var respuesta = true;
+
                     var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion !== 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
+
+                    // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
+                    if (_this.filtro.CodiProgramacion !== 0) {
+                        var partNameCookie2 = 'asientoBloqueado_' + _this.filtro.NroViaje + '_' + _this.filtro.Fecha + '_';
+                    }
+
                     for (var objAsiento of _this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
+
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie !== null) {
                                 objAsiento.IDS = valueCookie;
                                 APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
-                                await this.liberarAsiento(objAsiento, true);
+                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
+                                    .then(res => {
+                                        if (res.statusText === "OK") {
+                                            // Luego de liberar, dejar 'Asiento' como libre
+                                            objAsiento.Color = "";
+                                            //objAsiento.FechaVenta = "";
+                                            objAsiento.FechaViaje = "";
+                                            objAsiento.FlagVenta = "";
+                                            objAsiento.IDS = 0;
+                                            objAsiento.NumeAsiento = 0;
+                                            objAsiento.TipoDocumento = "";
+                                        }
+                                        else {
+                                            respuesta = false;
+                                            return respuesta;
+                                        }
+                                    }).catch(APP.rq.axios_handler_error_alert);
+                            }
+                            else {
+                                // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
+                                if (_this.filtro.CodiProgramacion !== 0) {
+                                    var valueCookie = APP.util.readCookie(partNameCookie2 + objAsiento.Tipo);
+                                    if (valueCookie !== null) {
+                                        objAsiento.IDS = valueCookie;
+                                        APP.util.deleteCookie(partNameCookie2 + objAsiento.Tipo);
+                                        await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
+                                            .then(res => {
+                                                if (res.statusText === "OK") {
+                                                    // Luego de liberar, dejar 'Asiento' como libre
+                                                    objAsiento.Color = "";
+                                                    //objAsiento.FechaVenta = "";
+                                                    objAsiento.FechaViaje = "";
+                                                    objAsiento.FlagVenta = "";
+                                                    objAsiento.IDS = 0;
+                                                    objAsiento.NumeAsiento = 0;
+                                                    objAsiento.TipoDocumento = "";
+                                                }
+                                                else {
+                                                    respuesta = false;
+                                                    return respuesta;
+                                                }
+                                            }).catch(APP.rq.axios_handler_error_alert);
+                                    }
+                                }
                             }
                         }
                     }
+
+                    return respuesta;
                 },
                 recorridoSectionFilter: function () {
                     var _this = this;
@@ -1618,15 +1672,15 @@
                 errorsInTicketsVenta: function () {
                     var _this = this;
                     var _indexOfTipoDoc = -1;
-                    var _indexOfDocumento = -1;                    
-                    var _indexOfNombres = -1;                    
-                    var _indexOfApellidoPaterno = -1;                    
-                    var _indexOfApellidoMaterno = -1;   
-                    var _indexOfEdad = -1;   
-                    var _indexOfSexo = -1;  
-                    var _indexOfRuc = -1;  
+                    var _indexOfDocumento = -1;
+                    var _indexOfNombres = -1;
+                    var _indexOfApellidoPaterno = -1;
+                    var _indexOfApellidoMaterno = -1;
+                    var _indexOfEdad = -1;
+                    var _indexOfSexo = -1;
+                    var _indexOfRuc = -1;
                     var _indexOfRazSoc = -1;
-                    var _indexOfNacionalidad = -1;                      
+                    var _indexOfNacionalidad = -1;
                     //Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null });
                     if (_indexOfTipoDoc !== -1) {
@@ -1635,7 +1689,7 @@
                         APP.msg.error('Debe seleccionar un tipo de documento');
                         return true;
                     }
-                    //número de documento, caso DNI                    
+                    //número de documento, caso DNI
                     _indexOfDocumento = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
                     if (_indexOfDocumento !== -1) {
                         _this.indexVenta = _indexOfDocumento;
@@ -1666,7 +1720,7 @@
                         APP.msg.error('Debe rellenar apellido materno');
                         _this.$nextTick(() => {
                             $('#txtApellidoMaterno').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Edad
@@ -1676,7 +1730,7 @@
                         APP.msg.error('Debe seleccionar una fecha válida, la edad no puede ser 0');
                         _this.$nextTick(() => {
                             $('#txtFechaNac').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Tipo de sexo
@@ -1695,7 +1749,7 @@
                         _this.$nextTick(() => {
                             $('#txtRuc').focus();
                             _this.$validator.validate('ruc');
-                        });                        
+                        });
                         return true;
                     }
                     //Razón social
@@ -1704,9 +1758,9 @@
                         _this.indexVenta = _indexOfRazSoc;
                         APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
                         _this.$nextTick(() => {
-                            $('#txtRazonSocial').focus();                            
+                            $('#txtRazonSocial').focus();
                             _this.$validator.validate('razon_social');
-                        });                        
+                        });
                         return true;
                     }
                     //Nacionalidad
@@ -2491,7 +2545,8 @@
                 mask: {
                     documento: ''
                 },
-                disabledBotones: false
+                disabledBotones: false,
+                password: ''
             },
             mounted: function () {
                 this.getParentesco();
@@ -2532,6 +2587,7 @@
                 setDateAndCalcYears: function (dateString) {
                     this.$nextTick(() => {
                         if (dateString) {
+                            debugger;
                             this.FechaNac = dateString;
                             var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                             this.Edad = '' + moment().diff(auxFechaNac, 'years');
@@ -2602,6 +2658,18 @@
                     }
                     // Desactiva botones 'Eliminar' y 'Aceptar'.
                     this.disabledBotones = true;
+                },
+                showRegistrarWithClave: function () {
+                    var _this = this;
+                    appController.showRegistrarWithClave();
+                },
+                sendClaveAutorizacion: function (_password) {
+                    APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + auxNameMethod, { password : _password })
+                        .then(async res => {
+                            if (res.data) {
+                                $('#appClaveAutorizacion').modal('hide');
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {
@@ -2713,12 +2781,7 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                _this.list.beneficiarios.push(
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'GOMEZ,INGARUCA,GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
-                                );
+                                _this.list.beneficiarios = res.data.ListaBeneficiarios;
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -2832,6 +2895,32 @@
                     appController.chargeTurnos();
                 }
             }
+        });
+
+        var appClaveAutorizacion = new Vue({
+            el: "#appClaveAutorizacion",
+            data: {
+                password: ''
+            },
+            methods: {
+                show: function () {
+                    var _this = this;
+                    $('#appClaveAutorizacion').modal('show');
+                    $('#appClaveAutorizacion').on('shown.bs.modal', function () {
+                        $('#txtContraseniaCA').focus();
+                    });
+                },
+                sendClaveAutorizacion: function () {
+                    var _this = this;
+                    appController.sendClaveAutorizacion(_this.password);
+                    _this.password = '';
+                },
+                cerrarClaveAutorizacion: function () {
+                    var _this = this;
+                    $('#appClaveAutorizacion').modal('hide');
+                    _this.password = '';
+                }
+            },
         });
     </script>
 }

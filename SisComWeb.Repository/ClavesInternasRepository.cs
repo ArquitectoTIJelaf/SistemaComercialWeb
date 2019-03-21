@@ -22,7 +22,9 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.codigo = Reader.GetIntValue(drlector, "codigo");
+                        entidad.oficina = Reader.GetIntValue(drlector, "oficina");
                         entidad.pwd = Reader.GetStringValue(drlector, "pwd");
+                        entidad.cod_tipo = Reader.GetStringValue(drlector, "cod_tipo");
                     }
                     response.EsCorrecto = true;
                     response.Valor = entidad;
