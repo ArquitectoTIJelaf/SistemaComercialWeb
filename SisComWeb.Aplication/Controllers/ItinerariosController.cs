@@ -585,6 +585,7 @@ namespace SisComWeb.Aplication.Controllers
                                         ",\"CodiRuta\" : " + listado[i].CodiRuta +
                                         ",\"CodiTarjetaCredito\" : \"" + listado[i].CodiTarjetaCredito + "\"" +
                                         ",\"NumeTarjetaCredito\" : \"" + listado[i].NumeTarjetaCredito + "\"" +
+                                        ",\"CodiZona\" : \"" + listado[i].CodiZona + "\"" +
                                         ",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
                                         ",\"Observacion\" : \"" + listado[i].Observacion + "\"" +
                                         ",\"Credito\" : " + listado[i].Credito +

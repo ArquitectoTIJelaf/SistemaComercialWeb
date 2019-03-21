@@ -2273,7 +2273,7 @@
                         input.CodiRuta = _this.ticketVenta.CodiRuta;
                         input.CodiTarjetaCredito = (_this.tarjeta !== null) ? _this.tarjeta.id : '';
                         input.NumeTarjetaCredito = _this.numeroTarjeta;
-                        input.CodiZona = (_this.distrito !== null) ? _this.distrito : '';
+                        input.CodiZona = (_this.distrito !== null) ? _this.distrito.id : '';
                         input.Direccion = _this.direccion;
                         input.Observacion = _this.observacion;
                         input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
@@ -2462,8 +2462,8 @@
                     switch (this.tipoPago) {
                         case '01': return _this.embarque && _this.importePagado /*&& _this.arribo*/;
                         case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
-                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque /*&& _this.arribo*/;
-                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
+                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
+                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
                         default: return false;
                     }
                 }
@@ -2713,14 +2713,12 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;
-                                //_this.list.beneficiarios = _.flatten(_.times(2, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
                                 _this.list.beneficiarios.push(
                                     { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
+                                    { Documento: 'DNI', Nombre_Beneficiario: 'GOMEZ,INGARUCA,GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
                                     { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
-                                );//BORRAR
+                                );
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
