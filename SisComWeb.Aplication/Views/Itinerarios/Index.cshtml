@@ -14,6 +14,7 @@
 @Html.Partial("_TipoPago")
 @Html.Partial("_PaseCortesia")
 @Html.Partial("_BoletosVendidos")
+@Html.Partial("_ClaveAutorizacion")
 
 @section styles{
     <style type="text/css">
@@ -601,8 +602,11 @@
                 chargeInfante: function (_ObjAcompanianate) {
                     appRegistrarInfante.setMostrarInfante(_ObjAcompanianate);
                 },
-                showRegistrarWithClave: function (_oficina, _password, _codiTipo) {
-                    appClaveAutorizacion.show(_oficina, _password, _codiTipo);
+                showRegistrarWithClave: function () {
+                    appClaveAutorizacion.show();
+                },
+                sendClaveAutorizacion: function (_password) {
+                    appRegistrarInfante.sendClaveAutorizacion(_password);
                 }
             };
         })();
@@ -1631,15 +1635,15 @@
                 errorsInTicketsVenta: function () {
                     var _this = this;
                     var _indexOfTipoDoc = -1;
-                    var _indexOfDocumento = -1;                    
-                    var _indexOfNombres = -1;                    
-                    var _indexOfApellidoPaterno = -1;                    
-                    var _indexOfApellidoMaterno = -1;   
-                    var _indexOfEdad = -1;   
-                    var _indexOfSexo = -1;  
-                    var _indexOfRuc = -1;  
+                    var _indexOfDocumento = -1;
+                    var _indexOfNombres = -1;
+                    var _indexOfApellidoPaterno = -1;
+                    var _indexOfApellidoMaterno = -1;
+                    var _indexOfEdad = -1;
+                    var _indexOfSexo = -1;
+                    var _indexOfRuc = -1;
                     var _indexOfRazSoc = -1;
-                    var _indexOfNacionalidad = -1;                      
+                    var _indexOfNacionalidad = -1;
                     //Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null });
                     if (_indexOfTipoDoc !== -1) {
@@ -1648,7 +1652,7 @@
                         APP.msg.error('Debe seleccionar un tipo de documento');
                         return true;
                     }
-                    //número de documento, caso DNI                    
+                    //número de documento, caso DNI
                     _indexOfDocumento = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
                     if (_indexOfDocumento !== -1) {
                         _this.indexVenta = _indexOfDocumento;
@@ -1679,7 +1683,7 @@
                         APP.msg.error('Debe rellenar apellido materno');
                         _this.$nextTick(() => {
                             $('#txtApellidoMaterno').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Edad
@@ -1689,7 +1693,7 @@
                         APP.msg.error('Debe seleccionar una fecha válida, la edad no puede ser 0');
                         _this.$nextTick(() => {
                             $('#txtFechaNac').focus();
-                        });                        
+                        });
                         return true;
                     }
                     //Tipo de sexo
@@ -1708,7 +1712,7 @@
                         _this.$nextTick(() => {
                             $('#txtRuc').focus();
                             _this.$validator.validate('ruc');
-                        });                        
+                        });
                         return true;
                     }
                     //Razón social
@@ -1717,9 +1721,9 @@
                         _this.indexVenta = _indexOfRazSoc;
                         APP.msg.error('El campo Razón Social no puede tener menos de 3 caracteres');
                         _this.$nextTick(() => {
-                            $('#txtRazonSocial').focus();                            
+                            $('#txtRazonSocial').focus();
                             _this.$validator.validate('razon_social');
-                        });                        
+                        });
                         return true;
                     }
                     //Nacionalidad
@@ -2247,9 +2251,6 @@
                     var _this = this;
                     _this.processing = true;
 
-                    // Limpiar 'AsientosBloqueados'
-                    var limpiarAB = await appVueVenta.limpiarAsientosBloqueados();
-                    if (!limpiarAB) return;
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2324,6 +2325,9 @@
                             _this.processing = false;
                             APP.rq.axios_handler_error_alert;
                         });
+
+                    // Limpiar 'AsientosBloqueados'
+                    await appVueVenta.limpiarAsientosBloqueados();
                 },
                 limpiarCampos: function () {
                     var _this = this;
@@ -2505,9 +2509,7 @@
                     documento: ''
                 },
                 disabledBotones: false,
-                oficina: '',
-                password: '',
-                codiTipo: ''
+                password: ''
             },
             mounted: function () {
                 this.getParentesco();
@@ -2622,7 +2624,15 @@
                 },
                 showRegistrarWithClave: function () {
                     var _this = this;
-                    appController.showRegistrarWithClave(_this.oficina, _this.password, _this.codiTipo);
+                    appController.showRegistrarWithClave();
+                },
+                sendClaveAutorizacion: function (_password) {
+                    APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + auxNameMethod, { password : _password })
+                        .then(async res => {
+                            if (res.data) {
+                                $('#appClaveAutorizacion').modal('hide');
+                            }
+                        }).catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {
@@ -2734,14 +2744,7 @@
                                 _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
-                                //_this.list.beneficiarios = res.data.ListaBeneficiarios;
-                                //_this.list.beneficiarios = _.flatten(_.times(2, _.constant(_.cloneDeep(res.data.ListaBeneficiarios))));
-                                _this.list.beneficiarios.push(
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'WILMER', Numero_Documento: '71018881', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'DAVID', Numero_Documento: '71018345', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'GERARDO', Numero_Documento: '71018361', Sexo: 'M', Tipo_Documento: '01' },
-                                    { Documento: 'DNI', Nombre_Beneficiario: 'XDD', Numero_Documento: '71018337', Sexo: 'M', Tipo_Documento: '01' }
-                                );//BORRAR
+                                _this.list.beneficiarios = res.data.ListaBeneficiarios;
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
@@ -2863,18 +2866,24 @@
                 password: ''
             },
             methods: {
-                show: function (_oficina, _password, _codiTipo) {
+                show: function () {
                     var _this = this;
                     $('#appClaveAutorizacion').modal('show');
                     $('#appClaveAutorizacion').on('shown.bs.modal', function () {
-                        //$('#btnCerrarVenta').focus();
+                        $('#txtContraseniaCA').focus();
                     });
                 },
-                cerrarVenta: function () {
+                sendClaveAutorizacion: function () {
+                    var _this = this;
+                    appController.sendClaveAutorizacion(_this.password);
+                    _this.password = '';
+                },
+                cerrarClaveAutorizacion: function () {
+                    var _this = this;
                     $('#appClaveAutorizacion').modal('hide');
-                    appController.chargeTurnos();
+                    _this.password = '';
                 }
-            }
+            },
         });
     </script>
 }

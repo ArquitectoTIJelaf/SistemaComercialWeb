@@ -2,13 +2,36 @@
     <div class="modal-dialog modal-sm" style="top:10%;">
         <div class="modal-content">
             <div class="modal-body">
-                <h3>XDD</h3>
+                <div class="form-horizontal">
+                    <div class="form-group m-b-0">
+                        <div class="col-md-12 text-center">
+                            <img src="~/wwwroot/plugins/images/users/user-shield-solid.svg" width="100" height="100" />
+                        </div>
+                        <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
+                            Esta acción requiere permisos extra. Por favor ingrese la contraseña de autorización.
+                        </h5>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-3 control-label label-sm">Password:</label>
+                            <div class="col-md-9">
+                                <input v-model="password"
+                                       id="txtContraseniaCA"
+                                       @@keypress.13.prevent="sendClaveAutorizacion"
+                                       type="password"
+                                       class="form-control input-sm"
+                                       placeholder="CONTRASEÑA"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button id="btnCerrarVenta" class="btn btn-info waves-effect waves-light text-left">
+                <button id="btnCerrarVenta" @@click="sendClaveAutorizacion" class="btn btn-info waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>ACEPTAR
                 </button>
-                <button data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                <button data-dismiss="modal" @@click="cerrarClaveAutorizacion" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>CANCELAR
                 </button>
             </div>
