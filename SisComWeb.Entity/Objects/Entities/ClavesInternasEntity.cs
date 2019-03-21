@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SisComWeb.Entity
+﻿namespace SisComWeb.Entity
 {
     public class ClavesInternasEntity
     {
         public int codigo { get; set; }
+        public int oficina { get; set; }
         public string pwd { get; set; }
+        public string cod_tipo { get; set; }
     }
 }
