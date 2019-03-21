@@ -166,7 +166,7 @@ namespace SisComWeb.Business
                                 ele.RucContacto = ocu.RucContacto;
                                 ele.FechaViaje = ocu.FechaViaje;
                                 // Para 'bgcVentaBus', 'iconVentaBus' y 'showNombrePasajero'
-                                if (ocu.IdVenta == "0") // Asiento ocupado pero no vendido (ocupado).
+                                if (ocu.FlagVenta == "AB" || ocu.IdVenta == "0") // Asiento ocupado pero no vendido (bloqueado).
                                     ele.FechaVenta = string.Empty;
                                 else
                                     ele.FechaVenta = ocu.FechaVenta;
