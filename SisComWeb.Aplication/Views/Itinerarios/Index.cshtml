@@ -1284,6 +1284,7 @@
                         if (!isNaN(objAsiento.Tipo)) {
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie !== null) {
+                                objAsiento.IDS = valueCookie;
                                 APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
                                     .then(res => {
@@ -2327,7 +2328,7 @@
                         });
 
                     // Limpiar 'AsientosBloqueados'
-                    await appVueVenta.limpiarAsientosBloqueados();
+                    await appVueVenta.cancelarBoletos();
                 },
                 limpiarCampos: function () {
                     var _this = this;
