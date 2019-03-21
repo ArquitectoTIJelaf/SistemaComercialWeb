@@ -31,7 +31,10 @@
                             <div class="col-md-3">
                                 <label class="control-label label-sm" for="txtSeriePos">Serie:</label>
                                 <input v-model="filtro.serie"
-                                       @@keypress.13.prevent="$refs.refNumeroPos.focus()"
+                                       @@keypress.13.prevent="recorrido"
+                                       @@keydown.9.prevent="recorrido"
+                                       @@focus="$event.target.select()"
+                                       @@blur="blurSerie"
                                        id="txtSeriePos"
                                        ref="refSeriePos"
                                        class="form-control input-sm"
@@ -41,6 +44,9 @@
                                 <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
                                 <input v-model="filtro.documento"
                                        @@keypress.13.prevent="recorrido"
+                                       @@keydown.9.prevent="recorrido"
+                                       @@focus="$event.target.select()"
+                                       @@blur="filtro.documento = _.padStart($event.target.value, 8, '0')"
                                        id="txtNumeroPos"
                                        ref="refNumeroPos"
                                        class="form-control input-sm"
@@ -48,7 +54,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label style="width: 100%">&nbsp;</label>
-                                <button @@click="" class="btn btn-primary waves-effect waves-light">
+                                <button @@click="" :disabled="!filledCampos" id="btnBuscarPos" class="btn btn-primary waves-effect waves-light">
                                     <span class="fa fa-search fa-fw"></span>Buscar
                                 </button>
                             </div>
@@ -57,10 +63,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
+                <button @@click="" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>
-                <button @@click="" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                <button @@click="" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>

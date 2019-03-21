@@ -4,7 +4,7 @@
     ViewBag.Title = "Ventas";
     var usuario = DataSession.UsuarioLogueado;
     var fechaActual = DateTime.Now.ToString("dd/MM/yyyy");
-    var horaActual = string.Format("{0:HH:mm:ss tt}", DateTime.Now);
+    var horaActual = DateTime.Now.ToString("hh:mm t").ToUpper();
 }
 
 @Html.Partial("_Filtros")
@@ -601,6 +601,9 @@
                 },
                 chargeInfante: function (_ObjAcompanianate) {
                     appRegistrarInfante.setMostrarInfante(_ObjAcompanianate);
+                },
+                showPostergacion: function () {
+                    appVuePostergacion.show();
                 }
             };
         })();
@@ -1120,6 +1123,8 @@
                                         case 'V': _this.list.ventas[_this.indexVenta].FlagVenta = ''; break;
                                         // Pase de cortesía
                                         case '7': appController.showPaseCortesia(); break;
+                                        // Postergarción
+                                        case 'PO': appController.showPostergacion(); break;
                                     }
                                 }
                             }
@@ -2851,13 +2856,56 @@
                     empresas: []
                 }
             },
+            mounted: function () {
+                var _this = this;
+                APP.rq.axios2.get(APP.base + '/base/get-empresas')
+                    .then(res => {
+                        _this.list.empresas = _.cloneDeep(res.data);
+                    }).catch(APP.rq.axios_handler_error_alert);
+            },
             methods: {
                 show: function () {
                     $('#appVuePostergacion').modal('show');
+                    $('#appVuePostergacion').on('shown.bs.modal', function () {
+                        $('#cboEmpresaPos input[type=search]').focus();
+                    });
                 },
-                filledCampos: function () {
-                    return this.filtro.empresa && this.filtro.serie && this.filtro.documento;
+                recorrido: function () {
+                    var _this = this;
+                    if (!_this.filtro.empresa)
+                        $('#cboEmpresaPos input[type=search]').focus();
+                    else if (!_this.filtro.serie)
+                        $('#txtSeriePos').focus();
+                    else if (!_this.filtro.documento)
+                        $('#txtNumeroPos').focus();
+                    else
+                        $('#btnBuscarPos').focus();
+                },
+                blurSerie: function () {
+                    var _serie = _.cloneDeep(this.filtro.serie);
+                    if (!isNaN(this.filtro.serie))
+                        this.filtro.serie = parseInt(_serie) !== 0 ? _.padStart(_serie, 4, '0').toUpperCase() : '';
+                    else {
+                        if (_serie.substring(0, 1).toUpperCase() === 'B')
+                            this.filtro.serie = 'B' + _.padStart(_serie.substring(1, 4), 3, '0');
+                        else if (_serie.substring(0, 1).toUpperCase() === 'F')
+                            this.filtro.serie = 'F' + _.padStart(_serie.substring(1, 4), 3, '0');
+                        else
+                            this.filtro.serie = '';
+                    }
+                },
+                blurNumero: function () {
+                    var _documento = _.cloneDeep(this.filtro.documento);
+                    return this.filtro.documento = parseInt(_documento) !== 0 ? _.padStart(_documento, 8, '0') : '';
                 }
+            },
+            computed: {
+                filledCampos: function () {
+                    if (this.filtro.empresa)
+                        return this.filtro.empresa.id && this.filtro.serie && this.filtro.documento;
+                    else
+                        return false;
+                },
             }
         });
     </script>
