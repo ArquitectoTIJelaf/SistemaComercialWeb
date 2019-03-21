@@ -9,59 +9,48 @@
                 <div class="form-horizontal">
                     <div class="form-group m-b-5">
                         <div class="col-md-12 separate-in-form">
-                            <label class="col-md-2 control-label label-sm">Gerente:</label>
+                            <label class="col-md-2 control-label label-sm">Empresa:</label>
                             <div class="col-md-10">
-                                <v-select v-model="gerente"
-                                          :id="'cboGerentePC'"
-                                          label="label"
-                                          :options="list.gerentes"
-                                          :placeholder="'GERENTE'"
-                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
-                                          ref="select">
-                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                </v-select>
-                            </div>
-                        </div>
-                        <div class="col-md-12 separate-in-form">
-                            <label class="col-md-2 control-label label-sm">Solicitante:</label>
-                            <div class="col-md-10">
-                                <v-select v-model="solicitante"
-                                          :options="list.solicitantes"
-                                          :placeholder="'SOLICITANTE'"
+                                <v-select v-model="filtro.empresa"
+                                          @@keydown.13.native.prevent="$refs.refSeriePos.focus()"
+                                          @@keypress.9.prevent="$refs.refSeriePos.focus()"
+                                          :options="list.empresas"
+                                          :placeholder="'EMPRESA'"
                                           :select-on-tab="true"
-                                          :id="'cboSolicitantePC'"
-                                          label="label"
-                                          @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
-                                          ref="refSolicitantePC">
+                                          :id="'cboEmpresaPos'"
+                                          ref="refEmpresaPos"
+                                          label="label">
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>
+                                        <div @@click="$refs.refSeriePos.focus()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
                         </div>
                         <div class="col-md-12 separate-in-form">
-                            <label class="col-md-2 control-label label-sm">Concepto:</label>
-                            <div class="col-md-10">
-                                <input v-model="concepto"
-                                       @@keypress.13.prevent="recorridoPaseCortesia"
-                                       id="txtConceptoPC"
-                                       type="text"
+                            <div class="col-md-4">
+                                <label class="control-label label-sm" for="txtSeriePos">Serie:</label>
+                                <input v-model="filtro.serie"
+                                       @@keypress.13.prevent="$refs.refNumeroPos.focus()"
+                                       id="txtSeriePos"
+                                       ref="refSeriePos"
                                        class="form-control input-sm"
-                                       placeholder="CONCEPTO"
-                                       autocomplete="off">
+                                       placeholder="0000">
                             </div>
-                        </div>
-                        <div class="col-md-12 separate-in-form">
-                            <label class="col-md-2 control-label label-sm">Beneficiario:</label>
-                            <div class="col-md-10">
-                                <input v-model="searchInTable"
-                                       @@keypress.13.prevent="recorridoPaseCortesia"
-                                       id="txtBeneficiarioPC"
-                                       type="text"
+                            <div class="col-md-8">
+                                <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
+                                <input v-model="filtro.documento"
+                                       @@keypress.13.prevent="recorrido"
+                                       id="txtNumeroPos"
+                                       ref="refNumeroPos"
                                        class="form-control input-sm"
-                                       placeholder="BENEFICIARIO"
-                                       autocomplete="off">
+                                       placeholder="00000000">
+                            </div>
+                            <div class="col-md-4">
+                                <label>&nbsp;</label>
+                                <button @@click="" class="btn btn-primary waves-effect waves-light">
+                                    <span class="fa fa-search fa-fw"></span>Buscar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -69,8 +58,8 @@
             </div>
             <div class="modal-footer">
                 <button @@click="" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
-                        <span class="fa fa-save fa-fw"></span>Asignar
-                    </button>
+                    <span class="fa fa-save fa-fw"></span>Asignar
+                </button>
                 <button @@click="" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
