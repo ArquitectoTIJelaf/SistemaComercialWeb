@@ -2233,9 +2233,6 @@
                     var _this = this;
                     _this.processing = true;
 
-                    // Limpiar 'AsientosBloqueados'
-                    await appVueVenta.limpiarAsientosBloqueados();
-
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2310,6 +2307,9 @@
                             _this.processing = false;
                             APP.rq.axios_handler_error_alert;
                         });
+
+                    // Limpiar 'AsientosBloqueados'
+                    await appVueVenta.limpiarAsientosBloqueados();
                 },
                 limpiarCampos: function () {
                     var _this = this;
