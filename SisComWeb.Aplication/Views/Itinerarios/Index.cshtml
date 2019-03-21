@@ -2629,7 +2629,8 @@
                 },
                 sendClaveAutorizacion: function (_password) {
                     APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + auxNameMethod, { password : _password })
-                        .then(async res => {
+                        .then(res => {
+                            debugger;
                             if (res.data) {
                                 $('#appClaveAutorizacion').modal('hide');
                             }
@@ -2742,7 +2743,7 @@
                     APP.rq.axios2.post(APP.base + '/itinerarios/listaBeneficiarioPase', { Codi_Socio: codSocio})
                         .then(res => {
                             if (res.data) {
-                                _this.boletosLibres = res.data.BoletoLibre.toFixed(2);
+                                _this.boletosLibres = res.data.BoletoLibre;
                                 _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
                                 _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
                                 _this.list.beneficiarios = res.data.ListaBeneficiarios;
