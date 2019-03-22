@@ -1,6 +1,5 @@
 ﻿using SisComWeb.Entity;
 using SisComWeb.Entity.Objects.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data;
 
