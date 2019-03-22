@@ -14,6 +14,8 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
+        #region BUSCAR CORRELATIVO
+
         public static Response<string> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
@@ -80,6 +82,10 @@ namespace SisComWeb.Business
                 return new Response<string>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
             }
         }
+
+        #endregion
+
+        #region GRABAR VENTA
 
         public static Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
         {
@@ -681,6 +687,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region GRABAR RESERVA
+
         public static Response<string> GrabaReserva(List<VentaEntity> listado)
         {
             try
@@ -795,6 +805,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region LISTA BENEFICIARIO PASE 
+
         public static Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
         {
             try
@@ -821,6 +835,10 @@ namespace SisComWeb.Business
                 return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
             }
         }
+
+        #endregion
+
+        #region CLAVES INTERNAS
 
         public static Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo)
         {
@@ -852,6 +870,10 @@ namespace SisComWeb.Business
                 return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
             }
         }
+
+        #endregion
+
+        #region ANULAR VENTA
 
         public static Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
         {
@@ -920,6 +942,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region BUSCAR VENTA POR BOLETO
+
         public static Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
         {
             try
@@ -940,6 +966,10 @@ namespace SisComWeb.Business
                 return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgErrBuscarVentaxBoleto, false);
             }
         }
+
+        #endregion
+
+        #region POSTERGAR VENTA
 
         public static Response<string> PostergarVenta(PostergarVentaRequest filtro)
         {
@@ -962,6 +992,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region MODIFICAR VENTA FECHA ABIERTA
+
         public static Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
             try
@@ -981,6 +1015,10 @@ namespace SisComWeb.Business
                 return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
             }
         }
+
+        #endregion
+
+        #region ELIMINAR RESERVA
 
         public static Response<bool> EliminarReserva(int IdVenta)
         {
@@ -1009,6 +1047,8 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
             }
         }
+
+        #endregion
 
         #region FACTURACIÓN ELETRÓNICA
 
