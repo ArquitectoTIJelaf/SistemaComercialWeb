@@ -254,7 +254,7 @@
                                                           @@keydown.13.native.prevent="nextStep(7)"
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
-                                                        <div @@click="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
+                                                        <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
                                                     </template>
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
