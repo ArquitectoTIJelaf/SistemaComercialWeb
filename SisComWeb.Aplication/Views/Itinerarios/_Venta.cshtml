@@ -406,17 +406,18 @@
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
                                                         </div>
-
-
-
+                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
+                                                            <span class="ios-center">
+                                                                <img src="~/wwwroot/plugins/images/r1.png" />
+                                                            </span>
+                                                        </div>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -434,12 +435,17 @@
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
+                                                            <span class="ios-center">
+                                                                <img src="~/wwwroot/plugins/images/r1.png" />
+                                                            </span>
                                                         </div>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
@@ -458,12 +464,17 @@
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
+                                                            <span class="ios-center">
+                                                                <img src="~/wwwroot/plugins/images/r1.png" />
+                                                            </span>
                                                         </div>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
@@ -482,12 +493,17 @@
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
+                                                            <span class="ios-center">
+                                                                <img src="~/wwwroot/plugins/images/r1.png" />
+                                                            </span>
                                                         </div>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
@@ -506,12 +522,17 @@
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
+                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
+                                                        </div>
+                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
+                                                            <span class="ios-center">
+                                                                <img src="~/wwwroot/plugins/images/r1.png" />
+                                                            </span>
                                                         </div>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}

@@ -197,38 +197,37 @@ namespace SisComWeb.Repository
             return obj;
         }
 
-        public static string PostergarVenta(int IdVenta, int CodiProgramacion, int NumeAsiento, int CodiServicio, string FechaViaje, string HoraViaje)
+        public static Response<VentaEntity> BuscarVentaById(int IdVenta)
         {
-            string mensaje = string.Empty;
+            var response = new Response<VentaEntity>(false, null, "Error: BuscarVentaById.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_PostergarVenta";
-                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
-                db.AddParameter("@Codi_programacion", DbType.String, ParameterDirection.Input, CodiProgramacion);
-                db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
-                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
-                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, FechaViaje);
-                db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, HoraViaje);
-                db.Execute();
-                mensaje = "Correcto: PostergarVenta.";
+                db.ProcedureName = "scwsp_BuscarVentaxId";
+                db.AddParameter("@Id_venta", DbType.String, ParameterDirection.Input, IdVenta);
+                var entidad = new VentaEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad = new VentaEntity
+                        {
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
+                            Precio_Venta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
+                            Codi_ruta = Reader.GetSmallIntValue(drlector, "Codi_ruta"),
+                            Fecha_Viaje = Reader.GetDateTimeValue(drlector, "Fecha_Viaje"),
+                            NUME_BOLETO = Reader.GetStringValue(drlector, "NUME_BOLETO")
+                        };
+                    }
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = entidad;
+                response.Mensaje = "Correcto: BuscarVentaById.";
+                response.Estado = true;
             }
-            return mensaje;
+            return response;
         }
 
-        public static string ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
-        {
-            string mensaje = string.Empty;
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_ModificarVentaAFechaAbierta";
-                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
-                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
-                db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, CodiRuta);
-                db.Execute();
-                mensaje = "Correcto: ModificarVentaAFechaAbierta.";
-            }
-            return mensaje;
-        }
         #endregion
 
         #region Métodos Transaccionales
@@ -567,35 +566,55 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<VentaEntity> BuscarVentaById(int IdVenta)
+        public static string PostergarVenta(int IdVenta, int CodiProgramacion, int NumeAsiento, int CodiServicio, string FechaViaje, string HoraViaje)
         {
-            var response = new Response<VentaEntity>(false, null, "Error: BuscarVentaById.", false);
+            string mensaje = string.Empty;
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarVentaxId";
-                db.AddParameter("@Id_venta", DbType.String, ParameterDirection.Input, IdVenta);
-                var entidad = new VentaEntity();
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        entidad = new VentaEntity
-                        {
-                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
-                            Precio_Venta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
-                            Codi_ruta = Reader.GetSmallIntValue(drlector, "Codi_ruta"),
-                            Fecha_Viaje = Reader.GetDateTimeValue(drlector, "Fecha_Viaje"),
-                            NUME_BOLETO = Reader.GetStringValue(drlector, "NUME_BOLETO")
-                        };
-                    }
-                }
+                db.ProcedureName = "scwsp_PostergarVenta";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_programacion", DbType.String, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
+                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, FechaViaje);
+                db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, HoraViaje);
+                db.Execute();
+                mensaje = "Correcto: PostergarVenta.";
+            }
+            return mensaje;
+        }
+
+        public static Response<bool> EliminarReserva(int IdVenta)
+        {
+            var response = new Response<bool>(false, false, "Error: EliminarReserva.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_EliminarReserva";
+                db.AddParameter("@IdVenta", DbType.Int32, ParameterDirection.Input, IdVenta);
+
+                db.Execute();
 
                 response.EsCorrecto = true;
-                response.Valor = entidad;
-                response.Mensaje = "Correcto: BuscarVentaById.";
+                response.Valor = true;
+                response.Mensaje = "Correcto: EliminarReserva.";
                 response.Estado = true;
             }
             return response;
+        }
+
+        public static string ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        {
+            string mensaje = string.Empty;
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificarVentaAFechaAbierta";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, CodiRuta);
+                db.Execute();
+                mensaje = "Correcto: ModificarVentaAFechaAbierta.";
+            }
+            return mensaje;
         }
 
         #endregion

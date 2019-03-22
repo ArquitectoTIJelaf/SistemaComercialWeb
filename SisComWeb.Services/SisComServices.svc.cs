@@ -413,6 +413,20 @@ namespace SisComWeb.Services
                 return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
             }
         }
+
+        public Response<bool> EliminarReserva(int IdVenta)
+        {
+            try
+            {
+                return VentaLogic.EliminarReserva(IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
+            }
+        }
+
         #endregion
 
         #region ANULAR VENTA

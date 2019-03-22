@@ -153,6 +153,11 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
         Response<string> PostergarVenta(PostergarVentaRequest filtro);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> EliminarReserva(int IdVenta);
+
         #endregion
 
         #region ANULAR VENTA
