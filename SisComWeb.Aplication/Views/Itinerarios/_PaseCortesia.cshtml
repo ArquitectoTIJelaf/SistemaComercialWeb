@@ -1,8 +1,8 @@
-﻿<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static">
+﻿<div id="appVuePaseCortesia" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" @@click="cancelarPaseCortesia">&times;</button>
+                <button type="button" class="close" @@click="cancelarPaseCortesia">&times;</button>
                 <h4 class="modal-title"><b>Datos del Beneficiario del Pase</b></h4>
             </div>
             <div class="modal-body">
@@ -95,7 +95,7 @@
                                     <tbody>
                                         <paginate name="items" :list="list.filterBeneficiarios" :per="4">
                                             <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                                <td class="custom-td">{{item.Nombre_Beneficiario}}</td>
+                                                <td class="custom-td">{{item.Nombre_Beneficiario | formatNombre}}</td>
                                                 <td class="custom-td">{{item.Documento}}</td>
                                                 <td class="custom-td">{{item.Numero_Documento}}</td>
                                                 <td class="custom-td">{{item.Sexo}}</td>
@@ -141,7 +141,7 @@
                 @*<button @@click="" id="btnAsignaPC" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>*@
-                <button @@click="cancelarPaseCortesia" data-dismiss="modal" class="btn btn-inverse waves-effect waves-light text-left">
+                <button @@click="cancelarPaseCortesia" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>

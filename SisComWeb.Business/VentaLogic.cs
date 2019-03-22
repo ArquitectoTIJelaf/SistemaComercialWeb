@@ -1,5 +1,7 @@
 ﻿using SisComWeb.Business.ServiceFE;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
+using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Entity.Peticiones.Response;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
@@ -523,7 +525,7 @@ namespace SisComWeb.Business
                     switch (entidad.TipoPago)
                     {
                         case "01": // Contado
-                                break;
+                            break;
                         case "02":
                         case "03": // Tarjeta de crédito    // Múltiple pago ("02")
                             {
@@ -812,16 +814,23 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = new Response<ClavesInternasResponse>(false, new ClavesInternasResponse(), "Error: ListaBeneficiarioPase.", false);
+                var response = new Response<ClavesInternasResponse>(false, new ClavesInternasResponse(), "Correcto: Clave autorizada.", false);
 
                 var objClavesInternas = ClavesInternasRepository.ClavesInternas(Codi_Oficina, Password, Codi_Tipo);
 
-                response.Valor.ClavesInternas = objClavesInternas.Valor;
-
-                response.EsCorrecto = true;
-                response.Valor = response.Valor;
-                response.Mensaje = Message.MsgCorrectoClavesInternas;
-                response.Estado = true;
+                if (Codi_Oficina == objClavesInternas.Valor.oficina && Password.ToUpper() == objClavesInternas.Valor.pwd.ToUpper() && Codi_Tipo == objClavesInternas.Valor.cod_tipo)
+                {
+                    response.EsCorrecto = true;
+                    response.Valor = response.Valor;
+                    response.Estado = true;
+                }
+                else
+                {
+                    response.EsCorrecto = false;
+                    response.Valor = response.Valor;
+                    response.Mensaje = Message.MsgErrExcClaveIncorrecta;
+                    response.Estado = false;
+                }
 
                 return response;
             }
@@ -829,6 +838,117 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
+            }
+        }
+
+        public static Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: AnularVenta.", false);
+                Response<bool> anularVenta = new Response<bool>();
+                Response<VentaEntity> objVenta = new Response<VentaEntity>();
+                Response<string> correlativo = new Response<string>();
+                Response<int> caja = new Response<int>();
+                CajaEntity objCaja;
+                string Table = "CAJA";
+
+                objVenta = VentaRepository.BuscarVentaById(Id_Venta);
+                correlativo = VentaRepository.GenerarCorrelativoAuxiliar(Table, CodiOficina, CodiPuntoVenta, string.Empty);
+
+                if (!string.IsNullOrEmpty(correlativo.Valor) && correlativo.Estado == true && objVenta.Valor != null && objVenta.Estado == true)
+                {
+                    objCaja = new CajaEntity
+                    {
+                        NumeCaja = correlativo.Valor,
+                        CodiEmpresa = objVenta.Valor.CodiEmpresa,
+                        CodiSucursal = Convert.ToInt16(CodiOficina),
+                        Boleto = Convert.ToInt32(objVenta.Valor.NUME_BOLETO).ToString("D7"),
+                        Monto = objVenta.Valor.PrecioVenta,
+                        CodiUsuario = Convert.ToInt16(Codi_Usuario),
+                        Recibe = string.Empty,
+                        CodiDestino = Convert.ToString(objVenta.Valor.Codi_ruta),
+                        FechaViaje = objVenta.Valor.Fecha_Viaje.ToString("dd/MM/yyyy"),
+                        HoraViaje = "VNA",
+                        CodiPuntoVenta = Convert.ToInt16(CodiPuntoVenta),
+                        IdVenta = Id_Venta,
+                        Origen = "AB",
+                        Modulo = "AP",
+                        Tipo = tipo,
+                        IdCaja = 0
+                    };
+
+                    caja = VentaRepository.GrabarCaja(objCaja);
+
+                    if (caja.Valor != 0 && caja.EsCorrecto == true && caja.Estado == true)
+                    {
+                        anularVenta = VentaRepository.AnularVenta(Id_Venta, Codi_Usuario);
+                    }
+
+                    if (anularVenta.Estado == true && anularVenta.EsCorrecto == true)
+                    {
+                        response.EsCorrecto = true;
+                        response.Valor = anularVenta.Valor;
+                        response.Mensaje = Message.MsgCorrectoAnularVenta;
+                        response.Estado = true;
+                    }
+                }
+                else
+                {
+                    response.EsCorrecto = false;
+                    response.Mensaje = Message.MsgErrExcAnularVenta;
+                    response.Estado = false;
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
+            }
+        }
+
+
+        public static Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
+        {
+            try
+            {
+                var response = new Response<VentaBeneficiarioEntity>()
+                {
+                    EsCorrecto = true,
+                    Valor = VentaRepository.BuscarVentaxBoleto(Tipo, Serie, Numero, CodiEmpresa),
+                    Mensaje = Message.MsgCorrectoBuscarVentaxBoleto,
+                    Estado = true
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgErrBuscarVentaxBoleto, false);
+            }
+        }
+
+        public static Response<string> PostergarVenta(PostergarVentaRequest filtro)
+        {
+            try
+            {
+                var response = new Response<string>()
+                {
+                    EsCorrecto = true,
+                    Valor = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje),
+                    Mensaje = Message.MsgCorrectoPostergarVenta,
+                    Estado = true
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
             }
         }
 

@@ -1,4 +1,6 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
+using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Entity.Peticiones.Response;
 using System.Collections.Generic;
 using System.ServiceModel;
@@ -143,6 +145,21 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ClavesInternas", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscarVentaxBoleto", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
+        Response<string> PostergarVenta(PostergarVentaRequest filtro);
+        #endregion
+
+        #region ANULAR VENTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo);
 
         #endregion
     }

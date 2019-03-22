@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Objects\Entities\CorrelativoAuxiliar.cs" />
     <Compile Include="Objects\Entities\ClavesInternasEntity.cs" />
     <Compile Include="Objects\Entities\BoletosCortesiaEntity.cs" />
     <Compile Include="Objects\Entities\AcompañanteEntity.cs" />
@@ -59,10 +60,12 @@
     <Compile Include="Objects\Entities\BaseEntity.cs" />
     <Compile Include="Objects\Entities\AuditoriaEntity.cs" />
     <Compile Include="Objects\Entities\CajaEntity.cs" />
+    <Compile Include="Objects\Entities\VentaBeneficiarioEntity.cs" />
     <Compile Include="Objects\Entities\VentaEntity.cs" />
     <Compile Include="Objects\Entities\UsuarioEntity.cs" />
     <Compile Include="Peticiones\Request\BloqueoAsientoRequest.cs" />
     <Compile Include="Peticiones\Request\CorrelativoRequest.cs" />
+    <Compile Include="Peticiones\Request\PostergarVentaRequest.cs" />
     <Compile Include="Peticiones\Request\TurnoRequest.cs" />
     <Compile Include="Peticiones\Request\PlanoRequest.cs" />
     <Compile Include="Peticiones\Request\ItinerarioRequest.cs" />

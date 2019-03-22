@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
 using System.Collections.Generic;
 using System.Data;
 
@@ -163,6 +164,56 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static VentaBeneficiarioEntity BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
+        {
+            VentaBeneficiarioEntity obj = new VentaBeneficiarioEntity();
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarVentaxBoleto";
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@Serie_Boleto", DbType.String, ParameterDirection.Input, Serie);
+                db.AddParameter("@Nume_Boleto", DbType.String, ParameterDirection.Input, Numero);
+                db.AddParameter("@Codi_Empresa", DbType.String, ParameterDirection.Input, CodiEmpresa);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        obj = new VentaBeneficiarioEntity
+                        {
+                            IdVenta = Reader.GetBigIntValue(drlector, "Id_Venta"),
+                            NombresConcat = Reader.GetStringValue(drlector, "NOMBRE"),
+                            CodiOrigen = Reader.GetIntValue(drlector, "Codi_Origen"),
+                            NombOrigen = Reader.GetStringValue(drlector, "Nom_Origen"),
+                            CodiDestino = Reader.GetIntValue(drlector, "Codi_Destino"),
+                            NombDestino = Reader.GetStringValue(drlector, "Nom_Destino"),
+                            NombServicio = Reader.GetStringValue(drlector, "Nom_Servicio"),
+                            FechViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje"),
+                            HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje"),
+                            NumeAsiento = Reader.GetSmallIntValue(drlector, "NUME_ASIENTO")
+                        };
+                    }
+                }
+            }
+            return obj;
+        }
+
+        public static string PostergarVenta(int IdVenta, int CodiProgramacion, int NumeAsiento, int CodiServicio, string FechaViaje, string HoraViaje)
+        {
+            string mensaje = string.Empty;
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_PostergarVenta";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_programacion", DbType.String, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
+                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, FechaViaje);
+                db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, HoraViaje);
+                db.Execute();
+                mensaje = "Correcto: PostergarVenta.";
+            }
+            return mensaje;
+        }
         #endregion
 
         #region Métodos Transaccionales
@@ -240,15 +291,15 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string Oficina, string FlagVenta, string Correlativo)
+        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string CodiOficina, string CodiPuntoVenta, string Correlativo)
         {
             var response = new Response<string>(false, null, "Error: GenerarCorrelativoAuxiliar.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GenerarCorrelativoAuxiliar";
                 db.AddParameter("@Tabla", DbType.String, ParameterDirection.Input, Tabla);
-                db.AddParameter("@Oficina", DbType.String, ParameterDirection.Input, Oficina);
-                db.AddParameter("@Flag_Venta", DbType.String, ParameterDirection.Input, FlagVenta);
+                db.AddParameter("@Oficina", DbType.String, ParameterDirection.Input, CodiOficina);
+                db.AddParameter("@Flag_Venta", DbType.String, ParameterDirection.Input, CodiPuntoVenta);
                 db.AddParameter("@Correlativo", DbType.String, ParameterDirection.Output, Correlativo);
 
                 db.Execute();
@@ -478,6 +529,57 @@ namespace SisComWeb.Repository
                 response.Estado = true;
             }
 
+            return response;
+        }
+
+        public static Response<bool> AnularVenta(int IdVenta, int Codi_Usuario)
+        {
+            var response = new Response<bool>(false, false, "Error: AnularVenta.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_AnularVenta";
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, Codi_Usuario);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: AnularVenta.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<VentaEntity> BuscarVentaById(int IdVenta)
+        {
+            var response = new Response<VentaEntity>(false, null, "Error: BuscarVentaById.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarVentaxId";
+                db.AddParameter("@Id_venta", DbType.String, ParameterDirection.Input, IdVenta);
+                var entidad = new VentaEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad = new VentaEntity
+                        {
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
+                            Precio_Venta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
+                            Codi_ruta = Reader.GetSmallIntValue(drlector, "Codi_ruta"),
+                            Fecha_Viaje = Reader.GetDateTimeValue(drlector, "Fecha_Viaje"),
+                            NUME_BOLETO = Reader.GetStringValue(drlector, "NUME_BOLETO")
+                        };
+                    }
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = entidad;
+                response.Mensaje = "Correcto: BuscarVentaById.";
+                response.Estado = true;
+            }
             return response;
         }
 

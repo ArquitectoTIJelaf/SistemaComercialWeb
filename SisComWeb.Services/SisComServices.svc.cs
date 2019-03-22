@@ -1,5 +1,7 @@
 ﻿using SisComWeb.Business;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
+using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Entity.Peticiones.Response;
 using SisComWeb.Utility;
 using System;
@@ -382,6 +384,49 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
+            }
+        }
+
+
+        public Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
+        {
+            try
+            {
+                return VentaLogic.BuscarVentaxBoleto(Tipo, Serie, Numero, CodiEmpresa);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgErrBuscarVentaxBoleto, false);
+            }
+        }
+
+        public Response<string> PostergarVenta(PostergarVentaRequest filtro)
+        {
+            try
+            {
+                return VentaLogic.PostergarVenta(filtro);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
+            }
+        }
+        #endregion
+
+        #region ANULAR VENTA
+
+        public Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
+        {
+            try
+            {
+                return VentaLogic.AnularVenta(Id_Venta, Codi_Usuario, CodiOficina, CodiPuntoVenta, tipo);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
             }
         }
 

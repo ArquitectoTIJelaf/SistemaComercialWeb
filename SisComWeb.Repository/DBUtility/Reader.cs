@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Globalization;
 
 namespace SisComWeb.Repository
 {
@@ -79,6 +80,16 @@ namespace SisComWeb.Repository
             catch { return 0; }
         }
 
+        public static byte GetByteValue(IDataReader dr, string column)
+        {
+            try
+            {
+                var obj = GetObjectValue(dr, column);
+                if (obj == null) return 0;
+                return Convert.ToByte(obj);
+            }
+            catch { return 0; }
+        }
 
         public static Int16 GetSmallIntValue(IDataReader dr, string column)
         {
@@ -122,5 +133,17 @@ namespace SisComWeb.Repository
             }
             catch { throw; }
         }
+
+        public static string GetDateStringValue(IDataReader dr, string column)
+        {
+            var tempDate = new DateTime();
+            try
+            {
+                var obj = dr[column];
+                tempDate = obj == DBNull.Value ? DateTime.Now : (DateTime)obj;
+                return tempDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+            }
+            catch { return tempDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }
+        }       
     }
 }

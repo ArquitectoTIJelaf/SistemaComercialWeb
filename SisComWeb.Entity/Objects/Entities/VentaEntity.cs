@@ -1,4 +1,6 @@
-﻿namespace SisComWeb.Entity
+﻿using System;
+
+namespace SisComWeb.Entity
 {
     public class VentaEntity
     {
@@ -134,5 +136,11 @@
         public bool FechaAbierta { get; set; }
 
         public string Concepto { get; set; } // @Reco_Venta en el store.
+
+        // VENTA DERIVADA
+        public decimal Precio_Venta { get; set; }
+        public Int16 Codi_ruta { get; set; }
+        public DateTime Fecha_Viaje { get; set; }
+        public string NUME_BOLETO { get; set; }
     }
 }
