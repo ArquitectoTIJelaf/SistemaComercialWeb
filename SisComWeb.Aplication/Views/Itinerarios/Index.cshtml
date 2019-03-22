@@ -2105,10 +2105,18 @@
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
                 },
                 sendToFechaAbierta: async function (asientoSel) {
-                    if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
-                        alert('ok');
-                    } else
+                    debugger;
+                    if (asientoSel.IdVenta) {
+                        if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
+                            alert('ok');
+                            appController.chargeTurnos();
+                        } else
+                            appController.liberarAsientoActual();
                         return;
+                    } else {
+                        APP.msg.error("Debe seleccionar un asiento vendido");
+                        appController.liberarAsientoActual();
+                    }
                 }
             },
             computed: {
