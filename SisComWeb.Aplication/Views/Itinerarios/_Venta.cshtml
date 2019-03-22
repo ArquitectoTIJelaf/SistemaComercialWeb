@@ -407,12 +407,16 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS)">
+
                                                         <div class="icons-of-seat" v-if="item.FechaVenta">
                                                             <span class="ios-left">
                                                                 <img :src="iconVentaBus(item.Sexo, item.Edad)" />
                                                             </span>
                                                             <span class="ios-right">{{item.Sigla}}</span>
                                                         </div>
+
+
+
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -632,15 +636,15 @@
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <div class="form-group">
-                                                <label v-show=" list.ventas[indexVenta].NroVenta == '' "
+                                                <label v-show="list.ventas[indexVenta].FlagVenta == '' "
                                                        class="control-label"
                                                        style="font-size: 16px !important; font-weight: 500; color: #004e90;">
                                                     N° {{Correlativo}}
                                                 </label>
-                                                <label v-show=" list.ventas[indexVenta].NroVenta != '' "
+                                                <label v-show=" list.ventas[indexVenta].FlagVenta != '' "
                                                        class="control-label"
                                                        style="font-size: 16px !important; font-weight: 500; color: black;">
-                                                    {{list.ventas[indexVenta].NroVenta}}
+                                                    N° {{list.ventas[indexVenta].NroVenta}}
                                                 </label>
                                             </div>
                                         </div>

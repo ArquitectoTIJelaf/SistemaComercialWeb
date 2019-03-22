@@ -333,7 +333,13 @@ namespace SisComWeb.Services
         {
             try
             {
-                return VentaLogic.GrabaVenta(listado, FlagVenta);
+                switch (FlagVenta)
+                {
+                    case "R": // Reserva
+                        return VentaLogic.GrabaReserva(listado);
+                    default:
+                        return VentaLogic.GrabaVenta(listado, FlagVenta);
+                }
             }
             catch (Exception ex)
             {
