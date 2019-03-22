@@ -240,15 +240,15 @@ namespace SisComWeb.Repository
             return response;
         }
 
-        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string Oficina, string FlagVenta, string Correlativo)
+        public static Response<string> GenerarCorrelativoAuxiliar(string Tabla, string CodiOficina, string CodiPuntoVenta, string Correlativo)
         {
             var response = new Response<string>(false, null, "Error: GenerarCorrelativoAuxiliar.", false);
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GenerarCorrelativoAuxiliar";
                 db.AddParameter("@Tabla", DbType.String, ParameterDirection.Input, Tabla);
-                db.AddParameter("@Oficina", DbType.String, ParameterDirection.Input, Oficina);
-                db.AddParameter("@Flag_Venta", DbType.String, ParameterDirection.Input, FlagVenta);
+                db.AddParameter("@Oficina", DbType.String, ParameterDirection.Input, CodiOficina);
+                db.AddParameter("@Flag_Venta", DbType.String, ParameterDirection.Input, CodiPuntoVenta);
                 db.AddParameter("@Correlativo", DbType.String, ParameterDirection.Output, Correlativo);
 
                 db.Execute();
@@ -478,6 +478,57 @@ namespace SisComWeb.Repository
                 response.Estado = true;
             }
 
+            return response;
+        }
+
+        public static Response<bool> AnularVenta(int IdVenta, int Codi_Usuario)
+        {
+            var response = new Response<bool>(false, false, "Error: AnularVenta.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_AnularVenta";
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, Codi_Usuario);
+
+                db.Execute();
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = "Correcto: AnularVenta.";
+                response.Estado = true;
+            }
+
+            return response;
+        }
+
+        public static Response<VentaEntity> BuscarVentaById(int IdVenta)
+        {
+            var response = new Response<VentaEntity>(false, null, "Error: BuscarVentaById.", false);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarVentaxId";
+                db.AddParameter("@Id_venta", DbType.String, ParameterDirection.Input, IdVenta);
+                var entidad = new VentaEntity();
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad = new VentaEntity
+                        {
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
+                            Precio_Venta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
+                            Codi_ruta = Reader.GetSmallIntValue(drlector, "Codi_ruta"),
+                            Fecha_Viaje = Reader.GetDateTimeValue(drlector, "Fecha_Viaje"),
+                            NUME_BOLETO = Reader.GetStringValue(drlector, "NUME_BOLETO")
+                        };
+                    }
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = entidad;
+                response.Mensaje = "Correcto: BuscarVentaById.";
+                response.Estado = true;
+            }
             return response;
         }
 

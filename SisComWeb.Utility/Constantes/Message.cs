@@ -73,7 +73,11 @@
 
         //Claves Internas
         public const string MsgCorrectoClavesInternas = "Correcto: ClavesInternas.";
-        public const string MsgErrExcClavesInternas = "Ocurrió una excepción en las claves internas.";
+        public const string MsgErrExcClaveIncorrecta = "La clave ingresada es incorrecta. Intente de nuevo.";
+        public const string MsgErrExcClavesInternas = "Error: Ocurrió una excepción en las claves internas.";
 
+        //Anular Venta
+        public const string MsgCorrectoAnularVenta = "Correcto: Se anuló correctamente la venta.";
+        public const string MsgErrExcAnularVenta = "Ocurrió una excepción al anular venta.";
     }
 }

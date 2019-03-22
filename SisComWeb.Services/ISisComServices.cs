@@ -145,5 +145,13 @@ namespace SisComWeb.Services
         Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo);
 
         #endregion
+
+        #region ANULAR VENTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo);
+
+        #endregion
     }
 }

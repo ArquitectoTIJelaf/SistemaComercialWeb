@@ -550,6 +550,11 @@
 
         var CodiSucursal = '@usuario.CodiSucursal'
 
+        Vue.filter('formatNombre', function (value) {
+            var nombreConcat = value.split(',');
+            return `${nombreConcat[2]} ${nombreConcat[0]} ${nombreConcat[1]}`;
+        });
+
         var appController = (function () {
             return {
                 loadTable: function (_list) {
@@ -2424,7 +2429,7 @@
                     var importePagado = parseFloat(_this.importePagado);
 
                     if (tipo === 'IPC') {
-                        if (importePagado > sumaTotal) {
+                        if (importePagado >= sumaTotal) {
                             _this.vuelto = importePagado - sumaTotal;
                         } else {
                             _this.vuelto = '';
@@ -2478,7 +2483,7 @@
                 filledCampos: function () {
                     var _this = this;
                     switch (this.tipoPago) {
-                        case '01': return _this.embarque && _this.importePagado /*&& _this.arribo*/;
+                        case '01': return _this.embarque && _this.importePagado >= _this.sumaTotal  /*&& _this.arribo*/;
                         case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
                         case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque /*&& _this.arribo*/;
                         case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
@@ -2510,6 +2515,7 @@
                     documento: ''
                 },
                 disabledBotones: false,
+                enableSaveWithClaveAutorizacion: false,
                 password: ''
             },
             mounted: function () {
@@ -2517,6 +2523,8 @@
             },
             methods: {
                 show: function (_TipoDoc, _listSexos) {
+                    debugger;
+                    if (this.Edad < 5) { this.enableSaveWithClaveAutorizacion = false; }
                     if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
                     this.limpiarCampos();
                     this.list.tipoDoc = _TipoDoc;
@@ -2551,7 +2559,6 @@
                 setDateAndCalcYears: function (dateString) {
                     this.$nextTick(() => {
                         if (dateString) {
-                            debugger;
                             this.FechaNac = dateString;
                             var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
                             this.Edad = '' + moment().diff(auxFechaNac, 'years');
@@ -2562,6 +2569,7 @@
                     });
                 },
                 recorridoSectionParentesco: function () {
+                    debugger;
                     var _this = this;
                     if (_this.CodiTipoDoc === null) {
                         $('#cboTipoDocRA input[type=search]').focus();
@@ -2624,15 +2632,18 @@
                     this.disabledBotones = true;
                 },
                 showRegistrarWithClave: function () {
-                    var _this = this;
                     appController.showRegistrarWithClave();
                 },
                 sendClaveAutorizacion: function (_password) {
-                    APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + auxNameMethod, { password : _password })
+                    APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + APP.util.getQueryParamByObject({ password: _password }))
                         .then(res => {
-                            debugger;
-                            if (res.data) {
+                            var _this = this;
+                            if (res.data.estado) {
+                                _this.enableSaveWithClaveAutorizacion = true;
+                                APP.msg.success(res.data.mensaje);
                                 $('#appClaveAutorizacion').modal('hide');
+                            } else {
+                                APP.msg.error(res.data);
                             }
                         }).catch(APP.rq.axios_handler_error_alert);
                 }
@@ -2640,17 +2651,21 @@
             computed: {
                 filledCampos: function () {
                     var _this = this;
-                    return (
-                        _this.CodiTipoDoc !== null &&
-                        _this.Documento.length >=8 &&
-                        _this.Nombres !== '' &&
-                        _this.ApellidoPaterno !== '' &&
-                        _this.ApellidoMaterno !== '' &&
-                        _this.FechaNac !== '' &&
-                        _this.Edad <=5 &&
-                        _this.Sexo !== '' &&
-                        _this.Parentesco !== ''
-                    )
+                    if (_this.enableSaveWithClaveAutorizacion === true) {
+                        return true;
+                    } else {
+                        return (
+                            _this.CodiTipoDoc !== null &&
+                            _this.Documento.length >=8 &&
+                            _this.Nombres !== '' &&
+                            _this.ApellidoPaterno !== '' &&
+                            _this.ApellidoMaterno !== '' &&
+                            _this.FechaNac !== '' &&
+                            _this.Edad < 5 &&
+                            _this.Sexo !== '' &&
+                            _this.Parentesco !== ''
+                        )
+                    }
                 }
             },
             watch: {
@@ -2744,8 +2759,8 @@
                         .then(res => {
                             if (res.data) {
                                 _this.boletosLibres = res.data.BoletoLibre;
-                                _this.boletosByPrecio = res.data.BoletoPrecio.toFixed(2);
-                                _this.totalBoletos = res.data.BoletoTotal.toFixed(2);
+                                _this.boletosByPrecio = res.data.BoletoPrecio;
+                                _this.totalBoletos = res.data.BoletoTotal;
                                 _this.list.beneficiarios = res.data.ListaBeneficiarios;
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
                             }
@@ -2808,25 +2823,25 @@
             watch: {
                 searchInTable: function (newVal) {
                     var _this = this;
-                    var Nombre_Beneficiario = 'Nombre_Beneficiario';
+                    //var Nombre_Beneficiario = 'Nombre_Beneficiario';
 
                     //const result = _this.list.filterBeneficiarios.find(beneficiario => beneficiario.Nombre_Beneficiario === newVal)
 
-                    for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
-                        if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
-                            return _this.list.filterBeneficiarios[i];
-                        }
-                    }
-
-                    //if (String(newVal).replace(/\s/g, '').length > 0) {
-                    //    return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
-                    //        return _.some(item.Nombre_Beneficiario, function (tag) {
-                    //            return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
-                    //        });
-                    //    });
-                    //} else {
-                    //    _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    //for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
+                    //    if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
+                    //        return _this.list.filterBeneficiarios[i];
+                    //    }
                     //}
+
+                    if (String(newVal).replace(/\s/g, '').length > 0) {
+                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
+                            return _.some(item.Nombre_Beneficiario, function (tag) {
+                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
+                            });
+                        });
+                    } else {
+                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                    }
                 }
             }
         });
@@ -2870,6 +2885,7 @@
             methods: {
                 show: function () {
                     var _this = this;
+                    this.limpiarClaveAutorizacion();
                     $('#appClaveAutorizacion').modal('show');
                     $('#appClaveAutorizacion').on('shown.bs.modal', function () {
                         $('#txtContraseniaCA').focus();
@@ -2878,6 +2894,9 @@
                 sendClaveAutorizacion: function () {
                     var _this = this;
                     appController.sendClaveAutorizacion(_this.password);
+                },
+                limpiarClaveAutorizacion: function () {
+                    var _this = this;
                     _this.password = '';
                 },
                 cerrarClaveAutorizacion: function () {

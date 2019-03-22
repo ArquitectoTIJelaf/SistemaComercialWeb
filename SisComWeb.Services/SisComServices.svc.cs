@@ -380,5 +380,22 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region ANULAR VENTA
+
+        public Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
+        {
+            try
+            {
+                return VentaLogic.AnularVenta(Id_Venta, Codi_Usuario, CodiOficina, CodiPuntoVenta, tipo);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
+            }
+        }
+
+        #endregion
     }
 }
