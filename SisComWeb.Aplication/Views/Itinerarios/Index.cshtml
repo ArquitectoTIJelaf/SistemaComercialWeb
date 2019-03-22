@@ -1091,6 +1091,16 @@
                         animateScrollTop(_topOfBus - _heightOfHeader, 800);
                     }
 
+                    // Validar 'AsientoSel' no vendido
+                    if (!asientoSel.FlagVenta) {
+                        switch (_this.pickedBusVenta) {
+                            case 'FA':
+                            case 'AN':
+                                APP.msg.error("Debe seleccionar un asiento vendido");
+                                return;
+                        }
+                    }
+
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS !== 0) {
                         await _this.liberarAsiento(asientoSel, true);
@@ -1150,9 +1160,6 @@
                                         case 'PO': // Postergarción
                                             appController.showPostergacion();
                                             break;
-                                        case 'FA': // Fecha Abierta
-                                            this.sendToFechaAbierta(asientoSel);
-                                            break;
                                     }
                                 }
                             }
@@ -1163,10 +1170,43 @@
                 fillDataAsientoVendido: async function (asientoSel) {
                     var _this = this;
                     var _fillData = false;
+                    debugger;
                     switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
-                        case 'R': // Pase de cortesía
+                            {
+                                if (_this.pickedBusVenta === 'FA') {
+                                    _fillData = true;
+                                    _this.sendToFechaAbierta(asientoSel);
+                                } else {
+                                    if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
+                                        _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
+                                        if (_fillData) {
+                                            await _this.cancelarBoletos();
+                                            _fillData = true;
+                                        }
+                                    }
+                                    else {
+                                        if (_this.list.ventas[_this.indexVenta].FlagVenta) {
+                                            if (_this.list.ventas[_this.indexVenta].NroAsiento === String(asientoSel.NumeAsiento).padStart(2, '0'))
+                                                _fillData = false;
+                                            else
+                                                _fillData = true;
+
+                                            _this.limpiarVenta();
+                                        }
+                                        else {
+                                            if (_this.list.ventas[_this.indexVenta].NroAsiento) {
+                                                await _this.cancelarBoletos();
+                                            }
+                                            _fillData = true;
+                                        }
+                                    }
+                                }
+
+                            };
+                            break;
+                        case 'R': // Reserva
                             {
                                 if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                                     _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
@@ -2095,7 +2135,7 @@
                                 }
                             };
                             break;
-                            
+
                     }
                 },
                 setPaseCortesia: function (_beneficiario) {
@@ -2115,17 +2155,12 @@
                 },
                 sendToFechaAbierta: async function (asientoSel) {
                     debugger;
-                    if (asientoSel.IdVenta) {
-                        if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
-                            alert('ok');
-                            appController.chargeTurnos();
-                        } else
-                            appController.liberarAsientoActual();
-                        return;
-                    } else {
-                        APP.msg.error("Debe seleccionar un asiento vendido");
-                        appController.liberarAsientoActual();
-                    }
+                    if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
+                        alert('ok');
+                        appController.chargeTurnos();
+                    } else
+                        this.limpiarVenta();
+                    return;
                 }
             },
             computed: {
