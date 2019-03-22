@@ -619,7 +619,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Año\" : \"" + DateTime.Now.ToString("yyyy") + "\"" +
                                     ",\"Concepto\" : \"" + listado[i].Concepto + "\"" +
                                     ",\"FechaAbierta\" : " + listado[i].FechaAbierta.ToString().ToLower() +
-                                 // -------------
+                                    // PASE DE CORTESÍA
+                                    ",\"IdVenta\" : \"" + listado[i].IdVenta + "\"" +
                                  "}";
 
                         if (i < listado.Count - 1)
@@ -999,6 +1000,43 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     string data = (string)tmpResult.SelectToken("Valor");
                     return Json(data, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("cancelar-reserva")]
+        public async Task<ActionResult> EliminarReserva(int IdVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ " + "\"IdVenta\": " + IdVenta + "}";
+
+                    HttpResponseMessage response = await client.PostAsync("EliminarReserva", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    string valor = (string)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

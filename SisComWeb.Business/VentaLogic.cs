@@ -694,6 +694,17 @@ namespace SisComWeb.Business
 
                     Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabaReserva.", false);
 
+                    // Elimina 'Reserva'
+                    var resEliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
+                    if (resEliminarReserva.Estado)
+                        // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
+                        entidad.IdVenta = 0;
+                    else
+                    {
+                        response.Mensaje = resEliminarReserva.Mensaje;
+                        return response;
+                    }
+
                     // Busca 'ProgramacionViaje'
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
                     if (resBuscarProgramacionViaje.Estado)
@@ -989,7 +1000,7 @@ namespace SisComWeb.Business
             {
                 var response = new Response<bool>(false, false, "Error: EliminarReserva.", false);
 
-                // Validar 'EliminarReserva'
+                // Elimina 'Reserva'
                 var resEliminarReserva = VentaRepository.EliminarReserva(IdVenta);
                 if (!resEliminarReserva.Estado)
                 {

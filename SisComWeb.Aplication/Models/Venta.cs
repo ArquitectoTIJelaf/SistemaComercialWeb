@@ -71,5 +71,8 @@ namespace SisComWeb.Aplication.Models
         public string Año { get; set; }
         public string Concepto { get; set; }
         public bool FechaAbierta { get; set; }
+
+        // RESERVA
+        public int IdVenta { get; set; }
     }
 }

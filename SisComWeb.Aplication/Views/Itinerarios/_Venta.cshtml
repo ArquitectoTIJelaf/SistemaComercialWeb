@@ -66,10 +66,6 @@
         border-width: 0 0 2px !important;
         border-color: #1082c0 !important;
     }
-
-    /*#txtPrecio :focus {
-            border-color: #004e90;
-        }*/
 </style>
 
 <div id="appVueVenta" v-show="showVentas" class="row">
@@ -265,7 +261,6 @@
                                                 <label class="control-label">Turno:</label>
                                                 <input v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
-                                                       @*@@keydown.13.prevent="nextStep(8)"*@
                                                        @@focus="$event.target.select()"
                                                        @@blur="nextStep(8)"
                                                        type="text"
@@ -280,7 +275,6 @@
                                                 <label class="control-label">Fecha Viaje:</label>
                                                 <input v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
-                                                       @*@@keydown.13.prevent="nextStep(9)"*@
                                                        @@focus="$event.target.select()"
                                                        @@blur="nextStep(9)"
                                                        type="text"
@@ -407,17 +401,23 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
-                                                            <span class="ios-left">
-                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                            </span>
-                                                            <span class="ios-right">{{item.Sigla}}</span>
-                                                        </div>
-                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
-                                                            <span class="ios-center">
-                                                                <img src="~/wwwroot/plugins/images/r1.png" />
-                                                            </span>
-                                                        </div>
+                                                        <template v-if="item.FechaVenta">
+                                                            <template v-if="item.FlagVenta == 'R'">
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-center">
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-left">
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                    </span>
+                                                                    <span class="ios-right">{{item.Sigla}}</span>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -436,17 +436,23 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
-                                                            <span class="ios-left">
-                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                            </span>
-                                                            <span class="ios-right">{{item.Sigla}}</span>
-                                                        </div>
-                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
-                                                            <span class="ios-center">
-                                                                <img src="~/wwwroot/plugins/images/r1.png" />
-                                                            </span>
-                                                        </div>
+                                                        <template v-if="item.FechaVenta">
+                                                            <template v-if="item.FlagVenta == 'R'">
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-center">
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-left">
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                    </span>
+                                                                    <span class="ios-right">{{item.Sigla}}</span>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -465,17 +471,23 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
-                                                            <span class="ios-left">
-                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                            </span>
-                                                            <span class="ios-right">{{item.Sigla}}</span>
-                                                        </div>
-                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
-                                                            <span class="ios-center">
-                                                                <img src="~/wwwroot/plugins/images/r1.png" />
-                                                            </span>
-                                                        </div>
+                                                        <template v-if="item.FechaVenta">
+                                                            <template v-if="item.FlagVenta == 'R'">
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-center">
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-left">
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                    </span>
+                                                                    <span class="ios-right">{{item.Sigla}}</span>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -494,17 +506,23 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
-                                                            <span class="ios-left">
-                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                            </span>
-                                                            <span class="ios-right">{{item.Sigla}}</span>
-                                                        </div>
-                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
-                                                            <span class="ios-center">
-                                                                <img src="~/wwwroot/plugins/images/r1.png" />
-                                                            </span>
-                                                        </div>
+                                                        <template v-if="item.FechaVenta">
+                                                            <template v-if="item.FlagVenta == 'R'">
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-center">
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-left">
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                    </span>
+                                                                    <span class="ios-right">{{item.Sigla}}</span>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -523,17 +541,23 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)">
-                                                        <div class="icons-of-seat" v-if="item.FechaVenta && item.FlagVenta != 'R'">
-                                                            <span class="ios-left">
-                                                                <img :src="iconVentaBus(item.Sexo, item.Edad)" />
-                                                            </span>
-                                                            <span class="ios-right">{{item.Sigla}}</span>
-                                                        </div>
-                                                        <div class="icons-of-seat" v-else-if="item.FechaVenta && item.FlagVenta == 'R'">
-                                                            <span class="ios-center">
-                                                                <img src="~/wwwroot/plugins/images/r1.png" />
-                                                            </span>
-                                                        </div>
+                                                        <template v-if="item.FechaVenta">
+                                                            <template v-if="item.FlagVenta == 'R'">
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-center">
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                            <template v-else>
+                                                                <div class="icons-of-seat">
+                                                                    <span class="ios-left">
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                    </span>
+                                                                    <span class="ios-right">{{item.Sigla}}</span>
+                                                                </div>
+                                                            </template>
+                                                        </template>
                                                         <div class="number-of-seat">
                                                             {{item.Tipo}}
                                                         </div>
@@ -657,16 +681,18 @@
                                         </div>
                                         <div class="col-md-2 text-center">
                                             <div class="form-group">
-                                                <label v-show="list.ventas[indexVenta].FlagVenta == '' "
-                                                       class="control-label"
-                                                       style="font-size: 16px !important; font-weight: 500; color: #004e90;">
-                                                    N° {{Correlativo}}
-                                                </label>
-                                                <label v-show=" list.ventas[indexVenta].FlagVenta != '' "
-                                                       class="control-label"
-                                                       style="font-size: 16px !important; font-weight: 500; color: black;">
-                                                    N° {{list.ventas[indexVenta].NroVenta}}
-                                                </label>
+                                                <template v-if=" list.ventas[indexVenta].FlagVenta == '' ">
+                                                    <label class="control-label"
+                                                           style="font-size: 16px !important; font-weight: 500; color: #004e90;">
+                                                        N° {{Correlativo}}
+                                                    </label>
+                                                </template>
+                                                <template v-else>
+                                                    <label class="control-label"
+                                                           style="font-size: 16px !important; font-weight: 500; color: black;">
+                                                        N° {{list.ventas[indexVenta].NroVenta}}
+                                                    </label>
+                                                </template>
                                             </div>
                                         </div>
                                     </div>
@@ -902,14 +928,19 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <div v-if="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
+                                                    <div v-show="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
                                                         <label class="control-label">&nbsp;</label>
                                                         <button @@click="showTipoPago"
                                                                 id="btnTipoPago"
                                                                 class="btn btn-secondary btn-ticket btn-venta"
                                                                 style="width: 100%;"
-                                                                v-bind:disabled=" !bloquearPago || list.ventas[indexVenta].FlagVenta != '' ">
-                                                            $&ensp;Pago&ensp;Total
+                                                                v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
+                                                            <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                                Confirmar Reserva
+                                                            </template>
+                                                            <template v-else>
+                                                                $ Pago Total
+                                                            </template>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -921,7 +952,12 @@
                                                             class="btn btn-secondary btn-ticket btn-cancelar"
                                                             style="width: 100%; color:white;">
                                                         <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                        Cancelar
+                                                        <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                            Cancelar Reserva
+                                                        </template>
+                                                        <template v-else>
+                                                            Cancelar
+                                                        </template>
                                                     </button>
                                                 </div>
                                             </div>

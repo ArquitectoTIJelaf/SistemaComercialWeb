@@ -210,39 +210,36 @@
                                 </div>
                             </div>
                         </template>
-
-                        <template v-if="pickedBusVenta !== 'R'">
-                            <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Embarques:</label>
-                                <div class="col-md-10">
-                                    <v-select v-model="embarque"
-                                              :id="'cboEmbarqueTP'"
-                                              :get-option-label="getLabelEmbarqueArribo"
-                                              label="Lugar"
-                                              :options="list.embarques"
-                                              :placeholder="'EMBARQUE'"
-                                              @@keydown.13.native.prevent="nextInput('EMBARQUE')"
-                                              ref="select">
-                                        <span slot="no-options" class="text-danger">No hay resultados</span>
-                                    </v-select>
-                                </div>
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Embarques:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="embarque"
+                                          :id="'cboEmbarqueTP'"
+                                          :get-option-label="getLabelEmbarqueArribo"
+                                          label="Lugar"
+                                          :options="list.embarques"
+                                          :placeholder="'EMBARQUE'"
+                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
                             </div>
-                            <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Arribos:</label>
-                                <div class="col-md-10">
-                                    <v-select v-model="arribo"
-                                              :id="'cboArriboTP'"
-                                              :get-option-label="getLabelEmbarqueArribo"
-                                              label="Lugar"
-                                              :options="list.arribos"
-                                              :placeholder="'ARRIBO'"
-                                              @@keydown.13.native.prevent="nextInput('ARRIBOS')"
-                                              ref="select">
-                                        <span slot="no-options" class="text-danger">No hay resultados</span>
-                                    </v-select>
-                                </div>
+                        </div>
+                        <div class="col-md-12 separate-in-form">
+                            <label class="col-md-2 control-label label-sm">Arribos:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="arribo"
+                                          :id="'cboArriboTP'"
+                                          :get-option-label="getLabelEmbarqueArribo"
+                                          label="Lugar"
+                                          :options="list.arribos"
+                                          :placeholder="'ARRIBO'"
+                                          @@keydown.13.native.prevent="nextInput('ARRIBOS')"
+                                          ref="select">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
                             </div>
-                        </template>
+                        </div>
                     </div>
                 </div>
             </div>
