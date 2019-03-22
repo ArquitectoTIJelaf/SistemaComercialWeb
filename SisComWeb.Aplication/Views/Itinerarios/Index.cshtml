@@ -1675,7 +1675,7 @@
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
                     if (FechaVenta) {
                         if (FlagVenta === 'R') // Color 'red'
-                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ff0000', 0.5)} ,${this.$options.filters.hexToRgb('#ff0000')}` };
+                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorReserva, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorReserva)}` };
                         else
                             return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
                     }
@@ -2176,8 +2176,8 @@
                             CodiRuta: _this.filtro.CodiDestinoBus.id
                         })).then(res => {
                             appController.chargeTurnos();
-                            APP.msg.info("Se cambió a Fecha Abierta correctamente");
-                        }).catch(APP.rq.axios_handler_error_alert);
+                            _this.$nextTick(() => { APP.msg.info("Se cambió a Fecha Abierta correctamente") });
+                            }).catch(APP.rq.axios_handler_error_alert);                        
                     } else
                         _this.limpiarVenta();
                     return;
@@ -3029,23 +3029,23 @@
                     var _this = this;
                     _this.boletos = _boletosVendidos.split(',');
                     _this.boletos.pop();
+                    window.addEventListener('keyup', _this.esc);
                     $('#appBoletosVendidos').modal('show');
                     $('#appBoletosVendidos').on('shown.bs.modal', function () {
-                        //window.addEventListener('keyup', function (e) {
-                        //    _this.closeModal(e);
-                        //});
                         $('#btnCerrarVenta').focus();
                     });
                 },
-                closeModal(event) {
-                    if (event.keyCode == 27) {
-                        alert('esc press');
-                        window.removeEventListener('keyup', this.closeModal());
-                    }
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarVenta();
                 },
                 cerrarVenta: function () {
+                    window.removeEventListener('keyup', this.esc);
                     $('#appBoletosVendidos').modal('hide');
-                    appController.chargeTurnos();
+                    $('#appBoletosVendidos').on('hidden.bs.modal', function () {
+                        appController.chargeTurnos();
+                    });
+                    
                 }
             }
         });

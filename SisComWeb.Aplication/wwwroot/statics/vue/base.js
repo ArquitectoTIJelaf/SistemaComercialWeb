@@ -1541,6 +1541,7 @@ Vue.component('v-select', VueSelect.VueSelect);
 APP.ventas = {};
 APP.ventas.colorBloqueoInterno = '#FFC36D';
 APP.ventas.colorBloqueoExterno = '#607D8B';
+APP.ventas.colorReserva = '#DD0707';
 /****************************************/
 
 
@@ -1571,17 +1572,17 @@ Vue.directive('numb-or-lett', function (el, binding, vnode) {
     });
 });
 
-//function func(event) {
-//    if (event.keyCode === 27) {
-//        alert('XD');
-//    }
-//}
+Vue.directive('only-name', function (el, binding, vnode) {
+    el.addEventListener('keypress', (e) => {
+        var inp = String.fromCharCode(e.keyCode);
+        if (/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ´,'. ]/.test(inp))
+            return true;
+        else
+            e.preventDefault();
+    });
 
-//Vue.directive('modal-press-esc', function (el, binding, vnode) {
-//    debugger;    
-//    if ($('#' + el.id).hasClass('in')) 
-//        window.addEventListener('keyup', func);           
-//    else
-//        window.removeEventListener('keyup', func);
-//});
+    if (el.value)
+        el.value = el.value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi).join("");
+});
+
 /**************************************/
