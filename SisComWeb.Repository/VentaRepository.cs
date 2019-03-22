@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
 using System.Collections.Generic;
 using System.Data;
 
@@ -163,6 +164,56 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static VentaBeneficiarioEntity BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
+        {
+            VentaBeneficiarioEntity obj = new VentaBeneficiarioEntity();
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarVentaxBoleto";
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@Serie_Boleto", DbType.String, ParameterDirection.Input, Serie);
+                db.AddParameter("@Nume_Boleto", DbType.String, ParameterDirection.Input, Numero);
+                db.AddParameter("@Codi_Empresa", DbType.String, ParameterDirection.Input, CodiEmpresa);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        obj = new VentaBeneficiarioEntity
+                        {
+                            IdVenta = Reader.GetBigIntValue(drlector, "Id_Venta"),
+                            NombresConcat = Reader.GetStringValue(drlector, "NOMBRE"),
+                            CodiOrigen = Reader.GetIntValue(drlector, "Codi_Origen"),
+                            NombOrigen = Reader.GetStringValue(drlector, "Nom_Origen"),
+                            CodiDestino = Reader.GetIntValue(drlector, "Codi_Destino"),
+                            NombDestino = Reader.GetStringValue(drlector, "Nom_Destino"),
+                            NombServicio = Reader.GetStringValue(drlector, "Nom_Servicio"),
+                            FechViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje"),
+                            HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje"),
+                            NumeAsiento = Reader.GetSmallIntValue(drlector, "NUME_ASIENTO")
+                        };
+                    }
+                }
+            }
+            return obj;
+        }
+
+        public static string PostergarVenta(int IdVenta, int CodiProgramacion, int NumeAsiento, int CodiServicio, string FechaViaje, string HoraViaje)
+        {
+            string mensaje = string.Empty;
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_PostergarVenta";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_programacion", DbType.String, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
+                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, FechaViaje);
+                db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, HoraViaje);
+                db.Execute();
+                mensaje = "Correcto: PostergarVenta.";
+            }
+            return mensaje;
+        }
         #endregion
 
         #region Métodos Transaccionales

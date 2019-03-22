@@ -75,5 +75,11 @@
         public const string MsgCorrectoClavesInternas = "Correcto: ClavesInternas.";
         public const string MsgErrExcClavesInternas = "Ocurrió una excepción en las claves internas.";
 
+        // Postergación
+        public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: Postergacion - Buscar Venta por Boleto";
+        public const string MsgErrBuscarVentaxBoleto = "Ocurrió una excepción en Postergacion - Buscar Venta por Boleto";
+        public const string MsgCorrectoPostergarVenta = "Correcto: Postergar Venta";
+        public const string MsgErrPostergarVenta = "Ocurrió una excepción en Postergar Venta";
+
     }
 }
