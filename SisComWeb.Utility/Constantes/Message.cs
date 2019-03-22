@@ -89,5 +89,7 @@
         // Reserva
         public const string MsgCorrectoGrabaReserva = "Correcto: GrabaReserva.";
         public const string MsgErrExcGrabaReserva = "Ocurrió una excepción al grabar reserva.";
+        public const string MsgCorrectoEliminarReserva = "Correcto: EliminarReserva.";
+        public const string MsgErrExcEliminarReserva = "Ocurrió una excepción al eliminar reserva.";
     }
 }

@@ -97,6 +97,18 @@ namespace SisComWeb.Business
                     Response<int> resGrabarVentaFechaAbierta = new Response<int>(false, 0, "Error: GrabarVentaFechaAbierta.", false);
                     Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabarVenta.", false);
 
+                    // RESERVA
+                    if (FlagVenta == "R")
+                    {
+                        // Valida 'SaldoPaseCortesia'
+                        var resEliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
+                        if (!resEliminarReserva.Estado)
+                        {
+                            response.Mensaje = resEliminarReserva.Mensaje;
+                            return response;
+                        }
+                    }
+
                     // Busca 'ProgramacionViaje'
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
                     if (resBuscarProgramacionViaje.Estado)
@@ -909,7 +921,6 @@ namespace SisComWeb.Business
             }
         }
 
-
         public static Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
         {
             try
@@ -949,6 +960,34 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
+            }
+        }
+
+        public static Response<bool> EliminarReserva(int IdVenta)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: EliminarReserva.", false);
+
+                // Validar 'EliminarReserva'
+                var resEliminarReserva = VentaRepository.EliminarReserva(IdVenta);
+                if (!resEliminarReserva.Estado)
+                {
+                    response.Mensaje = resEliminarReserva.Mensaje;
+                    return response;
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = resEliminarReserva.Valor;
+                response.Mensaje = Message.MsgCorrectoEliminarReserva;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
             }
         }
 

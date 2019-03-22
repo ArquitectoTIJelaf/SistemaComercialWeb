@@ -237,6 +237,11 @@
             right: -10%;
         }
 
+        .ios-center {
+            position: relative;
+            height: 95%;
+        }
+
         .check-with-label:checked + .label-for-check {
         }
 
@@ -1169,7 +1174,6 @@
                 fillDataAsientoVendido: async function (asientoSel) {
                     var _this = this;
                     var _fillData = false;
-                    debugger;
                     switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
@@ -1662,9 +1666,13 @@
                             //APP.msg.info(res.data);
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
-                bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS) {
-                    if (FechaVenta)
-                        return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
+                bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
+                    if (FechaVenta) {
+                        if (FlagVenta === 'R') // Color 'red'
+                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb('#ff0000', 0.5)} ,${this.$options.filters.hexToRgb('#ff0000')}` };
+                        else
+                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
+                    }
                     else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
@@ -2154,7 +2162,6 @@
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
                 },
                 sendToFechaAbierta: async function (asientoSel) {
-                    debugger;
                     if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
                         alert('ok');
                         appController.chargeTurnos();
@@ -2368,7 +2375,7 @@
                 saveVenta: async function () {
                     var _this = this;
                     _this.processing = true;
-                    debugger;
+
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2656,7 +2663,6 @@
             },
             methods: {
                 show: function (_TipoDoc, _listSexos) {
-                    debugger;
                     if (this.Edad < 5) { this.enableSaveWithClaveAutorizacion = false; }
                     if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
                     this.limpiarCampos();
@@ -2702,7 +2708,6 @@
                     });
                 },
                 recorridoSectionParentesco: function () {
-                    debugger;
                     var _this = this;
                     if (_this.CodiTipoDoc === null) {
                         $('#cboTipoDocRA input[type=search]').focus();
@@ -3102,7 +3107,6 @@
                         Numero: parseInt(_this.filtro.documento),
                         CodiEmpresa: _this.filtro.empresa.id
                     })).then(res => {
-                        debugger;
                         if (res.data.IdVenta) {
                             _this.showBeneficiario = true;
                             _this.objBeneficiario = _.cloneDeep(res.data);
@@ -3130,7 +3134,6 @@
                     var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
 
                     if (_origen === String(_this.objBeneficiario.CodiOrigen) && _destino === String(_this.objBeneficiario.CodiDestino)) {
-                        debugger;
                         var input = {};
                         input.IdVenta = _this.objBeneficiario.IdVenta;
                         input.CodiProgramacion = _codiProgramacion;
@@ -3139,7 +3142,6 @@
                         input.FechaViaje = appVueVenta.filtro.Fecha;
                         input.HoraViaje = appVueVenta.filtro.Turno;
                         APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input).then(res => {
-                            debugger;
                             appController.chargeTurnos();
                             _this.close();
                         }).catch(APP.rq.axios_handler_error_alert);
