@@ -880,7 +880,8 @@
                                                                 id="chckRegistrarNiño"
                                                                 ref="refRegistrarNiño"
                                                                 class="check-with-label"
-                                                                type="checkbox">
+                                                                type="checkbox"
+                                                              v-bind:disabled="!bloquearPago || list.ventas[indexVenta].FlagVenta != ''">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>

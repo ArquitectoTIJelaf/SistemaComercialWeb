@@ -1100,7 +1100,7 @@
                         switch (_this.pickedBusVenta) {
                             case 'FA':
                             case 'AN':
-                                APP.msg.error("Debe seleccionar un asiento vendido");
+                                APP.msg.error("Debe seleccionar un asiento vendido.");
                                 return;
                         }
                     }
@@ -1167,9 +1167,6 @@
                                         case 'FA': // Fecha Abierta
                                             this.sendToFechaAbierta(asientoSel);
                                             break;
-                                        case 'AN': // Anulación de ventas
-                                            this.sendToAnularVenta(asientoSel);
-                                            break;
                                     }
                                 }
                             }
@@ -1184,36 +1181,43 @@
                         case 'V': // Venta
                         case '7': // Pase de cortesía
                             {
-                                if (_this.pickedBusVenta === 'FA') {
-                                    _fillData = true;
-                                    _this.sendToFechaAbierta(asientoSel);
-                                }
-                                else {
-                                    if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
-                                        _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
-                                        if (_fillData) {
-                                            await _this.cancelarBoletos();
-                                            _fillData = true;
-                                        }
-                                    }
-                                    else {
-                                        if (_this.list.ventas[_this.indexVenta].FlagVenta) {
-                                            if (_this.list.ventas[_this.indexVenta].NroAsiento === String(asientoSel.NumeAsiento).padStart(2, '0'))
-                                                _fillData = false;
-                                            else
-                                                _fillData = true;
-
-                                            _this.limpiarVenta();
-                                        }
-                                        else {
-                                            if (_this.list.ventas[_this.indexVenta].NroAsiento) {
-                                                await _this.cancelarBoletos();
+                                switch (_this.pickedBusVenta) {
+                                    case 'FA': // Fecha abierta
+                                        _this.sendToFechaAbierta(asientoSel);
+                                        _fillData = true;
+                                        break;
+                                    case 'AN': // Anulación de venta
+                                        _this.sendToAnularVenta(asientoSel);
+                                        _fillData = true;
+                                        break;
+                                    default:
+                                        {
+                                            if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
+                                                _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
+                                                if (_fillData) {
+                                                    await _this.cancelarBoletos();
+                                                    _fillData = true;
+                                                }
                                             }
-                                            _fillData = true;
-                                        }
-                                    }
-                                }
+                                            else {
+                                                if (_this.list.ventas[_this.indexVenta].FlagVenta) {
+                                                    if (_this.list.ventas[_this.indexVenta].NroAsiento === String(asientoSel.NumeAsiento).padStart(2, '0'))
+                                                        _fillData = false;
+                                                    else
+                                                        _fillData = true;
 
+                                                    _this.limpiarVenta();
+                                                }
+                                                else {
+                                                    if (_this.list.ventas[_this.indexVenta].NroAsiento) {
+                                                        await _this.cancelarBoletos();
+                                                    }
+                                                    _fillData = true;
+                                                }
+                                            }
+                                        };
+                                        break;
+                                }
                             };
                             break;
                         case 'R': // Reserva
@@ -2183,21 +2187,24 @@
                     return;
                 },
                 sendToAnularVenta: async function (asientoSel) {
-                    debugger;
-                    if (asientoSel.IdVenta) {
-                        if (await APP.msg.confirm("Confirmar la anulacion de la venta", "Se anulará la venta. ¿Desea continuar?")) {
-                            debugger;
-                            //appController.chargeTurnos();
+                    var _this = this;
+                    if (await APP.msg.confirm("Confirmar la anulación", "Se anulará la venta. ¿Desea continuar?")) {
+                        if (asientoSel.IdVenta !== '' && asientoSel.Tipo !== '') {
+                            APP.rq.axios2.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({ Id_Venta: asientoSel.IdVenta, tipo : asientoSel.TipoBoleto }))
+                                .then(res => {
+                                    debugger;
+                                    if (res.data) {
+                                        appController.chargeTurnos();
+                                        _this.$nextTick(() => { APP.msg.success(res.data) });
+                                    }
+                            }).catch(APP.rq.axios_handler_error_alert);
                         } else {
-                            debugger;
-                            appController.liberarAsientoActual();
+                            APP.msg.error('No se encontró el IdVenta.');
                         }
-                        return;
                     } else {
-                        debugger;
-                        APP.msg.error("Debe seleccionar un asiento vendido");
-                        appController.liberarAsientoActual();
+                        _this.limpiarVenta();
                     }
+                    return;
                 }
             },
             computed: {
@@ -2470,7 +2477,7 @@
                     };
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: _this.pickedBusVenta })
-                        .then(async res => {
+                        .then(res => {
                             appController.showBoletosVendidos(res.data);
                             _this.processing = false;
                         }).catch(err => {
@@ -2813,7 +2820,7 @@
                             } else {
                                 APP.msg.error(res.data);
                             }
-                        }).catch(APP.rq.axios_handler_error_alert);
+                    }).catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {
