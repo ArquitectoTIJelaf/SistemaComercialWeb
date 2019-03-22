@@ -1164,6 +1164,12 @@
                                         case 'PO': // Postergarción
                                             appController.showPostergacion();
                                             break;
+                                        case 'FA': // Fecha Abierta
+                                            this.sendToFechaAbierta(asientoSel);
+                                            break;
+                                        case 'AN': // Anulación de ventas
+                                            this.sendToAnularVenta(asientoSel);
+                                            break;
                                     }
                                 }
                             }
@@ -2168,6 +2174,23 @@
                     } else
                         this.limpiarVenta();
                     return;
+                },
+                sendToAnularVenta: async function (asientoSel) {
+                    debugger;
+                    if (asientoSel.IdVenta) {
+                        if (await APP.msg.confirm("Confirmar la anulacion de la venta", "Se anulará la venta. ¿Desea continuar?")) {
+                            debugger;
+                            //appController.chargeTurnos();
+                        } else {
+                            debugger;
+                            appController.liberarAsientoActual();
+                        }
+                        return;
+                    } else {
+                        debugger;
+                        APP.msg.error("Debe seleccionar un asiento vendido");
+                        appController.liberarAsientoActual();
+                    }
                 }
             },
             computed: {
@@ -2478,7 +2501,7 @@
                     }
                     else if (_this.tipoPago === '01') {
                         if (_this.importePagado === '') {
-                            $('#txtImportePagdoC').focus();
+                            $('#txtImportePagadoC').focus();
                         }
                         else if (_this.embarque === null || _this.embarque === '') {
                             $('#cboEmbarqueTP input[type=search]').focus();
