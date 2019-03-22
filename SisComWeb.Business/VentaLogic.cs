@@ -1,5 +1,7 @@
 ﻿using SisComWeb.Business.ServiceFE;
 using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
+using SisComWeb.Entity.Peticiones.Request;
 using SisComWeb.Entity.Peticiones.Response;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
@@ -735,7 +737,7 @@ namespace SisComWeb.Business
                 objVenta = VentaRepository.BuscarVentaById(Id_Venta);
                 correlativo = VentaRepository.GenerarCorrelativoAuxiliar(Table, CodiOficina, CodiPuntoVenta, string.Empty);
 
-                if (!string.IsNullOrEmpty(correlativo.Valor) || correlativo.Estado == true && objVenta.Valor != null || objVenta.Estado == true)
+                if (!string.IsNullOrEmpty(correlativo.Valor) && correlativo.Estado == true && objVenta.Valor != null && objVenta.Estado == true)
                 {
                     objCaja = new CajaEntity
                     {
@@ -759,12 +761,12 @@ namespace SisComWeb.Business
 
                     caja = VentaRepository.GrabarCaja(objCaja);
 
-                    if (caja.Valor != 0 || caja.EsCorrecto == true || caja.Estado == true)
+                    if (caja.Valor != 0 && caja.EsCorrecto == true && caja.Estado == true)
                     {
                         anularVenta = VentaRepository.AnularVenta(Id_Venta, Codi_Usuario);
                     }
 
-                    if (anularVenta.Estado == true || anularVenta.EsCorrecto == true)
+                    if (anularVenta.Estado == true && anularVenta.EsCorrecto == true)
                     {
                         response.EsCorrecto = true;
                         response.Valor = anularVenta.Valor;
@@ -785,6 +787,49 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
+            }
+        }
+
+
+        public static Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
+        {
+            try
+            {
+                var response = new Response<VentaBeneficiarioEntity>()
+                {
+                    EsCorrecto = true,
+                    Valor = VentaRepository.BuscarVentaxBoleto(Tipo, Serie, Numero, CodiEmpresa),
+                    Mensaje = Message.MsgCorrectoBuscarVentaxBoleto,
+                    Estado = true
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgErrBuscarVentaxBoleto, false);
+            }
+        }
+
+        public static Response<string> PostergarVenta(PostergarVentaRequest filtro)
+        {
+            try
+            {
+                var response = new Response<string>()
+                {
+                    EsCorrecto = true,
+                    Valor = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje),
+                    Mensaje = Message.MsgCorrectoPostergarVenta,
+                    Estado = true
+                };
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
             }
         }
 

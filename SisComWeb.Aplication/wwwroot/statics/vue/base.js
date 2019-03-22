@@ -1544,7 +1544,7 @@ APP.ventas.colorBloqueoExterno = '#607D8B';
 /****************************************/
 
 
-/***************************************/
+/********************** Vue directive *****/
 
 //Vue.directive('numericOnly', function (el, binding, vnode) {
 //    el.type = 'number';
@@ -1566,9 +1566,22 @@ Vue.directive('numb-or-lett', function (el, binding, vnode) {
         var inp = String.fromCharCode(e.keyCode);
         if (/[a-zA-Z0-9]/.test(inp))
             return true;
-        else {
+        else 
             e.preventDefault();
-        }
     });
 });
+
+//function func(event) {
+//    if (event.keyCode === 27) {
+//        alert('XD');
+//    }
+//}
+
+//Vue.directive('modal-press-esc', function (el, binding, vnode) {
+//    debugger;    
+//    if ($('#' + el.id).hasClass('in')) 
+//        window.addEventListener('keyup', func);           
+//    else
+//        window.removeEventListener('keyup', func);
+//});
 /**************************************/

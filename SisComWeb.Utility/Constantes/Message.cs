@@ -79,5 +79,11 @@
         //Anular Venta
         public const string MsgCorrectoAnularVenta = "Correcto: Se anuló correctamente la venta.";
         public const string MsgErrExcAnularVenta = "Ocurrió una excepción al anular venta.";
+
+        // Postergación
+        public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: Postergacion - Buscar Venta por Boleto";
+        public const string MsgErrBuscarVentaxBoleto = "Ocurrió una excepción en Postergacion - Buscar Venta por Boleto";
+        public const string MsgCorrectoPostergarVenta = "Correcto: Postergar Venta";
+        public const string MsgErrPostergarVenta = "Ocurrió una excepción en Postergar Venta";
     }
 }
