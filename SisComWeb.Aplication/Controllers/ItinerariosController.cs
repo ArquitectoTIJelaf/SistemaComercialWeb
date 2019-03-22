@@ -807,7 +807,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Oficina\" : " + usuario.CodiPuntoVenta + "," + "\"Password\" : " + password + "," + "\"Codi_Tipo\" : " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD + " }";
+                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," + "\"Password\": \"" + password + "\"," + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") + " }";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -819,9 +819,64 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
+                    var clavesInternas = new ClavesInternas
+                    {
+                        estado = estado,
+                        mensaje = mensaje
+                    };
 
-                    return Json(data, JsonRequestBehavior.AllowGet);
+                    return Json(clavesInternas, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(mensaje, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("anular-venta")]
+        public async Task<ActionResult> AnularVenta(int Id_Venta, string tipo)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ " 
+                                     + "\"Id_Venta\": " + Id_Venta + ","
+                                     + "\"Codi_Usuario\": " + usuario.CodiUsuario + ","
+                                     + "\"CodiOficina\": " + usuario.CodiSucursal + ","
+                                     + "\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta + ","
+                                     + "\"tipo\": \"" + tipo 
+                                     + "\" }";
+
+                    HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    JObject data = (JObject)tmpResult["Valor"];
+                    BoletosCortesia item = new BoletosCortesia
+                    {
+                        //BoletoTotal = (decimal)data["BoletoTotal"],
+                        //BoletoLibre = (decimal)data["BoletoLibre"],
+                        //BoletoPrecio = (decimal)data["BoletoPrecio"],
+                        //ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
+                    };
+
+                    return Json(item, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

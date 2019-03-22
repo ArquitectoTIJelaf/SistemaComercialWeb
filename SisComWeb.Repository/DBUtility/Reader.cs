@@ -80,6 +80,16 @@ namespace SisComWeb.Repository
             catch { return 0; }
         }
 
+        public static byte GetByteValue(IDataReader dr, string column)
+        {
+            try
+            {
+                var obj = GetObjectValue(dr, column);
+                if (obj == null) return 0;
+                return Convert.ToByte(obj);
+            }
+            catch { return 0; }
+        }
 
         public static Int16 GetSmallIntValue(IDataReader dr, string column)
         {

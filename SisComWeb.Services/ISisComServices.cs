@@ -154,5 +154,13 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
         Response<string> PostergarVenta(PostergarVentaRequest filtro);
         #endregion
+
+        #region ANULAR VENTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo);
+
+        #endregion
     }
 }
