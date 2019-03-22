@@ -1153,6 +1153,9 @@
                                         case 'FA': // Fecha Abierta
                                             this.sendToFechaAbierta(asientoSel);
                                             break;
+                                        case 'AN':
+                                            this.sendToAnularVenta(asientoSel);
+                                            break;
                                     }
                                 }
                             }
@@ -2114,7 +2117,6 @@
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
                 },
                 sendToFechaAbierta: async function (asientoSel) {
-                    debugger;
                     if (asientoSel.IdVenta) {
                         if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
                             alert('ok');
@@ -2123,6 +2125,23 @@
                             appController.liberarAsientoActual();
                         return;
                     } else {
+                        APP.msg.error("Debe seleccionar un asiento vendido");
+                        appController.liberarAsientoActual();
+                    }
+                },
+                sendToAnularVenta: async function (asientoSel) {
+                    debugger;
+                    if (asientoSel.IdVenta) {
+                        if (await APP.msg.confirm("Confirmar la anulacion de la venta", "Se anulará la venta. ¿Desea continuar?")) {
+                            debugger;
+                            //appController.chargeTurnos();
+                        } else {
+                            debugger;
+                            appController.liberarAsientoActual();
+                        }
+                        return;
+                    } else {
+                        debugger;
                         APP.msg.error("Debe seleccionar un asiento vendido");
                         appController.liberarAsientoActual();
                     }

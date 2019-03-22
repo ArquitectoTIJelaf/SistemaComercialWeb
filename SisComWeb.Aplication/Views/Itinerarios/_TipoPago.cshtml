@@ -49,7 +49,7 @@
                                         <input v-model="importePagado"
                                                id="txtImportePagadoC"
                                                @@input="calcMontos('IPC')"
-                                               @@keypress.13.prevent="nextInput('NUMERO')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                v-validate="'min_value:' + (sumaTotal)"
                                                data-vv-as="Imp. Pagado:"
                                                class="form-control input-sm"
