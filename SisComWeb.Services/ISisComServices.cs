@@ -162,5 +162,13 @@ namespace SisComWeb.Services
         Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo);
 
         #endregion
+
+        #region FECHA ABIERTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
+        #endregion
+
     }
 }

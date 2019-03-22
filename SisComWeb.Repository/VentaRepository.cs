@@ -214,6 +214,21 @@ namespace SisComWeb.Repository
             }
             return mensaje;
         }
+
+        public static string ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        {
+            string mensaje = string.Empty;
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificarVentaAFechaAbierta";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, CodiRuta);
+                db.Execute();
+                mensaje = "Correcto: ModificarVentaAFechaAbierta.";
+            }
+            return mensaje;
+        }
         #endregion
 
         #region Métodos Transaccionales

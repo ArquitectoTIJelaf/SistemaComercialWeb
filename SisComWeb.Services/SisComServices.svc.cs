@@ -431,5 +431,21 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region FECHA ABIERTA
+
+        public Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        {
+            try
+            {
+                return VentaLogic.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
+            }
+        }
+        #endregion
     }
 }
