@@ -982,6 +982,7 @@ namespace SisComWeb.Business
                 return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
             }
         }
+
         public static Response<bool> EliminarReserva(int IdVenta)
         {
             try
