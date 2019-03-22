@@ -875,8 +875,8 @@ namespace SisComWeb.Business
                         NumeCaja = correlativo.Valor,
                         CodiEmpresa = objVenta.Valor.CodiEmpresa,
                         CodiSucursal = Convert.ToInt16(CodiOficina),
-                        Boleto = Convert.ToInt32(objVenta.Valor.NUME_BOLETO).ToString("D7"),
-                        Monto = objVenta.Valor.PrecioVenta,
+                        Boleto = objVenta.Valor.NUME_BOLETO,
+                        Monto = objVenta.Valor.Precio_Venta,
                         CodiUsuario = Convert.ToInt16(Codi_Usuario),
                         Recibe = string.Empty,
                         CodiDestino = Convert.ToString(objVenta.Valor.Codi_ruta),
@@ -897,10 +897,9 @@ namespace SisComWeb.Business
                         anularVenta = VentaRepository.AnularVenta(Id_Venta, Codi_Usuario);
                     }
 
-                    if (anularVenta.Estado == true && anularVenta.EsCorrecto == true)
+                    if (anularVenta.Valor == true && anularVenta.Estado == true)
                     {
                         response.EsCorrecto = true;
-                        response.Valor = anularVenta.Valor;
                         response.Mensaje = Message.MsgCorrectoAnularVenta;
                         response.Estado = true;
                     }

@@ -860,20 +860,11 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    BoletosCortesia item = new BoletosCortesia
-                    {
-                        //BoletoTotal = (decimal)data["BoletoTotal"],
-                        //BoletoLibre = (decimal)data["BoletoLibre"],
-                        //BoletoPrecio = (decimal)data["BoletoPrecio"],
-                        //ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
-                    };
-
-                    return Json(item, JsonRequestBehavior.AllowGet);
+                    return Json(mensaje, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                    return Json(mensaje, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
