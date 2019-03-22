@@ -1081,7 +1081,6 @@
                     return option.label.substring(0, 8);
                 },
                 bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
-                    //Gerarnoob
                     var _this = this;
 
                     // Animación 'ScrollTop'
@@ -1166,7 +1165,7 @@
                     switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
-                        case 'R': // Pase de cortesía
+                        case 'R': // Reserva
                             {
                                 if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                                     _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
