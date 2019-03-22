@@ -797,7 +797,10 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," + "\"Password\": \"" + password + "\"," + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") + " }";
+                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," 
+                                    + "\"Password\": \"" + password + "\"," 
+                                    + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") 
+                                    + " }";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
