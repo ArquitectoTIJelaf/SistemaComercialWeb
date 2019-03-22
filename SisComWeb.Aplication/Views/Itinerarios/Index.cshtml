@@ -1137,6 +1137,8 @@
                                         case '7': appController.showPaseCortesia(); break;
                                         // Postergarción
                                         case 'PO': appController.showPostergacion(); break;
+                                        // Fecha Abierta
+                                        case 'FA': this.sendToFechaAbierta(asientoSel); break;
                                     }
                                 }
                             }
@@ -2096,6 +2098,12 @@
                     _this.list.ventas[_this.indexVenta].CodiSocio = appVuePaseCortesia.solicitante ? appVuePaseCortesia.solicitante.id : '';
                     _this.list.ventas[_this.indexVenta].Concepto = appVuePaseCortesia.concepto;
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
+                },
+                sendToFechaAbierta: async function (asientoSel) {
+                    if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
+                        alert('ok');
+                    } else
+                        return;
                 }
             },
             computed: {
