@@ -75,5 +75,8 @@
         public const string MsgCorrectoClavesInternas = "Correcto: ClavesInternas.";
         public const string MsgErrExcClavesInternas = "Ocurrió una excepción en las claves internas.";
 
+        // Reserva
+        public const string MsgCorrectoGrabaReserva = "Correcto: GrabaReserva.";
+        public const string MsgErrExcGrabaReserva = "Ocurrió una excepción al grabar reserva.";
     }
 }

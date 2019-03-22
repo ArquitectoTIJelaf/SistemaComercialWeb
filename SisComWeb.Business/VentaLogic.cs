@@ -188,10 +188,12 @@ namespace SisComWeb.Business
                         // Seteo 'AuxCodigoBF_Interno'
                         switch (FlagVenta)
                         {
-                            // VENTA
-                            case "V": entidad.AuxCodigoBF_Interno = "17"; break;
-                            // PASE DE CORETESÍA
-                            case "7": entidad.AuxCodigoBF_Interno = "78"; break;
+                            case "V": // VENTA
+                                entidad.AuxCodigoBF_Interno = "17";
+                                break;
+                            case "7": // PASE DE CORTESÍA
+                                entidad.AuxCodigoBF_Interno = "78";
+                                break;
                         }
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "01"; // Factura
@@ -201,10 +203,12 @@ namespace SisComWeb.Business
                         // Seteo 'AuxCodigoBF_Interno'
                         switch (FlagVenta)
                         {
-                            // VENTA
-                            case "V": entidad.AuxCodigoBF_Interno = "16"; break;
-                            // PASE DE CORETESÍA
-                            case "7": entidad.AuxCodigoBF_Interno = "77"; break;
+                            case "V": // VENTA
+                                entidad.AuxCodigoBF_Interno = "16";
+                                break;
+                            case "7": // PASE DE CORTESÍA
+                                entidad.AuxCodigoBF_Interno = "77";
+                                break;
                         }
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "03"; // Boleta
@@ -458,6 +462,7 @@ namespace SisComWeb.Business
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = entidad.Tipo + entidad.SerieBoleto.ToString("D3").ToString() + "-" + entidad.NumeBoleto.ToString("D7").ToString();
 
+                    // PASE DE CORTESÍA
                     if (FlagVenta == "7")
                     {
                         // Modifica 'SaldoPaseCortesia'
@@ -659,6 +664,120 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgErrExcGrabaVenta, false);
+            }
+        }
+
+        public static Response<string> GrabaReserva(List<VentaEntity> listado)
+        {
+            try
+            {
+                var response = new Response<string>(false, null, "Error: GrabaReserva.", false);
+                string valor = string.Empty;
+
+                foreach (var entidad in listado)
+                {
+                    string auxBoletoCompleto = string.Empty;
+
+                    Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabaReserva.", false);
+
+                    // Busca 'ProgramacionViaje'
+                    var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
+                    if (resBuscarProgramacionViaje.Estado)
+                    {
+                        if (resBuscarProgramacionViaje.Valor == 0)
+                        {
+                            // Genera 'CorrelativoAuxiliar'
+                            var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                            if (resGenerarCorrelativoAuxiliar.Estado)
+                                entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor);
+                            else
+                            {
+                                response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
+                                return response;
+                            }
+
+                            var objProgramacion = new ProgramacionEntity
+                            {
+                                CodiProgramacion = entidad.CodiProgramacion,
+                                CodiEmpresa = entidad.CodiEmpresa,
+                                CodiSucursal = entidad.CodiSucursal,
+                                CodiRuta = entidad.CodiRuta,
+                                CodiBus = entidad.CodiBus,
+                                FechaProgramacion = entidad.FechaProgramacion,
+                                HoraProgramacion = entidad.HoraProgramacion,
+                                CodiServicio = entidad.CodiServicio
+                            };
+
+                            // Graba 'Programacion'
+                            var resGrabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
+                            if (!resGrabarProgramacion.Estado)
+                            {
+                                response.Mensaje = resGrabarProgramacion.Mensaje;
+                                return response;
+                            }
+
+                            // Graba 'ViajeProgramacion'
+                            var resGrabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
+                            if (!resGrabarViajeProgramacion.Estado)
+                            {
+                                response.Mensaje = resGrabarViajeProgramacion.Mensaje;
+                                return response;
+                            }
+                        }
+                        else
+                            entidad.CodiProgramacion = resBuscarProgramacionViaje.Valor;
+                    }
+                    else
+                        return response;
+
+                    // Busca 'Correlativo'
+                    var resGenerarCorrelativoAuxiliar2 = VentaRepository.GenerarCorrelativoAuxiliar("TB_RESERVAS", "999", "", string.Empty);
+                    if (resGenerarCorrelativoAuxiliar2.Estado)
+                    {
+                        entidad.SerieBoleto = -98;
+                        entidad.NumeBoleto = int.Parse(resGenerarCorrelativoAuxiliar2.Valor);
+                    }
+                    else
+                    {
+                        response.Mensaje = resGenerarCorrelativoAuxiliar2.Mensaje;
+                        return response;
+                    }
+
+                    // Seteo 'Tipo'
+                    entidad.Tipo = "M";
+
+                    // Graba 'Venta'
+                    resGrabarVenta = VentaRepository.GrabarVenta(entidad);
+                    if (resGrabarVenta.Estado)
+                    {
+                        if (resGrabarVenta.Valor != -1)
+                            entidad.IdVenta = resGrabarVenta.Valor;
+                        else
+                            return response;
+                    }
+                    else
+                    {
+                        response.Mensaje = resGrabarVenta.Mensaje;
+                        return response;
+                    }
+
+                    // Añado 'auxBoletoCompleto'
+                    auxBoletoCompleto = (entidad.Tipo == "M" ? "0" : entidad.Tipo) + entidad.SerieBoleto.ToString("D3").ToString() + "-" + entidad.NumeBoleto.ToString("D7").ToString();
+
+                    valor += auxBoletoCompleto + ",";
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = valor;
+                response.Mensaje = Message.MsgCorrectoGrabaReserva;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrExcGrabaReserva, false);
             }
         }
 
