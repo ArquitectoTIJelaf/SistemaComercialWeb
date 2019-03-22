@@ -975,5 +975,43 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("modificar-venta-a-fecha-abierta")]
+        public async Task<ActionResult> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{ \"IdVenta\" : " + IdVenta +
+                                ",\"CodiServicio\" : " + CodiServicio +
+                                ", \"CodiRuta\" : " + CodiRuta + " }";
+                    HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    string data = (string)tmpResult.SelectToken("Valor");
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

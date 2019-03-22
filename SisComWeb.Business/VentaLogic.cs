@@ -963,6 +963,26 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        {
+            try
+            {
+                var response = new Response<string>()
+                {
+                    EsCorrecto = true,
+                    Valor = VentaRepository.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta),
+                    Mensaje = Message.MsgCorrectoPostergarVenta,
+                    Estado = true
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
+            }
+        }
+
         public static Response<bool> EliminarReserva(int IdVenta)
         {
             try

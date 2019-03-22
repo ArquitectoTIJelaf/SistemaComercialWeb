@@ -91,5 +91,8 @@
         public const string MsgErrExcGrabaReserva = "Ocurrió una excepción al grabar reserva.";
         public const string MsgCorrectoEliminarReserva = "Correcto: EliminarReserva.";
         public const string MsgErrExcEliminarReserva = "Ocurrió una excepción al eliminar reserva.";
+        // Fecha Abierta
+        public const string MsgCorrectoModificarVentaAFechaAbierta = "Correcto: ModificarVentaAFechaAbierta.";
+        public const string MsgErrModificarVentaAFechaAbierta = "Ocurrió una excepción al modificar Fecha Abierta.";
     }
 }

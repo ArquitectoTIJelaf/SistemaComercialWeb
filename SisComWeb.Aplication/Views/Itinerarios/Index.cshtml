@@ -2168,11 +2168,18 @@
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
                 },
                 sendToFechaAbierta: async function (asientoSel) {
+                    var _this = this;
                     if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
-                        alert('ok');
-                        appController.chargeTurnos();
+                        APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
+                            IdVenta: asientoSel.IdVenta,
+                            CodiServicio: _this.filtro.CodiServicio.id,
+                            CodiRuta: _this.filtro.CodiDestinoBus.id
+                        })).then(res => {
+                            appController.chargeTurnos();
+                            APP.msg.info("Se cambió a Fecha Abierta correctamente");
+                        }).catch(APP.rq.axios_handler_error_alert);
                     } else
-                        this.limpiarVenta();
+                        _this.limpiarVenta();
                     return;
                 },
                 sendToAnularVenta: async function (asientoSel) {
