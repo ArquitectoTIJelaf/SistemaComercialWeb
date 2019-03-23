@@ -589,14 +589,14 @@
                                         <div class="col-md-1">
                                             <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
                                                 <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
-                                                <input v-model="list.ventas[indexVenta].NroAsiento"                                                       
-                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"                                                       
-                                                       @@keydown.9.prevent="validateTxtNroAsientoVenta($event)" 
+                                                <input v-model="list.ventas[indexVenta].NroAsiento"
+                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"
+                                                       @@keydown.9.prevent="validateTxtNroAsientoVenta($event)"
                                                        @@focus="focusAsiento($event)"
                                                        @@blur="validateTxtNroAsientoVenta($event)"
                                                        id="txtNroAsientoVenta"
                                                        ref="refNroAsientoVenta"
-                                                       class="form-control input-sm"                                                       
+                                                       class="form-control input-sm"
                                                        placeholder="Nº"
                                                        style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
                                                        v-bind:class="{'placeh-ticket-venta': auxFocus.asiento}"
@@ -642,7 +642,7 @@
                                                 <label class="control-label">Nombres</label>
                                                 <input :value="list.ventas[indexVenta].Nombres.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nombres = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"                                                       
+                                                       @@keypress.13.prevent="recorridoSectionVentas"
                                                        id="txtNombres"
                                                        ref="refNombres"
                                                        class="form-control input-sm"
@@ -729,7 +729,7 @@
                                                 </div>
                                                 <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
-                                            <div class="col-md-5">  
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select v-model="list.ventas[indexVenta].Sexo"
@@ -768,7 +768,7 @@
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
                                                        @@keypress.13.prevent="$refs.refRuc.focus()"
-                                                       @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
@@ -790,7 +790,7 @@
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input :value="list.ventas[indexVenta].NroSolicitud"
                                                        @@keypress.13.prevent="$refs.refRuc.focus()"
-                                                       @@keypress.9.prevent="$refs.refRuc.focus()"                                                       
+                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
                                                        id="txtNroSolicitud"
                                                        ref="refNroSolicitud"
                                                        class="form-control input-sm"
@@ -810,7 +810,7 @@
                                                                @@keypress.13.prevent="searchEmpresa"
                                                                @@keydown.9.prevent="searchEmpresa"
                                                                @@keyup.backspace="clearRazSoc"
-                                                               @@focus="$event.target.select()"                                                               
+                                                               @@focus="$event.target.select()"
                                                                id="txtRuc"
                                                                ref="refRuc"
                                                                name="ruc"
@@ -830,7 +830,7 @@
                                                                @@keypress.9.prevent="$refs.refDireccion.focus()"
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
-                                                               name="razon_social"                                                               
+                                                               name="razon_social"
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
@@ -871,7 +871,7 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refRegistrarNiño.focus()" 
+                                                       @@keypress.13.prevent="$refs.refRegistrarNiño.focus()"
                                                        @@keypress.9.prevent="$refs.refRegistrarNiño.focus()"
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
@@ -901,12 +901,13 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="checkedRegistrarNino"
-                                                                @@keypress.13.prevent="passSinceRegistrarNino" 
-                                                                @@keypress.9.prevent="passSinceRegistrarNino"
-                                                                id="chckRegistrarNiño"
-                                                                ref="refRegistrarNiño"
-                                                                class="check-with-label"
-                                                                type="checkbox">
+                                                               @@keypress.13.prevent="passSinceRegistrarNino"
+                                                               @@keypress.9.prevent="passSinceRegistrarNino"
+                                                               id="chckRegistrarNiño"
+                                                               ref="refRegistrarNiño"
+                                                               class="check-with-label"
+                                                               type="checkbox"
+                                                               v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -923,10 +924,11 @@
                                                            @@blur="validateRangePrice"
                                                            id="txtPrecio"
                                                            ref="refPrecio"
-                                                           class="form-control input-sm"                                                           
+                                                           class="form-control input-sm"
                                                            placeholder="0.00"
                                                            style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90;"
-                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
+                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}"
+                                                           v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -978,8 +980,8 @@
                             </div>
                         </div>
                         <div v-show="showPlano" class="col-md-12" style="margin-top: 5px; text-align: center;">
-                            <div @@click="indexVenta = index" 
-                                 v-for="(item, index) in list.ventas" 
+                            <div @@click="indexVenta = index"
+                                 v-for="(item, index) in list.ventas"
                                  style="display: inline-block; vertical-align: middle; margin-right: 5px;">
                                 <span class="label label-rouded btn-emp" style="cursor: pointer;">{{item.NroAsiento}}</span>
                             </div>
