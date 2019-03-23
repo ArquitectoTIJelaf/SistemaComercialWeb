@@ -440,6 +440,9 @@
             });
 
             $('#appRegistrarInfante').on('hidden.bs.modal', function () {
+                debugger;
+                var aux1 = appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante;
+
                 appVueVenta.$refs.refRegistrarNiño.focus();
                 if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
                     appVueVenta.checkRegistrarNino = false;
@@ -2806,7 +2809,10 @@
                         $('#cboParentescoRA input[type=search]').focus();
                     }
                     else {
-                        $('#btnRegistrarAconpaniante').focus();
+                        if (_this.Edad > 5)
+                            $('#btnIngresarConClave').focus();
+                        else
+                            $('#btnRegistrarAconpaniante').focus();
                     }
                 },
                 saveAcompaniante: function () {
