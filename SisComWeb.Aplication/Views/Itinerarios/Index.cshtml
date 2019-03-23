@@ -2195,7 +2195,7 @@
                 },
                 sendToFechaAbierta: async function (asientoSel) {
                     var _this = this;
-                    if (parseInt(asientoSel.IdVenta)) {                        
+                    if (parseInt(asientoSel.IdVenta)) {
                         if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
                             APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: asientoSel.IdVenta,
@@ -2210,7 +2210,7 @@
                         //return;
                     } else {
                         appController.showPostergacion();
-                    }                    
+                    }
                     return;
                 },
                 sendToAnularVenta: async function (asientoSel) {var _this = this;
@@ -2445,6 +2445,7 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
+                    debugger;
                     var _this = this;
                     _this.processing = true;
 
@@ -2521,6 +2522,7 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: _this.pickedBusVenta })
                         .then(res => {
+                            debugger;
                             appController.showBoletosVendidos(res.data);
                             _this.processing = false;
                         }).catch(err => {
@@ -3021,6 +3023,29 @@
                     _this.$nextTick(function () {
                         appVueVenta.passNumDocToDocumento();
                     });
+                },
+                filterByValues: function (collection, key, values) {
+                    debugger;
+                    var _this = this;
+                    return _.filter(collection, function (o) {
+                        return _.includes(collection, values);
+                    });
+                },
+                resolveKey: function (obj, key) {
+                    debugger;
+                    if (obj == null || key == null) {
+                        return undefined;
+                    }
+                    var resolved = undefined;
+                    if (typeof key == 'function') {
+                        resolved = key(obj);
+                    } else if (typeof key == 'string') {
+                        resolved = obj[key];
+                        if (resolved == null && key.indexOf(".") != -1) {
+                            resolved = _.deepGet(obj, key);
+                        }
+                    }
+                    return resolved;
                 }
             },
             computed: {
@@ -3037,25 +3062,15 @@
             },
             watch: {
                 searchInTable: function (newVal) {
+                    debugger;
                     var _this = this;
-                    //var Nombre_Beneficiario = 'Nombre_Beneficiario';
-
-                    //const result = _this.list.filterBeneficiarios.find(beneficiario => beneficiario.Nombre_Beneficiario === newVal)
-
-                    //for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
-                    //    if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
-                    //        return _this.list.filterBeneficiarios[i];
-                    //    }
-                    //}
-
                     if (String(newVal).replace(/\s/g, '').length > 0) {
-                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
-                            return _.some(item.Nombre_Beneficiario, function (tag) {
-                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
-                            });
+                        _this.list.filterBeneficiarios = _.filter(_this.list.beneficiarios, obj => {
+                            var coincidence = obj.Nombre_Beneficiario.toUpperCase().indexOf(newVal.toUpperCase()) !== -1;
+                            return coincidence;                            
                         });
                     } else {
-                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                         _this.list.filterBeneficiarios = _this.list.beneficiarios;
                     }
                 }
             }
@@ -3085,9 +3100,8 @@
                     window.removeEventListener('keyup', this.esc);
                     $('#appBoletosVendidos').modal('hide');
                     $('#appBoletosVendidos').on('hidden.bs.modal', function () {
-                        appController.chargeTurnos();
                     });
-                    
+                    appController.chargeTurnos();
                 }
             }
         });
