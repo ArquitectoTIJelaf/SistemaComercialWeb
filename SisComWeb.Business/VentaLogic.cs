@@ -14,6 +14,8 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
+        #region BUSCAR CORRELATIVO
+
         public static Response<string> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
@@ -81,6 +83,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region GRABAR VENTA
+
         public static Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
         {
             try
@@ -96,18 +102,6 @@ namespace SisComWeb.Business
 
                     Response<int> resGrabarVentaFechaAbierta = new Response<int>(false, 0, "Error: GrabarVentaFechaAbierta.", false);
                     Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabarVenta.", false);
-
-                    // RESERVA
-                    if (FlagVenta == "R")
-                    {
-                        // Valida 'SaldoPaseCortesia'
-                        var resEliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
-                        if (!resEliminarReserva.Estado)
-                        {
-                            response.Mensaje = resEliminarReserva.Mensaje;
-                            return response;
-                        }
-                    }
 
                     // Busca 'ProgramacionViaje'
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
@@ -367,19 +361,35 @@ namespace SisComWeb.Business
                     {
                         case "M":
                             {
-                                // Graba 'Venta'
-                                resGrabarVenta = VentaRepository.GrabarVenta(entidad);
-                                if (resGrabarVenta.Estado)
+                                // Valida 'FechaAbierta'
+                                if (entidad.FechaAbierta)
                                 {
-                                    if (resGrabarVenta.Valor != -1)
-                                        entidad.IdVenta = resGrabarVenta.Valor;
+                                    var auxCodiProgramacion = entidad.CodiProgramacion;
+                                    entidad.CodiProgramacion = 0;
+
+                                    // Graba 'VentaFechaAbierta'
+                                    resGrabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
+                                    if (resGrabarVentaFechaAbierta.Estado)
+                                        entidad.IdVenta = resGrabarVentaFechaAbierta.Valor;
                                     else
+                                    {
+                                        response.Mensaje = resGrabarVentaFechaAbierta.Mensaje;
                                         return response;
+                                    }
+
+                                    entidad.CodiProgramacion = auxCodiProgramacion;
                                 }
                                 else
                                 {
-                                    response.Mensaje = resGrabarVenta.Mensaje;
-                                    return response;
+                                    // Graba 'Venta'
+                                    resGrabarVenta = VentaRepository.GrabarVenta(entidad);
+                                    if (resGrabarVenta.Estado)
+                                        entidad.IdVenta = resGrabarVenta.Valor;
+                                    else
+                                    {
+                                        response.Mensaje = resGrabarVenta.Mensaje;
+                                        return response;
+                                    }
                                 }
 
                                 // Graba 'Acompañante'
@@ -681,6 +691,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region GRABAR RESERVA
+
         public static Response<string> GrabaReserva(List<VentaEntity> listado)
         {
             try
@@ -806,6 +820,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region LISTA BENEFICIARIO PASE 
+
         public static Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
         {
             try
@@ -832,6 +850,10 @@ namespace SisComWeb.Business
                 return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
             }
         }
+
+        #endregion
+
+        #region CLAVES INTERNAS
 
         public static Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo)
         {
@@ -864,6 +886,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region ANULAR VENTA
+
         public static Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
         {
             try
@@ -886,8 +912,8 @@ namespace SisComWeb.Business
                         NumeCaja = correlativo.Valor,
                         CodiEmpresa = objVenta.Valor.CodiEmpresa,
                         CodiSucursal = Convert.ToInt16(CodiOficina),
-                        Boleto = Convert.ToInt32(objVenta.Valor.NUME_BOLETO).ToString("D7"),
-                        Monto = objVenta.Valor.PrecioVenta,
+                        Boleto = objVenta.Valor.NUME_BOLETO,
+                        Monto = objVenta.Valor.Precio_Venta,
                         CodiUsuario = Convert.ToInt16(Codi_Usuario),
                         Recibe = string.Empty,
                         CodiDestino = Convert.ToString(objVenta.Valor.Codi_ruta),
@@ -908,10 +934,9 @@ namespace SisComWeb.Business
                         anularVenta = VentaRepository.AnularVenta(Id_Venta, Codi_Usuario);
                     }
 
-                    if (anularVenta.Estado == true && anularVenta.EsCorrecto == true)
+                    if (anularVenta.Valor == true && anularVenta.Estado == true)
                     {
                         response.EsCorrecto = true;
-                        response.Valor = anularVenta.Valor;
                         response.Mensaje = Message.MsgCorrectoAnularVenta;
                         response.Estado = true;
                     }
@@ -931,6 +956,10 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
             }
         }
+
+        #endregion
+
+        #region BUSCAR VENTA POR BOLETO
 
         public static Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
         {
@@ -953,6 +982,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region POSTERGAR VENTA
+
         public static Response<string> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
@@ -974,6 +1007,10 @@ namespace SisComWeb.Business
             }
         }
 
+        #endregion
+
+        #region MODIFICAR VENTA FECHA ABIERTA
+
         public static Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
             try
@@ -993,6 +1030,10 @@ namespace SisComWeb.Business
                 return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
             }
         }
+
+        #endregion
+
+        #region ELIMINAR RESERVA
 
         public static Response<bool> EliminarReserva(int IdVenta)
         {
@@ -1021,6 +1062,8 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
             }
         }
+
+        #endregion
 
         #region FACTURACIÓN ELETRÓNICA
 

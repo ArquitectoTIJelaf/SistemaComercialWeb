@@ -798,7 +798,10 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," + "\"Password\": \"" + password + "\"," + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") + " }";
+                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," 
+                                    + "\"Password\": \"" + password + "\"," 
+                                    + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") 
+                                    + " }";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -858,20 +861,11 @@ namespace SisComWeb.Aplication.Controllers
                 string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    BoletosCortesia item = new BoletosCortesia
-                    {
-                        //BoletoTotal = (decimal)data["BoletoTotal"],
-                        //BoletoLibre = (decimal)data["BoletoLibre"],
-                        //BoletoPrecio = (decimal)data["BoletoPrecio"],
-                        //ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
-                    };
-
-                    return Json(item, JsonRequestBehavior.AllowGet);
+                    return Json(mensaje, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                    return Json(mensaje, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)

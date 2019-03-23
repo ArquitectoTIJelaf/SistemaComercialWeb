@@ -250,7 +250,7 @@
                                                           @@keydown.13.native.prevent="nextStep(7)"
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
-                                                        <div @@click="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
+                                                        <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
                                                     </template>
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
@@ -648,7 +648,8 @@
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="NOMBRES"
-                                                       v-mask="'A'.repeat(100)">
+                                                       maxlength="200"
+                                                       v-only-name>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -662,7 +663,8 @@
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="PATERNO"
-                                                       v-mask="'A'.repeat(50)">
+                                                       maxlength="50"
+                                                       v-only-name>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -676,7 +678,8 @@
                                                        class="form-control input-sm"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="MATERNO"
-                                                       v-mask="'A'.repeat(50)">
+                                                       maxlength="50"
+                                                       v-only-name>
                                             </div>
                                         </div>
                                         <div class="col-md-2 text-center">
