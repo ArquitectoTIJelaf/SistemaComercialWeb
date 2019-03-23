@@ -641,7 +641,7 @@
             data: {
                 filtro: {
                     CodiOrigen: null,
-                    CodiDestino: null,
+                    CodiDestino: selectAll,
                     CodiRuta: selectAll,
                     FechaViaje: fechaActual,
                     Hora: horaActual,
@@ -2084,11 +2084,11 @@
                             _this.list.ventas[_this.indexVenta].Nacionalidad = 'PERUANA';
                         }
                         else if (id === "4") { //PASAPORTE
-                            _this.mask.documento = "#".repeat(9);
+                            _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                         else if (id === "7") { //CARNET EXTRANJERIA
-                            _this.mask.documento = "N".repeat(12);
+                            _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                     }
