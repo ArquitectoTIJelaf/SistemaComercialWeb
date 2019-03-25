@@ -214,6 +214,7 @@
             background-color: #f7fafc;
             border: 1px solid #5b5b5c !important;
             color: #333;
+            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
         }
 
         .number-of-seat {
@@ -761,11 +762,11 @@
             mounted: function () {},
             methods: {
                 loadTable: function (list) {
-                    if (this.$refs.paginator)
-                        this.$refs.paginator.goToPage(1);
                     this.list.itinerarios = list;
                     this.$nextTick(() => {
                         this.shown = true
+                        if (this.$refs.paginator && this.list.itinerarios.length > 0)
+                            this.$refs.paginator.goToPage(1);
                     });
                 },
                 sendRow: function (item) {
@@ -1681,16 +1682,16 @@
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
                     if (FechaVenta) {
                         if (FlagVenta === 'R') // Reserva
-                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorReserva, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorReserva)}` };
+                            return {'background-color': `${APP.ventas.colorReserva}`};
                         else
-                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
+                            return {'background-color': `${Color}`};
                     }
                     else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
+                                return {'background-color': `${APP.ventas.colorBloqueoExterno}`};
                             else
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno)}` };
+                                return {'background-color': `${APP.ventas.colorBloqueoInterno}`};
                         }
                     }
                 },
@@ -3043,7 +3044,7 @@
                     if (String(newVal).replace(/\s/g, '').length > 0) {
                         _this.list.filterBeneficiarios = _.filter(_this.list.beneficiarios, obj => {
                             var coincidence = obj.Nombre_Beneficiario.toUpperCase().indexOf(newVal.toUpperCase()) !== -1;
-                            return coincidence;                            
+                            return coincidence;
                         });
                     } else {
                          _this.list.filterBeneficiarios = _this.list.beneficiarios;
