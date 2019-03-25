@@ -3040,24 +3040,13 @@
             watch: {
                 searchInTable: function (newVal) {
                     var _this = this;
-                    //var Nombre_Beneficiario = 'Nombre_Beneficiario';
-
-                    //const result = _this.list.filterBeneficiarios.find(beneficiario => beneficiario.Nombre_Beneficiario === newVal)
-
-                    //for (var i = 0; i < _this.list.filterBeneficiarios.length; i++) {
-                    //    if (_this.list.filterBeneficiarios[i][Nombre_Beneficiario] === newVal) {
-                    //        return _this.list.filterBeneficiarios[i];
-                    //    }
-                    //}
-
                     if (String(newVal).replace(/\s/g, '').length > 0) {
-                        return _this.list.filterBeneficiarios = _.filter(_this.list.filterBeneficiarios, function (item) {
-                            return _.some(item.Nombre_Beneficiario, function (tag) {
-                                return _.startsWith(tag.toLowerCase(), newVal.toLowerCase());
-                            });
+                        _this.list.filterBeneficiarios = _.filter(_this.list.beneficiarios, obj => {
+                            var coincidence = obj.Nombre_Beneficiario.toUpperCase().indexOf(newVal.toUpperCase()) !== -1;
+                            return coincidence;                            
                         });
                     } else {
-                        _this.list.filterBeneficiarios = _this.list.beneficiarios;
+                         _this.list.filterBeneficiarios = _this.list.beneficiarios;
                     }
                 }
             }
@@ -3087,9 +3076,8 @@
                     window.removeEventListener('keyup', this.esc);
                     $('#appBoletosVendidos').modal('hide');
                     $('#appBoletosVendidos').on('hidden.bs.modal', function () {
-                        appController.chargeTurnos();
                     });
-
+                    appController.chargeTurnos();
                 }
             }
         });
