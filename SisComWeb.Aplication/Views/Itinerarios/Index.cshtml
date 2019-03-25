@@ -214,6 +214,7 @@
             background-color: #f7fafc;
             border: 1px solid #5b5b5c !important;
             color: #333;
+            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
         }
 
         .number-of-seat {
@@ -780,6 +781,8 @@
                     this.list.itinerarios = list;
                     this.$nextTick(() => {
                         this.shown = true
+                        if (this.$refs.paginator && this.list.itinerarios.length > 0)
+                            this.$refs.paginator.goToPage(1);
                     });
                 },
                 sendRow: function (item) {
@@ -1695,16 +1698,16 @@
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
                     if (FechaVenta) {
                         if (FlagVenta === 'R') // Reserva
-                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorReserva, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorReserva)}` };
+                            return {'background-color': `${APP.ventas.colorReserva}`};
                         else
-                            return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(Color, 0.5)} ,${this.$options.filters.hexToRgb(Color)}` };
+                            return {'background-color': `${Color}`};
                     }
                     else {
                         if (NumeAsiento !== 0) {
                             if (IDS === 0)
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}` };
+                                return {'background-color': `${APP.ventas.colorBloqueoExterno}`};
                             else
-                                return { 'background-image': `radial-gradient(circle, ${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno, 0.5)} ,${this.$options.filters.hexToRgb(APP.ventas.colorBloqueoInterno)}` };
+                                return {'background-color': `${APP.ventas.colorBloqueoInterno}`};
                         }
                     }
                 },
@@ -3006,26 +3009,6 @@
                     _this.$nextTick(function () {
                         appVueVenta.passNumDocToDocumento();
                     });
-                },
-                filterByValues: function (collection, key, values) {
-                    return _.filter(collection, function (o) {
-                        return _.includes(collection, values);
-                    });
-                },
-                resolveKey: function (obj, key) {
-                    if (obj == null || key == null) {
-                        return undefined;
-                    }
-                    var resolved = undefined;
-                    if (typeof key == 'function') {
-                        resolved = key(obj);
-                    } else if (typeof key == 'string') {
-                        resolved = obj[key];
-                        if (resolved == null && key.indexOf(".") != -1) {
-                            resolved = _.deepGet(obj, key);
-                        }
-                    }
-                    return resolved;
                 }
             },
             computed: {

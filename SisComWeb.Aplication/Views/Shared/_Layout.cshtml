@@ -60,18 +60,22 @@
         ClientSignalR.Owner = false;
 
         $(function () {
-            
+
             var notification = $.connection.notificationHub;
 
             notification.client.bloquearBus = function (nroViaje, fechaViaje, nroAsiento) {
-                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner)
-                    $('#btnAsiento_' + nroAsiento).css('background-image', `radial-gradient(circle, ${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}`);
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
+                    //$('#btnAsiento_' + nroAsiento).css('background-image', `radial-gradient(circle, ${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}`);
+                    $('#btnAsiento_' + nroAsiento).css('background-color', `${APP.ventas.colorBloqueoExterno}`);
+                }
                 ClientSignalR.Owner = false;
             };
 
             notification.client.liberarBus = function (nroViaje, fechaViaje, nroAsiento) {
-                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner)
-                    $('#btnAsiento_' + nroAsiento).css('background-image', '');
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
+                    //$('#btnAsiento_' + nroAsiento).css('background-image', '');
+                    $('#btnAsiento_' + nroAsiento).css('background-color', '');
+                }
                 ClientSignalR.Owner = false;
             };
 

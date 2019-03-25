@@ -1542,6 +1542,7 @@ APP.ventas = {};
 APP.ventas.colorBloqueoInterno = '#FFC36D';
 APP.ventas.colorBloqueoExterno = '#607D8B';
 APP.ventas.colorReserva = '#DD0707';
+APP.ventas.colorDegrade = '#FFFFFF';
 /****************************************/
 
 
