@@ -140,10 +140,10 @@ namespace SisComWeb.Repository
             try
             {
                 var obj = dr[column];
-                tempDate = obj == DBNull.Value ? DateTime.Now : (DateTime)obj;
+                tempDate = (DateTime)obj;
                 return tempDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
             }
-            catch { return tempDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture); }
-        }       
+            catch { return ""; }
+        }
     }
 }

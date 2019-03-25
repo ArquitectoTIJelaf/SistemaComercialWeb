@@ -761,6 +761,8 @@
             mounted: function () {},
             methods: {
                 loadTable: function (list) {
+                    if (this.$refs.paginator)
+                        this.$refs.paginator.goToPage(1);
                     this.list.itinerarios = list;
                     this.$nextTick(() => {
                         this.shown = true
@@ -2195,7 +2197,7 @@
                 },
                 sendToFechaAbierta: async function (asientoSel) {
                     var _this = this;
-                    if (parseInt(asientoSel.IdVenta)) {                        
+                    if (parseInt(asientoSel.IdVenta)) {
                         if (await APP.msg.confirm("Confirmar Fecha Abierta", "Se cambiará a Fecha Abierta. ¿Desea continuar?")) {
                             APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: asientoSel.IdVenta,
@@ -2210,7 +2212,7 @@
                         //return;
                     } else {
                         appController.showPostergacion();
-                    }                    
+                    }
                     return;
                 },
                 sendToAnularVenta: async function (asientoSel) {var _this = this;
@@ -3087,7 +3089,7 @@
                     $('#appBoletosVendidos').on('hidden.bs.modal', function () {
                         appController.chargeTurnos();
                     });
-                    
+
                 }
             }
         });

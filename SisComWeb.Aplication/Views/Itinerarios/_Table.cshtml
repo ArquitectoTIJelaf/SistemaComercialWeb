@@ -48,7 +48,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <paginate name="items" :list="list.itinerarios" :per="10">
+                                <paginate ref="paginator" name="items" :list="list.itinerarios" :per="10">
                                     <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                         <td class="custom-td">
                                             <template v-if="item.Color === '#FFFFFF'">
