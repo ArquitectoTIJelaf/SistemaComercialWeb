@@ -351,7 +351,9 @@
 
 @section scripts{
     <script type="text/javascript">
+
         $(document).ready(function () {
+
             //#region RECORRIDO ITINERARIOS
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
@@ -439,8 +441,36 @@
                 return false;
             });
 
+            $('#appVueTipoPago').on('shown.bs.modal', function () {
+                switch (appVueTipoPago.pickedBusVenta) {
+                    case 'V': // Venta
+                        $("#cboTipoPagoTP input[type=search]").focus();
+                        break;
+                    case '7': // Pase de Cortesía
+                        appVueTipoPago.tipoPago = '01';
+                        appVueTipoPago.$nextTick(function () {
+                            $("#txtImportePagadoC").focus();
+                        });
+                        break;
+                }
+            });
+
+            $('#appVueTipoPago').on('hidden.bs.modal', function () {
+                $('#btnTipoPago').focus();
+            });
+
+            $('#appRegistrarInfante').on('shown.bs.modal', function () {
+                if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante) {
+                    appRegistrarInfante.setMostrarInfante(appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante);
+                    document.getElementById("chckRegistrarNiño").checked = true;
+                }    
+                else
+                    $("#cboTipoDocRA input[type=search]").focus();
+            });
+
             $('#appRegistrarInfante').on('hidden.bs.modal', function () {
                 debugger;
+
                 var aux1 = appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante;
 
                 appVueVenta.$refs.refRegistrarNiño.focus();
@@ -457,44 +487,27 @@
                 }
             });
 
-            $('#appVueTipoPago').on('hidden.bs.modal', function () {
-                $('#btnTipoPago').focus();
+            $('#appVuePaseCortesia').on('shown.bs.modal', function () {
+                $("#cboGerentePC input[type=search]").focus();
             });
 
-            function validateFloatKeyPress(el, evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                var number = el.value.split('.');
-                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    return false;
-                }
-                //just one dot
-                if (number.length > 1 && charCode == 46) {
-                    return false;
-                }
-                //get the carat position
-                var caratPos = getSelectionStart(el);
-                var dotPos = el.value.indexOf(".");
-                if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
-                    return false;
-                }
-                return true;
-            }
+            $('#appBoletosVendidos').on('shown.bs.modal', function () {
+                $('#btnCerrarVenta').focus();
+            });
 
-            function getSelectionStart(o) {
-                if (o.createTextRange) {
-                    var r = document.selection.createRange().duplicate()
-                    r.moveEnd('character', o.value.length)
-                    if (r.text == '') return o.value.length
-                    return o.value.lastIndexOf(r.text)
-                } else return o.selectionStart
-            }
+            $('#appBoletosVendidos').on('hidden.bs.modal', function () {
+                appController.chargeTurnos();
+            });
 
-            function keyPress(field, evt) {
+            $('#appVuePostergacion').on('shown.bs.modal', function () {
+                $('#cboEmpresaPos input[type=search]').focus();
+            });
 
-            }
+            $('#appClaveAutorizacion').on('shown.bs.modal', function () {
+                $('#txtContraseniaCA').focus();
+            });
 
             if ($('.dpyear').length) {
-
                 $('.dpyear').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
@@ -524,7 +537,6 @@
             }
 
             if ($('.dpyearnino').length) {
-
                 $('.dpyearnino').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
@@ -555,14 +567,15 @@
         });
 
         var fechaActual = '@fechaActual';
+
         var horaActual = '@horaActual';
+
+        var CodiSucursal = '@usuario.CodiSucursal'
 
         var selectAll = {
             id: 0,
             label: 'TODOS'
         }
-
-        var CodiSucursal = '@usuario.CodiSucursal'
 
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
@@ -1731,6 +1744,7 @@
                     }
                 },
                 showTipoPago: function () {
+                    document.getElementById('btnTipoPago').disabled = true;
                     var _this = this;
                     if (!_this.errorsInTicketsVenta()) {
                         _this.saveUser();
@@ -1754,6 +1768,7 @@
                         input.CodiRuta = _this.filtro.CodiDestinoBus.id;
                         appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas);
                     }
+
                 },
                 errorsInTicketsVenta: function () {
                     var _this = this;
@@ -1953,6 +1968,7 @@
                     _this.list.ventas[_this.indexVenta].IdVenta = 0;
                     _this.errors.clear();
                     _this.checkRegistrarNino = false;
+
                     appRegistrarInfante.limpiarCampos();
                 },
                 focusPrecio: function (event) {
@@ -2105,11 +2121,6 @@
                         _this.$refs.refNroAsientoVenta.focus();
                 },
                 cancelarBoletos: async function () {
-                    switch (this.list.ventas[this.indexVenta].FlagVenta) {
-                        case 'R':
-                            this.cancelarReserva();
-                            return;
-                    }
                     for (i = 0; i < this.list.ventas.length; i++) {
                         if (this.list.ventas[i].NroAsiento) {
                             var auxObj = this.findObjectAsiento(this.list.ventas[i].NroAsiento);
@@ -2137,7 +2148,6 @@
 
                     // Si es el mismo valor, retornar.
                     if (_this.pickedBusVenta === value) return;
-
                     switch (value) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
@@ -2208,9 +2218,9 @@
                                 appController.chargeTurnos();
                                 _this.$nextTick(() => { APP.msg.info("Se cambió a Fecha Abierta correctamente") });
                             }).catch(APP.rq.axios_handler_error_alert);
-                        } else
+                        }
+                        else
                             _this.limpiarVenta();
-                        //return;
                     } else {
                         appController.showPostergacion();
                     }
@@ -2392,39 +2402,21 @@
                     _this.list.arribos = arribos;
                     _this.ticketVenta = ticketVenta;
                     _this.list.ventas = listaVentas;
-
                     // Primero
                     switch (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
-                        case 'R':
+                        case 'R': // Reserva
                             _this.saveVenta();
                             return;
                     }
-
                     // Segundo
                     switch (_this.pickedBusVenta) {
                         case 'R': // Reserva
                             _this.saveVenta();
                             return;
                     }
-
                     _this.sumaTotal = _.sumBy(_this.list.ventas, o => { return parseFloat(o.Precio); });
                     _this.cantAsientos = _this.list.ventas.length;
                     $('#appVueTipoPago').modal('show');
-                    $('#appVueTipoPago').on('shown.bs.modal', function () {
-                        switch (_this.pickedBusVenta) {
-                            case 'V': // Venta
-                                $("#cboTipoPagoTP input[type=search]").focus();
-                                break;
-                            case '7': // Pase de Cortesía
-                                {
-                                    _this.tipoPago = '01';
-                                    _this.$nextTick(() => {
-                                        $("#txtImportePagadoC").focus();
-                                    });
-                                };
-                                break;
-                        }
-                    });
                 },
                 getTipoPago: function () {
                     var _this = this;
@@ -2448,10 +2440,8 @@
                         }).catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta: async function () {
-                    debugger;
                     var _this = this;
                     _this.processing = true;
-
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
                         var input = {};
@@ -2508,24 +2498,21 @@
                                 input.FechaAbierta = objVenta.FechaAbierta;
                                 break;
                         }
-
                         switch (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
                             case 'R':
                                 input.IdVenta = objVenta.IdVenta;
                                 _this.pickedBusVenta = 'R';
                                 break;
                         }
-
                         // --------------
 
                         listado.push(input);
-                        //Cerrar modal de tipo pago
-                        $("#appVueTipoPago").modal('hide');
                     };
+
+                    $("#appVueTipoPago").modal('hide');
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: _this.pickedBusVenta })
                         .then(res => {
-                            debugger;
                             appController.showBoletosVendidos(res.data);
                             _this.processing = false;
                         }).catch(err => {
@@ -2746,12 +2733,6 @@
                     this.list.tipoDoc = _TipoDoc;
                     this.list.sexos = _listSexos;
                     $('#appRegistrarInfante').modal('show');
-                    $('#appRegistrarInfante').on('shown.bs.modal', function () {
-                        if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompañante)
-                            document.getElementById("chckRegistrarNiño").checked = true;
-                        else
-                            $("#cboTipoDocRA input[type=search]").focus();
-                    });
                 },
                 getParentesco: function () {
                     var _this = this;
@@ -2847,7 +2828,8 @@
                         this.ApellidoMaterno = arrayDeNombres[2];
                     }
                     // Desactiva botones 'Eliminar' y 'Aceptar'.
-                    this.disabledBotones = true;
+                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta !== '')
+                        this.disabledBotones = true;
                 },
                 showRegistrarWithClave: function () {
                     appController.showRegistrarWithClave();
@@ -2937,9 +2919,6 @@
                     this.getSocios();
                     this.limpiarPaseCortesia();
                     $('#appVuePaseCortesia').modal('show');
-                    $('#appVuePaseCortesia').on('shown.bs.modal', function () {
-                        $("#cboGerentePC input[type=search]").focus();
-                    });
                 },
                 getGerentes() {
                     var _this = this;
@@ -3017,12 +2996,10 @@
                 sendRow: async function (item) {
                     var _this = this;
                     if (_this.validateSend) {
-
                         // SweetAlert para 'fechaAbierta'
                         if (await APP.msg.confirm('Mensaje', '¿Desea enviar el pase a Fecha Abierta?')) {
                             _this.fechaAbierta = true;
                         }
-
                         appController.sendPaseCortesia(item);
                         $('#appVuePaseCortesia').modal('hide');
                     }
@@ -3031,14 +3008,11 @@
                     });
                 },
                 filterByValues: function (collection, key, values) {
-                    debugger;
-                    var _this = this;
                     return _.filter(collection, function (o) {
                         return _.includes(collection, values);
                     });
                 },
                 resolveKey: function (obj, key) {
-                    debugger;
                     if (obj == null || key == null) {
                         return undefined;
                     }
@@ -3068,12 +3042,11 @@
             },
             watch: {
                 searchInTable: function (newVal) {
-                    debugger;
                     var _this = this;
                     if (String(newVal).replace(/\s/g, '').length > 0) {
                         _this.list.filterBeneficiarios = _.filter(_this.list.beneficiarios, obj => {
                             var coincidence = obj.Nombre_Beneficiario.toUpperCase().indexOf(newVal.toUpperCase()) !== -1;
-                            return coincidence;                            
+                            return coincidence;
                         });
                     } else {
                          _this.list.filterBeneficiarios = _this.list.beneficiarios;
@@ -3094,20 +3067,14 @@
                     _this.boletos.pop();
                     window.addEventListener('keyup', _this.esc);
                     $('#appBoletosVendidos').modal('show');
-                    $('#appBoletosVendidos').on('shown.bs.modal', function () {
-                        $('#btnCerrarVenta').focus();
-                    });
+
                 },
                 esc: function (event) {
-                    if (event.keyCode === 27)
-                        this.cerrarVenta();
+                    if (event.keyCode === 27) this.cerrarVenta();
                 },
                 cerrarVenta: function () {
                     window.removeEventListener('keyup', this.esc);
                     $('#appBoletosVendidos').modal('hide');
-                    $('#appBoletosVendidos').on('hidden.bs.modal', function () {
-                    });
-                    appController.chargeTurnos();
                 }
             }
         });
@@ -3139,9 +3106,6 @@
                     this.limpiarCampos();
                     this.showBeneficiario = false;
                     $('#appVuePostergacion').modal('show');
-                    $('#appVuePostergacion').on('shown.bs.modal', function () {
-                        $('#cboEmpresaPos input[type=search]').focus();
-                    });
                 },
                 esc: function (event) {
                     if (event.keyCode === 27)
@@ -3248,7 +3212,7 @@
                         return this.filtro.empresa.id && this.filtro.serie && this.filtro.documento;
                     else
                         return false;
-                },
+                }
             }
         });
 
@@ -3259,12 +3223,8 @@
             },
             methods: {
                 show: function () {
-                    var _this = this;
                     this.limpiarClaveAutorizacion();
                     $('#appClaveAutorizacion').modal('show');
-                    $('#appClaveAutorizacion').on('shown.bs.modal', function () {
-                        $('#txtContraseniaCA').focus();
-                    });
                 },
                 sendClaveAutorizacion: function () {
                     var _this = this;

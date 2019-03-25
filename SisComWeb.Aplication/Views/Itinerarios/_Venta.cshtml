@@ -906,8 +906,7 @@
                                                                id="chckRegistrarNiño"
                                                                ref="refRegistrarNiño"
                                                                class="check-with-label"
-                                                               type="checkbox"
-                                                               v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
+                                                               type="checkbox">
                                                         <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
@@ -927,8 +926,7 @@
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
                                                            style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90;"
-                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
+                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
@@ -953,17 +951,22 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     <label class="control-label">&nbsp;</label>
-                                                    <button @@click="cancelarBoletos"
-                                                            class="btn btn-secondary btn-ticket btn-cancelar"
-                                                            style="width: 100%; color:white;">
-                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                        <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
-                                                            Cancelar Reserva
-                                                        </template>
-                                                        <template v-else>
-                                                            Cancelar
-                                                        </template>
-                                                    </button>
+                                                    <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                        <button @@click="cancelarReserva"
+                                                                class="btn btn-secondary btn-ticket btn-cancelar"
+                                                                style="width: 100%; color:white;">
+                                                            <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
+                                                                Cancelar Reserva
+                                                        </button>
+                                                    </template>
+                                                    <template v-else>
+                                                        <button @@click="cancelarBoletos"
+                                                                class="btn btn-secondary btn-ticket btn-cancelar"
+                                                                style="width: 100%; color:white;">
+                                                            <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
+                                                                Cancelar
+                                                        </button>
+                                                    </template>
                                                 </div>
                                             </div>
                                         </div>
