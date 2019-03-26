@@ -1586,4 +1586,30 @@ Vue.directive('only-name', function (el, binding, vnode) {
         el.value = el.value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi).join("");
 });
 
+Vue.directive('only-digit', function (el, binding, vnode) {
+    el.addEventListener('keypress', (e) => {
+        var inp = String.fromCharCode(e.keyCode);
+        if (/[0-9.]/.test(inp))
+            return true;
+        else
+            e.preventDefault();
+    });
+
+    if (el.value) {
+        var coincidence = el.value.match(/[0-9.]/gi);
+        if (coincidence)
+            el.value = coincidence.length > 1 ? coincidence.join('') : coincidence;
+        else
+            el.value = '';
+    }
+});
+
+Vue.directive('money', function (el, binding, vnode) {
+    el.addEventListener('input', (e) => {
+        var valid = /^[1-9]{1}\d{0,3}(\.\d{0,2})?$/.test(el.value), val = el.value;
+        if (!valid) {
+            el.value = val.substring(0, val.length - 1);
+        } 
+    });
+});
 /**************************************/
