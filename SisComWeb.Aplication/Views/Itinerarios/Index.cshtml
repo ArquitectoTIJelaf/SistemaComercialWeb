@@ -601,7 +601,7 @@
                 chargeItinerarios: function () {
                     appVueFilter.search();
                 },
-                chargeTurnos: function () {
+                chargeTurnos: async function () {
                     var item = {};
                     appVueVenta.firstCharge = false;
                     item.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
@@ -613,7 +613,7 @@
                     item.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
                     item.HoraPartida = appVueVenta.filtro.Turno.replace(" ", "");
                     item.FechaViaje = appVueVenta.filtro.Fecha;
-                    appVueVenta.getTurno(item, item.FechaViaje);
+                    await appVueVenta.getTurno(item, item.FechaViaje);
                 },
                 showTipoPago: function (_embarque, _arribos, _ticketVenta, _listaVenta) {
                     appVueTipoPago.show(_embarque, _arribos, _ticketVenta, _listaVenta);
@@ -2121,7 +2121,7 @@
                 },
                 cancelarBoletos: async function () {
                     for (i = 0; i < this.list.ventas.length; i++) {
-                        if (this.list.ventas[i].NroAsiento) {
+                        if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
                             var auxObj = this.findObjectAsiento(this.list.ventas[i].NroAsiento);
                             await this.liberarAsiento(auxObj, true);
                             i--;
@@ -2152,6 +2152,7 @@
                         case '7': // Pase de cortesía
                         case 'R': // Reserva
                         case 'AN': // Anulación
+                        case 'FA': // Fecha abierta
                             {
                                 if (_this.list.ventas.length > 1) {
                                     if (await APP.msg.confirm('Confirmar Cambio', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?')) {
@@ -2214,9 +2215,11 @@
                                 IdVenta: asientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
                                 CodiRuta: _this.filtro.CodiDestinoBus.id
-                            })).then(res => {
-                                appController.chargeTurnos();
-                                _this.$nextTick(() => { APP.msg.info("Se cambió a Fecha Abierta correctamente") });
+                            })).then(async function (res) {
+                                await appController.chargeTurnos();
+                                _this.$nextTick(() => {
+                                    APP.msg.info("Se cambió a Fecha Abierta correctamente")
+                                });
                             }).catch(APP.rq.axios_handler_error_alert);
                         }
                         else
@@ -2231,9 +2234,9 @@
                     if (await APP.msg.confirm("Confirmar la anulación", "Se anulará la venta. ¿Desea continuar?")) {
                         if (asientoSel.IdVenta !== '' && asientoSel.Tipo !== '') {
                             APP.rq.axios2.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({ Id_Venta: asientoSel.IdVenta, tipo : asientoSel.TipoBoleto }))
-                                .then(res => {
+                                .then(async function (res) {
                                     if (res.data) {
-                                        appController.chargeTurnos();
+                                        await appController.chargeTurnos();
                                         _this.$nextTick(() => {
                                             APP.msg.success(res.data)
                                         });
@@ -2786,7 +2789,7 @@
                     if (_this.CodiTipoDoc === null) {
                         $('#cboTipoDocRA input[type=search]').focus();
                     }
-                    else if (_this.Documento === '') {
+                    else if (_this.Documento === '' || _this.Documento === null) {
                         $('#txtDocumentoRA').focus();
                     }
                     else if (_this.Nombres === '') {
@@ -2801,10 +2804,10 @@
                     else if (_this.FechaNac === '') {
                         $('#txtFechaNacRA').focus();
                     }
-                    else if (_this.Sexo === '') {
+                    else if (_this.Sexo === '' || _this.Sexo === null) {
                         $('#cboSexoRA input[type=search]').focus();
                     }
-                    else if (_this.Parentesco === '') {
+                    else if (_this.Parentesco === '' || _this.Parentesco === null) {
                         $('#cboParentescoRA input[type=search]').focus();
                     }
                     else {
@@ -2848,8 +2851,10 @@
                     }
 
                     // Desactiva botones 'Eliminar' y 'Aceptar'.
-                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta !== '')
-                        this.disabledBotones = true;
+                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta !== '') {
+                        if (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta !== 'R')
+                            this.disabledBotones = true;
+                    }
                 },
                 showRegistrarWithClave: function () {
                     appController.showRegistrarWithClave();

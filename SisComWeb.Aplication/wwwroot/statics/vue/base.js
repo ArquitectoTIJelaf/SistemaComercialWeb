@@ -299,7 +299,7 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
         confirmButtonColor: _colorOfButton || "#DD6B55",
         confirmButtonText: _textButtonConfirm || "Si",
         cancelButtonText: _textButtonCancel || "No",
-        closeOnClickOutside: false
+        allowOutsideClick: false
     }).then(res => { if (res.value) _bool = res.value; })
         .catch(error => { APP.msg.error(error); });
     return _bool;
