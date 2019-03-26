@@ -1,9 +1,9 @@
 ﻿
-<div id="appRegistrarInfante" class="modal fade" role="dialog" data-backdrop="static">
+<div id="appRegistrarInfante" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width: 500px; top:10%">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" @@click="close">&times;</button>
                 <h4 class="modal-title"><b>Datos del Acompañante</b></h4>
             </div>
             <div class="modal-body">
@@ -144,8 +144,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button data-dismiss="modal"
-                        @@click="eliminarAcompaniante"
+                <button @@click="eliminarAcompaniante"
                         :disabled="disabledBotones"
                         class="btn btn-danger waves-effect text-left"
                         style="float: left; ">
@@ -164,7 +163,7 @@
                         class="btn btn-primary waves-effect text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
-                <button data-dismiss="modal"
+                <button @@click="close"
                         class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>

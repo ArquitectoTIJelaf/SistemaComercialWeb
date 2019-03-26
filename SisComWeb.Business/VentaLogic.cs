@@ -58,10 +58,10 @@ namespace SisComWeb.Business
                             switch (request.CodiDocumento)
                             {
                                 case "17":
-                                    auxBoletoCompleto = "F" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D7").ToString();
+                                    auxBoletoCompleto = "F" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D8").ToString();
                                     break;
                                 case "16":
-                                    auxBoletoCompleto = "B" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D7").ToString();
+                                    auxBoletoCompleto = "B" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D8").ToString();
                                     break;
                             }
 
@@ -186,6 +186,24 @@ namespace SisComWeb.Business
                         else
                         {
                             response.Mensaje = resValidarSaldoPaseCortesia.Mensaje;
+                            return response;
+                        }
+                    }
+
+                    // RESERVA
+                    if (entidad.FlagVenta == "R")
+                    {
+                        // Elimina 'Reserva'
+                        var resEliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
+                        if (resEliminarReserva.Estado){
+                            // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
+                            entidad.IdVenta = 0;
+                            // Cuando 'confirmasReserva', por ahora se venderá como una 'Venta'.
+                            entidad.FlagVenta = "V";
+                        }
+                        else
+                        {
+                            response.Mensaje = resEliminarReserva.Mensaje;
                             return response;
                         }
                     }
@@ -708,17 +726,6 @@ namespace SisComWeb.Business
 
                     Response<int> resGrabarVenta = new Response<int>(false, 0, "Error: GrabaReserva.", false);
 
-                    // Elimina 'Reserva'
-                    var resEliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
-                    if (resEliminarReserva.Estado)
-                        // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
-                        entidad.IdVenta = 0;
-                    else
-                    {
-                        response.Mensaje = resEliminarReserva.Mensaje;
-                        return response;
-                    }
-
                     // Busca 'ProgramacionViaje'
                     var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
                     if (resBuscarProgramacionViaje.Estado)
@@ -817,6 +824,38 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgErrExcGrabaReserva, false);
+            }
+        }
+
+        #endregion
+
+        #region ELIMINAR RESERVA
+
+        public static Response<bool> EliminarReserva(int IdVenta)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: EliminarReserva.", false);
+
+                // Elimina 'Reserva'
+                var resEliminarReserva = VentaRepository.EliminarReserva(IdVenta);
+                if (!resEliminarReserva.Estado)
+                {
+                    response.Mensaje = resEliminarReserva.Mensaje;
+                    return response;
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = resEliminarReserva.Valor;
+                response.Mensaje = Message.MsgCorrectoEliminarReserva;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
             }
         }
 
@@ -1028,38 +1067,6 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
-            }
-        }
-
-        #endregion
-
-        #region ELIMINAR RESERVA
-
-        public static Response<bool> EliminarReserva(int IdVenta)
-        {
-            try
-            {
-                var response = new Response<bool>(false, false, "Error: EliminarReserva.", false);
-
-                // Elimina 'Reserva'
-                var resEliminarReserva = VentaRepository.EliminarReserva(IdVenta);
-                if (!resEliminarReserva.Estado)
-                {
-                    response.Mensaje = resEliminarReserva.Mensaje;
-                    return response;
-                }
-
-                response.EsCorrecto = true;
-                response.Valor = resEliminarReserva.Valor;
-                response.Mensaje = Message.MsgCorrectoEliminarReserva;
-                response.Estado = true;
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
             }
         }
 
