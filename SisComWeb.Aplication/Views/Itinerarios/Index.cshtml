@@ -2385,7 +2385,8 @@
                 vuelto: '',
                 disabledTipoPago: false,
                 processing: false,
-                pickedBusVenta: 'V'
+                pickedBusVenta: 'V',
+                validImpPagar: ''
             },
             mounted: function () {
                 this.getTipoPago();
@@ -2621,28 +2622,28 @@
 
                     if (tipo === 'IPC') {
                         if (importePagado >= sumaTotal) {
-                            _this.vuelto = importePagado - sumaTotal;
+                            _this.vuelto = parseFloat(importePagado - sumaTotal).toFixed(2);
                         } else {
                             _this.vuelto = '';
                         }
                     }else if (tipo === 'T') {
                         if (sumaTotal >= tarjetaCant) {
-                            _this.efectivo = sumaTotal - tarjetaCant;
+                            _this.efectivo = parseFloat(sumaTotal - tarjetaCant).toFixed(2);
                         } else {
                             _this.efectivo = '';
                         }
                     } else if (tipo === 'E') {
                         if (sumaTotal >= efectivo) {
-                            _this.tarjetaCant = sumaTotal - efectivo;
+                            _this.tarjetaCant = parseFloat(sumaTotal - efectivo).toFixed(2);
                         } else {
                             _this.tarjetaCant = '';
                         }
                     } else if (tipo === 'IP') {
                         if (importePagado > sumaTotal) {
-                            _this.vuelto = importePagado - sumaTotal;
+                            _this.vuelto = parseFloat(importePagado - sumaTotal).toFixed(2);
                         } else {
                             if (importePagado >= efectivo) {
-                                _this.vuelto = importePagado - efectivo;
+                                _this.vuelto = parseFloat(importePagado - efectivo).toFixed(2);
                             }
                             else {
                                 if (importePagado === NaN) {
@@ -2672,8 +2673,9 @@
                     },
                     set: function (value) {
                         if (value !== '' && value !== null) {
-                            if (this.list.tiposPago.find(x => x.id === value.id))
+                            if (this.list.tiposPago.find(x => x.id === value.id)) {
                                 this.tipoPago = value.id;
+                            }                                
                         } else {
                             this.tipoPago = '';
                         }
@@ -2682,8 +2684,8 @@
                 filledCampos: function () {
                     var _this = this;
                     switch (this.tipoPago) {
-                        case '01': return _this.embarque && _this.importePagado >= _this.sumaTotal /*&& _this.arribo*/;
-                        case '02': return _this.tarjeta && _this.tarjetaCant && _this.efectivo && _this.embarque /*&& _this.arribo*/;
+                        case '01': return _this.embarque && parseFloat(_this.importePagado) >= parseFloat(_this.sumaTotal) /*&& _this.arribo*/;
+                        case '02': return _this.tarjeta && _this.tarjetaCant && parseFloat(_this.importePagado) >= parseFloat(_this.efectivo) && _this.embarque /*&& _this.arribo*/;
                         case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
                         case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
                         default: return false;

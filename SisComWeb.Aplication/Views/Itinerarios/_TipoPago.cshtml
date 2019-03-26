@@ -54,6 +54,8 @@
                                                data-vv-as="Imp. Pagado:"
                                                class="form-control input-sm"
                                                name="Imp Pagado"
+                                               v-money
+                                               v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
@@ -107,6 +109,8 @@
                                                v-validate="'between:1, '+(sumaTotal-1)"
                                                class="form-control input-sm"
                                                name="monto tarjeta"
+                                               v-money
+                                               v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
@@ -120,6 +124,8 @@
                                                v-validate="'between:1, '+sumaTotal"
                                                class="form-control input-sm"
                                                name="monto efectivo"
+                                               v-money
+                                               v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
@@ -130,7 +136,7 @@
                                                id="txtImportePagdoTP"
                                                @@input="calcMontos('IP')"
                                                @@keypress.13.prevent="nextInput('NUMERO')"
-                                               v-validate="'min_value:' + (sumaTotal + 1)"
+                                               v-validate="'min_value:' + (efectivo)"
                                                data-vv-as="Imp. Pagado:"
                                                class="form-control input-sm"
                                                name="Imp Pagado"
@@ -173,7 +179,8 @@
                                     <input v-model="numeroTarjeta"
                                            id="txtNumeroTP"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm" />
+                                           class="form-control input-sm"
+                                           v-mask="'####-####-####-####'"/>
                                 </div>
                             </div>
                         </template>
@@ -235,8 +242,8 @@
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
                                           @@keydown.13.native.prevent="nextInput('ARRIBOS')"
-                                          ref="select">
-                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                          ref="refArriboTP">
+                                    <div slot="no-options" class="text-danger" @@click="$refs.refArriboTP.open = false">No hay resultados</div>
                                 </v-select>
                             </div>
                         </div>

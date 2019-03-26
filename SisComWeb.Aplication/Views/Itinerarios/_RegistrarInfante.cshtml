@@ -52,6 +52,7 @@
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        id="txtNombresRA"
                                        type="text"
+                                       maxlength="50"
                                        class="form-control input-sm"
                                        placeholder="NOMBRES"
                                        autocomplete="off">
@@ -66,6 +67,7 @@
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        id="txtApellidoPaternoRA"
                                        type="text"
+                                       maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO PATERNO"
                                        autocomplete="off">
@@ -78,6 +80,7 @@
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        id="txtApellidoMaternoRA"
                                        type="text"
+                                       maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO MATERNO"
                                        autocomplete="off">
@@ -89,12 +92,13 @@
                             <label class="col-md-12 label-sm">Fec. Nacimiento:</label>
                             <div class="col-md-12">
                                 <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                       :value="FechaNac"
+                                       v-model="FechaNac"
                                        type="text"
                                        id="txtFechaNacRA"
-                                       class="form-control input-sm dp"
+                                       class="form-control input-sm dpyearnino"
                                        placeholder="FECHA NAC."
-                                       autocomplete="off">
+                                       autocomplete="off"
+                                       v-mask="'##/##/####'">
                             </div>
                         </div>
                         <div class="col-md-3">
