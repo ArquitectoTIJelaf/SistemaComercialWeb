@@ -940,12 +940,22 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"IdVenta\" : " + filtro.IdVenta +
-                                ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
-                                ",\"NumeAsiento\" : " + filtro.NumeAsiento +
-                                ",\"CodiServicio\" : " + filtro.CodiServicio +
-                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\""+
-                                ", \"HoraViaje\" : \"" + filtro.HoraViaje + "\" }";
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + filtro.IdVenta +
+                                    ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                    ",\"NumeAsiento\" : " + filtro.NumeAsiento +
+                                    ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                    ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                    ", \"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+
+                                    ",\"NroViaje\" : " + filtro.NroViaje +
+                                    ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"CodiSucursal\" : " + filtro.CodiSucursal +
+                                    ",\"CodiRuta\" : " + filtro.CodiRuta +
+                                    ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
+                                    ",\"HoraProgramacion\" : \"" + filtro.HoraProgramacion + "\"" +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("PostergarVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {

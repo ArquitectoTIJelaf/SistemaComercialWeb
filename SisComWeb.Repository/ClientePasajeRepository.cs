@@ -13,7 +13,7 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPasajero";
-                db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, TipoDoc);
+                db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, int.Parse(TipoDoc));
                 db.AddParameter("@Numero_Doc", DbType.String, ParameterDirection.Input, NumeroDoc);
                 var entidad = new ClientePasajeEntity
                 {

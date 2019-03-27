@@ -580,6 +580,12 @@
             return `${nombreConcat[2]} ${nombreConcat[0]} ${nombreConcat[1]}`;
         });
 
+        Vue.filter('formatNroVenta', function (value) {
+            var auxValur = value.substring(5);
+            auxValur = auxValur.padStart(8, '0');
+            return value.substring(0, 5) + auxValur;
+        });
+
         var appController = (function () {
             return {
                 loadTable: function (_list) {
@@ -1096,6 +1102,7 @@
                         $('#btnDesplegar').click();
                     }
                     appController.hideVentas();
+                    appVueFilter.nextStep(0);
                 },
                 changeTurno: function (item) {
                     this.showPlano = false;
@@ -1414,12 +1421,9 @@
                                         if (res.statusText === "OK") {
                                             // Luego de liberar, dejar 'Asiento' como libre
                                             //objAsiento.Color = "";
-                                            //objAsiento.FechaVenta = "";
                                             //objAsiento.FechaViaje = "";
-                                            //objAsiento.FlagVenta = "";
                                             objAsiento.IDS = 0;
                                             if (_this.pickedBusVenta !== 'FA') objAsiento.NumeAsiento = 0;
-                                            //objAsiento.TipoDocumento = "";
                                         }
                                         else {
                                             respuesta = false;
@@ -1438,13 +1442,10 @@
                                             .then(res => {
                                                 if (res.statusText === "OK") {
                                                     // Luego de liberar, dejar 'Asiento' como libre
-                                                    objAsiento.Color = "";
-                                                    //objAsiento.FechaVenta = "";
-                                                    objAsiento.FechaViaje = "";
-                                                    objAsiento.FlagVenta = "";
+                                                    //objAsiento.Color = "";
+                                                    //objAsiento.FechaViaje = "";
                                                     objAsiento.IDS = 0;
-                                                    objAsiento.NumeAsiento = 0;
-                                                    objAsiento.TipoDocumento = "";
+                                                    if (_this.pickedBusVenta !== 'FA') objAsiento.NumeAsiento = 0;
                                                 }
                                                 else {
                                                     respuesta = false;
@@ -1745,8 +1746,7 @@
                     //}
                 },
                 nextStep: function (code) {
-                    var _this = this;
-                    _this.showPlano = false;
+                    this.showPlano = false;
                     switch (code) {
                         case 1: if (!$("#panelWrapperV").hasClass("in")) $('#btnDesplegar').click(); $('#cboSucursal input[type=search]').focus(); break;
                         case 2: $('#cboOrigenBus input[type=search]').focus(); break;
@@ -3216,11 +3216,11 @@
                 asignBeneficiario: function () {
                     var _this = this;
 
-                    var _codiProgramacion = appVueVenta.filtro.CodiProgramacion;
-                    if (parseInt(_codiProgramacion) === 0) {
-                        APP.msg.warning("Debe seleccionar un plano con Programación");
-                        return;
-                    }
+                    //var _codiProgramacion = appVueVenta.filtro.CodiProgramacion;
+                    //if (parseInt(_codiProgramacion) === 0) {
+                    //    APP.msg.warning("Debe seleccionar un plano con Programación");
+                    //    return;
+                    //}
 
                     var _origen = String(appVueVenta.filtro.CodiSucursal.id);
                     var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
@@ -3228,11 +3228,19 @@
                     if (_origen === String(_this.objBeneficiario.CodiOrigen) && _destino === String(_this.objBeneficiario.CodiDestino)) {
                         var input = {};
                         input.IdVenta = _this.objBeneficiario.IdVenta;
-                        input.CodiProgramacion = _codiProgramacion;
+                        input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
                         input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
                         input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
                         input.FechaViaje = appVueVenta.filtro.Fecha;
                         input.HoraViaje = appVueVenta.filtro.Turno;
+                        input.NroViaje = appVueVenta.filtro.NroViaje;
+                        input.FechaProgramacion = appVueVenta.objTurno.FechaProgramacion;
+                        input.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
+                        input.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
+                        input.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
+                        input.CodiBus = appVueVenta.objPlano.CodiBus;
+                        input.HoraProgramacion = appVueVenta.objTurno.HoraProgramacion;
+
                         APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input).then(res => {
                             appController.chargeTurnos();
                             _this.close();

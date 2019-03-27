@@ -49,7 +49,7 @@ namespace SisComWeb.Business
                 {
                     case "M":
                         {
-                            auxBoletoCompleto = "0" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D7").ToString();
+                            auxBoletoCompleto = "0" + resBuscarCorrelativo.Valor.SerieBoleto.ToString("D3").ToString() + "-" + (resBuscarCorrelativo.Valor.NumeBoleto + 1).ToString("D8").ToString();
 
                             break;
                         }
@@ -1029,13 +1029,62 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = new Response<string>()
+                var response = new Response<string>(false, null, "Error: GrabaVenta.", false);
+
+                // Busca 'ProgramacionViaje'
+                var resBuscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(filtro.NroViaje, filtro.FechaProgramacion);
+                if (resBuscarProgramacionViaje.Estado)
                 {
-                    EsCorrecto = true,
-                    Valor = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje),
-                    Mensaje = Message.MsgCorrectoPostergarVenta,
-                    Estado = true
-                };
+                    if (resBuscarProgramacionViaje.Valor == 0)
+                    {
+                        // Genera 'CorrelativoAuxiliar'
+                        var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                        if (resGenerarCorrelativoAuxiliar.Estado)
+                            filtro.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor);
+                        else
+                        {
+                            response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
+                            return response;
+                        }
+
+                        var objProgramacion = new ProgramacionEntity
+                        {
+                            CodiProgramacion = filtro.CodiProgramacion,
+                            CodiEmpresa = filtro.CodiEmpresa,
+                            CodiSucursal = filtro.CodiSucursal,
+                            CodiRuta = filtro.CodiRuta,
+                            CodiBus = filtro.CodiBus,
+                            FechaProgramacion = filtro.FechaProgramacion,
+                            HoraProgramacion = filtro.HoraProgramacion,
+                            CodiServicio = byte.Parse(filtro.CodiServicio.ToString())
+                        };
+
+                        // Graba 'Programacion'
+                        var resGrabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
+                        if (!resGrabarProgramacion.Estado)
+                        {
+                            response.Mensaje = resGrabarProgramacion.Mensaje;
+                            return response;
+                        }
+
+                        // Graba 'ViajeProgramacion'
+                        var resGrabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(filtro.NroViaje, filtro.CodiProgramacion, filtro.FechaProgramacion, filtro.CodiBus);
+                        if (!resGrabarViajeProgramacion.Estado)
+                        {
+                            response.Mensaje = resGrabarViajeProgramacion.Mensaje;
+                            return response;
+                        }
+                    }
+                    else
+                        filtro.CodiProgramacion = resBuscarProgramacionViaje.Valor;
+                }
+                else
+                    return response;
+
+                response.EsCorrecto = true;
+                response.Valor = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
+                response.Mensaje = Message.MsgCorrectoPostergarVenta;
+                response.Estado = true;
 
                 return response;
             }
