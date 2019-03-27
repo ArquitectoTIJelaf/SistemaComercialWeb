@@ -162,7 +162,8 @@ namespace SisComWeb.Business
                         var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
                         if (resConsultaSUNAT.Estado)
                         {
-                            objEmpresa.RazonSocial = resConsultaSUNAT.Valor;
+                            objEmpresa.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
+                            objEmpresa.Direccion = resConsultaSUNAT.Valor.Direccion;
                         }
 
                         // Graba 'Empresa'
@@ -189,24 +190,35 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<RucEntity> ConsultarSUNAT(string RucContacto)
+        public static Response<RucEntity> ConsultarSUNAT(string RucContacto, bool CondicionEmpresa)
         {
             try
             {
-                // Busca 'Empresa'
-                var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(RucContacto);
-                if (!resBuscarEmpresa.Estado)
-                    return resBuscarEmpresa;
+                var response = new Response<RucEntity>(false, new RucEntity(), "Error: ConsultarSUNAT.", false);
 
-                if (string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
+                // Valida si se buscará en la 'BD'
+                if (CondicionEmpresa)
+                {
+                    response = ClientePasajeRepository.BuscarEmpresa(RucContacto);
+                    if (!response.Estado)
+                        return response;
+                }
+
+                if (string.IsNullOrEmpty(response.Valor.RucCliente))
                 {
                     // Consulta 'SUNAT'
                     var resConsultaSUNAT = ConsultaSUNAT(RucContacto);
-                    if (resConsultaSUNAT.Estado)
-                        resBuscarEmpresa.Valor.RazonSocial = resConsultaSUNAT.Valor;
+                    if (resConsultaSUNAT.Estado) {
+                        response.Valor.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
+                        response.Valor.Direccion = resConsultaSUNAT.Valor.Direccion;
+                    }
                 }
 
-                return new Response<RucEntity>(resBuscarEmpresa.EsCorrecto, resBuscarEmpresa.Valor, resBuscarEmpresa.Mensaje, resBuscarEmpresa.Estado);
+                response.EsCorrecto = true;
+                response.Mensaje = Message.MsgCorrectoConsultarSUNAT;
+                response.Estado = true;
+
+                return response;
             }
             catch (Exception ex)
             {
@@ -215,12 +227,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<string> ConsultaSUNAT(string RucContacto)
+        public static Response<RucEntity> ConsultaSUNAT(string RucContacto)
         {
             try
             {
-                var response = new Response<string>(false, null, "Error: ConsultaSUNAT.", false);
-                string Valor = "";
+                var response = new Response<RucEntity>(false, new RucEntity(), "Error: ConsultaSUNAT.", false);
 
                 var httpClient = new HttpClient();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
@@ -240,13 +251,14 @@ namespace SisComWeb.Business
                 foreach (XmlNode xn in xnList)
                 {
                     response.Estado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
-                    Valor = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText;
+                    response.Valor.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? "";
+                    response.Valor.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? "";
                 };
 
                 if (response.Estado)
                 {
                     response.EsCorrecto = true;
-                    response.Valor = Valor;
+                    response.Valor = response.Valor;
                     response.Mensaje = "Correcto: ConsultaSUNAT.";
                 }
 
@@ -255,7 +267,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, "Error: ConsultaSUNAT.", false);
+                return new Response<RucEntity>(false, null, "Error: ConsultaSUNAT.", false);
             }
         }
 

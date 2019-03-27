@@ -805,10 +805,10 @@
                                             <div class="col-md-7" style="padding-left: 0px; padding-right: 0px;">
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label class="control-label">RUC</label>
+                                                        <label class="control-label" style="width: 100%; ">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
-                                                               @@keypress.13.prevent="searchEmpresa"
-                                                               @@keydown.9.prevent="searchEmpresa"
+                                                               @@keypress.13.prevent="searchEmpresa(true)"
+                                                               @@keydown.9.prevent="searchEmpresa(true)"
                                                                @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"
                                                                id="txtRuc"
@@ -818,7 +818,13 @@
                                                                placeholder="RUC"
                                                                v-validate="'min: 11'"
                                                                data-vv-as="RUC"
-                                                               v-mask="'#'.repeat(11)">
+                                                               v-mask="'#'.repeat(11)"
+                                                               style="min-width: 85%; width: 85%; display: inline-block; ">
+                                                        <button class="btn-success btn-xs"
+                                                                title="Consultar a SUNAT"
+                                                                v-on:click="searchEmpresa(false)">
+                                                            <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8">

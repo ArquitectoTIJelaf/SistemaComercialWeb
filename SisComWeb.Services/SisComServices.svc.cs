@@ -218,11 +218,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<RucEntity> ConsultarSUNAT(string RucContacto)
+        public Response<RucEntity> ConsultarSUNAT(string RucContacto, bool CondicionEmpresa)
         {
             try
             {
-                return ClientePasajeLogic.ConsultarSUNAT(RucContacto);
+                return ClientePasajeLogic.ConsultarSUNAT(RucContacto, CondicionEmpresa);
             }
             catch (Exception ex)
             {

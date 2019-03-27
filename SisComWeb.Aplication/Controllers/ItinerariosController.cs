@@ -195,7 +195,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{ \"CodiOrigen\" : " + filtro.CodiOrigen +
                                 ",\"CodiDestino\" : " + filtro.CodiDestino +
                                 ",\"CodiRuta\" : " + filtro.CodiRuta +
-                                ",\"Hora\" : \"" + filtro.Hora.Replace(" ", "") + "\"" +
+                                ",\"Hora\" : \"" + (filtro.Hora ?? "").Replace(" ", "") + "\"" +
                                 ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                 ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
                                 ", \"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() + " }";
@@ -661,7 +661,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpGet]
         [Route("consultar-empresa")]
-        public async Task<ActionResult> SearchEmpresa(string rucContacto)
+        public async Task<ActionResult> SearchEmpresa(string rucContacto, bool condicionEmpresa)
         {
             try
             {
@@ -669,7 +669,10 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"RucContacto\" :  \"" + rucContacto + "\"" + " }";
+                    var _body = "{" +
+                                    "\"RucContacto\" :  \"" + rucContacto + "\"" +
+                                    ",\"CondicionEmpresa\" :  " + condicionEmpresa.ToString().ToLower() +
+                                " }";
                     HttpResponseMessage response = await client.PostAsync("ConsultarSUNAT", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
