@@ -35,13 +35,16 @@
                                 <input :value="Documento.toUpperCase()"
                                        @@input="Documento = $event.target.value.toUpperCase()"
                                        id="txtDocumentoRA"
+                                       name="Número"
                                        type="text"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        class="form-control input-sm"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
-                                       v-mask="mask.documento">
+                                       v-mask="mask.documento"
+                                       v-validate="'min: ' + validateMinNumero">
                             </div>
+                            <span v-show="errors.has('Número')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Número') }}</span>
                         </div>
                     </div>
                     <div class="form-group m-b-5">

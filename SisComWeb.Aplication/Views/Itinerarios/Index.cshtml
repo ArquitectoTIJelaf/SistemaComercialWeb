@@ -2762,7 +2762,8 @@
                 },
                 disabledBotones: false,
                 enableSaveWithClaveAutorizacion: false,
-                password: ''
+                password: '',
+                validateMinNumero: '0'
             },
             mounted: function () {
                 this.getParentesco();
@@ -2796,6 +2797,7 @@
                     this.Sexo = ''; // null
                     this.Parentesco = ''; // null
                     this.disabledBotones = false;
+                    this.validateMinNumero = '0';
                 },
                 setDateAndCalcYears: function (dateString) {
                     this.$nextTick(() => {
@@ -2903,7 +2905,27 @@
                 close: function () {
                     window.removeEventListener('keyup', this.esc);
                     $('#appRegistrarInfante').modal('hide');
-                }
+                },
+                passNumDocToDocumento: function () {
+                    var _this = this;
+                    var codiTipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
+                    if (codiTipoDoc) {
+                        id = codiTipoDoc.id;
+                        if (id === "1") { //DNI
+                            _this.mask.documento = "#".repeat(8);
+                            _this.list.ventas[_this.indexVenta].Nacionalidad = 'PERUANA';
+                        }
+                        else if (id === "4") { //PASAPORTE
+                            _this.mask.documento = "N".repeat(15);
+                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                        }
+                        else if (id === "7") { //CARNET EXTRANJERIA
+                            _this.mask.documento = "N".repeat(15);
+                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
+                        }
+                    }
+                    this.recorridoSectionVentas();
+                },
             },
             computed: {
                 filledCampos: function () {
@@ -2933,14 +2955,17 @@
                         if (id === "1") {
                             //DNI
                             _this.mask.documento = "#".repeat(8);
+                            _this.validateMinNumero = '8';
                         }
                         else if (id === "4") {
                             //PASAPORTE
-                            _this.mask.documento = "#".repeat(9);
+                            _this.mask.documento = "N".repeat(15);
+                            _this.validateMinNumero = '15';
                         }
                         else if (id === "7") {
                             //CARNET EXTRANJERIA
-                            _this.mask.documento = "N".repeat(12);
+                            _this.mask.documento = "N".repeat(15);
+                            _this.validateMinNumero = '15';
                         }
                     }
                 }
