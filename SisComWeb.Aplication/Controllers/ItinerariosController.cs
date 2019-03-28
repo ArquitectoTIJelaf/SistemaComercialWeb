@@ -534,6 +534,51 @@ namespace SisComWeb.Aplication.Controllers
         }
 
         [HttpPost]
+        [Route("liberarArregloAsientos")]
+        public async Task<ActionResult> LiberarArregloAsientos(int[] arregloIDS)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    string _body = string.Empty;
+
+                    _body += "[";
+                    for (var i = 0; i < arregloIDS.Length; i++)
+                    {
+                        _body += arregloIDS[i];
+                        if (i < arregloIDS.Length - 1) _body += ",";
+                    }
+                    _body += "]";
+
+                    HttpResponseMessage response = await client.PostAsync("LiberaArregloAsientos", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+                JToken tmpResult = JObject.Parse(result);
+                bool estado = (bool)tmpResult.SelectToken("Estado");
+                string mensaje = (string)tmpResult.SelectToken("Mensaje");
+                if (estado)
+                {
+                    bool valor = (bool)tmpResult["Valor"];
+                    return Json(valor, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
         [Route("grabar-venta")]
         public async Task<ActionResult> SendVenta(List<FiltroVenta> listado, string flagVenta)
         {

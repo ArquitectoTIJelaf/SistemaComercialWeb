@@ -312,6 +312,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<bool> LiberaArregloAsientos(int[] arregloIDS)
+        {
+            try
+            {
+                return BloqueoAsientoLogic.LiberaArregloAsientos(arregloIDS);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcLiberaArregloAsientos, false);
+            }
+        }
+
         #endregion
 
         #region GRABA VENTA

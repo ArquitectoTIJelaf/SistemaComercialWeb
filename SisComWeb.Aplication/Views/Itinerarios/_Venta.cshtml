@@ -113,7 +113,7 @@
                                     <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
                                     <label style="cursor: pointer; ">Atrás</label>
                                 </div>
-                                <a href="@Url.Action("Index","Principal")">
+                                <a @@click="cerrarVentas">
                                     <div style="display: inline-block; cursor: pointer;">
                                         <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px; " />
                                     </div>
@@ -693,7 +693,7 @@
                                                 <template v-else>
                                                     <label class="control-label"
                                                            style="font-size: 16px !important; font-weight: 500; color: black;">
-                                                        N° {{list.ventas[indexVenta].NroVenta | formatNroVenta}}
+                                                        N° {{list.ventas[indexVenta].NroVenta | formatNroVenta(list.ventas[indexVenta].FlagVenta)}}
                                                     </label>
                                                 </template>
                                             </div>

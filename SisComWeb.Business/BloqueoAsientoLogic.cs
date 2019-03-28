@@ -76,7 +76,7 @@ namespace SisComWeb.Business
             {
                 var response = new Response<bool>(false, false, "Error: LiberaAsiento.", false);
 
-                // Validar 'LiberaAsiento'
+                // Libera 'Asiento'
                 var resLiberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
                 if (!resLiberaAsiento.Estado)
                 {
@@ -95,6 +95,37 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgErrExcLiberaAsiento, false);
+            }
+        }
+
+        public static Response<bool> LiberaArregloAsientos(int[] arregloIDS)
+        {
+            try
+            {
+                var response = new Response<bool>(false, false, "Error: LiberaArregloAsientos.", false);
+
+                foreach (int IDS in arregloIDS)
+                {
+                    // Libera 'Asiento'
+                    var resLiberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
+                    if (!resLiberaAsiento.Estado)
+                    {
+                        response.Mensaje = resLiberaAsiento.Mensaje;
+                        return response;
+                    }
+                }
+
+                response.EsCorrecto = true;
+                response.Valor = true;
+                response.Mensaje = Message.MsgCorrectoLiberaArregloAsientos;
+                response.Estado = true;
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgErrExcLiberaArregloAsientos, false);
             }
         }
     }

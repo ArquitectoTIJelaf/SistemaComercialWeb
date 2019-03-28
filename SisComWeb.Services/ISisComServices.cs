@@ -122,6 +122,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "LiberaAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> LiberaAsiento(int IDS);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "LiberaArregloAsientos", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> LiberaArregloAsientos(int[] arregloIDS);
+
         #endregion
 
         #region GRABA VENTA

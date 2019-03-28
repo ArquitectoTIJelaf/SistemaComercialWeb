@@ -53,6 +53,8 @@
         public const string MsgErrExcBloqueoAsiento = "Ocurrió una excepción al bloquear asiento.";
         public const string MsgCorrectoLiberaAsiento = "Correcto: LiberaAsiento.";
         public const string MsgErrExcLiberaAsiento = "Ocurrió una excepción al liberar asiento.";
+        public const string MsgCorrectoLiberaArregloAsientos = "Correcto: LiberaArregloAsientos.";
+        public const string MsgErrExcLiberaArregloAsientos = "Ocurrió una excepción al liberar arreglo de asientos.";
 
         // Venta
         public const string MsgCorrectoBuscaCorrelativo = "Correcto: BuscaCorrelativo.";
