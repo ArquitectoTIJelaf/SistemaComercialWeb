@@ -745,13 +745,16 @@
                     input.Hora = _this.filtro.Hora;
                     input.TodosTurnos = _this.filtro.TodosTurnos;
                     input.SoloProgramados = _this.filtro.SoloProgramados;
-                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input)
+                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input, { timeout: 10000 })
                         .then(res => {
                             appController.loadTable(res.data);
                             this.processing = false;
                         }).catch(err => {
-                            this.processing = false;
-                            APP.rq.axios_handler_error_alert;
+                            if (err.code === "ECONNABORTED") {
+                                this.processing = false;
+                                APP.msg.warning('Timeout: No se pudo cargar Turno');
+                            }
+                            else APP.rq.axios_handler_error_alert;
                         });
                 },
                 recorrido: function () {
@@ -1016,7 +1019,7 @@
                         APP.msg.error('No se pudo cargar Correlativo');
                         return;
                     }
-                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
+                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input, { timeout: 10000 })
                         .then(async function (res) {
                             if (res.data.NroViaje) {
                                 _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.CodiEmpresa));
@@ -1083,7 +1086,14 @@
                                 _this.showPlano = false;
                                 APP.msg.error('No se cargó resultados');
                             }
-                        }).catch(APP.rq.axios_handler_error_alert);
+                        }).catch(err => {
+                            if (err.code === "ECONNABORTED") {
+                                _this.processing = false;
+                                _this.showPlano = false;
+                                APP.msg.warning('Timeout: No se pudo cargar Turno');
+                            }
+                            else APP.rq.axios_handler_error_alert;
+                        });
                 },
                 getEmpresas: function () {
                     var _this = this;
@@ -1168,11 +1178,11 @@
                     var _this = this;
 
                     // Animación 'ScrollTop'
-                    //if ($(".img-bus")[0].getBoundingClientRect().top !== $("#appVueNavarHeader")[0].getBoundingClientRect().height) {
-                    //    var _topOfBus = $('.img-bus').offset().top;
-                    //    var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
-                    //    animateScrollTop(_topOfBus - _heightOfHeader, 800);
-                    //} -- SOLO PARA EL PUBLICADO
+                    if ($(".img-bus")[0].getBoundingClientRect().top !== $("#appVueNavarHeader")[0].getBoundingClientRect().height) {
+                        var _topOfBus = $('.img-bus').offset().top;
+                        var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
+                        animateScrollTop(_topOfBus - _heightOfHeader, 800);
+                    } // SOLO PARA EL PUBLICADO
 
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
