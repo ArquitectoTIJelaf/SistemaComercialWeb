@@ -21,6 +21,7 @@ namespace SisComWeb.Business
             try
             {
                 var response = new Response<string>(false, null, "Error: BuscaCorrelativo.", false);
+                var resBuscarCorrelativo = new Response<CorrelativoEntity>(false, new CorrelativoEntity(), "Error: BuscaCorrelativo.", false);
                 var auxBoletoCompleto = string.Empty;
 
                 // Valida 'TerminalElectronico'
@@ -36,12 +37,19 @@ namespace SisComWeb.Business
                     return response;
                 }
 
-                // Busca 'Correlativo'
-                var resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, request.CodiDocumento, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
-                if (!resValidarTerminalElectronico.Estado)
+                switch (request.FlagVenta)
                 {
-                    response.Mensaje = resValidarTerminalElectronico.Mensaje;
-                    return response;
+                    case "V": // Venta
+                        {
+                            // Busca 'Correlativo'
+                            resBuscarCorrelativo = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, request.CodiDocumento, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, resValidarTerminalElectronico.Valor.Tipo);
+                            if (!resValidarTerminalElectronico.Estado)
+                            {
+                                response.Mensaje = resValidarTerminalElectronico.Mensaje;
+                                return response;
+                            }
+                        };
+                        break;
                 }
 
                 // Seteo 'auxBoletoCompleto'

@@ -584,6 +584,8 @@ namespace SisComWeb.Aplication.Controllers
         {
             try
             {
+                Response<string> res = new Response<string>(false, string.Empty, string.Empty);
+
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())
                 {
@@ -687,20 +689,21 @@ namespace SisComWeb.Aplication.Controllers
                 }
                 JToken tmpResult = JObject.Parse(result);
                 bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 if (estado)
                 {
-                    string valor = (string)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
+                    res.Estado = estado;
+                    res.Mensaje = (string)tmpResult.SelectToken("Mensaje");
+                    res.Valor = (string)tmpResult["Valor"];
+                    return Json(res, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
+                    return Json(res, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<string>(false, ex.Message, string.Empty), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -762,10 +765,11 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                 "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
-                                ",\"CodiDocumento\" : \"" + "16" + "\"" + // TODO
+                                ",\"CodiDocumento\" : \"" + filtro.CodiDocumento + "\"" +
                                 ",\"CodiSucursal\" : " + usuario.CodiSucursal +
                                 ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
                                 ",\"CodiTerminal\" : \"" + CodiTerminal + "\"" +
+                                ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaCorrelativo", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

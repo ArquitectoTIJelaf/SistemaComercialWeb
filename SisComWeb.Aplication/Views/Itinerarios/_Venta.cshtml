@@ -819,7 +819,7 @@
                                                                v-validate="'min: 11'"
                                                                data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
-                                                               style="min-width: 85%; width: 85%; display: inline-block; ">
+                                                               style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-success btn-xs"
                                                                 title="Consultar a SUNAT"
                                                                 v-on:click="searchEmpresa(false)">

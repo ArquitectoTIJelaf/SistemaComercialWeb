@@ -1,11 +1,15 @@
-﻿@using SisComWeb.Aplication.Helpers
+﻿@using SisComWeb.Aplication.Helpers;
 @using System.Globalization;
+@using System.Configuration;
 
 @{
     ViewBag.Title = "Ventas";
     var usuario = DataSession.UsuarioLogueado;
     var fechaActual = DateTime.Now.ToString("dd/MM/yyyy");
     var horaActual = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture);
+
+    var CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["CodiCorrelativoVentaBoleta"];
+    var CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["CodiCorrelativoVentaFactura"];
 }
 
 @Html.Partial("_Filtros")
@@ -42,7 +46,8 @@
         }
 
         #divOtrosTurnos ul {
-            margin-left: calc(100% - 250px);
+            display: block;
+            margin-left: 30%;
         }
 
         #appRegistrarInfante .form-horizontal .control-label {
@@ -572,6 +577,10 @@
 
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
 
+        var CodiCorrelativoVentaBoleta = '@CodiCorrelativoVentaBoleta';
+
+        var CodiCorrelativoVentaFactura = '@CodiCorrelativoVentaFactura';
+
         var selectAll = {
             id: 0,
             label: 'TODOS'
@@ -598,13 +607,16 @@
                 loadTable: function (_list) {
                     appVueTable.loadTable(_list)
                 },
-                showVentas: function (_item, _turnos) {
-                    appVueFilter.showVentas = true;
-                    appVueTable.showVentas = true;
-                    appVueVenta.showVentas = true;
+                showVentas: async function (_item, _turnos) {
                     appVueVenta.pickedBusVenta = 'V';
-                    var _fechaViaje = appVueFilter.filtro.FechaViaje
-                    appVueVenta.chargeVentas(_item, _fechaViaje, _turnos);
+                    var _fechaViaje = appVueFilter.filtro.FechaViaje;
+
+                    var auxValidate = await appVueVenta.chargeVentas(_item, _fechaViaje, _turnos);
+                    if (auxValidate !== 'sinCorrelativo') {
+                        appVueFilter.showVentas = true;
+                        appVueTable.showVentas = true;
+                        appVueVenta.showVentas = true;
+                    }
                 },
                 hideVentas: function () {
                     appVueFilter.showVentas = false;
@@ -846,7 +858,7 @@
             computed: {},
             watch: {}
         });
-
+        
         var appVueVenta = new Vue({
             el: '#appVueVenta',
             data: {
@@ -954,7 +966,10 @@
                 },
                 processing: false,
                 empresas: [],
-                checkRegistrarNino: false
+                checkRegistrarNino: false,
+                // Correlativos
+                CorrelativoVentaBoleta: '',
+                CorrelativoVentaFactura: ''
             },
             mounted: function () {
                 this.getEmpresas();
@@ -966,12 +981,14 @@
                 window.addEventListener('beforeunload', this.beforeClosePage);
             },
             methods: {
-                chargeVentas: function (item, fechaViaje, turnos) {
+                chargeVentas: async function (item, fechaViaje, turnos) {
                     this.firstCharge = true;
                     this.list.turnos = turnos;
                     this.objTurno.FechaProgramacion = item.FechaProgramacion;
                     this.objTurno.HoraProgramacion = item.HoraProgramacion;
-                    this.getTurno(item, fechaViaje);
+
+                    var auxValidate = await this.getTurno(item, fechaViaje);
+                    if (auxValidate === 'sinCorrelativo') return 'sinCorrelativo';
                 },
                 getTurno: async function (item, fechaViaje) {
                     var _this = this;
@@ -987,13 +1004,17 @@
                     input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = fechaViaje;
-                    _this.Correlativo = await _this.getCorrelativo(item.CodiEmpresa);
+
+                    _this.CorrelativoVentaBoleta = await _this.getCorrelativo(item.CodiEmpresa, CodiCorrelativoVentaBoleta, 'V');
+                    _this.CorrelativoVentaFactura = await _this.getCorrelativo(item.CodiEmpresa, CodiCorrelativoVentaFactura, 'V');
+                    _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
                     // Cuando no obtiene 'Correlativo'
                     if (_this.Correlativo === '0000-00000001') {
                         _this.processing = false;
                         _this.showPlano = false;
+                        appController.hideVentas();
                         APP.msg.error('No se pudo cargar Correlativo');
-                        return;
+                        return 'sinCorrelativo';
                     }
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
@@ -1572,6 +1593,7 @@
                         && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1'
                         && _this.list.ventas[_this.indexVenta].Documento
                         && _this.list.ventas[_this.indexVenta].Documento.length === 8) {
+
                         APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
@@ -1710,10 +1732,12 @@
                         }
                     });
                 },
-                getCorrelativo: async function (_CodiEmpresa) {
+                getCorrelativo: async function (_CodiEmpresa, _CodiDocumento, _FlagVenta) {
                     var auxNroVenta = '';
                     var input = {};
                     input.CodiEmpresa = _CodiEmpresa;
+                    input.CodiDocumento = _CodiDocumento;
+                    input.FlagVenta = _FlagVenta;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
                         .then(res => {
                             auxNroVenta = res.data;
@@ -2199,6 +2223,7 @@
                     // Si es el mismo valor, retornar.
                     if (_this.pickedBusVenta === value) return;
 
+                    // Valida si se limpiará los 'AsientosBloqueados' del Picked anterior.
                     switch (value) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
@@ -2368,6 +2393,9 @@
                                 this.checkRegistrarNino = value;
                         }
                     }
+                },
+                listVentasCampoRuc: function () {
+                    return this.list.ventas[this.indexVenta].Ruc;
                 }
             },
             watch: {
@@ -2423,6 +2451,16 @@
                         this.slider = this.list.ventas.length;
                     },
                     deep: true,
+                },
+                listVentasCampoRuc: function (newVal, oldVal) {
+                    if (this.pickedBusVenta !== 'R') {
+                        if (newVal.length === 11)
+                            this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+                        else {
+                            if (newVal.length === 0)
+                                this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                        }
+                    }
                 }
             }
         });
@@ -2582,17 +2620,25 @@
                     };
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: _this.pickedBusVenta })
-                        .then(res => {
+                        .then(async function (res) {
+
+                            // Limpiar 'AsientosBloqueados'
+                            await appVueVenta.cancelarBoletos();
+
                             $("#appVueTipoPago").modal('hide');
-                            appController.showBoletosVendidos(res.data);
+                            if (res.data.Estado)
+                                appController.showBoletosVendidos(res.data.Valor);
+                            else {
+                                await appController.chargeTurnos();
+                                _this.$nextTick(() => {
+                                    APP.msg.error(res.data.Mensaje)
+                                });
+                            }
                             _this.processing = false;
                         }).catch(err => {
                             _this.processing = false;
                             APP.rq.axios_handler_error_alert;
                         });
-
-                    // Limpiar 'AsientosBloqueados'
-                    await appVueVenta.cancelarBoletos();
                 },
                 limpiarCampos: function () {
                     this.tipoPago = '';
@@ -2745,7 +2791,7 @@
                         if (value !== '' && value !== null) {
                             if (this.list.tiposPago.find(x => x.id === value.id)) {
                                 this.tipoPago = value.id;
-                            }                                
+                            }
                         } else {
                             this.tipoPago = '';
                         }
