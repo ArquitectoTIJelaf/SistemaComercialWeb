@@ -591,12 +591,14 @@
             return `${nombreConcat[2]} ${nombreConcat[0]} ${nombreConcat[1]}`;
         });
 
-        Vue.filter('formatNroVenta', function (value, flagVenta) {
-            if (flagVenta === 'R') {
-                var auxCeroPorSigno = value.substring(1, 2);
-                if (auxCeroPorSigno === '-') auxCeroPorSigno = '0';
+        Vue.filter('formatNroVenta', function (value) {
+            // Para el case de 'Reserva'
+            var auxCeroPorSigno = value.substring(1, 2);
+            if (auxCeroPorSigno === '-') {
+                auxCeroPorSigno = '0';
                 value = value.substring(0, 1) + auxCeroPorSigno + value.substring(2);
-            }
+            } 
+            // -------------------------
             var auxValue = value.substring(5);
             auxValue = auxValue.padStart(8, '0');
             return value.substring(0, 5) + auxValue;
@@ -611,8 +613,8 @@
                     appVueVenta.pickedBusVenta = 'V';
                     var _fechaViaje = appVueFilter.filtro.FechaViaje;
 
-                    var auxValidate = await appVueVenta.chargeVentas(_item, _fechaViaje, _turnos);
-                    if (auxValidate !== 'sinCorrelativo') {
+                    await appVueVenta.chargeVentas(_item, _fechaViaje, _turnos);
+                    if (appVueVenta.showPlano) {
                         appVueFilter.showVentas = true;
                         appVueTable.showVentas = true;
                         appVueVenta.showVentas = true;
@@ -987,8 +989,7 @@
                     this.objTurno.FechaProgramacion = item.FechaProgramacion;
                     this.objTurno.HoraProgramacion = item.HoraProgramacion;
 
-                    var auxValidate = await this.getTurno(item, fechaViaje);
-                    if (auxValidate === 'sinCorrelativo') return 'sinCorrelativo';
+                    await this.getTurno(item, fechaViaje);
                 },
                 getTurno: async function (item, fechaViaje) {
                     var _this = this;
@@ -1012,9 +1013,8 @@
                     if (_this.Correlativo === '0000-00000001') {
                         _this.processing = false;
                         _this.showPlano = false;
-                        appController.hideVentas();
                         APP.msg.error('No se pudo cargar Correlativo');
-                        return 'sinCorrelativo';
+                        return;
                     }
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
@@ -1071,7 +1071,7 @@
                                     _this.list.plano1 = [];
                                     _this.$nextTick(() => {
                                         _this.showPlano = false;
-                                        APP.msg.error('No se pudo cargar el plano');
+                                        APP.msg.error('No se pudo cargar Plano');
                                     });
                                 }
                                 _this.processing = false;

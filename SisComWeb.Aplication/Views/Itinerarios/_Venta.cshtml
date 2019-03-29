@@ -325,15 +325,15 @@
                                     <label for="paseBV" class="align-label-radio">Pase</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('ND2')">
-                                    <input type="radio" id="remotoBV" value="ND2" v-model="pickedBusVenta" class="align-radio">
+                                    <input type="radio" id="remotoBV" value="ND2" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="remotoBV" class="align-label-radio">Remoto</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('ND3')">
-                                    <input type="radio" id="retornoBV" value="ND3" v-model="pickedBusVenta" class="align-radio">
+                                    <input type="radio" id="retornoBV" value="ND3" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="retornoBV" class="align-label-radio">Retorno</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('ND4')">
-                                    <input type="radio" id="creditoBV" value="ND4" v-model="pickedBusVenta" class="align-radio">
+                                    <input type="radio" id="creditoBV" value="ND4" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="creditoBV" class="align-label-radio">Crédito</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click="changePickedBusVenta('PO')">
@@ -693,7 +693,7 @@
                                                 <template v-else>
                                                     <label class="control-label"
                                                            style="font-size: 16px !important; font-weight: 500; color: black;">
-                                                        N° {{list.ventas[indexVenta].NroVenta | formatNroVenta(list.ventas[indexVenta].FlagVenta)}}
+                                                        N° {{list.ventas[indexVenta].NroVenta | formatNroVenta}}
                                                     </label>
                                                 </template>
                                             </div>

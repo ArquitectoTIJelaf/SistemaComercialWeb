@@ -158,8 +158,10 @@ namespace SisComWeb.Business
                         else
                             entidad.CodiProgramacion = resBuscarProgramacionViaje.Valor;
                     }
-                    else
+                    else {
+                        response.Mensaje = resBuscarProgramacionViaje.Mensaje;
                         return response;
+                    }
 
                     // Valida 'TerminalElectronico'
                     var resValidarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
@@ -183,10 +185,10 @@ namespace SisComWeb.Business
                         {
                             if (resValidarSaldoPaseCortesia.Valor != 1)
                             {
-                                response.EsCorrecto = true;
+                                response.EsCorrecto = false;
                                 response.Valor = valor;
-                                response.Mensaje = Message.MsgCorrectoGrabaPase;
-                                response.Estado = true;
+                                response.Mensaje = "Socio sin saldo disponible.";
+                                response.Estado = false;
 
                                 return response;
                             }
