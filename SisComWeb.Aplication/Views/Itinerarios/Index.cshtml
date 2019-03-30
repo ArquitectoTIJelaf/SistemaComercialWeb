@@ -2629,7 +2629,7 @@
                         listado.push(input);
                     };
 
-                    await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { listado: listado, flagVenta: _this.pickedBusVenta })
+                    await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { Listado: listado, FlagVenta: _this.pickedBusVenta })
                         .then(async function (res) {
 
                             // Limpiar 'AsientosBloqueados'

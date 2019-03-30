@@ -135,8 +135,8 @@ namespace SisComWeb.Services
         Response<string> BuscaCorrelativo(CorrelativoRequest request);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta);
+        [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]
+        Response<string> GrabaVenta(VentaRequest request);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaBeneficiarioPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]

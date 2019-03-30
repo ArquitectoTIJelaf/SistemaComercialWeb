@@ -95,14 +95,14 @@ namespace SisComWeb.Business
 
         #region GRABAR VENTA
 
-        public static Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
+        public static Response<string> GrabaVenta(List<VentaEntity> Listado, string FlagVenta)
         {
             try
             {
                 var response = new Response<string>(false, null, "Error: GrabaVenta.", false);
                 string valor = string.Empty;
 
-                foreach (var entidad in listado)
+                foreach (var entidad in Listado)
                 {
                     string auxBoletoCompleto = string.Empty;
                     string auxNumeCaja = string.Empty;
@@ -723,14 +723,14 @@ namespace SisComWeb.Business
 
         #region GRABAR RESERVA
 
-        public static Response<string> GrabaReserva(List<VentaEntity> listado)
+        public static Response<string> GrabaReserva(List<VentaEntity> Listado)
         {
             try
             {
                 var response = new Response<string>(false, null, "Error: GrabaReserva.", false);
                 string valor = string.Empty;
 
-                foreach (var entidad in listado)
+                foreach (var entidad in Listado)
                 {
                     string auxBoletoCompleto = string.Empty;
 

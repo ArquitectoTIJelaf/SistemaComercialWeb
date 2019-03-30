@@ -342,16 +342,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> GrabaVenta(List<VentaEntity> listado, string FlagVenta)
+        public Response<string> GrabaVenta(VentaRequest request)
         {
             try
             {
-                switch (FlagVenta)
+                switch (request.FlagVenta)
                 {
                     case "R": // Reserva
-                        return VentaLogic.GrabaReserva(listado);
+                        return VentaLogic.GrabaReserva(request.Listado);
                     default:
-                        return VentaLogic.GrabaVenta(listado, FlagVenta);
+                        return VentaLogic.GrabaVenta(request.Listado, request.FlagVenta);
                 }
             }
             catch (Exception ex)
