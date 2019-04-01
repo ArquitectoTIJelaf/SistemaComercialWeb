@@ -688,18 +688,12 @@ namespace SisComWeb.Aplication.Controllers
                     }
                 }
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                if (estado)
-                {
-                    res.Estado = estado;
-                    res.Mensaje = (string)tmpResult.SelectToken("Mensaje");
-                    res.Valor = (string)tmpResult["Valor"];
-                    return Json(res, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(res, JsonRequestBehavior.AllowGet);
-                }
+
+                res.Estado = (bool)tmpResult.SelectToken("Estado");
+                res.Mensaje = (string)tmpResult.SelectToken("Mensaje");
+                res.Valor = (string)tmpResult["Valor"];
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

@@ -120,7 +120,7 @@ namespace SisComWeb.Business
                             // Genera 'CorrelativoAuxiliar'
                             var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
                             if (resGenerarCorrelativoAuxiliar.Estado)
-                                entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor);
+                                entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor) + 1;
                             else
                             {
                                 response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
@@ -555,15 +555,18 @@ namespace SisComWeb.Business
                     // Graba 'LiquidacionVentas'
                     else
                     {
+                        int auxCorrelativoAuxiliar = 0;
                         // Genera 'CorrelativoAuxiliar'
                         var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("Liq_Caja", "999", "", string.Empty);
-                        if (!resGenerarCorrelativoAuxiliar.Estado)
+                        if (resGenerarCorrelativoAuxiliar.Estado)
+                            auxCorrelativoAuxiliar = int.Parse(resGenerarCorrelativoAuxiliar.Valor) + 1;
+                        else
                         {
                             response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
                             return response;
                         }
 
-                        var resGrabarLiquidacionVentas = VentaRepository.GrabarLiquidacionVentas(int.Parse(resGenerarCorrelativoAuxiliar.Valor), entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
+                        var resGrabarLiquidacionVentas = VentaRepository.GrabarLiquidacionVentas(auxCorrelativoAuxiliar, entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
                         if (!resGrabarLiquidacionVentas.Estado)
                         {
                             response.Mensaje = resGrabarLiquidacionVentas.Mensaje;
@@ -745,7 +748,7 @@ namespace SisComWeb.Business
                             // Genera 'CorrelativoAuxiliar'
                             var resGenerarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
                             if (resGenerarCorrelativoAuxiliar.Estado)
-                                entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor);
+                                entidad.CodiProgramacion = int.Parse(resGenerarCorrelativoAuxiliar.Valor) + 1;
                             else
                             {
                                 response.Mensaje = resGenerarCorrelativoAuxiliar.Mensaje;
@@ -784,14 +787,17 @@ namespace SisComWeb.Business
                             entidad.CodiProgramacion = resBuscarProgramacionViaje.Valor;
                     }
                     else
+                    {
+                        response.Mensaje = resBuscarProgramacionViaje.Mensaje;
                         return response;
+                    }
 
                     // Busca 'Correlativo'
                     var resGenerarCorrelativoAuxiliar2 = VentaRepository.GenerarCorrelativoAuxiliar("TB_RESERVAS", "999", "", string.Empty);
                     if (resGenerarCorrelativoAuxiliar2.Estado)
                     {
                         entidad.SerieBoleto = -98;
-                        entidad.NumeBoleto = int.Parse(resGenerarCorrelativoAuxiliar2.Valor);
+                        entidad.NumeBoleto = int.Parse(resGenerarCorrelativoAuxiliar2.Valor) + 1;
                     }
                     else
                     {
@@ -809,12 +815,27 @@ namespace SisComWeb.Business
                         if (resGrabarVenta.Valor != -1)
                             entidad.IdVenta = resGrabarVenta.Valor;
                         else
+                        {
+                            response.Mensaje = "Error: resGrabarVenta.Valor = -1.";
                             return response;
+                        }
                     }
                     else
                     {
                         response.Mensaje = resGrabarVenta.Mensaje;
                         return response;
+                    }
+
+                    // Graba 'Acompañante'
+                    if (!string.IsNullOrEmpty(entidad.ObjAcompañante.TipoDocumento) &&
+                        !string.IsNullOrEmpty(entidad.ObjAcompañante.NumeroDocumento))
+                    {
+                        var resGrabarAcompañanteVenta = VentaRepository.GrabarAcompañanteVenta(entidad.IdVenta, entidad.ObjAcompañante);
+                        if (!resGrabarAcompañanteVenta.Estado)
+                        {
+                            response.Mensaje = resGrabarAcompañanteVenta.Mensaje;
+                            return response;
+                        }
                     }
 
                     // Añado 'auxBoletoCompleto'

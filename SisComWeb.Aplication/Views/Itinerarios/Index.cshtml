@@ -1182,7 +1182,7 @@
                         var _topOfBus = $('.img-bus').offset().top;
                         var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
                         animateScrollTop(_topOfBus - _heightOfHeader, 800);
-                    } // SOLO PARA EL PUBLICADO
+                    }
 
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
@@ -2631,7 +2631,6 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta' + auxNameMethod, { Listado: listado, FlagVenta: _this.pickedBusVenta })
                         .then(async function (res) {
-
                             // Limpiar 'AsientosBloqueados'
                             await appVueVenta.cancelarBoletos();
 
