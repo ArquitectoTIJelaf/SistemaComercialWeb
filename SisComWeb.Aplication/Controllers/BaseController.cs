@@ -33,20 +33,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -66,20 +72,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -101,20 +113,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -134,20 +152,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -169,20 +193,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -202,20 +232,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -235,20 +271,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -268,20 +310,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -301,20 +349,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -334,20 +388,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -367,20 +427,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -400,20 +466,26 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
                 JArray data = (JArray)tmpResult["Valor"];
-                List<Base> items = data.Select(x => new Base
+
+                Response<List<Base>> res = new Response<List<Base>>()
                 {
-                    id = (string)x["id"],
-                    label = (string)x["label"]
-                }).ToList();
-                return Json(items, JsonRequestBehavior.AllowGet);
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = data.Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

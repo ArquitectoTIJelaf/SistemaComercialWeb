@@ -12,22 +12,20 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = UsuarioRepository.ValidaUsuario(CodiUsuario);
-                if (!response.Estado)
-                    return response;
+                var validaUsuario = UsuarioRepository.ValidaUsuario(CodiUsuario);
 
                 Seguridad seguridad = new Seguridad();
-                var desencriptaPassword = seguridad.Desencripta(response.Valor.Password, Constantes.UnaLlave);
+                var desencriptaPassword = seguridad.Desencripta(validaUsuario.Password, Constantes.UnaLlave);
 
-                if (response.Valor.CodiUsuario > 0 && (Password == desencriptaPassword || Password == response.Valor.Password))
-                    return new Response<UsuarioEntity>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                if (validaUsuario.CodiUsuario > 0 && (Password == desencriptaPassword || Password == validaUsuario.Password))
+                    return new Response<UsuarioEntity>(true, validaUsuario, Message.MsgCorrectoValidaUsuario, true);
                 else
-                    return new Response<UsuarioEntity>(false, null, "Las credenciales ingresadas son inválidas.", false);
+                    return new Response<UsuarioEntity>(false, validaUsuario, Message.MsgErrorValidaUsuario, false);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(UsuarioLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcValidaUsuario, false);
+                return new Response<UsuarioEntity>(false, null, Message.MsgExcValidaUsuario, false);
             }
         }
     }

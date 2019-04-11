@@ -6,27 +6,15 @@
             <h3><span class="fa-fw open-close"><i class="ti-menu hidden-xs"></i><i class="ti-close visible-xs"></i></span> <span class="hide-menu">opciones</span></h3>
         </div>
         @{
-            //var usuario = DataSession.UsuarioLogueado;
-            //var datosSesion = DataSession.PermisosUsuario;
             string idPadreInicial = System.Configuration.ConfigurationManager.AppSettings["idPadre"];
         }
         <ul class="nav" id="side-menu">
             <li class="user-pro">
                 <a href="javascript:void(0);" class="waves-effect">
-                    @*<img src="~/wwwroot/plugins/images/ccc-logo-white.png" alt="user-img" class="img-circle"/>*@
                     <img src="~/wwwroot/plugins/images/users/jelaf-blue.gif" alt="user-img" class="img-circle"/>
                     <b class="hide-menu ccc text-white">Gestión de Transportes</b>
                 </a>
             </li>
-            @*@if (usuario != null)
-            {
-                var usuarioActual = usuario;
-                var modelo = datosSesion.Where(x => x.TipoOpcion == 1).ToList();
-                if ((modelo != null && modelo.Count() > 0))
-                {
-                    @MenuPrincipal.GetMenu(modelo, Convert.ToInt32(idPadreInicial))
-                }
-            }*@
         </ul>        
     </div>
 </div>

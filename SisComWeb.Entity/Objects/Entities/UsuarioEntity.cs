@@ -19,5 +19,7 @@
         public string NomSucursal { get; set; }
 
         public string NomPuntoVenta { get; set; }
+
+        public int Terminal { get; set; }
     }
 }

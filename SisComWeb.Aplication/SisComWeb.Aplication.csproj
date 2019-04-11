@@ -438,8 +438,8 @@
     <Compile Include="Helpers\NotifyJson.cs" />
     <Compile Include="Helpers\SessionExpire.cs" />
     <Compile Include="Hubs\NotificationHub.cs" />
+    <Compile Include="Models\Reniec.cs" />
     <Compile Include="Models\Beneficiario.cs" />
-    <Compile Include="Models\ClavesInternas.cs" />
     <Compile Include="Models\ClientePasaje.cs" />
     <Compile Include="Models\DestinoRuta.cs" />
     <Compile Include="Models\Itinerario.cs" />
@@ -453,7 +453,7 @@
     <Compile Include="Models\Base.cs" />
     <Compile Include="Models\Turno.cs" />
     <Compile Include="Models\Correlativo.cs" />
-    <Compile Include="Models\Acompañante.cs" />
+    <Compile Include="Models\Acompaniante.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Venta.cs" />
     <Compile Include="Models\VentaBeneficiario.cs" />
@@ -462,7 +462,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
-    <Content Include="App_Code\MenuPrincipal.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\_LayoutFooter.cshtml" />
@@ -768,6 +767,7 @@
     <Content Include="wwwroot\statics\less\widgets.less" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>

@@ -1,7 +1,6 @@
-﻿
-namespace SisComWeb.Aplication.Models
+﻿namespace SisComWeb.Aplication.Models
 {
-    public class Acompañante
+    public class Acompaniante
     {
         public string CodiTipoDoc { get; set; }
 

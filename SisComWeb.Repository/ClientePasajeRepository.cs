@@ -7,96 +7,90 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
+        public static ClientePasajeEntity BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
-            var response = new Response<ClientePasajeEntity>(false, null, "Error: BuscaPasajero.", false);
+            var entidad = new ClientePasajeEntity
+            {
+                IdCliente = 0,
+                TipoDoc = string.Empty,
+                NumeroDoc = string.Empty,
+                NombreCliente = string.Empty,
+                ApellidoPaterno = string.Empty,
+                ApellidoMaterno = string.Empty,
+                FechaNacimiento = string.Empty,
+                Edad = 0,
+                Direccion = string.Empty,
+                Telefono = string.Empty,
+                RucContacto = string.Empty,
+                Sexo = string.Empty,
+                RazonSocial = string.Empty
+            };
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPasajero";
                 db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, int.Parse(TipoDoc));
                 db.AddParameter("@Numero_Doc", DbType.String, ParameterDirection.Input, NumeroDoc);
-                var entidad = new ClientePasajeEntity
-                {
-                    IdCliente = 0,
-                    TipoDoc = "",
-                    NumeroDoc = "",
-                    NombreCliente = "",
-                    ApellidoPaterno = "",
-                    ApellidoMaterno = "",
-                    FechaNacimiento = "",
-                    Edad = 0,
-                    Direccion = "",
-                    Telefono = "",
-                    RucContacto = "",
-                    Sexo = "",
-                    RazonSocial = ""
-                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         entidad.IdCliente = Reader.GetIntValue(drlector, "Id_Clientes");
-                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id") ?? "";
-                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? "";
-                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? "";
-                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P") ?? "";
-                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? "";
+                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id") ?? string.Empty;
+                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? string.Empty;
+                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? string.Empty;
+                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P") ?? string.Empty;
+                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? string.Empty;
                         entidad.FechaNacimiento = Reader.GetDateStringValue(drlector, "fec_nac");
                         entidad.Edad = Reader.GetTinyIntValue(drlector, "edad");
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? "";
-                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? "";
-                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? "";
-                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? "";
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
+                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
+                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;
+                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? string.Empty;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscaPasajero.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<RucEntity> BuscarEmpresa(string RucCliente)
+        public static RucEntity BuscarEmpresa(string RucCliente)
         {
-            var response = new Response<RucEntity>(false, null, "Error: BuscarEmpresa.", false);
+            var entidad = new RucEntity
+            {
+                RucCliente = string.Empty,
+                RazonSocial = string.Empty,
+                Direccion = string.Empty,
+                Telefono = string.Empty
+            };
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarEmpresa";
                 db.AddParameter("@Ruc_Cliente", DbType.String, ParameterDirection.Input, RucCliente);
-                var entidad = new RucEntity
-                {
-                    RucCliente = "",
-                    RazonSocial = "",
-                    Direccion = "",
-                    Telefono = ""
-                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente") ?? "";
-                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? "";
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? "";
-                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono") ?? "";
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente") ?? string.Empty;
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? string.Empty;
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
+                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono") ?? string.Empty;
                     }
-
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscarEmpresa.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
         #endregion
 
         #region Métodos Transaccionales
 
-        public static Response<int> GrabarPasajero(ClientePasajeEntity entidad)
+        public static int GrabarPasajero(ClientePasajeEntity entidad)
         {
-            var response = new Response<int>(false, 0, "Error: GrabarPasajero.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarPasajero";
@@ -115,19 +109,16 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                int _outputIdCliente = int.Parse(db.GetParameter("@Id_Clientes").ToString());
-
-                response.EsCorrecto = true;
-                response.Valor = _outputIdCliente;
-                response.Mensaje = "Correcto: GrabarPasajero.";
-                response.Estado = true;
+                valor = int.Parse(db.GetParameter("@Id_Clientes").ToString());
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<bool> ModificarPasajero(ClientePasajeEntity entidad)
+        public static bool ModificarPasajero(ClientePasajeEntity entidad)
         {
-            var response = new Response<bool>(false, false, "Error: ModificarPasajero.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ModificarPasajero";
@@ -146,17 +137,16 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: ModificarPasajero.";
-                response.Estado = true;
+                valor = true;
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<bool> GrabarEmpresa(RucEntity entidad)
+        public static bool GrabarEmpresa(RucEntity entidad)
         {
-            var response = new Response<bool>(false, false, "Error: GrabarEmpresa.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarEmpresa";
@@ -164,20 +154,19 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: GrabarEmpresa.";
-                response.Estado = true;
+                valor = true;
             }
 
-            return response;
+            return valor;
         }
 
-        public static Response<bool> ModificarEmpresa(RucEntity entidad)
+        public static bool ModificarEmpresa(RucEntity entidad)
         {
-            var response = new Response<bool>(false, false, "Error: ModificarEmpresa.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ModificarEmpresa";
@@ -185,15 +174,13 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Razon_Social", DbType.String, ParameterDirection.Input, entidad.RazonSocial);
                 db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
                 db.AddParameter("@Telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
+
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: ModificarEmpresa.";
-                response.Estado = true;
+                valor = true;
             }
 
-            return response;
+            return valor;
         }
 
         #endregion

@@ -8,9 +8,10 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<List<ItinerarioEntity>> BuscarItinerarios(short CodiOrigen, short CodiDestino, short CodiRuta, string Hora)
+        public static List<ItinerarioEntity> BuscarItinerarios(short CodiOrigen, short CodiDestino, short CodiRuta, string Hora)
         {
-            var response = new Response<List<ItinerarioEntity>>(false, null, "Error: BuscarItinerarios.", false);
+            var Lista = new List<ItinerarioEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarItinerarios";
@@ -18,7 +19,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
                 db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, CodiRuta);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var Lista = new List<ItinerarioEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -49,24 +49,21 @@ namespace SisComWeb.Repository
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: BuscarItinerarios.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<TurnoViajeEntity> VerificaCambiosTurnoViaje(int NroViaje, string FechaProgramacion)
+        public static TurnoViajeEntity VerificaCambiosTurnoViaje(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<TurnoViajeEntity>(false, null, "Error: VerificaCambiosTurnoViaje.", false);
+            var entidad = new TurnoViajeEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@FechaProgramacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
-                var entidad = new TurnoViajeEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -75,42 +72,37 @@ namespace SisComWeb.Repository
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Servicio");
                         entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: VerificaCambiosTurnoViaje.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<int> BuscarProgramacionViaje(int NroViaje, string FechaProgramacion)
+        public static int BuscarProgramacionViaje(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "Error: BuscarProgramacionViaje.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarProgramacionViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
-                var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "codi_programacion");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: BuscarProgramacionViaje.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<BusEntity> ObtenerBusEstandar(byte CodiEmpresa, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
+        public static BusEntity ObtenerBusEstandar(byte CodiEmpresa, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
         {
-            var response = new Response<BusEntity>(false, null, "Error: ObtenerBusEstandar.", false);
+            var entidad = new BusEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerBusEstandar";
@@ -119,7 +111,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiRuta);
                 db.AddParameter("@Codi_Servicio", DbType.Int16, ParameterDirection.Input, CodiServicio);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var entidad = new BusEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -129,23 +120,21 @@ namespace SisComWeb.Repository
                         entidad.NumePasajeros = Reader.GetStringValue(drlector, "Nume_Pasajeros");
                         entidad.PlacBus = Reader.GetStringValue(drlector, "Plac_bus");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerBusEstandar.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<BusEntity> ObtenerBusProgramacion(int CodiProgramacion)
+        public static BusEntity ObtenerBusProgramacion(int CodiProgramacion)
         {
-            var response = new Response<BusEntity>(false, null, "Error: ObtenerBusProgramacion.", false);
+            var entidad = new BusEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerBusProgramacion";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
-                var entidad = new BusEntity();
+                
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -159,24 +148,22 @@ namespace SisComWeb.Repository
                         entidad.CodiCopiloto = Reader.GetStringValue(drlector, "Codi_Copiloto");
                         entidad.NombreCopiloto = Reader.GetStringValue(drlector, "Nombre_Copiloto");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerBusProgramacion.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<int> ValidarTurnoAdicional(int NroViaje, string FechaProgramacion)
+        public static int ValidarTurnoAdicional(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "Error: ValidarTurnoAdicional.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarTurnoAdicional";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
-                var valor = new int();
+                
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -184,24 +171,21 @@ namespace SisComWeb.Repository
                         valor = 1;
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarTurnoAdicional.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<int> ValidarProgrmacionCerrada(int NroViaje, string FechaProgramacion)
+        public static int ValidarProgramacionCerrada(int NroViaje, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "Error: ValidarProgrmacionCerrada.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarProgrmacionCerrada";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
-                var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -209,38 +193,32 @@ namespace SisComWeb.Repository
                         valor = 1;
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarProgrmacionCerrada.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<int> ObtenerTotalVentas(int CodiProgramacion, short CodiOrigen, short CodiDestino)
+        public static int ObtenerTotalVentas(int CodiProgramacion, short CodiOrigen, short CodiDestino)
         {
-            var response = new Response<int>(false, 0, "Error: ObtenerTotalVentas.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerTotalVentas";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
                 db.AddParameter("@Codi_Origen", DbType.Int32, ParameterDirection.Input, CodiOrigen);
                 db.AddParameter("@Codi_Destino", DbType.Int32, ParameterDirection.Input, CodiDestino);
-                var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "CantidadVenta");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ObtenerTotalVentas.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
         #endregion

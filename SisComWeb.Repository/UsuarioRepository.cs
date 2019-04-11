@@ -7,14 +7,14 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<UsuarioEntity> ValidaUsuario(short CodiUsuario)
+        public static UsuarioEntity ValidaUsuario(short CodiUsuario)
         {
-            var response = new Response<UsuarioEntity>(false, null, "Error: ValidaUsuario.", false);
+            var entidad = new UsuarioEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarUsuario";
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
-                var entidad = new UsuarioEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -28,14 +28,11 @@ namespace SisComWeb.Repository
                         entidad.Nivel = Reader.GetTinyIntValue(drlector, "Nivel");
                         entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
                         entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
+                        entidad.Terminal = Reader.GetIntValue(drlector, "Terminal");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: ValidaUsuario.";
-                    response.Estado = true;
                 }
             }
-            return response;
+            return entidad;
         }
 
         #endregion

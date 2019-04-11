@@ -3,8 +3,8 @@ using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Xml;
 
@@ -12,274 +12,104 @@ namespace SisComWeb.Business
 {
     public class ClientePasajeLogic
     {
+        private static readonly string ServiceRENIEC = ConfigurationManager.AppSettings["serviceRENIEC"].ToString();
+        private static readonly string ServiceSUNAT = ConfigurationManager.AppSettings["serviceSUNAT"].ToString();
+
         public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
             try
             {
-                var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
-                if (!resBuscaPasajero.Estado)
-                    return resBuscaPasajero;
+                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
+                var buscaEmpresa = new RucEntity();
+
+                if (!string.IsNullOrEmpty(buscaPasajero.RucContacto))
+                {
+                    buscaEmpresa = ClientePasajeRepository.BuscarEmpresa(buscaPasajero.RucContacto);
+                    buscaPasajero.RazonSocial = buscaEmpresa.RazonSocial;
+                    buscaPasajero.Direccion = buscaEmpresa.Direccion;
+                }
 
                 // Consulta 'RENIEC'
-                if (TipoDoc == "1" && string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
+                if (TipoDoc == "1" && string.IsNullOrEmpty(buscaPasajero.NumeroDoc))
                 {
                     var resConsultaRENIEC = ConsultaRENIEC(NumeroDoc);
                     if (resConsultaRENIEC.Estado)
                     {
-                        if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
-                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
-                            !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
-                        {
-                            resBuscaPasajero.Valor.ApellidoPaterno = resConsultaRENIEC.Valor[0];
-                            resBuscaPasajero.Valor.ApellidoMaterno = resConsultaRENIEC.Valor[1];
-                            resBuscaPasajero.Valor.NombreCliente = resConsultaRENIEC.Valor[2];
-                        }
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.RucContacto))
-                {
-                    var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(resBuscaPasajero.Valor.RucContacto);
-                    if (resBuscarEmpresa.Estado)
-                    {
-                        resBuscaPasajero.Valor.RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty;
-                        resBuscaPasajero.Valor.Direccion = resBuscarEmpresa.Valor.Direccion ?? string.Empty;
-                    }
-                }
-
-                return new Response<ClientePasajeEntity>(resBuscaPasajero.EsCorrecto, resBuscaPasajero.Valor, resBuscaPasajero.Mensaje, resBuscaPasajero.Estado);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ClientePasajeEntity>(false, null, Message.MsgErrExcBusqClientePasaje, false);
-            }
-        }
-
-        public static Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista)
-        {
-            try
-            {
-                var response = new Response<bool>(false, false, "Error: GrabarPasajero.", false);
-
-                foreach (var entidad in lista)
-                {
-                    // Busca 'Pasajero'
-                    var resBuscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
-                    if (!resBuscaPasajero.Estado)
-                    {
-                        response.Mensaje = resBuscaPasajero.Mensaje;
-                        return response;
-                    }
-
-                    var objClientePasajeEntity = new ClientePasajeEntity
-                    {
-                        IdCliente = resBuscaPasajero.Valor.IdCliente,
-                        TipoDoc = entidad.TipoDoc,
-                        NumeroDoc = entidad.NumeroDoc,
-                        NombreCliente = entidad.NombreCliente,
-                        ApellidoPaterno = entidad.ApellidoPaterno,
-                        ApellidoMaterno = entidad.ApellidoMaterno,
-                        FechaNacimiento = entidad.FechaNacimiento,
-                        Edad = entidad.Edad,
-                        Direccion = entidad.Direccion ?? string.Empty,
-                        Telefono = entidad.Telefono ?? string.Empty,
-                        RucContacto = entidad.RucContacto ?? string.Empty,
-                        Sexo = entidad.Sexo ?? string.Empty
-                    };
-
-                    if (!string.IsNullOrEmpty(resBuscaPasajero.Valor.TipoDoc) && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
-                    {
-                        // Modifica 'Pasajero'
-                        var resModificarPasajero = ClientePasajeRepository.ModificarPasajero(objClientePasajeEntity);
-                        if (!resModificarPasajero.Estado)
-                        {
-                            response.Mensaje = resModificarPasajero.Mensaje;
-                            return response;
-                        }
+                        buscaPasajero.ApellidoPaterno = resConsultaRENIEC.Valor.ApellidoPaterno;
+                        buscaPasajero.ApellidoMaterno = resConsultaRENIEC.Valor.ApellidoMaterno;
+                        buscaPasajero.NombreCliente = resConsultaRENIEC.Valor.Nombres;
                     }
                     else
-                    {
-                        if (entidad.TipoDoc == "1" && !string.IsNullOrEmpty(resBuscaPasajero.Valor.NumeroDoc))
-                        {
-                            // Consulta 'RENIEC'
-                            var resConsultaRENIEC = ConsultaRENIEC(entidad.NumeroDoc);
-                            if (resConsultaRENIEC.Estado)
-                            {
-                                if (!string.IsNullOrEmpty(resConsultaRENIEC.Valor[0]) &&
-                                    !string.IsNullOrEmpty(resConsultaRENIEC.Valor[1]) &&
-                                    !string.IsNullOrEmpty(resConsultaRENIEC.Valor[2]))
-                                {
-                                    objClientePasajeEntity.ApellidoPaterno = resConsultaRENIEC.Valor[0];
-                                    objClientePasajeEntity.ApellidoMaterno = resConsultaRENIEC.Valor[1];
-                                    objClientePasajeEntity.NombreCliente = resConsultaRENIEC.Valor[2];
-                                }
-                            }
-                        }
+                        return new Response<ClientePasajeEntity>(false, buscaPasajero, resConsultaRENIEC.Mensaje, true);
+                }
 
-                        // Graba 'Pasajero'
-                        var resGrabarPasajero = ClientePasajeRepository.GrabarPasajero(objClientePasajeEntity);
-                        if (!resGrabarPasajero.Estado)
-                        {
-                            response.Mensaje = resGrabarPasajero.Mensaje;
-                            return response;
-                        }
-                    }
-
-                    // Valida 'RucContacto'
-                    if (string.IsNullOrEmpty(entidad.RucContacto))
-                        continue;
-
-                    // Busca 'Empresa'
-                    var resBuscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
-                    if (!resBuscarEmpresa.Estado)
+                // Consulta 'SUNAT'
+                if (!string.IsNullOrEmpty(buscaPasajero.RucContacto))
+                {
+                    if (string.IsNullOrEmpty(buscaEmpresa.RucCliente))
                     {
-                        response.Mensaje = resBuscarEmpresa.Mensaje;
-                        return response;
-                    }
-
-                    var objEmpresa = new RucEntity
-                    {
-                        RucCliente = entidad.RucContacto,
-                        RazonSocial = resBuscarEmpresa.Valor.RazonSocial ?? string.Empty,
-                        Direccion = entidad.Direccion ?? string.Empty,
-                        Telefono = entidad.Telefono ?? string.Empty
-                    };
-
-                    if (!string.IsNullOrEmpty(resBuscarEmpresa.Valor.RucCliente))
-                    {
-                        // Modifica 'Empresa'
-                        var resModificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
-                        if (!resModificarEmpresa.Estado)
-                        {
-                            response.Mensaje = resModificarEmpresa.Mensaje;
-                            return response;
-                        }
-                    }
-                    else
-                    {
-                        // Consulta 'SUNAT'
-                        var resConsultaSUNAT = ConsultaSUNAT(entidad.RucContacto);
+                        var resConsultaSUNAT = ConsultaSUNAT(buscaPasajero.RucContacto);
                         if (resConsultaSUNAT.Estado)
                         {
-                            objEmpresa.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
-                            objEmpresa.Direccion = resConsultaSUNAT.Valor.Direccion;
+                            buscaPasajero.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
+                            buscaPasajero.Direccion = resConsultaSUNAT.Valor.Direccion;
                         }
-
-                        // Graba 'Empresa'
-                        var resGrabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
-                        if (!resGrabarEmpresa.Estado)
-                        {
-                            response.Mensaje = resGrabarEmpresa.Mensaje;
-                            return response;
-                        }
+                        else
+                            return new Response<ClientePasajeEntity>(false, buscaPasajero, resConsultaSUNAT.Mensaje, true);
                     }
                 }
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = Message.MsgCorrectoGrabarClientePasaje;
-                response.Estado = true;
-
-                return response;
+                return new Response<ClientePasajeEntity>(true, buscaPasajero, Message.MsgCorrectoBuscaPasajero, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcGrabarClientePasaje, false);
+                return new Response<ClientePasajeEntity>(false, null, Message.MsgExcBuscaPasajero, false);
             }
         }
 
-        public static Response<RucEntity> ConsultarSUNAT(string RucContacto, bool CondicionEmpresa)
+        public static Response<RucEntity> BuscaEmpresa(string RucContacto)
         {
             try
             {
-                var response = new Response<RucEntity>(false, new RucEntity(), "Error: ConsultarSUNAT.", false);
+                var buscaEmpresa = ClientePasajeRepository.BuscarEmpresa(RucContacto);
 
-                // Valida si se buscará en la 'BD'
-                if (CondicionEmpresa)
+                // Consulta 'SUNAT'
+                if (string.IsNullOrEmpty(buscaEmpresa.RucCliente))
                 {
-                    response = ClientePasajeRepository.BuscarEmpresa(RucContacto);
-                    if (!response.Estado)
-                        return response;
-                }
-
-                if (string.IsNullOrEmpty(response.Valor.RucCliente))
-                {
-                    // Consulta 'SUNAT'
                     var resConsultaSUNAT = ConsultaSUNAT(RucContacto);
-                    if (resConsultaSUNAT.Estado) {
-                        response.Valor.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
-                        response.Valor.Direccion = resConsultaSUNAT.Valor.Direccion;
+                    if (resConsultaSUNAT.Estado)
+                    {
+                        buscaEmpresa.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
+                        buscaEmpresa.Direccion = resConsultaSUNAT.Valor.Direccion;
                     }
+                    else
+                        return new Response<RucEntity>(false, buscaEmpresa, resConsultaSUNAT.Mensaje, true);
                 }
 
-                response.EsCorrecto = true;
-                response.Mensaje = Message.MsgCorrectoConsultarSUNAT;
-                response.Estado = true;
-
-                return response;
+                return new Response<RucEntity>(true, buscaEmpresa, Message.MsgCorrectoBuscaEmpresa, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<RucEntity>(false, null, Message.MsgErrExcConsultarSUNAT, false);
+                return new Response<RucEntity>(false, null, Message.MsgExcBuscaEmpresa, false);
             }
         }
 
-        public static Response<RucEntity> ConsultaSUNAT(string RucContacto)
+        public static Response<ReniecEntity> ConsultaRENIEC(string NumeroDoc)
         {
             try
             {
-                var response = new Response<RucEntity>(false, new RucEntity(), "Error: ConsultaSUNAT.", false);
-
-                var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
-                var soapXml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:int=\"integradores.jelaf.pe\">" +
-                                    "<soapenv:Header/>" +
-                                        "<soapenv:Body>" +
-                                            "<int:CONSULTAR_RUC><int:RUC>" + RucContacto + "</int:RUC></int:CONSULTAR_RUC>" +
-                                        "</soapenv:Body>" +
-                                   "</soapenv:Envelope>";
-                var responseC = httpClient.PostAsync("http://integradores.jelaf.pe/WsRUC/WsConsulta.asmx", new StringContent(soapXml, Encoding.UTF8, "text/xml")).Result;
-                var content = responseC.Content.ReadAsStringAsync().Result;
-                XmlDocument document = new XmlDocument();
-                document.LoadXml(content);
-                XmlNamespaceManager manager = new XmlNamespaceManager(document.NameTable);
-                manager.AddNamespace("bhr", "integradores.jelaf.pe");
-                XmlNodeList xnList = document.SelectNodes("//bhr:CONSULTAR_RUCResponse", manager);
-                foreach (XmlNode xn in xnList)
+                ReniecEntity entidad = new ReniecEntity
                 {
-                    response.Estado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
-                    response.Valor.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? "";
-                    response.Valor.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? "";
+                    ApellidoPaterno = string.Empty,
+                    ApellidoMaterno = string.Empty,
+                    Nombres = string.Empty
                 };
 
-                if (response.Estado)
-                {
-                    response.EsCorrecto = true;
-                    response.Valor = response.Valor;
-                    response.Mensaje = "Correcto: ConsultaSUNAT.";
-                }
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<RucEntity>(false, null, "Error: ConsultaSUNAT.", false);
-            }
-        }
-
-        public static Response<string[]> ConsultaRENIEC(string NumeroDoc)
-        {
-            var response = new Response<string[]>(false, null, "Error: ConsultaRENIEC.", false);
-
-            try
-            {
                 var client = new HttpClient
                 {
-                    BaseAddress = new Uri("http://aplicaciones007.jne.gob.pe/srop_publico/Consulta/Afiliado/")
+                    BaseAddress = new Uri(ServiceRENIEC)
                 };
 
                 var res = client.GetAsync("GetNombresCiudadano?DNI=" + NumeroDoc).Result;
@@ -289,18 +119,148 @@ namespace SisComWeb.Business
                     var result = res.Content.ReadAsStringAsync().Result;
                     string[] arrayNombreCompleto = result.Split('|');
 
-                    response.EsCorrecto = true;
-                    response.Valor = arrayNombreCompleto;
-                    response.Mensaje = "Correcto: ConsultaRENIEC.";
-                    response.Estado = true;
-                }
+                    entidad.ApellidoPaterno = arrayNombreCompleto[0];
+                    entidad.ApellidoMaterno = arrayNombreCompleto[1];
+                    entidad.Nombres = arrayNombreCompleto[2];
 
-                return response;
+                    return new Response<ReniecEntity>(true, entidad, Message.MsgCorrectoConsultaRENIEC, true);
+                }
+                else
+                    return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, false);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string[]>(false, null, "Error: ConsultaRENIEC.", false);
+                return new Response<ReniecEntity>(false, null, Message.MsgExcConsultaRENIEC, false);
+            }
+        }
+
+        public static Response<RucEntity> ConsultaSUNAT(string RucContacto)
+        {
+            try
+            {
+                RucEntity entidad = new RucEntity
+                {
+                    RazonSocial = string.Empty,
+                    Direccion = string.Empty
+                };
+                var auxEstado = new bool();
+
+                var soapXml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:int=\"integradores.jelaf.pe\">" +
+                                    "<soapenv:Header/>" +
+                                        "<soapenv:Body>" +
+                                            "<int:CONSULTAR_RUC><int:RUC>" + RucContacto + "</int:RUC></int:CONSULTAR_RUC>" +
+                                        "</soapenv:Body>" +
+                                "</soapenv:Envelope>";
+
+                var client = new HttpClient
+                {
+                    BaseAddress = new Uri(ServiceSUNAT),
+                };
+
+                var res = client.PostAsync(client.BaseAddress, new StringContent(soapXml, Encoding.UTF8, "text/xml")).Result;
+
+                if (res.IsSuccessStatusCode)
+                {
+                    var result = res.Content.ReadAsStringAsync().Result;
+
+                    var document = new XmlDocument();
+                    document.LoadXml(result);
+                    var manager = new XmlNamespaceManager(document.NameTable);
+                    manager.AddNamespace("bhr", "integradores.jelaf.pe");
+                    XmlNodeList xnList = document.SelectNodes("//bhr:CONSULTAR_RUCResponse", manager);
+                    foreach (XmlNode xn in xnList)
+                    {
+                        auxEstado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
+                        entidad.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? "";
+                        entidad.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? "";
+                    };
+
+                    if (auxEstado)
+                    {
+                        // Para limpiar: "-</td>\r\n </tr>\r\n\r\n <tr>\r\n "
+                        if (!string.IsNullOrEmpty(entidad.Direccion))
+                        {
+                            var auxLenght = entidad.Direccion.Length;
+                            entidad.Direccion = entidad.Direccion.Substring(0, auxLenght - 25);
+                        }
+
+                        return new Response<RucEntity>(true, entidad, Message.MsgCorrectoConsultaSUNAT, true);
+                    }
+                    else
+                        return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, false);
+                }
+                else
+                    return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, false);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<RucEntity>(false, null, Message.MsgExcConsultaSUNAT, false);
+            }
+        }
+
+        public static Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista)
+        {
+            try
+            {
+                foreach (var entidad in lista)
+                {
+                    // Busca 'Pasajero'
+                    var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
+
+                    if (buscaPasajero.IdCliente > 0)
+                    {
+                        // Modifica 'Pasajero'
+                        var modificarPasajero = ClientePasajeRepository.ModificarPasajero(entidad);
+                        if (!modificarPasajero)
+                            new Response<bool>(false, modificarPasajero, Message.MsgErrorModificarPasajero, false);
+                    }
+                    else
+                    {
+                        // Graba 'Pasajero'
+                        var grabarPasajero = ClientePasajeRepository.GrabarPasajero(entidad);
+                        if (grabarPasajero <= 0)
+                            new Response<bool>(false, false, Message.MsgErrorGrabarPasajero, false);
+                    }
+
+                    // Valida 'RucContacto'
+                    if (string.IsNullOrEmpty(entidad.RucContacto)) continue;
+
+                    // Busca 'Empresa'
+                    var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+
+                    var objEmpresa = new RucEntity
+                    {
+                        RucCliente = entidad.RucContacto ?? string.Empty,
+                        RazonSocial = entidad.RazonSocial ?? string.Empty,
+                        Direccion = entidad.Direccion ?? string.Empty,
+                        Telefono = entidad.Telefono ?? string.Empty
+                    };
+
+                    if (!string.IsNullOrEmpty(buscarEmpresa.RucCliente))
+                    {
+                        // Modifica 'Empresa'
+                        var modificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
+                        if (!modificarEmpresa)
+                            new Response<bool>(false, modificarEmpresa, Message.MsgErrorModificarEmpresa, false);
+                    }
+
+                    else
+                    {
+                        // Graba 'Empresa'
+                        var grabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
+                        if (!grabarEmpresa)
+                            new Response<bool>(false, grabarEmpresa, Message.MsgErrorGrabarEmpresa, false);
+                    }
+                }
+
+                return new Response<bool>(true, true, Message.MsgCorrectoGrabarClientePasaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(ClientePasajeLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcGrabarClientePasaje, false);
             }
         }
     }

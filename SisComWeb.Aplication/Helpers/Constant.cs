@@ -2,6 +2,8 @@
 {
     public class Constant
     {
+        public const string EXCEPCION = "Ha ocurrido una excepción.";
+
         public const int CLAVE_GIROS = 1;
         public const int CLAVE_PROGRAMACION = 2;
         public const int CLAVE_VENTA = 3;

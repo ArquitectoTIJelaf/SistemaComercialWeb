@@ -27,15 +27,6 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Solicitante:</label>
                             <div class="col-md-10">
-                                @*<v-select v-model="solicitante"
-                                          :id="'cboSolicitantePC'"
-                                          label="label"
-                                          :options="list.solicitantes"
-                                          :placeholder="'SOLICITANTE'"
-                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
-                                          ref="select">
-                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                </v-select>*@
                                 <v-select v-model="solicitante"
                                           :options="list.solicitantes"
                                           :placeholder="'SOLICITANTE'"
@@ -95,9 +86,9 @@
                                     <tbody>
                                         <paginate name="items" :list="list.filterBeneficiarios" :per="4">
                                             <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                                <td class="custom-td">{{item.Nombre_Beneficiario | formatNombre}}</td>
+                                                <td class="custom-td">{{item.NombreBeneficiario | formatNombre}}</td>
                                                 <td class="custom-td">{{item.Documento}}</td>
-                                                <td class="custom-td">{{item.Numero_Documento}}</td>
+                                                <td class="custom-td">{{item.NumeroDocumento}}</td>
                                                 <td class="custom-td">{{item.Sexo}}</td>
                                             </tr>
                                         </paginate>
@@ -138,9 +129,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                @*<button @@click="" id="btnAsignaPC" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light text-left">
-                    <span class="fa fa-save fa-fw"></span>Asignar
-                </button>*@
                 <button @@click="cancelarPaseCortesia" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>

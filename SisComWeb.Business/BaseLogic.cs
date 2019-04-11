@@ -12,13 +12,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaOficinas();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaOficinas();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaOficinas, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListOficina, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaOficinas, false);
             }
         }
 
@@ -26,13 +26,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaPuntosVenta(CodiSucursal);
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaPuntosVenta(CodiSucursal);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaPuntosVenta, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListPuntoVenta, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaPuntosVenta, false);
             }
         }
 
@@ -40,15 +40,15 @@ namespace SisComWeb.Business
         {
             try
             {
-                if (value == "NULL") { value = string.Empty; }
+                if (value == "NULL") value = string.Empty;
 
-                var response = BaseRepository.ListaUsuariosAutocomplete(value);
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaUsuariosAutocomplete(value);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuarios, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListUsuario, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
             }
         }
 
@@ -56,13 +56,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaServicios();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaServicios();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaServicios, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListServicio, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaServicios, false);
             }
         }
 
@@ -70,13 +70,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaEmpresas();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaEmpresas();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaEmpresas, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListEmpresa, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaEmpresas, false);
             }
         }
 
@@ -84,13 +84,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaTiposDoc();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaTiposDoc();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaTiposDoc, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoDoc, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTiposDoc, false);
             }
         }
 
@@ -98,13 +98,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaTipoPago();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaTipoPago();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaTipoPago, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoPago, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTipoPago, false);
             }
         }
 
@@ -112,13 +112,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaTarjetaCredito();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaTarjetaCredito();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaTarjetaCredito, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTarjetaCredito, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTarjetaCredito, false);
             }
         }
 
@@ -126,13 +126,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListaCiudad();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListaCiudad();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaCiudad, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaCiudad, false);
             }
         }
 
@@ -140,13 +140,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListarParentesco();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListarParentesco();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListarParentesco, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarParentesco, false);
             }
         }
 
@@ -154,13 +154,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListarGerente();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListarGerente();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListarGerente, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarGerente, false);
             }
         }
 
@@ -168,13 +168,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                var response = BaseRepository.ListarSocio();
-                return new Response<List<BaseEntity>>(response.EsCorrecto, response.Valor, response.Mensaje, response.Estado);
+                var lista = BaseRepository.ListarSocio();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListarSocio, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarSocio, false);
             }
         }
     }

@@ -64,7 +64,7 @@ namespace SisComWeb.Entity
 
         public short CodiArribo { get; set; }
 
-        public string Hora_Embarque { get; set; }
+        public string HoraEmbarque { get; set; }
 
         public byte NivelAsiento { get; set; }
 
@@ -122,7 +122,7 @@ namespace SisComWeb.Entity
 
         public decimal Credito { get; set; }
 
-        public AcompañanteEntity ObjAcompañante { get; set; }
+        public AcompanianteEntity ObjAcompaniante { get; set; }
 
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; }
@@ -131,16 +131,13 @@ namespace SisComWeb.Entity
 
         public string Mes { get; set; }
 
-        public string Año { get; set; }
+        public string Anno { get; set; }
 
         public bool FechaAbierta { get; set; }
 
         public string Concepto { get; set; } // @Reco_Venta en el store.
 
-        // VENTA DERIVADA
-        public decimal Precio_Venta { get; set; }
-        public Int16 Codi_ruta { get; set; }
-        public DateTime Fecha_Viaje { get; set; }
-        public string NUME_BOLETO { get; set; }
+        // ANULACIÓN
+        public string BoletoCompleto { get; set; }
     }
 }

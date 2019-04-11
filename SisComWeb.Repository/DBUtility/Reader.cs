@@ -25,6 +25,7 @@ namespace SisComWeb.Repository
             }
             catch { return ""; }
         }
+
         public static float GetRealValue(IDataReader dr, string column)
         {
             try
@@ -35,6 +36,7 @@ namespace SisComWeb.Repository
             }
             catch { return 0; }
         }
+
         public static double GetFloatValue(IDataReader dr, string column)
         {
             try
@@ -56,7 +58,6 @@ namespace SisComWeb.Repository
             }
             catch { return 0; }
         }
-
 
         public static Int64 GetBigIntValue(IDataReader dr, string column)
         {
@@ -143,7 +144,7 @@ namespace SisComWeb.Repository
                 tempDate = (DateTime)obj;
                 return tempDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
             }
-            catch { return ""; }
+            catch { return string.Empty; }
         }
     }
 }

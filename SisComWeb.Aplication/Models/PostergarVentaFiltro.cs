@@ -1,5 +1,4 @@
-﻿
-namespace SisComWeb.Aplication.Models
+﻿namespace SisComWeb.Aplication.Models
 {
     public class PostergarVentaFiltro
     {

@@ -27,7 +27,6 @@ namespace SisComWeb.Aplication.Controllers
         [Route("redirect")]
         public ActionResult Redirect()
         {
-
             return RedirectToAction("Index", "Principal");
         }
 
@@ -41,7 +40,10 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiUsuario\" : " + Codigo + ", \"Password\" : \"" + Clave + "\" }";
+                    var _body = "{" +
+                                    "\"CodiUsuario\" : " + Codigo +
+                                    ", \"Password\" : \"" + Clave + "\"" +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ValidaUsuario", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -50,12 +52,13 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Usuario> res = new Response<Usuario>()
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    Usuario user = new Usuario
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Usuario
                     {
                         CodiEmpresa = (int)data["CodiEmpresa"],
                         CodiPuntoVenta = (int)data["CodiPuntoVenta"],
@@ -64,29 +67,30 @@ namespace SisComWeb.Aplication.Controllers
                         Nombre = (string)data["Login"],
                         Nivel = (int)data["Nivel"],
                         NomSucursal = (string)data["NomSucursal"],
-                        NomPuntoVenta = (string)data["NomPuntoVenta"]
-                    };
+                        NomPuntoVenta = (string)data["NomPuntoVenta"],
+                        Terminal = (int)data["Terminal"]
+                    }
+                };
 
+                if (res.Estado)
+                {
                     // Caso: JLMrootCode
-                    if (user.CodiUsuario == int.Parse(JLMrootCode))
+                    if (res.Valor.CodiUsuario == int.Parse(JLMrootCode))
                     {
-                        user.CodiSucursal = int.Parse(Sucursal);
-                        user.CodiPuntoVenta = int.Parse(PuntoVenta);
-                        user.NomSucursal = NomSucursal;
-                        user.NomPuntoVenta = NomPuntoVenta;
+                        res.Valor.CodiSucursal = int.Parse(Sucursal);
+                        res.Valor.CodiPuntoVenta = int.Parse(PuntoVenta);
+                        res.Valor.NomSucursal = NomSucursal;
+                        res.Valor.NomPuntoVenta = NomPuntoVenta;
                     }
 
-                    DataSession.UsuarioLogueado = user;
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, "Log success"), JsonRequestBehavior.AllowGet);
+                    DataSession.UsuarioLogueado = res.Valor;
                 }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Usuario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

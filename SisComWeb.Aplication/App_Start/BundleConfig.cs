@@ -6,18 +6,6 @@ namespace SisComWeb.Aplication
     {
         public static void RegisterBundles(BundleCollection bundles)
         {
-            //bundles.Add(new StyleBundle("~/bundles/css").Include(
-            //        "~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css",
-            //        "~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css",
-            //        "~/wwwroot/statics/css/animate.css",
-            //        "~/wwwroot/statics/css/style.css",
-            //        "~/wwwroot/statics/css/colors/blue-dark.css",
-            //        "~/wwwroot/statics/css/custom-style.css",
-            //        "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css",
-            //        "~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css",
-            //        "~/wwwroot/plugins/bower_components/animatedborder/css/animatedborder.css"
-            //    ));
-
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
                     "~/wwwroot/plugins/bower_components/jquery/dist/jquery.min.js",
                     "~/wwwroot/statics/bootstrap/dist/js/bootstrap.min.js",
@@ -42,7 +30,6 @@ namespace SisComWeb.Aplication
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/moment_2.10.6_locale_es.js",
                     "~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.js",
-                    //"~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker-4.7.14.min.js",
                     "~/wwwroot/plugins/bower_components/sweetalert/sweetalert2.all.min.js"
                 ));
         }

@@ -67,292 +67,256 @@ namespace SisComWeb.Repository
 
         #region Métodos No Transaccionales
 
-        public static Response<List<BaseEntity>> ListaOficinas()
+        public static List<BaseEntity> ListaOficinas()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaOficinas.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarSucursales";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 1));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaOficinas.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaPuntosVenta(short CodiSucursal)
+        public static List<BaseEntity> ListaPuntosVenta(short CodiSucursal)
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaPuntosVenta.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosVenta";
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 2));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaPuntosVenta.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaUsuarios()
+        public static List<BaseEntity> ListaUsuarios()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaUsuarios.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarUsuarios";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 3));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaUsuarios.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaUsuariosAutocomplete(string value)
+        public static List<BaseEntity> ListaUsuariosAutocomplete(string value)
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaUsuarios.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_Tb_Usuario_Autocomplete";
                 db.AddParameter("@LOGIN", DbType.String, ParameterDirection.Input, value);
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 3));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaUsuarios.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaServicios()
+        public static List<BaseEntity> ListaServicios()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaServicios.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarServicios";
-                var Lista = new List<BaseEntity>();
+                
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 4));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaServicios.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaEmpresas()
+        public static List<BaseEntity> ListaEmpresas()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaEmpresas.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarEmpresas";
-                var Lista = new List<BaseEntity>();
+                
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 5));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaEmpresas.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaTiposDoc()
+        public static List<BaseEntity> ListaTiposDoc()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTiposDoc.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaTipoDocumento";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 6));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaTiposDoc.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaTipoPago()
+        public static List<BaseEntity> ListaTipoPago()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTipoPago.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarTipoPago";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 7));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaTipoPago.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaTarjetaCredito()
+        public static List<BaseEntity> ListaTarjetaCredito()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaTarjetaCredito.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarTarjetaCredito";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 8));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaTarjetaCredito.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListaCiudad()
+        public static List<BaseEntity> ListaCiudad()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListaCiudad.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaDistrito";
-                var Lista = new List<BaseEntity>();
+                
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 9));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaCiudad.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListarParentesco()
+        public static List<BaseEntity> ListarParentesco()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarParentesco.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarParentesco";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 10));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarParentesco.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListarGerente()
+        public static List<BaseEntity> ListarGerente()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarGerente.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarGerente";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 11));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarGerente.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<BaseEntity>> ListarSocio()
+        public static List<BaseEntity> ListarSocio()
         {
-            var response = new Response<List<BaseEntity>>(false, null, "Error: ListarSocio.", false);
+            var Lista = new List<BaseEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarSocio";
-                var Lista = new List<BaseEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 12));
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarSocio.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
         #endregion

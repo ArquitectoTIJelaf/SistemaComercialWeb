@@ -9,9 +9,10 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<ItinerarioEntity> BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
+        public static ItinerarioEntity BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
         {
-            var response = new Response<ItinerarioEntity>(false, null, "Error: BuscarTurno.", false);
+            var entidad = new ItinerarioEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarTurno";
@@ -23,7 +24,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, CodiRuta);
                 db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, CodiServicio);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var entidad = new ItinerarioEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -50,18 +50,16 @@ namespace SisComWeb.Repository
                         entidad.NroRutaInt = Reader.GetIntValue(drlector, "NRO_RUTA_INT");
                         entidad.Dias = Reader.GetSmallIntValue(drlector, "DIAS");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscarTurno.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<List<PuntoEntity>> ListarPuntosEmbarque(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
+        public static List<PuntoEntity> ListarPuntosEmbarque(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
         {
-            var response = new Response<List<PuntoEntity>>(false, null, "Error: ListarPuntosEmbarque.", false);
+            var Lista = new List<PuntoEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosEmbarque";
@@ -71,7 +69,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var Lista = new List<PuntoEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -84,18 +81,16 @@ namespace SisComWeb.Repository
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarPuntosEmbarque.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<PuntoEntity>> ListarPuntosArribo(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
+        public static List<PuntoEntity> ListarPuntosArribo(short CodiOrigen, short CodiDestino, byte CodiServicio, byte CodiEmpresa, short CodiPuntoVenta, string Hora)
         {
-            var response = new Response<List<PuntoEntity>>(false, null, "Error: ListarPuntosArribo.", false);
+            var Lista = new List<PuntoEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarPuntosArribo";
@@ -105,7 +100,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
-                var Lista = new List<PuntoEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -118,24 +112,21 @@ namespace SisComWeb.Repository
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarPuntosArribo.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        public static List<DestinoRutaEntity> ListaDestinosRuta(int NroViaje, short CodiSucursal)
         {
-            var response = new Response<List<DestinoRutaEntity>>(false, null, "Error: ListaDestinosRuta.", false);
+            var Lista = new List<DestinoRutaEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaDestinosRuta";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
-                var Lista = new List<DestinoRutaEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -149,13 +140,9 @@ namespace SisComWeb.Repository
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListaDestinosRuta.";
-                    response.Estado = true;
                 }
             }
-            return response;
+            return Lista;
         }
 
         #endregion

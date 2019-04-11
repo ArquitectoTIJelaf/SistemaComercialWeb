@@ -64,6 +64,6 @@
 
         public string IdVenta { get; set; }
 
-        public AcompañanteEntity ObjAcompanianate { get; set; }
+        public AcompanianteEntity ObjAcompaniante { get; set; }
     }
 }

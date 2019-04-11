@@ -79,12 +79,20 @@ namespace SisComWeb.Services
         Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista);
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaEmpresa", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<RucEntity> BuscaEmpresa(string RucContacto);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ConsultarSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<RucEntity> ConsultarSUNAT(string RucContacto, bool CondicionEmpresa);
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaRENIEC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<ReniecEntity> ConsultaRENIEC(string NumeroDoc);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaSUNAT", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<RucEntity> ConsultaSUNAT(string RucContacto);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista);
 
         #endregion
 
@@ -140,15 +148,15 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaBeneficiarioPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes);
+        Response<PaseCortesiaResponse> ListaBeneficiarioPase(string CodiSocio, string Anno, string Mes);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno);
+        Response<int> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ClavesInternas", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo);
+        Response<bool> ClavesInternas(int CodiOficina, string Password, string CodiTipo);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscarVentaxBoleto", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
@@ -156,7 +164,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
-        Response<string> PostergarVenta(PostergarVentaRequest filtro);
+        Response<bool> PostergarVenta(PostergarVentaRequest filtro);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
@@ -168,7 +176,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo);
+        Response<bool> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo);
 
         #endregion
 
@@ -176,7 +184,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
+        Response<bool> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
         #endregion
 
     }

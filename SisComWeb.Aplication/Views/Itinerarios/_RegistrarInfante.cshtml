@@ -4,11 +4,11 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="close">&times;</button>
-                <h4 class="modal-title"><b>Datos del Acompañante</b></h4>
+                <h4 class="modal-title"><b>Datos del Acompa&ntilde;ante</b></h4>
             </div>
             <div class="modal-body">
                 <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
-                    Los niños acompañantes no pueden ser mayores a los 5 años, caso contrario deben comprar un
+                    Los niños acompa&ntilde;antes no pueden ser mayores a los 5 a&ntilde;os, caso contrario deben comprar un
                     propio pasaje o tener la autorizacion de una administrador.
                 </h5>
                 <div class="form-horizontal">
@@ -58,7 +58,8 @@
                                        maxlength="50"
                                        class="form-control input-sm"
                                        placeholder="NOMBRES"
-                                       autocomplete="off">
+                                       autocomplete="off"
+                                       v-only-name>
                             </div>
                         </div>
                     </div>
@@ -73,7 +74,8 @@
                                        maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO PATERNO"
-                                       autocomplete="off">
+                                       autocomplete="off"
+                                       v-only-name>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -86,7 +88,8 @@
                                        maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO MATERNO"
-                                       autocomplete="off">
+                                       autocomplete="off"
+                                       v-only-name>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 ﻿namespace SisComWeb.Entity
 {
-    public class AcompañanteEntity
+    public class AcompanianteEntity
     {
         public string TipoDocumento { get; set; }
 

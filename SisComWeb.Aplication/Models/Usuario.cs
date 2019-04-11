@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace SisComWeb.Aplication.Models
+﻿namespace SisComWeb.Aplication.Models
 {
     public class Usuario
     {
@@ -16,5 +11,6 @@ namespace SisComWeb.Aplication.Models
         public string NomSucursal { get; set; }
         public string NomPuntoVenta { get; set; }
 
+        public int Terminal { get; set; }
     }
 }

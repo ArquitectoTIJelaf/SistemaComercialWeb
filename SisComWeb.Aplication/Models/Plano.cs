@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace SisComWeb.Aplication.Models
+﻿namespace SisComWeb.Aplication.Models
 {
     public class Plano
     {
@@ -39,7 +34,7 @@ namespace SisComWeb.Aplication.Models
         public string Boleto { get; set; }
         public string TipoBoleto { get; set; }
         public string IdVenta { get; set; }
-        public Acompañante ObjAcompanianate { get; set; }
+        public Acompaniante ObjAcompaniante { get; set; }
     }
 
     public class FiltroPlano

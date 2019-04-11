@@ -7,39 +7,37 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<int> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Año)
+        public static int ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
         {
-            var response = new Response<int>(false, 0, "Error: ValidarSaldoPaseCortesia.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarSaldoPaseCortesia";
                 db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, CodiSocio);
                 db.AddParameter("@Mes", DbType.String, ParameterDirection.Input, Mes);
-                db.AddParameter("@Anno", DbType.String, ParameterDirection.Input, Año);
-                var Valor = new int();
+                db.AddParameter("@Anno", DbType.String, ParameterDirection.Input, Anno);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        Valor = 1;
+                        valor = 1;
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Valor;
-                    response.Mensaje = "Correcto: ValidarSaldoPaseCortesia.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
         #endregion
 
         #region Métodos Transaccionales
 
-        public static Response<int> GrabarVentaFechaAbierta(VentaEntity entidad)
+        public static int GrabarVentaFechaAbierta(VentaEntity entidad)
         {
-            var response = new Response<int>(false, 0, "Error: GrabarVentaFechaAbierta.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarVentaFechaAbierta";
@@ -71,7 +69,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, entidad.CodiServicio);
                 db.AddParameter("@Codi_Embarque", DbType.Int16, ParameterDirection.Input, entidad.CodiEmbarque);
                 db.AddParameter("@Codi_Arribo", DbType.Int16, ParameterDirection.Input, entidad.CodiArribo);
-                db.AddParameter("@Hora_Embarque", DbType.String, ParameterDirection.Input, entidad.Hora_Embarque);
+                db.AddParameter("@Hora_Embarque", DbType.String, ParameterDirection.Input, entidad.HoraEmbarque);
                 db.AddParameter("@Nivel_Asiento", DbType.Byte, ParameterDirection.Input, entidad.NivelAsiento);
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
@@ -81,39 +79,35 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                int _outputIdVenta = int.Parse(db.GetParameter("@Id_Venta").ToString());
-
-                response.EsCorrecto = true;
-                response.Valor = _outputIdVenta;
-                response.Mensaje = "Correcto: GrabarVentaFechaAbierta.";
-                response.Estado = true;
+                valor = int.Parse(db.GetParameter("@Id_Venta").ToString());
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<bool> ModificarSaldoPaseCortesia(string CodiSocio, string Mes, string Año)
+        public static bool ModificarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
         {
-            var response = new Response<bool>(false, false, "Error: ModificarSaldoPaseCortesia.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ModificarSaldoPaseCortesia";
                 db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, CodiSocio);
                 db.AddParameter("@Mes", DbType.String, ParameterDirection.Input, Mes);
-                db.AddParameter("@Anno", DbType.String, ParameterDirection.Input, Año);
+                db.AddParameter("@Anno", DbType.String, ParameterDirection.Input, Anno);
 
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: ModificarSaldoPaseCortesia.";
-                response.Estado = true;
+                valor = true;
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<bool> GrabarPaseSocio(int IdVenta, string CodiGerente, string CodiSocio, string Observacion)
+        public static bool GrabarPaseSocio(int IdVenta, string CodiGerente, string CodiSocio, string Observacion)
         {
-            var response = new Response<bool>(false, false, "Error: GrabarPaseSocio.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_GrabarPaseSocio";
@@ -124,12 +118,10 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: GrabarPaseSocio.";
-                response.Estado = true;
+                valor = true;
             }
-            return response;
+
+            return valor;
         }
 
         #endregion

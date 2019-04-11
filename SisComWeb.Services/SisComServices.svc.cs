@@ -24,7 +24,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListOficina, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaOficinas, false);
             }
         }
 
@@ -37,7 +37,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListPuntoVenta, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaPuntosVenta, false);
             }
         }
 
@@ -50,7 +50,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListUsuario, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
             }
         }
 
@@ -63,7 +63,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListServicio, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaServicios, false);
             }
         }
 
@@ -76,7 +76,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListEmpresa, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaEmpresas, false);
             }
         }
 
@@ -89,7 +89,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoDoc, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTiposDoc, false);
             }
         }
 
@@ -102,7 +102,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTipoPago, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTipoPago, false);
             }
         }
 
@@ -115,7 +115,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListTarjetaCredito, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaTarjetaCredito, false);
             }
         }
 
@@ -128,7 +128,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaCiudad, false);
             }
         }
 
@@ -141,7 +141,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarParentesco, false);
             }
         }
 
@@ -154,7 +154,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarGerente, false);
             }
         }
 
@@ -167,7 +167,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgErrExcListCiudad, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarSocio, false);
             }
         }
 
@@ -184,7 +184,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<UsuarioEntity>(false, null, Message.MsgErrExcValidaUsuario, false);
+                return new Response<UsuarioEntity>(false, null, Message.MsgExcValidaUsuario, false);
             }
         }
 
@@ -201,7 +201,46 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ClientePasajeEntity>(false, null, Message.MsgErrExcBusqClientePasaje, false);
+                return new Response<ClientePasajeEntity>(false, null, Message.MsgExcBuscaPasajero, false);
+            }
+        }
+
+        public Response<RucEntity> BuscaEmpresa(string RucContacto)
+        {
+            try
+            {
+                return ClientePasajeLogic.BuscaEmpresa(RucContacto);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<RucEntity>(false, null, Message.MsgExcBuscaEmpresa, false);
+            }
+        }
+
+        public Response<ReniecEntity> ConsultaRENIEC(string NumeroDoc)
+        {
+            try
+            {
+                return ClientePasajeLogic.ConsultaRENIEC(NumeroDoc);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReniecEntity>(false, null, Message.MsgExcConsultaRENIEC, false);
+            }
+        }
+
+        public Response<RucEntity> ConsultaSUNAT(string RucContacto)
+        {
+            try
+            {
+                return ClientePasajeLogic.ConsultaSUNAT(RucContacto);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<RucEntity>(false, null, Message.MsgExcConsultaRENIEC, false);
             }
         }
 
@@ -214,20 +253,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcGrabarClientePasaje, false);
-            }
-        }
-
-        public Response<RucEntity> ConsultarSUNAT(string RucContacto, bool CondicionEmpresa)
-        {
-            try
-            {
-                return ClientePasajeLogic.ConsultarSUNAT(RucContacto, CondicionEmpresa);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<RucEntity>(false, null, Message.MsgErrExcConsultarSUNAT, false);
+                return new Response<bool>(false, false, Message.MsgExcGrabarClientePasaje, false);
             }
         }
 
@@ -244,7 +270,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgErrExcBuscaItinerarios, false);
+                return new Response<List<ItinerarioEntity>>(false, null, Message.MsgExcBuscaItinerarios, false);
             }
         }
 
@@ -261,7 +287,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PlanoEntity>>(false, null, Message.MsgErrExcMuestraPlano, false);
+                return new Response<List<PlanoEntity>>(false, null, Message.MsgExcMuestraPlano, false);
             }
         }
 
@@ -278,7 +304,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ItinerarioEntity>(false, null, Message.MsgErrExcMuestraTurno, false);
+                return new Response<ItinerarioEntity>(false, null, Message.MsgExcMuestraTurno, false);
             }
         }
 
@@ -295,7 +321,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgErrExcBloqueoAsiento, false);
+                return new Response<int>(false, 0, Message.MsgExcBloqueoAsiento, false);
             }
         }
 
@@ -308,7 +334,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcLiberaAsiento, false);
+                return new Response<bool>(false, false, Message.MsgExcLiberaAsiento, false);
             }
         }
 
@@ -321,7 +347,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcLiberaArregloAsientos, false);
+                return new Response<bool>(false, false, Message.MsgExcLiberaArregloAsientos, false);
             }
         }
 
@@ -338,7 +364,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrExcBuscaCorrelativo, false);
+                return new Response<string>(false, null, Message.MsgExcBuscaCorrelativo, false);
             }
         }
 
@@ -357,24 +383,24 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrExcGrabaVenta, false);
+                return new Response<string>(false, null, Message.MsgExcGrabaVenta, false);
             }
         }
 
-        public Response<PaseCortesiaResponse> ListaBeneficiarioPase(string Codi_Socio, string año, string mes)
+        public Response<PaseCortesiaResponse> ListaBeneficiarioPase(string CodiSocio, string Anno, string Mes)
         {
             try
             {
-                return VentaLogic.ListaBeneficiarioPase(Codi_Socio, año, mes);
+                return VentaLogic.ListaBeneficiarioPase(CodiSocio, Anno, Mes);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<PaseCortesiaResponse>(false, null, Message.MsgErrExcBeneficiarioPase, false);
+                return new Response<PaseCortesiaResponse>(false, null, Message.MsgExcListaBeneficiarioPase, false);
             }
         }
 
-        public Response<bool> ValidarPase(string CodiSocio, string Mes, string Anno)
+        public Response<int> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
         {
             try
             {
@@ -383,20 +409,20 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcValidarPase, false);
+                return new Response<int>(false, 0, Message.MsgExcValidarSaldoPaseCortesia, false);
             }
         }
 
-        public Response<ClavesInternasResponse> ClavesInternas(int Codi_Oficina, string Password, string Codi_Tipo)
+        public Response<bool> ClavesInternas(int CodiOficina, string Password, string CodiTipo)
         {
             try
             {
-                return VentaLogic.ClavesInternas(Codi_Oficina, Password, Codi_Tipo);
+                return VentaLogic.ClavesInternas(CodiOficina, Password, CodiTipo);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ClavesInternasResponse>(false, null, Message.MsgErrExcClavesInternas, false);
+                return new Response<bool>(false, false, Message.MsgExcClavesInternas, false);
             }
         }
 
@@ -410,11 +436,11 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgErrBuscarVentaxBoleto, false);
+                return new Response<VentaBeneficiarioEntity>(false, null, Message.MsgExcBuscarVentaxBoleto, false);
             }
         }
 
-        public Response<string> PostergarVenta(PostergarVentaRequest filtro)
+        public Response<bool> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
             {
@@ -423,7 +449,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrPostergarVenta, false);
+                return new Response<bool>(false, false, Message.MsgExcPostergarVenta, false);
             }
         }
 
@@ -436,7 +462,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcEliminarReserva, false);
+                return new Response<bool>(false, false, Message.MsgExcEliminarReserva, false);
             }
         }
 
@@ -444,16 +470,16 @@ namespace SisComWeb.Services
 
         #region ANULAR VENTA
 
-        public Response<bool> AnularVenta(int Id_Venta, int Codi_Usuario, string CodiOficina, string CodiPuntoVenta, string tipo)
+        public Response<bool> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
         {
             try
             {
-                return VentaLogic.AnularVenta(Id_Venta, Codi_Usuario, CodiOficina, CodiPuntoVenta, tipo);
+                return VentaLogic.AnularVenta(IdVenta, CodiUsuario, CodiOficina, CodiPuntoVenta, Tipo);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgErrExcAnularVenta, false);
+                return new Response<bool>(false, false, Message.MsgExcAnularVenta, false);
             }
         }
 
@@ -461,7 +487,7 @@ namespace SisComWeb.Services
 
         #region FECHA ABIERTA
 
-        public Response<string> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public Response<bool> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
             try
             {
@@ -470,7 +496,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgErrModificarVentaAFechaAbierta, false);
+                return new Response<bool>(false, false, Message.MsgExcModificarVentaAFechaAbierta, false);
             }
         }
         #endregion

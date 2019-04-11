@@ -1,8 +1,9 @@
 ﻿@using SisComWeb.Aplication.Helpers
 @{
     var usuario = DataSession.UsuarioLogueado;
-    var CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
 }
+
+@*var CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];*@
 
 <style>
     #appVueNavarHeader .nav .open > a {
@@ -154,7 +155,7 @@
                 -- / -- / --
             </p>
             <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
-                TERMINAL @CodiTerminal / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToShortDateString()
+                TERMINAL @usuario.Terminal.ToString("D3") / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToShortDateString()
             </p>
         </div>
     </div>

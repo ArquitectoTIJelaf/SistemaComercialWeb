@@ -5,7 +5,7 @@ namespace SisComWeb.Aplication.Models
     public class Sesion
     {
         private static Sesion _UsuarioLogueado;
-        //private static List<OpcionPerfil> _PermisosUsuario;
+
         public static Sesion UsuarioLogueado
         {
             get
@@ -19,19 +19,5 @@ namespace SisComWeb.Aplication.Models
                 HttpContext.Current.Session["SessionUsuario"] = value;
             }
         }
-
-        //public static List<OpcionPerfil> PermisosUsuario
-        //{
-        //    get
-        //    {
-        //        var session = (List<OpcionPerfil>)HttpContext.Current.Session["DatosSesion"] ?? new List<OpcionPerfil>();
-        //        _PermisosUsuario = session;
-        //        return _PermisosUsuario;
-        //    }
-        //    set
-        //    {
-        //        HttpContext.Current.Session["DatosSesion"] = value;
-        //    }
-        //}
     }
 }

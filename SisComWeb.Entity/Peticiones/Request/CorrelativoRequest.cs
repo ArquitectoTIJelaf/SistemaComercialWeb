@@ -11,7 +11,5 @@
         public short CodiPuntoVenta { get; set; }
 
         public string CodiTerminal { get; set; }
-
-        public string FlagVenta { get; set; }
     }
 }

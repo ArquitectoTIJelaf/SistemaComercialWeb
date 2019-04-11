@@ -1,5 +1,4 @@
-﻿using SisComWeb.Entity;
-using System.Data;
+﻿using System.Data;
 
 namespace SisComWeb.Repository
 {
@@ -7,9 +6,10 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<int> ValidarBloqueoAsiento(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string NumeAsiento, string FechaProgramacion)
+        public static int ValidarBloqueoAsiento(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string NumeAsiento, string FechaProgramacion)
         {
-            var response = new Response<int>(false, 0, "Error: ValidarBloqueoAsiento.", false);
+            var valor = new int();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ValidarBloqueoAsiento";
@@ -19,7 +19,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
                 db.AddParameter("@Nume_Asiento", DbType.String, ParameterDirection.Input, NumeAsiento);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
-                var valor = new int();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -27,22 +26,20 @@ namespace SisComWeb.Repository
                         valor = 1;
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ValidarBloqueoAsiento.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
         #endregion
 
         #region Métodos Transaccionales
 
-        public static Response<decimal> BloquearAsientoProgramacion(int CodiProgramacion, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
+        public static decimal BloquearAsientoProgramacion(int CodiProgramacion, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
         {
-            var response = new Response<decimal>(false, 0, "Error: BloquearAsientoProgramacion.", false);
+            var valor = new decimal();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BloquearAsientobyProgramacion";
@@ -51,7 +48,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Costo", DbType.Decimal, ParameterDirection.Input, Costo);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 db.AddParameter("@Codi_Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
-                var valor = new decimal();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -59,18 +55,16 @@ namespace SisComWeb.Repository
                         valor = Reader.GetDecimalValue(drlector, "Resultado");
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: BloquearAsientoProgramacion.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<decimal> BloquearAsientoViaje(int NroViaje, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
+        public static decimal BloquearAsientoViaje(int NroViaje, string NumeAsiento, decimal Costo, string FechaProgramacion, string CodiTerminal)
         {
-            var response = new Response<decimal>(false, 0, "Error: BloquearAsientoViaje.", false);
+            var valor = new decimal();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BloquearAsientobyViaje";
@@ -79,7 +73,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Costo", DbType.Decimal, ParameterDirection.Input, Costo);
                 db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 db.AddParameter("@Codi_Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
-                var valor = new decimal();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -87,18 +80,16 @@ namespace SisComWeb.Repository
                         valor = Reader.GetDecimalValue(drlector, "Resultado");
                         break;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: BloquearAsientoViaje.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<bool> LiberaAsiento(int IDS)
+        public static bool LiberaAsiento(int IDS)
         {
-            var response = new Response<bool>(false, false, "Error: LiberaAsiento.", false);
+            var valor = new bool();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_LiberarAsiento";
@@ -106,12 +97,27 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                response.EsCorrecto = true;
-                response.Valor = true;
-                response.Mensaje = "Correcto: LiberaAsiento.";
-                response.Estado = true;
+                valor = true;
             }
-            return response;
+
+            return valor;
+        }
+
+        public static bool LiberaArregloAsientos(string Xml)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_LiberaArregloAsientos";
+                db.AddParameter("@Xml", DbType.Xml, ParameterDirection.Input, Xml);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
         }
 
         #endregion

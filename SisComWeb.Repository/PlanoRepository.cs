@@ -9,84 +9,79 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static Response<List<PlanoEntity>> BuscarPlanoBus(string CodiPlano)
+        public static List<PlanoEntity> BuscarPlanoBus(string CodiPlano)
         {
-            var response = new Response<List<PlanoEntity>>(false, null, "Error: BuscarPlanoBus.", false);
+            var Lista = new List<PlanoEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPlanoBus";
                 db.AddParameter("@Codi_Plano", DbType.String, ParameterDirection.Input, CodiPlano);
-                var Lista = new List<PlanoEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         var entidad = new PlanoEntity
                         {
-                            Codigo = Reader.GetStringValue(drlector, "Codigo") ?? "",
-                            Tipo = Reader.GetStringValue(drlector, "Tipo") ?? "",
+                            Codigo = Reader.GetStringValue(drlector, "Codigo") ?? string.Empty,
+                            Tipo = Reader.GetStringValue(drlector, "Tipo") ?? string.Empty,
                             Indice = Reader.GetIntValue(drlector, "Indice"),
                             // Para evitar Null's
-                            ApellidoMaterno = "",
-                            ApellidoPaterno = "",
-                            Boleto = "",
-                            Color = "",
-                            Direccion = "",
-                            FechaNacimiento = "",
-                            FechaVenta = "",
-                            FechaViaje = "",
-                            FlagVenta = "",
-                            IdVenta = "",
-                            Nacionalidad = "",
-                            Nombres = "",
-                            NumeroDocumento = "",
-                            RazonSocial = "",
-                            RecogeEn = "",
-                            RucContacto = "",
-                            Sexo = "",
-                            Sigla = "",
-                            Telefono = "",
-                            TipoBoleto = "",
-                            TipoDocumento = ""
+                            ApellidoMaterno = string.Empty,
+                            ApellidoPaterno = string.Empty,
+                            Boleto = string.Empty,
+                            Color = string.Empty,
+                            Direccion = string.Empty,
+                            FechaNacimiento = string.Empty,
+                            FechaVenta = string.Empty,
+                            FechaViaje = string.Empty,
+                            FlagVenta = string.Empty,
+                            IdVenta = string.Empty,
+                            Nacionalidad = string.Empty,
+                            Nombres = string.Empty,
+                            NumeroDocumento = string.Empty,
+                            RazonSocial = string.Empty,
+                            RecogeEn = string.Empty,
+                            RucContacto = string.Empty,
+                            Sexo = string.Empty,
+                            Sigla = string.Empty,
+                            Telefono = string.Empty,
+                            TipoBoleto = string.Empty,
+                            TipoDocumento = string.Empty
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: BuscarPlanoBus.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<string> ObtenerNivelAsiento(string CodiBus, int NumeAsiento)
+        public static string ObtenerNivelAsiento(string CodiBus, int NumeAsiento)
         {
-            var response = new Response<string>(false, null, "Error: ObtenerNivelAsiento.", false);
+            var valor = string.Empty;
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerNivelAsiento";
                 db.AddParameter("@Codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
                 db.AddParameter("@Nume_Asiento", DbType.Int32, ParameterDirection.Input, NumeAsiento);
-                var valor = string.Empty;
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "Nivel");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = valor;
-                    response.Mensaje = "Correcto: ObtenerNivelAsiento.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return valor;
         }
 
-        public static Response<PlanoEntity> ObtenerPrecioAsiento(short CodiOrigen, short CodiDestino, string Hora, string Fecha, short CodiServicio, byte CodiEmpresa, string Nivel)
+        public static PlanoEntity ObtenerPrecioAsiento(short CodiOrigen, short CodiDestino, string Hora, string Fecha, short CodiServicio, byte CodiEmpresa, string Nivel)
         {
-            var response = new Response<PlanoEntity>(false, null, "Error: ObtenerPrecioAsiento.", false);
+            var entidad = new PlanoEntity();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ObtenerPrecioAsiento";
@@ -97,7 +92,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
                 db.AddParameter("@Codi_Empresa", DbType.String, ParameterDirection.Input, CodiEmpresa);
                 db.AddParameter("@Nivel", DbType.String, ParameterDirection.Input, Nivel);
-                var entidad = new PlanoEntity();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -106,18 +100,16 @@ namespace SisComWeb.Repository
                         entidad.PrecioMinimo = Reader.GetRealValue(drlector, "Precio_Min");
                         entidad.PrecioMaximo = Reader.GetRealValue(drlector, "Precio_Max");
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: ObtenerPrecioAsiento.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
-        public static Response<List<PlanoEntity>> ListarAsientosOcupados(int CodiProgramacion, string FechaProgramacion, int NroViajem, short CodiOrigen, short CodiDestino)
+        public static List<PlanoEntity> ListarAsientosOcupados(int CodiProgramacion, string FechaProgramacion, int NroViajem, short CodiOrigen, short CodiDestino)
         {
-            var response = new Response<List<PlanoEntity>>(false, null, "Error: ListarAsientosOcupados.", false);
+            var Lista = new List<PlanoEntity>();
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarAsientosOcupados";
@@ -126,7 +118,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViajem);
                 db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
-                var Lista = new List<PlanoEntity>();
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -134,77 +125,71 @@ namespace SisComWeb.Repository
                         var entidad = new PlanoEntity
                         {
                             NumeAsiento = Reader.GetTinyIntValue(drlector, "NUME_ASIENTO"),
-                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento") ?? "",
-                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento") ?? "",
-                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto") ?? "",
-                            FechaViaje = Reader.GetStringValue(drlector, "Fecha_Viaje") ?? "",
-                            FechaVenta = Reader.GetStringValue(drlector, "Fecha_Venta") ?? "",
-                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad") ?? "",
+                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento") ?? string.Empty,
+                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento") ?? string.Empty,
+                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto") ?? string.Empty,
+                            FechaViaje = Reader.GetStringValue(drlector, "Fecha_Viaje") ?? string.Empty,
+                            FechaVenta = Reader.GetStringValue(drlector, "Fecha_Venta") ?? string.Empty,
+                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad") ?? string.Empty,
                             PrecioVenta = Reader.GetRealValue(drlector, "Precio_Venta"),
-                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En") ?? "",
-                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")) ?? "",
-                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? "",
-                            Sigla = Reader.GetStringValue(drlector, "Sigla") ?? "",
-                            Boleto = Reader.GetStringValue(drlector, "Boleto") ?? "",
-                            TipoBoleto = Reader.GetStringValue(drlector, "tipo") ?? "",
-                            IdVenta = Reader.GetStringValue(drlector, "id_venta") ?? "",
+                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En") ?? string.Empty,
+                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")) ?? string.Empty,
+                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty,
+                            Sigla = Reader.GetStringValue(drlector, "Sigla") ?? string.Empty,
+                            Boleto = Reader.GetStringValue(drlector, "Boleto") ?? string.Empty,
+                            TipoBoleto = Reader.GetStringValue(drlector, "tipo") ?? string.Empty,
+                            IdVenta = Reader.GetStringValue(drlector, "id_venta") ?? string.Empty,
                             // Para evitar Null's
-                            Nombres = "",
-                            ApellidoPaterno = "",
-                            ApellidoMaterno = "",
-                            FechaNacimiento = "",
-                            Telefono = "",
-                            Sexo = "",
-                            RazonSocial = "",
-                            Direccion = ""
+                            Nombres = string.Empty,
+                            ApellidoPaterno = string.Empty,
+                            ApellidoMaterno = string.Empty,
+                            FechaNacimiento = string.Empty,
+                            Telefono = string.Empty,
+                            Sexo = string.Empty,
+                            RazonSocial = string.Empty,
+                            Direccion = string.Empty
                         };
                         Lista.Add(entidad);
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = Lista;
-                    response.Mensaje = "Correcto: ListarAsientosOcupados.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return Lista;
         }
 
-        public static Response<AcompañanteEntity> BuscaAcompaniante(string IdVenta)
+        public static AcompanianteEntity BuscaAcompaniante(string IdVenta)
         {
-            var response = new Response<AcompañanteEntity>(false, null, "Error: BuscaAcompaniante.", false);
+            var entidad = new AcompanianteEntity
+            {
+                TipoDocumento = string.Empty,
+                NumeroDocumento = string.Empty,
+                NombreCompleto = string.Empty,
+                FechaNacimiento = string.Empty,
+                Edad = string.Empty,
+                Sexo = string.Empty,
+                Parentesco = string.Empty
+            };
+
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarAcompaniante";
                 db.AddParameter("@IdVenta", DbType.String, ParameterDirection.Input, IdVenta);
-                var entidad = new AcompañanteEntity
-                {
-                    TipoDocumento = "",
-                    NumeroDocumento = "",
-                    NombreCompleto = "",
-                    FechaNacimiento = "",
-                    Edad = "",
-                    Sexo = "",
-                    Parentesco = ""
-                };
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? "";
-                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI") ?? "";
-                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE") ?? "";
-                        entidad.FechaNacimiento = (Reader.GetDateTimeValue(drlector, "FECHAN").ToString("dd/MM/yyyy")) ?? "";
-                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD") ?? "";
-                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO") ?? "";
-                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO") ?? "";
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? string.Empty;
+                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI") ?? string.Empty;
+                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE") ?? string.Empty;
+                        entidad.FechaNacimiento = Reader.GetDateStringValue(drlector, "FECHAN");
+                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD") ?? string.Empty;
+                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty;
+                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO") ?? string.Empty;
                     }
-                    response.EsCorrecto = true;
-                    response.Valor = entidad;
-                    response.Mensaje = "Correcto: BuscaAcompaniante.";
-                    response.Estado = true;
                 }
             }
-            return response;
+
+            return entidad;
         }
 
         #endregion

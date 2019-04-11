@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SisComWeb.Entity.Objects.Entities
+﻿namespace SisComWeb.Entity.Objects.Entities
 {
     public class VentaBeneficiarioEntity
     {

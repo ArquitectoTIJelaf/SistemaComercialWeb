@@ -19,6 +19,7 @@
         }
 
             [type="radio"]:checked + label:before,
+            [type="radio"]:checked + label:before,
             [type="radio"]:not(:checked) + label:before {
                 content: '';
                 position: absolute;
@@ -28,7 +29,6 @@
                 height: 16px;
                 border: 2px solid white;
                 border-radius: 100%;
-                /*background: #ff7601;*/
             }
 
             [type="radio"]:checked + label:after,
@@ -336,7 +336,7 @@
                                     <input type="radio" id="creditoBV" value="ND4" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="creditoBV" class="align-label-radio">Crédito</label>
                                 </div>
-                                <div class="col-md-1 ancho" @@click="changePickedBusVenta('PO')">
+                                <div class="col-md-1 ancho" @@click.prevent="changePickedBusVenta('PO')">
                                     <input type="radio" id="postergadoBV" value="PO" v-model="pickedBusVenta" class="align-radio">
                                     <label for="postergadoBV" class="align-label-radio">Postergación</label>
                                 </div>
@@ -624,7 +624,15 @@
                                         </div>
                                         <div class="col-md-1">
                                             <div class="form-group">
-                                                <label class="control-label">Número</label>
+                                                <label class="control-label"
+                                                       style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
+                                                    Número
+                                                </label>
+                                                <button class="btn-info btn-xs"
+                                                        title="Consultar a RENIEC"
+                                                        v-on:click="consultaReniec">
+                                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                </button>
                                                 <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
                                                        @@keypress.13.prevent="searchUser"
@@ -807,8 +815,8 @@
                                                     <div class="form-group">
                                                         <label class="control-label" style="width: 100%; ">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
-                                                               @@keypress.13.prevent="searchEmpresa(true)"
-                                                               @@keydown.9.prevent="searchEmpresa(true)"
+                                                               @@keypress.13.prevent="searchEmpresa"
+                                                               @@keydown.9.prevent="searchEmpresa"
                                                                @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"
                                                                id="txtRuc"
@@ -820,9 +828,9 @@
                                                                data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
-                                                        <button class="btn-success btn-xs"
+                                                        <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
-                                                                v-on:click="searchEmpresa(false)">
+                                                                v-on:click="consultaSunat">
                                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                                         </button>
                                                     </div>
@@ -877,8 +885,8 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refRegistrarNiño.focus()"
-                                                       @@keypress.9.prevent="$refs.refRegistrarNiño.focus()"
+                                                       @@keypress.13.prevent="$refs.refRegistrarNino.focus()"
+                                                       @@keypress.9.prevent="$refs.refRegistrarNino.focus()"
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
@@ -909,11 +917,11 @@
                                                         <input v-model="checkedRegistrarNino"
                                                                @@keypress.13.prevent="passSinceRegistrarNino"
                                                                @@keypress.9.prevent="passSinceRegistrarNino"
-                                                               id="chckRegistrarNiño"
-                                                               ref="refRegistrarNiño"
+                                                               id="chckRegistrarNino"
+                                                               ref="refRegistrarNino"
                                                                class="check-with-label"
                                                                type="checkbox">
-                                                        <label for="chckRegistrarNiño" class="label-for-check" style="min-height: initial; ">
+                                                        <label for="chckRegistrarNino" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
                                                         </label>
                                                     </div>

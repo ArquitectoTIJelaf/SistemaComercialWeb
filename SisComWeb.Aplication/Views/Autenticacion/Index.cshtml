@@ -10,7 +10,6 @@
             border-color: #66afe9;
             border-color: rgb(102, 175, 233);
         }
-
         #appVueLogin {
             width: 300px;
         }
@@ -41,7 +40,7 @@
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
-            <div v-show="filtro.Codigo !== null && filtro.Codigo === '@JLMrootCode'">
+            <div v-show="filtro.Codigo && filtro.Codigo === '@JLMrootCode'">
                 <div class="separate-in-form">
                     <v-select v-model="filtro.Sucursal"
                               :id="'cboSucursal'"
@@ -116,27 +115,36 @@
                     input.NomPuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.label : '';
                     APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
-                            if (res.data.mensaje === 'Log success') {
+                            if (res.data.Estado)
                                 $('#frmLogin').submit();
-                            } else {
+                            else {
                                 document.getElementById("txtContrasena").focus();
-                                APP.msg.warning(res.data.mensaje);
+                                APP.msg.warning(res.data.Mensaje);
                             }
-                        }).catch(APP.rq.axios_handler_error_alert);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 getSucursales() {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-oficinas')
                         .then(res => {
-                            _this.list.sucursales = res.data;
-                        }).catch(APP.rq.axios_handler_error_alert);
+                            if (res.data.Estado)
+                                _this.list.sucursales = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 getPuntosVenta(Codi_Sucursal) {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_Sucursal } })
                         .then(res => {
-                            _this.list.puntosventa = res.data;
-                        }).catch(APP.rq.axios_handler_error_alert);
+                            if (res.data.Estado)
+                                _this.list.puntosventa = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 getUsuarios: async function (search, loading) {
                     var _this = this;
@@ -144,25 +152,28 @@
                         loading(true);
                     await APP.rq.axios2.get(APP.base + '/base/get-usuarios' + APP.util.getQueryParamByObject({ value: search }))
                         .then(res => {
-                            if (res.data) {
+                            if (res.data.Estado) {
                                 if (loading)
                                     loading(false);
-                                _this.list.usuarios = res.data;
+                                _this.list.usuarios = res.data.Valor;
                             }
-                        }).catch(APP.rq.axios_handler_error_alert);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
                 },
                 recorrido() {
                     var _this = this;
-                    if (_this.filtro.Codigo === '@JLMrootCode' && _this.filtro.Sucursal === null)
+                    if (_this.filtro.Codigo === '@JLMrootCode' && !_this.filtro.Sucursal)
                         $('#cboSucursal input[type=search]').focus();
-                    else if (_this.filtro.Codigo === '@JLMrootCode' && _this.filtro.PuntoVenta === null)
+                    else if (_this.filtro.Codigo === '@JLMrootCode' && !_this.filtro.PuntoVenta)
                         $('#cboPuntoVenta input[type=search]').focus();
                     else if (_this.filtro.Codigo === 0)
                         $('#cboUsuario input[type=search]').focus();
-                    else if (_this.filtro.Clave === '')
+                    else if (!_this.filtro.Clave)
                         document.getElementById("txtContrasena").focus();
                     else
                         document.getElementById("btnLogIn").focus();
@@ -171,19 +182,19 @@
             computed: {
                 filledFiltro: function() {
                     var _this = this;
-                    if (_this.filtro.Codigo !== null && _this.filtro.Codigo === '@JLMrootCode')
-                    {
-                        return (
-                            _this.filtro.Sucursal !== null &&
-                            _this.filtro.PuntoVenta !== null &&
-                            _this.filtro.Codigo !== 0 &&
-                            _this.filtro.Clave) ? true : false;
-                    }
-                    else
-                    {
-                        return (
-                            _this.filtro.Codigo !== 0 &&
-                            _this.filtro.Clave) ? true : false;
+                    if (_this.filtro.Codigo) {
+                        if (_this.filtro.Codigo === '@JLMrootCode') {
+                            return (
+                                _this.filtro.Sucursal &&
+                                _this.filtro.PuntoVenta &&
+                                _this.filtro.Codigo > 0 &&
+                                _this.filtro.Clave) ? true : false;
+                        }
+                        else {
+                            return (
+                                _this.filtro.Codigo > 0 &&
+                                _this.filtro.Clave) ? true : false;
+                        }
                     }
                 },
                 codigoUsuario: {
@@ -192,24 +203,24 @@
                             return this.list.usuarios.find(x => x.id === parseInt(this.filtro.Codigo))
                     },
                     set: function (value) {
-                        if (value !== '' && value !== null) {
+                        if (value) {
                             if (this.list.usuarios.find(x => x.id === value.id)) {
                                 this.filtro.Codigo = value.id;
                                 this.recorrido();
                             }
-                        } else {
-                            this.filtro.Codigo = '';
                         }
+                        else
+                            this.filtro.Codigo = '';
                     }
                 }
             },
             watch: {
                 'filtro.Sucursal': function (newVal, oldVal) {
                     if (newVal) {
-                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
+                        if (String(newVal.id).replace(/\s/g, '').length > 0)
                             this.getPuntosVenta(newVal.id);
-                        }
-                    } else {
+                    }
+                    else {
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
                     }
@@ -221,6 +232,7 @@
                 'filtro.Codigo': function (newVal, oldVal) {
                     if (this.filtro.Codigo === '@JLMrootCode' && this.list.sucursales.length === 0)
                         this.getSucursales();
+
                     this.$nextTick(function () {
                         this.recorrido();
                     });

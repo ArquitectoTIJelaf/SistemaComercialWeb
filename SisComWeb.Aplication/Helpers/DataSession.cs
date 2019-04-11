@@ -1,6 +1,4 @@
-﻿//using SisComWeb.Aplication..Servicio;
-using SisComWeb.Aplication.Models;
-using System.Collections.Generic;
+﻿using SisComWeb.Aplication.Models;
 using System.Web;
 
 namespace SisComWeb.Aplication.Helpers
@@ -8,7 +6,7 @@ namespace SisComWeb.Aplication.Helpers
     public class DataSession
     {
         private static Usuario _UsuarioLogueado;
-        //private static List<OpcionPerfil> _PermisosUsuario;
+
         public static Usuario UsuarioLogueado
         {
             get
@@ -22,19 +20,5 @@ namespace SisComWeb.Aplication.Helpers
                 HttpContext.Current.Session["SessionUsuario"] = value;
             }
         }
-
-        //public static List<OpcionPerfil> PermisosUsuario
-        //{
-        //    get
-        //    {
-        //        var session = (List<OpcionPerfil>)HttpContext.Current.Session["DatosSesion"] ?? new List<OpcionPerfil>();
-        //        _PermisosUsuario = session;
-        //        return _PermisosUsuario;
-        //    }
-        //    set
-        //    {
-        //        HttpContext.Current.Session["DatosSesion"] = value;
-        //    }
-        //}
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace SisComWeb.Aplication.Models
+﻿namespace SisComWeb.Aplication.Models
 {
     public class Response<T>
     {
@@ -9,11 +8,25 @@ namespace SisComWeb.Aplication.Models
 
         public T Valor { set; get; }
 
-        public Response (bool estado, string mensaje, T valor)
+        public bool EsCorrecto { get; set; }
+
+        public Response()
+        {
+        }
+
+        public Response(bool estado, string mensaje, T valor)
         {
             Estado = estado;
             Mensaje = mensaje;
             Valor = valor;
+        }
+
+        public Response (bool estado, string mensaje, T valor, bool esCorrecto)
+        {
+            Estado = estado;
+            Mensaje = mensaje;
+            Valor = valor;
+            EsCorrecto = esCorrecto;
         }
     }
 }

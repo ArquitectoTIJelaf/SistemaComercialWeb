@@ -10,12 +10,8 @@
     <title>Login</title>
     <link href="~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet" />
-    @*<link href="~/wwwroot/statics/css/animate.css" rel="stylesheet">*@
     <link href="~/wwwroot/statics/css/style.css" rel="stylesheet">
-    @*<link href="~/wwwroot/statics/css/colors/blue-dark.css" rel="stylesheet">*@
     <link href="~/wwwroot/statics/css/custom-style.css" rel="stylesheet">
-    @*<link href="~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
-        <link href="~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css" rel="stylesheet">*@
     @RenderSection("styles", required: false)
     <script type="text/javascript">
             var main_globals = {};
@@ -26,7 +22,7 @@
             main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
             main_globals.flagDevelop = JSON.parse("true".toLowerCase());
     </script>
-    @*background: url("@Url.Content("~/wwwroot/plugins/images/users/FONDO.jpg")") no-repeat;*@
+
     <style>
         html {
             background: url("/wwwroot/plugins/images/users/FONDO.jpg") no-repeat center center fixed;

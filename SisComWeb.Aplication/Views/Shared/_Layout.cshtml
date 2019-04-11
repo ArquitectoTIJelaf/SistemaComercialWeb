@@ -8,7 +8,6 @@
     <meta name="author" content="">
     <link rel="icon" type="image/png" sizes="16x16" href="~/favicon.ico">
     <title>SisComWeb - @ViewBag.Title</title>
-    @*@Styles.Render("~/bundles/css")*@
     <link href="~/wwwroot/statics/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/wwwroot/plugins/bower_components/toast-master/css/jquery.toast.css" rel="stylesheet" />
     <link href="~/wwwroot/statics/css/animate.css" rel="stylesheet">
@@ -28,9 +27,6 @@
         main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
         main_globals.flagDevelop = JSON.parse("true".toLowerCase());
     </script>
-    <!--CDN-->
-    <!-- <link rel="stylesheet" href="" /> -->
-    <!--CDN-->
 </head>
 <body class="fix-header">
     <div class="preloader">
@@ -65,7 +61,6 @@
 
             notification.client.bloquearBus = function (nroViaje, fechaViaje, nroAsiento) {
                 if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
-                    //$('#btnAsiento_' + nroAsiento).css('background-image', `radial-gradient(circle, ${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno, 0.5)} ,${appVueVenta.$options.filters.hexToRgb(APP.ventas.colorBloqueoExterno)}`);
                     $('#btnAsiento_' + nroAsiento).css('background-color', `${APP.ventas.colorBloqueoExterno}`);
                 }
                 ClientSignalR.Owner = false;
@@ -73,7 +68,6 @@
 
             notification.client.liberarBus = function (nroViaje, fechaViaje, nroAsiento) {
                 if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
-                    //$('#btnAsiento_' + nroAsiento).css('background-image', '');
                     $('#btnAsiento_' + nroAsiento).css('background-color', '');
                 }
                 ClientSignalR.Owner = false;

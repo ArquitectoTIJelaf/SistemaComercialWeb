@@ -3,6 +3,7 @@ using SisComWeb.Aplication.Helpers;
 using SisComWeb.Aplication.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,8 +17,8 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        private static readonly string CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
         readonly Usuario usuario = DataSession.UsuarioLogueado;
+        //private static readonly string CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
 
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
@@ -121,19 +122,20 @@ namespace SisComWeb.Aplication.Controllers
                 Boleto = (string)x["Boleto"],
                 TipoBoleto = (string)x["TipoBoleto"],
                 IdVenta = (string)x["IdVenta"],
-                ObjAcompanianate = _ObjetoAcompaniante(x["ObjAcompanianate"])
+                ObjAcompaniante = _ObjetoAcompaniante(x["ObjAcompaniante"])
             }).ToList();
 
             return lista;
         }
 
-        private static Acompañante _ObjetoAcompaniante(JToken obj)
+        private static Acompaniante _ObjetoAcompaniante(JToken obj)
         {
-            Acompañante objeto = new Acompañante();
+            Acompaniante objeto = new Acompaniante();
 
             // Valida 'obj'
             var auxValidator = obj.ToString();
-            if (string.IsNullOrEmpty(auxValidator)) return objeto;
+            if (string.IsNullOrEmpty(auxValidator))
+                return objeto;
             // ------------
 
             JObject data = (JObject)obj;
@@ -166,10 +168,10 @@ namespace SisComWeb.Aplication.Controllers
         {
             List<Beneficiario> lista = list.Select(x => new Beneficiario
             {
-                Nombre_Beneficiario = (string)x["Nombre_Beneficiario"],
-                Tipo_Documento = (string)x["Tipo_Documento"],
+                NombreBeneficiario = (string)x["NombreBeneficiario"],
+                TipoDocumento = (string)x["TipoDocumento"],
                 Documento = (string)x["Documento"],
-                Numero_Documento = (string)x["Numero_Documento"],
+                NumeroDocumento = (string)x["NumeroDocumento"],
                 Sexo = (string)x["Sexo"]
             }).ToList();
 
@@ -192,25 +194,29 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiOrigen\" : " + filtro.CodiOrigen +
-                                ",\"CodiDestino\" : " + filtro.CodiDestino +
-                                ",\"CodiRuta\" : " + filtro.CodiRuta +
-                                ",\"Hora\" : \"" + (filtro.Hora ?? "").Replace(" ", "") + "\"" +
-                                ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-                                ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
-                                ", \"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() + " }";
+                    var _body = "{" +
+                                    "\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"CodiRuta\" : " + filtro.CodiRuta +
+                                    ",\"Hora\" : \"" + (filtro.Hora ?? "").Replace(" ", "") + "\"" +
+                                    ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                    ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
+                                    ", \"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() +
+                                " }";
                     HttpResponseMessage response = await client.PostAsync("BuscaItinerarios", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<List<Itinerario>> res = new Response<List<Itinerario>>
                 {
-                    List<Itinerario> items = ((JArray)tmpResult["Valor"]).Select(x => new Itinerario
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Itinerario
                     {
                         AsientosVendidos = (int)x["AsientosVendidos"],
                         CapacidadBus = (string)x["CapacidadBus"],
@@ -243,18 +249,14 @@ namespace SisComWeb.Aplication.Controllers
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
                         SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
-                    }).ToList();
+                    }).ToList()
+                };
 
-                    return Json(items, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Itinerario>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -268,28 +270,32 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiEmpresa\" : " + filtro.CodiEmpresa +
-                                ",\"CodiOrigen\" : " + filtro.CodiOrigen +
-                                ",\"CodiDestino\" : " + filtro.CodiDestino +
-                                ",\"CodiSucursal\" : " + filtro.CodiSucursal +
-                                ",\"CodiRuta\" : " + filtro.CodiRuta +
-                                ",\"CodiPuntoVenta\" : " + filtro.CodiPuntoVenta +
-                                ",\"CodiServicio\" : " + filtro.CodiServicio +
-                                ",\"HoraViaje\" :  \"" + filtro.HoraViaje + "\"" +
-                                ",\"FechaViaje\" :  \"" + filtro.FechaViaje + "\"" + " }";
+                    var _body = "{" +
+                                    "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"CodiSucursal\" : " + filtro.CodiSucursal +
+                                    ",\"CodiRuta\" : " + filtro.CodiRuta +
+                                    ",\"CodiPuntoVenta\" : " + filtro.CodiPuntoVenta +
+                                    ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                    ",\"HoraViaje\" :  \"" + filtro.HoraViaje + "\"" +
+                                    ",\"FechaViaje\" :  \"" + filtro.FechaViaje + "\"" +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Itinerario> res = new Response<Itinerario>
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    Itinerario item = new Itinerario
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Itinerario
                     {
                         AsientosVendidos = (int)data["AsientosVendidos"],
                         CapacidadBus = (string)data["CapacidadBus"],
@@ -328,17 +334,14 @@ namespace SisComWeb.Aplication.Controllers
                         CodiCopiloto = (string)data["CodiCopiloto"],
                         NombreCopiloto = (string)data["NombreCopiloto"],
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"])
-                    };
-                    return Json(item, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Itinerario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -352,21 +355,25 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"TipoDoc\" :\"" + tipoDoc + "\"" +
-                                ",\"NumeroDoc\" :  \"" + numeroDoc + "\"" + " }";
+                    var _body = "{" +
+                                    "\"TipoDoc\" :\"" + tipoDoc + "\"" +
+                                    ",\"NumeroDoc\" :  \"" + numeroDoc + "\"" +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaPasajero", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<ClientePasaje> res = new Response<ClientePasaje>
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    ClientePasaje item = new ClientePasaje
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new ClientePasaje
                     {
                         ApellidoMaterno = (string)data["ApellidoMaterno"],
                         ApellidoPaterno = (string)data["ApellidoPaterno"],
@@ -382,17 +389,145 @@ namespace SisComWeb.Aplication.Controllers
                         TipoDoc = (string)data["TipoDoc"],
                         Sexo = (string)data["Sexo"],
                         RazonSocial = (string)data["RazonSocial"]
-                    };
-                    return Json(item, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<ClientePasaje>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("consultar-empresa")]
+        public async Task<ActionResult> SearchEmpresa(string rucContacto)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"RucContacto\" :  \"" + rucContacto + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscaEmpresa", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Ruc> res = new Response<Ruc>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Ruc()
+                    {
+                        RucCliente = (string)data["RucCliente"],
+                        RazonSocial = (string)data["RazonSocial"],
+                        Direccion = (string)data["Direccion"],
+                        Telefono = (string)data["Telefono"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Ruc>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("consulta-reniec")]
+        public async Task<ActionResult> ConsultaReniec(string numeroDoc)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"NumeroDoc\" :  \"" + numeroDoc + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaRENIEC", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<ReniecEntity> res = new Response<ReniecEntity>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new ReniecEntity()
+                    {
+                        ApellidoPaterno = (string)data["ApellidoPaterno"],
+                        ApellidoMaterno = (string)data["ApellidoMaterno"],
+                        Nombres = (string)data["Nombres"]
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<ReniecEntity>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("consulta-sunat")]
+        public async Task<ActionResult> ConsultaSunat(string rucContacto)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"RucContacto\" :  \"" + rucContacto + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaSUNAT", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Ruc> res = new Response<Ruc>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Ruc()
+                    {
+                        RazonSocial = (string)data["RazonSocial"],
+                        Direccion = (string)data["Direccion"]
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Ruc>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -411,7 +546,8 @@ namespace SisComWeb.Aplication.Controllers
                     _body += "[";
                     for (var i = 0; i < listado.Count; i++)
                     {
-                        _body += "{ \"IdCliente\" : " + listado[i].IdCliente +
+                        _body += "{" +
+                                    "\"IdCliente\" : " + listado[i].IdCliente +
                                     ",\"TipoDoc\" : \"" + listado[i].TipoDoc + "\"" +
                                     ",\"NumeroDoc\" : \"" + listado[i].NumeroDoc + "\"" +
                                     ",\"NombreCliente\" : \"" + listado[i].NombreCliente + "\"" +
@@ -423,7 +559,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Telefono\" : \"" + listado[i].Telefono + "\"" +
                                     ",\"Email\" : \"" + listado[i].Email + "\"" +
                                     ",\"Sexo\" :  \"" + listado[i].Sexo + "\"" +
-                                    ",\"RucContacto\" :  \"" + listado[i].RucContacto + "\"" + " }";
+                                    ",\"RucContacto\" :  \"" + listado[i].RucContacto + "\"" +
+                                    ",\"RazonSocial\" :  \"" + listado[i].RazonSocial + "\"" +
+                                 "}";
                         if (i < listado.Count - 1)
                             _body += ",";
                     }
@@ -435,22 +573,21 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                bool valor = (bool)tmpResult.SelectToken("Valor");
-                if (valor)
+
+                Response<bool> res = new Response<bool>
                 {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Informativo, mensaje), JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -464,14 +601,16 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"CodiProgramacion\" : " + filtro.CodiProgramacion +
-                                ",\"NroViaje\" : " + filtro.NroViaje +
-                                ",\"CodiOrigen\" : " + filtro.CodiOrigen +
-                                ",\"CodiDestino\" : " + filtro.CodiDestino +
-                                ",\"NumeAsiento\" : " + filtro.NumeAsiento +
-                                ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
-                                ",\"Precio\" : " + filtro.Precio +
-                                ",\"CodiTerminal\" : " + Convert.ToInt32(CodiTerminal) + " }";
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                    ",\"NroViaje\" : " + filtro.NroViaje +
+                                    ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"NumeAsiento\" : " + filtro.NumeAsiento +
+                                    ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                    ",\"Precio\" : " + filtro.Precio +
+                                    ",\"CodiTerminal\" : " + int.Parse(usuario.Terminal.ToString("D3")) +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("BloqueoAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
@@ -479,21 +618,20 @@ namespace SisComWeb.Aplication.Controllers
                     }
                 }
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<int> res = new Response<int>
                 {
-                    int valor = (int)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -507,29 +645,31 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"IDS\" : " + IDS + " }";
+                    var _body = "{" +
+                                    "\"IDS\" : " + IDS +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("LiberaAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<bool> res = new Response<bool>
                 {
-                    bool valor = (bool)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -559,22 +699,21 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<bool> res = new Response<bool>
                 {
-                    bool valor = (bool)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -584,8 +723,6 @@ namespace SisComWeb.Aplication.Controllers
         {
             try
             {
-                Response<string> res = new Response<string>(false, string.Empty, string.Empty);
-
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())
                 {
@@ -627,9 +764,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + Listado[i].CodiServicio +
                                     ",\"CodiEmbarque\" : " + Listado[i].CodiEmbarque +
                                     ",\"CodiArribo\" : " + Listado[i].CodiArribo +
-                                    ",\"Hora_Embarque\" : \"" + Listado[i].Hora_Embarque + "\"" +
+                                    ",\"HoraEmbarque\" : \"" + Listado[i].HoraEmbarque + "\"" +
                                     ",\"NivelAsiento\" : " + Listado[i].NivelAsiento +
-                                    ",\"CodiTerminal\" : \"" + CodiTerminal + "\"" +
+                                    ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
                                     ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" +
                                     ",\"NomPuntoVenta\" : \"" + usuario.NomPuntoVenta + "\"" +
                                     ",\"NomDestino\" : \"" + Listado[i].NomDestino + "\"" +
@@ -649,21 +786,21 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Direccion\" : \"" + Listado[i].Direccion + "\"" +
                                     ",\"Observacion\" : \"" + Listado[i].Observacion + "\"" +
                                     ",\"Credito\" : " + Listado[i].Credito +
-                                    ",\"ObjAcompañante\" : " +
+                                    ",\"ObjAcompaniante\" : " +
                                     "{" +
-                                        "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.CodiTipoDoc) + "\"" +
-                                        ",\"NumeroDocumento\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.Documento) + "\"" +
-                                        ",\"NombreCompleto\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.NombreCompleto) + "\"" +
-                                        ",\"FechaNacimiento\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.FechaNac) + "\"" +
-                                        ",\"Edad\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.Edad) + "\"" +
-                                        ",\"Sexo\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.Sexo) + "\"" +
-                                        ",\"Parentesco\" : \"" + (Listado[i].ObjAcompañante == null ? "" : Listado[i].ObjAcompañante.Parentesco) + "\"" +
+                                        "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.CodiTipoDoc) + "\"" +
+                                        ",\"NumeroDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Documento) + "\"" +
+                                        ",\"NombreCompleto\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.NombreCompleto) + "\"" +
+                                        ",\"FechaNacimiento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.FechaNac) + "\"" +
+                                        ",\"Edad\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Edad) + "\"" +
+                                        ",\"Sexo\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Sexo) + "\"" +
+                                        ",\"Parentesco\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Parentesco) + "\"" +
                                     "}" +
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
                                     ",\"CodiSocio\" : \"" + Listado[i].CodiSocio + "\"" +
-                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM") + "\"" +
-                                    ",\"Año\" : \"" + DateTime.Now.ToString("yyyy") + "\"" +
+                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Concepto\" : \"" + Listado[i].Concepto + "\"" +
                                     ",\"FechaAbierta\" : " + Listado[i].FechaAbierta.ToString().ToLower() +
                                     // PASE DE CORTESÍA
@@ -687,63 +824,21 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
 
-                res.Estado = (bool)tmpResult.SelectToken("Estado");
-                res.Mensaje = (string)tmpResult.SelectToken("Mensaje");
-                res.Valor = (string)tmpResult["Valor"];
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(new Response<string>(false, ex.Message, string.Empty), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        [Route("consultar-empresa")]
-        public async Task<ActionResult> SearchEmpresa(string rucContacto, bool condicionEmpresa)
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    var _body = "{" +
-                                    "\"RucContacto\" :  \"" + rucContacto + "\"" +
-                                    ",\"CondicionEmpresa\" :  " + condicionEmpresa.ToString().ToLower() +
-                                " }";
-                    HttpResponseMessage response = await client.PostAsync("ConsultarSUNAT", new StringContent(_body, Encoding.UTF8, "application/json"));
-                    if (response.IsSuccessStatusCode)
-                    {
-                        result = await response.Content.ReadAsStringAsync();
-                    }
-                }
-                JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
-                {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    Ruc item = new Ruc
-                    {
-                        RucCliente = (string)data["RucCliente"],
-                        RazonSocial = (string)data["RazonSocial"],
-                        Direccion = (string)data["Direccion"],
-                        Telefono = (string)data["Telefono"]
-                    };
-                    return Json(item, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -758,12 +853,11 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
-                                ",\"CodiDocumento\" : \"" + filtro.CodiDocumento + "\"" +
-                                ",\"CodiSucursal\" : " + usuario.CodiSucursal +
-                                ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
-                                ",\"CodiTerminal\" : \"" + CodiTerminal + "\"" +
-                                ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
+                                    "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"CodiDocumento\" : \"" + filtro.CodiDocumento + "\"" +
+                                    ",\"CodiSucursal\" : " + usuario.CodiSucursal +
+                                    ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
+                                    ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaCorrelativo", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -771,28 +865,27 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<string> res = new Response<string>()
                 {
-                    string valor = (string)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
         [Route("listaBeneficiarioPase")]
-        public async Task<ActionResult> ListaBeneficiarioPase(string Codi_Socio)
+        public async Task<ActionResult> ListaBeneficiarioPase(string CodiSocio)
         {
             try
             {
@@ -800,43 +893,45 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Socio\" : " + Codi_Socio + "," + "\"año\" : " + DateTime.Now.ToString("yyyy") + "," + "\"mes\" : " + DateTime.Now.ToString("MM") + " }";
+                    var _body = "{" +
+                                    "\"CodiSocio\" : " + CodiSocio + "," +
+                                    "\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"," +
+                                    "\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) +"\"" +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ListaBeneficiarioPase", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<BoletosCortesia> res = new Response<BoletosCortesia>()
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    BoletosCortesia item = new BoletosCortesia
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new BoletosCortesia
                     {
                         BoletoTotal = (decimal)data["BoletoTotal"],
                         BoletoLibre = (decimal)data["BoletoLibre"],
                         BoletoPrecio = (decimal)data["BoletoPrecio"],
                         ListaBeneficiarios = _listaBeneficiario(data["ListaBeneficiarios"])
-                    };
+                    }
+                };
 
-                    return Json(item, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<BoletosCortesia>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
         [Route("clave-autorizacion")]
-        public async Task<ActionResult> claveAutorizacion(string password)
+        public async Task<ActionResult> ClaveAutorizacion(string password)
         {
             try
             {
@@ -844,43 +939,38 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Codi_Oficina\": " + usuario.CodiPuntoVenta + "," 
-                                    + "\"Password\": \"" + password + "\"," 
-                                    + "\"Codi_Tipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") 
-                                    + " }";
+                    var _body = "{" +
+                                    "\"CodiOficina\": " + usuario.CodiPuntoVenta + ","
+                                    + "\"Password\": \"" + password + "\","
+                                    + "\"CodiTipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
-                JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
-                {
-                    var clavesInternas = new ClavesInternas
-                    {
-                        estado = estado,
-                        mensaje = mensaje
-                    };
 
-                    return Json(clavesInternas, JsonRequestBehavior.AllowGet);
-                }
-                else
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
                 {
-                    return Json(mensaje, JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
         [Route("anular-venta")]
-        public async Task<ActionResult> AnularVenta(int Id_Venta, string tipo)
+        public async Task<ActionResult> AnularVenta(int IdVenta, string Tipo)
         {
             try
             {
@@ -889,12 +979,12 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{ " 
-                                     + "\"Id_Venta\": " + Id_Venta + ","
-                                     + "\"Codi_Usuario\": " + usuario.CodiUsuario + ","
-                                     + "\"CodiOficina\": " + usuario.CodiSucursal + ","
-                                     + "\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta + ","
-                                     + "\"tipo\": \"" + tipo 
-                                     + "\" }";
+                                + "\"IdVenta\": " + IdVenta + ","
+                                + "\"CodiUsuario\": " + usuario.CodiUsuario + ","
+                                + "\"CodiOficina\": " + usuario.CodiSucursal + ","
+                                + "\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta + ","
+                                + "\"Tipo\": \"" + Tipo 
+                                + "\" }";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -902,21 +992,21 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<bool> res = new Response<bool>()
                 {
-                    return Json(mensaje, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(mensaje, JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -930,23 +1020,27 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"Tipo\" : \"" + Tipo + "\"" +
-                                ",\"Serie\" : " + Serie +
-                                ",\"Numero\" : " + Numero +
-                                ", \"CodiEmpresa\" : " + CodiEmpresa + " }";
+                    var _body = "{" +
+                                    "\"Tipo\" : \"" + Tipo + "\"" +
+                                    ",\"Serie\" : " + Serie +
+                                    ",\"Numero\" : " + Numero +
+                                    ", \"CodiEmpresa\" : " + CodiEmpresa +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("BuscarVentaxBoleto", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<VentaBeneficiario> res = new Response<VentaBeneficiario>()
                 {
-                    JObject data = (JObject)tmpResult["Valor"];
-                    VentaBeneficiario item = new VentaBeneficiario
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new VentaBeneficiario
                     {
                         IdVenta = (long)data["IdVenta"],
                         NombresConcat = (string)data["NombresConcat"],
@@ -958,18 +1052,14 @@ namespace SisComWeb.Aplication.Controllers
                         FechViaje = (string)data["FechViaje"],
                         HoraViaje = (string)data["HoraViaje"],
                         NumeAsiento = (int)data["NumeAsiento"]
-                    };
+                    }
+                };
 
-                    return Json(item, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<VentaBeneficiario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1005,22 +1095,21 @@ namespace SisComWeb.Aplication.Controllers
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");                
-                if (estado)
+
+                Response<bool> res = new Response<bool>()
                 {
-                    string data = (string)tmpResult.SelectToken("Valor");
-                    return Json(data, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1034,31 +1123,32 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ \"IdVenta\" : " + IdVenta +
-                                ",\"CodiServicio\" : " + CodiServicio +
-                                ", \"CodiRuta\" : " + CodiRuta + " }";
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + IdVenta +
+                                    ",\"CodiServicio\" : " + CodiServicio +
+                                    ", \"CodiRuta\" : " + CodiRuta +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<bool> res = new Response<bool>()
                 {
-                    string data = (string)tmpResult.SelectToken("Valor");
-                    return Json(data, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1072,30 +1162,30 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ " + "\"IdVenta\": " + IdVenta + "}";
-
+                    var _body = "{" +
+                                    "\"IdVenta\": " + IdVenta +
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("EliminarReserva", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
                     }
                 }
+
                 JToken tmpResult = JObject.Parse(result);
-                bool estado = (bool)tmpResult.SelectToken("Estado");
-                string mensaje = (string)tmpResult.SelectToken("Mensaje");
-                if (estado)
+
+                Response<bool> res = new Response<bool>()
                 {
-                    string valor = (string)tmpResult["Valor"];
-                    return Json(valor, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, mensaje), JsonRequestBehavior.AllowGet);
-                }
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
+            catch
             {
-                return Json(NotifyJson.BuildJson(KindOfNotify.Advertencia, ex.Message), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
     }
