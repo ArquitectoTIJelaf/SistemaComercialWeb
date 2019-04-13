@@ -15,5 +15,7 @@
         public bool TodosTurnos { get; set; }
 
         public bool SoloProgramados { get; set; }
+
+        public string NomDestino { get; set; }
     }
 }

@@ -54,5 +54,7 @@ namespace SisComWeb.Aplication.Models
         public string FechaViaje { get; set; }
         public string TodosTurnos { get; set; }
         public string SoloProgramados { get; set; }
+
+        public string NomDestino { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                string auxTipoLI = "";
+                string auxTipoLI = string.Empty;
 
                 // Busca PlanoBus
                 var buscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus);

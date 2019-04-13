@@ -22,7 +22,7 @@ namespace SisComWeb.Aplication.Controllers
 
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
-            var color = "";
+            var color = string.Empty;
             if (ProgramacionCerrada)
             {
                 color = "#169BFF"; //Azul
@@ -63,7 +63,7 @@ namespace SisComWeb.Aplication.Controllers
 
         private static string _twoColor(int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
-            var color = "";
+            var color = string.Empty;
             if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
             {
                 color = "#A9E36A"; //Naranja y Verde
@@ -202,6 +202,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                     ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
                                     ", \"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() +
+
+                                    ", \"NomDestino\" : \"" + filtro.NomDestino + "\"" +
                                 " }";
                     HttpResponseMessage response = await client.PostAsync("BuscaItinerarios", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

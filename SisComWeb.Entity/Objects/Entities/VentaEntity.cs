@@ -124,6 +124,8 @@ namespace SisComWeb.Entity
 
         public AcompanianteEntity ObjAcompaniante { get; set; }
 
+        public string FechaVenta { get; set; }
+
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; }
 

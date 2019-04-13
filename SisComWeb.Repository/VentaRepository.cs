@@ -217,7 +217,10 @@ namespace SisComWeb.Repository
                         entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "Precio_Venta");
                         entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
                         entidad.FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
-                        entidad.BoletoCompleto = Reader.GetStringValue(drlector, "NUME_BOLETO");
+                        entidad.SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO");
+                        entidad.NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO");
+                        entidad.FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta");
+                        entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
                     }
                 }
             }

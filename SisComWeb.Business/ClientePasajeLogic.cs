@@ -172,8 +172,8 @@ namespace SisComWeb.Business
                     foreach (XmlNode xn in xnList)
                     {
                         auxEstado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
-                        entidad.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? "";
-                        entidad.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? "";
+                        entidad.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? string.Empty;
+                        entidad.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? string.Empty;
                     };
 
                     if (auxEstado)

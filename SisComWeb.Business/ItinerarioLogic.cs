@@ -16,7 +16,7 @@ namespace SisComWeb.Business
                 var obtenerBus = new BusEntity();
 
                 // Validar 'TodosTurnos'
-                if (request.TodosTurnos == true) request.Hora = "";
+                if (request.TodosTurnos == true) request.Hora = string.Empty;
 
                 // Lista Itinerarios
                 var buscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
@@ -24,6 +24,18 @@ namespace SisComWeb.Business
                 // Recorre cada registro
                 for (int i = 0; i < buscarItinerarios.Count; i++)
                 {
+                    // Seteo 'CodiDestino' y 'Nom_Destino' (Recordar: Antes era traído de la BD)
+                    if (request.CodiDestino > 0)
+                    {
+                        buscarItinerarios[i].CodiDestino = request.CodiDestino;
+                        buscarItinerarios[i].NomDestino = request.NomDestino;
+                    }
+                    else
+                    {
+                        buscarItinerarios[i].CodiDestino = buscarItinerarios[i].CodiRuta;
+                        buscarItinerarios[i].NomDestino = buscarItinerarios[i].NomRuta;
+                    }
+
                     // Calcula 'FechaProgramacion'
                     var doubleDias = double.Parse(buscarItinerarios[i].Dias.ToString());
                     if (buscarItinerarios[i].Dias > 0)

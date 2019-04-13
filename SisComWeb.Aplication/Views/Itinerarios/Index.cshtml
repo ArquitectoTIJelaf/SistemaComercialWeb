@@ -755,6 +755,9 @@
                     input.Hora = _this.filtro.Hora;
                     input.TodosTurnos = _this.filtro.TodosTurnos;
                     input.SoloProgramados = _this.filtro.SoloProgramados;
+
+                    input.NomDestino = (_this.filtro.CodiDestino) ? _this.filtro.CodiDestino.label : '';
+
                     APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', input)
                         .then(res => {
                             if (res.data.Estado)
@@ -1174,11 +1177,11 @@
                         $('#btnDesplegar').click();
                     }
                     appController.hideVentas();
-                    await this.limpiarAsientosBloqueados_Out();
+                    await this.limpiarAsientosBloqueados();
                     /*appVueFilter.nextStep(0);*/ // PUBLICADO
                 },
                 cerrarVentas: async function () {
-                    await this.limpiarAsientosBloqueados_Out();
+                    await this.limpiarAsientosBloqueados();
                     window.location.href = UrlIndexPrincipal;
                 },
                 changeTurno: function (item) {
@@ -1314,10 +1317,8 @@
                                         {
                                             if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                                                 _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
-                                                if (_fillData) {
+                                                if (_fillData)
                                                     await _this.cancelarBoletos();
-                                                    _fillData = true;
-                                                }
                                             }
                                             else {
                                                 if (_this.list.ventas[_this.indexVenta].FlagVenta) {
@@ -1344,24 +1345,22 @@
                             {
                                 if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                                     _fillData = await APP.msg.confirm('Confirmar Acción', 'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
-                                    if (_fillData) {
+                                    if (_fillData)
                                         await _this.cancelarBoletos();
-                                        _fillData = true;
-                                    }
                                 }
                                 else {
                                     if (_this.list.ventas[_this.indexVenta].FlagVenta) {
-                                        if (_this.list.ventas[_this.indexVenta].NroAsiento === String(asientoSel.NumeAsiento).padStart(2, '0'))
+                                        if (_this.list.ventas[_this.indexVenta].NroAsiento === String(asientoSel.NumeAsiento).padStart(2, '0')) {
                                             _fillData = false;
+                                            _this.limpiarVenta();
+                                        }
                                         else
                                             _fillData = true;
-
-                                        _this.limpiarVenta();
                                     }
                                     else {
-                                        if (_this.list.ventas[_this.indexVenta].NroAsiento) {
+                                        if (_this.list.ventas[_this.indexVenta].NroAsiento)
                                             await _this.cancelarBoletos();
-                                        }
+
                                         _fillData = true;
                                     }
                                 }
@@ -1491,9 +1490,8 @@
                     var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion > 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
 
                     // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
-                    if (_this.filtro.CodiProgramacion > 0) {
+                    if (_this.filtro.CodiProgramacion > 0)
                         var partNameCookie2 = 'asientoBloqueado_' + _this.filtro.NroViaje + '_' + _this.filtro.Fecha + '_';
-                    }
 
                     for (var objAsiento of _this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
@@ -1509,6 +1507,13 @@
                                             objAsiento.NumeAsiento = 0;
 
                                             APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
+
+                                            // SignalR
+                                            ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                            ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                            ClientSignalR.NroAsiento = objAsiento.Tipo;
+                                            ClientSignalR.Owner = true;
+                                            if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenLiberarBus').click();
                                         }
                                         else {
                                             if (!res.data.Estado)
@@ -1533,6 +1538,13 @@
                                                     objAsiento.NumeAsiento = 0;
 
                                                     APP.util.deleteCookie(partNameCookie2 + objAsiento.Tipo);
+
+                                                    // SignalR
+                                                    ClientSignalR.NroViaje = _this.filtro.NroViaje;
+                                                    ClientSignalR.FechaViaje = _this.filtro.Fecha;
+                                                    ClientSignalR.NroAsiento = objAsiento.Tipo;
+                                                    ClientSignalR.Owner = true;
+                                                    if (ClientSignalR.NroViaje && ClientSignalR.FechaViaje && ClientSignalR.NroAsiento) document.getElementById('btnHiddenLiberarBus').click();
                                                 }
                                                 else {
                                                     if (!res.data.Estado)
@@ -1658,7 +1670,7 @@
                         && _this.list.ventas[_this.indexVenta].Documento
                         && _this.list.ventas[_this.indexVenta].Documento.length === 8) {
 
-                        APP.rq.axios2.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                        APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
                         }), { timeout: 10000 })
@@ -1754,9 +1766,9 @@
                     if (_this.list.ventas[_this.indexVenta].Ruc
                         && _this.list.ventas[_this.indexVenta].Ruc.length === 11) {
 
-                        APP.rq.axios2.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
+                        APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
                             rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                        }), { timeout: 5000 })
+                        }), { timeout: 10000 })
                             .then(res => {
                                 if (res.data.Estado) {
                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
@@ -1797,9 +1809,9 @@
                     if (_this.list.ventas[_this.indexVenta].Documento
                         && _this.list.ventas[_this.indexVenta].Documento.length === 8) {
 
-                        APP.rq.axios2.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
-                        }), { timeout: 5000 })
+                        }), { timeout: 10000 })
                             .then(res => {
                                 if (res.data.Estado) {
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.Nombres;
@@ -1824,9 +1836,9 @@
                     if (_this.list.ventas[_this.indexVenta].Ruc
                         && _this.list.ventas[_this.indexVenta].Ruc.length === 11) {
 
-                        APP.rq.axios2.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
                             rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                        }), { timeout: 5000 })
+                        }), { timeout: 10000 })
                             .then(res => {
                                 if (res.data.Estado) {
                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
@@ -1838,7 +1850,7 @@
                             .catch(err => {
                                 if (err.code === "ECONNABORTED") {
                                     APP.msg.warning('No se pudo consultar a la SUNAT');
-                                    _this.$refs.refNombres.focus();
+                                    _this.$refs.refRazonSocial.focus();
                                 }
                                 else
                                     APP.rq.axios_handler_error_alert;
@@ -2348,6 +2360,8 @@
                                 return auxResponse = false;
                             }
                         }
+                        else
+                            this.limpiarVenta();
                     }
 
                     return auxResponse;
@@ -2492,7 +2506,7 @@
                     }
                 },
                 beforeClosePage: function () {
-                    this.limpiarAsientosBloqueados_Out();
+                    this.limpiarAsientosBloqueados();
                 }
             },
             computed: {

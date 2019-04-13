@@ -16,6 +16,7 @@ namespace SisComWeb.Business
     public static class VentaLogic
     {
         private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"].ToString();
+        private static readonly string MotivoAnulacionFE = ConfigurationManager.AppSettings["motivoAnulacionFE"].ToString();
 
         #region BUSCAR CORRELATIVO
 
@@ -34,6 +35,9 @@ namespace SisComWeb.Business
 
                 if (buscarCorrelativo.SerieBoleto == 0)
                     return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
+
+                // Aumento para el método 'BuscarCorrelativo'
+                buscarCorrelativo.NumeBoleto = buscarCorrelativo.NumeBoleto + AumentoDelCorrelativo(validarTerminalElectronico.Tipo, request.CodiDocumento);
 
                 valor = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, request.CodiDocumento, buscarCorrelativo.SerieBoleto, buscarCorrelativo.NumeBoleto, "3", "8");
 
@@ -67,7 +71,7 @@ namespace SisComWeb.Business
                     if (buscarProgramacionViaje == 0)
                     {
                         // Genera 'CorrelativoAuxiliar'
-                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                             return new Response<string>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
@@ -137,7 +141,7 @@ namespace SisComWeb.Business
                             case "7": // PASE DE CORTESÍA
                                 entidad.AuxCodigoBF_Interno = "78";
                                 break;
-                        }
+                        };
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "01"; // Factura
                     }
@@ -152,7 +156,7 @@ namespace SisComWeb.Business
                             case "7": // PASE DE CORTESÍA
                                 entidad.AuxCodigoBF_Interno = "77";
                                 break;
-                        }
+                        };
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "03"; // Boleta
                     }
@@ -160,7 +164,7 @@ namespace SisComWeb.Business
                     // Busca 'Correlativo'
                     var buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
                     entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
 
                     if (buscarCorrelativo.SerieBoleto == 0)
                     {
@@ -198,13 +202,13 @@ namespace SisComWeb.Business
                                                     else
                                                     {
                                                         entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                                                        entidad.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+                                                        entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                                                     }
                                                 }
                                                 else
                                                 {
                                                     entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                                                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+                                                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                                                 }
                                             };
                                             break;
@@ -225,16 +229,16 @@ namespace SisComWeb.Business
                                                 else
                                                 {
                                                     entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                                                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+                                                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                                                 }
                                             };
                                             break;
-                                    }
+                                    };
                                 };
                                 break;
                             case "E":
                                 return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
-                        }
+                        };
                     }
 
                     // Seteo 'Tipo'
@@ -251,7 +255,10 @@ namespace SisComWeb.Business
                                     entidad.Tipo = "B";
                             };
                             break;
-                    }
+                    };
+
+                    // Aumento para el método 'BuscarCorrelativo'
+                    entidad.NumeBoleto = entidad.NumeBoleto + AumentoDelCorrelativo(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno);
 
                     // Graba 'Venta', 'Otros' y 'FacturaciónElectrónica'
                     switch (validarTerminalElectronico.Tipo)
@@ -345,17 +352,17 @@ namespace SisComWeb.Business
                                     return new Response<string>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                             };
                             break;
-                    }
+                    };
 
                     // Seteo 'auxBoletoCompleto'
-                    auxBoletoCompleto = BoletoFormatoCompleto(entidad.Tipo, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+                    auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
                     // PASE DE CORTESÍA
                     if (FlagVenta == "7")
                     {
                         // Modifica 'SaldoPaseCortesia'
                         var modificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
-                        if(!modificarSaldoPaseCortesia)
+                        if (!modificarSaldoPaseCortesia)
                             return new Response<string>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
 
                         // Graba 'PaseSocio'
@@ -371,7 +378,7 @@ namespace SisComWeb.Business
                     if (validarLiquidacionVentas > 0)
                     {
                         var actualizarLiquidacionVentas = VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture));
-                        if(!actualizarLiquidacionVentas)
+                        if (!actualizarLiquidacionVentas)
                             return new Response<string>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
                     }
 
@@ -381,7 +388,7 @@ namespace SisComWeb.Business
                         int auxCorrelativoAuxiliar = 0;
 
                         // Genera 'CorrelativoAuxiliar'
-                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("Liq_Caja", "999", "", string.Empty);
+                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("LIQ_CAJA", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                             return new Response<string>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
@@ -414,13 +421,13 @@ namespace SisComWeb.Business
                                     NumeCaja = generarCorrelativoAuxiliar,
                                     CodiEmpresa = entidad.CodiEmpresa,
                                     CodiSucursal = entidad.CodiOficina,
-                                    Boleto = auxBoletoCompleto,
+                                    Boleto = auxBoletoCompleto.Substring(1),
                                     Monto = entidad.TipoPago == "03" ? entidad.PrecioVenta : entidad.Credito,
                                     CodiUsuario = entidad.CodiUsuario,
-                                    Recibe = entidad.TipoPago == "03" ? "" : "MULTIPLE PAGO PARCIAL",
+                                    Recibe = entidad.TipoPago == "03" ? string.Empty : "MULTIPLE PAGO PARCIAL",
                                     CodiDestino = entidad.CodiDestino.ToString(),
                                     FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                                    HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : "",
+                                    HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : string.Empty,
                                     CodiPuntoVenta = entidad.CodiPuntoVenta,
                                     IdVenta = entidad.IdVenta,
                                     Origen = entidad.TipoPago == "03" ? "VT" : "PA",
@@ -444,7 +451,7 @@ namespace SisComWeb.Business
                                         Tipo = entidad.Tipo
                                     };
                                     var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
-                                    if(!grabarPagoTarjetaCredito)
+                                    if (!grabarPagoTarjetaCredito)
                                         return new Response<string>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
                                 }
                                 else
@@ -456,7 +463,7 @@ namespace SisComWeb.Business
                             if (!grabarPagoDelivery)
                                 return new Response<string>(false, valor, Message.MsgErrorGrabarPagoDelivery, false);
                             break;
-                    }
+                    };
 
                     // Graba 'Auditoria'
                     var objAuditoriaEntity = new AuditoriaEntity
@@ -486,7 +493,7 @@ namespace SisComWeb.Business
                         return new Response<string>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
                     // Añado 'auxBoletoCompleto'
-                    auxBoletoCompleto = BoletoFormatoCompleto(entidad.Tipo == "M" ? "0" : entidad.Tipo, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+                    auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
                     valor += auxBoletoCompleto + ",";
                 }
@@ -519,7 +526,7 @@ namespace SisComWeb.Business
                     if (buscarProgramacionViaje == 0)
                     {
                         // Genera 'CorrelativoAuxiliar'
-                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                             return new Response<string>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
@@ -551,14 +558,14 @@ namespace SisComWeb.Business
                         entidad.CodiProgramacion = buscarProgramacionViaje;
 
                     // Busca 'Correlativo'
-                    var generarCorrelativoAuxiliar2 = VentaRepository.GenerarCorrelativoAuxiliar("TB_RESERVAS", "999", "", string.Empty);
+                    var generarCorrelativoAuxiliar2 = VentaRepository.GenerarCorrelativoAuxiliar("TB_RESERVAS", "999", string.Empty, string.Empty);
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar2))
                         return new Response<string>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                     entidad.SerieBoleto = -98;
                     entidad.NumeBoleto = int.Parse(generarCorrelativoAuxiliar2) + 1;
 
-                    // Seteo 'Tipo'
+                    // Seteo 'Tipo' (Reserva siempre es 'M')
                     entidad.Tipo = "M";
 
                     // Graba 'Venta'
@@ -577,7 +584,7 @@ namespace SisComWeb.Business
                     }
 
                     // Añado 'auxBoletoCompleto'
-                    auxBoletoCompleto = BoletoFormatoCompleto(entidad.Tipo == "M" ? "0" : entidad.Tipo, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+                    auxBoletoCompleto = BoletoFormatoCompleto("M", string.Empty, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8");
 
                     valor += auxBoletoCompleto + ",";
                 }
@@ -669,13 +676,21 @@ namespace SisComWeb.Business
         {
             try
             {
-                string Table = "CAJA";
-
                 var objVenta = VentaRepository.BuscarVentaById(IdVenta);
-                if (string.IsNullOrEmpty(objVenta.BoletoCompleto))
+
+                if (objVenta.SerieBoleto == 0)
                     return new Response<bool>(false, false, Message.MsgErrorBuscarVentaById, false);
 
-                var correlativo = VentaRepository.GenerarCorrelativoAuxiliar(Table, CodiOficina, CodiPuntoVenta, string.Empty);
+                // Valida 'AnularDocumentoSUNAT'
+                if (objVenta.Tipo != "M")
+                {
+                    // Anula 'DocumentoSUNAT'
+                    var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVenta);
+                    if (!resAnularDocumentoSUNAT.Estado)
+                        return new Response<bool>(false, false, resAnularDocumentoSUNAT.MensajeError, false);
+                }
+
+                var correlativo = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", CodiOficina, CodiPuntoVenta, string.Empty);
                 if (string.IsNullOrEmpty(correlativo))
                     return new Response<bool>(false, false, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
@@ -684,7 +699,7 @@ namespace SisComWeb.Business
                     NumeCaja = correlativo,
                     CodiEmpresa = objVenta.CodiEmpresa,
                     CodiSucursal = short.Parse(CodiOficina),
-                    Boleto = objVenta.BoletoCompleto,
+                    Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
                     Monto = objVenta.PrecioVenta,
                     CodiUsuario = short.Parse(CodiUsuario.ToString()),
                     Recibe = string.Empty,
@@ -755,11 +770,11 @@ namespace SisComWeb.Business
                 if (buscarProgramacionViaje == 0)
                 {
                     // Genera 'CorrelativoAuxiliar'
-                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", "", string.Empty);
+                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                         return new Response<bool>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                    filtro.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar);
+                    filtro.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
 
                     var objProgramacion = new ProgramacionEntity
                     {
@@ -828,21 +843,20 @@ namespace SisComWeb.Business
         {
             try
             {
-                Ws_SeeFacteSoapClient serviceFE = new Ws_SeeFacteSoapClient();
-                SetInvoiceRequestBody entidadFE = new SetInvoiceRequestBody();
+                var serviceFE = new Ws_SeeFacteSoapClient();
+                var entidadFE = new SetInvoiceRequestBody();
 
                 // Busca 'RucEmpresa'
                 var buscarRucEmpresa = VentaRepository.BuscarRucEmpresa(entidad.CodiEmpresa);
                 if (string.IsNullOrEmpty(buscarRucEmpresa))
-                {
                     return null;
-                }
 
-                Security seguridadFE = new Security
+                var seguridadFE = new Security
                 {
                     ID = buscarRucEmpresa,
                     User = entidad.UserWebSUNAT
                 };
+
                 // Genera 'Seguridad'
                 entidadFE.Security = seguridadFE;
                 // Genera 'Persona'
@@ -871,7 +885,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                Ws_SeeFacteSoapClient serviceFE = new Ws_SeeFacteSoapClient();
+                var serviceFE = new Ws_SeeFacteSoapClient();
 
                 ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, false);
                 return ServFactElectResponse;
@@ -884,11 +898,57 @@ namespace SisComWeb.Business
 
         }
 
+        public static ResponseW AnularDocumentoSUNAT(VentaEntity entidad)
+        {
+            try
+            {
+                var serviceFE = new Ws_SeeFacteSoapClient();
+                var auxTDocumento = string.Empty;
+
+                // Busca 'RucEmpresa'
+                var buscarRucEmpresa = VentaRepository.BuscarRucEmpresa(entidad.CodiEmpresa);
+                if (string.IsNullOrEmpty(buscarRucEmpresa))
+                    return null;
+
+                var seguridadFE = new Security
+                {
+                    ID = buscarRucEmpresa,
+                    User = UserWebSUNAT
+                };
+
+                // Seteo 'auxTDocumento'
+                switch (entidad.Tipo)
+                {
+                    case "F":
+                        auxTDocumento = "01";
+                        break;
+                    case "B":
+                        auxTDocumento = "03";
+                        break;
+                };
+
+                var documento = auxTDocumento +
+                                "|" + entidad.Tipo + entidad.SerieBoleto.ToString("D3") +
+                                "|" + entidad.NumeBoleto.ToString("D8") +
+                                "|" + MotivoAnulacionFE +
+                                "|" + entidad.FechaVenta +
+                                "|" + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                ResponseW ServFactElectResponse = serviceFE.SetVoidedDocument(seguridadFE, documento);
+                return ServFactElectResponse;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return null;
+            }
+        }
+
         public static string GenerarPersona(VentaEntity entidad)
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("[IdTipoDocIdentidad]|[NumDocIdentidad]|[RazonNombres]|[RazonComercial]|[DireccionFiscal]|[UbigeoSUNAT]|[Departamento]|[Provincia]|[Distrito]|[Urbanizacion]|[PaisCodSUNAT]");
                 if (entidad.CodiDocumento == "03")
                 {
@@ -936,7 +996,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.Append("[TDocumento]|[Serie]|[Numero]|[FecEmision]|[HoraEmision]|[TMoneda]|[ImporteTotalVenta]|[EnviarEmail]|[CorreoCliente]");
                 sb.Append("|[TipoCambio]|[TValorOperacionGravada]|[TValorOperacionInafecta]|[TValorOperacionExo]|[PorcIgv]|[SumIgvTotal]|[SumISCTotal]");
                 sb.Append("|[SumOtrosTrib]|[SumOtrosCargos]|[TDescuentos]|[ImportePercepcionN]|[ValorRefServTransp]|[NombEmbarcacionPesq]|[MatEmbarcacionPesq]");
@@ -949,7 +1009,7 @@ namespace SisComWeb.Business
                 sb = sb.Replace("[HoraEmision]", DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[TMoneda]", "PEN");
                 sb = sb.Replace("[ImporteTotalVenta]", entidad.PrecioVenta.ToString("F2", CultureInfo.InvariantCulture));
-                sb = sb.Replace("[EnviarEmail]", "");
+                sb = sb.Replace("[EnviarEmail]", string.Empty);
                 sb = sb.Replace("[CorreoCliente]", string.Empty);
                 sb = sb.Replace("[TipoCambio]", string.Empty);
                 sb = sb.Replace("[TValorOperacionGravada]", "0.00");
@@ -990,8 +1050,8 @@ namespace SisComWeb.Business
         {
             try
             {
-                ArrayOfString array = new ArrayOfString();
-                StringBuilder sb = new StringBuilder();
+                var array = new ArrayOfString();
+                var sb = new StringBuilder();
 
                 sb.Append("[ID]|[CodProdInt]|[UnidadMedida]|[CantidadItem]|[Descripcion]|[ValorUnitario]|[PrecioVenta]|[CodAFIgvxItem]|[AFIgvxItem]");
                 sb.Append("|[CodAFIscxItem]|[AFIscxItem]|[AFOtroxItem]|[ValorVenta]|[VRefGratuita]|[VDescuento]");
@@ -1027,8 +1087,8 @@ namespace SisComWeb.Business
         {
             try
             {
-                ArrayOfString array = new ArrayOfString();
-                StringBuilder sb = new StringBuilder();
+                var array = new ArrayOfString();
+                var sb = new StringBuilder();
 
                 sb.Append("[CodAdicional]|[Descripcion]");
                 sb = sb.Replace("[CodAdicional]", "1");
@@ -1050,36 +1110,74 @@ namespace SisComWeb.Business
 
         #region REUTILIZABLE
 
-        public static string BoletoFormatoCompleto(string Tipo, short serieBoleto, int numeroBoleto, string formatoSerieBol, string formatoNumeroBol)
-        {
-            return Tipo + serieBoleto.ToString("D" + formatoSerieBol).ToString() + "-" + numeroBoleto.ToString("D" + formatoNumeroBol).ToString();
-        }
-
-        public static string BoletoFormatoCompleto(string Tipo, string CodiDocumento, short serieBoleto, int numeroBoleto, string formatoSerieBol, string formatoNumeroBol)
+        public static string BoletoFormatoCompleto(string tipo, string codiDocumento, short serieBoleto, int numeroBoleto, string formatoSerieBol, string formatoNumeroBol)
         {
             var boletoCompleto = string.Empty;
 
-            switch (Tipo)
+            switch (tipo)
             {
                 case "M":
-                    boletoCompleto = "0" + serieBoleto.ToString("D" + formatoSerieBol).ToString() + "-" + (numeroBoleto + 1).ToString("D" + formatoNumeroBol).ToString();
+                    boletoCompleto = "0" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
                     break;
                 case "E":
                     {
-                        switch (CodiDocumento)
+                        switch (codiDocumento)
                         {
                             case "17":
-                                boletoCompleto = "F" + serieBoleto.ToString("D" + formatoSerieBol).ToString() + "-" + (numeroBoleto + 1).ToString("D" + formatoNumeroBol).ToString();
+                            case "78":
+                                boletoCompleto = "F" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
                                 break;
                             case "16":
-                                boletoCompleto = "B" + serieBoleto.ToString("D" + formatoSerieBol).ToString() + "-" + (numeroBoleto + 1).ToString("D" + formatoNumeroBol).ToString();
+                            case "77":
+                                boletoCompleto = "B" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
                                 break;
                         };
-                    }
+                    };
                     break;
             };
 
             return boletoCompleto;
+        }
+
+        public static byte AumentoDelCorrelativo(string tipo, string auxCodigoBF_Interno)
+        {
+            byte auxAumento = 0;
+
+            // Nota:
+            // Cuando vuelva a fallar el 'correlativo' entonces habilitar o deshabilitar el 'case X' correspondiente.
+            // No volver a modificarlo hasta un nuevo fallo para evitar saltos en el 'correlativo'.
+
+            switch (tipo)
+            {
+                case "M":
+                    {
+                        switch (auxCodigoBF_Interno)
+                        {
+                            case "17":
+                                //case "16": // No necesita.
+                                //case "78": // No hay data: se supone que no necesita.
+                                //case "77": // No hay data: se supone que no necesita.
+                                auxAumento = 1;
+                                break;
+                        };
+                    }
+                    break;
+                case "E":
+                    {
+                        switch (auxCodigoBF_Interno)
+                        {
+                            case "17":
+                            case "16":
+                            //case "78": // No hay data: se supone que no necesita.
+                            case "77":
+                                auxAumento = 1;
+                                break;
+                        };
+                    };
+                    break;
+            };
+
+            return auxAumento;
         }
 
         #endregion
