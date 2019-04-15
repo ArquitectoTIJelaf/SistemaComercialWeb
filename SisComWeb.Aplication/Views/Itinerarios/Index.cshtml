@@ -1391,6 +1391,7 @@
                         _this.list.ventas[_this.indexVenta].Direccion = asientoSel.Direccion;
                         _this.list.ventas[_this.indexVenta].NroVenta = (asientoSel.TipoBoleto === 'M' ? '0' : asientoSel.TipoBoleto) + asientoSel.Boleto;
                         _this.list.ventas[_this.indexVenta].IdVenta = asientoSel.IdVenta;
+                        _this.list.ventas[_this.indexVenta].FechaVen = asientoSel.FechaVenta;
                         if (asientoSel.ObjAcompaniante) {
                             _this.list.ventas[_this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
                             appController.chargeInfante(_this.list.ventas[_this.indexVenta].ObjAcompaniante);
@@ -1499,7 +1500,7 @@
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie) {
                                 objAsiento.IDS = valueCookie;
-                                
+
                                 await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
                                     .then(res => {
                                         if (res.data.EsCorrecto) {
@@ -1892,7 +1893,7 @@
                                 // Mensaje solo para 'Boleta'
                                 if (_CodiDocumento === CodiCorrelativoVentaBoleta)
                                     APP.msg.error(res.data.Mensaje);
-                            } 
+                            }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                     return auxNroVenta;
@@ -1931,16 +1932,16 @@
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
                     if (FechaVenta) {
                         if (FlagVenta === 'R') // Reserva
-                            return {'background-color': `${APP.ventas.colorReserva}`};
+                            return { 'background-color': `${APP.ventas.colorReserva}` };
                         else
-                            return {'background-color': `${Color}`};
+                            return { 'background-color': `${Color}` };
                     }
                     else {
                         if (NumeAsiento > 0) {
                             if (IDS === 0)
-                                return {'background-color': `${APP.ventas.colorBloqueoExterno}`};
+                                return { 'background-color': `${APP.ventas.colorBloqueoExterno}` };
                             else
-                                return {'background-color': `${APP.ventas.colorBloqueoInterno}`};
+                                return { 'background-color': `${APP.ventas.colorBloqueoInterno}` };
                         }
                     }
                 },
@@ -2364,6 +2365,8 @@
                             this.limpiarVenta();
                     }
 
+                    this.$refs.refNroAsientoVenta.focus();
+
                     return auxResponse;
                 },
                 cancelarReserva: async function () {
@@ -2507,6 +2510,10 @@
                 },
                 beforeClosePage: function () {
                     this.limpiarAsientosBloqueados();
+                },
+                setDocumento: function (e) {
+                    this.list.ventas[this.indexVenta].Documento = e.target.value.toUpperCase();
+                    this.$validator.validate('Tipo', this.list.ventas[this.indexVenta].CodiTipoDoc);
                 }
             },
             computed: {

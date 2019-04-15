@@ -586,64 +586,69 @@
                             <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
                                 <form autocomplete="off" @@submit.prevent>
                                     <div class="row">
-                                        <div class="col-md-1">
-                                            <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
-                                                <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
-                                                <input v-model="list.ventas[indexVenta].NroAsiento"
-                                                       @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"
-                                                       @@keydown.9.prevent="validateTxtNroAsientoVenta($event)"
-                                                       @@focus="focusAsiento($event)"
-                                                       @@blur="validateTxtNroAsientoVenta($event)"
-                                                       id="txtNroAsientoVenta"
-                                                       ref="refNroAsientoVenta"
-                                                       class="form-control input-sm"
-                                                       placeholder="Nº"
-                                                       style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
-                                                       v-bind:class="{'placeh-ticket-venta': auxFocus.asiento}"
-                                                       v-mask="'##'">
+                                        <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
+                                                    <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
+                                                    <input v-model="list.ventas[indexVenta].NroAsiento"
+                                                           @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"
+                                                           @@keydown.9.prevent="validateTxtNroAsientoVenta($event)"
+                                                           @@focus="focusAsiento($event)"
+                                                           @@blur="validateTxtNroAsientoVenta($event)"
+                                                           id="txtNroAsientoVenta"
+                                                           ref="refNroAsientoVenta"
+                                                           class="form-control input-sm"
+                                                           placeholder="Nº"
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
+                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.asiento}"
+                                                           v-mask="'##'">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Tipo doc.</label>
-                                                <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                                          @@keydown.13.native.prevent="passNumDocToDocumento"
-                                                          @@keydown.9.native.prevent="passNumDocToDocumento"
-                                                          :options="list.tiposDoc"
-                                                          :placeholder="'TIPO'"
-                                                          :select-on-tab="true"
-                                                          :id="'cboTipoDoc'"
-                                                          ref="refTipoDoc"
-                                                          :get-option-label="labelOfDocumento">
-                                                    <template slot="option" slot-scope="option">
-                                                        <div @@click="passNumDocToDocumento">{{ option.label }}</div>
-                                                    </template>
-                                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                                </v-select>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label">Tipo doc.</label>
+                                                    <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                              @@keydown.13.native.prevent="passNumDocToDocumento"
+                                                              @@keydown.9.native.prevent="passNumDocToDocumento"
+                                                              :options="list.tiposDoc"
+                                                              :placeholder="'TIPO'"
+                                                              :select-on-tab="true"
+                                                              :id="'cboTipoDoc'"
+                                                              ref="refTipoDoc"
+                                                              :get-option-label="labelOfDocumento"
+                                                              name="Tipo"
+                                                              v-validate="'required'">
+                                                        <template slot="option" slot-scope="option">
+                                                            <div @@click="passNumDocToDocumento">{{ option.label }}</div>
+                                                        </template>
+                                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                    </v-select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label class="control-label"
-                                                       style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
-                                                    Número
-                                                </label>
-                                                <button class="btn-info btn-xs"
-                                                        title="Consultar a RENIEC"
-                                                        v-on:click="consultaReniec">
-                                                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                                                </button>
-                                                <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
-                                                       @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="searchUser"
-                                                       @@keydown.9.prevent="searchUser"
-                                                       @@keyup.backspace="clearUser"
-                                                       id="txtDocumento"
-                                                       ref="refDocumento"
-                                                       class="form-control input-sm"
-                                                       placeholder="DOCUMENTO"
-                                                       v-mask="mask.documento">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="control-label"
+                                                           style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
+                                                        Número
+                                                    </label>
+                                                    <button class="btn-info btn-xs"
+                                                            title="Consultar a RENIEC"
+                                                            v-on:click="consultaReniec">
+                                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                                    </button>
+                                                    <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
+                                                           @@input="setDocumento($event)"
+                                                           @@keypress.13.prevent="searchUser"
+                                                           @@keydown.9.prevent="searchUser"
+                                                           @@keyup.backspace="clearUser"
+                                                           id="txtDocumento"
+                                                           ref="refDocumento"
+                                                           class="form-control input-sm"
+                                                           placeholder="DOCUMENTO"
+                                                           v-mask="mask.documento">
+                                                </div>
                                             </div>
+                                            <span v-if="list.ventas[indexVenta].CodiTipoDoc == null && list.ventas[indexVenta].Documento.length > 0" class="text-danger">{{ errors.first('Tipo') }}</span>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -853,7 +858,7 @@
                                                     </div>
                                                 </div>
                                                 <span v-show="list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length > 0 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
