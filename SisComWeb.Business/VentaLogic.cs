@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Text;
 
 namespace SisComWeb.Business
@@ -58,7 +59,8 @@ namespace SisComWeb.Business
         {
             try
             {
-                string valor = string.Empty;
+                var valor = string.Empty;
+                var listaFilesPDF = new List<byte[]>();
 
                 foreach (var entidad in Listado)
                 {
@@ -273,7 +275,7 @@ namespace SisComWeb.Business
 
                                     // Graba 'VentaFechaAbierta'
                                     var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
-                                    if (grabarVentaFechaAbierta == 0)
+                                    if (grabarVentaFechaAbierta <= 0)
                                         return new Response<string>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
                                     entidad.IdVenta = grabarVentaFechaAbierta;
@@ -283,7 +285,7 @@ namespace SisComWeb.Business
                                 {
                                     // Graba 'Venta'
                                     var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                    if (grabarVenta == 0)
+                                    if (grabarVenta <= 0)
                                         return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
 
                                     entidad.IdVenta = grabarVenta;
@@ -314,7 +316,7 @@ namespace SisComWeb.Business
 
                                         // Graba 'VentaFechaAbierta'
                                         var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
-                                        if (grabarVentaFechaAbierta == 0)
+                                        if (grabarVentaFechaAbierta <= 0)
                                             return new Response<string>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
                                         entidad.IdVenta = grabarVentaFechaAbierta;
@@ -324,7 +326,7 @@ namespace SisComWeb.Business
                                     {
                                         // Graba 'Venta'
                                         var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                        if (grabarVenta == 0)
+                                        if (grabarVenta <= 0)
                                             return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
 
                                         entidad.IdVenta = grabarVenta;
@@ -342,7 +344,19 @@ namespace SisComWeb.Business
                                     {
                                         // Registra 'DocumentoSUNAT'
                                         var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
-                                        if (!resRegistrarDocumentoSUNAT.Estado)
+                                        if (resRegistrarDocumentoSUNAT.Estado)
+                                        {
+                                            // Guarda PDFs
+                                            if (!string.IsNullOrEmpty(resRegistrarDocumentoSUNAT.PdfValue))
+                                            {
+                                                string pdfValue = resRegistrarDocumentoSUNAT.PdfValue;
+                                                var filePDF = Convert.FromBase64String(pdfValue);
+                                                listaFilesPDF.Add(filePDF);
+                                            }
+                                            else
+                                                return new Response<string>(false, valor, Message.MsgErrorPdfValue, false);
+                                        }
+                                        else
                                             return new Response<string>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
                                     }
                                     else
@@ -497,6 +511,12 @@ namespace SisComWeb.Business
 
                     valor += auxBoletoCompleto + ",";
                 }
+
+                // Imprime PDFs
+                //foreach (var filePDF in listaFilesPDF)
+                //{
+
+                //}
 
                 return new Response<string>(true, valor, Message.MsgCorrectoGrabaVenta, true);
             }
@@ -870,6 +890,7 @@ namespace SisComWeb.Business
                 // Genera 'Adicionales'
                 entidadFE.Aditional = GenerarAdicionales(entidad);
                 entidadFE.EnvioAsync = false;
+
                 bodyDocumentoSUNAT = entidadFE;
 
                 return serviceFE.SetValueInvoice(bodyDocumentoSUNAT.Security, bodyDocumentoSUNAT.Persona, bodyDocumentoSUNAT.CInvoice, bodyDocumentoSUNAT.DetInvoice, bodyDocumentoSUNAT.DocInvoice, bodyDocumentoSUNAT.Aditional);
@@ -1004,7 +1025,7 @@ namespace SisComWeb.Business
                 sb.Append("|[FechConsumo]|[TVentaGratuita]|[DescuentoGlobal]|[MontoLetras]");
                 sb = sb.Replace("[TDocumento]", entidad.CodiDocumento);
                 sb = sb.Replace("[Serie]", entidad.Tipo + entidad.SerieBoleto.ToString());
-                sb = sb.Replace("[Numero]", entidad.NumeBoleto.ToString("0######"));
+                sb = sb.Replace("[Numero]", entidad.NumeBoleto.ToString("D7"));
                 sb = sb.Replace("[FecEmision]", DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[HoraEmision]", DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[TMoneda]", "PEN");
@@ -1178,6 +1199,11 @@ namespace SisComWeb.Business
             };
 
             return auxAumento;
+        }
+
+        public static void ImprimirPDF()
+        {
+
         }
 
         #endregion
