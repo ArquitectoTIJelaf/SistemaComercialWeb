@@ -36,6 +36,9 @@ namespace SisComWeb.Business
                 if (buscarCorrelativo.SerieBoleto == 0)
                     return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
 
+                // Siempre '+ 1' al 'NumeBoleto'
+                buscarCorrelativo.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+
                 valor = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, request.CodiDocumento, buscarCorrelativo.SerieBoleto, buscarCorrelativo.NumeBoleto, "3", "8");
 
                 return new Response<string>(true, valor, Message.MsgCorrectoBuscaCorrelativo, true);
@@ -254,6 +257,9 @@ namespace SisComWeb.Business
                             break;
                     };
 
+                    // Siempre '+ 1' al 'NumeBoleto'
+                    entidad.NumeBoleto = entidad.NumeBoleto + 1;
+
                     // Graba 'Venta', 'Otros' y 'FacturaciónElectrónica'
                     switch (validarTerminalElectronico.Tipo)
                     {
@@ -277,14 +283,6 @@ namespace SisComWeb.Business
                                 {
                                     // Graba 'Venta'
                                     var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                    // Valida error 'grabarVenta = -1'
-                                    if (grabarVenta == -1)
-                                    {
-                                        // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
-                                        entidad.NumeBoleto = entidad.NumeBoleto + 1;
-                                        grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                    }
-                                    // -------------------------------
                                     if (grabarVenta <= 0)
                                         return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
 
@@ -306,18 +304,8 @@ namespace SisComWeb.Business
 
                                 // Valida 'DocumentoSUNAT'
                                 var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
-                                if (resValidarDocumentoSUNAT != null)
+                                if (resValidarDocumentoSUNAT != null && resValidarDocumentoSUNAT.Estado)
                                 {
-                                    // Valida error de mayor probabilidad 'Comprobante se encuentra ACEPTADO.'
-                                    if (!resValidarDocumentoSUNAT.Estado)
-                                    {
-                                        // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
-                                        entidad.NumeBoleto = entidad.NumeBoleto + 1;
-                                        resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
-                                        if (resValidarDocumentoSUNAT == null)
-                                            return new Response<string>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
-                                    }
-                                    // -----------------------------------------------------------------------
                                     if (resValidarDocumentoSUNAT.Estado)
                                     {
                                         // Valida 'FechaAbierta'
@@ -338,14 +326,6 @@ namespace SisComWeb.Business
                                         {
                                             // Graba 'Venta'
                                             var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                            // Valida error 'grabarVenta = -1'
-                                            if (grabarVenta == -1)
-                                            {
-                                                // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
-                                                entidad.NumeBoleto = entidad.NumeBoleto + 1;
-                                                grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                            }
-                                            // -------------------------------
                                             if (grabarVenta <= 0)
                                                 return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
 
@@ -716,13 +696,13 @@ namespace SisComWeb.Business
                         return new Response<bool>(false, false, resAnularDocumentoSUNAT.MensajeError, false);
                 }
 
-                var correlativo = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", CodiOficina, CodiPuntoVenta, string.Empty);
-                if (string.IsNullOrEmpty(correlativo))
+                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", CodiOficina, CodiPuntoVenta, string.Empty);
+                if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                     return new Response<bool>(false, false, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                 CajaEntity objCaja = new CajaEntity
                 {
-                    NumeCaja = correlativo,
+                    NumeCaja = generarCorrelativoAuxiliar,
                     CodiEmpresa = objVenta.CodiEmpresa,
                     CodiSucursal = short.Parse(CodiOficina),
                     Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),

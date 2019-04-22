@@ -65,5 +65,11 @@
         public string IdVenta { get; set; }
 
         public AcompanianteEntity ObjAcompaniante { get; set; }
+
+        public short CodiOrigen { get; set; }
+
+        public short CodiDestino { get; set; }
+
+        public string Orden { get; set; }
     }
 }

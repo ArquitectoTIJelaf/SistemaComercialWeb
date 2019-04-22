@@ -23,5 +23,9 @@
         public string FechaProgramacion { get; set; }
 
         public int NroViaje { get; set; }
+
+        public short CodiSucursal { get; set; }
+
+        public short CodiRuta { get; set; }
     }
 }

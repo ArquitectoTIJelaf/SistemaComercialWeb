@@ -135,7 +135,9 @@ namespace SisComWeb.Business
                     CodiServicio = buscarTurno.CodiServicio,
                     CodiEmpresa = buscarTurno.CodiEmpresa,
                     FechaProgramacion = buscarTurno.FechaProgramacion,
-                    NroViaje = buscarTurno.NroViaje
+                    NroViaje = buscarTurno.NroViaje,
+                    CodiSucursal = buscarTurno.CodiSucursal,
+                    CodiRuta = buscarTurno.CodiRuta
                 };
                 var resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
                 if (resMuestraPlano.Estado)

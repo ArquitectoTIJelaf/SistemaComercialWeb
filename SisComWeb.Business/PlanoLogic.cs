@@ -23,13 +23,19 @@ namespace SisComWeb.Business
                 // Lista 'AsientosOcupados'
                 var listarAsientosOcupados = PlanoRepository.ListarAsientosOcupados(request.CodiProgramacion, request.FechaProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino);
 
+                //var listarAsientosBloqueados = PlanoRepository.ListarAsientosBloqueados(request.NroViaje);
+                //var listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.CodiProgramacion);
+
+                //var ordenOrigenPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiOrigen, request.CodiDestino);
+                //var ordenDestinoBus = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiSucursal, request.CodiRuta);
+
                 // Recorre cada registro
                 foreach (var entidad in buscarPlanoBus)
                 {
-                    // Obtiene 'NivelAsiento'
                     bool auxBool = int.TryParse(entidad.Tipo, out int auxValue);
                     if (auxBool)
                     {
+                        // Obtiene 'NivelAsiento'
                         var obtenerNivelAsiento = PlanoRepository.ObtenerNivelAsiento(request.CodiBus, auxValue);
                         if (!string.IsNullOrEmpty(obtenerNivelAsiento))
                             entidad.Nivel = int.Parse(obtenerNivelAsiento);
