@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
-using System.IO;
 using System.Text;
 
 namespace SisComWeb.Business
@@ -37,9 +36,6 @@ namespace SisComWeb.Business
                 if (buscarCorrelativo.SerieBoleto == 0)
                     return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
 
-                // Aumento para el método 'BuscarCorrelativo'
-                buscarCorrelativo.NumeBoleto = buscarCorrelativo.NumeBoleto + AumentoDelCorrelativo(validarTerminalElectronico.Tipo, request.CodiDocumento);
-
                 valor = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, request.CodiDocumento, buscarCorrelativo.SerieBoleto, buscarCorrelativo.NumeBoleto, "3", "8");
 
                 return new Response<string>(true, valor, Message.MsgCorrectoBuscaCorrelativo, true);
@@ -60,7 +56,6 @@ namespace SisComWeb.Business
             try
             {
                 var valor = string.Empty;
-                var listaFilesPDF = new List<byte[]>();
 
                 foreach (var entidad in Listado)
                 {
@@ -259,9 +254,6 @@ namespace SisComWeb.Business
                             break;
                     };
 
-                    // Aumento para el método 'BuscarCorrelativo'
-                    entidad.NumeBoleto = entidad.NumeBoleto + AumentoDelCorrelativo(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno);
-
                     // Graba 'Venta', 'Otros' y 'FacturaciónElectrónica'
                     switch (validarTerminalElectronico.Tipo)
                     {
@@ -285,6 +277,14 @@ namespace SisComWeb.Business
                                 {
                                     // Graba 'Venta'
                                     var grabarVenta = VentaRepository.GrabarVenta(entidad);
+                                    // Valida error 'grabarVenta = -1'
+                                    if (grabarVenta == -1)
+                                    {
+                                        // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
+                                        entidad.NumeBoleto = entidad.NumeBoleto + 1;
+                                        grabarVenta = VentaRepository.GrabarVenta(entidad);
+                                    }
+                                    // -------------------------------
                                     if (grabarVenta <= 0)
                                         return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
 
@@ -306,61 +306,72 @@ namespace SisComWeb.Business
 
                                 // Valida 'DocumentoSUNAT'
                                 var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
-                                if (resValidarDocumentoSUNAT.Estado && resValidarDocumentoSUNAT != null)
+                                if (resValidarDocumentoSUNAT != null)
                                 {
-                                    // Valida 'FechaAbierta'
-                                    if (entidad.FechaAbierta)
+                                    // Valida error de mayor probabilidad 'Comprobante se encuentra ACEPTADO.'
+                                    if (!resValidarDocumentoSUNAT.Estado)
                                     {
-                                        var auxCodiProgramacion = entidad.CodiProgramacion;
-                                        entidad.CodiProgramacion = 0;
-
-                                        // Graba 'VentaFechaAbierta'
-                                        var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
-                                        if (grabarVentaFechaAbierta <= 0)
-                                            return new Response<string>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
-
-                                        entidad.IdVenta = grabarVentaFechaAbierta;
-                                        entidad.CodiProgramacion = auxCodiProgramacion;
+                                        // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
+                                        entidad.NumeBoleto = entidad.NumeBoleto + 1;
+                                        resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
+                                        if (resValidarDocumentoSUNAT == null)
+                                            return new Response<string>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                                     }
-                                    else
+                                    // -----------------------------------------------------------------------
+                                    if (resValidarDocumentoSUNAT.Estado)
                                     {
-                                        // Graba 'Venta'
-                                        var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                        if (grabarVenta <= 0)
-                                            return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
-
-                                        entidad.IdVenta = grabarVenta;
-                                    }
-
-                                    // Graba 'Acompañante'
-                                    if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
-                                    {
-                                        var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
-                                        if (!grabarAcompanianteVenta)
-                                            return new Response<string>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
-                                    }
-
-                                    if (entidad.IdVenta > 0)
-                                    {
-                                        // Registra 'DocumentoSUNAT'
-                                        var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
-                                        if (resRegistrarDocumentoSUNAT.Estado)
+                                        // Valida 'FechaAbierta'
+                                        if (entidad.FechaAbierta)
                                         {
-                                            // Guarda PDFs
-                                            if (!string.IsNullOrEmpty(resRegistrarDocumentoSUNAT.PdfValue))
-                                            {
-                                                string pdfValue = resRegistrarDocumentoSUNAT.PdfValue;
-                                                var filePDF = Convert.FromBase64String(pdfValue);
-                                                listaFilesPDF.Add(filePDF);
-                                            }
-                                            else
-                                                return new Response<string>(false, valor, Message.MsgErrorPdfValue, false);
+                                            var auxCodiProgramacion = entidad.CodiProgramacion;
+                                            entidad.CodiProgramacion = 0;
+
+                                            // Graba 'VentaFechaAbierta'
+                                            var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
+                                            if (grabarVentaFechaAbierta <= 0)
+                                                return new Response<string>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
+
+                                            entidad.IdVenta = grabarVentaFechaAbierta;
+                                            entidad.CodiProgramacion = auxCodiProgramacion;
                                         }
                                         else
-                                            return new Response<string>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                                        {
+                                            // Graba 'Venta'
+                                            var grabarVenta = VentaRepository.GrabarVenta(entidad);
+                                            // Valida error 'grabarVenta = -1'
+                                            if (grabarVenta == -1)
+                                            {
+                                                // Solución de mayor probabilidad: Aumenta en '+ 1' al 'NumeBoleto'
+                                                entidad.NumeBoleto = entidad.NumeBoleto + 1;
+                                                grabarVenta = VentaRepository.GrabarVenta(entidad);
+                                            }
+                                            // -------------------------------
+                                            if (grabarVenta <= 0)
+                                                return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
+
+                                            entidad.IdVenta = grabarVenta;
+                                        }
+
+                                        // Graba 'Acompañante'
+                                        if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
+                                        {
+                                            var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
+                                            if (!grabarAcompanianteVenta)
+                                                return new Response<string>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
+                                        }
+
+                                        if (entidad.IdVenta > 0)
+                                        {
+                                            // Registra 'DocumentoSUNAT'
+                                            var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
+                                            if (!resRegistrarDocumentoSUNAT.Estado)
+                                                return new Response<string>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                                        }
+                                        else
+                                            return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
                                     }
                                     else
-                                        return new Response<string>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                        return new Response<string>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                                 }
                                 else
                                     return new Response<string>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
@@ -408,6 +419,7 @@ namespace SisComWeb.Business
 
                         auxCorrelativoAuxiliar = int.Parse(generarCorrelativoAuxiliar) + 1;
 
+                        // Graba 'LiquidacionVentas'
                         var grabarLiquidacionVentas = VentaRepository.GrabarLiquidacionVentas(auxCorrelativoAuxiliar, entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
                         if (!grabarLiquidacionVentas)
                             return new Response<string>(false, valor, Message.MsgErrorGrabarLiquidacionVentas, false);
@@ -511,12 +523,6 @@ namespace SisComWeb.Business
 
                     valor += auxBoletoCompleto + ",";
                 }
-
-                // Imprime PDFs
-                //foreach (var filePDF in listaFilesPDF)
-                //{
-
-                //}
 
                 return new Response<string>(true, valor, Message.MsgCorrectoGrabaVenta, true);
             }
@@ -1158,52 +1164,6 @@ namespace SisComWeb.Business
             };
 
             return boletoCompleto;
-        }
-
-        public static byte AumentoDelCorrelativo(string tipo, string auxCodigoBF_Interno)
-        {
-            byte auxAumento = 0;
-
-            // Nota:
-            // Cuando vuelva a fallar el 'correlativo' entonces habilitar o deshabilitar el 'case X' correspondiente.
-            // No volver a modificarlo hasta un nuevo fallo para evitar saltos en el 'correlativo'.
-
-            switch (tipo)
-            {
-                case "M":
-                    {
-                        switch (auxCodigoBF_Interno)
-                        {
-                            case "17":
-                                //case "16": // No necesita.
-                                //case "78": // No hay data: se supone que no necesita.
-                                //case "77": // No hay data: se supone que no necesita.
-                                auxAumento = 1;
-                                break;
-                        };
-                    }
-                    break;
-                case "E":
-                    {
-                        switch (auxCodigoBF_Interno)
-                        {
-                            case "17":
-                            case "16":
-                            //case "78": // No hay data: se supone que no necesita.
-                            case "77":
-                                auxAumento = 1;
-                                break;
-                        };
-                    };
-                    break;
-            };
-
-            return auxAumento;
-        }
-
-        public static void ImprimirPDF()
-        {
-
         }
 
         #endregion

@@ -990,6 +990,7 @@
                 processing: false,
                 empresas: [],
                 checkRegistrarNino: false,
+                disabledAsiento: false,
                 // Correlativos
                 CorrelativoVentaBoleta: '',
                 CorrelativoVentaFactura: ''
@@ -2347,6 +2348,7 @@
                 },
                 cancelarBoletos: async function () {
                     var auxResponse = true;
+                    this.disabledAsiento = true;
 
                     for (i = 0; i < this.list.ventas.length; i++) {
                         if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
@@ -2356,6 +2358,9 @@
                                 i--;
                             else {
                                 APP.msg.warning('No se pudo limpiar los asientos bloqueados.');
+                                this.$nextTick(() => {
+                                    this.disabledAsiento = false;
+                                });
                                 return auxResponse = false;
                             }
                         }
@@ -2363,8 +2368,10 @@
                             this.limpiarVenta();
                     }
 
-                    this.$refs.refNroAsientoVenta.focus();
-
+                    this.$nextTick(() => {
+                        this.disabledAsiento = false;
+                        this.$refs.refNroAsientoVenta.focus();
+                    });
                     return auxResponse;
                 },
                 cancelarReserva: async function () {

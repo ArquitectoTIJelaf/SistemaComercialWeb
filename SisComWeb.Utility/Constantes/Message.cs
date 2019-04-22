@@ -128,8 +128,6 @@
         public const string MsgErrorGrabarPagoDelivery = "Error: GrabarPagoDelivery.";
         public const string MsgErrorGrabarAuditoria = "Error: GrabarAuditoria.";
 
-        public const string MsgErrorPdfValue = "Error: PdfValue.";
-
         public const string MsgErrorGrabaVenta = "Error: GrabaVenta.";
         public const string MsgErrorGrabarCaja = "Error: GrabarCaja.";
 
