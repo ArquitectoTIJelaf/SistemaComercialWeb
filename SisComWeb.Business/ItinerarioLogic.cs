@@ -39,9 +39,12 @@ namespace SisComWeb.Business
                     // Calcula 'FechaProgramacion'
                     var doubleDias = double.Parse(buscarItinerarios[i].Dias.ToString());
                     if (buscarItinerarios[i].Dias > 0)
-                        buscarItinerarios[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        buscarItinerarios[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(-doubleDias).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                     else
                         buscarItinerarios[i].FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                    // Seteo 'FechaViaje'
+                    buscarItinerarios[i].FechaViaje = request.FechaViaje;
 
                     // Verifica cambios 'TurnoViaje'
                     var verificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(buscarItinerarios[i].NroViaje, buscarItinerarios[i].FechaProgramacion);
@@ -50,6 +53,11 @@ namespace SisComWeb.Business
                         buscarItinerarios[i].CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
                         buscarItinerarios[i].NomServicio = verificaCambiosTurnoViaje.NomServicio;
                         buscarItinerarios[i].CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
+                    }
+
+                    if (buscarItinerarios[i].NroViaje == 106231)
+                    {
+
                     }
 
                     // Busca 'ProgramacionViaje'

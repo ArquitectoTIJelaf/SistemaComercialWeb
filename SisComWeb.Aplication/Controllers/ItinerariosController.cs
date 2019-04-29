@@ -122,7 +122,9 @@ namespace SisComWeb.Aplication.Controllers
                 Boleto = (string)x["Boleto"],
                 TipoBoleto = (string)x["TipoBoleto"],
                 IdVenta = (string)x["IdVenta"],
-                ObjAcompaniante = _ObjetoAcompaniante(x["ObjAcompaniante"])
+                ObjAcompaniante = _ObjetoAcompaniante(x["ObjAcompaniante"]),
+
+                CodiOrigen = (short)x["CodiOrigen"]
             }).ToList();
 
             return lista;
@@ -249,6 +251,7 @@ namespace SisComWeb.Aplication.Controllers
                         RazonSocial = (string)x["RazonSocial"],
                         StOpcional = (string)x["StOpcional"],
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
+                        FechaViaje = (string)x["FechaViaje"],
                         Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
                         SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
                     }).ToList()

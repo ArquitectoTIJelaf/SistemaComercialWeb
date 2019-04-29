@@ -119,7 +119,7 @@
                                 $('#frmLogin').submit();
                             else {
                                 document.getElementById("txtContrasena").focus();
-                                APP.msg.warning(res.data.Mensaje);
+                                APP.msg.error(res.data.Mensaje);
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);

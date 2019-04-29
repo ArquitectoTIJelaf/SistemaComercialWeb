@@ -70,6 +70,6 @@
 
         public short CodiDestino { get; set; }
 
-        public string Orden { get; set; }
+        public string OrdenOrigen { get; set; }
     }
 }

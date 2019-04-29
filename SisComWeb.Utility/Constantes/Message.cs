@@ -75,6 +75,7 @@
         public const string MsgExcBuscaItinerarios = "Excepción: BuscaItinerarios.";
 
         // Plano
+        public const string MsgErrorMuestraPlano = "Error: MuestraPlano.";
         public const string MsgValidaMuestraPlano = "El Plano se encuentra vacío.";
         public const string MsgCorrectoMuestraPlano = "Correcto: MuestraPlano.";
         public const string MsgExcMuestraPlano = "Excepción: MuestraPlano.";

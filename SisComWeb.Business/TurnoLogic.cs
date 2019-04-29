@@ -20,7 +20,7 @@ namespace SisComWeb.Business
                 // Calcula 'FechaProgramacion'
                 var doubleDias = double.Parse(buscarTurno.Dias.ToString());
                 if (buscarTurno.Dias > 0)
-                    buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(doubleDias).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(-doubleDias).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                 else
                     buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
