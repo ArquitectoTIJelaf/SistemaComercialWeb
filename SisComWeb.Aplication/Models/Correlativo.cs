@@ -2,21 +2,28 @@
 {
     public class Correlativo
     {
-        public short SerieBoleto { get; set; }
 
-        public int NumeBoleto { get; set; }
     }
 
     public class CorrelativoFiltro
     {
         public byte CodiEmpresa { get; set; }
 
-        public string CodiDocumento { get; set; }
+        public string FlagVenta { get; set; }
+    }
 
-        public short CodiSucursal { get; set; }
+    public class CorrelativoResponse
+    {
+        public string CodiTerminalElectronico { get; set; }
 
-        public short CodiPuntoVenta { get; set; }
+        public string CorrelativoVentaBoleta { get; set; }
 
-        public string CodiTerminal { get; set; }
+        public string CorrelativoVentaFactura { get; set; }
+
+        public string CorrelativoPaseBoleta { get; set; }
+
+        public string CorrelativoPaseFactura { get; set; }
+
+        public string CorrelativoReserva { get; set; }
     }
 }

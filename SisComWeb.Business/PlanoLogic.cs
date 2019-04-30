@@ -14,7 +14,6 @@ namespace SisComWeb.Business
         {
             try
             {
-                var listarAsientosVendidos = new List<PlanoEntity>();
                 string auxTipoLI = string.Empty;
 
                 // Busca PlanoBus
@@ -23,8 +22,7 @@ namespace SisComWeb.Business
                     return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgValidaMuestraPlano, false);
 
                 // Lista 'AsientosVendidos'
-                if (request.CodiProgramacion != 0)
-                    listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.CodiProgramacion, request.NroViaje);
+                var listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.CodiProgramacion, request.NroViaje);
 
                 // Lista 'AsientosBloqueados'
                 var listarAsientosBloqueados = PlanoRepository.ListarAsientosBloqueados(request.NroViaje, request.CodiProgramacion, request.FechaProgramacion);

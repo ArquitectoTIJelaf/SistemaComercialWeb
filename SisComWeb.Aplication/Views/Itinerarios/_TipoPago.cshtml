@@ -92,11 +92,14 @@
                                 <div class="col-md-12">
                                     <input v-model="numeroTarjeta"
                                            id="txtNumeroTP"
+                                           name="Número"
                                            @@keydown.13.native.prevent="nextInput('ARRIBOS')"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
                                            class="form-control input-sm"
-                                           v-mask="'####-####-####-####'" />
+                                           v-mask="'####-####-####-####'"
+                                           v-validate="'formatoNumeroTarjeta: 16'"/>
                                 </div>
+                                <span v-show="errors.has('Número')" class="text-danger m-l-15" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-3">
@@ -177,10 +180,13 @@
                                 <div class="col-md-10">
                                     <input v-model="numeroTarjeta"
                                            id="txtNumeroTP"
+                                           name="Número"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
                                            class="form-control input-sm"
-                                           v-mask="'####-####-####-####'"/>
+                                           v-mask="'####-####-####-####'"
+                                           v-validate="'formatoNumeroTarjeta: 16'" />
                                 </div>
+                                <span v-show="errors.has('Número')" class="text-danger m-l-15" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
                         </template>
                         <template v-else-if="tipoPago === '04'">

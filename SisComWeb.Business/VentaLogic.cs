@@ -17,36 +17,85 @@ namespace SisComWeb.Business
     {
         private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"].ToString();
         private static readonly string MotivoAnulacionFE = ConfigurationManager.AppSettings["motivoAnulacionFE"].ToString();
+        private static readonly string CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["codiCorrelativoVentaBoleta"].ToString();
+        private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"].ToString();
+        private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"].ToString();
+        private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
+        private static readonly short CodiSerieReserva = short.Parse(ConfigurationManager.AppSettings["codiSerieReserva"]);
 
         #region BUSCAR CORRELATIVO
 
-        public static Response<string> BuscaCorrelativo(CorrelativoRequest request)
+        public static Response<CorrelativoResponse> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
             {
-                var valor = string.Empty;
+                var valor = new CorrelativoResponse
+                {
+                    CorrelativoVentaBoleta = string.Empty,
+                    CorrelativoVentaFactura = string.Empty,
+                    CorrelativoPaseBoleta = string.Empty,
+                    CorrelativoPaseFactura = string.Empty,
+                    CodiTerminalElectronico = string.Empty
+                };
+
+                var auxCorrelativos = new CorrelativoEntity[3];
 
                 // Valida 'TerminalElectronico'
                 var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
                 if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo))
                     validarTerminalElectronico.Tipo = "M";
 
-                var buscarCorrelativo = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, request.CodiDocumento, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
+                switch (request.FlagVenta)
+                {
+                    case "7":
+                        {
+                            auxCorrelativos[0] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoPaseBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
+                            auxCorrelativos[1] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoPaseFactura, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
+                            auxCorrelativos[2] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
 
-                if (buscarCorrelativo.SerieBoleto == 0)
-                    return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
+                            if (auxCorrelativos[1].SerieBoleto == 0 && auxCorrelativos[0].SerieBoleto == 0 && auxCorrelativos[2].SerieBoleto == 0)
+                                return new Response<CorrelativoResponse>(false, valor, Message.MsgErrorSerieBoleto, true);
 
-                // Siempre '+ 1' al 'NumeBoleto'
-                buscarCorrelativo.NumeBoleto = buscarCorrelativo.NumeBoleto + 1;
+                            if (auxCorrelativos[0].SerieBoleto != 0)
+                                auxCorrelativos[0].NumeBoleto = auxCorrelativos[0].NumeBoleto + 1;
+                            if (auxCorrelativos[1].SerieBoleto != 0)
+                                auxCorrelativos[1].NumeBoleto = auxCorrelativos[1].NumeBoleto + 1;
+                            if (auxCorrelativos[2].SerieBoleto != 0)
+                                auxCorrelativos[2].NumeBoleto = auxCorrelativos[2].NumeBoleto + 1;
 
-                valor = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, request.CodiDocumento, buscarCorrelativo.SerieBoleto, buscarCorrelativo.NumeBoleto, "3", "8");
+                            valor.CorrelativoPaseBoleta = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoPaseBoleta, auxCorrelativos[0].SerieBoleto, auxCorrelativos[0].NumeBoleto, "3", "8");
+                            valor.CorrelativoPaseFactura = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoPaseFactura, auxCorrelativos[1].SerieBoleto, auxCorrelativos[1].NumeBoleto, "3", "8");
+                            valor.CorrelativoVentaBoleta = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoVentaBoleta, auxCorrelativos[2].SerieBoleto, auxCorrelativos[2].NumeBoleto, "3", "8");
+                        };
+                        break;
+                    default:
+                        {
+                            auxCorrelativos[0] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
+                            auxCorrelativos[1] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaFactura, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
 
-                return new Response<string>(true, valor, Message.MsgCorrectoBuscaCorrelativo, true);
+                            if (auxCorrelativos[1].SerieBoleto == 0 && auxCorrelativos[0].SerieBoleto == 0)
+                                return new Response<CorrelativoResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
+
+                            if (auxCorrelativos[0].SerieBoleto != 0)
+                                auxCorrelativos[0].NumeBoleto = auxCorrelativos[0].NumeBoleto + 1;
+                            if (auxCorrelativos[1].SerieBoleto != 0)
+                                auxCorrelativos[1].NumeBoleto = auxCorrelativos[1].NumeBoleto + 1;
+
+                            valor.CorrelativoVentaBoleta = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoVentaBoleta, auxCorrelativos[0].SerieBoleto, auxCorrelativos[0].NumeBoleto, "3", "8");
+                            valor.CorrelativoVentaFactura = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoVentaFactura, auxCorrelativos[1].SerieBoleto, auxCorrelativos[1].NumeBoleto, "3", "8");
+                        };
+                        break;
+                };
+
+                // Seteo 'CodiTerminalElectronico'
+                valor.CodiTerminalElectronico = validarTerminalElectronico.Tipo;
+
+                return new Response<CorrelativoResponse>(true, valor, Message.MsgCorrectoBuscaCorrelativo, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgExcBuscaCorrelativo, false);
+                return new Response<CorrelativoResponse>(false, null, Message.MsgExcBuscaCorrelativo, false);
             }
         }
 
@@ -136,10 +185,10 @@ namespace SisComWeb.Business
                         switch (FlagVenta)
                         {
                             case "V": // VENTA
-                                entidad.AuxCodigoBF_Interno = "17";
+                                entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
                                 break;
                             case "7": // PASE DE CORTESÍA
-                                entidad.AuxCodigoBF_Interno = "78";
+                                entidad.AuxCodigoBF_Interno = CodiCorrelativoPaseFactura;
                                 break;
                         };
                         // Seteo 'CodiDocumento'
@@ -151,10 +200,10 @@ namespace SisComWeb.Business
                         switch (FlagVenta)
                         {
                             case "V": // VENTA
-                                entidad.AuxCodigoBF_Interno = "16";
+                                entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
                                 break;
                             case "7": // PASE DE CORTESÍA
-                                entidad.AuxCodigoBF_Interno = "77";
+                                entidad.AuxCodigoBF_Interno = CodiCorrelativoPaseBoleta;
                                 break;
                         };
                         // Seteo 'CodiDocumento'
@@ -179,19 +228,17 @@ namespace SisComWeb.Business
                                                 if (FlagVenta == "7")
                                                 {
                                                     // Seteo 'CodiBF Interno'
-                                                    entidad.AuxCodigoBF_Interno = "77";
+                                                    entidad.AuxCodigoBF_Interno = CodiCorrelativoPaseBoleta;
                                                     // Seteo 'CodiDocumento'
                                                     entidad.CodiDocumento = "03"; // Boleta
                                                     // Busca 'Correlativo'
                                                     buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
-                                                    if (buscarCorrelativo.SerieBoleto == 0)
-                                                        return new Response<string>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                 }
 
                                                 if (buscarCorrelativo.SerieBoleto == 0)
                                                 {
                                                     // Seteo 'CodiBF Interno'
-                                                    entidad.AuxCodigoBF_Interno = "16";
+                                                    entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
                                                     // Seteo 'CodiDocumento'
                                                     entidad.CodiDocumento = "03"; // Boleta
 
@@ -217,7 +264,7 @@ namespace SisComWeb.Business
                                                 if (FlagVenta == "7")
                                                 {
                                                     // Seteo 'CodiBF Interno'
-                                                    entidad.AuxCodigoBF_Interno = "16";
+                                                    entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
                                                     // Busca 'Correlativo'
                                                     buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
                                                     if (buscarCorrelativo.SerieBoleto == 0)
@@ -568,7 +615,7 @@ namespace SisComWeb.Business
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar2))
                         return new Response<string>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                    entidad.SerieBoleto = -98;
+                    entidad.SerieBoleto = CodiSerieReserva;
                     entidad.NumeBoleto = int.Parse(generarCorrelativoAuxiliar2) + 1;
 
                     // Seteo 'Tipo' (Reserva siempre es 'M')
@@ -1124,21 +1171,20 @@ namespace SisComWeb.Business
             switch (tipo)
             {
                 case "M":
-                    boletoCompleto = "0" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
+                    {
+                        if (serieBoleto == CodiSerieReserva)
+                            boletoCompleto = "0" + serieBoleto.ToString("D" + formatoSerieBol).Substring(1) + "-" + numeroBoleto.ToString("D" + formatoNumeroBol);
+                        else
+                            boletoCompleto = "0" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + numeroBoleto.ToString("D" + formatoNumeroBol);
+                    };
                     break;
                 case "E":
                     {
-                        switch (codiDocumento)
-                        {
-                            case "17":
-                            case "78":
-                                boletoCompleto = "F" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
-                                break;
-                            case "16":
-                            case "77":
-                                boletoCompleto = "B" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + (numeroBoleto).ToString("D" + formatoNumeroBol);
-                                break;
-                        };
+                        if (codiDocumento == CodiCorrelativoVentaFactura|| codiDocumento == CodiCorrelativoPaseFactura)
+                            boletoCompleto = "F" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + numeroBoleto.ToString("D" + formatoNumeroBol);
+
+                        else if (codiDocumento == CodiCorrelativoVentaBoleta || codiDocumento == CodiCorrelativoPaseBoleta)
+                            boletoCompleto = "B" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + numeroBoleto.ToString("D" + formatoNumeroBol);
                     };
                     break;
             };

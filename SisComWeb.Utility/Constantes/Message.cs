@@ -119,6 +119,7 @@
         public const string MsgErrorGrabarProgramacion = "Error: GrabarProgramacion.";
         public const string MsgErrorGrabarViajeProgramacion = "Error: GrabarViajeProgramacion.";
         public const string MsgErrorSerieBoleto = "No se encontró serie para el boleto.";
+        public const string MsgErrorNumeroBoleto = "No se encontró número para el boleto.";
         public const string MsgErrorGrabarVentaFechaAbierta = "Error: GrabarVentaFechaAbierta.";
         public const string MsgErrorGrabarAcompanianteVenta = "Error: GrabarAcompanianteVenta.";
         public const string MsgErrorModificarSaldoPaseCortesia = "Error: ModificarSaldoPaseCortesia.";

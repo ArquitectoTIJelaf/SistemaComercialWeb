@@ -7,9 +7,6 @@
     var usuario = DataSession.UsuarioLogueado;
     var fechaActual = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
     var horaActual = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture);
-
-    var CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["CodiCorrelativoVentaBoleta"];
-    var CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["CodiCorrelativoVentaFactura"];
 }
 
 @Html.Partial("_Filtros")
@@ -583,10 +580,6 @@
 
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
 
-        var CodiCorrelativoVentaBoleta = '@CodiCorrelativoVentaBoleta';
-
-        var CodiCorrelativoVentaFactura = '@CodiCorrelativoVentaFactura';
-
         var selectAll = {
             id: '0',
             label: 'TODOS'
@@ -636,6 +629,7 @@
                 chargeTurnos: async function () {
                     // Si está actualizando, no volver a actualizar.
                     if (appVueVenta.processing) return;
+                    // ---------------------------------------------
                     var item = {};
                     appVueVenta.firstCharge = false;
                     item.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
@@ -997,13 +991,29 @@
                 disabledAsiento: false,
                 // Correlativos
                 CorrelativoVentaBoleta: '',
-                CorrelativoVentaFactura: ''
+                CorrelativoVentaFactura: '',
+                CorrelativoPaseBoleta: '',
+                CorrelativoPaseFactura: '',
+                CodiTerminalElectronico: ''
             },
             mounted: function () {
                 this.getEmpresas();
                 this.getSucursales();
                 this.getServicios();
                 this.getTiposDoc();
+
+                // Nuevo 'Validate'
+                this.$validator.extend('formatoNumeroTarjeta', {
+                    getMessage(field, val) {
+                        return `El campo ${field} debe tener ${val} dígitos.`
+                    },
+                    validate(value, field) {
+                        if (value.length < 19)
+                            return false
+                        else
+                            return true;
+                    }
+                });
 
                 window.addEventListener('keydown', this.configEventKeyF5);
                 window.addEventListener('beforeunload', this.beforeClosePage);
@@ -1021,6 +1031,7 @@
                     var _this = this;
                     _this.processing = true;
                     _this.checkRegistrarNino = false;
+                    _this.pickedBusVenta = 'V';
                     // --------------------------------------
                     if (!_this.firstCharge) {
                         if ($("#panelWrapperV").hasClass("in")) {
@@ -1039,16 +1050,14 @@
                     input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = item.FechaViaje;
-                    _this.CorrelativoVentaBoleta = await _this.getCorrelativo(item.CodiEmpresa, CodiCorrelativoVentaBoleta);
+                    var auxValidator = await _this.getCorrelativo(item.CodiEmpresa, _this.pickedBusVenta);
                     // ---------------------------------
-                    if (!_this.CorrelativoVentaBoleta) {
+                    if (!auxValidator) {
                         _this.processing = false;
                         _this.showPlano = false;
                         return;
                     }
                     // ---------------------------------
-                    _this.CorrelativoVentaFactura = await _this.getCorrelativo(item.CodiEmpresa, CodiCorrelativoVentaFactura);
-                    _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.Estado) {
@@ -1664,7 +1673,8 @@
                         }
                         else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1) {
                             $('#btnTipoPago').focus();
-                        } else {
+                        }
+                        else {
                             _this.rightSlider();
                             $("#cboTipoDoc input[type=search]").focus();
                         }
@@ -1701,7 +1711,8 @@
                                             _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.NombreCliente;
                                             _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
                                             _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
-                                        } else {
+                                        }
+                                        else {
                                             _this.list.ventas[_this.indexVenta].Nombres = '';
                                             _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
                                             _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
@@ -1732,6 +1743,9 @@
                                         !_this.list.ventas[_this.indexVenta].Sexo) {
 
                                         _this.recorridoSectionVentas();
+                                    }
+                                    else if (_this.list.ventas[_this.indexVenta].Edad === 0) {
+                                        _this.$refs.refFechaNac.focus();
                                     }
                                     else {
                                         if (!_this.list.ventas[_this.indexVenta].Telefono)
@@ -1886,23 +1900,71 @@
                         }
                     });
                 },
-                getCorrelativo: async function (_CodiEmpresa, _CodiDocumento, _FlagVenta) {
-                    var auxNroVenta = '';
+                getCorrelativo: async function (_CodiEmpresa, _PickedBusVenta) {
+                    var auxValidator = false;
+
                     var input = {};
                     input.CodiEmpresa = _CodiEmpresa;
-                    input.CodiDocumento = _CodiDocumento;
+                    input.FlagVenta = _PickedBusVenta;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/busca-correlativo', input)
                         .then(res => {
-                            if (res.data.Estado)
-                                auxNroVenta = res.data.Valor;
-                            else {
-                                // Mensaje solo para 'Boleta'
-                                if (_CodiDocumento === CodiCorrelativoVentaBoleta)
+                            if (res.data.Estado) {
+                                auxValidator = res.data.Estado;
+
+                                switch (_PickedBusVenta) {
+                                    case '7':
+                                        {
+                                            this.CorrelativoPaseBoleta = res.data.Valor.CorrelativoPaseBoleta;
+                                            this.CorrelativoPaseFactura = res.data.Valor.CorrelativoPaseFactura;
+                                            this.CorrelativoVentaBoleta = res.data.Valor.CorrelativoVentaBoleta;
+
+                                            switch (this.CodiTerminalElectronico) {
+                                                case 'M':
+                                                    {
+                                                        if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                            this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                        else
+                                                            this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                    }
+                                                    break;
+                                                case 'E':
+                                                    {
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                    };
+                                                    break;
+                                            }
+                                        };
+                                        break;
+                                    default:
+                                        this.CorrelativoVentaBoleta = res.data.Valor.CorrelativoVentaBoleta;
+                                        this.CorrelativoVentaFactura = res.data.Valor.CorrelativoVentaFactura;
+
+                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                }
+
+                                this.CodiTerminalElectronico = res.data.Valor.CodiTerminalElectronico;
+
+                                if (res.data.EsCorrecto) {
+                                    if (this.Correlativo === 'B000-00000000')
+                                        APP.msg.error("No se encontró serie para el boleto.");
+                                }
+                                else {
                                     APP.msg.error(res.data.Mensaje);
+                                }
+                            }
+                            else {
+                                this.CorrelativoVentaBoleta = '';
+                                this.CorrelativoVentaFactura = '';
+                                this.CorrelativoPaseBoleta = '';
+                                this.CorrelativoPaseFactura = '';
+                                this.CodiTerminalElectronico = '';
+
+                                APP.msg.error(res.data.Mensaje);
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
-                    return auxNroVenta;
+
+                    return auxValidator;
                 },
                 saveUser: function () {
                     var _this = this;
@@ -2403,10 +2465,10 @@
                 },
                 changePickedBusVenta: async function (value) {
                     var _this = this;
-                    // Si es el mismo valor, retornar.
+                    // Si es el mismo valor, retornar
                     if (_this.pickedBusVenta === value) return;
 
-                    // Valida si se limpiará los 'AsientosBloqueados' del Picked anterior.
+                    // Valida si se limpiará los 'AsientosBloqueados' del Picked anterior
                     switch (value) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
@@ -2452,6 +2514,50 @@
                             };
                             break;
                     }
+
+                    // Valida si ya se cargó el respectivo 'Correlativo'
+                    switch (_this.pickedBusVenta) {
+                        case '7':
+                            {
+                                if (_this.CorrelativoPaseFactura && _this.CorrelativoPaseBoleta && _this.CorrelativoVentaBoleta) {
+                                    switch (_this.CodiTerminalElectronico) {
+                                        case 'M':
+                                            {
+                                                if (_this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                    _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
+                                                else
+                                                    _this.Correlativo = _.cloneDeep(_this.CorrelativoPaseBoleta);
+                                            }
+                                            break;
+                                        case 'E':
+                                            {
+                                                _this.Correlativo = _.cloneDeep(_this.CorrelativoPaseBoleta);
+                                            };
+                                            break;
+                                    }
+
+                                    if (this.Correlativo === 'B000-00000000')
+                                        APP.msg.error("No se encontró serie para el boleto.");
+
+                                    return;
+                                }
+                            }
+                            break;
+                        default:
+                            {
+                                if (_this.CorrelativoVentaFactura && _this.CorrelativoVentaBoleta) {
+                                    _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
+
+                                    if (this.Correlativo === 'B000-00000000')
+                                        APP.msg.error("No se encontró serie para el boleto.");
+
+                                    return;
+                                }
+                            }
+                    }
+
+                    // Carga 'Correlativo'
+                    _this.getCorrelativo(_this.filtro.CodiEmpresa.id, _this.pickedBusVenta);
                 },
                 setPaseCortesia: function (_beneficiario) {
                     var _this = this;
@@ -2656,13 +2762,85 @@
                     deep: true,
                 },
                 listVentasCampoRuc: function (newVal, oldVal) {
-                    if (this.pickedBusVenta !== 'R') {
-                        if (newVal.length === 11)
-                            this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
-                        else {
-                            if (newVal.length === 0)
-                                this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
-                        }
+                    switch (this.pickedBusVenta) {
+                        case '7':
+                            {
+                                if (newVal.length === 11) {
+                                    switch (this.CodiTerminalElectronico) {
+                                        case 'M':
+                                            {
+                                                if (this.CorrelativoPaseFactura === 'F000-00000000') {
+
+                                                    if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                    else
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                }
+                                                else
+                                                    this.Correlativo = _.cloneDeep(this.CorrelativoPaseFactura);
+                                            };
+                                            break;
+                                        case 'E':
+                                            this.Correlativo = _.cloneDeep(this.CorrelativoPaseFactura);
+                                            break;
+                                    }
+
+                                    if (this.Correlativo === 'F000-00000000')
+                                        APP.msg.error("No se encontró serie para el boleto.");
+                                }
+                                else {
+                                    if (newVal.length === 0) {
+                                        switch (this.CodiTerminalElectronico) {
+                                            case 'M':
+                                                {
+                                                    if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                    else
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                };
+                                                break;
+                                            case 'E':
+                                                this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                break;
+                                        }
+
+                                        if (this.Correlativo === 'B000-00000000')
+                                            APP.msg.error("No se encontró serie para el boleto.");
+                                    }
+                                }
+                            };
+                            break;
+                        default:
+                            {
+                                if (newVal.length === 11) {
+                                    switch (this.CodiTerminalElectronico) {
+                                        case 'M':
+                                            {
+                                                if (this.CorrelativoVentaFactura === 'F000-00000000')
+                                                    this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                else
+                                                    this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+                                            };
+                                            break;
+                                        case 'E':
+                                            {
+                                                this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+                                            };
+                                            break;
+                                    }
+
+                                    if (this.Correlativo === 'F000-00000000')
+                                        APP.msg.error("No se encontró serie para el boleto.");
+                                }
+                                else {
+                                    if (newVal.length === 0) {
+                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+
+                                        if (this.Correlativo === 'B000-00000000')
+                                            APP.msg.error("No se encontró serie para el boleto.");
+                                    }
+                                }
+                            };
                     }
                 }
             }

@@ -18,7 +18,6 @@ namespace SisComWeb.Aplication.Controllers
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
         readonly Usuario usuario = DataSession.UsuarioLogueado;
-        //private static readonly string CodiTerminal = System.Configuration.ConfigurationManager.AppSettings["CodiTerminal"];
 
         private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
@@ -859,10 +858,10 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"CodiEmpresa\" : " + filtro.CodiEmpresa +
-                                    ",\"CodiDocumento\" : \"" + filtro.CodiDocumento + "\"" +
                                     ",\"CodiSucursal\" : " + usuario.CodiSucursal +
                                     ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
                                     ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
+                                    ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaCorrelativo", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -872,19 +871,29 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
 
-                Response<string> res = new Response<string>()
+                Response<CorrelativoResponse> res = new Response<CorrelativoResponse>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (string)tmpResult["Valor"]
+                    Valor = new CorrelativoResponse()
+                    {
+                        CodiTerminalElectronico = (string)data["CodiTerminalElectronico"],
+                        CorrelativoVentaBoleta = (string)data["CorrelativoVentaBoleta"],
+                        CorrelativoVentaFactura = (string)data["CorrelativoVentaFactura"],
+                        CorrelativoPaseBoleta = (string)data["CorrelativoPaseBoleta"],
+                        CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"],
+                        CorrelativoReserva = (string)data["CorrelativoReserva"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<CorrelativoResponse>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
