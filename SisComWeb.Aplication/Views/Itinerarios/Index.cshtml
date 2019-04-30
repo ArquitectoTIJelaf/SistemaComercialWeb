@@ -3211,9 +3211,9 @@
                 filledCampos: function () {
                     var _this = this;
                     switch (this.tipoPago) {
-                        case '01': return _this.embarque && parseFloat(_this.importePagado) >= parseFloat(_this.sumaTotal) /*&& _this.arribo*/;
-                        case '02': return _this.tarjeta && _this.tarjetaCant && parseFloat(_this.importePagado) >= parseFloat(_this.efectivo) && _this.embarque /*&& _this.arribo*/;
-                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.embarque && _this.numeroTarjeta.length === 19 /*&& _this.arribo*/;
+                        case '01': return parseFloat(_this.importePagado) >= parseFloat(_this.sumaTotal) && _this.embarque /*&& _this.arribo*/;
+                        case '02': return _this.tarjeta && _this.numeroTarjeta && _this.numeroTarjeta.length === 19 && _this.tarjetaCant && parseFloat(_this.importePagado) >= parseFloat(_this.efectivo) && _this.embarque /*&& _this.arribo*/;
+                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.numeroTarjeta.length === 19 && _this.embarque /*&& _this.arribo*/;
                         case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
                         default: return false;
                     }
