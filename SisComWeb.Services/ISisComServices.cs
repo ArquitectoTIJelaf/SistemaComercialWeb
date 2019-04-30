@@ -140,7 +140,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaCorrelativo", ResponseFormat = WebMessageFormat.Json)]
-        Response<string> BuscaCorrelativo(CorrelativoRequest request);
+        Response<CorrelativoResponse> BuscaCorrelativo(CorrelativoRequest request);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]

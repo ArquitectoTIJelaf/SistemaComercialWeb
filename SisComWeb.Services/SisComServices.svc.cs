@@ -355,7 +355,7 @@ namespace SisComWeb.Services
 
         #region GRABA VENTA
 
-        public Response<string> BuscaCorrelativo(CorrelativoRequest request)
+        public Response<CorrelativoResponse> BuscaCorrelativo(CorrelativoRequest request)
         {
             try
             {
@@ -364,7 +364,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgExcBuscaCorrelativo, false);
+                return new Response<CorrelativoResponse>(false, null, Message.MsgExcBuscaCorrelativo, false);
             }
         }
 
