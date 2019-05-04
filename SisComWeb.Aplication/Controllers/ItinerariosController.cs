@@ -895,8 +895,7 @@ namespace SisComWeb.Aplication.Controllers
                         CorrelativoVentaBoleta = (string)data["CorrelativoVentaBoleta"],
                         CorrelativoVentaFactura = (string)data["CorrelativoVentaFactura"],
                         CorrelativoPaseBoleta = (string)data["CorrelativoPaseBoleta"],
-                        CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"],
-                        CorrelativoReserva = (string)data["CorrelativoReserva"]
+                        CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

@@ -38,12 +38,15 @@ namespace SisComWeb.Business
                     CodiTerminalElectronico = string.Empty
                 };
 
-                var auxCorrelativos = new CorrelativoEntity[3];
+                var auxCorrelativos = new CorrelativoEntity[2];
 
                 // Valida 'TerminalElectronico'
                 var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
                 if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo))
                     validarTerminalElectronico.Tipo = "M";
+
+                // Seteo 'CodiTerminalElectronico'
+                valor.CodiTerminalElectronico = validarTerminalElectronico.Tipo;
 
                 switch (request.FlagVenta)
                 {
@@ -51,21 +54,24 @@ namespace SisComWeb.Business
                         {
                             auxCorrelativos[0] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoPaseBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
                             auxCorrelativos[1] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoPaseFactura, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
-                            auxCorrelativos[2] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
-
-                            if (auxCorrelativos[1].SerieBoleto == 0 && auxCorrelativos[0].SerieBoleto == 0 && auxCorrelativos[2].SerieBoleto == 0)
-                                return new Response<CorrelativoResponse>(false, valor, Message.MsgErrorSerieBoleto, true);
 
                             if (auxCorrelativos[0].SerieBoleto != 0)
                                 auxCorrelativos[0].NumeBoleto = auxCorrelativos[0].NumeBoleto + 1;
                             if (auxCorrelativos[1].SerieBoleto != 0)
                                 auxCorrelativos[1].NumeBoleto = auxCorrelativos[1].NumeBoleto + 1;
-                            if (auxCorrelativos[2].SerieBoleto != 0)
-                                auxCorrelativos[2].NumeBoleto = auxCorrelativos[2].NumeBoleto + 1;
 
                             valor.CorrelativoPaseBoleta = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoPaseBoleta, auxCorrelativos[0].SerieBoleto, auxCorrelativos[0].NumeBoleto, "3", "8");
                             valor.CorrelativoPaseFactura = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoPaseFactura, auxCorrelativos[1].SerieBoleto, auxCorrelativos[1].NumeBoleto, "3", "8");
-                            valor.CorrelativoVentaBoleta = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, CodiCorrelativoVentaBoleta, auxCorrelativos[2].SerieBoleto, auxCorrelativos[2].NumeBoleto, "3", "8");
+
+                            switch (validarTerminalElectronico.Tipo)
+                            {
+                                case "E":
+                                    {
+                                        if (auxCorrelativos[0].SerieBoleto == 0)
+                                            return new Response<CorrelativoResponse>(false, valor, Message.MsgErrorSerieBoleto, true);
+                                    };
+                                    break;
+                            }
                         };
                         break;
                     default:
@@ -73,7 +79,7 @@ namespace SisComWeb.Business
                             auxCorrelativos[0] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaBoleta, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
                             auxCorrelativos[1] = VentaRepository.BuscarCorrelativo(request.CodiEmpresa, CodiCorrelativoVentaFactura, request.CodiSucursal, request.CodiPuntoVenta, request.CodiTerminal, validarTerminalElectronico.Tipo);
 
-                            if (auxCorrelativos[1].SerieBoleto == 0 && auxCorrelativos[0].SerieBoleto == 0)
+                            if (auxCorrelativos[0].SerieBoleto == 0)
                                 return new Response<CorrelativoResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
 
                             if (auxCorrelativos[0].SerieBoleto != 0)
@@ -86,9 +92,6 @@ namespace SisComWeb.Business
                         };
                         break;
                 };
-
-                // Seteo 'CodiTerminalElectronico'
-                valor.CodiTerminalElectronico = validarTerminalElectronico.Tipo;
 
                 return new Response<CorrelativoResponse>(true, valor, Message.MsgCorrectoBuscaCorrelativo, true);
             }

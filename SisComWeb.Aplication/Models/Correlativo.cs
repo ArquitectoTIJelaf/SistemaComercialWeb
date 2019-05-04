@@ -23,7 +23,5 @@
         public string CorrelativoPaseBoleta { get; set; }
 
         public string CorrelativoPaseFactura { get; set; }
-
-        public string CorrelativoReserva { get; set; }
     }
 }

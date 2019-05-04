@@ -1229,7 +1229,13 @@
                 },
                 bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
-                    
+
+                    // Valida 'Correlativo'
+                    if (this.Correlativo === 'B000-00000000' || this.Correlativo === 'F000-00000000') {
+                        APP.msg.error("No se encontró serie para el boleto.");
+                        return;
+                    }
+
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
                         switch (_this.pickedBusVenta) {
@@ -1900,13 +1906,13 @@
                         .then(res => {
                             if (res.data.Estado) {
                                 auxValidator = res.data.Estado;
+                                this.CodiTerminalElectronico = res.data.Valor.CodiTerminalElectronico;
 
                                 switch (_PickedBusVenta) {
                                     case '7':
                                         {
                                             this.CorrelativoPaseBoleta = res.data.Valor.CorrelativoPaseBoleta;
                                             this.CorrelativoPaseFactura = res.data.Valor.CorrelativoPaseFactura;
-                                            this.CorrelativoVentaBoleta = res.data.Valor.CorrelativoVentaBoleta;
 
                                             switch (this.CodiTerminalElectronico) {
                                                 case 'M':
@@ -1918,9 +1924,7 @@
                                                     }
                                                     break;
                                                 case 'E':
-                                                    {
-                                                        this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
-                                                    };
+                                                    this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
                                                     break;
                                             }
                                         };
@@ -1932,15 +1936,8 @@
                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                 }
 
-                                this.CodiTerminalElectronico = res.data.Valor.CodiTerminalElectronico;
-
-                                if (res.data.EsCorrecto) {
-                                    if (this.Correlativo === 'B000-00000000')
-                                        APP.msg.error("No se encontró serie para el boleto.");
-                                }
-                                else {
+                                if (!res.data.EsCorrecto)
                                     APP.msg.error(res.data.Mensaje);
-                                }
                             }
                             else {
                                 this.CorrelativoVentaBoleta = '';
@@ -2027,8 +2024,11 @@
                         case 6: $('#cboDestinoPas_2 input[type=search]').focus(); break;
                         case 7: $('#txtTurno').focus(); break;
                         case 8: this.filtro.Turno = $('#txtTurno').val(); $('#txtFecha_2').focus(); break;
-                        case 9: this.filtro.Fecha = $('#txtFecha_2').val(); $('#btnActualizar').focus(); this.nextStep(10); break;
-                        default: this.recorridoSectionFilter(); $('#btnActualizar').blur();
+                        case 9: this.filtro.Fecha = $('#txtFecha_2').val(); this.recorridoSectionFilter(); break;
+                        default:
+                            // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
+                            this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
+                            this.recorridoSectionFilter();
                     }
                 },
                 showTipoPago: async function () {
@@ -2542,7 +2542,7 @@
                     switch (_this.pickedBusVenta) {
                         case '7':
                             {
-                                if (_this.CorrelativoPaseFactura && _this.CorrelativoPaseBoleta && _this.CorrelativoVentaBoleta) {
+                                if (_this.CorrelativoPaseFactura && _this.CorrelativoPaseBoleta) {
                                     switch (_this.CodiTerminalElectronico) {
                                         case 'M':
                                             {
@@ -2555,28 +2555,19 @@
                                         case 'E':
                                             {
                                                 _this.Correlativo = _.cloneDeep(_this.CorrelativoPaseBoleta);
+
+                                                if (this.Correlativo === 'B000-00000000')
+                                                    APP.msg.error("No se encontró serie para el boleto.");
                                             };
                                             break;
                                     }
-
-                                    if (this.Correlativo === 'B000-00000000')
-                                        APP.msg.error("No se encontró serie para el boleto.");
-
                                     return;
                                 }
                             }
                             break;
                         default:
-                            {
-                                if (_this.CorrelativoVentaFactura && _this.CorrelativoVentaBoleta) {
-                                    _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
-
-                                    if (this.Correlativo === 'B000-00000000')
-                                        APP.msg.error("No se encontró serie para el boleto.");
-
-                                    return;
-                                }
-                            }
+                            _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
+                            return;
                     }
 
                     // Carga 'Correlativo'
@@ -2675,9 +2666,9 @@
                     var cadenaEmbarques = '';
                     for (i = 0; i < _this.list.embarques.length; i++) {
                         if (i !== _this.list.embarques.length - 1)
-                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora + ' - ';
+                            cadenaEmbarques += '[ ' + _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora + ' ] - ';
                         else
-                            cadenaEmbarques += _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora;
+                            cadenaEmbarques += '[ ' + _this.list.embarques[i].Lugar + ', ' + _this.list.embarques[i].Hora + ' ]';
                     }
                     return cadenaEmbarques;
                 },
@@ -2807,12 +2798,14 @@
                                             };
                                             break;
                                         case 'E':
-                                            this.Correlativo = _.cloneDeep(this.CorrelativoPaseFactura);
+                                            {
+                                                this.Correlativo = _.cloneDeep(this.CorrelativoPaseFactura);
+
+                                                if (this.Correlativo === 'F000-00000000')
+                                                    APP.msg.error("No se encontró serie para el boleto.");
+                                            };
                                             break;
                                     }
-
-                                    if (this.Correlativo === 'F000-00000000')
-                                        APP.msg.error("No se encontró serie para el boleto.");
                                 }
                                 else {
                                     if (newVal.length === 0) {
@@ -2826,12 +2819,14 @@
                                                 };
                                                 break;
                                             case 'E':
-                                                this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+                                                {
+                                                    this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
+
+                                                    if (this.Correlativo === 'B000-00000000')
+                                                        APP.msg.error("No se encontró serie para el boleto.");
+                                                };
                                                 break;
                                         }
-
-                                        if (this.Correlativo === 'B000-00000000')
-                                            APP.msg.error("No se encontró serie para el boleto.");
                                     }
                                 }
                             };
@@ -2851,20 +2846,16 @@
                                         case 'E':
                                             {
                                                 this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+
+                                                if (this.Correlativo === 'F000-00000000')
+                                                    APP.msg.error("No se encontró serie para el boleto.");
                                             };
                                             break;
                                     }
-
-                                    if (this.Correlativo === 'F000-00000000')
-                                        APP.msg.error("No se encontró serie para el boleto.");
                                 }
                                 else {
-                                    if (newVal.length === 0) {
+                                    if (newVal.length === 0)
                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
-
-                                        if (this.Correlativo === 'B000-00000000')
-                                            APP.msg.error("No se encontró serie para el boleto.");
-                                    }
                                 }
                             };
                     }
