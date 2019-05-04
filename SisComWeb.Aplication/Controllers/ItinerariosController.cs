@@ -165,6 +165,17 @@ namespace SisComWeb.Aplication.Controllers
             return lista;
         }
 
+        private static List<Base> _ListaAuxDestinosRuta(JToken list)
+        {
+            List<Base> lista = list.Select(x => new Base
+            {
+                id = (string)x["CodiSucursal"],
+                label = (string)x["NomOficina"]
+            }).ToList();
+
+            return lista;
+        }
+
         private static List<Beneficiario> _listaBeneficiario(JToken list)
         {
             List<Beneficiario> lista = list.Select(x => new Beneficiario
@@ -282,7 +293,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiRuta\" : " + filtro.CodiRuta +
                                     ",\"CodiPuntoVenta\" : " + filtro.CodiPuntoVenta +
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
-                                    ",\"HoraViaje\" :  \"" + filtro.HoraViaje + "\"" +
+                                    ",\"HoraViaje\" :  \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"FechaViaje\" :  \"" + filtro.FechaViaje + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -337,7 +348,8 @@ namespace SisComWeb.Aplication.Controllers
                         NombreChofer = (string)data["NombreChofer"],
                         CodiCopiloto = (string)data["CodiCopiloto"],
                         NombreCopiloto = (string)data["NombreCopiloto"],
-                        ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"])
+                        ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
+                        ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"])
                     }
                 };
 
@@ -381,7 +393,6 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         ApellidoMaterno = (string)data["ApellidoMaterno"],
                         ApellidoPaterno = (string)data["ApellidoPaterno"],
-                        Direccion = (string)data["Direccion"],
                         Edad = (byte)data["Edad"],
                         Email = (string)data["Email"],
                         FechaNacimiento = (string)data["FechaNacimiento"],
@@ -392,7 +403,8 @@ namespace SisComWeb.Aplication.Controllers
                         Telefono = (string)data["Telefono"],
                         TipoDoc = (string)data["TipoDoc"],
                         Sexo = (string)data["Sexo"],
-                        RazonSocial = (string)data["RazonSocial"]
+                        RazonSocial = (string)data["RazonSocial"],
+                        Direccion = (string)data["Direccion"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -559,12 +571,12 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"ApellidoMaterno\" : \"" + listado[i].ApellidoMaterno + "\"" +
                                     ",\"FechaNacimiento\" : \"" + listado[i].FechaNacimiento + "\"" +
                                     ",\"Edad\" : " + listado[i].Edad +
-                                    ",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
                                     ",\"Telefono\" : \"" + listado[i].Telefono + "\"" +
                                     ",\"Email\" : \"" + listado[i].Email + "\"" +
                                     ",\"Sexo\" :  \"" + listado[i].Sexo + "\"" +
                                     ",\"RucContacto\" :  \"" + listado[i].RucContacto + "\"" +
                                     ",\"RazonSocial\" :  \"" + listado[i].RazonSocial + "\"" +
+                                    ",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
                                  "}";
                         if (i < listado.Count - 1)
                             _body += ",";
@@ -763,7 +775,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Sexo\" : \"" + Listado[i].Sexo + "\"" +
                                     ",\"TipoPago\" : \"" + Listado[i].TipoPago + "\"" +
                                     ",\"FechaViaje\" : \"" + Listado[i].FechaViaje + "\"" +
-                                    ",\"HoraViaje\" : \"" + Listado[i].HoraViaje + "\"" +
+                                    ",\"HoraViaje\" : \"" + Listado[i].HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"Nacionalidad\" : \"" + Listado[i].Nacionalidad + "\"" +
                                     ",\"CodiServicio\" : " + Listado[i].CodiServicio +
                                     ",\"CodiEmbarque\" : " + Listado[i].CodiEmbarque +
@@ -1093,7 +1105,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NumeAsiento\" : " + filtro.NumeAsiento +
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-                                    ", \"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                    ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
 
                                     ",\"NroViaje\" : " + filtro.NroViaje +
                                     ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +

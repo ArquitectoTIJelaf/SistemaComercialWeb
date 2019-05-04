@@ -480,7 +480,7 @@ namespace SisComWeb.Business
                                     Recibe = entidad.TipoPago == "03" ? string.Empty : "MULTIPLE PAGO PARCIAL",
                                     CodiDestino = entidad.CodiDestino.ToString(),
                                     FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                                    HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje.Replace(" ", "") : string.Empty,
+                                    HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : string.Empty,
                                     CodiPuntoVenta = entidad.CodiPuntoVenta,
                                     IdVenta = entidad.IdVenta,
                                     Origen = entidad.TipoPago == "03" ? "VT" : "PA",

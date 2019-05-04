@@ -825,7 +825,7 @@
                                                                readonly>
                                                     </div>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Edad') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -941,23 +941,27 @@
                                                                v-validate="'required|min: 3'"
                                                                data-vv-as="Razón social">
                                                     </div>
+                                                    <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-5">{{ errors.first('razon_social') }}</span>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-15">{{ errors.first('ruc') }}</span>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-15">{{ errors.first('razon_social') }}</span>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-5">{{ errors.first('ruc') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
-                                                    <label class="control-label">Dirección</label>
+                                                    <label class="control-label">Dirección fiscal</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
                                                            @@keypress.13.prevent="$refs.refNacionalidad.focus()"
                                                            @@keypress.9.prevent="$refs.refNacionalidad.focus()"
                                                            id="txtDireccion"
                                                            ref="refDireccion"
+                                                           name="direccion"
                                                            max="200"
                                                            class="form-control input-sm"
-                                                           placeholder="DIRECCIÓN">
+                                                           placeholder="DIRECCIÓN"
+                                                           v-validate="'required'"
+                                                           data-vv-as="Dirección fiscal">
                                                 </div>
+                                                <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].Direccion.length < 1 && errors.has('direccion')" class="text-danger m-l-5">{{ errors.first('direccion') }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-1">

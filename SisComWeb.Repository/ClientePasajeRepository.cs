@@ -101,7 +101,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Apellido_M", DbType.String, ParameterDirection.Input, entidad.ApellidoMaterno);
                 db.AddParameter("@fec_nac", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
                 db.AddParameter("@edad", DbType.Byte, ParameterDirection.Input, entidad.Edad);
-                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, string.Empty);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
                 db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
@@ -130,7 +130,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Apellido_M", DbType.String, ParameterDirection.Input, entidad.ApellidoMaterno);
                 db.AddParameter("@fec_nac", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
                 db.AddParameter("@edad", DbType.Byte, ParameterDirection.Input, entidad.Edad);
-                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, entidad.Direccion);
+                db.AddParameter("@Direccion", DbType.String, ParameterDirection.Input, string.Empty);
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
                 db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);

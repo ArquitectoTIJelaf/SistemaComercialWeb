@@ -11,7 +11,14 @@
                     </div>
                     <div class="form-group m-b-0">
                         <div class="col-md-12">
-                            <h1 class="text-center boletosVendidosTitle">BOLETOS VENDIDOS</h1>
+                            <template v-if="pickedBusVenta == 'R'">
+                                <h1 v-if="tmpCantidadVendida <= 1" class="text-center boletosVendidosTitle">RESERVA REALIZADA CON ÉXITO</h1>
+                                <h1 v-else class="text-center boletosVendidosTitle">RESERVAS REALIZADAS CON ÉXITO</h1>
+                            </template>
+                            <template v-else>
+                                <h1 v-if="tmpCantidadVendida <= 1" class="text-center boletosVendidosTitle">BOLETO VENDIDO</h1>
+                                <h1 v-else class="text-center boletosVendidosTitle">BOLETOS VENDIDOS</h1>
+                            </template>
                             <hr class="colorHr" />
                         </div>
                     </div>

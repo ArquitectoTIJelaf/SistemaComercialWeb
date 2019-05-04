@@ -28,6 +28,9 @@ namespace SisComWeb.Business
                     buscaPasajero.RazonSocial = buscaEmpresa.RazonSocial;
                     buscaPasajero.Direccion = buscaEmpresa.Direccion;
                 }
+                // Con esto nos aseguramos que estamos tomando solo la 'Direccion' de la empresa
+                else
+                    buscaPasajero.Direccion = string.Empty;
 
                 // Consulta 'RENIEC'
                 if (TipoDoc == "1" && string.IsNullOrEmpty(buscaPasajero.NumeroDoc))
@@ -206,10 +209,7 @@ namespace SisComWeb.Business
             {
                 foreach (var entidad in lista)
                 {
-                    // Busca 'Pasajero'
-                    var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDoc, entidad.NumeroDoc);
-
-                    if (buscaPasajero.IdCliente > 0)
+                    if (entidad.IdCliente > 0)
                     {
                         // Modifica 'Pasajero'
                         var modificarPasajero = ClientePasajeRepository.ModificarPasajero(entidad);
@@ -235,7 +235,7 @@ namespace SisComWeb.Business
                         RucCliente = entidad.RucContacto ?? string.Empty,
                         RazonSocial = entidad.RazonSocial ?? string.Empty,
                         Direccion = entidad.Direccion ?? string.Empty,
-                        Telefono = entidad.Telefono ?? string.Empty
+                        Telefono = string.Empty
                     };
 
                     if (!string.IsNullOrEmpty(buscarEmpresa.RucCliente))
@@ -245,7 +245,6 @@ namespace SisComWeb.Business
                         if (!modificarEmpresa)
                             new Response<bool>(false, modificarEmpresa, Message.MsgErrorModificarEmpresa, false);
                     }
-
                     else
                     {
                         // Graba 'Empresa'
