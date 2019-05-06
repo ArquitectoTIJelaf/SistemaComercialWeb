@@ -843,18 +843,21 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<string> res = new Response<string>()
+                Response<List<Venta>> res = new Response<List<Venta>>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (string)tmpResult["Valor"]
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Venta {
+                        NumeroAsiento = (string)x["NumeroAsiento"],
+                        BoletoCompleto = (string)x["BoletoCompleto"]
+                    }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Venta>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

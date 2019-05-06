@@ -368,7 +368,7 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> GrabaVenta(VentaRequest request)
+        public Response<List<VentaResponse>> GrabaVenta(VentaRequest request)
         {
             try
             {
@@ -383,7 +383,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgExcGrabaVenta, false);
+                return new Response<List<VentaResponse>>(false, null, Message.MsgExcGrabaVenta, false);
             }
         }
 

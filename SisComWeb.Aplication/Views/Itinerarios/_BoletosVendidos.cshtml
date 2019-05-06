@@ -24,7 +24,9 @@
                     </div>
                     <div class="form-group m-b-0">
                         <div class="col-md-12 text-left">
-                            <p v-for="boleto in boletos" class="boletosVendidos">N:&ensp;{{boleto | formatNroVenta}}</p>
+                            <p v-for="boleto in boletos" class="boletosVendidos">
+                                Asiento {{boleto.NumeroAsiento}}:&ensp;N° {{boleto.BoletoCompleto | formatNroVenta}}
+                            </p>
                         </div>
                     </div>
                 </div>

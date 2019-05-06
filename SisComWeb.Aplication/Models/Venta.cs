@@ -7,6 +7,9 @@ namespace SisComWeb.Aplication.Models
 {
     public class Venta
     {
+        public string NumeroAsiento { get; set; }
+
+        public string BoletoCompleto { get; set; }
     }
 
     public class FiltroVenta
