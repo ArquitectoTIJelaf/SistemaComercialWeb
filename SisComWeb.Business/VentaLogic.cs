@@ -1022,6 +1022,8 @@ namespace SisComWeb.Business
                 {
                     if (entidad.TipoDocumento == "01")
                         sb = sb.Replace("[IdTipoDocIdentidad]", "1");
+                    else if (entidad.TipoDocumento == "04")
+                        sb = sb.Replace("[IdTipoDocIdentidad]", "7");
                     else
                         sb = sb.Replace("[IdTipoDocIdentidad]", "4");
 

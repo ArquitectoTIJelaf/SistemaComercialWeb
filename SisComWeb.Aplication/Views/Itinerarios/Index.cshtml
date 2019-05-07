@@ -20,6 +20,10 @@
 
 @section styles{
     <style type="text/css">
+        .camposTicket:disabled {
+            background-color: #fff;
+        }
+
         .v-select.disabled .open-indicator {
             background-color: transparent !important;
         }
@@ -992,6 +996,7 @@
                 empresas: [],
                 checkRegistrarNino: false,
                 disabledAsiento: false,
+                disabledCamposTicket: false,
                 // Correlativos
                 CorrelativoVentaBoleta: '',
                 CorrelativoVentaFactura: '',
@@ -1019,7 +1024,6 @@
                 });
 
                 window.addEventListener('keydown', this.configEventKeyF5);
-                window.addEventListener('beforeunload', this.beforeClosePage);
             },
             methods: {
                 chargeVentas: async function (item, turnos) {
@@ -1083,8 +1087,8 @@
                                 _this.objPlano.NombreCopiloto = res.data.Valor.NombreCopiloto;
                                 _this.list.destinosRuta = res.data.Valor.ListaDestinosRuta;
                                 // --------------------------------------------------
-                                if (res.data.Valor.ListaAuxDestinosRuta.length > 0)
-                                    _this.list.destinosPas = res.data.Valor.ListaAuxDestinosRuta;
+                                if (_this.list.destinosRuta.length > 0)
+                                    _this.list.destinosPas = _.cloneDeep(res.data.Valor.ListaAuxDestinosRuta);
                                 // --------------------------------------------------
                                 _this.list.embarques = res.data.Valor.ListaEmbarques;
                                 _this.list.arribos = res.data.Valor.ListaArribos;
@@ -1262,6 +1266,12 @@
                         return;
                     }
 
+                    // Valida 'Precio'
+                    if (asientoSel.PrecioNormal === 0) {
+                        APP.msg.error("No se encontró precio del asiento.");
+                        return;
+                    }
+
                     var input = {};
                     input.CodiProgramacion = _this.filtro.CodiProgramacion;
                     input.NroViaje = _this.filtro.NroViaje;
@@ -1299,9 +1309,6 @@
 
                                 // Acción según 'pickedBusVenta'
                                 switch (_this.pickedBusVenta) {
-                                    case 'V': // Venta
-                                        _this.list.ventas[_this.indexVenta].FlagVenta = '';
-                                        break;
                                     case '7': // Pase de cortesía
                                         appController.showPaseCortesia();
                                         break;
@@ -1357,8 +1364,9 @@
                     if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
                         _fillData = await APP.msg.confirm('Confirmar acción',
                             'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
-                        if (_fillData)
+                        if (_fillData) {
                             await _this.cancelarBoletos();
+                        }
                     }
                     else {
                         if (_this.list.ventas[_this.indexVenta].FlagVenta) {
@@ -1374,7 +1382,7 @@
                             _fillData = true;
                         }
                     }
-                    
+
                     // After
                     switch (asientoSel.FlagVenta) {
                         case 'VI': // Venta intermedia
@@ -1393,6 +1401,7 @@
                     }
 
                     // Solo cuando '_fillData' es 'true':
+
                     if (_fillData) {
                         // Animación 'ScrollTop'
                         animateScrollTop(800);
@@ -1426,6 +1435,10 @@
                             if (asientoSel.ObjAcompaniante.CodiTipoDoc && asientoSel.ObjAcompaniante.Documento)
                                 _this.checkRegistrarNino = true;
                         }
+
+                        _this.$nextTick(() => {
+                            _this.disabledCamposTicket = true;
+                        });
                     }
                 },
                 createElementInList: function () {
@@ -2296,6 +2309,7 @@
                     _this.list.ventas[_this.indexVenta].IdVenta = 0;
                     _this.errors.clear();
                     _this.checkRegistrarNino = false;
+                    _this.disabledCamposTicket = false;
 
                     appRegistrarInfante.limpiarCampos();
                 },
@@ -2331,13 +2345,15 @@
                     this.auxFocus.asiento = true;
                 },
                 validateTxtNroAsientoVenta: async function (e) {
-                    if (this.list.ventas[this.indexVenta] && this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
+                    
+                    if (this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
+
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
                         var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                         if (!auxObj) {
                             this.auxFocus.asiento = false;
-                            APP.msg.warning('Asiento ' + _NroAsiento + ' no encontrado');
+                            APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' no encontrado');
                             return;
                         }
 
@@ -2345,16 +2361,20 @@
                             await this.bloquearAsiento(auxObj, true);
                             this.auxFocus.asiento = false;
                         }
-                        else APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
+                        else
+                            APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
                     }
                     else if (this.list.ventas[this.indexVenta].NroVenta) {
+
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+
                         if (this.list.ventas[this.indexVenta].NroAsiento !== this.list.ventas[this.indexVenta].OldNroAsiento) {
+
                             var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                             if (!auxObj) {
                                 this.auxFocus.asiento = false;
-                                APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' no encontrado');
                                 this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
+                                APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' no encontrado');
                                 return;
                             }
 
@@ -2376,7 +2396,12 @@
 
                                 this.auxFocus.asiento = false;
                             }
-                            else APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
+                            else {
+                                if (this.list.ventas[this.indexVenta].OldNroAsiento) {
+                                    this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
+                                    APP.msg.warning('Asiento ' + this.list.ventas[this.indexVenta].NroAsiento + ' ocupado');
+                                }
+                            }
                         }
                         else {
                             if (this.camposObligatorios())
@@ -2386,7 +2411,8 @@
                         }
                     }
                     else {
-                        if (e && e.keyCode !== 13) this.auxFocus.asiento = false;
+                        if (e && e.keyCode !== 13)
+                            this.auxFocus.asiento = false;
                     }
                 },
                 camposObligatorios: function () {
@@ -2661,9 +2687,6 @@
                             appController.chargeTurnos();
                         }
                     }
-                },
-                beforeClosePage: function () {
-                    this.limpiarAsientosBloqueados();
                 },
                 setDocumento: function (e) {
                     this.list.ventas[this.indexVenta].Documento = e.target.value.toUpperCase();
