@@ -190,6 +190,17 @@ namespace SisComWeb.Aplication.Controllers
             return lista;
         }
 
+        private static List<VentaRealizada> _listVentasRealizadas(JToken list)
+        {
+            List<VentaRealizada> lista = list.Select(x => new VentaRealizada
+            {
+                NumeAsiento = (string)x["NumeAsiento"],
+                BoletoCompleto = (string)x["BoletoCompleto"]
+            }).ToList();
+
+            return lista;
+        }
+
         [Route("")]
         public ActionResult Index()
         {
@@ -842,15 +853,17 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
 
-                Response<List<Venta>> res = new Response<List<Venta>>()
+                Response<VentaResponse> res = new Response<VentaResponse>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Venta {
-                        NumeroAsiento = (string)x["NumeroAsiento"],
-                        BoletoCompleto = (string)x["BoletoCompleto"]
-                    }).ToList()
+                    Valor = new VentaResponse()
+                    {
+                        ListaVentasRealizadas = _listVentasRealizadas(data["ListaVentasRealizadas"]),
+                        CodiProgramacion = (int)data["CodiProgramacion"]
+                    }
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
@@ -1126,18 +1139,18 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<bool> res = new Response<bool>()
+                Response<int> res = new Response<int>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = (int)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
 

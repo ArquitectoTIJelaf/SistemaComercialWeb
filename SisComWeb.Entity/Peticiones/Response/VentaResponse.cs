@@ -1,9 +1,11 @@
-﻿namespace SisComWeb.Entity.Peticiones.Response
+﻿using System.Collections.Generic;
+
+namespace SisComWeb.Entity.Peticiones.Response
 {
     public class VentaResponse
     {
-        public string NumeroAsiento { get; set; }
+        public List<VentaRealizada> ListaVentasRealizadas { get; set; }
 
-        public string BoletoCompleto { get; set; }
+        public int CodiProgramacion { get; set; }
     }
 }

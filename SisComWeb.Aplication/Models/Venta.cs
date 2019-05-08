@@ -7,9 +7,7 @@ namespace SisComWeb.Aplication.Models
 {
     public class Venta
     {
-        public string NumeroAsiento { get; set; }
 
-        public string BoletoCompleto { get; set; }
     }
 
     public class FiltroVenta
@@ -77,5 +75,19 @@ namespace SisComWeb.Aplication.Models
 
         // RESERVA
         public int IdVenta { get; set; }
+    }
+
+    public class VentaResponse
+    {
+        public List<VentaRealizada> ListaVentasRealizadas { get; set; }
+
+        public int CodiProgramacion { get; set; }
+    }
+
+    public class VentaRealizada
+    {
+        public string NumeAsiento { get; set; }
+
+        public string BoletoCompleto { get; set; }
     }
 }

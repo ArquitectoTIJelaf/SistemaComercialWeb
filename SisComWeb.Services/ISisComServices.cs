@@ -144,7 +144,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "GrabaVenta", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<VentaResponse>> GrabaVenta(VentaRequest request);
+        Response<VentaResponse> GrabaVenta(VentaRequest request);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaBeneficiarioPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
@@ -164,7 +164,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> PostergarVenta(PostergarVentaRequest filtro);
+        Response<int> PostergarVenta(PostergarVentaRequest filtro);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]

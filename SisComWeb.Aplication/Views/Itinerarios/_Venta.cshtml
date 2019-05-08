@@ -983,15 +983,18 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       @@keypress.9.prevent="recorridoSectionVentas"
+                                                       @@keypress.13.prevent="$refs.refRegistrarNino.focus()"
+                                                       @@keypress.9.prevent="$refs.refRegistrarNino.focus()"
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
+                                                       name="nacionalidad"
                                                        class="form-control input-sm"
                                                        placeholder="NACIONALIDAD"
+                                                       v-validate="'required'"
                                                        v-mask="'A'.repeat(30)">
                                             </div>
+                                            <span v-show="errors.has('nacionalidad')" class="text-danger m-l-5">{{ errors.first('nacionalidad') }}</span>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -1047,6 +1050,7 @@
                                                         <label class="control-label">&nbsp;</label>
                                                         <button @@click="showTipoPago"
                                                                 id="btnTipoPago"
+                                                                ref="refTipoPago"
                                                                 class="btn btn-secondary btn-ticket btn-venta"
                                                                 style="width: 100%;"
                                                                 v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">

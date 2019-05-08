@@ -368,7 +368,7 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<VentaResponse>> GrabaVenta(VentaRequest request)
+        public Response<VentaResponse> GrabaVenta(VentaRequest request)
         {
             try
             {
@@ -383,7 +383,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<VentaResponse>>(false, null, Message.MsgExcGrabaVenta, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcGrabaVenta, false);
             }
         }
 
@@ -440,7 +440,7 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<bool> PostergarVenta(PostergarVentaRequest filtro)
+        public Response<int> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
             {
@@ -449,7 +449,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcPostergarVenta, false);
+                return new Response<int>(false, 0, Message.MsgExcPostergarVenta, false);
             }
         }
 

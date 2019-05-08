@@ -51,35 +51,48 @@
 
         var ClientSignalR = {};
         ClientSignalR.NroViaje = '';
-        ClientSignalR.FechaViaje = '';
+        ClientSignalR.FechaProgramacion = '';
         ClientSignalR.NroAsiento = '';
+        ClientSignalR.CodiProgramacion = '';
         ClientSignalR.Owner = false;
 
         $(function () {
 
             var notification = $.connection.notificationHub;
 
-            notification.client.bloquearBus = function (nroViaje, fechaViaje, nroAsiento) {
-                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
+            notification.client.bloquearAsiento = function (nroViaje, fechaProgramacion, nroAsiento) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.objTurno.FechaProgramacion === fechaProgramacion && !ClientSignalR.Owner) {
                     $('#btnAsiento_' + nroAsiento).css('background-color', `${APP.ventas.colorBloqueoExterno}`);
                 }
                 ClientSignalR.Owner = false;
             };
 
-            notification.client.liberarBus = function (nroViaje, fechaViaje, nroAsiento) {
-                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.filtro.Fecha === fechaViaje && !ClientSignalR.Owner) {
+            notification.client.liberarAsiento = function (nroViaje, fechaProgramacion, nroAsiento) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.objTurno.FechaProgramacion === fechaProgramacion && !ClientSignalR.Owner) {
                     $('#btnAsiento_' + nroAsiento).css('background-color', '');
                 }
                 ClientSignalR.Owner = false;
             };
 
+            notification.client.actualizarCodiProgramacion = function (nroViaje, fechaProgramacion, codiProgramacion) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.objTurno.FechaProgramacion === fechaProgramacion && !ClientSignalR.Owner) {
+                    if (!isNaN(codiProgramacion))
+                        appVueVenta.filtro.CodiProgramacion = parseInt(codiProgramacion);
+                }
+                ClientSignalR.Owner = false;
+            };
+
             $.connection.hub.start().done(function () {
-                $('#btnHiddenBloquearBus').click(function () {
-                    notification.server.bloquear(ClientSignalR.NroViaje, ClientSignalR.FechaViaje, ClientSignalR.NroAsiento);
+                $('#btnHiddenBloquearAsiento').click(function () {
+                    notification.server.bloquearAsiento(ClientSignalR.NroViaje, ClientSignalR.FechaProgramacion, ClientSignalR.NroAsiento);
                 });
 
-                $('#btnHiddenLiberarBus').click(function () {
-                    notification.server.liberar(ClientSignalR.NroViaje, ClientSignalR.FechaViaje, ClientSignalR.NroAsiento);
+                $('#btnHiddenLiberarAsiento').click(function () {
+                    notification.server.liberarAsiento(ClientSignalR.NroViaje, ClientSignalR.FechaProgramacion, ClientSignalR.NroAsiento);
+                });
+
+                $('#btnHiddenActualizarCodiProgramacion').click(function () {
+                    notification.server.actualizarCodiProgramacion(ClientSignalR.NroViaje, ClientSignalR.FechaProgramacion, ClientSignalR.CodiProgramacion);
                 });
             });
 

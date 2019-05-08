@@ -138,8 +138,12 @@ namespace SisComWeb.Entity
         public bool FechaAbierta { get; set; }
 
         public string Concepto { get; set; } // @Reco_Venta en el store.
+    }
 
-        // ANULACIÓN
+    public class VentaRealizada
+    {
+        public string NumeAsiento { get; set; }
+
         public string BoletoCompleto { get; set; }
     }
 }

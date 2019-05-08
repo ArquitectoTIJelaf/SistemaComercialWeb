@@ -199,6 +199,13 @@ namespace SisComWeb.Business
                 entidad.FechaVenta = string.Empty;
                 entidad.FechaViaje = string.Empty;
             }
+            else if (item.FlagVenta == "VI")
+            {
+                entidad.IdVenta = item.IdVenta;
+                entidad.Color = item.Color;
+                entidad.FechaVenta = "07/07/1777";
+                entidad.FechaViaje = string.Empty;
+            }
             else
             {
                 entidad.IdVenta = item.IdVenta;

@@ -106,11 +106,12 @@ namespace SisComWeb.Business
 
         #region GRABAR VENTA
 
-        public static Response<List<VentaResponse>> GrabaVenta(List<VentaEntity> Listado, string FlagVenta)
+        public static Response<VentaResponse> GrabaVenta(List<VentaEntity> Listado, string FlagVenta)
         {
             try
             {
-                var valor = new List<VentaResponse>();
+                var valor = new VentaResponse();
+                var listaVentasRealizadas = new List<VentaRealizada>();
 
                 foreach (var entidad in Listado)
                 {
@@ -125,7 +126,7 @@ namespace SisComWeb.Business
                         // Genera 'CorrelativoAuxiliar'
                         var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                         entidad.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
 
@@ -144,15 +145,18 @@ namespace SisComWeb.Business
                         // Graba 'Programacion'
                         var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
                         if (!grabarProgramacion)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarProgramacion, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
 
                         // Graba 'ViajeProgramacion'
                         var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
                         if (!grabarViajeProgramacion)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
                     }
                     else
                         entidad.CodiProgramacion = buscarProgramacionViaje;
+
+                    // Seteo 'valor.CodiProgramacion'
+                    valor.CodiProgramacion = entidad.CodiProgramacion;
 
                     // Valida 'TerminalElectronico'
                     var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
@@ -165,7 +169,7 @@ namespace SisComWeb.Business
                         // Valida 'SaldoPaseCortesia'
                         var validarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
                         if (validarSaldoPaseCortesia != 1)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgValidaSaldoPaseCortesia, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgValidaSaldoPaseCortesia, false);
                     }
 
                     // RESERVA
@@ -174,7 +178,7 @@ namespace SisComWeb.Business
                         // Elimina 'Reserva'
                         var eliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
                         if (!eliminarReserva)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorEliminarReserva, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorEliminarReserva, false);
                         // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
                         entidad.IdVenta = 0;
                         // Cuando 'confirmasReserva', por ahora se venderá como una 'Venta'.
@@ -248,7 +252,7 @@ namespace SisComWeb.Business
                                                     // Busca 'Correlativo'
                                                     buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
                                                     if (buscarCorrelativo.SerieBoleto == 0)
-                                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                     else
                                                     {
                                                         entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
@@ -271,11 +275,11 @@ namespace SisComWeb.Business
                                                     // Busca 'Correlativo'
                                                     buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
                                                     if (buscarCorrelativo.SerieBoleto == 0)
-                                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                 }
 
                                                 if (buscarCorrelativo.SerieBoleto == 0)
-                                                    return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                 else
                                                 {
                                                     entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
@@ -287,7 +291,7 @@ namespace SisComWeb.Business
                                 };
                                 break;
                             case "E":
-                                return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                         };
                     }
 
@@ -324,7 +328,7 @@ namespace SisComWeb.Business
                                     // Graba 'VentaFechaAbierta'
                                     var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
                                     if (grabarVentaFechaAbierta <= 0)
-                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
                                     entidad.IdVenta = grabarVentaFechaAbierta;
                                     entidad.CodiProgramacion = auxCodiProgramacion;
@@ -334,7 +338,7 @@ namespace SisComWeb.Business
                                     // Graba 'Venta'
                                     var grabarVenta = VentaRepository.GrabarVenta(entidad);
                                     if (grabarVenta <= 0)
-                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
 
                                     entidad.IdVenta = grabarVenta;
                                 }
@@ -344,7 +348,7 @@ namespace SisComWeb.Business
                                 {
                                     var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
                                     if (!grabarAcompanianteVenta)
-                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
                                 }
                             };
                             break;
@@ -367,7 +371,7 @@ namespace SisComWeb.Business
                                             // Graba 'VentaFechaAbierta'
                                             var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
                                             if (grabarVentaFechaAbierta <= 0)
-                                                return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
+                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
                                             entidad.IdVenta = grabarVentaFechaAbierta;
                                             entidad.CodiProgramacion = auxCodiProgramacion;
@@ -377,7 +381,7 @@ namespace SisComWeb.Business
                                             // Graba 'Venta'
                                             var grabarVenta = VentaRepository.GrabarVenta(entidad);
                                             if (grabarVenta <= 0)
-                                                return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
 
                                             entidad.IdVenta = grabarVenta;
                                         }
@@ -387,7 +391,7 @@ namespace SisComWeb.Business
                                         {
                                             var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
                                             if (!grabarAcompanianteVenta)
-                                                return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
+                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
                                         }
 
                                         if (entidad.IdVenta > 0)
@@ -395,16 +399,16 @@ namespace SisComWeb.Business
                                             // Registra 'DocumentoSUNAT'
                                             var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
                                             if (!resRegistrarDocumentoSUNAT.Estado)
-                                                return new Response<List<VentaResponse>>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                                                return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
                                         }
                                         else
-                                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
                                     }
                                     else
-                                        return new Response<List<VentaResponse>>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                        return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                                 }
                                 else
-                                    return new Response<List<VentaResponse>>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                    return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                             };
                             break;
                     };
@@ -418,12 +422,12 @@ namespace SisComWeb.Business
                         // Modifica 'SaldoPaseCortesia'
                         var modificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
                         if (!modificarSaldoPaseCortesia)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
 
                         // Graba 'PaseSocio'
                         var grabarPaseSocio = PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
                         if (!grabarPaseSocio)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarPaseSocio, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPaseSocio, false);
                     }
 
                     // Valida 'LiquidacionVentas'
@@ -434,9 +438,9 @@ namespace SisComWeb.Business
                     {
                         var actualizarLiquidacionVentas = VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture));
                         if (!actualizarLiquidacionVentas)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
                     }
-
+                    
                     // Graba 'LiquidacionVentas'
                     else
                     {
@@ -445,14 +449,14 @@ namespace SisComWeb.Business
                         // Genera 'CorrelativoAuxiliar'
                         var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("LIQ_CAJA", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                         auxCorrelativoAuxiliar = int.Parse(generarCorrelativoAuxiliar) + 1;
 
                         // Graba 'LiquidacionVentas'
                         var grabarLiquidacionVentas = VentaRepository.GrabarLiquidacionVentas(auxCorrelativoAuxiliar, entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
                         if (!grabarLiquidacionVentas)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarLiquidacionVentas, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarLiquidacionVentas, false);
                     }
 
                     // Valida 'TipoPago'
@@ -466,7 +470,7 @@ namespace SisComWeb.Business
                                 //  Genera 'CorrelativoAuxiliar'
                                 var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
                                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                                    return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                                 // Seteo 'NumeCaja'
                                 auxNumeCaja = entidad.CodiOficina.ToString() + entidad.CodiPuntoVenta.ToString() + generarCorrelativoAuxiliar;
@@ -508,16 +512,16 @@ namespace SisComWeb.Business
                                     };
                                     var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
                                     if (!grabarPagoTarjetaCredito)
-                                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
                                 }
                                 else
-                                    return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarCaja, false);
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarCaja, false);
                             };
                             break;
                         case "04": // Delivery
                             var grabarPagoDelivery = VentaRepository.GrabarPagoDelivery(entidad.IdVenta, entidad.CodiZona, entidad.Direccion, entidad.Observacion);
                             if (!grabarPagoDelivery)
-                                return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarPagoDelivery, false);
+                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoDelivery, false);
                             break;
                     };
 
@@ -546,24 +550,26 @@ namespace SisComWeb.Business
 
                     var grabarAuditoria = VentaRepository.GrabarAuditoria(objAuditoriaEntity);
                     if (!grabarAuditoria)
-                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarAuditoria, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
-                    // Añado 'ventaResponse'
-                    var ventaResponse = new VentaResponse
+                    // Añado 'ventaRealizada'
+                    var ventaRealizada = new VentaRealizada
                     {
-                        NumeroAsiento = entidad.NumeAsiento.ToString("D2"),
+                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         BoletoCompleto = auxBoletoCompleto
                     };
-
-                    valor.Add(ventaResponse);
+                    listaVentasRealizadas.Add(ventaRealizada);
                 }
 
-                return new Response<List<VentaResponse>>(true, valor, Message.MsgCorrectoGrabaVenta, true);
+                // Seteo 'valor.ListaVentasRealizadas'
+                valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                return new Response<VentaResponse>(true, valor, Message.MsgCorrectoGrabaVenta, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<VentaResponse>>(false, null, Message.MsgExcGrabaVenta, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcGrabaVenta, false);
             }
         }
 
@@ -571,11 +577,12 @@ namespace SisComWeb.Business
 
         #region GRABAR RESERVA
 
-        public static Response<List<VentaResponse>> GrabaReserva(List<VentaEntity> Listado)
+        public static Response<VentaResponse> GrabaReserva(List<VentaEntity> Listado)
         {
             try
             {
-                var valor = new List<VentaResponse>();
+                var valor = new VentaResponse();
+                var listaVentasRealizadas = new List<VentaRealizada>();
 
                 foreach (var entidad in Listado)
                 {
@@ -583,12 +590,13 @@ namespace SisComWeb.Business
 
                     // Busca 'ProgramacionViaje'
                     var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
+
                     if (buscarProgramacionViaje == 0)
                     {
                         // Genera 'CorrelativoAuxiliar'
                         var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                         entidad.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
 
@@ -607,20 +615,23 @@ namespace SisComWeb.Business
                         // Graba 'Programacion'
                         var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
                         if (!grabarProgramacion)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarProgramacion, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
 
                         // Graba 'ViajeProgramacion'
                         var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
                         if (!grabarViajeProgramacion)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
                     }
                     else
                         entidad.CodiProgramacion = buscarProgramacionViaje;
 
+                    // Seteo 'valor.CodiProgramacion'
+                    valor.CodiProgramacion = entidad.CodiProgramacion;
+
                     // Busca 'Correlativo'
                     var generarCorrelativoAuxiliar2 = VentaRepository.GenerarCorrelativoAuxiliar("TB_RESERVAS", "999", string.Empty, string.Empty);
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar2))
-                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                     entidad.SerieBoleto = CodiSerieReserva;
                     entidad.NumeBoleto = int.Parse(generarCorrelativoAuxiliar2) + 1;
@@ -633,35 +644,37 @@ namespace SisComWeb.Business
                     if (grabarVenta > 0)
                         entidad.IdVenta = grabarVenta;
                     else
-                        return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabaVenta, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
 
                     // Graba 'Acompañante'
                     if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
                     {
                         var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
                         if (!grabarAcompanianteVenta)
-                            return new Response<List<VentaResponse>>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
                     }
 
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto("M", string.Empty, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8");
 
-                    // Añado 'ventaResponse'
-                    var ventaResponse = new VentaResponse
+                    // Añado 'ventaRealizada'
+                    var ventaRealizada = new VentaRealizada
                     {
-                        NumeroAsiento = entidad.NumeAsiento.ToString("D2"),
+                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         BoletoCompleto = auxBoletoCompleto
                     };
-
-                    valor.Add(ventaResponse);
+                    listaVentasRealizadas.Add(ventaRealizada);
                 }
 
-                return new Response<List<VentaResponse>>(true, valor, Message.MsgCorrectoGrabaReserva, true);
+                // Seteo 'valor'
+                valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                return new Response<VentaResponse>(true, valor, Message.MsgCorrectoGrabaReserva, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<VentaResponse>>(false, null, Message.MsgExcGrabaReserva, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcGrabaReserva, false);
             }
         }
 
@@ -826,11 +839,11 @@ namespace SisComWeb.Business
 
         #region POSTERGAR VENTA
 
-        public static Response<bool> PostergarVenta(PostergarVentaRequest filtro)
+        public static Response<int> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
             {
-                var valor = new bool();
+                var valor = new int();
 
                 // Busca 'ProgramacionViaje'
                 var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(filtro.NroViaje, filtro.FechaProgramacion);
@@ -839,7 +852,7 @@ namespace SisComWeb.Business
                     // Genera 'CorrelativoAuxiliar'
                     var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                        return new Response<bool>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                        return new Response<int>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                     filtro.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
 
@@ -858,26 +871,29 @@ namespace SisComWeb.Business
                     // Graba 'Programacion'
                     var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
                     if (!grabarProgramacion)
-                        return new Response<bool>(false, valor, Message.MsgErrorGrabarProgramacion, false);
+                        return new Response<int>(false, valor, Message.MsgErrorGrabarProgramacion, false);
 
                     // Graba 'ViajeProgramacion'
                     var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(filtro.NroViaje, filtro.CodiProgramacion, filtro.FechaProgramacion, filtro.CodiBus);
                     if (!grabarViajeProgramacion)
-                        return new Response<bool>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
+                        return new Response<int>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
                 }
                 else
                     filtro.CodiProgramacion = buscarProgramacionViaje;
 
-                valor = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
-                if (valor)
-                    return new Response<bool>(true, valor, Message.MsgCorrectoPostergarVenta, true);
+                var postergarVenta = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
+                if (postergarVenta)
+                {
+                    valor = filtro.CodiProgramacion;
+                    return new Response<int>(true, valor, Message.MsgCorrectoPostergarVenta, true);
+                }
                 else
-                    return new Response<bool>(false, valor, Message.MsgErrorPostergarVenta, false);
+                    return new Response<int>(false, valor, Message.MsgErrorPostergarVenta, false);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcPostergarVenta, false);
+                return new Response<int>(false, 0, Message.MsgExcPostergarVenta, false);
             }
         }
 

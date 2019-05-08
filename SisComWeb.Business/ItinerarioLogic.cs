@@ -55,11 +55,6 @@ namespace SisComWeb.Business
                         buscarItinerarios[i].CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
                     }
 
-                    if (buscarItinerarios[i].NroViaje == 106231)
-                    {
-
-                    }
-
                     // Busca 'ProgramacionViaje'
                     var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(buscarItinerarios[i].NroViaje, buscarItinerarios[i].FechaProgramacion);
                     if (buscarProgramacionViaje > 0)

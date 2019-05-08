@@ -5,14 +5,19 @@ namespace SisComWeb.Aplication.Hubs
     public class NotificationHub : Hub
     {
 
-        public void Bloquear(string nroViaje, string fechaViaje, string nroAsiento)
+        public void BloquearAsiento(string nroViaje, string FechaProgramacion, string nroAsiento)
         {
-            Clients.All.bloquearBus(nroViaje, fechaViaje, nroAsiento);
+            Clients.All.bloquearAsiento(nroViaje, FechaProgramacion, nroAsiento);
         }
 
-        public void Liberar(string nroViaje, string fechaViaje, string nroAsiento)
+        public void LiberarAsiento(string nroViaje, string FechaProgramacion, string nroAsiento)
         {
-            Clients.All.liberarBus(nroViaje, fechaViaje, nroAsiento);
+            Clients.All.liberarAsiento(nroViaje, FechaProgramacion, nroAsiento);
+        }
+
+        public void ActualizarCodiProgramacion(string nroViaje, string FechaProgramacion, string codiProgramacion)
+        {
+            Clients.All.actualizarCodiProgramacion(nroViaje, FechaProgramacion, codiProgramacion);
         }
     }
 }
