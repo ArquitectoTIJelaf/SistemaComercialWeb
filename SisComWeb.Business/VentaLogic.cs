@@ -177,8 +177,8 @@ namespace SisComWeb.Business
                     {
                         // Elimina 'Reserva'
                         var eliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
-                        if (!eliminarReserva)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorEliminarReserva, false);
+                        if (eliminarReserva <= 0)
+                            return new Response<VentaResponse>(true, valor, Message.MsgErrorEliminarReserva, false);
                         // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
                         entidad.IdVenta = 0;
                         // Cuando 'confirmasReserva', por ahora se venderá como una 'Venta'.
@@ -682,21 +682,21 @@ namespace SisComWeb.Business
 
         #region ELIMINAR RESERVA
 
-        public static Response<bool> EliminarReserva(int IdVenta)
+        public static Response<byte> EliminarReserva(int IdVenta)
         {
             try
             {
                 // Elimina 'Reserva'
                 var eliminarReserva = VentaRepository.EliminarReserva(IdVenta);
-                if (eliminarReserva)
-                    return new Response<bool>(true, eliminarReserva, Message.MsgCorrectoEliminarReserva, true);
+                if (eliminarReserva > 0)
+                    return new Response<byte>(true, eliminarReserva, Message.MsgCorrectoEliminarReserva, true);
                 else
-                    return new Response<bool>(false, eliminarReserva, Message.MsgErrorEliminarReserva, false);
+                    return new Response<byte>(false, eliminarReserva, Message.MsgErrorEliminarReserva, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcEliminarReserva, false);
+                return new Response<byte>(false, 0, Message.MsgExcEliminarReserva, false);
             }
         }
 
@@ -752,14 +752,16 @@ namespace SisComWeb.Business
 
         #region ANULAR VENTA
 
-        public static Response<bool> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
+        public static Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
         {
             try
             {
+                var anularVenta = new byte();
+
                 var objVenta = VentaRepository.BuscarVentaById(IdVenta);
 
                 if (objVenta.SerieBoleto == 0)
-                    return new Response<bool>(false, false, Message.MsgErrorBuscarVentaById, false);
+                    return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
 
                 // Valida 'AnularDocumentoSUNAT'
                 if (objVenta.Tipo != "M")
@@ -767,12 +769,12 @@ namespace SisComWeb.Business
                     // Anula 'DocumentoSUNAT'
                     var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVenta);
                     if (!resAnularDocumentoSUNAT.Estado)
-                        return new Response<bool>(false, false, resAnularDocumentoSUNAT.MensajeError, false);
+                        return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
                 }
 
                 var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", CodiOficina, CodiPuntoVenta, string.Empty);
                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                    return new Response<bool>(false, false, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                    return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                 CajaEntity objCaja = new CajaEntity
                 {
@@ -797,19 +799,19 @@ namespace SisComWeb.Business
 
                 if (caja > 0)
                 {
-                    var anularVenta = VentaRepository.AnularVenta(IdVenta, CodiUsuario);
-                    if (anularVenta)
-                        return new Response<bool>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+                    anularVenta = VentaRepository.AnularVenta(IdVenta, CodiUsuario);
+                    if (anularVenta > 0)
+                        return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
                     else
-                        return new Response<bool>(false, anularVenta, Message.MsgErrorAnularVenta, false);
+                        return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
                 }
                 else
-                    return new Response<bool>(false, false, Message.MsgErrorGrabarCaja, false);
+                    return new Response<byte>(false, 0, Message.MsgErrorGrabarCaja, false);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcAnularVenta, false);
+                return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
             }
         }
 
@@ -826,7 +828,7 @@ namespace SisComWeb.Business
                 if (buscarVentaxBoleto.IdVenta > 0)
                     return new Response<VentaBeneficiarioEntity>(true, buscarVentaxBoleto, Message.MsgCorrectoBuscarVentaxBoleto, true);
                 else
-                    return new Response<VentaBeneficiarioEntity>(false, buscarVentaxBoleto, Message.MsgValidaBuscarVentaxBoleto, false);
+                    return new Response<VentaBeneficiarioEntity>(true, buscarVentaxBoleto, Message.MsgValidaBuscarVentaxBoleto, false);
             }
             catch (Exception ex)
             {
@@ -839,11 +841,14 @@ namespace SisComWeb.Business
 
         #region POSTERGAR VENTA
 
-        public static Response<int> PostergarVenta(PostergarVentaRequest filtro)
+        public static Response<VentaResponse> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
             {
-                var valor = new int();
+                var valor = new VentaResponse();
+                var listaVentasRealizadas = new List<VentaRealizada>();
+
+                var postergarVenta = new bool();
 
                 // Busca 'ProgramacionViaje'
                 var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(filtro.NroViaje, filtro.FechaProgramacion);
@@ -852,7 +857,7 @@ namespace SisComWeb.Business
                     // Genera 'CorrelativoAuxiliar'
                     var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
                     if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                        return new Response<int>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                     filtro.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
 
@@ -871,29 +876,42 @@ namespace SisComWeb.Business
                     // Graba 'Programacion'
                     var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
                     if (!grabarProgramacion)
-                        return new Response<int>(false, valor, Message.MsgErrorGrabarProgramacion, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
 
                     // Graba 'ViajeProgramacion'
                     var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(filtro.NroViaje, filtro.CodiProgramacion, filtro.FechaProgramacion, filtro.CodiBus);
                     if (!grabarViajeProgramacion)
-                        return new Response<int>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
                 }
                 else
                     filtro.CodiProgramacion = buscarProgramacionViaje;
 
-                var postergarVenta = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
+                // Seteo 'valor.CodiProgramacion'
+                valor.CodiProgramacion = filtro.CodiProgramacion;
+
+                postergarVenta = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
                 if (postergarVenta)
                 {
-                    valor = filtro.CodiProgramacion;
-                    return new Response<int>(true, valor, Message.MsgCorrectoPostergarVenta, true);
+                    // Añado 'ventaRealizada'
+                    var ventaRealizada = new VentaRealizada
+                    {
+                        NumeAsiento = filtro.NumeAsiento.ToString("D2"),
+                        BoletoCompleto = string.Empty
+                    };
+                    listaVentasRealizadas.Add(ventaRealizada);
+
+                    // Seteo 'valor.ListaVentasRealizadas'
+                    valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                    return new Response<VentaResponse>(true, valor, Message.MsgCorrectoPostergarVenta, true);
                 }
                 else
-                    return new Response<int>(false, valor, Message.MsgErrorPostergarVenta, false);
+                    return new Response<VentaResponse>(false, valor, Message.MsgErrorPostergarVenta, false);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcPostergarVenta, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcPostergarVenta, false);
             }
         }
 
@@ -901,20 +919,20 @@ namespace SisComWeb.Business
 
         #region MODIFICAR VENTA FECHA ABIERTA
 
-        public static Response<bool> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public static Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
             try
             {
                 var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta);
-                if (modificarVentaAFechaAbierta)
-                    return new Response<bool>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoPostergarVenta, true);
+                if (modificarVentaAFechaAbierta > 0)
+                    return new Response<byte>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
                 else
-                    return new Response<bool>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, false);
+                    return new Response<byte>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcModificarVentaAFechaAbierta, false);
+                return new Response<byte>(false, 0, Message.MsgExcModificarVentaAFechaAbierta, false);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
+using SisComWeb.Aplication.Models;
 
 namespace SisComWeb.Aplication.Hubs
 {
@@ -15,9 +16,9 @@ namespace SisComWeb.Aplication.Hubs
             Clients.All.liberarAsiento(nroViaje, FechaProgramacion, nroAsiento);
         }
 
-        public void ActualizarCodiProgramacion(string nroViaje, string FechaProgramacion, string codiProgramacion)
+        public void ActualizarTurnoPlano(string nroViaje, string FechaProgramacion, VentaResponse ventaResponse)
         {
-            Clients.All.actualizarCodiProgramacion(nroViaje, FechaProgramacion, codiProgramacion);
+            Clients.All.actualizarTurnoPlano(nroViaje, FechaProgramacion, ventaResponse);
         }
     }
 }

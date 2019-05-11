@@ -424,7 +424,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<ClientePasaje>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<ClientePasaje>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -863,14 +863,15 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         ListaVentasRealizadas = _listVentasRealizadas(data["ListaVentasRealizadas"]),
                         CodiProgramacion = (int)data["CodiProgramacion"]
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<Venta>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Venta>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1036,18 +1037,19 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<bool> res = new Response<bool>()
+                Response<byte> res = new Response<byte>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = (byte)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1093,14 +1095,15 @@ namespace SisComWeb.Aplication.Controllers
                         FechViaje = (string)data["FechViaje"],
                         HoraViaje = (string)data["HoraViaje"],
                         NumeAsiento = (int)data["NumeAsiento"]
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<VentaBeneficiario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<VentaBeneficiario>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1138,19 +1141,25 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
 
-                Response<int> res = new Response<int>()
+                Response<VentaResponse> res = new Response<VentaResponse>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (int)tmpResult["Valor"]
+                    Valor = new VentaResponse()
+                    {
+                        ListaVentasRealizadas = _listVentasRealizadas(data["ListaVentasRealizadas"]),
+                        CodiProgramacion = (int)data["CodiProgramacion"]
+                    },
+                    EsCorrecto = (bool)tmpResult["Estado"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+                return Json(new Response<byte>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1178,18 +1187,19 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<bool> res = new Response<bool>()
+                Response<byte> res = new Response<byte>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = (byte)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1215,18 +1225,19 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<bool> res = new Response<bool>()
+                Response<byte> res = new Response<byte>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = (byte)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
     }

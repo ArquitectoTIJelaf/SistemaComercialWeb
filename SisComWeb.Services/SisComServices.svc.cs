@@ -440,7 +440,7 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<int> PostergarVenta(PostergarVentaRequest filtro)
+        public Response<VentaResponse> PostergarVenta(PostergarVentaRequest filtro)
         {
             try
             {
@@ -449,11 +449,11 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcPostergarVenta, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcPostergarVenta, false);
             }
         }
 
-        public Response<bool> EliminarReserva(int IdVenta)
+        public Response<byte> EliminarReserva(int IdVenta)
         {
             try
             {
@@ -462,7 +462,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcEliminarReserva, false);
+                return new Response<byte>(false, 0, Message.MsgExcEliminarReserva, false);
             }
         }
 
@@ -470,7 +470,7 @@ namespace SisComWeb.Services
 
         #region ANULAR VENTA
 
-        public Response<bool> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
+        public Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
         {
             try
             {
@@ -479,7 +479,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcAnularVenta, false);
+                return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
             }
         }
 
@@ -487,7 +487,7 @@ namespace SisComWeb.Services
 
         #region FECHA ABIERTA
 
-        public Response<bool> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
             try
             {
@@ -496,7 +496,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcModificarVentaAFechaAbierta, false);
+                return new Response<byte>(false, 0, Message.MsgExcModificarVentaAFechaAbierta, false);
             }
         }
         #endregion

@@ -519,19 +519,23 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static bool AnularVenta(int IdVenta, int CodiUsuario)
+        public static byte AnularVenta(int IdVenta, int CodiUsuario)
         {
-            var valor = new bool();
+            var valor = new byte();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_AnularVenta";
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, IdVenta);
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
-
-                db.Execute();
-
-                valor = true;
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetByteValue(drlector, "Validator");
+                        break;
+                    }
+                }
             }
 
             return valor;
@@ -559,26 +563,30 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static bool EliminarReserva(int IdVenta)
+        public static byte EliminarReserva(int IdVenta)
         {
-            var valor = new bool();
+            var valor = new byte();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_EliminarReserva";
                 db.AddParameter("@IdVenta", DbType.Int32, ParameterDirection.Input, IdVenta);
-
-                db.Execute();
-
-                valor = true;
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetByteValue(drlector, "Validator");
+                        break;
+                    }
+                }
             }
 
             return valor;
         }
 
-        public static bool ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public static byte ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
         {
-            var valor = new bool();
+            var valor = new byte();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -586,10 +594,14 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
                 db.AddParameter("@Codi_Servicio", DbType.String, ParameterDirection.Input, CodiServicio);
                 db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, CodiRuta);
-
-                db.Execute();
-
-                valor = true;
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetByteValue(drlector, "Validator");
+                        break;
+                    }
+                }
             }
 
             return valor;

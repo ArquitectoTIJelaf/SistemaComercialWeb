@@ -85,7 +85,7 @@
         public const string MsgExcMuestraTurno = "Excepción: MuestraTurno.";
 
         // Bloqueo Asiento
-        public const string MsgValidaBloqueoAsiento = "Asiento ocupado.";
+        public const string MsgValidaBloqueoAsiento = "Asiento no disponible.";
         public const string MsgValidaCeroBloqueoAsiento = "No se puede bloquear el asiento seleccionado.";
         public const string MsgCorrectoBloqueoAsiento = "Correcto: BloqueoAsiento.";
         public const string MsgExcBloqueoAsiento = "Excepción: BloqueoAsiento.";
@@ -140,8 +140,8 @@
         public const string MsgCorrectoGrabaReserva = "Correcto: GrabaReserva.";
         public const string MsgExcGrabaReserva = "Excepción: GrabaVenta.";
 
-        public const string MsgCorrectoEliminarReserva = "Correcto: EliminarReserva.";
-        public const string MsgErrorEliminarReserva = "Error: EliminarReserva.";
+        public const string MsgCorrectoEliminarReserva = "Se canceló la reserva correctamente.";
+        public const string MsgErrorEliminarReserva = "Solicitud cancelada, la reserva ya ha sido cancelada o confirmada.";
         public const string MsgExcEliminarReserva = "Excepción: EliminarReserva.";
 
         // Pase
@@ -157,8 +157,7 @@
         public const string MsgExcClavesInternas = "Excepción: ClavesInternas.";
 
         // Anular Venta
-        public const string MsgErrorBuscarVentaById = "Error: BuscarVentaById.";
-        public const string MsgErrorAnularVenta = "Error: AnularVenta.";
+        public const string MsgErrorAnularVenta = "Solicitud cancelada, la venta ya ha sido anulada.";
 
         public const string MsgCorrectoAnularVenta = "Se anuló la venta correctamente.";
         public const string MsgExcAnularVenta = "Excepción: AnularVenta.";
@@ -168,13 +167,13 @@
         public const string MsgValidaBuscarVentaxBoleto = "No se encontraron resultados.";
         public const string MsgExcBuscarVentaxBoleto = "Excepción: BuscarVentaxBoleto.";
 
-        public const string MsgCorrectoPostergarVenta = "Se cambió a Fecha Abierta correctamente.";
+        public const string MsgCorrectoPostergarVenta = "Se postergó venta correctamente.";
         public const string MsgErrorPostergarVenta = "Error: PostergarVenta.";
         public const string MsgExcPostergarVenta = "Excepción: PostergarVenta.";
 
         // Fecha Abierta
-        public const string MsgCorrectoModificarVentaAFechaAbierta = "Correcto: ModificarVentaAFechaAbierta.";
-        public const string MsgErrorModificarVentaAFechaAbierta = "Error: ModificarVentaAFechaAbierta.";
+        public const string MsgCorrectoModificarVentaAFechaAbierta = "Se envió a Fecha Abierta correctamente.";
+        public const string MsgErrorModificarVentaAFechaAbierta = "Solicitud cancelada, la venta ya ha sido enviada a Fecha Abierta.";
         public const string MsgExcModificarVentaAFechaAbierta = "Excepción: ModificarVentaAFechaAbierta.";
     }
 }
