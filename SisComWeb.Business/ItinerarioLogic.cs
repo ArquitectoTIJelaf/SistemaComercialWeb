@@ -130,6 +130,12 @@ namespace SisComWeb.Business
                     // Obtiene 'TotalVentas'
                     if (buscarItinerarios[i].CodiProgramacion > 0)
                         buscarItinerarios[i].AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarItinerarios[i].CodiProgramacion, buscarItinerarios[i].CodiOrigen, buscarItinerarios[i].CodiDestino);
+
+                    // Seteo 'Color'
+                    buscarItinerarios[i].Color = GetColor(buscarItinerarios[i].ProgramacionCerrada, buscarItinerarios[i].AsientosVendidos, int.Parse(buscarItinerarios[i].CapacidadBus), buscarItinerarios[i].StOpcional);
+
+                    // Seteo 'SecondColor'
+                    buscarItinerarios[i].SecondColor = GetSecondColor(buscarItinerarios[i].AsientosVendidos, int.Parse(buscarItinerarios[i].CapacidadBus), buscarItinerarios[i].StOpcional);
                 }
 
                 return new Response<List<ItinerarioEntity>>(true, buscarItinerarios, Message.MsgCorrectoBuscaItinerarios, true);
@@ -139,6 +145,61 @@ namespace SisComWeb.Business
                 Log.Instance(typeof(ItinerarioLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<ItinerarioEntity>>(false, null, Message.MsgExcBuscaItinerarios, false);
             }
+        }
+
+        public static string GetColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
+        {
+            var color = string.Empty;
+            if (ProgramacionCerrada)
+            {
+                color = "#169BFF"; // Azul
+            }
+            else
+            {
+                if (AsientosVendidos == 0 && StOpcional.Equals("0"))
+                {
+                    color = "#FFFFFF"; // Blanco
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("0"))
+                {
+                    color = "#A9E36A"; // Verde
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("0"))
+                {
+                    color = "#E26B67"; // Rojo
+                }
+                else if (AsientosVendidos == 0 && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E"; // Naranja
+                }
+                else if (CapacidadBus == 0 && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E"; // Naranja
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E"; // Naranja y Verde
+                }
+                else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
+                {
+                    color = "#F7C06E"; // Naranja y Rojo
+                }
+            }
+            return color;
+        }
+
+        public static string GetSecondColor(int AsientosVendidos, int CapacidadBus, string StOpcional)
+        {
+            var color = string.Empty;
+            if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
+            {
+                color = "#A9E36A"; // Naranja y Verde
+            }
+            else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
+            {
+                color = "#E26B67"; // Naranja y Rojo
+            }
+            return color;
         }
     }
 }

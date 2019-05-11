@@ -79,5 +79,9 @@ namespace SisComWeb.Entity
         public List<DestinoRutaEntity> ListaDestinosRuta { get; set; }
 
         public string FechaViaje { get; set; }
+
+        public string Color { get; set; }
+
+        public string SecondColor { get; set; }
     }
 }

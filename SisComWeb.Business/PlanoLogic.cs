@@ -186,32 +186,38 @@ namespace SisComWeb.Business
             entidad.PrecioVenta = item.PrecioVenta;
             entidad.RecogeEn = item.RecogeEn;
             entidad.FlagVenta = item.FlagVenta;
-            entidad.Sigla = item.Sigla;
+
+            if(entidad.FlagVenta == "7") // Pase de cortesía
+                entidad.Sigla = "PAS";
+            else
+                entidad.Sigla = item.Sigla;
+
             entidad.Boleto = item.Boleto;
             entidad.TipoBoleto = item.TipoBoleto;
             entidad.CodiOrigen = item.CodiOrigen;
             entidad.OrdenOrigen = item.OrdenOrigen;
 
-            if (item.FlagVenta == "X" || item.FlagVenta == "AB")
+            switch (entidad.FlagVenta)
             {
-                entidad.IdVenta = string.Empty;
-                entidad.Color = string.Empty;
-                entidad.FechaVenta = string.Empty;
-                entidad.FechaViaje = string.Empty;
-            }
-            else if (item.FlagVenta == "VI")
-            {
-                entidad.IdVenta = item.IdVenta;
-                entidad.Color = item.Color;
-                entidad.FechaVenta = "07/07/1777";
-                entidad.FechaViaje = string.Empty;
-            }
-            else
-            {
-                entidad.IdVenta = item.IdVenta;
-                entidad.Color = item.Color;
-                entidad.FechaVenta = item.FechaVenta;
-                entidad.FechaViaje = item.FechaViaje;
+                case "X": // Asiento bloqueado
+                case "AB": // Asiento bloqueado por módulo
+                    entidad.IdVenta = string.Empty;
+                    entidad.Color = string.Empty;
+                    entidad.FechaVenta = string.Empty;
+                    entidad.FechaViaje = string.Empty;
+                    break;
+                case "VI": // Venta intermedia
+                    entidad.IdVenta = item.IdVenta;
+                    entidad.Color = item.Color;
+                    entidad.FechaVenta = "07/07/1777";
+                    entidad.FechaViaje = string.Empty;
+                    break;
+                default:
+                    entidad.IdVenta = item.IdVenta;
+                    entidad.Color = item.Color;
+                    entidad.FechaVenta = item.FechaVenta;
+                    entidad.FechaViaje = item.FechaViaje;
+                    break;
             }
 
             // Busca 'Pasajero'

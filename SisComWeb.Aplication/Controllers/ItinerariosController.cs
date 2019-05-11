@@ -19,61 +19,6 @@ namespace SisComWeb.Aplication.Controllers
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
         readonly Usuario usuario = DataSession.UsuarioLogueado;
 
-        private static string _oneColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
-        {
-            var color = string.Empty;
-            if (ProgramacionCerrada)
-            {
-                color = "#169BFF"; //Azul
-            }
-            else
-            {
-                if (AsientosVendidos == 0 && StOpcional.Equals("0"))
-                {
-                    color = "#FFFFFF"; //Blanco
-                }
-                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("0"))
-                {
-                    color = "#A9E36A"; //Verde
-                }
-                else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("0"))
-                {
-                    color = "#E26B67"; //Rojo
-                }
-                else if (AsientosVendidos == 0 && StOpcional.Equals("1"))
-                {
-                    color = "#F7C06E"; //Naranja
-                }
-                else if (CapacidadBus == 0 && StOpcional.Equals("1"))
-                {
-                    color = "#F7C06E"; //Naranja
-                }
-                else if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
-                {
-                    color = "#F7C06E"; //Naranja y Verde
-                }
-                else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
-                {
-                    color = "#F7C06E"; //Naranja y Rojo
-                }
-            }
-            return color;
-        }
-
-        private static string _twoColor(int AsientosVendidos, int CapacidadBus, string StOpcional)
-        {
-            var color = string.Empty;
-            if (AsientosVendidos > 0 && AsientosVendidos < CapacidadBus && StOpcional.Equals("1"))
-            {
-                color = "#A9E36A"; //Naranja y Verde
-            }
-            else if (AsientosVendidos > 0 && AsientosVendidos == CapacidadBus && StOpcional.Equals("1"))
-            {
-                color = "#E26B67"; //Naranja y Rojo
-            }
-            return color;
-        }
-
         private static List<Punto> _listPuntos(JToken list)
         {
             List<Punto> lista = list.Select(x => new Punto
@@ -273,8 +218,8 @@ namespace SisComWeb.Aplication.Controllers
                         StOpcional = (string)x["StOpcional"],
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         FechaViaje = (string)x["FechaViaje"],
-                        Color = _oneColor((bool)x["ProgramacionCerrada"], (int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"]),
-                        SecondColor = _twoColor((int)x["AsientosVendidos"], (int)x["CapacidadBus"], (string)x["StOpcional"])
+                        Color = (string)x["Color"],
+                        SecondColor = (string)x["SecondColor"],
                     }).ToList()
                 };
 

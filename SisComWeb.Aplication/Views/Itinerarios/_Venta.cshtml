@@ -682,11 +682,11 @@
                                                            @@blur="validateTxtNroAsientoVenta($event)"
                                                            id="txtNroAsientoVenta"
                                                            ref="refNroAsientoVenta"
-                                                           class="form-control input-sm camposTicket"
+                                                           class="form-control input-sm"
                                                            placeholder="Nº"
                                                            style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
-                                                           v-bind:disabled="disabledCamposTicket"
-                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.asiento}"
+                                                           :class="{'placeh-ticket-venta': auxFocus.asiento}"
+                                                           :disabled="disabledCampoNroAsiento"
                                                            v-mask="'##'">
                                                 </div>
                                             </div>
@@ -702,6 +702,7 @@
                                                               :id="'cboTipoDoc'"
                                                               ref="refTipoDoc"
                                                               :get-option-label="labelOfDocumento"
+                                                              :disabled="disabledCamposTicket_Pase"
                                                               name="Tipo"
                                                               v-validate="'required'">
                                                         <template slot="option" slot-scope="option">
@@ -719,6 +720,7 @@
                                                     </label>
                                                     <button class="btn-info btn-xs"
                                                             title="Consultar a RENIEC"
+                                                            :disabled="disabledCamposTicket_Pase"
                                                             v-on:click="consultaReniec">
                                                         <i class="fa fa-refresh" aria-hidden="true"></i>
                                                     </button>
@@ -731,6 +733,7 @@
                                                            ref="refDocumento"
                                                            class="form-control input-sm"
                                                            placeholder="DOCUMENTO"
+                                                           :disabled="disabledCamposTicket_Pase"
                                                            v-mask="mask.documento">
                                                 </div>
                                             </div>
@@ -746,6 +749,7 @@
                                                        id="txtNombres"
                                                        ref="refNombres"
                                                        class="form-control input-sm"
+                                                       :disabled="disabledCamposTicket_Pase"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="NOMBRES"
                                                        maxlength="200"
@@ -762,6 +766,7 @@
                                                        id="txtApellidoPaterno"
                                                        ref="refApellidoPaterno"
                                                        class="form-control input-sm"
+                                                       :disabled="disabledCamposTicket_Pase"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="PATERNO"
                                                        maxlength="50"
@@ -778,6 +783,7 @@
                                                        id="txtApellidoMaterno"
                                                        ref="refApellidoMaterno"
                                                        class="form-control input-sm"
+                                                       :disabled="disabledCamposTicket_Pase"
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="MATERNO"
                                                        maxlength="50"
@@ -841,6 +847,7 @@
                                                               :placeholder="'SEXO'"
                                                               :select-on-tab="true"
                                                               :id="'cboSexo'"
+                                                              :disabled="disabledCamposTicket_Pase"
                                                               ref="refSexo"
                                                               label="label">
                                                         <template slot="option" slot-scope="option">
