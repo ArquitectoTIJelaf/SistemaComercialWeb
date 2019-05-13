@@ -188,7 +188,7 @@ namespace SisComWeb.Business
             entidad.FlagVenta = item.FlagVenta;
 
             if(entidad.FlagVenta == "7") // Pase de cortesía
-                entidad.Sigla = "PAS";
+                entidad.Sigla = "PC";
             else
                 entidad.Sigla = item.Sigla;
 

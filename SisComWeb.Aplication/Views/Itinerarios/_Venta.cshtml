@@ -56,16 +56,6 @@
                 -webkit-transform: scale(1);
                 transform: scale(1);
             }
-
-    .ancho {
-        width: 23%;
-    }
-
-    #txtPrecio {
-        outline: 0 !important;
-        border-width: 0 0 2px !important;
-        border-color: #1082c0 !important;
-    }
 </style>
 
 <div id="appVueVenta" v-show="showVentas" class="row">
@@ -93,11 +83,11 @@
                                     </v-select>
                                 </div>
                             </div>
-                            <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label color-blue">Nº VIAJE: {{filtro.NroViaje}}</label>
+                            <div class="col-md-2" style="text-align: center; margin-top: 30px; color: var(--emp-color); ">
+                                <label class="control-label">Nº VIAJE: {{filtro.NroViaje}}</label>
                             </div>
-                            <div class="col-md-2" style="text-align: center; margin-top: 30px; ">
-                                <label class="control-label color-blue">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion}}</label>
+                            <div class="col-md-2" style="text-align: center; margin-top: 30px; color: var(--emp-color); ">
+                                <label class="control-label">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion}}</label>
                             </div>
                             <div class="col-md-4" style="text-align: right; font-size: 15px;">
                                 <a @@click="nextStep(10)"
@@ -123,7 +113,7 @@
                         <div class="col-md-12">
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
                                 <img src="~/wwwroot/plugins/images/BUS3.png" />
-                                <label class="control-label color-blue" style="margin-left: 5px; font-size: 12px; display: inline; ">
+                                <label class="control-label" style="margin-left: 5px; font-size: 12px; display: inline; color: var(--emp-color); ">
                                     CON EMBARQUE EN: {{setCadenaEmbarques}}
                                 </label>
                                 <div class="panel-action">
@@ -291,7 +281,11 @@
                                             <div style="overflow-y:auto;height: 100px;">
                                                 <ul style="list-style-type: none; padding-left: 0;">
                                                     <li v-for="item in list.turnos">
-                                                        <a @@click="changeTurno(item)" style="cursor:pointer;font-weight: 500; color: #2A97F4" :title="item.HoraPartida + ' - ' + item.NomServicio">{{item.HoraPartida}}  -  {{item.NomServicio}}</a>
+                                                        <a @@click="changeTurno(item)"
+                                                           style="cursor:pointer;font-weight: 500; color: var(--emp-color); "
+                                                           :title="item.HoraPartida + ' - ' + item.NomServicio">
+                                                            {{item.HoraPartida}}  -  {{item.NomServicio}}
+                                                        </a>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -668,13 +662,15 @@
                                     <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" />
                                 </div>
                             </div>
-                            <div id="bannerVentas" class="col-md-10" style="border: 1px solid #009cff; width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
+                            <div id="bannerVentas" class="col-md-10" style="border: 1px solid var(--emp-color); width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
                                 <form autocomplete="off" @@submit.prevent>
                                     <div class="row">
                                         <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
                                             <div class="col-md-4">
-                                                <div class="form-group" style="border: 1px solid #009cff; text-align: center; border-radius: 5px; padding: 5px 0px; ">
-                                                    <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Asiento</label>
+                                                <div class="form-group"
+                                                     :class="{'disabled-contenedor-NroAsiento': disabledCampoNroAsiento}"
+                                                     style="border: 1px solid var(--emp-color); text-align: center; border-radius: 5px; padding: 5px 0px;">
+                                                    <label class="control-label" style="width: 100%; font-weight: 500; color: var(--emp-color); ">Asiento</label>
                                                     <input v-model="list.ventas[indexVenta].NroAsiento"
                                                            @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"
                                                            @@keydown.9.prevent="validateTxtNroAsientoVenta($event)"
@@ -684,7 +680,7 @@
                                                            ref="refNroAsientoVenta"
                                                            class="form-control input-sm"
                                                            placeholder="Nº"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90"
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color)"
                                                            :class="{'placeh-ticket-venta': auxFocus.asiento}"
                                                            :disabled="disabledCampoNroAsiento"
                                                            v-mask="'##'">
@@ -794,7 +790,7 @@
                                             <div class="form-group">
                                                 <template v-if=" list.ventas[indexVenta].FlagVenta == '' ">
                                                     <label class="control-label"
-                                                           style="font-size: 16px !important; font-weight: 500; color: #004e90;">
+                                                           style="font-size: 16px !important; font-weight: 500; color: var(--emp-color);">
                                                         N° {{Correlativo}}
                                                     </label>
                                                 </template>
@@ -819,6 +815,7 @@
                                                                ref="refFechaNac"
                                                                class="form-control input-sm dpyear"
                                                                placeholder="FECHA NAC."
+                                                               :disabled="disabledCamposTicket"
                                                                v-mask="'##/##/####'">
                                                     </div>
                                                 </div>
@@ -832,7 +829,7 @@
                                                                placeholder="E"
                                                                v-validate="'required|min_value: 1'"
                                                                style="cursor: not-allowed;"
-                                                               readonly>
+                                                               disabled="disabled">
                                                     </div>
                                                 </div>
                                                 <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Edad') }}</span>
@@ -868,6 +865,7 @@
                                                        ref="refTelefono"
                                                        class="form-control input-sm"
                                                        placeholder="TELÉFONO"
+                                                       :disabled="disabledCamposTicket"
                                                        v-mask="'#'.repeat(9)">
                                             </div>
                                         </div>
@@ -881,6 +879,7 @@
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
+                                                       :disabled="disabledCamposTicket"
                                                        placeholder="RECOGER">
                                             </div>
                                         </div>
@@ -928,9 +927,11 @@
                                                                v-validate="'min: 11'"
                                                                data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
+                                                               :disabled="disabledCamposTicket"
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
+                                                                :disabled="disabledCamposTicket_Pase"
                                                                 v-on:click="consultaSunat">
                                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                                         </button>
@@ -949,6 +950,7 @@
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
+                                                               :disabled="disabledCamposTicket"
                                                                v-validate="'required|min: 3'"
                                                                data-vv-as="Razón social">
                                                     </div>
@@ -969,6 +971,7 @@
                                                            max="200"
                                                            class="form-control input-sm"
                                                            placeholder="DIRECCIÓN"
+                                                           :disabled="disabledCamposTicket"
                                                            v-validate="'required'"
                                                            data-vv-as="Dirección fiscal">
                                                 </div>
@@ -998,6 +1001,7 @@
                                                        name="nacionalidad"
                                                        class="form-control input-sm"
                                                        placeholder="NACIONALIDAD"
+                                                       :disabled="disabledCamposTicket"
                                                        v-validate="'required'"
                                                        v-mask="'A'.repeat(30)">
                                             </div>
@@ -1028,6 +1032,7 @@
                                                                id="chckRegistrarNino"
                                                                ref="refRegistrarNino"
                                                                class="check-with-label"
+                                                               :disabled="disabledCamposTicket && !checkRegistrarNino"
                                                                type="checkbox">
                                                         <label for="chckRegistrarNino" class="label-for-check" style="min-height: initial; ">
                                                             REGISTRAR NI&Ntilde;O
@@ -1037,7 +1042,7 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group text-center">
-                                                    <label class="control-label" style="width: 100%; font-weight: 500; color: #1082c0;">Precio S/.</label>
+                                                    <label class="control-label" style="width: 100%; font-weight: 500; color: var(--emp-color);">Precio S/.</label>
                                                     <input v-model="list.ventas[indexVenta].Precio"
                                                            @@keypress.13.prevent="recorridoSectionVentas"
                                                            @@keypress.9.prevent="recorridoSectionVentas"
@@ -1047,7 +1052,8 @@
                                                            ref="refPrecio"
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: #004E90;"
+                                                           :disabled="disabledCamposTicket"
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color);"
                                                            v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
                                                 </div>
                                             </div>

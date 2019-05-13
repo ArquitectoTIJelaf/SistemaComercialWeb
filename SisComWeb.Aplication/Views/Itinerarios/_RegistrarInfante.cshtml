@@ -21,6 +21,7 @@
                                           label="label"
                                           :options="list.tipoDoc"
                                           :placeholder="'DOCUMENTO'"
+                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -41,10 +42,11 @@
                                        class="form-control input-sm"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
+                                       :disabled="disabledCamposTicket"
                                        v-mask="mask.documento"
                                        v-validate="'min: ' + validateMinNumero">
                             </div>
-                            <span v-show="errors.has('Número')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Número') }}</span>
+                            <span v-show="errors.has('Número')" class="text-danger m-l-5" style="display: inline-block; margin-top: 5px; ">{{ errors.first('Número') }}</span>
                         </div>
                     </div>
                     <div class="form-group m-b-5">
@@ -58,6 +60,7 @@
                                        maxlength="50"
                                        class="form-control input-sm"
                                        placeholder="NOMBRES"
+                                       :disabled="disabledCamposTicket"
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -65,7 +68,7 @@
                     </div>
                     <div class="form-group m-b-5">
                         <div class="col-md-6">
-                            <label class="col-md-12 control-label label-sm">A. Paterno:</label>
+                            <label class="col-md-12 control-label label-sm">Apellido Paterno:</label>
                             <div class="col-md-12">
                                 <input v-model="ApellidoPaterno"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
@@ -74,12 +77,13 @@
                                        maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO PATERNO"
+                                       :disabled="disabledCamposTicket"
                                        autocomplete="off"
                                        v-only-name>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label class="col-md-12 control-label label-sm">A. Materno:</label>
+                            <label class="col-md-12 control-label label-sm">Apellido Materno:</label>
                             <div class="col-md-12">
                                 <input v-model="ApellidoMaterno"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
@@ -88,6 +92,7 @@
                                        maxlength="25"
                                        class="form-control input-sm"
                                        placeholder="APELLIDO MATERNO"
+                                       :disabled="disabledCamposTicket"
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -95,7 +100,7 @@
                     </div>
                     <div class="form-group m-b-5">
                         <div class="col-md-5">
-                            <label class="col-md-12 label-sm">Fec. Nacimiento:</label>
+                            <label class="col-md-12 label-sm">Fecha Nacimiento:</label>
                             <div class="col-md-12">
                                 <input @@blur="setDateAndCalcYears($event.target.value.trim())"
                                        v-model="FechaNac"
@@ -103,6 +108,7 @@
                                        id="txtFechaNacRA"
                                        class="form-control input-sm dpyearnino"
                                        placeholder="FECHA NAC."
+                                       :disabled="disabledCamposTicket"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">
                             </div>
@@ -116,7 +122,7 @@
                                        class="form-control input-sm"
                                        placeholder="EDAD"
                                        style="text-align: center; "
-                                       readonly="readonly"
+                                       disabled="disabled"
                                        autocomplete="off">
                             </div>
                         </div>
@@ -128,6 +134,7 @@
                                           label="label"
                                           :options="list.sexos"
                                           :placeholder="'SEXO'"
+                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -144,6 +151,7 @@
                                           label="label"
                                           :options="list.parentesco"
                                           :placeholder="'PARENTESCO'"
+                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           ref="select">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>

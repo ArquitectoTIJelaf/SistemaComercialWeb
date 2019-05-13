@@ -50,11 +50,14 @@
                                 <input v-model="concepto"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
                                        id="txtConceptoPC"
+                                       name="Concepto"
                                        type="text"
                                        class="form-control input-sm"
                                        placeholder="CONCEPTO"
+                                       v-validate="'required'"
                                        autocomplete="off">
                             </div>
+                            <span v-show="gerente && solicitante && errors.has('Concepto')" class="text-danger m-l-15" style="display: inline-block; margin-top: 5px; ">{{ errors.first('Concepto') }}</span>
                         </div>
                     </div>
                     <div class="form-group m-b-5">

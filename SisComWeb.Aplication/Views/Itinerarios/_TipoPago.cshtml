@@ -53,7 +53,7 @@
                                                v-validate="'min_value:' + (sumaTotal)"
                                                data-vv-as="Imp. Pagado"
                                                class="form-control input-sm"
-                                               name="Imp Pagado"
+                                               name="Imp. Pagado"
                                                v-money
                                                v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
@@ -70,8 +70,8 @@
                                                disabled />
                                     </div>
                                 </div>
+                                <span v-show="errors.has('Imp. Pagado')" class="text-danger m-l-10">{{errors.first('Imp. Pagado')}}</span>
                             </div>
-                            <span v-show="errors.has('Imp Pagado')" class="text-danger m-l-15">{{errors.first('Imp Pagado')}}</span>
                         </template>
                         <template v-else-if="tipoPago === '02'">
                             <div class="col-md-6 separate-in-form">
@@ -99,7 +99,7 @@
                                            v-mask="'####-####-####-####'"
                                            v-validate="'formatoNumeroTarjeta: 16'"/>
                                 </div>
-                                <span v-show="errors.has('Número')" class="text-danger m-l-15" style="display: inline-block;">{{ errors.first('Número') }}</span>
+                                <span v-show="errors.has('Número')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-3">
@@ -111,7 +111,7 @@
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                v-validate="'between:1, '+(sumaTotal-1)"
                                                class="form-control input-sm"
-                                               name="monto tarjeta"
+                                               name="Monto Tarjeta"
                                                v-money
                                                v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
@@ -126,7 +126,7 @@
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                v-validate="'between:1, '+sumaTotal"
                                                class="form-control input-sm"
-                                               name="monto efectivo"
+                                               name="Monto Efectivo"
                                                v-money
                                                v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
@@ -140,9 +140,8 @@
                                                @@input="calcMontos('IP')"
                                                @@keypress.13.prevent="nextInput('NUMERO')"
                                                v-validate="'min_value:' + (efectivo)"
-                                               data-vv-as="Imp. Pagado:"
                                                class="form-control input-sm"
-                                               name="Imp Pagado"
+                                               name="Imp. Pagado"
                                                v-money
                                                v-only-digit
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
@@ -158,8 +157,8 @@
                                                disabled />
                                     </div>
                                 </div>
-                                <span v-show="errors.has('monto tarjeta')" class="text-danger m-l-15">{{errors.first('monto tarjeta')}}</span>
-                                <span v-show="errors.has('Imp Pagado')" class="text-danger m-l-15">{{errors.first('Imp Pagado')}}</span>
+                                <span v-show="errors.has('Monto Tarjeta')" class="text-danger m-l-10">{{errors.first('Monto Tarjeta')}}</span>
+                                <span v-show="errors.has('Imp. Pagado')" class="text-danger m-l-10">{{errors.first('Imp. Pagado')}}</span>
                             </div>
                         </template>
                         <template v-if="tipoPago === '03'">
@@ -187,7 +186,7 @@
                                            v-mask="'####-####-####-####'"
                                            v-validate="'formatoNumeroTarjeta: 16'" />
                                 </div>
-                                <span v-show="errors.has('Número')" class="text-danger m-l-15" style="display: inline-block;">{{ errors.first('Número') }}</span>
+                                <span v-show="errors.has('Número')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
                         </template>
                         <template v-else-if="tipoPago === '04'">
@@ -257,7 +256,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos || processing" class="btn btn-primary waves-effect waves-light text-left">
+                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos || processing" class="btn btn-primary waves-effect text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light text-left">

@@ -21,6 +21,32 @@
 @section styles{
     <style type="text/css">
 
+        input[type=checkbox][disabled] {
+            cursor: not-allowed !important;
+        }
+
+        .checkbox input[type=checkbox]:disabled + label {
+            cursor: not-allowed;
+        }
+
+        .form-control[disabled] {
+            background-color: inherit;
+        }
+
+        .ancho {
+            width: 23%;
+        }
+
+        #txtPrecio {
+            outline: 0 !important;
+            border-width: 0 0 2px !important;
+            border-color: var(--emp-color) !important;
+        }
+
+        .checkbox label::before {
+            border: 1px solid var(--emp-color);
+        }
+
         button[disabled] {
             cursor: not-allowed;
         }
@@ -1025,6 +1051,7 @@
                 checkRegistrarNino: false,
                 disabledAsiento: false,
                 disabledCampoNroAsiento: false,
+                disabledCamposTicket: false,
                 disabledCamposTicket_Pase: false,
                 // Correlativos
                 CorrelativoVentaBoleta: '',
@@ -1432,7 +1459,6 @@
                     }
 
                     // Solo cuando '_fillData' es 'true':
-
                     if (_fillData) {
                         // Animación 'ScrollTop'
                         animateScrollTop(800);
@@ -1469,6 +1495,9 @@
 
                         _this.$nextTick(() => {
                             _this.disabledCampoNroAsiento = true;
+                            _this.disabledCamposTicket = true;
+                            _this.disabledCamposTicket_Pase = true;
+                            appRegistrarInfante.disabledCamposTicket = true;
                         });
                     }
                 },
@@ -2320,6 +2349,7 @@
                     _this.errors.clear();
                     _this.checkRegistrarNino = false;
                     _this.disabledCampoNroAsiento = false;
+                    _this.disabledCamposTicket = false;
                     _this.disabledCamposTicket_Pase = false;
 
                     appRegistrarInfante.limpiarCampos();
@@ -2449,15 +2479,15 @@
                     var codiTipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
                     if (codiTipoDoc) {
                         id = codiTipoDoc.id;
-                        if (id === "1") { //DNI
+                        if (id === '1') { //DNI
                             _this.mask.documento = "#".repeat(8);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = 'PERUANA';
                         }
-                        else if (id === "4") { //PASAPORTE
+                        else if (id === '4') { //PASAPORTE
                             _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
-                        else if (id === "7") { //CARNET EXTRANJERIA
+                        else if (id === '7') { //CARNET EXTRANJERIA
                             _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
@@ -2626,6 +2656,10 @@
                     var _this = this;
                     var nomBen = (_beneficiario.NombreBeneficiario) ? _beneficiario.NombreBeneficiario.split(',') : [];
                     _this.list.ventas[_this.indexVenta].CodiTipoDoc = _.find(_this.list.tiposDoc, { 'id': _beneficiario.TipoDocumento.replace(/0/g, '') }) || null;
+                    // ---------------------------------------------------------------------------------------------------------------
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1')
+                        _this.list.ventas[_this.indexVenta].Nacionalidad = 'PERUANA';
+                    // ---------------------------------------------------------------------------------------------------------------
                     _this.list.ventas[_this.indexVenta].Documento = _beneficiario.NumeroDocumento;
                     _this.list.ventas[_this.indexVenta].Nombres = nomBen[2];
                     _this.list.ventas[_this.indexVenta].ApellidoPaterno = nomBen[0];
@@ -2637,7 +2671,7 @@
                     _this.list.ventas[_this.indexVenta].Concepto = appVuePaseCortesia.concepto;
                     _this.list.ventas[_this.indexVenta].FechaAbierta = appVuePaseCortesia.fechaAbierta;
 
-                    await _this.searchUser();
+                    _this.searchUser();
 
                     _this.disabledCampoNroAsiento = true;
                     _this.disabledCamposTicket_Pase = true;
@@ -3406,7 +3440,8 @@
                 disabledBotones: false,
                 enableSaveWithClaveAutorizacion: false,
                 password: '',
-                validateMinNumero: '0'
+                validateMinNumero: '0',
+                disabledCamposTicket: false
             },
             mounted: function () {
                 this.getParentesco();
@@ -3445,6 +3480,7 @@
                     this.Parentesco = ''; // null
                     this.disabledBotones = false;
                     this.validateMinNumero = '0';
+                    this.disabledCamposTicket = false;
                 },
                 setDateAndCalcYears: function (dateString) {
                     this.$nextTick(() => {
@@ -3631,7 +3667,6 @@
                 gerente: null,
                 solicitante: null,
                 concepto: '',
-                beneficiario: '',
                 list: {
                     gerentes: [],
                     solicitantes: [],
@@ -3649,7 +3684,7 @@
             mounted: function () {},
             methods: {
                 show: function () {
-                    window.addEventListener('keyup', this.esc);//HMSV
+                    window.addEventListener('keyup', this.esc); // HMSV
                     this.getGerentes();
                     this.getSocios();
                     this.limpiarPaseCortesia();
@@ -3685,7 +3720,7 @@
                         $('#cboSolicitantePC input[type=search]').focus();
                     else if (!_this.concepto)
                         $('#txtConceptoPC').focus();
-                    else if (!_this.beneficiario)
+                    else if (!_this.searchInTable)
                         $('#txtBeneficiarioPC').focus();
                     else
                         $('#btnAsignaPC').focus();
@@ -3725,7 +3760,7 @@
                     _this.gerente = null;
                     _this.solicitante = null;
                     _this.concepto = '';
-                    _this.beneficiario = '';
+                    _this.searchInTable = '';
                     _this.fechaAbierta = false;
                     _this.list.beneficiarios = [];
                     _this.list.filterBeneficiarios = [];
@@ -3735,15 +3770,12 @@
                     return (
                         _this.gerente &&
                         _this.solicitante &&
-                        _this.concepto &&
-                        _this.beneficiario &&
-                        parseFloat(_this.efectivo) + parseFloat(_this.tarjetaCant) === _this.sumaTotal
+                        _this.concepto
                     )
                 },
                 sendRow: async function (item) {
                     var _this = this;
-                    debugger;
-                    if (_this.validateSend) {
+                    if (_this.validateSend()) {
                         // SweetAlert para 'fechaAbierta'
                         if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar el Pase a Fecha Abierta?'))
                             _this.fechaAbierta = true;
@@ -3751,20 +3783,11 @@
                         await appController.sendPaseCortesia(item);
                         $('#appVuePaseCortesia').modal('hide');
                     }
+                    else
+                        _this.recorridoPaseCortesia();
                 }
             },
-            computed: {
-                filledCampos: function () {
-                    var _this = this;
-                    return (
-                        _this.gerente &&
-                        _this.solicitante &&
-                        _this.concepto &&
-                        _this.beneficiario &&
-                        parseFloat(_this.efectivo) + parseFloat(_this.tarjetaCant) === _this.sumaTotal
-                    )
-                }
-            },
+            computed: {},
             watch: {
                 searchInTable: function (newVal) {
                     var _this = this;
@@ -3773,9 +3796,9 @@
                             var coincidence = obj.NombreBeneficiario.toUpperCase().indexOf(newVal.toUpperCase()) !== -1;
                             return coincidence;
                         });
-                    } else {
-                         _this.list.filterBeneficiarios = _this.list.beneficiarios;
                     }
+                    else
+                         _this.list.filterBeneficiarios = _this.list.beneficiarios;
                 }
             }
         });
