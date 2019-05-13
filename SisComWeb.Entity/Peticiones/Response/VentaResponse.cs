@@ -6,6 +6,6 @@ namespace SisComWeb.Entity.Peticiones.Response
     {
         public List<VentaRealizada> ListaVentasRealizadas { get; set; }
 
-        public int CodiProgramacion { get; set; }
+        public int CodiProgramacion { get; set; } 
     }
 }
