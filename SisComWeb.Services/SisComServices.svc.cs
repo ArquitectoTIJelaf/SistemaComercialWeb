@@ -400,7 +400,7 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<int> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
+        public Response<decimal> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
         {
             try
             {
@@ -409,7 +409,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcValidarSaldoPaseCortesia, false);
+                return new Response<decimal>(false, 0, Message.MsgExcValidarSaldoPaseCortesia, false);
             }
         }
 

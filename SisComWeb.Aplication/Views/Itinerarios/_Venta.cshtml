@@ -344,7 +344,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group ">
-                                        <input value="USUARIO: @usuario.Nombre.ToString().ToUpper() - @usuario.CodiUsuario.ToString()"
+                                        <input value="USUARIO: @usuario.CodiUsuario.ToString() - @usuario.Nombre.ToString().ToUpper()"
                                                type="text"
                                                class="form-control input-sm"
                                                placeholder="USUARIO"
@@ -672,10 +672,10 @@
                                                      style="border: 1px solid var(--emp-color); text-align: center; border-radius: 5px; padding: 5px 0px;">
                                                     <label class="control-label" style="width: 100%; font-weight: 500; color: var(--emp-color); ">Asiento</label>
                                                     <input v-model="list.ventas[indexVenta].NroAsiento"
-                                                           @@keydown.13.prevent="validateTxtNroAsientoVenta($event)"
-                                                           @@keydown.9.prevent="validateTxtNroAsientoVenta($event)"
-                                                           @@focus="focusAsiento($event)"
+                                                           @@keydown.13.prevent="enterTxtNroAsientoVenta($event)"
+                                                           @@keydown.9.prevent="enterTxtNroAsientoVenta($event)"
                                                            @@blur="validateTxtNroAsientoVenta($event)"
+                                                           @@focus="focusAsiento($event)"
                                                            id="txtNroAsientoVenta"
                                                            ref="refNroAsientoVenta"
                                                            class="form-control input-sm"
@@ -963,8 +963,8 @@
                                                     <label class="control-label">Dirección fiscal</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="$refs.refNacionalidad.focus()"
-                                                           @@keypress.9.prevent="$refs.refNacionalidad.focus()"
+                                                           @@keypress.13.prevent="recorridoSectionVentas"
+                                                           @@keypress.9.prevent="recorridoSectionVentas"
                                                            id="txtDireccion"
                                                            ref="refDireccion"
                                                            name="direccion"
@@ -1009,7 +1009,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">Observación</label>
                                                 <textarea :value="list.ventas[indexVenta].Observacion"
@@ -1017,11 +1017,22 @@
                                                           class="form-control input-sm"
                                                           placeholder="OBSERVACIÓN"
                                                           style="height: 30px; min-height: 30px; "
-                                                          disabled>
+                                                          disabled="disabled">
                                                 </textarea>
                                             </div>
                                         </div>
-                                        <div class="col-md-8" style="padding-left: 0px; padding-right: 0px; ">
+                                        <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">&nbsp;</label>
+                                                    <textarea :value="list.ventas[indexVenta].Info"
+                                                              id="txtInfo"
+                                                              class="form-control input-sm"
+                                                              style="height: 50px; min-height: 50px; "
+                                                              disabled="disabled">
+                                                </textarea>
+                                                </div>
+                                            </div>
                                             <div class="col-md-3">
                                                 <div class="form-group text-center">
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
@@ -1057,46 +1068,46 @@
                                                            v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <div v-show="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
-                                                        <label class="control-label">&nbsp;</label>
-                                                        <button @@click="showTipoPago"
-                                                                id="btnTipoPago"
-                                                                ref="refTipoPago"
-                                                                class="btn btn-secondary btn-ticket btn-venta"
-                                                                style="width: 100%;"
-                                                                v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
-                                                            <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
-                                                                Confirmar Reserva
-                                                            </template>
-                                                            <template v-else>
-                                                                $ Pago Total
-                                                            </template>
-                                                        </button>
-                                                    </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <div v-show="list.ventas.length > 0 && indexVenta === list.ventas.length - 1">
+                                                    <label class="control-label">&nbsp;</label>
+                                                    <button @@click="showTipoPago"
+                                                            id="btnTipoPago"
+                                                            ref="refTipoPago"
+                                                            class="btn btn-secondary btn-ticket btn-venta"
+                                                            style="width: 100%;"
+                                                            v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
+                                                        <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                            Confirmar Reserva
+                                                        </template>
+                                                        <template v-else>
+                                                            $ Pago Total
+                                                        </template>
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
-                                                <div class="form-group">
-                                                    <label class="control-label">&nbsp;</label>
-                                                    <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
-                                                        <button @@click="cancelarReserva"
-                                                                class="btn btn-secondary btn-ticket btn-cancelar"
-                                                                style="width: 100%; color:white;">
-                                                            <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                                Cancelar Reserva
-                                                        </button>
-                                                    </template>
-                                                    <template v-else>
-                                                        <button @@click="cancelarBoletos"
-                                                                class="btn btn-secondary btn-ticket btn-cancelar"
-                                                                style="width: 100%; color:white;">
-                                                            <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                                Cancelar
-                                                        </button>
-                                                    </template>
-                                                </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <label class="control-label">&nbsp;</label>
+                                                <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                    <button @@click="cancelarReserva"
+                                                            class="btn btn-secondary btn-ticket btn-cancelar"
+                                                            style="width: 100%; color:white;">
+                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
+                                                        Cancelar Reserva
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <button @@click="cancelarBoletos"
+                                                            class="btn btn-secondary btn-ticket btn-cancelar"
+                                                            style="width: 100%; color:white;">
+                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
+                                                        Cancelar
+                                                    </button>
+                                                </template>
                                             </div>
                                         </div>
                                     </div>

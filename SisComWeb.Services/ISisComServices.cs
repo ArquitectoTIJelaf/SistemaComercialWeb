@@ -152,7 +152,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidarPase", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<int> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno);
+        Response<decimal> ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ClavesInternas", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]

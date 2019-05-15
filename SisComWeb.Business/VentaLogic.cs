@@ -168,8 +168,8 @@ namespace SisComWeb.Business
                     {
                         // Valida 'SaldoPaseCortesia'
                         var validarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
-                        if (validarSaldoPaseCortesia != 1)
-                            return new Response<VentaResponse>(false, valor, Message.MsgValidaSaldoPaseCortesia, false);
+                        if (validarSaldoPaseCortesia <= 0)
+                            return new Response<VentaResponse>(true, valor, Message.MsgValidaSaldoPaseCortesia, false);
                     }
 
                     // RESERVA

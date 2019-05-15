@@ -37,6 +37,13 @@
         public Acompaniante ObjAcompaniante { get; set; }
 
         public short CodiOrigen { get; set; }
+        public short CodiDestino { get; set; }
+        public string NomOrigen { get; set; }
+        public string NomDestino { get; set; }
+        public short CodiPuntoVenta { get; set; }
+        public string NomPuntoVenta { get; set; }
+        public short CodiUsuario { get; set; }
+        public string NomUsuario { get; set; }
     }
 
     public class FiltroPlano

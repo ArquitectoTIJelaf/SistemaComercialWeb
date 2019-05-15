@@ -197,6 +197,14 @@ namespace SisComWeb.Business
             entidad.CodiOrigen = item.CodiOrigen;
             entidad.OrdenOrigen = item.OrdenOrigen;
 
+            entidad.CodiDestino = item.CodiDestino;
+            entidad.NomOrigen = item.NomOrigen;
+            entidad.NomDestino = item.NomDestino;
+            entidad.CodiPuntoVenta = item.CodiPuntoVenta;
+            entidad.NomPuntoVenta = item.NomPuntoVenta;
+            entidad.CodiUsuario = item.CodiUsuario;
+            entidad.NomUsuario = item.NomUsuario;
+
             switch (entidad.FlagVenta)
             {
                 case "X": // Asiento bloqueado

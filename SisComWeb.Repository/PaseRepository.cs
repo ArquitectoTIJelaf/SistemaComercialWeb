@@ -7,9 +7,9 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static int ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
+        public static decimal ValidarSaldoPaseCortesia(string CodiSocio, string Mes, string Anno)
         {
-            var valor = new int();
+            var valor = new decimal();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -21,8 +21,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = 1;
-                        break;
+                        valor = Reader.GetDecimalValue(drlector, "saldo");
                     }
                 }
             }

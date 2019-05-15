@@ -68,7 +68,14 @@ namespace SisComWeb.Aplication.Controllers
                 IdVenta = (string)x["IdVenta"],
                 ObjAcompaniante = _ObjetoAcompaniante(x["ObjAcompaniante"]),
 
-                CodiOrigen = (short)x["CodiOrigen"]
+                CodiOrigen = (short)x["CodiOrigen"],
+                CodiDestino = (short)x["CodiDestino"],
+                NomOrigen = (string)x["NomOrigen"],
+                NomDestino = (string)x["NomDestino"],
+                CodiPuntoVenta = (short)x["CodiPuntoVenta"],
+                NomPuntoVenta = (string)x["NomPuntoVenta"],
+                CodiUsuario = (short)x["CodiUsuario"],
+                NomUsuario = (string)x["NomUsuario"]
             }).ToList();
 
             return lista;
@@ -881,9 +888,9 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"CodiSocio\" : " + CodiSocio + "," +
-                                    "\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"," +
-                                    "\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) +"\"" +
+                                    "\"CodiSocio\" : \"" + CodiSocio + "\"" +
+                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ListaBeneficiarioPase", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -913,6 +920,47 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<BoletosCortesia>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("validarPase")]
+        public async Task<ActionResult> ValidarSaldoPaseCortesia(string CodiSocio)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiSocio\" : \"" + CodiSocio + "\"" +
+                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
+
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidarPase", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<decimal> res = new Response<decimal>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (decimal)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
             }
         }
 

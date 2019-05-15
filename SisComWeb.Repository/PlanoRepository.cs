@@ -48,7 +48,11 @@ namespace SisComWeb.Repository
                             Telefono = string.Empty,
                             TipoBoleto = string.Empty,
                             TipoDocumento = string.Empty,
-                            OrdenOrigen = string.Empty
+                            OrdenOrigen = string.Empty,
+                            NomOrigen = string.Empty,
+                            NomDestino = string.Empty,
+                            NomPuntoVenta = string.Empty,
+                            NomUsuario = string.Empty,
                         };
                         Lista.Add(entidad);
                     }
@@ -174,6 +178,12 @@ namespace SisComWeb.Repository
                             Boleto = Reader.GetStringValue(drlector, "Boleto") ?? string.Empty,
                             TipoBoleto = Reader.GetStringValue(drlector, "tipo") ?? string.Empty,
                             IdVenta = Reader.GetStringValue(drlector, "id_venta") ?? string.Empty,
+                            NomOrigen = Reader.GetStringValue(drlector, "Nom_Origen") ?? string.Empty,
+                            NomDestino = Reader.GetStringValue(drlector, "Nom_Destino") ?? string.Empty,
+                            CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_Punto_Venta"),
+                            NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_Punto_Venta") ?? string.Empty,
+                            CodiUsuario = Reader.GetSmallIntValue(drlector, "Codi_Usuario"),
+                            NomUsuario = Reader.GetStringValue(drlector, "Nom_Usuario") ?? string.Empty,
                             // Para evitar Null's
                             Nombres = string.Empty,
                             ApellidoPaterno = string.Empty,
@@ -238,7 +248,11 @@ namespace SisComWeb.Repository
                             Direccion = string.Empty,
                             Codigo = string.Empty,
                             OrdenOrigen = string.Empty,
-                            Tipo = string.Empty
+                            Tipo = string.Empty,
+                            NomOrigen = string.Empty,
+                            NomDestino = string.Empty,
+                            NomPuntoVenta = string.Empty,
+                            NomUsuario = string.Empty,
                         };
                         Lista.Add(entidad);
                     }
