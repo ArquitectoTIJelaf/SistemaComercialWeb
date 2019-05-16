@@ -338,19 +338,6 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<bool> LiberaArregloAsientos(int[] arregloIDS)
-        {
-            try
-            {
-                return BloqueoAsientoLogic.LiberaArregloAsientos(arregloIDS);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcLiberaArregloAsientos, false);
-            }
-        }
-
         #endregion
 
         #region GRABA VENTA
@@ -497,6 +484,23 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<byte>(false, 0, Message.MsgExcModificarVentaAFechaAbierta, false);
+            }
+        }
+
+        #endregion
+
+        #region INSERTAR IMPRESIÓN
+
+        public Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado)
+        {
+            try
+            {
+                return VentaLogic.InsertarImpresion(Listado);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, null, Message.MsgExcInsertarImpresion, false);
             }
         }
         #endregion

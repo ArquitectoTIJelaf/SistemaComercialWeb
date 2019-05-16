@@ -3225,6 +3225,9 @@
                             if (res.data.Estado) {
                                 appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, _this.pickedBusVenta, tmpCantidadVendida);
 
+                                // Inserta boletos para imprimir
+                                _this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
+
                                 // callSignalR_ActualizarTurnoPlano
                                 callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
                             }
@@ -3379,6 +3382,41 @@
                     window.removeEventListener('keyup', this.esc);
                     document.getElementById('btnTipoPago').disabled = false;
                     $('#appVueTipoPago').modal('hide');
+                },
+                insertarImpresion: function (_ListaVentasRealizadas) {
+                    var _this = this;
+                    debugger;
+                    APP.rq.axios2.post(APP.base + '/itinerarios/insertar-impresion', {
+                        Listado: _ListaVentasRealizadas
+                    })
+                        .then(async function (res) {
+                            if (res.data.Estado) {
+                                debugger;
+                                for (i = 0; i < res.data.Valor.length; i++) {
+                                    var auxResponse = await _this.imprimirBoleto(res.data.Valor[i]);
+                                    if (!auxResponse)
+                                        break;
+                                }
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                imprimirBoleto: async function (_idVenta) {
+                    debugger;
+                    var auxResponse = false;
+                    
+                    await axios({ method: "GET", "url": "http://localhost:9101/?boletocompleto=" + _idVenta })
+                        .then(res => {
+                            debugger;
+                            auxResponse = true;
+                            APP.msg.success(res.data);
+                        }, error => {
+                            APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                        });
+
+                    return auxResponse;
                 }
             },
             computed: {
@@ -3415,6 +3453,8 @@
             },
             watch: {}
         });
+
+        var auxContadorOrden = 0;
 
         var appRegistrarInfante = new Vue({
             el: '#appRegistrarInfante ',

@@ -146,8 +146,47 @@ namespace SisComWeb.Aplication.Controllers
         {
             List<VentaRealizada> lista = list.Select(x => new VentaRealizada
             {
+                // Para la vista 'BoletosVendidos'
                 NumeAsiento = (string)x["NumeAsiento"],
-                BoletoCompleto = (string)x["BoletoCompleto"]
+                BoletoCompleto = (string)x["BoletoCompleto"],
+                // Para la tabla 'tb_impresion'
+                IdVenta = (int)x["IdVenta"],
+                NomTipVenta = (string)x["NomTipVenta"],
+                BoletoTipo = (string)x["BoletoTipo"],
+                BoletoSerie = (string)x["BoletoSerie"],
+                BoletoNum = (string)x["BoletoNum"],
+                EmpRuc = (string)x["EmpRuc"],
+                EmpRazSocial = (string)x["EmpRazSocial"],
+                EmpDireccion = (string)x["EmpDireccion"],
+                EmpDirAgencia = (string)x["EmpDirAgencia"],
+                EmpTelefono1 = (string)x["EmpTelefono1"],
+                EmpTelefono2 = (string)x["EmpTelefono2"],
+                CodDocumento = (string)x["CodDocumento"],
+                EmisionFecha = (string)x["EmisionFecha"],
+                EmisionHora = (string)x["EmisionHora"],
+                CajeroCod = (short)x["CajeroCod"],
+                CajeroNom = (string)x["CajeroNom"],
+                PasNombreCom = (string)x["PasNombreCom"],
+                PasRuc = (string)x["PasRuc"],
+                PasRazSocial = (string)x["PasRazSocial"],
+                PasDireccion = (string)x["PasDireccion"],
+                NomOriPas = (string)x["NomOriPas"],
+                NomDesPas = (string)x["NomDesPas"],
+                DocTipo = (byte)x["DocTipo"],
+                DocNumero = (string)x["DocNumero"],
+                PrecioCan = (string)x["PrecioCan"],
+                PrecioDes = (string)x["PrecioDes"],
+                NomServicio = (string)x["NomServicio"],
+                FechaViaje = (string)x["FechaViaje"],
+
+                EmbarqueDir = (string)x["EmbarqueDir"],
+                EmbarqueHora = (string)x["BoletoCoEmbarqueHorampleto"],
+                CodigoX_FE = (string)x["CodigoX_FE"],
+                LinkPag_FE = (string)x["LinkPag_FE"],
+                CodPoliza = (string)x["CodPoliza"],
+
+                CodTerminal = (string)x["CodTerminal"],
+                TipImpresora = (byte)x["TipImpresora"]
             }).ToList();
 
             return lista;
@@ -649,50 +688,6 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        [Route("liberarArregloAsientos")]
-        public async Task<ActionResult> LiberarArregloAsientos(int[] arregloIDS)
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    string _body = string.Empty;
-
-                    _body += "[";
-                    for (var i = 0; i < arregloIDS.Length; i++)
-                    {
-                        _body += arregloIDS[i];
-                        if (i < arregloIDS.Length - 1) _body += ",";
-                    }
-                    _body += "]";
-
-                    HttpResponseMessage response = await client.PostAsync("LiberaArregloAsientos", new StringContent(_body, Encoding.UTF8, "application/json"));
-                    if (response.IsSuccessStatusCode)
-                    {
-                        result = await response.Content.ReadAsStringAsync();
-                    }
-                }
-
-                JToken tmpResult = JObject.Parse(result);
-
-                Response<bool> res = new Response<bool>
-                {
-                    Estado = (bool)tmpResult["Estado"],
-                    Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
-                };
-
-                return Json(res, JsonRequestBehavior.AllowGet);
-            }
-            catch
-            {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1231,6 +1226,91 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("insertar-impresion")]
+        public async Task<ActionResult> InsertarImpresion(List<VentaRealizada> Listado)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    string _body = string.Empty;
+
+                    _body += "[";
+                    for (var i = 0; i < Listado.Count; i++)
+                    {
+                        _body += "{"
+                                    + "\"IdVenta\": " + Listado[i].IdVenta
+                                    + ",\"NomTipVenta\" : \"" + Listado[i].NomTipVenta + "\""
+                                    + ",\"NumeAsiento\" : \"" + Listado[i].NumeAsiento + "\""
+                                    + ",\"BoletoCompleto\" : \"" + Listado[i].BoletoCompleto + "\""
+                                    + ",\"BoletoTipo\" : \"" + Listado[i].BoletoTipo + "\""
+                                    + ",\"BoletoSerie\" : \"" + Listado[i].BoletoSerie + "\""
+                                    + ",\"BoletoNum\" : \"" + Listado[i].BoletoNum + "\""
+                                    + ",\"EmpRuc\" : \"" + Listado[i].EmpRuc + "\""
+                                    + ",\"EmpRazSocial\" : \"" + Listado[i].EmpRazSocial + "\""
+                                    + ",\"EmpDireccion\" : \"" + Listado[i].EmpDireccion + "\""
+                                    + ",\"EmpDirAgencia\" : \"" + Listado[i].EmpDirAgencia + "\""
+                                    + ",\"EmpTelefono1\" : \"" + Listado[i].EmpTelefono1 + "\""
+                                    + ",\"EmpTelefono2\" : \"" + Listado[i].EmpTelefono2 + "\""
+                                    + ",\"CodDocumento\" : \"" + Listado[i].CodDocumento + "\""
+                                    + ",\"EmisionFecha\" : \"" + Listado[i].EmisionFecha + "\""
+                                    + ",\"EmisionHora\" : \"" + Listado[i].EmisionHora + "\""
+                                    + ",\"CajeroCod\": " + Listado[i].CajeroCod
+                                    + ",\"CajeroNom\" : \"" + Listado[i].CajeroNom + "\""
+                                    + ",\"PasNombreCom\" : \"" + Listado[i].PasNombreCom + "\""
+                                    + ",\"PasRuc\" : \"" + Listado[i].PasRuc + "\""
+                                    + ",\"PasRazSocial\" : \"" + Listado[i].PasRazSocial + "\""
+                                    + ",\"PasDireccion\" : \"" + Listado[i].PasDireccion + "\""
+                                    + ",\"NomOriPas\" : \"" + Listado[i].NomOriPas + "\""
+                                    + ",\"NomDesPas\" : \"" + Listado[i].NomDesPas + "\""
+                                    + ",\"DocTipo\": " + Listado[i].DocTipo
+                                    + ",\"DocNumero\" : \"" + Listado[i].DocNumero + "\""
+                                    + ",\"PrecioCan\" : \"" + Listado[i].PrecioCan + "\""
+                                    + ",\"PrecioDes\" : \"" + Listado[i].PrecioDes + "\""
+                                    + ",\"NomServicio\" : \"" + Listado[i].NomServicio + "\""
+                                    + ",\"FechaViaje\" : \"" + Listado[i].FechaViaje + "\""
+                                    + ",\"EmbarqueDir\" : \"" + Listado[i].EmbarqueDir + "\""
+                                    + ",\"EmbarqueHora\" : \"" + Listado[i].EmbarqueHora + "\""
+                                    + ",\"CodigoX_FE\" : \"" + Listado[i].CodigoX_FE + "\""
+                                    + ",\"LinkPag_FE\" : \"" + Listado[i].LinkPag_FE + "\""
+                                    + ",\"CodPoliza\" : \"" + Listado[i].CodPoliza + "\""
+                                    + ",\"CodTerminal\" : \"" + Listado[i].CodTerminal + "\""
+                                    + ",\"TipImpresora\": " + Listado[i].TipImpresora
+                                + "}";
+
+                        if (i < Listado.Count - 1)
+                            _body += ",";
+                    }
+                    _body += "]";
+
+                    HttpResponseMessage response = await client.PostAsync("InsertarImpresion", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+
+                Response<List<int>> res = new Response<List<int>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = tmpResult["Valor"].ToObject<List<int>>()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
     }

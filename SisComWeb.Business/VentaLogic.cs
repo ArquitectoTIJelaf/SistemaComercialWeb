@@ -358,6 +358,7 @@ namespace SisComWeb.Business
 
                                 // Valida 'DocumentoSUNAT'
                                 var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
+
                                 if (resValidarDocumentoSUNAT != null && resValidarDocumentoSUNAT.Estado)
                                 {
                                     if (resValidarDocumentoSUNAT.Estado)
@@ -532,8 +533,8 @@ namespace SisComWeb.Business
                         NomUsuario = entidad.NomUsuario,
                         Tabla = "VENTA",
                         TipoMovimiento = "ADICION",
-                        Boleto = auxBoletoCompleto,
-                        NumeAsiento = entidad.NumeAsiento.ToString(),
+                        Boleto = auxBoletoCompleto.Substring(1),
+                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         NomOficina = entidad.NomOficina,
                         NomPuntoVenta = entidad.NomPuntoVenta,
                         Pasajero = entidad.Nombre,
@@ -552,11 +553,57 @@ namespace SisComWeb.Business
                     if (!grabarAuditoria)
                         return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
+                    // Para la tabla 'tb_impresion'
+                    
+                    var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
+                    var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.CodiEmpresa, entidad.CodiPuntoVenta);
+
+                    // ----------------------------
+
                     // Añado 'ventaRealizada'
                     var ventaRealizada = new VentaRealizada
                     {
+                        // Para la vista 'BoletosVendidos'
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
-                        BoletoCompleto = auxBoletoCompleto
+                        BoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),
+                        // Para la tabla 'tb_impresion'
+                        IdVenta = entidad.IdVenta,
+                        NomTipVenta = "EFECTIVO",
+                        BoletoTipo = entidad.Tipo,
+                        BoletoSerie = entidad.SerieBoleto.ToString("D3"),
+                        BoletoNum = entidad.NumeBoleto.ToString("D8"),
+                        EmpRuc = buscarEmpresaEmisor.Ruc,
+                        EmpRazSocial = buscarEmpresaEmisor.RazonSocial,
+                        EmpDireccion = buscarEmpresaEmisor.Direccion,
+                        EmpDirAgencia = buscarAgenciaEmpresa.Direccion,
+                        EmpTelefono1 = buscarAgenciaEmpresa.Telefono1,
+                        EmpTelefono2 = buscarAgenciaEmpresa.Telefono2,
+                        CodDocumento = entidad.CodiDocumento,
+                        EmisionFecha = entidad.FechaVenta,
+                        EmisionHora = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture),
+                        CajeroCod = entidad.CodiUsuario,
+                        CajeroNom = entidad.NomUsuario,
+                        PasNombreCom = entidad.SplitNombre[0] + " " + entidad.SplitNombre[1] + " " + entidad.SplitNombre[2],
+                        PasRuc = entidad.RucCliente,
+                        PasRazSocial = entidad.NomEmpresaRuc,
+                        PasDireccion = entidad.DirEmpresaRuc,
+                        NomOriPas = entidad.NomOrigen,
+                        NomDesPas = entidad.NomDestino,
+                        DocTipo = TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
+                        DocNumero = entidad.Dni,
+                        PrecioCan = entidad.PrecioVenta,
+                        PrecioDes = DataUtility.MontoSolesALetras(entidad.PrecioVenta.ToString("F2", CultureInfo.InvariantCulture)),
+                        NomServicio = entidad.NomServicio,
+                        FechaViaje = entidad.FechaViaje,
+
+                        EmbarqueDir = string.Empty,
+                        EmbarqueHora = string.Empty,
+                        CodigoX_FE = string.Empty,
+                        LinkPag_FE = string.Empty,
+                        CodPoliza = string.Empty,
+
+                        CodTerminal = validarTerminalElectronico.Tipo,
+                        TipImpresora = byte.Parse(validarTerminalElectronico.Imp)
                     };
                     listaVentasRealizadas.Add(ventaRealizada);
                 }
@@ -938,6 +985,35 @@ namespace SisComWeb.Business
 
         #endregion
 
+        #region INSERTAR IMPRESIÓN
+
+        public static Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado)
+        {
+            try
+            {
+                var valor = new List<int>();
+
+                foreach (var entidad in Listado)
+                {
+                    // Inserta Impresion
+                    var insertarImpresion = VentaRepository.InsertarImpresion(entidad);
+                    if (!insertarImpresion)
+                        return new Response<List<int>>(false, valor, Message.MsgErrorInsertarImpresion, false);
+
+                    valor.Add(entidad.IdVenta);
+                }
+
+                return new Response<List<int>>(true, valor, Message.MsgCorrectoInsertarImpresion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, null, Message.MsgExcInsertarImpresion, false);
+            }
+        }
+
+        #endregion
+
         #region FACTURACIÓN ELETRÓNICA
 
         public static ResponseW ValidarDocumentoSUNAT(VentaEntity entidad, ref SetInvoiceRequestBody bodyDocumentoSUNAT)
@@ -948,13 +1024,13 @@ namespace SisComWeb.Business
                 var entidadFE = new SetInvoiceRequestBody();
 
                 // Busca 'RucEmpresa'
-                var buscarRucEmpresa = VentaRepository.BuscarRucEmpresa(entidad.CodiEmpresa);
-                if (string.IsNullOrEmpty(buscarRucEmpresa))
+                var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
+                if (string.IsNullOrEmpty(buscarEmpresaEmisor.Ruc))
                     return null;
 
                 var seguridadFE = new Security
                 {
-                    ID = buscarRucEmpresa,
+                    ID = buscarEmpresaEmisor.Ruc,
                     User = entidad.UserWebSUNAT
                 };
 
@@ -1008,13 +1084,13 @@ namespace SisComWeb.Business
                 var auxTDocumento = string.Empty;
 
                 // Busca 'RucEmpresa'
-                var buscarRucEmpresa = VentaRepository.BuscarRucEmpresa(entidad.CodiEmpresa);
-                if (string.IsNullOrEmpty(buscarRucEmpresa))
+                var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
+                if (string.IsNullOrEmpty(buscarEmpresaEmisor.Ruc))
                     return null;
 
                 var seguridadFE = new Security
                 {
-                    ID = buscarRucEmpresa,
+                    ID = buscarEmpresaEmisor.Ruc,
                     User = UserWebSUNAT
                 };
 
@@ -1054,20 +1130,13 @@ namespace SisComWeb.Business
                 sb.Append("[IdTipoDocIdentidad]|[NumDocIdentidad]|[RazonNombres]|[RazonComercial]|[DireccionFiscal]|[UbigeoSUNAT]|[Departamento]|[Provincia]|[Distrito]|[Urbanizacion]|[PaisCodSUNAT]");
                 if (entidad.CodiDocumento == "03")
                 {
-                    if (entidad.TipoDocumento == "01")
-                        sb = sb.Replace("[IdTipoDocIdentidad]", "1");
-                    else if (entidad.TipoDocumento == "04")
-                        sb = sb.Replace("[IdTipoDocIdentidad]", "7");
-                    else
-                        sb = sb.Replace("[IdTipoDocIdentidad]", "4");
+                    var auxIdTipoDocIdentidad = TipoDocumentoHomologadoParaFE(entidad.TipoDocumento);
 
-                    // Split a 'Nombre'
-                    string[] splitNombre = entidad.Nombre.Split(',');
-
+                    sb = sb.Replace("[IdTipoDocIdentidad]", auxIdTipoDocIdentidad.ToString());
                     sb = sb.Replace("[NumDocIdentidad]", entidad.Dni);
-                    sb = sb.Replace("[RazonNombres]", (splitNombre[0].Replace("|", string.Empty) + " " +
-                                                       splitNombre[1].Replace("|", string.Empty) + " " +
-                                                       splitNombre[2].Replace("|", string.Empty)));
+                    sb = sb.Replace("[RazonNombres]", (entidad.SplitNombre[0].Replace("|", string.Empty) + " " +
+                                                      entidad.SplitNombre[1].Replace("|", string.Empty) + " " +
+                                                      entidad.SplitNombre[2].Replace("|", string.Empty)));
                     sb = sb.Replace("[RazonComercial]", string.Empty);
                     sb = sb.Replace("[DireccionFiscal]", string.Empty);
                 }
@@ -1107,7 +1176,7 @@ namespace SisComWeb.Business
                 sb.Append("|[DTipoEspVend]|[LugarDescargar]|[FechDescarga]|[NumeroRegMTC]|[ConfigVehicular]|[PuntoOrigen]|[PuntoDestino]|[ValorReferncialPrel]");
                 sb.Append("|[FechConsumo]|[TVentaGratuita]|[DescuentoGlobal]|[MontoLetras]");
                 sb = sb.Replace("[TDocumento]", entidad.CodiDocumento);
-                sb = sb.Replace("[Serie]", entidad.Tipo + entidad.SerieBoleto.ToString());
+                sb = sb.Replace("[Serie]", entidad.Tipo + entidad.SerieBoleto.ToString("D3"));
                 sb = sb.Replace("[Numero]", entidad.NumeBoleto.ToString("D7"));
                 sb = sb.Replace("[FecEmision]", DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[HoraEmision]", DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
@@ -1230,7 +1299,7 @@ namespace SisComWeb.Business
                     break;
                 case "E":
                     {
-                        if (codiDocumento == CodiCorrelativoVentaFactura|| codiDocumento == CodiCorrelativoPaseFactura)
+                        if (codiDocumento == CodiCorrelativoVentaFactura || codiDocumento == CodiCorrelativoPaseFactura)
                             boletoCompleto = "F" + serieBoleto.ToString("D" + formatoSerieBol) + "-" + numeroBoleto.ToString("D" + formatoNumeroBol);
 
                         else if (codiDocumento == CodiCorrelativoVentaBoleta || codiDocumento == CodiCorrelativoPaseBoleta)
@@ -1240,6 +1309,20 @@ namespace SisComWeb.Business
             };
 
             return boletoCompleto;
+        }
+
+        public static byte TipoDocumentoHomologadoParaFE(string TipoDocumento)
+        {
+            var valor = new byte();
+
+            if (TipoDocumento == "01")
+                valor = 1;
+            else if (TipoDocumento == "04")
+                valor = 7;
+            else
+                valor = 4;
+
+            return valor;
         }
 
         #endregion

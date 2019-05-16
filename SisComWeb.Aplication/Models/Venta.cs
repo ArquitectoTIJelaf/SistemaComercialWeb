@@ -86,8 +86,78 @@ namespace SisComWeb.Aplication.Models
 
     public class VentaRealizada
     {
+        public int IdVenta { get; set; }
+
+        public string NomTipVenta { get; set; }
+
         public string NumeAsiento { get; set; }
 
         public string BoletoCompleto { get; set; }
+
+        public string BoletoTipo { get; set; }
+
+        public string BoletoSerie { get; set; }
+
+        public string BoletoNum { get; set; }
+
+        public string EmpRuc { get; set; }
+
+        public string EmpRazSocial { get; set; }
+
+        public string EmpDireccion { get; set; }
+
+        public string EmpDirAgencia { get; set; }
+
+        public string EmpTelefono1 { get; set; }
+
+        public string EmpTelefono2 { get; set; }
+
+        public string CodDocumento { get; set; }
+
+        public string EmisionFecha { get; set; }
+
+        public string EmisionHora { get; set; }
+
+        public short CajeroCod { get; set; }
+
+        public string CajeroNom { get; set; }
+
+        public string PasNombreCom { get; set; }
+
+        public string PasRuc { get; set; }
+
+        public string PasRazSocial { get; set; }
+
+        public string PasDireccion { get; set; }
+
+        public string NomOriPas { get; set; }
+
+        public string NomDesPas { get; set; }
+
+        public byte DocTipo { get; set; }
+
+        public string DocNumero { get; set; }
+
+        public string PrecioCan { get; set; }
+
+        public string PrecioDes { get; set; }
+
+        public string NomServicio { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string EmbarqueDir { get; set; }
+
+        public string EmbarqueHora { get; set; }
+
+        public string CodigoX_FE { get; set; }
+
+        public string LinkPag_FE { get; set; }
+
+        public string CodPoliza { get; set; }
+
+        public string CodTerminal { get; set; }
+
+        public byte TipImpresora { get; set; }
     }
 }

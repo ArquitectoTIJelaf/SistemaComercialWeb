@@ -175,5 +175,10 @@
         public const string MsgCorrectoModificarVentaAFechaAbierta = "Se envió a Fecha Abierta correctamente.";
         public const string MsgErrorModificarVentaAFechaAbierta = "Solicitud cancelada, la venta ya ha sido enviada a Fecha Abierta.";
         public const string MsgExcModificarVentaAFechaAbierta = "Excepción: ModificarVentaAFechaAbierta.";
+
+        // Impresión
+        public const string MsgCorrectoInsertarImpresion = "Correcto: InsertarImpresion.";
+        public const string MsgErrorInsertarImpresion = "Error: InsertarImpresion.";
+        public const string MsgExcInsertarImpresion = "Excepción: InsertarImpresion.";
     }
 }

@@ -82,25 +82,51 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static string BuscarRucEmpresa(byte CodiEmpresa)
+        public static EmpresaEntity BuscarEmpresaEmisor(byte CodiEmpresa)
         {
-            var valor = string.Empty;
+            var entidad = new EmpresaEntity();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarRucEmpresa";
+                db.ProcedureName = "scwsp_BuscarEmpresaEmisor";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
                 
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "Ruc"); ;
+                        entidad.Ruc = Reader.GetStringValue(drlector, "Ruc");
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
+                        entidad.Direccion = Reader.GetStringValue(drlector, "DIRECCION");
                     }
                 }
             }
 
-            return valor;
+            return entidad;
+        }
+
+        public static AgenciaEntity BuscarAgenciaEmpresa(byte CodiEmpresa, int CodiSucursal)
+        {
+            var entidad = new AgenciaEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarAgenciaEmpresa";
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@Codi_Sucursal", DbType.Int32, ParameterDirection.Input, CodiSucursal);
+
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.Direccion = Reader.GetStringValue(drlector, "direccion");
+                        entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1");
+                        entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2");
+                    }
+                }
+            }
+
+            return entidad;
         }
 
         public static List<BeneficiarioEntity> ListaBeneficiarios(string CodiSocio)
@@ -602,6 +628,58 @@ namespace SisComWeb.Repository
                         break;
                     }
                 }
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarImpresion(VentaRealizada entidad)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_InsertarImpresion";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, entidad.IdVenta);
+                db.AddParameter("@nom_tip_venta", DbType.String, ParameterDirection.Input, entidad.NomTipVenta);
+                db.AddParameter("@emp_ruc", DbType.String, ParameterDirection.Input, entidad.EmpRuc);
+                db.AddParameter("@emp_raz_social", DbType.String, ParameterDirection.Input, entidad.EmpRazSocial);
+                db.AddParameter("@emp_direccion", DbType.String, ParameterDirection.Input, entidad.EmpDireccion);
+                db.AddParameter("@emp_dir_agencia", DbType.String, ParameterDirection.Input, entidad.EmpDirAgencia);
+                db.AddParameter("@emp_telefono1", DbType.String, ParameterDirection.Input, entidad.EmpTelefono1);
+                db.AddParameter("@emp_telefono2", DbType.String, ParameterDirection.Input, entidad.EmpTelefono2);
+                db.AddParameter("@cod_documento", DbType.String, ParameterDirection.Input, entidad.CodDocumento);
+                db.AddParameter("@boleto_tipo", DbType.String, ParameterDirection.Input, entidad.BoletoTipo);
+                db.AddParameter("@boleto_serie", DbType.String, ParameterDirection.Input, entidad.BoletoSerie);
+                db.AddParameter("@boleto_num", DbType.String, ParameterDirection.Input, entidad.BoletoNum);
+                db.AddParameter("@emision_fecha", DbType.String, ParameterDirection.Input, entidad.EmisionFecha);
+                db.AddParameter("@emision_hora", DbType.String, ParameterDirection.Input, entidad.EmisionHora);
+                db.AddParameter("@cajero_cod", DbType.Int16, ParameterDirection.Input, entidad.CajeroCod);
+                db.AddParameter("@cajero_nom", DbType.String, ParameterDirection.Input, entidad.CajeroNom);
+                db.AddParameter("@pas_nombre_com", DbType.String, ParameterDirection.Input, entidad.PasNombreCom);
+                db.AddParameter("@pas_ruc", DbType.String, ParameterDirection.Input, entidad.PasRuc);
+                db.AddParameter("@pas_raz_social", DbType.String, ParameterDirection.Input, entidad.PasRazSocial);
+                db.AddParameter("@pas_direccion", DbType.String, ParameterDirection.Input, entidad.PasDireccion);
+                db.AddParameter("@nom_ori_pas", DbType.String, ParameterDirection.Input, entidad.NomOriPas);
+                db.AddParameter("@nom_des_pas", DbType.String, ParameterDirection.Input, entidad.NomDesPas);
+                db.AddParameter("@doc_tipo", DbType.Byte, ParameterDirection.Input, entidad.DocTipo);
+                db.AddParameter("@doc_numero", DbType.String, ParameterDirection.Input, entidad.DocNumero);
+                db.AddParameter("@precio_can", DbType.Decimal, ParameterDirection.Input, entidad.PrecioCan);
+                db.AddParameter("@precio_des", DbType.String, ParameterDirection.Input, entidad.PrecioDes);
+                db.AddParameter("@nom_servicio", DbType.String, ParameterDirection.Input, entidad.NomServicio);
+                db.AddParameter("@num_asiento", DbType.String, ParameterDirection.Input, entidad.NumeAsiento);
+                db.AddParameter("@fecha_viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
+                db.AddParameter("@embarque_dir", DbType.String, ParameterDirection.Input, entidad.EmbarqueDir);
+                db.AddParameter("@embarque_hora", DbType.String, ParameterDirection.Input, entidad.EmbarqueHora);
+                db.AddParameter("@codigo_x_fe", DbType.String, ParameterDirection.Input, entidad.CodigoX_FE);
+                db.AddParameter("@link_pag_fe", DbType.String, ParameterDirection.Input, entidad.LinkPag_FE);
+                db.AddParameter("@cod_poliza", DbType.String, ParameterDirection.Input, entidad.CodPoliza);
+                db.AddParameter("@cod_terminal", DbType.String, ParameterDirection.Input, entidad.CodTerminal);
+                db.AddParameter("@tip_impresora", DbType.Byte, ParameterDirection.Input, entidad.TipImpresora);
+
+                db.Execute();
+
+                valor = true;
             }
 
             return valor;

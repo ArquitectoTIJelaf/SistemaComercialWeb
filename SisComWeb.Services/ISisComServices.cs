@@ -130,10 +130,6 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "LiberaAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> LiberaAsiento(int IDS);
 
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "LiberaArregloAsientos", ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> LiberaArregloAsientos(int[] arregloIDS);
-
         #endregion
 
         #region GRABA VENTA
@@ -187,5 +183,11 @@ namespace SisComWeb.Services
         Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
         #endregion
 
+        #region INSERTAR IMPRESIÓN
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "InsertarImpresion", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado);
+        #endregion
     }
 }

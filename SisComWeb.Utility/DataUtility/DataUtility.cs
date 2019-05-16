@@ -417,9 +417,9 @@ namespace SisComWeb.Utility
 
                 // **********Une la parte entera y la parte decimal*************
                 if (dec != string.Empty && int.Parse(dec) > 0)
-                    Valor = palabras + System.Convert.ToString(System.Convert.ToInt32(dec)) + "/100 soles";
+                    Valor = palabras + "con " + Convert.ToString(Convert.ToInt32(dec)) + "/100 soles";
                 else
-                    Valor = palabras + "00/100 soles";
+                    Valor = palabras + "con 00/100 soles";
             }
             else
                 Valor = string.Empty;
