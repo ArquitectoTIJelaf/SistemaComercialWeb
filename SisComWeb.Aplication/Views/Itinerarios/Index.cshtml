@@ -1115,13 +1115,14 @@
                                 if (res.data.Valor.ListaAuxDestinosRuta.length > 0)
                                     _this.list.destinosPas = _.cloneDeep(res.data.Valor.ListaAuxDestinosRuta);
                                 else
-                                    _this.list.destinosPas = _.cloneDeep(appController.getListOficinas);
+                                    _this.list.destinosPas = _.cloneDeep(appVueFilter.list.oficinas_backup);
                                 // --------------------------------------------------
                                 _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.Valor.CodiEmpresa));
                                 _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(res.data.Valor.CodiOrigen));
                                 _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(res.data.Valor.CodiSucursal));
                                 _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(res.data.Valor.CodiRuta));
                                 _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(res.data.Valor.CodiServicio));
+                                debugger;
                                 _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(res.data.Valor.CodiDestino));
                                 _this.filtro.Turno = res.data.Valor.HoraPartida;
                                 _this.filtro.Fecha = input.FechaViaje;
