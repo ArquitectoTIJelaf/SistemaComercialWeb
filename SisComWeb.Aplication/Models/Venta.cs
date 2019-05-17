@@ -63,6 +63,7 @@ namespace SisComWeb.Aplication.Models
         public string Direccion { get; set; }
         public string Observacion { get; set; }
         public decimal Credito { get; set; }
+        public string DirEmbarque { get; set; }
         public Acompaniante ObjAcompaniante { get; set; }
 
         // PASE DE CORTESÍA
@@ -159,5 +160,7 @@ namespace SisComWeb.Aplication.Models
         public string CodTerminal { get; set; }
 
         public byte TipImpresora { get; set; }
+
+        public string CodX { get; set; }
     }
 }

@@ -186,7 +186,8 @@ namespace SisComWeb.Aplication.Controllers
                 CodPoliza = (string)x["CodPoliza"],
 
                 CodTerminal = (string)x["CodTerminal"],
-                TipImpresora = (byte)x["TipImpresora"]
+                TipImpresora = (byte)x["TipImpresora"],
+                CodX = (string)x["CodX"]
             }).ToList();
 
             return lista;
@@ -760,6 +761,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Direccion\" : \"" + Listado[i].Direccion + "\"" +
                                     ",\"Observacion\" : \"" + Listado[i].Observacion + "\"" +
                                     ",\"Credito\" : " + Listado[i].Credito +
+                                    ",\"DirEmbarque\" : \"" + Listado[i].DirEmbarque + "\"" +
                                     ",\"ObjAcompaniante\" : " +
                                     "{" +
                                         "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.CodiTipoDoc) + "\"" +
@@ -1282,6 +1284,7 @@ namespace SisComWeb.Aplication.Controllers
                                     + ",\"CodPoliza\" : \"" + Listado[i].CodPoliza + "\""
                                     + ",\"CodTerminal\" : \"" + Listado[i].CodTerminal + "\""
                                     + ",\"TipImpresora\": " + Listado[i].TipImpresora
+                                    + ",\"CodX\" : \"" + Listado[i].CodX + "\""
                                 + "}";
 
                         if (i < Listado.Count - 1)

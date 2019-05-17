@@ -3164,7 +3164,7 @@
                         input.CodiServicio = _this.ticketVenta.CodiServicio;
                         input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : 0);
                         input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : 0);
-                        input.Hora_Embarque = (_this.embarque ? _this.embarque.Hora : '');
+                        input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : '');
                         input.NivelAsiento = objVenta.NivelAsiento;
                         input.NomDestino = _this.ticketVenta.NomDestino;
                         input.NomServicio = _this.ticketVenta.NomServicio;
@@ -3184,6 +3184,8 @@
                         input.Credito = (parseFloat(_this.tarjetaCant ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
+
+                        input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
 
                         // TIPOS DE VENTA
                         switch (_this.pickedBusVenta) {
@@ -3226,7 +3228,7 @@
                                 appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, _this.pickedBusVenta, tmpCantidadVendida);
 
                                 // Inserta boletos para imprimir
-                                _this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
+                                //_this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
 
                                 // callSignalR_ActualizarTurnoPlano
                                 callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
@@ -3385,17 +3387,15 @@
                 },
                 insertarImpresion: function (_ListaVentasRealizadas) {
                     var _this = this;
-                    debugger;
                     APP.rq.axios2.post(APP.base + '/itinerarios/insertar-impresion', {
                         Listado: _ListaVentasRealizadas
                     })
-                        .then(async function (res) {
+                        .then(function (res) {
                             if (res.data.Estado) {
-                                debugger;
                                 for (i = 0; i < res.data.Valor.length; i++) {
-                                    var auxResponse = await _this.imprimirBoleto(res.data.Valor[i]);
-                                    if (!auxResponse)
-                                        break;
+                                    (function (i) {
+                                        setTimeout(function () { _this.imprimirBoleto(res.data.Valor[i]); }, i * 1000);
+                                    })(i);
                                 }
                             }
                             else
@@ -3403,20 +3403,13 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                imprimirBoleto: async function (_idVenta) {
-                    debugger;
-                    var auxResponse = false;
-                    
-                    await axios({ method: "GET", "url": "http://localhost:9101/?boletocompleto=" + _idVenta })
+                imprimirBoleto: function (_idVenta) {
+                    axios({ method: "GET", "url": "http://localhost:9101/?boletocompleto=" + _idVenta })
                         .then(res => {
-                            debugger;
-                            auxResponse = true;
                             APP.msg.success(res.data);
                         }, error => {
                             APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                         });
-
-                    return auxResponse;
                 }
             },
             computed: {

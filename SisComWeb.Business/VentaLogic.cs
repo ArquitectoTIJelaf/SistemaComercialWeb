@@ -595,15 +595,17 @@ namespace SisComWeb.Business
                         PrecioDes = DataUtility.MontoSolesALetras(entidad.PrecioVenta.ToString("F2", CultureInfo.InvariantCulture)),
                         NomServicio = entidad.NomServicio,
                         FechaViaje = entidad.FechaViaje,
+                        EmbarqueDir = entidad.DirEmbarque,
+                        EmbarqueHora = entidad.HoraEmbarque,
 
-                        EmbarqueDir = string.Empty,
-                        EmbarqueHora = string.Empty,
                         CodigoX_FE = string.Empty,
                         LinkPag_FE = string.Empty,
                         CodPoliza = string.Empty,
 
                         CodTerminal = validarTerminalElectronico.Tipo,
-                        TipImpresora = byte.Parse(validarTerminalElectronico.Imp)
+                        TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
+
+                        CodX = "1"
                     };
                     listaVentasRealizadas.Add(ventaRealizada);
                 }

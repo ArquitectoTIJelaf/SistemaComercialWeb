@@ -145,6 +145,8 @@ namespace SisComWeb.Entity
         public bool FechaAbierta { get; set; }
 
         public string Concepto { get; set; } // @Reco_Venta en el store.
+
+        public string DirEmbarque { get; set; }
     }
 
     public class VentaRealizada
@@ -222,5 +224,7 @@ namespace SisComWeb.Entity
         public string CodTerminal { get; set; }
 
         public byte TipImpresora { get; set; }
+
+        public string CodX { get; set; }
     }
 }

@@ -676,6 +676,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@cod_poliza", DbType.String, ParameterDirection.Input, entidad.CodPoliza);
                 db.AddParameter("@cod_terminal", DbType.String, ParameterDirection.Input, entidad.CodTerminal);
                 db.AddParameter("@tip_impresora", DbType.Byte, ParameterDirection.Input, entidad.TipImpresora);
+                db.AddParameter("@cod_x", DbType.String, ParameterDirection.Input, entidad.CodX);
 
                 db.Execute();
 
