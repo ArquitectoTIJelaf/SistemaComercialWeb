@@ -508,7 +508,7 @@ namespace SisComWeb.Services
 
         #region INSERTAR IMPRESIÓN
 
-        public Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado)
+        public Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado)
         {
             try
             {
@@ -517,7 +517,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<int>>(false, null, Message.MsgExcInsertarImpresion, false);
+                return new Response<List<string>>(false, null, Message.MsgExcInsertarImpresion, false);
             }
         }
         #endregion

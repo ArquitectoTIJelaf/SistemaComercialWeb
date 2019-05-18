@@ -3255,7 +3255,7 @@
                                 appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, _this.pickedBusVenta, tmpCantidadVendida);
 
                                 // Inserta boletos para imprimir
-                                //_this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
+                                _this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
 
                                 // callSignalR_ActualizarTurnoPlano
                                 callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
@@ -3418,10 +3418,14 @@
                         Listado: _ListaVentasRealizadas
                     })
                         .then(function (res) {
+                            var _listImpresion = res.data.Valor;
+
                             if (res.data.Estado) {
-                                for (i = 0; i < res.data.Valor.length; i++) {
+                                for (i = 0; i < _listImpresion.length; i++) {
                                     (function (i) {
-                                        setTimeout(function () { _this.imprimirBoleto(res.data.Valor[i]); }, i * 1000);
+                                        setTimeout(function () {
+                                            _this.imprimirBoleto(_listImpresion[i]);
+                                        }, i * 1000);
                                     })(i);
                                 }
                             }
@@ -3430,12 +3434,16 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                imprimirBoleto: function (_idVenta) {
-                    axios({ method: "GET", "url": "http://localhost:9101/?boletocompleto=" + _idVenta })
+                imprimirBoleto: function (_objVenta) {
+                    var config = {
+                        headers: { 'Access-Control-Allow-Origin': '*' }
+                    };
+
+                    axios({ method: "GET", "url": "http://localhost:9099/?base=" + _objVenta, headers: { 'Access-Control-Allow-Origin': '*' } })
                         .then(res => {
                             APP.msg.success(res.data);
                         }, error => {
-                            APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                            //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                         });
                 }
             },

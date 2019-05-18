@@ -196,7 +196,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "InsertarImpresion", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado);
+        Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado);
 
         #endregion
     }

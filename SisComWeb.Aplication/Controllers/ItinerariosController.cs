@@ -1355,19 +1355,18 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-
-                Response<List<int>> res = new Response<List<int>>()
+                Response<List<string>> res = new Response<List<string>>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = tmpResult["Valor"].ToObject<List<int>>()
+                    Valor = tmpResult["Valor"].ToObject<List<string>>()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
     }

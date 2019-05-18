@@ -69,6 +69,10 @@
     <Compile Include="UsuarioLogic.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SisComWeb.CuadreImpresora\SisComWeb.CuadreImpresora.csproj">
+      <Project>{8CE8732A-C38C-4072-9932-4B7B293914D1}</Project>
+      <Name>SisComWeb.CuadreImpresora</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SisComWeb.Entity\SisComWeb.Entity.csproj">
       <Project>{cecccf83-3642-4f5e-8123-b0d5c6fcb207}</Project>
       <Name>SisComWeb.Entity</Name>

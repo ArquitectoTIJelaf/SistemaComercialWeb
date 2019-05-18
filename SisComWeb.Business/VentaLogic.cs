@@ -989,28 +989,30 @@ namespace SisComWeb.Business
 
         #region INSERTAR IMPRESIÓN
 
-        public static Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado)
+        public static Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado)
         {
             try
             {
-                var valor = new List<int>();
+                var valor = new List<string>();
 
                 foreach (var entidad in Listado)
                 {
-                    // Inserta Impresion
-                    var insertarImpresion = VentaRepository.InsertarImpresion(entidad);
-                    if (!insertarImpresion)
-                        return new Response<List<int>>(false, valor, Message.MsgErrorInsertarImpresion, false);
+                    //// Inserta Impresion
+                    //var insertarImpresion = VentaRepository.InsertarImpresion(entidad);
+                    //if (!insertarImpresion)
+                    //    return new Response<List<int>>(false, valor, Message.MsgErrorInsertarImpresion, false);
 
-                    valor.Add(entidad.IdVenta);
+                    var aux = CuadreImpresora.Cuadre.WriteText(entidad);
+
+                    valor.Add(aux);
                 }
 
-                return new Response<List<int>>(true, valor, Message.MsgCorrectoInsertarImpresion, true);
+                return new Response<List<string>>(true, valor, Message.MsgCorrectoInsertarImpresion, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<int>>(false, null, Message.MsgExcInsertarImpresion, false);
+                return new Response<List<string>>(false, null, Message.MsgExcInsertarImpresion, false);
             }
         }
 
