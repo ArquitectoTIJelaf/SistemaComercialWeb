@@ -181,6 +181,15 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
+
+        #endregion
+
+        #region CRÉDITO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaClientesContrato", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<ClienteCreditoEntity>> ListaClientesContrato(CreditoRequest request);
+
         #endregion
 
         #region INSERTAR IMPRESIÓN
@@ -188,6 +197,7 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "InsertarImpresion", ResponseFormat = WebMessageFormat.Json)]
         Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado);
+
         #endregion
     }
 }

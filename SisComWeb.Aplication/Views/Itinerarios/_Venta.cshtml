@@ -326,8 +326,8 @@
                                     <input type="radio" id="retornoBV" value="ND3" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="retornoBV" class="align-label-radio">Retorno</label>
                                 </div>
-                                <div class="col-md-1 ancho" @*@@click="changePickedBusVenta('ND4')"*@>
-                                    <input type="radio" id="creditoBV" value="ND4" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
+                                <div class="col-md-1 ancho" @@click.prevent="changePickedBusVenta('1')">
+                                    <input type="radio" id="creditoBV" value="1" v-model="pickedBusVenta" class="align-radio">
                                     <label for="creditoBV" class="align-label-radio">Crédito</label>
                                 </div>
                                 <div class="col-md-1 ancho" @@click.prevent="changePickedBusVenta('PO')">

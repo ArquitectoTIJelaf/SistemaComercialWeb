@@ -266,7 +266,7 @@ namespace SisComWeb.Aplication.Controllers
                         ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
                         FechaViaje = (string)x["FechaViaje"],
                         Color = (string)x["Color"],
-                        SecondColor = (string)x["SecondColor"],
+                        SecondColor = (string)x["SecondColor"]
                     }).ToList()
                 };
 
@@ -1228,6 +1228,60 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("listaClientesContrato")]
+        public async Task<ActionResult> ListaClientesContrato(CreditoRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"FechaViaje\" : \"" + request.FechaViaje + "\"" +
+                                    ",\"CodiOficina\" : " + request.CodiOficina +
+                                    ",\"CodiRuta\" : " + request.CodiRuta +
+                                    ",\"CodiServicio\" : " + request.CodiServicio +
+                                    ",\"Precio\" : " + request.Precio +
+                                    ",\"CodiBus\" : \"" + request.CodiBus + "\"" +
+                                    ",\"NumeAsiento\" : " + request.NumeAsiento +
+                                    ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ListaClientesContrato", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+
+                Response<List<ClienteCredito>> res = new Response<List<ClienteCredito>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new ClienteCredito
+                    {
+                        NumeContrato = (string)x["NumeContrato"],
+                        RucCliente = (string)x["RucCliente"],
+                        RazonSocial = (string)x["RazonSocial"],
+                        St = (string)x["St"],
+                        IdRuc = (int)x["IdRuc"],
+                        NombreCorto = (string)x["NombreCorto"],
+                        IdContrato = (int)x["IdContrato"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

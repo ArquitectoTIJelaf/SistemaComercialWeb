@@ -17,6 +17,7 @@
 @Html.Partial("_BoletosVendidos")
 @Html.Partial("_Postergacion")
 @Html.Partial("_ClaveAutorizacion")
+@Html.Partial("_CreditoClientes")
 
 @section styles{
     <style type="text/css">
@@ -534,6 +535,10 @@
                 $('#txtContraseniaCA').focus();
             });
 
+            $('#appVueCreditoClientes').on('hidden.bs.modal', function () {
+                appVueCreditoClientes.limpiarCreditoClientes();
+            });
+
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
                     keyBinds: {
@@ -729,6 +734,9 @@
                         var auxObj = appVueVenta.findObjectAsiento(auxNroAsiento);
                         appVueVenta.liberarAsiento(auxObj, true);
                     }
+                },
+                showCreditoClientes: function (_dataVenta) {
+                    appVueCreditoClientes.show(_dataVenta);
                 }
             };
         })();
@@ -1122,7 +1130,6 @@
                                 _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(res.data.Valor.CodiSucursal));
                                 _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(res.data.Valor.CodiRuta));
                                 _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(res.data.Valor.CodiServicio));
-                                debugger;
                                 _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(res.data.Valor.CodiDestino));
                                 _this.filtro.Turno = res.data.Valor.HoraPartida;
                                 _this.filtro.Fecha = input.FechaViaje;
@@ -2401,7 +2408,7 @@
                 validateTxtNroAsientoVenta: async function (e) {
                     if (this.eventTxtNroAsientoVenta)
                         e = this.eventTxtNroAsientoVenta;
-                    
+
                     if (this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
 
@@ -2450,7 +2457,7 @@
                             else {
                                 if (this.list.ventas[this.indexVenta].OldNroAsiento)
                                     this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
-                            } 
+                            }
                         }
                         else {
                             this.auxFocus.asiento = false;
@@ -2581,8 +2588,12 @@
                 },
                 changePickedBusVenta: async function (value) {
                     var _this = this;
+
                     // Si es el mismo valor, retornar
-                    if (_this.pickedBusVenta === value) return;
+                    if (_this.pickedBusVenta !== '1') {
+                        if (_this.pickedBusVenta === value)
+                            return;
+                    }
 
                     // Valida si se limpiará los 'AsientosBloqueados' del Picked anterior
                     switch (value) {
@@ -2592,6 +2603,7 @@
                         case 'AN': // Anulación
                         case 'FA': // Fecha abierta
                         case 'PO': // Postergación
+                        case '1': // Crédito
                             {
                                 if (_this.list.ventas.length > 1) {
                                     if (await APP.msg.confirm('Confirmar acción',
@@ -2630,6 +2642,20 @@
                                     _this.limpiarVenta();
                                 }
                             };
+                            break;
+                    }
+                    
+                    // Muestra 'Modal'
+                    switch (value) {
+                        case '1': // Crédito
+                            var dataVenta = {};
+                            dataVenta.FechaViaje = _this.filtro.Fecha;
+                            dataVenta.CodiOficina = _this.filtro.CodiSucursal;
+                            dataVenta.CodiRuta = _this.filtro.CodiDestinoPas;
+                            dataVenta.CodiServicio = _this.filtro.CodiServicio;
+                            dataVenta.CodiBus = _this.objPlano.CodiBus;
+                            dataVenta.HoraViaje = _this.filtro.Turno;
+                            appController.showCreditoClientes(dataVenta);
                             break;
                     }
 
@@ -2709,7 +2735,7 @@
                             }))
                                 .then(async function (res) {
                                     await appController.chargeTurnos();
-                                    
+
                                     if (res.data.Estado) {
                                         _this.$nextTick(() => {
                                             if (res.data.EsCorrecto)
@@ -3448,8 +3474,6 @@
             watch: {}
         });
 
-        var auxContadorOrden = 0;
-
         var appRegistrarInfante = new Vue({
             el: '#appRegistrarInfante ',
             data: {
@@ -4102,6 +4126,57 @@
 
         var appVueConfirmFechaAbierta = new Vue({
 
+        });
+
+        var appVueCreditoClientes = new Vue({
+            el: "#appVueCreditoClientes",
+            data: {
+                list: {
+                    clientes: []
+                },
+                venta: {}
+            },
+            mounted: function () { },
+            methods: {
+                show: function (_dataVenta) {
+                    window.addEventListener('keyup', this.esc);
+                    this.venta = _dataVenta;
+                    this.listaClientesContrato();
+                    $('#appVueCreditoClientes').modal('show');
+                },
+                listaClientesContrato: function () {
+                    var _this = this;
+
+                    var _request = {};
+                    _request.FechaViaje = _this.venta.FechaViaje;
+                    _request.CodiOficina = (_this.venta.CodiOficina ? _this.venta.CodiOficina.id : '0');
+                    _request.CodiRuta = (_this.venta.CodiRuta ? _this.venta.CodiRuta.id : '0');
+                    _request.CodiServicio = (_this.venta.CodiServicio ? _this.venta.CodiServicio.id : '0');
+                    _request.Precio = 0;
+                    _request.CodiBus = _this.venta.CodiBus;
+                    _request.NumeAsiento = 0;
+                    _request.HoraViaje = _this.venta.HoraViaje;
+                    APP.rq.axios2.post(APP.base + '/itinerarios/listaClientesContrato', {
+                        request: _request
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.clientes = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                cancelarCreditoClientes: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueCreditoClientes').modal('hide');
+                },
+                limpiarCreditoClientes: function () {
+                    this.list.clientes = [];
+                }
+            },
+            computed: {},
+            watch: {}
         });
 
     </script>

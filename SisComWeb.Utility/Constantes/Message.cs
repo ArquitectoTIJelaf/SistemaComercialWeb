@@ -180,5 +180,10 @@
         public const string MsgCorrectoInsertarImpresion = "Correcto: InsertarImpresion.";
         public const string MsgErrorInsertarImpresion = "Error: InsertarImpresion.";
         public const string MsgExcInsertarImpresion = "Excepción: InsertarImpresion.";
+
+        // ClientesContrato
+        public const string MsgCorrectoListaClientesContrato = "Correcto: ListaClientesContrato.";
+        public const string MsgErrorListaClientesContrato = "Error: ListaClientesContrato.";
+        public const string MsgExcListaClientesContrato = "Excepción: ListaClientesContrato.";
     }
 }

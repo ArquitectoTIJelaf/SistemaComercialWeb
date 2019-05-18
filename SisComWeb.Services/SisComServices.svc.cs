@@ -489,6 +489,23 @@ namespace SisComWeb.Services
 
         #endregion
 
+        #region CRÉDITO
+
+        public Response<List<ClienteCreditoEntity>> ListaClientesContrato(CreditoRequest request)
+        {
+            try
+            {
+                return CreditoLogic.ListaClientesContrato(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<ClienteCreditoEntity>>(false, null, Message.MsgExcListaClientesContrato, false);
+            }
+        }
+
+        #endregion
+
         #region INSERTAR IMPRESIÓN
 
         public Response<List<int>> InsertarImpresion(List<VentaRealizada> Listado)
