@@ -569,6 +569,32 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<PrecioNormalEntity> VerificarPrecioNormal(int idContrato)
+        {
+            try
+            {
+                return CreditoLogic.VerificarPrecioNormal(idContrato);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<PrecioNormalEntity>(false, null, Message.MsgExcVerificarPrecioNormal, false);
+            }
+        }
+
+        public Response<decimal> BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
+        {
+            try
+            {
+                return CreditoLogic.BuscarPrecio(fechaViaje, nivel, hora, idPrecio);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<decimal>(false, 0, Message.MsgExcBuscarPrecio, false);
+            }
+        }
+
         #endregion
 
         #region IMPRESIÓN

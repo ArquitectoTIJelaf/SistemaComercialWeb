@@ -210,6 +210,14 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ConsultarContrato", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<ContratoEntity> ConsultarContrato(int idContrato);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificarPrecioNormal", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<PrecioNormalEntity> VerificarPrecioNormal(int idContrato);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscarPrecio", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<decimal> BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio);
+
         #endregion
 
         #region IMPRESIÓN

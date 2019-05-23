@@ -162,6 +162,8 @@ namespace SisComWeb.Entity
         public string FechaCita { get; set; }
 
         public int IdHospital { get; set; }
+
+        public bool FlagPrecioNormal { get; set; }
     }
 
     public class VentaRealizada

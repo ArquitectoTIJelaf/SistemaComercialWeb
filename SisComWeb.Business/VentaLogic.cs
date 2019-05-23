@@ -177,12 +177,12 @@ namespace SisComWeb.Business
                         case "1": // CRÉDITO
                             {
                                 // Consulta 'Contrato'
-                                var consultarContrato = CreditoRepository.ConsultarContrato(entidad.IdContrato);
-                                if (consultarContrato.Marcador == "1")
-                                {
-                                    if (consultarContrato.Saldo < entidad.PrecioVenta)
-                                        return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
-                                }
+                                //var consultarContrato = CreditoRepository.ConsultarContrato(entidad.IdContrato);
+                                //if (consultarContrato.Marcador == "1")
+                                //{
+                                //    if (consultarContrato.Saldo < entidad.PrecioVenta)
+                                //        return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
+                                //}
                             };
                             break;
                     }
@@ -453,7 +453,12 @@ namespace SisComWeb.Business
                         case "1": // CRÉDITO
                             {
                                 // Actualiza 'BoletosStock'
-                                var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1"); // Revisar Notepad: Se está suponiendo 'FlagPrecioNormal' = false
+                                var actualizarBoletosStock = false;
+                                if (entidad.FlagPrecioNormal)
+                                    actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1");
+                                else
+                                    actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdContrato.ToString(), "0");
+
                                 if (!actualizarBoletosStock)
                                     return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarBoletosStock, false);
                             };

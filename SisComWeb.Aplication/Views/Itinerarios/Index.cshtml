@@ -1046,7 +1046,8 @@
                         Concepto: '',
                         FechaAbierta: false,
                         IdVenta: 0,
-                        Info: ''
+                        Info: '',
+                        FlagPrecioNormal: false
                     }],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
@@ -1354,6 +1355,9 @@
                     var _this = this;
                     var auxResponse = false;
 
+                    // Para setear variables de 'Crédito'
+                    var tmpAsientoSel = _.cloneDeep(asientoSel);
+
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
                         switch (_this.pickedBusVenta) {
@@ -1364,9 +1368,102 @@
                                 return;
                             case '1': // Crédito
                                 {
-                                    var auxResponse = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
-                                    if (!auxResponse)
+                                    var resConsultarContrato = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
+                                    if (!resConsultarContrato)
                                         return;
+
+                                    // Valida 'PrecioValor'
+                                    var validatorPrecioValor = false;
+                                    var objPanelPrecioValor = appController.validatePanel('121');
+                                    if (objPanelPrecioValor && objPanelPrecioValor.Valor === '1')
+                                        validatorPrecioValor = true;
+
+                                    if (validatorPrecioValor) {
+                                        var resObjPrecioNormal = await _this.verificarPrecioNormal(_this.objCreditoCliente.idContrato);
+
+                                        if (resObjPrecioNormal) {
+                                            if (resObjPrecioNormal.IdNormal !== -1) {
+                                                tmpAsientoSel.Precio = tmpAsientoSel.Precio + resVerificarPrecioNormal.MontoMas - resVerificarPrecioNormal.MontoMenos;
+                                                tmpAsientoSel.FlagPrecioNormal = true;
+
+                                                var auxLength = _this.list.ventas.length;
+                                                if (auxLength === 1) {
+                                                    if (resObjPrecioNormal.Saldo <= 0) {
+                                                        APP.msg.warning("Contrato sin boletos disponibles.");
+                                                        return;
+                                                    }
+                                                }
+                                                else {
+                                                    if (resObjPrecioNormal.Saldo < auxLength) {
+                                                        APP.msg.warning("Contrato sin boletos disponibles.");
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                var resPrecioFecha = await _this.buscarPrecio(_this.filtro.Fecha, asientoSel.Nivel, _this.filtro.Turno, _this.objCreditoCliente.IdPrecio);
+
+                                                if (_this.objCreditoCliente.SaldoBoletos > 0) {
+                                                    if (resPrecioFecha > 0)
+                                                        tmpAsientoSel.Precio = resPrecioFecha;
+                                                    else
+                                                        tmpAsientoSel.Precio = _this.objCreditoCliente.Precio;
+                                                }
+                                                else {
+                                                    APP.msg.warning("Contrato sin boletos disponibles.");
+                                                    return;
+                                                }
+                                                tmpAsientoSel.FlagPrecioNormal = false;
+                                            }
+                                        }
+                                        else
+                                            return;
+
+                                        tmpAsientoSel.Precio = asientoSel.Precio;
+                                    }
+                                    else {
+                                        var resObjPrecioNormal = await _this.verificarPrecioNormal(_this.objCreditoCliente.idContrato);
+
+                                        if (resObjPrecioNormal) {
+                                            if (resObjPrecioNormal.IdNormal !== -1) {
+                                                tmpAsientoSel.Precio = tmpAsientoSel.Precio + resVerificarPrecioNormal.MontoMas - resVerificarPrecioNormal.MontoMenos;
+                                                tmpAsientoSel.FlagPrecioNormal = true;
+
+                                                var auxLength = _this.list.ventas.length;
+                                                if (auxLength === 1) {
+                                                    if (resObjPrecioNormal.Saldo <= 0) {
+                                                        APP.msg.warning("Contrato sin boletos disponibles.");
+                                                        return;
+                                                    }
+                                                }
+                                                else {
+                                                    if (resObjPrecioNormal.Saldo < auxLength) {
+                                                        APP.msg.warning("Contrato sin boletos disponibles.");
+                                                        return;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                var resPrecioFecha = await _this.buscarPrecio(_this.filtro.Fecha, asientoSel.Nivel, _this.filtro.Turno, _this.objCreditoCliente.IdPrecio);
+
+                                                if (_this.objCreditoCliente.SaldoBoletos > 0) {
+                                                    if (resPrecioFecha > 0)
+                                                        tmpAsientoSel.Precio = resPrecioFecha;
+                                                    else
+                                                        tmpAsientoSel.Precio = _this.objCreditoCliente.Precio;
+                                                }
+                                                else {
+                                                    APP.msg.warning("Contrato sin boletos disponibles.");
+                                                    return;
+                                                }
+                                                tmpAsientoSel.FlagPrecioNormal = false;
+                                            }
+                                        }
+                                        else
+                                            return;
+                                    }
+
+                                    //tmpAsientoSel.Precio = asientoSel.Precio;
                                 }
                                 break;
                         }
@@ -1441,6 +1538,8 @@
                                         break;
                                     case '1': // Crédito
                                         appController.showCreditoOpciones(_this.objCreditoCliente.idContrato);
+                                        _this.list.ventas[_this.indexVenta].Precio = tmpAsientoSel.Precio;
+                                        _this.list.ventas[_this.indexVenta].FlagPrecioNormal = tmpAsientoSel.FlagPrecioNormal;
                                         break;
                                 }
 
@@ -1619,7 +1718,8 @@
                         CodiSocio: '',
                         Concepto: '',
                         FechaAbierta: false,
-                        IdVenta: 0
+                        IdVenta: 0,
+                        FlagPrecioNormal: false
                     });
                 },
                 liberarAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
@@ -1781,7 +1881,7 @@
                             $('#txtApellidoPaterno').focus();
                         }
                         else if (!_this.list.ventas[_this.indexVenta].ApellidoMaterno) {
-                                $('#txtApellidoMaterno').focus();
+                            $('#txtApellidoMaterno').focus();
                         }
                         else if (!_this.list.ventas[_this.indexVenta].FechaNac) {
                             $('#txtFechaNac').focus();
@@ -2498,6 +2598,7 @@
                     _this.list.ventas[_this.indexVenta].FechaAbierta = false;
                     _this.list.ventas[_this.indexVenta].IdVenta = 0;
                     _this.list.ventas[_this.indexVenta].Info = '';
+                    _this.list.ventas[_this.indexVenta].FlagPrecioNormal = false;
                     _this.errors.clear();
                     _this.checkRegistrarNino = false;
                     _this.disabledCampoNroAsiento = false;
@@ -3000,24 +3101,28 @@
                     })
                         .then(res => {
                             if (res.data.Estado) {
-                                if (res.data.Valor.Marcador === '1') {
-                                    var auxLength = appVueVenta.list.ventas.length;
-                                    if (auxLength === 1) {
-                                        if (res.data.Valor.Saldo >= _PrecioMaximo)
-                                            auxResponse = true;
-                                    }
-                                    else {
-                                        var auxSaldoTotal = _.sumBy(_this.list.ventas, function (objVenta) { return objVenta.PrecioMaximo; });
+                                if (res.data.EsCorrecto) {
+                                    if (res.data.Valor.Marcador === '1') {
+                                        var auxLength = _this.list.ventas.length;
+                                        if (auxLength === 1) {
+                                            if (res.data.Valor.Saldo >= _PrecioMaximo)
+                                                auxResponse = true;
+                                        }
+                                        else {
+                                            var auxSaldoTotal = _.sumBy(_this.list.ventas, function (objVenta) { return objVenta.PrecioMaximo; });
 
-                                        if (res.data.Valor.Saldo >= auxSaldoTotal)
-                                            auxResponse = true;
+                                            if (res.data.Valor.Saldo >= auxSaldoTotal)
+                                                auxResponse = true;
+                                        }
                                     }
+                                    else
+                                        auxResponse = true;
+
+                                    if (!auxResponse)
+                                        APP.msg.warning("Cliente con saldo insuficiente.");
                                 }
                                 else
-                                    auxResponse = true;
-
-                                if (!auxResponse)
-                                    APP.msg.warning("Cliente con saldo insuficiente.");
+                                    APP.msg.warning(res.data.Mensaje);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -3025,6 +3130,41 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
+                },
+                verificarPrecioNormal: async function (_idContrato) {
+                    var resObjPrecioNormal = null;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/verificarPrecioNormal', {
+                        idContrato: _idContrato
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                resObjPrecioNormal = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return resObjPrecioNormal;
+                },
+                buscarPrecio: async function (_Fecha, _Nivel, _Turno, _IdPrecio) {
+                    var resPrecioFecha = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/buscarPrecio', {
+                        fechaViaje: _Fecha,
+                        nivel: _Nivel,
+                        hora: _Turno,
+                        idPrecio: _IdPrecio
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                resPrecioFecha = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return resPrecioFecha;
                 },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
@@ -3428,15 +3568,7 @@
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
                         input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
-
-                        input.IdContrato = _this.ticketVenta.IdContrato;
-                        input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
-
-                        input.NroSolicitud = objVenta.NroSolicitud;
-                        input.IdArea = (objVenta.area ? objVenta.area.id : 0);
-                        input.FlgIda = objVenta.boletoTipoDir;
-                        input.FechaCita = objVenta.fechaCita;
-                        input.IdHospital = (objVenta.hospital ? objVenta.hospital.id : 0);
+                        input.FechaAbierta = objVenta.FechaAbierta;
 
                         // TIPOS DE VENTA
                         switch (_this.pickedBusVenta) {
@@ -3444,10 +3576,16 @@
                                 input.CodiGerente = objVenta.CodiGerente;
                                 input.CodiSocio = objVenta.CodiSocio;
                                 input.Concepto = objVenta.Concepto;
-                                input.FechaAbierta = objVenta.FechaAbierta;
                                 break;
                             case '1': // CRÉDITO
-                                input.FechaAbierta = objVenta.FechaAbierta;
+                                input.IdContrato = _this.ticketVenta.IdContrato;
+                                input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
+                                input.NroSolicitud = objVenta.NroSolicitud;
+                                input.IdArea = (objVenta.area ? objVenta.area.id : 0);
+                                input.FlgIda = objVenta.boletoTipoDir;
+                                input.FechaCita = objVenta.fechaCita;
+                                input.IdHospital = (objVenta.hospital ? objVenta.hospital.id : 0);
+                                input.FlagPrecioNormal = objVenta.FlagPrecioNormal;
                                 break;
                         }
                         switch (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
@@ -3471,7 +3609,7 @@
                         APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
                         return;
                     }
-                    debugger;
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
                         Listado: listado,
                         FlagVenta: _this.pickedBusVenta
@@ -4388,7 +4526,6 @@
                     _request.CodiOficina = (_this.venta.CodiOficina ? _this.venta.CodiOficina.id : '0');
                     _request.CodiRuta = (_this.venta.CodiRuta ? _this.venta.CodiRuta.id : '0');
                     _request.CodiServicio = (_this.venta.CodiServicio ? _this.venta.CodiServicio.id : '0');
-                    _request.Precio = 0;
                     _request.CodiBus = _this.venta.CodiBus;
                     _request.NumeAsiento = 0;
                     _request.HoraViaje = _this.venta.HoraViaje;
@@ -4538,9 +4675,9 @@
                             if (auxValidate === true) APP.msg.warning('Seleccione una fecha.');
                         }
                         else {
-                            var validateFechaCita = moment(this.fechaCita, 'DD/MM/YYYY').isAfter(moment(), 'day');
+                            var validateFechaCita = moment(this.fechaCita, 'DD/MM/YYYY').isBefore(moment(), 'day');
 
-                            if (auxValidate && this.boletoTipoDir === '1' && validateFechaCita) {
+                            if (auxValidate && this.boletoTipoDir === '0' && validateFechaCita) {
                                 document.getElementById('txtFechaCita').focus();
                                 APP.msg.warning('Selecciona una fecha menor o igual a la fecha actual.');
                             }

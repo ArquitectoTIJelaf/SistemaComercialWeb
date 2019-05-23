@@ -18,16 +18,23 @@ namespace SisComWeb.Business
                 for (int i = 0; i < listarClientesContrato.Count; i++)
                 {
                     // Consulta 'Contrato'
-                    var consultarContrato = CreditoRepository.ConsultarContrato(listarClientesContrato[i].IdContrato);
-
-                    if (consultarContrato.Marcador == "1")
+                    ContratoEntity consultarContrato = CreditoRepository.ConsultarContrato(listarClientesContrato[i].IdContrato);
+                    if (consultarContrato != null)
                     {
-                        if (consultarContrato.Saldo - request.Precio <= 0)
+                        if (consultarContrato.Marcador == "1")
                         {
-                            listarClientesContrato.RemoveAt(i);
-                            i--;
-                            continue;
+                            if (consultarContrato.Saldo <= 0)
+                            {
+                                listarClientesContrato.RemoveAt(i);
+                                i--;
+                                continue;
+                            }
                         }
+                    }
+                    else {
+                        listarClientesContrato.RemoveAt(i);
+                        i--;
+                        continue;
                     }
 
                     // Verifica 'ContratoPasajes'
@@ -46,11 +53,11 @@ namespace SisComWeb.Business
                     }
 
                     // Verificar 'PrecioNormal'
-                    var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(listarClientesContrato[i].IdContrato);
+                    var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(verificarContratoPasajes.IdContrato);
                     // Si encontró datos (IdNormal toma desde el 0)
                     if (verificarPrecioNormal.IdNormal >= 0)
                     {
-                        if (verificarPrecioNormal.Saldo < 1)
+                        if (verificarPrecioNormal.Saldo <= 0)
                         {
                             listarClientesContrato.RemoveAt(i);
                             i--;
@@ -69,10 +76,10 @@ namespace SisComWeb.Business
                     }
 
                     // Seteo variables auxiliares desde 'verificarContratoPasajes'
-                    listarClientesContrato[i].CntBoletos = verificarContratoPasajes.CntBoletos;
-                    listarClientesContrato[i].SaldoBoletos = verificarContratoPasajes.SaldoBoletos;
-                    listarClientesContrato[i].IdPrecio = verificarContratoPasajes.IdPrecio;
-                    listarClientesContrato[i].Precio = verificarContratoPasajes.Precio;
+                    listarClientesContrato[i].CntBoletos = verificarContratoPasajes.CntBoletos; // Cnt
+                    listarClientesContrato[i].SaldoBoletos = verificarContratoPasajes.SaldoBoletos; // SALDO
+                    listarClientesContrato[i].IdPrecio = verificarContratoPasajes.IdPrecio; // IdServicioContrato
+                    listarClientesContrato[i].Precio = verificarContratoPasajes.Precio; // Precio
                 }
 
                 return new Response<List<ClienteCreditoEntity>>(true, listarClientesContrato, Message.MsgCorrectoListarClientesContrato, true);
@@ -105,14 +112,50 @@ namespace SisComWeb.Business
             try
             {
                 // Consulta 'Contrato'
-                var consultarContrato = CreditoRepository.ConsultarContrato(idContrato);
-
-                return new Response<ContratoEntity>(true, consultarContrato, Message.MsgCorrectoConsultarContrato, true);
+                ContratoEntity consultarContrato = CreditoRepository.ConsultarContrato(idContrato);
+                if (consultarContrato != null)
+                    return new Response<ContratoEntity>(true, consultarContrato, Message.MsgCorrectoConsultarContrato, true);
+                else
+                    return new Response<ContratoEntity>(false, consultarContrato, Message.MsgValidaNullConsultarContrato, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<ContratoEntity>(false, null, Message.MsgExcConsultarContrato, false);
+            }
+        }
+
+        
+
+        public static Response<PrecioNormalEntity> VerificarPrecioNormal(int idContrato)
+        {
+            try
+            {
+                // Verificar 'PrecioNormal'
+                var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(idContrato);
+
+                return new Response<PrecioNormalEntity>(true, verificarPrecioNormal, Message.MsgCorrectoVerificarPrecioNormal, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<PrecioNormalEntity>(false, null, Message.MsgExcVerificarPrecioNormal, false);
+            }
+        }
+
+        public static Response<decimal> BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
+        {
+            try
+            {
+                // Buscar 'Precio'
+                var buscarPrecio = CreditoRepository.BuscarPrecio(fechaViaje, nivel, hora, idPrecio);
+
+                return new Response<decimal>(true, buscarPrecio, Message.MsgCorrectoBuscarPrecio, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<decimal>(false, 0, Message.MsgExcBuscarPrecio, false);
             }
         }
     }

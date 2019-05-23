@@ -12,8 +12,6 @@ namespace SisComWeb.Entity
 
         public byte CodiServicio { get; set; }
 
-        public decimal Precio { get; set; }
-
         public string CodiBus { get; set; }
 
         public byte NumeAsiento { get; set; }

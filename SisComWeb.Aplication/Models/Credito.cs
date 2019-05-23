@@ -10,8 +10,6 @@
 
         public byte CodiServicio { get; set; }
 
-        public decimal Precio { get; set; }
-
         public string CodiBus { get; set; }
 
         public byte NumeAsiento { get; set; }
@@ -50,5 +48,22 @@
         public decimal Saldo { get; set; }
 
         public string Marcador { get; set; }
+    }
+
+    public class PrecioNormal
+    {
+        public int IdNormal { get; set; }
+
+        public int IdContrato { get; set; }
+
+        public string TipoPrecio { get; set; }
+
+        public decimal MontoMas { get; set; }
+
+        public decimal MontoMenos { get; set; }
+
+        public int CntBol { get; set; }
+
+        public int Saldo { get; set; }
     }
 }

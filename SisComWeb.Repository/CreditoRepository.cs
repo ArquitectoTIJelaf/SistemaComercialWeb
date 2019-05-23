@@ -41,7 +41,7 @@ namespace SisComWeb.Repository
 
         public static ContratoEntity ConsultarContrato(int idContrato)
         {
-            var entidad = new ContratoEntity();
+            ContratoEntity entidad = null;
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -51,8 +51,11 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.Saldo = Reader.GetDecimalValue(drlector, "saldo");
-                        entidad.Marcador = Reader.GetStringValue(drlector, "marcador");
+                        entidad = new ContratoEntity
+                        {
+                            Saldo = Reader.GetDecimalValue(drlector, "saldo"),
+                            Marcador = Reader.GetStringValue(drlector, "marcador")
+                        };
                     }
                 }
             }
@@ -154,46 +157,6 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static string ConsultarAsientoNivel(string bus, string asi)
-        {
-            var valor = "0";
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_TB_ASIENTONIVEL_Asi_Consulta";
-                db.AddParameter("@bus", DbType.String, ParameterDirection.Input, bus);
-                db.AddParameter("@asi", DbType.String, ParameterDirection.Input, asi);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = Reader.GetStringValue(drlector, "N");
-                    }
-                }
-            }
-
-            return valor;
-        }
-
-        public static decimal BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
-        {
-            var valor = new decimal() ;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_FindPrecio";
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = Reader.GetDecimalValue(drlector, "");
-                    }
-                }
-            }
-
-            return valor;
-        }
-
         public static List<PanelControlEntity> ListarPanelControl()
         {
             var Lista = new List<PanelControlEntity>();
@@ -219,6 +182,29 @@ namespace SisComWeb.Repository
             }
 
             return Lista;
+        }
+
+        public static decimal BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
+        {
+            var valor = new decimal();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_FindPrecio";
+                db.AddParameter("@fechaViaje", DbType.String, ParameterDirection.Input, fechaViaje);
+                db.AddParameter("@nivel", DbType.String, ParameterDirection.Input, nivel);
+                db.AddParameter("@hora", DbType.String, ParameterDirection.Input, hora);
+                db.AddParameter("@idPrecio", DbType.String, ParameterDirection.Input, idPrecio);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetDecimalValue(drlector, "");
+                    }
+                }
+            }
+
+            return valor;
         }
 
         #endregion

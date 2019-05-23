@@ -789,6 +789,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"FlgIda\" : \"" + Listado[i].FlgIda + "\"" +
                                     ",\"FechaCita\" : \"" + Listado[i].FechaCita + "\"" +
                                     ",\"IdHospital\" : " + Listado[i].IdHospital +
+                                     ",\"FlagPrecioNormal\" : " + Listado[i].FlagPrecioNormal.ToString().ToLower() +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -1018,13 +1019,13 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
-                    var _body = "{ " 
+                    var _body = "{" 
                                 + "\"IdVenta\": " + IdVenta + ","
                                 + "\"CodiUsuario\": " + usuario.CodiUsuario + ","
                                 + "\"CodiOficina\": " + usuario.CodiSucursal + ","
                                 + "\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta + ","
-                                + "\"Tipo\": \"" + Tipo 
-                                + "\" }";
+                                + "\"Tipo\": \"" + Tipo + "\""
+                                + "}";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1254,7 +1255,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiOficina\" : " + request.CodiOficina +
                                     ",\"CodiRuta\" : " + request.CodiRuta +
                                     ",\"CodiServicio\" : " + request.CodiServicio +
-                                    ",\"Precio\" : " + request.Precio +
                                     ",\"CodiBus\" : \"" + request.CodiBus + "\"" +
                                     ",\"NumeAsiento\" : " + request.NumeAsiento +
                                     ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
@@ -1455,6 +1455,54 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         Saldo = (decimal)data["Saldo"],
                         Marcador = (string)data["Marcador"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Contrato>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificarPrecioNormal")]
+        public async Task<ActionResult> VerificarPrecioNormal(int idContrato)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"idContrato\" : " + idContrato +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificarPrecioNormal", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<PrecioNormal> res = new Response<PrecioNormal>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new PrecioNormal()
+                    {
+                        IdNormal = (int)data["IdNormal"],
+                        IdContrato = (int)data["IdContrato"],
+                        TipoPrecio = (string)data["TipoPrecio"],
+                        MontoMas = (decimal)data["MontoMas"],
+                        MontoMenos = (decimal)data["MontoMenos"],
+                        CntBol = (int)data["CntBol"],
+                        Saldo = (int)data["Saldo"]
                     }
                 };
 
@@ -1462,7 +1510,47 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<Contrato>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<PrecioNormal>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("buscarPrecio")]
+        public async Task<ActionResult> BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"fechaViaje\": \"" + fechaViaje + "\"" +
+                                    ",\"nivel\": \"" + nivel + "\"" +
+                                    ",\"hora\": \"" + hora.Replace(" ", "") + "\"" +
+                                    ",\"idPrecio\": \"" + idPrecio + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscarPrecio", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<decimal> res = new Response<decimal>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (decimal)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
     }

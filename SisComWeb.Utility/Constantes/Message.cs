@@ -205,5 +205,14 @@
         public const string MsgCorrectoConsultarContrato = "Correcto: ConsultarContrato.";
         public const string MsgExcConsultarContrato = "Excepción: ConsultarContrato.";
         public const string MsgValidaConsultarContrato = "Cliente con saldo insuficiente.";
+        public const string MsgValidaNullConsultarContrato = "No se ha encontrado contrato.";
+
+        // Precio Normal
+        public const string MsgCorrectoVerificarPrecioNormal = "Correcto: VerificarPrecioNormal.";
+        public const string MsgExcVerificarPrecioNormal = "Excepción: VerificarPrecioNormal.";
+
+        // Precio Contrato
+        public const string MsgCorrectoBuscarPrecio = "Correcto: BuscarPrecio.";
+        public const string MsgExcBuscarPrecio = "Excepción: BuscarPrecio.";
     }
 }
