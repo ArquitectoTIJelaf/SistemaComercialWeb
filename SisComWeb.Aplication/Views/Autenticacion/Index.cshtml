@@ -47,8 +47,8 @@
                               label="label"
                               :get-option-label="getLabel"
                               :options="list.sucursales"
-                              :placeholder="'Sucursal'"
-                              ref="select">
+                              :select-on-tab="true"
+                              :placeholder="'Sucursal'">
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
@@ -58,8 +58,8 @@
                               label="label"
                               :get-option-label="getLabel"
                               :options="list.puntosventa"
-                              :placeholder="'Punto de Venta'"
-                              ref="select">
+                              :select-on-tab="true"
+                              :placeholder="'Punto de Venta'">
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>

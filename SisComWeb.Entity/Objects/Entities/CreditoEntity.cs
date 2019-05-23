@@ -20,6 +20,15 @@
         public string NombreCorto { get; set; }
 
         public int IdContrato { get; set; }
+
+        // Variables auxiliares
+        public int CntBoletos { get; set; }
+
+        public int SaldoBoletos { get; set; }
+
+        public int IdPrecio { get; set; }
+
+        public decimal Precio { get; set; }
     }
 
     public class ContratoEntity

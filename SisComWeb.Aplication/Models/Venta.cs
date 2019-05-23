@@ -76,6 +76,15 @@ namespace SisComWeb.Aplication.Models
 
         // RESERVA
         public int IdVenta { get; set; }
+
+        // CRÉDITO
+        public int IdContrato { get; set; }
+        public int IdPrecio { get; set; } // IdServicioContrato     // @IdTabla
+        public string NroSolicitud { get; set; }
+        public int IdArea { get; set; }
+        public string FlgIda { get; set; }
+        public string FechaCita { get; set; }
+        public int IdHospital { get; set; }
     }
 
     public class VentaResponse

@@ -74,6 +74,15 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
                 db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.Concepto);
                 db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, entidad.CodiRuta);
+
+                db.AddParameter("@IdContrato", DbType.Int32, ParameterDirection.Input, entidad.IdContrato);
+                db.AddParameter("@NroSolicitud", DbType.String, ParameterDirection.Input, entidad.NroSolicitud ?? "");
+                db.AddParameter("@IdAreaContrato", DbType.Int32, ParameterDirection.Input, entidad.IdArea);
+                db.AddParameter("@Flg_Ida", DbType.String, ParameterDirection.Input, entidad.FlgIda ?? "");
+                db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, entidad.FechaCita ?? "");
+                db.AddParameter("@Id_hospital", DbType.Int32, ParameterDirection.Input, entidad.IdHospital);
+                db.AddParameter("@IdTabla", DbType.Int32, ParameterDirection.Input, entidad.IdPrecio);
+
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 
                 db.Execute();

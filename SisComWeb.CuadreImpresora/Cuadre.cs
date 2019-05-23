@@ -15,7 +15,7 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 42, "^"));
             texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 42, "^"));
             texto.AppendLine("|||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " DE VENTA ELECTRONICA", 29));
-            texto.AppendLine("|^" + PadBoth(String.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 17));
+            texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 17));
             texto.AppendLine(" ");
             texto.AppendLine("^FECHA DE EMISION  : " + venta.EmisionFecha + "-" + venta.EmisionHora);
             texto.AppendLine("^NRO DOC           : " + venta.DocNumero);
@@ -50,16 +50,16 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine("^      devoluciones, Conservar su      ");
             texto.AppendLine("^      comprobante ante cualquier      ");
             texto.AppendLine("^             eventualidad             ");
-            texto.AppendLine(String.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
+            texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                             venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,
                                             venta.BoletoSerie, venta.BoletoNum, venta.PrecioCan,
                                             venta.EmisionFecha, venta.DocTipo, venta.DocNumero));
             texto.AppendLine(" ");
+
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
+            var boletoBase64 = Convert.ToBase64String(encodedText);
 
-            var aux = Convert.ToBase64String(encodedText);
-
-            return aux;
+            return boletoBase64;
         }
 
         public static string SplitStringPreserving(string str, int length, string starOFline = "", bool center = true)

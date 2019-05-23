@@ -8,7 +8,7 @@ namespace SisComWeb.Business
 {
     public static class CreditoLogic
     {
-        public static Response<List<ClienteCreditoEntity>> ListaClientesContrato(CreditoRequest request)
+        public static Response<List<ClienteCreditoEntity>> ListarClientesContrato(CreditoRequest request)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace SisComWeb.Business
                     }
 
                     // Verificar 'PrecioNormal'
-                    var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal();
+                    var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(listarClientesContrato[i].IdContrato);
                     // Si encontró datos (IdNormal toma desde el 0)
                     if (verificarPrecioNormal.IdNormal >= 0)
                     {
@@ -60,18 +60,6 @@ namespace SisComWeb.Business
                     // Sino
                     else
                     {
-                        // Consulta 'AsientoNivel'
-                        //var consultarAsientoNivel = CreditoRepository.ConsultarAsientoNivel(request.CodiBus, request.NumeAsiento.ToString());
-
-                        // Busca 'Precio'
-                        //var buscarPrecio = CreditoRepository.BuscarPrecio(request.FechaViaje, consultarAsientoNivel, request.HoraViaje, verificarContratoPasajes.IdPrecio.ToString());
-                        //if (buscarPrecio <= 0)
-                        //{
-                        //    listarClientesContrato.RemoveAt(i);
-                        //    i--;
-                        //    continue;
-                        //}
-
                         if (verificarContratoPasajes.SaldoBoletos <= 0)
                         {
                             listarClientesContrato.RemoveAt(i);
@@ -79,14 +67,52 @@ namespace SisComWeb.Business
                             continue;
                         }
                     }
+
+                    // Seteo variables auxiliares desde 'verificarContratoPasajes'
+                    listarClientesContrato[i].CntBoletos = verificarContratoPasajes.CntBoletos;
+                    listarClientesContrato[i].SaldoBoletos = verificarContratoPasajes.SaldoBoletos;
+                    listarClientesContrato[i].IdPrecio = verificarContratoPasajes.IdPrecio;
+                    listarClientesContrato[i].Precio = verificarContratoPasajes.Precio;
                 }
 
-                return new Response<List<ClienteCreditoEntity>>(true, listarClientesContrato, Message.MsgCorrectoListaClientesContrato, true);
+                return new Response<List<ClienteCreditoEntity>>(true, listarClientesContrato, Message.MsgCorrectoListarClientesContrato, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<ClienteCreditoEntity>>(false, null, Message.MsgExcListaClientesContrato, false);
+                return new Response<List<ClienteCreditoEntity>>(false, null, Message.MsgExcListarClientesContrato, false);
+            }
+        }
+
+        public static Response<List<PanelControlEntity>> ListarPanelControl()
+        {
+            try
+            {
+                // Lista 'PanelControl'
+                var listarPanelControl = CreditoRepository.ListarPanelControl();
+
+                return new Response<List<PanelControlEntity>>(true, listarPanelControl, Message.MsgCorrectoListarPanelControl, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<PanelControlEntity>>(false, null, Message.MsgExcListarPanelControl, false);
+            }
+        }
+
+        public static Response<ContratoEntity> ConsultarContrato(int idContrato)
+        {
+            try
+            {
+                // Consulta 'Contrato'
+                var consultarContrato = CreditoRepository.ConsultarContrato(idContrato);
+
+                return new Response<ContratoEntity>(true, consultarContrato, Message.MsgCorrectoConsultarContrato, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ContratoEntity>(false, null, Message.MsgExcConsultarContrato, false);
             }
         }
     }

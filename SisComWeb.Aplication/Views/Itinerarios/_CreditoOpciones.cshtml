@@ -1,0 +1,106 @@
+﻿<div id="appVueCreditoOpciones" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="cancelarCreditoOpciones">&times;</button>
+                <h4 class="modal-title"><b>Opciones Crédito</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Sección:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="seccion"
+                                          :id="'cboSeccion'"
+                                          label="label"
+                                          :options="list.secciones"
+                                          :placeholder="'SECCIÓN'"
+                                          :select-on-tab="true"
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">Área:</label>
+                            <div class="col-md-10">
+                                <v-select v-model="area"
+                                          :id="'cboArea'"
+                                          label="label"
+                                          :options="list.areas"
+                                          :placeholder="'ÁREA'"
+                                          :select-on-tab="true"
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-show="showOpcionesHospital">
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12">
+                                <label class="col-md-2 control-label label-sm">Fecha cita:</label>
+                                <div class="col-md-10">
+                                    <input v-model="fechaCita"
+                                           v-mask="'##/##/####'"
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurFechaCita"
+                                           type="text"
+                                           id="txtFechaCita"
+                                           class="form-control input-sm dp"
+                                           placeholder="FECHA CITA"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12">
+                                <label class="col-md-2 control-label label-sm">Hospital:</label>
+                                <div class="col-md-10">
+                                    <v-select v-model="hospital"
+                                              :id="'cboHospital'"
+                                              label="label"
+                                              :options="list.hospitales"
+                                              :placeholder="'HOSPITAL'"
+                                              :select-on-tab="true"
+                                              @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5" style="margin-top: 10px; ">
+                        <div class="col-md-12">
+                            <label class="col-md-2 control-label label-sm">&nbsp;</label>
+                            <div class="col-md-10">
+                                <input type="radio" id="boletoIda" class="rbBoletoTipoDir" value="1" v-model="boletoTipoDir">
+                                <label for="boletoIda"
+                                       class="lblBoletoTipoDir">
+                                    Boleto de ida
+                                </label>
+                                <input type="radio" id="boletoRetorno" class="rbBoletoTipoDir" value="0" v-model="boletoTipoDir">
+                                <label for="boletoRetorno"
+                                       class="lblBoletoTipoDir">
+                                    Boleto de retorno
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnAceptar_CO" @@click="saveCreditoOpciones" @@keypress.13.native.prevent="saveCreditoOpciones" class="btn btn-primary waves-effect text-left">
+                        <span class="fa fa-save fa-fw"></span>Aceptar
+                    </button>
+
+                    <button @@click="cancelarCreditoOpciones" class="btn btn-inverse waves-effect waves-light text-left">
+                        <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

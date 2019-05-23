@@ -62,6 +62,18 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListarSocio", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListarSocio();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaHospitales/{codiSucursal}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaHospitales(string codiSucursal);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaSecciones/{idContrato}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaSecciones(string idContrato);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaAreas/{idContrato}", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaAreas(string idContrato);
+
         #endregion
 
         #region LOGIN
@@ -187,16 +199,24 @@ namespace SisComWeb.Services
         #region CRÉDITO
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ListaClientesContrato", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<ClienteCreditoEntity>> ListaClientesContrato(CreditoRequest request);
+        [WebInvoke(Method = "POST", UriTemplate = "ListarClientesContrato", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<ClienteCreditoEntity>> ListarClientesContrato(CreditoRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListarPanelControl", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<PanelControlEntity>> ListarPanelControl();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultarContrato", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<ContratoEntity> ConsultarContrato(int idContrato);
 
         #endregion
 
-        #region INSERTAR IMPRESIÓN
+        #region IMPRESIÓN
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "InsertarImpresion", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado);
+        [WebInvoke(Method = "POST", UriTemplate = "ConvertirVentaToBase64", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<string>> ConvertirVentaToBase64(List<VentaRealizada> Listado);
 
         #endregion
     }

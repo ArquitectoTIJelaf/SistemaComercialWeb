@@ -54,6 +54,18 @@
         public const string MsgCorrectoListarSocio = "Correcto: ListarSocio.";
         public const string MsgExcListarSocio = "Excepción: ListarSocio.";
 
+        // Hospitales
+        public const string MsgCorrectoListaHospitales = "Correcto: ListaHospitales.";
+        public const string MsgExcListaHospitales = "Excepción: ListaHospitales.";
+
+        // Secciones
+        public const string MsgCorrectoListaSecciones = "Correcto: ListaSecciones.";
+        public const string MsgExcListaSecciones = "Excepción: ListaSecciones.";
+
+        // Áreas
+        public const string MsgCorrectoListaAreas = "Correcto: ListaAreas.";
+        public const string MsgExcListaAreas = "Excepción: ListaAreas.";
+
         // Cliente Pasaje
         public const string MsgCorrectoBuscaPasajero = "Correcto: BuscaPasajero.";
         public const string MsgExcBuscaPasajero = "Excepción: BuscaPasajero.";
@@ -124,6 +136,7 @@
         public const string MsgErrorGrabarAcompanianteVenta = "Error: GrabarAcompanianteVenta.";
         public const string MsgErrorModificarSaldoPaseCortesia = "Error: ModificarSaldoPaseCortesia.";
         public const string MsgErrorGrabarPaseSocio = "Error: GrabarPaseSocio.";
+        public const string MsgErrorActualizarBoletosStock = "Error: ActualizarBoletosStock.";
         public const string MsgErrorActualizarLiquidacionVentas = "Error: ActualizarLiquidacionVentas.";
         public const string MsgErrorGrabarLiquidacionVentas = "Error: GrabarLiquidacionVentas.";
         public const string MsgErrorGrabarPagoTarjetaCredito = "Error: GrabarPagoTarjetaCredito.";
@@ -178,12 +191,19 @@
 
         // Impresión
         public const string MsgCorrectoInsertarImpresion = "Correcto: InsertarImpresion.";
-        public const string MsgErrorInsertarImpresion = "Error: InsertarImpresion.";
         public const string MsgExcInsertarImpresion = "Excepción: InsertarImpresion.";
 
-        // ClientesContrato
-        public const string MsgCorrectoListaClientesContrato = "Correcto: ListaClientesContrato.";
-        public const string MsgErrorListaClientesContrato = "Error: ListaClientesContrato.";
-        public const string MsgExcListaClientesContrato = "Excepción: ListaClientesContrato.";
+        // Clientes Contrato
+        public const string MsgCorrectoListarClientesContrato = "Correcto: ListarClientesContrato.";
+        public const string MsgExcListarClientesContrato = "Excepción: ListarClientesContrato.";
+
+        // Panel de Control
+        public const string MsgCorrectoListarPanelControl = "Correcto: ListarPanelControl.";
+        public const string MsgExcListarPanelControl = "Excepción: ListarPanelControl.";
+
+        // Contrato
+        public const string MsgCorrectoConsultarContrato = "Correcto: ConsultarContrato.";
+        public const string MsgExcConsultarContrato = "Excepción: ConsultarContrato.";
+        public const string MsgValidaConsultarContrato = "Cliente con saldo insuficiente.";
     }
 }

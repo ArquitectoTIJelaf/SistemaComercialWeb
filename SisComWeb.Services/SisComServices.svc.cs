@@ -171,6 +171,45 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaHospitales(string codiSucursal)
+        {
+            try
+            {
+                return BaseLogic.ListaHospitales(int.Parse(codiSucursal));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaHospitales, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaSecciones(string idContrato)
+        {
+            try
+            {
+                return BaseLogic.ListaSecciones(int.Parse(idContrato));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaSecciones, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaAreas(string idContrato)
+        {
+            try
+            {
+                return BaseLogic.ListaAreas(int.Parse(idContrato));
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaAreas, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN
@@ -491,28 +530,54 @@ namespace SisComWeb.Services
 
         #region CRÉDITO
 
-        public Response<List<ClienteCreditoEntity>> ListaClientesContrato(CreditoRequest request)
+        public Response<List<ClienteCreditoEntity>> ListarClientesContrato(CreditoRequest request)
         {
             try
             {
-                return CreditoLogic.ListaClientesContrato(request);
+                return CreditoLogic.ListarClientesContrato(request);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<ClienteCreditoEntity>>(false, null, Message.MsgExcListaClientesContrato, false);
+                return new Response<List<ClienteCreditoEntity>>(false, null, Message.MsgExcListarClientesContrato, false);
+            }
+        }
+
+        public Response<List<PanelControlEntity>> ListarPanelControl()
+        {
+            try
+            {
+                return CreditoLogic.ListarPanelControl();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<PanelControlEntity>>(false, null, Message.MsgExcListarPanelControl, false);
+            }
+        }
+
+        public Response<ContratoEntity> ConsultarContrato(int idContrato)
+        {
+            try
+            {
+                return CreditoLogic.ConsultarContrato(idContrato);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ContratoEntity>(false, null, Message.MsgExcConsultarContrato, false);
             }
         }
 
         #endregion
 
-        #region INSERTAR IMPRESIÓN
+        #region IMPRESIÓN
 
-        public Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado)
+        public Response<List<string>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
         {
             try
             {
-                return VentaLogic.InsertarImpresion(Listado);
+                return VentaLogic.ConvertirVentaToBase64(Listado);
             }
             catch (Exception ex)
             {
@@ -520,6 +585,7 @@ namespace SisComWeb.Services
                 return new Response<List<string>>(false, null, Message.MsgExcInsertarImpresion, false);
             }
         }
+
         #endregion
     }
 }

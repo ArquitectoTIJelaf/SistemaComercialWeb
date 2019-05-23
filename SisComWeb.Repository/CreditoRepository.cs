@@ -81,20 +81,20 @@ namespace SisComWeb.Repository
                         entidad.IdContrato = Reader.GetIntValue(drlector, "IdContrato");
                         entidad.RucCliente = Reader.GetStringValue(drlector, "RucCliente");
                         entidad.IdRuta = Reader.GetIntValue(drlector, "IdRuta");
-                        entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "CodiSucursal");
-                        entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "CodiRuta");
+                        entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal");
+                        entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_Ruta");
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "IdPrecio");
-                        entidad.CodiServicio = Reader.GetByteValue(drlector, "CodiServicio");
+                        entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
                         entidad.PrecioReal = Reader.GetDecimalValue(drlector, "PrecioReal");
-                        entidad.Precio = Reader.GetDecimalValue(drlector, "Precio");
+                        entidad.Precio = Reader.GetDecimalValue(drlector, "precio");
                         entidad.CntBoletos = Reader.GetIntValue(drlector, "CntBoletos");
                         entidad.SaldoBoletos = Reader.GetIntValue(drlector, "SaldoBoletos");
-                        entidad.FechaInicial = Reader.GetStringValue(drlector, "FechaInicial");
-                        entidad.FechaFinal = Reader.GetStringValue(drlector, "FechaFinal");
-                        entidad.MontoMas = Reader.GetDecimalValue(drlector, "MontoMas");
-                        entidad.MontoMenos = Reader.GetDecimalValue(drlector, "MontoMenos");
-                        entidad.St = Reader.GetStringValue(drlector, "St");
-                        entidad.IdRuc = Reader.GetIntValue(drlector, "IdRuc");
+                        entidad.FechaInicial = Reader.GetStringValue(drlector, "Fecha_inicial");
+                        entidad.FechaFinal = Reader.GetStringValue(drlector, "Fecha_Final");
+                        entidad.MontoMas = Reader.GetDecimalValue(drlector, "Monto_Mas");
+                        entidad.MontoMenos = Reader.GetDecimalValue(drlector, "Monto_Menos");
+                        entidad.St = Reader.GetStringValue(drlector, "st");
+                        entidad.IdRuc = Reader.GetIntValue(drlector, "idRuc");
                     }
                 }
             }
@@ -125,7 +125,7 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static PrecioNormalEntity VerificarPrecioNormal()
+        public static PrecioNormalEntity VerificarPrecioNormal(int IdContrato)
         {
             var entidad = new PrecioNormalEntity
             {
@@ -134,7 +134,8 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_tb_precioNormal_Verifica";
+                db.ProcedureName = "Scwsp_tb_precioNormal_Verifica";
+                db.AddParameter("@IdContrato", DbType.Int32, ParameterDirection.Input, IdContrato);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -193,9 +194,55 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static List<PanelControlEntity> ListarPanelControl()
+        {
+            var Lista = new List<PanelControlEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Panel_Consulta";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new PanelControlEntity
+                        {
+                            CodiPanel = Reader.GetStringValue(drlector, "codi_panel"),
+                            Valor = Reader.GetStringValue(drlector, "valor"),
+                            Descripcion = Reader.GetStringValue(drlector, "descripcion"),
+                            TipoControl = Reader.GetStringValue(drlector, "Tipo_Control")
+                        };
+
+                        Lista.Add(entidad);
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
+
+        public static bool ActualizarBoletosStock(string St, string IdPrecio, string Tipo)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_UpdateBoletosStock";
+                db.AddParameter("@St", DbType.String, ParameterDirection.Input, St);
+                db.AddParameter("@IdPrecio", DbType.String, ParameterDirection.Input, IdPrecio);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
 
         #endregion
     }

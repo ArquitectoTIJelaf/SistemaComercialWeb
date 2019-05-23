@@ -35,13 +35,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -74,13 +73,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -115,13 +113,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -154,13 +151,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -195,13 +191,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -234,13 +229,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -273,13 +267,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -312,13 +305,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -351,13 +343,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -390,13 +381,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -429,13 +419,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
@@ -468,13 +457,126 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JArray data = (JArray)tmpResult["Valor"];
 
                 Response<List<Base>> res = new Response<List<Base>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = data.Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-hospitales")]
+        public async Task<JsonResult> GetHospitales(int codiSucursal)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaHospitales");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaHospitales/" + codiSucursal);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-secciones")]
+        public async Task<JsonResult> GetSecciones(string idContrato)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaSecciones");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaSecciones/" + idContrato);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("get-areas")]
+        public async Task<JsonResult> GetAreas(string idContrato)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaAreas");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaAreas/" + idContrato);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]

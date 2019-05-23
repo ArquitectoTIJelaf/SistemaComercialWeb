@@ -874,8 +874,8 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refRuc.focus()"
-                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
+                                                       @@keypress.13.prevent="recorridoTxtRecoger"
+                                                       @@keypress.9.prevent="recorridoTxtRecoger"
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
@@ -896,15 +896,15 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
-                                                <input :value="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keypress.13.prevent="$refs.refRuc.focus()"
-                                                       @@keypress.9.prevent="$refs.refRuc.focus()"
+                                                <input v-model="list.ventas[indexVenta].NroSolicitud"
+                                                       @@keypress.13.prevent="recorridoTxtNroSolicitud"
+                                                       @@keypress.9.prevent="recorridoTxtNroSolicitud"
                                                        id="txtNroSolicitud"
                                                        ref="refNroSolicitud"
                                                        class="form-control input-sm"
                                                        placeholder="Nº SOLICITUD"
-                                                       v-mask="'#'.repeat(15)"
-                                                       disabled>
+                                                       v-mask="'#'.repeat(10)"
+                                                       :disabled="disabledCampoNumSolicitud">
                                             </div>
                                         </div>
                                     </div>
@@ -927,7 +927,7 @@
                                                                v-validate="'min: 11'"
                                                                data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
-                                                               :disabled="disabledCamposTicket"
+                                                               :disabled="disabledCamposTicket || disabledCredito"
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
@@ -950,7 +950,7 @@
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
-                                                               :disabled="disabledCamposTicket"
+                                                               :disabled="disabledCamposTicket || disabledCredito"
                                                                v-validate="'required|min: 3'"
                                                                data-vv-as="Razón social">
                                                     </div>
@@ -1063,7 +1063,7 @@
                                                            ref="refPrecio"
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
-                                                           :disabled="disabledCamposTicket"
+                                                           :disabled="disabledCamposTicket || disabledPrecio"
                                                            style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color);"
                                                            v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
                                                 </div>

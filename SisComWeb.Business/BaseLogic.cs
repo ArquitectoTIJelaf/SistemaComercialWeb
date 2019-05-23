@@ -177,5 +177,47 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListarSocio, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListaHospitales(int codiSucursal)
+        {
+            try
+            {
+                var lista = BaseRepository.ListaHospitales(codiSucursal);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListarSocio, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaHospitales, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaSecciones(int idContrato)
+        {
+            try
+            {
+                var lista = BaseRepository.ListaSecciones(idContrato);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaSecciones, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaSecciones, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaAreas(int idContrato)
+        {
+            try
+            {
+                var lista = BaseRepository.ListaAreas(idContrato);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaAreas, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaAreas, false);
+            }
+        }
     }
 }

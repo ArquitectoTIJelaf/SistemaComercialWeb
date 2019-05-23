@@ -163,13 +163,28 @@ namespace SisComWeb.Business
                     if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo))
                         validarTerminalElectronico.Tipo = "M";
 
-                    // PASE DE CORTESÍA
-                    if (FlagVenta == "7")
+                    // Valida 'SaldoPaseCortesia', consulta 'Contrato' y otros
+                    switch (FlagVenta)
                     {
-                        // Valida 'SaldoPaseCortesia'
-                        var validarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
-                        if (validarSaldoPaseCortesia <= 0)
-                            return new Response<VentaResponse>(true, valor, Message.MsgValidaSaldoPaseCortesia, false);
+                        case "7": // PASE DE CORTESÍA
+                            {
+                                // Valida 'SaldoPaseCortesia'
+                                var validarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
+                                if (validarSaldoPaseCortesia <= 0)
+                                    return new Response<VentaResponse>(true, valor, Message.MsgValidaSaldoPaseCortesia, false);
+                            };
+                            break;
+                        case "1": // CRÉDITO
+                            {
+                                // Consulta 'Contrato'
+                                var consultarContrato = CreditoRepository.ConsultarContrato(entidad.IdContrato);
+                                if (consultarContrato.Marcador == "1")
+                                {
+                                    if (consultarContrato.Saldo < entidad.PrecioVenta)
+                                        return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
+                                }
+                            };
+                            break;
                     }
 
                     // RESERVA
@@ -192,6 +207,7 @@ namespace SisComWeb.Business
                         switch (FlagVenta)
                         {
                             case "V": // VENTA
+                            case "1": // CRÉDITO
                                 entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
                                 break;
                             case "7": // PASE DE CORTESÍA
@@ -207,6 +223,7 @@ namespace SisComWeb.Business
                         switch (FlagVenta)
                         {
                             case "V": // VENTA
+                            case "1": // CRÉDITO
                                 entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
                                 break;
                             case "7": // PASE DE CORTESÍA
@@ -314,7 +331,7 @@ namespace SisComWeb.Business
                     // Siempre '+ 1' al 'NumeBoleto'
                     entidad.NumeBoleto = entidad.NumeBoleto + 1;
 
-                    // Graba 'Venta', 'Otros' y 'FacturaciónElectrónica'
+                    // Graba 'Venta', 'FacturaciónElectrónica' y otros
                     switch (validarTerminalElectronico.Tipo)
                     {
                         case "M":
@@ -417,18 +434,30 @@ namespace SisComWeb.Business
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
-                    // PASE DE CORTESÍA
-                    if (FlagVenta == "7")
+                    // Modifica 'SaldoPaseCortesia', '' y otros
+                    switch (FlagVenta)
                     {
-                        // Modifica 'SaldoPaseCortesia'
-                        var modificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
-                        if (!modificarSaldoPaseCortesia)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
+                        case "7": // PASE DE CORTESÍA
+                            {
+                                // Modifica 'SaldoPaseCortesia'
+                                var modificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
+                                if (!modificarSaldoPaseCortesia)
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
 
-                        // Graba 'PaseSocio'
-                        var grabarPaseSocio = PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
-                        if (!grabarPaseSocio)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPaseSocio, false);
+                                // Graba 'PaseSocio'
+                                var grabarPaseSocio = PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
+                                if (!grabarPaseSocio)
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPaseSocio, false);
+                            };
+                            break;
+                        case "1": // CRÉDITO
+                            {
+                                // Actualiza 'BoletosStock'
+                                var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1"); // Revisar Notepad: Se está suponiendo 'FlagPrecioNormal' = false
+                                if (!actualizarBoletosStock)
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarBoletosStock, false);
+                            };
+                            break;
                     }
 
                     // Valida 'LiquidacionVentas'
@@ -553,12 +582,12 @@ namespace SisComWeb.Business
                     if (!grabarAuditoria)
                         return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
-                    // Para la tabla 'tb_impresion'
-                    
+
+                    // Para 'Impresión'
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
                     var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.CodiEmpresa, entidad.CodiPuntoVenta);
+                    // ----------------
 
-                    // ----------------------------
 
                     // Añado 'ventaRealizada'
                     var ventaRealizada = new VentaRealizada
@@ -987,27 +1016,21 @@ namespace SisComWeb.Business
 
         #endregion
 
-        #region INSERTAR IMPRESIÓN
+        #region IMPRESIÓN
 
-        public static Response<List<string>> InsertarImpresion(List<VentaRealizada> Listado)
+        public static Response<List<string>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
         {
             try
             {
-                var valor = new List<string>();
+                var listaDocumentos = new List<string>();
 
                 foreach (var entidad in Listado)
                 {
-                    //// Inserta Impresion
-                    //var insertarImpresion = VentaRepository.InsertarImpresion(entidad);
-                    //if (!insertarImpresion)
-                    //    return new Response<List<int>>(false, valor, Message.MsgErrorInsertarImpresion, false);
-
-                    var aux = CuadreImpresora.Cuadre.WriteText(entidad);
-
-                    valor.Add(aux);
+                    var documento = CuadreImpresora.Cuadre.WriteText(entidad);
+                    listaDocumentos.Add(documento);
                 }
 
-                return new Response<List<string>>(true, valor, Message.MsgCorrectoInsertarImpresion, true);
+                return new Response<List<string>>(true, listaDocumentos, Message.MsgCorrectoInsertarImpresion, true);
             }
             catch (Exception ex)
             {

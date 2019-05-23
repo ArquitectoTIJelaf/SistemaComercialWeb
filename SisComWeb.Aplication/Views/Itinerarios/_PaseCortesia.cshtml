@@ -16,8 +16,8 @@
                                           label="label"
                                           :options="list.gerentes"
                                           :placeholder="'GERENTE'"
-                                          @@keydown.13.native.prevent="recorridoPaseCortesia"
-                                          ref="select">
+                                          :select-on-tab="true"
+                                          @@keydown.13.native.prevent="recorridoPaseCortesia">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>

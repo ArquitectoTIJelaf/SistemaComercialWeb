@@ -18,9 +18,28 @@
 @Html.Partial("_Postergacion")
 @Html.Partial("_ClaveAutorizacion")
 @Html.Partial("_CreditoClientes")
+@Html.Partial("_CreditoOpciones")
 
 @section styles{
     <style type="text/css">
+
+        .lblBoletoTipoDir::after {
+            background: var(--emp-color) !important;
+            width: 10px !important;
+            height: 10px !important;
+            top: 3px !important;
+            left: 3px !important;
+        }
+
+        .lblBoletoTipoDir::before {
+            border: 1px solid var(--emp-color) !important;
+        }
+
+        .lblBoletoTipoDir {
+            color: #313131 !important;
+            font-weight: 500 !important;
+            margin-right: 10px;
+        }
 
         input[type=checkbox][disabled] {
             cursor: not-allowed !important;
@@ -539,6 +558,14 @@
                 appVueCreditoClientes.limpiarCreditoClientes();
             });
 
+            $('#appVueCreditoOpciones').on('shown.bs.modal', function () {
+                $("#cboSeccion input[type=search]").focus();
+            });
+
+            $('#appVueCreditoOpciones').on('hidden.bs.modal', function () {
+                appVueCreditoOpciones.limpiarCreditoOpciones();
+            });
+
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
                     keyBinds: {
@@ -734,9 +761,23 @@
                         var auxObj = appVueVenta.findObjectAsiento(auxNroAsiento);
                         appVueVenta.liberarAsiento(auxObj, true);
                     }
+                    appVueVenta.$refs.refNroAsientoVenta.focus();
                 },
                 showCreditoClientes: function (_dataVenta) {
                     appVueCreditoClientes.show(_dataVenta);
+                },
+                validatePanel: function (_cadenaCodiPanel) {
+                    var objPanel = _.find(appVueVenta.list.panelControl, { 'CodiPanel': _cadenaCodiPanel });
+                    return objPanel;
+                },
+                sendDataCredito: function (_objPanelTxtPrecio, _auxItem) {
+                    appVueVenta.setCreditoCliente(_objPanelTxtPrecio, _auxItem);
+                },
+                showCreditoOpciones: function (_idContrato) {
+                    appVueCreditoOpciones.show(_idContrato);
+                },
+                sendCreditoOpciones: function (_request) {
+                    appVueVenta.setCreditoOpciones(_request);
                 }
             };
         })();
@@ -1011,7 +1052,8 @@
                         { 'id': 'M', 'label': 'MASCULINO' },
                         { 'id': 'F', 'label': 'FEMENINO' }
                     ],
-                    tempList: []
+                    tempList: [],
+                    panelControl: []
                 },
                 objPlano: {
                     CodiBus: '',
@@ -1050,6 +1092,17 @@
                 disabledCamposTicket: false,
                 disabledCamposTicket_Pase: false,
                 eventTxtNroAsientoVenta: '',
+                // Credito
+                disabledPrecio: false,
+                disabledCredito: false,
+                disabledCampoNumSolicitud: true,
+                objCreditoCliente: {
+                    idContrato: 0,
+                    CntBoletos: 0,
+                    SaldoBoletos: 0,
+                    IdPrecio: 0,
+                    Precio: 0
+                },
                 // Correlativos
                 CorrelativoVentaBoleta: '',
                 CorrelativoVentaFactura: '',
@@ -1062,6 +1115,7 @@
                 this.getSucursales();
                 this.getServicios();
                 this.getTiposDoc();
+                this.listarPanelControl();
 
                 // Nuevo 'Validate'
                 this.$validator.extend('formatoNumeroTarjeta', {
@@ -1235,12 +1289,23 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                getTiposDoc() {
+                getTiposDoc: function () {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-tiposDoc')
                         .then(res => {
                             if (res.data.Estado)
                                 _this.list.tiposDoc = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                listarPanelControl: async function () {
+                    var _this = this;
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/listarPanelControl')
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.panelControl = res.data.Valor;
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -1297,18 +1362,25 @@
                                 // Animación 'ScrollTop'
                                 animateScrollTop(800);
                                 return;
+                            case '1': // Crédito
+                                {
+                                    var auxResponse = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
+                                    if (!auxResponse)
+                                        return;
+                                }
+                                break;
                         }
                     }
 
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS > 0) {
-                        await _this.liberarAsiento(asientoSel, true);
+                        _this.liberarAsiento(asientoSel, true);
                         return;
                     }
 
                     // Validar 'AsientoSel' vendido
                     if (asientoSel.FlagVenta) {
-                        await _this.fillDataAsientoVendido(asientoSel);
+                        _this.fillDataAsientoVendido(asientoSel);
                         return;
                     }
 
@@ -1337,7 +1409,7 @@
                     input.FechaProgramacion = _this.filtro.Fecha;
                     input.Precio = asientoSel.PrecioVenta;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
-                        .then(res => {
+                        .then(function (res) {
                             if (res.data.EsCorrecto) {
                                 // Animación 'ScrollTop'
                                 animateScrollTop(800);
@@ -1354,7 +1426,7 @@
                                     _this.firstAsiento = false;
                                 }
 
-                                this.list.ventas[this.indexVenta].OldNroAsiento = this.list.ventas[this.indexVenta].NroAsiento;
+                                _this.list.ventas[_this.indexVenta].OldNroAsiento = _this.list.ventas[_this.indexVenta].NroAsiento;
 
                                 // Acción según 'pickedBusVenta'
                                 switch (_this.pickedBusVenta) {
@@ -1365,7 +1437,10 @@
                                         appController.showPostergacion();
                                         break;
                                     case 'FA': // Fecha Abierta
-                                        this.sendToFechaAbierta(asientoSel);
+                                        _this.sendToFechaAbierta(asientoSel);
+                                        break;
+                                    case '1': // Crédito
+                                        appController.showCreditoOpciones(_this.objCreditoCliente.idContrato);
                                         break;
                                 }
 
@@ -1729,9 +1804,27 @@
                         }
                     });
                 },
+                recorridoTxtRecoger: function () {
+                    if (this.pickedBusVenta !== '1') // Crédito
+                        this.$refs.refRuc.focus();
+                    else
+                        this.$refs.refNroSolicitud.focus();
+                },
+                recorridoTxtNroSolicitud: function () {
+                    if (!this.list.ventas[this.indexVenta].NroSolicitud)
+                        this.$refs.refNroSolicitud.focus();
+                    else {
+                        if (!this.list.ventas[this.indexVenta].Nacionalidad)
+                            this.$refs.refNacionalidad.focus();
+                        else
+                            this.$refs.refRegistrarNino.focus();
+                    }
+                },
                 searchUser: async function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc && _this.list.ventas[_this.indexVenta].Documento) {
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc
+                        && _this.list.ventas[_this.indexVenta].Documento
+                        && _this.list.ventas[_this.indexVenta].Documento.length >= 8) {
 
                         if (!_this.list.ventas[_this.indexVenta].IdCliente) {
                             await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
@@ -1765,9 +1858,11 @@
                                                         _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
                                                         _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
                                                         _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
-                                                        _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
-                                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                                        _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                        if (_this.pickedBusVenta !== '1') {
+                                                            _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
+                                                            _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
+                                                            _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                        }
                                                     }
                                                     else {
                                                         if (res.data.Valor.NombreCliente && res.data.Valor.ApellidoPaterno && res.data.Valor.ApellidoPaterno) {
@@ -1786,9 +1881,11 @@
                                                         _this.list.ventas[_this.indexVenta].Edad = '';
                                                         _this.list.ventas[_this.indexVenta].Sexo = null;
                                                         _this.list.ventas[_this.indexVenta].Telefono = '';
-                                                        _this.list.ventas[_this.indexVenta].Ruc = '';
-                                                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                                                        _this.list.ventas[_this.indexVenta].Direccion = '';
+                                                        if (_this.pickedBusVenta !== '1') {
+                                                            _this.list.ventas[_this.indexVenta].Ruc = '';
+                                                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                                                            _this.list.ventas[_this.indexVenta].Direccion = '';
+                                                        }
                                                     }
                                                 };
                                                 break;
@@ -1833,50 +1930,62 @@
                 },
                 searchEmpresa: async function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].Ruc && _this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+                    if (_this.list.ventas[_this.indexVenta].Ruc) {
+                        if (_this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+                            if (!_this.list.ventas[_this.indexVenta].RazonSocial || _this.pickedBusVenta === '1') {
+                                await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
+                                    rucContacto: _this.list.ventas[_this.indexVenta].Ruc
+                                }), { timeout: 10000 })
+                                    .then(res => {
+                                        if (res.data.Estado) {
+                                            if (_this.pickedBusVenta !== '1') // Crédito
+                                                _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
 
-                        if (!_this.list.ventas[_this.indexVenta].RazonSocial) {
-                            await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
-                                rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                            }), { timeout: 10000 })
-                                .then(res => {
-                                    if (res.data.Estado) {
-                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                        _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                            _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
 
-                                        if (!res.data.EsCorrecto)
-                                            APP.msg.warning(res.data.Mensaje);
-                                    }
-                                    else
-                                        APP.msg.error(res.data.Mensaje);
-                                })
-                                .catch(err => {
-                                    if (err.code === "ECONNABORTED") {
-                                        APP.msg.warning('No se pudo cargar los datos de la empresa.');
-                                        _this.$refs.refRazonSocial.focus();
-                                    }
-                                    else
-                                        APP.rq.axios_handler_error_alert;
-                                });
-                        }
-
-                        _this.$nextTick(() => {
-                            if (!_this.list.ventas[_this.indexVenta].RazonSocial)
-                                _this.$refs.refRazonSocial.focus();
-                            else if (!_this.list.ventas[_this.indexVenta].Direccion)
-                                _this.$refs.refDireccion.focus();
-                            else {
-                                if (!_this.list.ventas[_this.indexVenta].Nacionalidad)
-                                    _this.$refs.refNacionalidad.focus();
-                                else
-                                    _this.$refs.refRegistrarNino.focus()
+                                            if (!res.data.EsCorrecto)
+                                                APP.msg.warning(res.data.Mensaje);
+                                        }
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    })
+                                    .catch(err => {
+                                        if (err.code === "ECONNABORTED") {
+                                            APP.msg.warning('No se pudo cargar los datos de la empresa.');
+                                            if (_this.pickedBusVenta !== '1') // Crédito
+                                                _this.$refs.refRazonSocial.focus();
+                                            else
+                                                _this.$refs.refDireccion.focus();
+                                        }
+                                        else
+                                            APP.rq.axios_handler_error_alert;
+                                    });
                             }
-                        });
 
+                            _this.$nextTick(() => {
+                                if (!_this.list.ventas[_this.indexVenta].RazonSocial)
+                                    _this.$refs.refRazonSocial.focus();
+                                else if (!_this.list.ventas[_this.indexVenta].Direccion)
+                                    _this.$refs.refDireccion.focus();
+                                else {
+                                    if (!_this.list.ventas[_this.indexVenta].Nacionalidad)
+                                        _this.$refs.refNacionalidad.focus();
+                                    else
+                                        _this.$refs.refRegistrarNino.focus()
+                                }
+                            });
+                        }
+                        else {
+                            if (_this.list.ventas[_this.indexVenta].Ruc.length > 0)
+                                _this.$refs.refRuc.focus();
+                        }
                     }
                     else {
-                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                        if (_this.pickedBusVenta !== '1') // Crédito
+                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
+
                         _this.list.ventas[_this.indexVenta].Direccion = '';
+
                         if (!_this.list.ventas[_this.indexVenta].Nacionalidad)
                             _this.$refs.refNacionalidad.focus();
                         else
@@ -1912,33 +2021,48 @@
                 },
                 consultaSunat: function () {
                     var _this = this;
-                    if (_this.list.ventas[_this.indexVenta].Ruc
-                        && _this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+                    if (_this.list.ventas[_this.indexVenta].Ruc) {
 
-                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
-                            rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                        }), { timeout: 10000 })
-                            .then(res => {
-                                if (res.data.Estado) {
-                                    _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
-                                }
-                                else
-                                    APP.msg.error(res.data.Mensaje);
-                            })
-                            .catch(err => {
-                                if (err.code === "ECONNABORTED") {
-                                    APP.msg.warning('No se pudo consultar a la SUNAT.');
-                                    _this.$refs.refRazonSocial.focus();
-                                }
-                                else
-                                    APP.rq.axios_handler_error_alert;
-                            });
+                        if (_this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+                            APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
+                                rucContacto: _this.list.ventas[_this.indexVenta].Ruc
+                            }), { timeout: 10000 })
+                                .then(res => {
+                                    if (res.data.Estado) {
+                                        if (_this.pickedBusVenta !== '1') // Crédito
+                                            _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
+                                        _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                    }
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                })
+                                .catch(err => {
+                                    if (err.code === "ECONNABORTED") {
+                                        APP.msg.warning('No se pudo consultar a la SUNAT.');
+                                        if (_this.pickedBusVenta !== '1') // Crédito
+                                            _this.$refs.refRazonSocial.focus();
+                                        else
+                                            _this.$refs.refDireccion.focus();
+                                    }
+                                    else
+                                        APP.rq.axios_handler_error_alert;
+                                });
+                        }
+                        else {
+                            if (_this.list.ventas[_this.indexVenta].Ruc.length > 0)
+                                _this.$refs.refRuc.focus();
+                        }
                     }
                     else {
-                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                        if (_this.pickedBusVenta !== '1') // Crédito
+                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
+
                         _this.list.ventas[_this.indexVenta].Direccion = '';
-                        _this.$refs.refNacionalidad.focus();
+
+                        if (!_this.list.ventas[_this.indexVenta].Nacionalidad)
+                            _this.$refs.refNacionalidad.focus();
+                        else
+                            _this.$refs.refRegistrarNino.focus()
                     }
                 },
                 passSectionVentas: function (_nroAsiento, _precioNormal, _nivelAsiento, _precioMin, _precioMax) {
@@ -2135,7 +2259,9 @@
 
                     if (!_this.errorsInTicketsVenta()) {
                         document.getElementById('btnTipoPago').disabled = true;
-                        _this.saveUser();
+                        if (_this.pickedBusVenta !== '1') {
+                            _this.saveUser();
+                        }
 
                         var input = {};
                         input.CodiEmpresa = _this.filtro.CodiEmpresa.id;
@@ -2156,6 +2282,9 @@
                         input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
                         input.CodiRuta = _this.filtro.CodiDestinoBus.id;
 
+                        input.IdContrato = _this.objCreditoCliente.idContrato;
+                        input.IdPrecio = _this.objCreditoCliente.IdPrecio;
+
                         appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas, _this.pickedBusVenta);
                     }
                 },
@@ -2172,6 +2301,7 @@
                     var _indexOfRazSoc = -1;
                     var _indexOfDireccion = -1;
                     var _indexOfNacionalidad = -1;
+                    var _indexOfNroSolicitud = -1;
 
                     // Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null; });
@@ -2267,6 +2397,15 @@
                         APP.msg.warning('Ingrese nacionalidad.');
                         return true;
                     }
+                    if (_this.pickedBusVenta === '1') { // Crédito
+                        _indexOfNroSolicitud = _.findIndex(_this.list.ventas, o => { return o.NroSolicitud === ''; });
+                        if (_indexOfNroSolicitud !== -1) {
+                            _this.indexVenta = _indexOfNroSolicitud;
+                            _this.$nextTick(() => { $('#txtNroSolicitud').focus(); });
+                            APP.msg.warning('Ingrese número de solicitud.');
+                            return true;
+                        }
+                    }
 
                     return false;
                 },
@@ -2337,9 +2476,6 @@
                     _this.list.ventas[_this.indexVenta].Edad = '';
                     _this.list.ventas[_this.indexVenta].Sexo = null;
                     _this.list.ventas[_this.indexVenta].Telefono = '';
-                    _this.list.ventas[_this.indexVenta].Ruc = '';
-                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                    _this.list.ventas[_this.indexVenta].Direccion = '';
                     _this.list.ventas[_this.indexVenta].Recoger = '';
                     _this.list.ventas[_this.indexVenta].Reintegro = '';
                     _this.list.ventas[_this.indexVenta].Observacion = '';
@@ -2367,7 +2503,22 @@
                     _this.disabledCampoNroAsiento = false;
                     _this.disabledCamposTicket = false;
                     _this.disabledCamposTicket_Pase = false;
+                    _this.disabledCampoNumSolicitud = true;
+                    // Crédito
+                    if (_this.pickedBusVenta !== '1') {
+                        _this.list.ventas[_this.indexVenta].Ruc = '';
+                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                        _this.list.ventas[_this.indexVenta].Direccion = '';
 
+                        _this.disabledPrecio = false;
+                        _this.disabledCredito = false;
+                        _this.objCreditoCliente.idContrato = 0;
+                        _this.objCreditoCliente.CntBoletos = 0;
+                        _this.objCreditoCliente.SaldoBoletos = 0;
+                        _this.objCreditoCliente.IdPrecio = 0;
+                        _this.objCreditoCliente.Precio = 0;
+                    }
+                    _this.passNumDocToDocumento(true);
                     appRegistrarInfante.limpiarCampos();
                 },
                 focusPrecio: function (event) {
@@ -2497,7 +2648,7 @@
 
                     return auxObj;
                 },
-                passNumDocToDocumento: function () {
+                passNumDocToDocumento: function (auxValidate) {
                     var _this = this;
                     var codiTipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
                     if (codiTipoDoc) {
@@ -2515,7 +2666,8 @@
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                     }
-                    this.recorridoSectionVentas();
+
+                    if (auxValidate !== true) this.recorridoSectionVentas();
                 },
                 passSinceRegistrarNino: function () {
                     var _this = this;
@@ -2644,7 +2796,7 @@
                             };
                             break;
                     }
-                    
+
                     // Muestra 'Modal'
                     switch (value) {
                         case '1': // Crédito
@@ -2810,6 +2962,69 @@
                 setDocumento: function (e) {
                     this.list.ventas[this.indexVenta].Documento = e.target.value.toUpperCase();
                     this.$validator.validate('Tipo', this.list.ventas[this.indexVenta].CodiTipoDoc);
+                },
+                setCreditoCliente: function (_objPanelTxtPrecio, _auxItem) {
+                    // Valida 'disabledPrecio'
+                    if (_objPanelTxtPrecio && _objPanelTxtPrecio.Valor === '1')
+                        this.disabledPrecio = true;
+
+                    this.list.ventas[this.indexVenta].Ruc = _auxItem.RucCliente;
+                    this.list.ventas[this.indexVenta].RazonSocial = _auxItem.RazonSocial;
+
+                    this.objCreditoCliente.idContrato = _auxItem.IdContrato;
+                    this.objCreditoCliente.CntBoletos = _auxItem.CntBoletos;
+                    this.objCreditoCliente.SaldoBoletos = _auxItem.SaldoBoletos;
+                    this.objCreditoCliente.IdPrecio = _auxItem.IdPrecio;
+                    this.objCreditoCliente.Precio = _auxItem.Precio;
+
+                    this.disabledCredito = true;
+                },
+                setCreditoOpciones: async function (_request) {
+                    // Agregamos nuevos valores (No están en la lista inicial).
+                    this.list.ventas[this.indexVenta].area = _request.area;
+                    this.list.ventas[this.indexVenta].boletoTipoDir = _request.boletoTipoDir;
+                    this.list.ventas[this.indexVenta].fechaCita = _request.fechaCita;
+                    this.list.ventas[this.indexVenta].hospital = _request.hospital;
+                    this.list.ventas[this.indexVenta].FechaAbierta = _request.fechaAbierta;
+
+                    this.disabledCampoNumSolicitud = false;
+
+                    this.recorridoSectionVentas();
+                },
+                consultarContrato: async function (_idContrato, _PrecioMaximo) {
+                    var _this = this;
+                    var auxResponse = false;
+
+                    await APP.rq.axios.post(APP.base + '/itinerarios/consultarContrato', {
+                        idContrato: _idContrato
+                    })
+                        .then(res => {
+                            if (res.data.Estado) {
+                                if (res.data.Valor.Marcador === '1') {
+                                    var auxLength = appVueVenta.list.ventas.length;
+                                    if (auxLength === 1) {
+                                        if (res.data.Valor.Saldo >= _PrecioMaximo)
+                                            auxResponse = true;
+                                    }
+                                    else {
+                                        var auxSaldoTotal = _.sumBy(_this.list.ventas, function (objVenta) { return objVenta.PrecioMaximo; });
+
+                                        if (res.data.Valor.Saldo >= auxSaldoTotal)
+                                            auxResponse = true;
+                                    }
+                                }
+                                else
+                                    auxResponse = true;
+
+                                if (!auxResponse)
+                                    APP.msg.warning("Cliente con saldo insuficiente.");
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
                 },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
@@ -3162,6 +3377,7 @@
                 },
                 saveVenta: async function () {
                     var _this = this;
+                    var auxListaVentasRealizadas = [];
                     _this.processing = true;
 
                     $("#appVueTipoPago").modal('hide');
@@ -3208,11 +3424,19 @@
                         input.CodiZona = (_this.distrito ? _this.distrito.id : '');
                         input.Direccion = _this.direccion;
                         input.Observacion = _this.observacion;
-                        input.Credito = (parseFloat(_this.tarjetaCant ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
+                        input.Credito = (parseFloat(_this.tarjetaCant === '' ? 0 : _this.tarjetaCant) / parseFloat(_this.cantAsientos));
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
-
                         input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
+
+                        input.IdContrato = _this.ticketVenta.IdContrato;
+                        input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
+
+                        input.NroSolicitud = objVenta.NroSolicitud;
+                        input.IdArea = (objVenta.area ? objVenta.area.id : 0);
+                        input.FlgIda = objVenta.boletoTipoDir;
+                        input.FechaCita = objVenta.fechaCita;
+                        input.IdHospital = (objVenta.hospital ? objVenta.hospital.id : 0);
 
                         // TIPOS DE VENTA
                         switch (_this.pickedBusVenta) {
@@ -3220,6 +3444,9 @@
                                 input.CodiGerente = objVenta.CodiGerente;
                                 input.CodiSocio = objVenta.CodiSocio;
                                 input.Concepto = objVenta.Concepto;
+                                input.FechaAbierta = objVenta.FechaAbierta;
+                                break;
+                            case '1': // CRÉDITO
                                 input.FechaAbierta = objVenta.FechaAbierta;
                                 break;
                         }
@@ -3232,7 +3459,6 @@
                                 break;
                         }
                         // --------------
-
                         listado.push(input);
                     };
 
@@ -3245,7 +3471,7 @@
                         APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
                         return;
                     }
-
+                    debugger;
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
                         Listado: listado,
                         FlagVenta: _this.pickedBusVenta
@@ -3254,8 +3480,8 @@
                             if (res.data.Estado) {
                                 appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, _this.pickedBusVenta, tmpCantidadVendida);
 
-                                // Inserta boletos para imprimir
-                                _this.insertarImpresion(res.data.Valor.ListaVentasRealizadas);
+                                // Guarda ventas realizadas
+                                auxListaVentasRealizadas = res.data.Valor.ListaVentasRealizadas;
 
                                 // callSignalR_ActualizarTurnoPlano
                                 callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
@@ -3273,6 +3499,11 @@
                             _this.processing = false;
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+
+                    // Convierte las ventas realizadas en documentos 'base64'
+                    // para mandarlos a 'imprimirBoleto'
+                    if (auxListaVentasRealizadas.length > 0)
+                        _this.convertirVentaToBase64(auxListaVentasRealizadas);
                 },
                 limpiarCampos: function () {
                     this.tipoPago = '';
@@ -3412,20 +3643,20 @@
                     document.getElementById('btnTipoPago').disabled = false;
                     $('#appVueTipoPago').modal('hide');
                 },
-                insertarImpresion: function (_ListaVentasRealizadas) {
+                convertirVentaToBase64: function (_ListaVentasRealizadas) {
                     var _this = this;
-                    APP.rq.axios2.post(APP.base + '/itinerarios/insertar-impresion', {
+                    APP.rq.axios2.post(APP.base + '/itinerarios/convertir-venta-to-base64', {
                         Listado: _ListaVentasRealizadas
                     })
                         .then(function (res) {
-                            var _listImpresion = res.data.Valor;
-
+                            var _listaBoletos = res.data.Valor;
                             if (res.data.Estado) {
-                                for (i = 0; i < _listImpresion.length; i++) {
+                                for (i = 0; i < _listaBoletos.length; i++) {
                                     (function (i) {
                                         setTimeout(function () {
-                                            _this.imprimirBoleto(_listImpresion[i]);
-                                        }, i * 1000);
+                                            // Imprime 'Boleto'
+                                            _this.imprimirBoleto(_listaBoletos[i]);
+                                        }, i * 5000);
                                     })(i);
                                 }
                             }
@@ -3434,16 +3665,12 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                imprimirBoleto: function (_objVenta) {
-                    var config = {
-                        headers: { 'Access-Control-Allow-Origin': '*' }
-                    };
-
-                    axios({ method: "GET", "url": "http://localhost:9099/?base=" + _objVenta, headers: { 'Access-Control-Allow-Origin': '*' } })
+                imprimirBoleto: function (_Boleto) {
+                    axios({ method: "GET", "url": "http://localhost:9099/?base=" + _Boleto })
                         .then(res => {
-                            APP.msg.success(res.data);
+                            APP.msg.success('Boleto enviado a imprimir correctamente.');
                         }, error => {
-                            //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                            APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                         });
                 }
             },
@@ -3748,7 +3975,7 @@
             mounted: function () {},
             methods: {
                 show: function () {
-                    window.addEventListener('keyup', this.esc); // HMSV
+                    window.addEventListener('keyup', this.esc);
                     if (this.list.gerentes.length === 0)
                         this.getGerentes();
                     if (this.list.solicitantes.length === 0)
@@ -3883,6 +4110,7 @@
                                 _this.fechaAbierta = true;
 
                             await appController.sendPaseCortesia(item);
+                            window.removeEventListener('keyup', this.esc);
                             $('#appVuePaseCortesia').modal('hide');
                         }
                     }
@@ -3923,7 +4151,8 @@
                     $('#appBoletosVendidos').modal('show');
                 },
                 esc: function (event) {
-                    if (event.keyCode === 27) this.cerrarVenta();
+                    if (event.keyCode === 27)
+                        this.cerrarVenta();
                 },
                 cerrarVenta: function () {
                     window.removeEventListener('keyup', this.esc);
@@ -4149,12 +4378,11 @@
                 show: function (_dataVenta) {
                     window.addEventListener('keyup', this.esc);
                     this.venta = _dataVenta;
-                    this.listaClientesContrato();
+                    this.listarClientesContrato();
                     $('#appVueCreditoClientes').modal('show');
                 },
-                listaClientesContrato: function () {
+                listarClientesContrato: function () {
                     var _this = this;
-
                     var _request = {};
                     _request.FechaViaje = _this.venta.FechaViaje;
                     _request.CodiOficina = (_this.venta.CodiOficina ? _this.venta.CodiOficina.id : '0');
@@ -4164,7 +4392,7 @@
                     _request.CodiBus = _this.venta.CodiBus;
                     _request.NumeAsiento = 0;
                     _request.HoraViaje = _this.venta.HoraViaje;
-                    APP.rq.axios2.post(APP.base + '/itinerarios/listaClientesContrato', {
+                    APP.rq.axios2.post(APP.base + '/itinerarios/listarClientesContrato', {
                         request: _request
                     })
                         .then(res => {
@@ -4175,12 +4403,191 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                cancelarCreditoClientes: function () {
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarCreditoClientes();
+                },
+                cerrarCreditoClientes: function () {
                     window.removeEventListener('keyup', this.esc);
                     $('#appVueCreditoClientes').modal('hide');
                 },
                 limpiarCreditoClientes: function () {
                     this.list.clientes = [];
+                },
+                sendRow: async function (item) {
+                    var objPanelTxtPrecio = appController.validatePanel('171');
+
+                    var auxItem = {};
+                    auxItem.RucCliente = item.RucCliente;
+                    auxItem.RazonSocial = item.RazonSocial;
+                    auxItem.IdContrato = item.IdContrato;
+
+                    auxItem.CntBoletos = item.CntBoletos;
+                    auxItem.SaldoBoletos = item.SaldoBoletos;
+                    auxItem.IdPrecio = item.IdPrecio;
+                    auxItem.Precio = item.Precio;
+
+                    appController.sendDataCredito(objPanelTxtPrecio, auxItem);
+
+                    await appVueVenta.searchEmpresa();
+
+                    this.cerrarCreditoClientes();
+                },
+            },
+            computed: {},
+            watch: {}
+        });
+
+        var appVueCreditoOpciones = new Vue({
+            el: "#appVueCreditoOpciones",
+            data: {
+                seccion: null,
+                area: null,
+                hospital: null,
+                list: {
+                    secciones: [],
+                    areas: [],
+                    hospitales: []
+                },
+                boletoTipoDir: '1',
+                fechaCita: '',
+                showOpcionesHospital: false
+            },
+            mounted: function () { },
+            methods: {
+                show: function (_idContrato) {
+                    window.addEventListener('keyup', this.esc);
+                    if (this.list.secciones.length === 0)
+                        this.getSecciones(_idContrato);
+                    if (this.list.areas.length === 0)
+                        this.getAreas(_idContrato);
+                    if (this.list.hospitales.length === 0)
+                        this.getHospitales(CodiSucursal);
+
+                    // Valida 'opcionesHospital'
+                    var objPanelOpcionesHospital = appController.validatePanel('190');
+                    if (objPanelOpcionesHospital && objPanelOpcionesHospital.Valor === '1')
+                        this.showOpcionesHospital = true;
+                    
+                    $('#appVueCreditoOpciones').modal('show');
+                },
+                getSecciones(_idContrato) {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-secciones/', { params: { idContrato: _idContrato } })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.secciones = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getAreas(_idContrato) {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-areas/', { params: { idContrato: _idContrato } })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.areas = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getHospitales(_CodiSucursal) {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-hospitales', { params: { codiSucursal: _CodiSucursal } })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.hospitales = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cancelarCreditoOpciones();
+                },
+                cancelarCreditoOpciones: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueCreditoOpciones').modal('hide');
+                    appController.liberarAsientoActual();
+                },
+                limpiarCreditoOpciones: function () {
+                    this.seccion = null;
+                    this.area = null;
+                    this.hospital = null;
+                    this.boletoTipoDir = '1';
+                    this.fechaCita = '';
+                    this.showOpcionesHospital = false;
+                },
+                recorrerCreditoOpciones: function (auxValidate) {
+                    var auxResponse = false;
+                    
+                    if (!this.seccion) {
+                        $('#cboSeccion input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione una sección.');
+                    }
+                    else if (!this.area) {
+                        $('#cboArea input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione una área.');
+                    }
+                    else if (this.showOpcionesHospital) {
+                        if (!this.fechaCita) {
+                            document.getElementById('txtFechaCita').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione una fecha.');
+                        }
+                        else {
+                            var validateFechaCita = moment(this.fechaCita, 'DD/MM/YYYY').isAfter(moment(), 'day');
+
+                            if (auxValidate && this.boletoTipoDir === '1' && validateFechaCita) {
+                                document.getElementById('txtFechaCita').focus();
+                                APP.msg.warning('Selecciona una fecha menor o igual a la fecha actual.');
+                            }
+                            else if (!this.hospital) {
+                                $('#cboHospital input[type=search]').focus();
+                                if (auxValidate === true) APP.msg.warning('Seleccione un hospital.');
+                            }
+                            else {
+                                document.getElementById('btnAceptar_CO').focus();
+                                auxResponse = true;
+                            }
+                        }
+                    }
+                    else {
+                        document.getElementById('btnAceptar_CO').focus();
+                        auxResponse = true;
+                    }
+
+                    return auxResponse;
+                },
+                blurFechaCita: function () {
+                    this.fechaCita = $('#txtFechaCita').val();
+                    this.recorrerCreditoOpciones();
+                },
+                saveCreditoOpciones: async function () {
+                    if (!this.recorrerCreditoOpciones(true))
+                        return;
+
+                    var request = {};
+                    request.area = this.area;
+                    request.boletoTipoDir = this.boletoTipoDir;
+                    request.fechaCita = this.fechaCita;
+                    request.hospital = this.hospital;
+
+                    // SweetAlert para 'fechaAbierta'
+                    if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar el Pase a Fecha Abierta?'))
+                        request.fechaAbierta = true;
+                    else
+                        request.fechaAbierta = false;
+
+                    this.sendCreditoOpciones(request);
+
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueCreditoOpciones').modal('hide');
+                },
+                sendCreditoOpciones: function (_request) {
+                    appController.sendCreditoOpciones(_request);
                 }
             },
             computed: {},

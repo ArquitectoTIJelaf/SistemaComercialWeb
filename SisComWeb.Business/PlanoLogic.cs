@@ -245,9 +245,15 @@ namespace SisComWeb.Business
 
                 if (!string.IsNullOrEmpty(entidad.RucContacto))
                 {
-                    var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
-                    entidad.RazonSocial = buscarEmpresa.RazonSocial;
-                    entidad.Direccion = buscarEmpresa.Direccion;
+                    if (entidad.FlagVenta != "1")
+                    {
+                        var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+                        entidad.RazonSocial = buscarEmpresa.RazonSocial;
+                        entidad.Direccion = buscarEmpresa.Direccion;
+                    }
+                    else {
+
+                    }
                 }
                 else
                 {

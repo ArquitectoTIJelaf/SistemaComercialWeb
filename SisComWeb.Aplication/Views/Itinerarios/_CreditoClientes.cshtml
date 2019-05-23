@@ -2,7 +2,7 @@
     <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" class="close" @@click="cancelarCreditoClientes">&times;</button>
+            <button type="button" class="close" @@click="cerrarCreditoClientes">&times;</button>
             <h4 class="modal-title"><b>Clientes Crédito</b></h4>
         </div>
         <div class="modal-body">
@@ -21,7 +21,7 @@
                                 <tbody>
                                     @*<paginate name="items" :list="list.clientes" :per="4">*@
                                     @*<tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">*@
-                                    <tr v-for="item in list.clientes" @*@@dblclick="sendRow(item)"*@>
+                                    <tr v-for="item in list.clientes" @@dblclick="sendRow(item)">
                                         <td class="custom-td">{{item.RucCliente}}</td>
                                         <td class="custom-td">{{item.RazonSocial}}</td>
                                         <td class="custom-td">{{item.NumeContrato}}</td>
@@ -38,7 +38,7 @@
             </div>
         </div>
             <div class="modal-footer">
-                <button @@click="cancelarCreditoClientes" class="btn btn-inverse waves-effect waves-light text-left">
+                <button @@click="cerrarCreditoClientes" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>

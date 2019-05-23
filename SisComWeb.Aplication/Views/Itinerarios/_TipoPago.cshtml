@@ -34,8 +34,7 @@
                                           :id="'cboTipoPagoTP'"
                                           :options="list.tiposPago"
                                           :placeholder="'TIPO PAGO'"
-                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                          ref="select">
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -80,8 +79,7 @@
                                               :id="'cboTipoTargetaTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              ref="select">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -168,8 +166,7 @@
                                               :id="'cboTipoTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              ref="select">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -196,8 +193,7 @@
                                               :id="'cboDistritoTP'"
                                               :options="list.distritos"
                                               :placeholder="'DISTRITO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              ref="select">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -230,8 +226,7 @@
                                           label="Lugar"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
-                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')"
-                                          ref="select">
+                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>

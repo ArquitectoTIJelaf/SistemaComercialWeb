@@ -60,7 +60,18 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["Codi_Socio"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Socio"]).ToUpper();
                     break;
-
+                case 13:
+                    item.id = DataUtility.ObjectToString(reader["CODI_HOSPITAL"]);
+                    item.label = DataUtility.ObjectToString(reader["DESCRIPCION"]).ToUpper();
+                    break;
+                case 14:
+                    item.id = DataUtility.ObjectToString(reader["Codi_Zonas"]);
+                    item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
+                    break;
+                case 15:
+                    item.id = DataUtility.ObjectToString(reader["idAreaContrato"]);
+                    item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -312,6 +323,66 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 12));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaHospitales(int codiSucursal)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListaHospitales";
+                db.AddParameter("@CODI_SUCURSAL", DbType.Int32, ParameterDirection.Input, codiSucursal);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 13));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaSecciones(int idContrato)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_SeccionesZona_Consulta";
+                db.AddParameter("@idContrato", DbType.Int32, ParameterDirection.Input, idContrato);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 14));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaAreas(int idContrato)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_AreaContrato_Consulta";
+                db.AddParameter("@idContrato", DbType.Int32, ParameterDirection.Input, idContrato);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 15));
                     }
                 }
             }

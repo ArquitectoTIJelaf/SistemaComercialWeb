@@ -778,9 +778,17 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Concepto\" : \"" + Listado[i].Concepto + "\"" +
-                                    ",\"FechaAbierta\" : " + Listado[i].FechaAbierta.ToString().ToLower() +
-                                    // PASE DE CORTESÍA
-                                    ",\"IdVenta\" : \"" + Listado[i].IdVenta + "\"" +
+                                    ",\"FechaAbierta\" : \"" + Listado[i].FechaAbierta.ToString().ToLower() + "\"" +
+                                    // RESERVA
+                                    ",\"IdVenta\" : " + Listado[i].IdVenta +
+                                    // CRÉDITO
+                                    ",\"IdContrato\" : " + Listado[i].IdContrato +
+                                    ",\"IdPrecio\" : " + Listado[i].IdPrecio +
+                                    ",\"NroSolicitud\" : \"" + Listado[i].NroSolicitud + "\"" +
+                                    ",\"IdArea\" : " + Listado[i].IdArea +
+                                    ",\"FlgIda\" : \"" + Listado[i].FlgIda + "\"" +
+                                    ",\"FechaCita\" : \"" + Listado[i].FechaCita + "\"" +
+                                    ",\"IdHospital\" : " + Listado[i].IdHospital +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -1232,8 +1240,8 @@ namespace SisComWeb.Aplication.Controllers
         }
 
         [HttpPost]
-        [Route("listaClientesContrato")]
-        public async Task<ActionResult> ListaClientesContrato(CreditoRequest request)
+        [Route("listarClientesContrato")]
+        public async Task<ActionResult> ListarClientesContrato(CreditoRequest request)
         {
             try
             {
@@ -1251,7 +1259,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NumeAsiento\" : " + request.NumeAsiento +
                                     ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
                                 "}";
-                    HttpResponseMessage response = await client.PostAsync("ListaClientesContrato", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage response = await client.PostAsync("ListarClientesContrato", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
@@ -1273,21 +1281,27 @@ namespace SisComWeb.Aplication.Controllers
                         St = (string)x["St"],
                         IdRuc = (int)x["IdRuc"],
                         NombreCorto = (string)x["NombreCorto"],
-                        IdContrato = (int)x["IdContrato"]
+                        IdContrato = (int)x["IdContrato"],
+
+                        CntBoletos = (int)x["CntBoletos"],
+                        SaldoBoletos = (int)x["SaldoBoletos"],
+                        IdPrecio = (int)x["IdPrecio"],
+                        Precio = (decimal)x["Precio"]
+
                     }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch
             {
                 return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
         [HttpPost]
-        [Route("insertar-impresion")]
-        public async Task<ActionResult> InsertarImpresion(List<VentaRealizada> Listado)
+        [Route("convertir-venta-to-base64")]
+        public async Task<ActionResult> ConvertirVentaToBase64(List<VentaRealizada> Listado)
         {
             try
             {
@@ -1346,7 +1360,7 @@ namespace SisComWeb.Aplication.Controllers
                     }
                     _body += "]";
 
-                    HttpResponseMessage response = await client.PostAsync("InsertarImpresion", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage response = await client.PostAsync("ConvertirVentaToBase64", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
@@ -1367,6 +1381,88 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("listarPanelControl")]
+        public async Task<ActionResult> ListarPanelControl()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListarPanelControl");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListarPanelControl");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<PanelControlEntity>> res = new Response<List<PanelControlEntity>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new PanelControlEntity
+                    {
+                        CodiPanel = (string)x["CodiPanel"],
+                        Valor = (string)x["Valor"],
+                        Descripcion = (string)x["Descripcion"],
+                        TipoControl = (string)x["TipoControl"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultarContrato")]
+        public async Task<ActionResult> ConsultarContrato(int idContrato)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"idContrato\" : " + idContrato +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultarContrato", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Contrato> res = new Response<Contrato>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Contrato()
+                    {
+                        Saldo = (decimal)data["Saldo"],
+                        Marcador = (string)data["Marcador"]
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Contrato>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
     }

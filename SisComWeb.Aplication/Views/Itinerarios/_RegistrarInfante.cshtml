@@ -22,8 +22,7 @@
                                           :options="list.tipoDoc"
                                           :placeholder="'DOCUMENTO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          ref="select">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -135,8 +134,7 @@
                                           :options="list.sexos"
                                           :placeholder="'SEXO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          ref="select">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -152,8 +150,7 @@
                                           :options="list.parentesco"
                                           :placeholder="'PARENTESCO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          ref="select">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
