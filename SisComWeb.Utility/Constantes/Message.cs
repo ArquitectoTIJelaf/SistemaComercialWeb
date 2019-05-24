@@ -171,7 +171,8 @@
 
         // Anular Venta
         public const string MsgErrorAnularVenta = "Solicitud cancelada, la venta ya ha sido anulada.";
-
+        public const string MsgErrorConsultaBoletoPorContrato = "Error: MsgErrorConsultaBoletoPorContrato.";
+        public const string MsgErrorActualizarBoletosPorContrato = "Error: MsgErrorActualizarBoletosPorContrato.";
         public const string MsgCorrectoAnularVenta = "Se anuló la venta correctamente.";
         public const string MsgExcAnularVenta = "Excepción: AnularVenta.";
 
@@ -209,6 +210,7 @@
 
         // Precio Normal
         public const string MsgCorrectoVerificarPrecioNormal = "Correcto: VerificarPrecioNormal.";
+        public const string MsgErrorVerificarPrecioNormal = "Contrato sin boletos disponibles.";
         public const string MsgExcVerificarPrecioNormal = "Excepción: VerificarPrecioNormal.";
 
         // Precio Contrato

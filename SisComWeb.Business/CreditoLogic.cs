@@ -125,8 +125,6 @@ namespace SisComWeb.Business
             }
         }
 
-        
-
         public static Response<PrecioNormalEntity> VerificarPrecioNormal(int idContrato)
         {
             try

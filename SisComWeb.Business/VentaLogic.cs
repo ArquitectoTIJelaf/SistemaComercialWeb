@@ -112,6 +112,7 @@ namespace SisComWeb.Business
             {
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizada>();
+                var ListarPanelControl = new List<PanelControlEntity>();
 
                 foreach (var entidad in Listado)
                 {
@@ -177,12 +178,54 @@ namespace SisComWeb.Business
                         case "1": // CRÉDITO
                             {
                                 // Consulta 'Contrato'
-                                //var consultarContrato = CreditoRepository.ConsultarContrato(entidad.IdContrato);
-                                //if (consultarContrato.Marcador == "1")
-                                //{
-                                //    if (consultarContrato.Saldo < entidad.PrecioVenta)
-                                //        return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
-                                //}
+                                ContratoEntity consultarContrato = CreditoRepository.ConsultarContrato(entidad.IdContrato);
+                                if (consultarContrato != null)
+                                {
+                                    if (consultarContrato.Marcador == "1")
+                                    {
+                                        if (consultarContrato.Saldo < entidad.PrecioVenta)
+                                            return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
+                                    }
+                                }
+                                else
+                                    return new Response<VentaResponse>(true, valor, Message.MsgValidaNullConsultarContrato, false);
+
+                                // Agrega validación de Precio que está en la vista.
+                                var validatorPrecioValor = false;
+
+                                if (ListarPanelControl.Count != 0)
+                                    ListarPanelControl = CreditoRepository.ListarPanelControl();
+
+                                var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "121");
+                                if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
+                                    validatorPrecioValor = true;
+
+                                if (!validatorPrecioValor)
+                                {
+                                    // Verifica 'PrecioNormal'
+                                    var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(entidad.IdContrato);
+                                    if (verificarPrecioNormal.IdNormal != -1)
+                                    {
+                                        var auxLength = Listado.Count;
+                                        if (auxLength == 1)
+                                        {
+                                            if (verificarPrecioNormal.Saldo <= 0)
+                                                return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
+                                        }
+                                        else
+                                        {
+                                            if (verificarPrecioNormal.Saldo < auxLength)
+                                                return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var verificarContratoPasajes = CreditoRepository.VerificarContratoPasajes(entidad.RucCliente, entidad.FechaViaje, entidad.FechaViaje, entidad.CodiOficina.ToString(), entidad.CodiRuta.ToString(), entidad.CodiServicio.ToString(), entidad.IdRuc);
+
+                                        if (verificarContratoPasajes.SaldoBoletos <= 0)
+                                            return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
+                                    }
+                                }
                             };
                             break;
                     }
@@ -434,7 +477,7 @@ namespace SisComWeb.Business
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
-                    // Modifica 'SaldoPaseCortesia', '' y otros
+                    // Modifica 'SaldoPaseCortesia', actualiza 'BoletosStock' y otros
                     switch (FlagVenta)
                     {
                         case "7": // PASE DE CORTESÍA
@@ -454,7 +497,7 @@ namespace SisComWeb.Business
                             {
                                 // Actualiza 'BoletosStock'
                                 var actualizarBoletosStock = false;
-                                if (entidad.FlagPrecioNormal)
+                                if (!entidad.FlagPrecioNormal)
                                     actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1");
                                 else
                                     actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdContrato.ToString(), "0");
@@ -835,7 +878,7 @@ namespace SisComWeb.Business
 
         #region ANULAR VENTA
 
-        public static Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
+        public static Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo, string FlagVenta)
         {
             try
             {
@@ -882,6 +925,26 @@ namespace SisComWeb.Business
 
                 if (caja > 0)
                 {
+                    if (FlagVenta == "1")
+                    {
+                        // Consulta 'BoletoPorContrato'
+                        var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(IdVenta);
+                        if (consultaBoletoPorContrato > 0)
+                        {
+                            // Actualiza 'BoletosPorContrato'
+                            var actualizarBoletosPorContrato = CreditoRepository.ActualizarBoletosPorContrato(consultaBoletoPorContrato.ToString());
+                            if (!actualizarBoletosPorContrato)
+                                return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosPorContrato, true);
+
+                            // Actualiza 'BoletosStock'
+                            var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("0", objVenta.IdPrecio.ToString(), "1"); // Se está suponiendo que es 'FlagPrecioNormal' siempre es 'false'.
+                            if (!actualizarBoletosStock)
+                                return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosStock, true);
+                        }
+                        else
+                            return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
+                    }
+
                     anularVenta = VentaRepository.AnularVenta(IdVenta, CodiUsuario);
                     if (anularVenta > 0)
                         return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);

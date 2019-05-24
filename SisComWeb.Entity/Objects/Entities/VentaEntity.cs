@@ -164,6 +164,8 @@ namespace SisComWeb.Entity
         public int IdHospital { get; set; }
 
         public bool FlagPrecioNormal { get; set; }
+
+        public int IdRuc { get; set; }
     }
 
     public class VentaRealizada

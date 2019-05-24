@@ -496,11 +496,11 @@ namespace SisComWeb.Services
 
         #region ANULAR VENTA
 
-        public Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo)
+        public Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo, string FlagVenta)
         {
             try
             {
-                return VentaLogic.AnularVenta(IdVenta, CodiUsuario, CodiOficina, CodiPuntoVenta, Tipo);
+                return VentaLogic.AnularVenta(IdVenta, CodiUsuario, CodiOficina, CodiPuntoVenta, Tipo, FlagVenta);
             }
             catch (Exception ex)
             {

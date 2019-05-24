@@ -790,6 +790,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"FechaCita\" : \"" + Listado[i].FechaCita + "\"" +
                                     ",\"IdHospital\" : " + Listado[i].IdHospital +
                                      ",\"FlagPrecioNormal\" : " + Listado[i].FlagPrecioNormal.ToString().ToLower() +
+                                     ",\"IdRuc\" : " + Listado[i].IdRuc +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -1011,7 +1012,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("anular-venta")]
-        public async Task<ActionResult> AnularVenta(int IdVenta, string Tipo)
+        public async Task<ActionResult> AnularVenta(int IdVenta, string Tipo, string FlagVenta)
         {
             try
             {
@@ -1024,7 +1025,8 @@ namespace SisComWeb.Aplication.Controllers
                                 + "\"CodiUsuario\": " + usuario.CodiUsuario + ","
                                 + "\"CodiOficina\": " + usuario.CodiSucursal + ","
                                 + "\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta + ","
-                                + "\"Tipo\": \"" + Tipo + "\""
+                                + "\"Tipo\": \"" + Tipo + "\"" + ","
+                                + "\"FlagVenta\": \"" + FlagVenta + "\""
                                 + "}";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));

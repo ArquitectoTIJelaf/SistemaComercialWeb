@@ -249,6 +249,7 @@ namespace SisComWeb.Repository
                         entidad.NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO");
                         entidad.FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta");
                         entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
+                        entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
                     }
                 }
             }

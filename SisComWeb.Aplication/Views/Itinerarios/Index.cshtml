@@ -1099,6 +1099,7 @@
                 disabledCampoNumSolicitud: true,
                 objCreditoCliente: {
                     idContrato: 0,
+                    IdRuc: 0,
                     CntBoletos: 0,
                     SaldoBoletos: 0,
                     IdPrecio: 0,
@@ -1368,6 +1369,7 @@
                                 return;
                             case '1': // Crédito
                                 {
+                                    // Consulta 'Contrato'
                                     var resConsultarContrato = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
                                     if (!resConsultarContrato)
                                         return;
@@ -1378,50 +1380,10 @@
                                     if (objPanelPrecioValor && objPanelPrecioValor.Valor === '1')
                                         validatorPrecioValor = true;
 
-                                    if (validatorPrecioValor) {
-                                        var resObjPrecioNormal = await _this.verificarPrecioNormal(_this.objCreditoCliente.idContrato);
-
-                                        if (resObjPrecioNormal) {
-                                            if (resObjPrecioNormal.IdNormal !== -1) {
-                                                tmpAsientoSel.Precio = tmpAsientoSel.Precio + resVerificarPrecioNormal.MontoMas - resVerificarPrecioNormal.MontoMenos;
-                                                tmpAsientoSel.FlagPrecioNormal = true;
-
-                                                var auxLength = _this.list.ventas.length;
-                                                if (auxLength === 1) {
-                                                    if (resObjPrecioNormal.Saldo <= 0) {
-                                                        APP.msg.warning("Contrato sin boletos disponibles.");
-                                                        return;
-                                                    }
-                                                }
-                                                else {
-                                                    if (resObjPrecioNormal.Saldo < auxLength) {
-                                                        APP.msg.warning("Contrato sin boletos disponibles.");
-                                                        return;
-                                                    }
-                                                }
-                                            }
-                                            else {
-                                                var resPrecioFecha = await _this.buscarPrecio(_this.filtro.Fecha, asientoSel.Nivel, _this.filtro.Turno, _this.objCreditoCliente.IdPrecio);
-
-                                                if (_this.objCreditoCliente.SaldoBoletos > 0) {
-                                                    if (resPrecioFecha > 0)
-                                                        tmpAsientoSel.Precio = resPrecioFecha;
-                                                    else
-                                                        tmpAsientoSel.Precio = _this.objCreditoCliente.Precio;
-                                                }
-                                                else {
-                                                    APP.msg.warning("Contrato sin boletos disponibles.");
-                                                    return;
-                                                }
-                                                tmpAsientoSel.FlagPrecioNormal = false;
-                                            }
-                                        }
-                                        else
-                                            return;
-
+                                    if (validatorPrecioValor)
                                         tmpAsientoSel.Precio = asientoSel.Precio;
-                                    }
                                     else {
+                                        // Verifica 'PrecioNormal'
                                         var resObjPrecioNormal = await _this.verificarPrecioNormal(_this.objCreditoCliente.idContrato);
 
                                         if (resObjPrecioNormal) {
@@ -1462,8 +1424,6 @@
                                         else
                                             return;
                                     }
-
-                                    //tmpAsientoSel.Precio = asientoSel.Precio;
                                 }
                                 break;
                         }
@@ -1567,6 +1527,7 @@
                     switch (asientoSel.FlagVenta) {
                         case 'V': // Venta
                         case '7': // Pase de cortesía
+                        case '1': // Crédito
                             {
                                 switch (_this.pickedBusVenta) {
                                     case 'FA': // Fecha abierta
@@ -2384,6 +2345,7 @@
 
                         input.IdContrato = _this.objCreditoCliente.idContrato;
                         input.IdPrecio = _this.objCreditoCliente.IdPrecio;
+                        input.IdRuc = _this.objCreditoCliente.IdRuc;
 
                         appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas, _this.pickedBusVenta);
                     }
@@ -2615,6 +2577,7 @@
                         _this.disabledCredito = false;
                         _this.objCreditoCliente.idContrato = 0;
                         _this.objCreditoCliente.CntBoletos = 0;
+                        _this.objCreditoCliente.IdRuc = 0;
                         _this.objCreditoCliente.SaldoBoletos = 0;
                         _this.objCreditoCliente.IdPrecio = 0;
                         _this.objCreditoCliente.Precio = 0;
@@ -3025,7 +2988,8 @@
                         'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será anulado, ¿Desea continuar?')) {
                         APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                             IdVenta: tmpAsientoSel.IdVenta,
-                            Tipo: tmpAsientoSel.TipoBoleto
+                            Tipo: tmpAsientoSel.TipoBoleto,
+                            FlagVenta: tmpAsientoSel.FlagVenta
                         }))
                             .then(async function (res) {
                                 await appController.chargeTurnos();
@@ -3073,6 +3037,8 @@
                     this.list.ventas[this.indexVenta].RazonSocial = _auxItem.RazonSocial;
 
                     this.objCreditoCliente.idContrato = _auxItem.IdContrato;
+                    this.objCreditoCliente.IdRuc = _auxItem.IdRuc;
+
                     this.objCreditoCliente.CntBoletos = _auxItem.CntBoletos;
                     this.objCreditoCliente.SaldoBoletos = _auxItem.SaldoBoletos;
                     this.objCreditoCliente.IdPrecio = _auxItem.IdPrecio;
@@ -3580,6 +3546,7 @@
                             case '1': // CRÉDITO
                                 input.IdContrato = _this.ticketVenta.IdContrato;
                                 input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
+                                input.IdRuc = _this.ticketVenta.IdRuc;
                                 input.NroSolicitud = objVenta.NroSolicitud;
                                 input.IdArea = (objVenta.area ? objVenta.area.id : 0);
                                 input.FlgIda = objVenta.boletoTipoDir;
@@ -3588,11 +3555,11 @@
                                 input.FlagPrecioNormal = objVenta.FlagPrecioNormal;
                                 break;
                         }
-                        switch (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
+
+                        switch (objVenta.FlagVenta) {
                             case 'R':
                                 input.IdVenta = objVenta.IdVenta;
                                 _this.pickedBusVenta = 'V';
-                                // Este valor sale del 'pickedBusVenta', pero como es una 'Reserva' tiene que ir con su 'FlagVenta' correspondiente.
                                 input.FlagVenta = 'R';
                                 break;
                         }
@@ -4558,6 +4525,7 @@
                     auxItem.RucCliente = item.RucCliente;
                     auxItem.RazonSocial = item.RazonSocial;
                     auxItem.IdContrato = item.IdContrato;
+                    auxItem.IdRuc = item.IdRuc;
 
                     auxItem.CntBoletos = item.CntBoletos;
                     auxItem.SaldoBoletos = item.SaldoBoletos;

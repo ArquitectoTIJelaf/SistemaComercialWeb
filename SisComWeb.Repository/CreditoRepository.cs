@@ -207,6 +207,26 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static int ConsultaBoletoPorContrato(int idVenta)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_boletoxcontrato_Consulta";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, idVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "idregistro");
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -221,6 +241,23 @@ namespace SisComWeb.Repository
                 db.AddParameter("@St", DbType.String, ParameterDirection.Input, St);
                 db.AddParameter("@IdPrecio", DbType.String, ParameterDirection.Input, IdPrecio);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool ActualizarBoletosPorContrato(string Id)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_UpdateBoletosXContrato";
+                db.AddParameter("@Id", DbType.String, ParameterDirection.Input, Id);
 
                 db.Execute();
 
