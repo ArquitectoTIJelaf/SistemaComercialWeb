@@ -511,7 +511,6 @@
             });
 
             $('#appVueTipoPago').on('hidden.bs.modal', function () {
-                $("#btnTipoPago").focus();
                 appVueTipoPago.limpiarCampos();
             });
 
@@ -1157,7 +1156,8 @@
                     var _this = this;
                     _this.processing = true;
                     _this.checkRegistrarNino = false;
-                    _this.pickedBusVenta = 'V';
+                    if (_this.pickedBusVenta !== '1') // Crédito
+                        _this.pickedBusVenta = 'V';
                     // --------------------------------------
                     if (!_this.firstCharge) {
                         if ($("#panelWrapperV").hasClass("in")) {
@@ -1381,6 +1381,11 @@
                                 return;
                             case '1': // Crédito
                                 {
+                                    if (!_this.objCreditoCliente.idContrato) {
+                                        APP.msg.warning('No ha seleccionado un Cliente, haga click en la opción Crédito.');
+                                        return;
+                                    }
+
                                     // Consulta 'Contrato'
                                     var resConsultarContrato = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
                                     if (!resConsultarContrato)
@@ -2720,7 +2725,8 @@
                             this.auxFocus.asiento = false;
                         else {
                             this.$refs.refNroAsientoVenta.focus();
-                            APP.msg.warning('Ingrese un número de asiento.');
+                            if (!appVueTipoPago.processing)
+                                APP.msg.warning('Ingrese un número de asiento.');
                         }
                     }
 
@@ -3066,7 +3072,7 @@
                 },
                 setCreditoCliente: async function (_objPanelTxtPrecio, _auxItem) {
                     // Valida 'disabledPrecio'
-                    if (_objPanelTxtPrecio && _objPanelTxtPrecio.Valor === '1')
+                    if (_objPanelTxtPrecio && _objPanelTxtPrecio.Valor === '0')
                         this.disabledPrecio = true;
 
                     this.objCreditoCliente.Ruc = _auxItem.RucCliente;
@@ -3281,6 +3287,16 @@
                 },
                 listVentasCampoRuc: function () {
                     return this.list.ventas[this.indexVenta].Ruc;
+                },
+                getFiltrosResumen: function () {
+                    var tmpOrigenPas = '';
+                    var tmpDestinoPas = '';
+                    if (this.filtro.CodiSucursal)
+                        tmpOrigenPas = this.filtro.CodiSucursal.label;
+                    if (this.filtro.CodiDestinoPas)
+                        tmpDestinoPas = this.filtro.CodiDestinoPas.label;
+
+                    return tmpOrigenPas.substring(0, 3) + '-' + tmpDestinoPas.substring(0, 3) + ' | ' + this.filtro.Turno + ' | ' + this.filtro.Fecha;
                 }
             },
             watch: {
@@ -3646,6 +3662,8 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
 
+                    _this.processing = false;
+
                     // Convierte las ventas realizadas en documentos 'base64'
                     // para mandarlos a 'imprimirBoleto'
                     if (auxListaVentasRealizadas.length > 0)
@@ -3667,7 +3685,7 @@
                     this.cantAsientos = 0;
                     this.importePagado = '';
                     this.vuelto = '';
-                    this.processing = false;
+                    //this.processing = false;
                 },
                 recorridoSectionTipoPagos: function () {
                     var _this = this;

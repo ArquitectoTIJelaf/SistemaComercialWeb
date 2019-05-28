@@ -206,17 +206,8 @@ namespace SisComWeb.Business
                                     var verificarPrecioNormal = CreditoRepository.VerificarPrecioNormal(entidad.IdContrato);
                                     if (verificarPrecioNormal.IdNormal != -1)
                                     {
-                                        var auxLength = Listado.Count;
-                                        if (auxLength == 1)
-                                        {
-                                            if (verificarPrecioNormal.Saldo <= 0)
-                                                return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
-                                        }
-                                        else
-                                        {
-                                            if (verificarPrecioNormal.Saldo < auxLength)
-                                                return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
-                                        }
+                                        if (verificarPrecioNormal.Saldo <= 0)
+                                            return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
                                     }
                                     else
                                     {
