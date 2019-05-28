@@ -82,7 +82,10 @@ namespace SisComWeb.Business
                     listarClientesContrato[i].Precio = verificarContratoPasajes.Precio; // Precio
                 }
 
-                return new Response<List<ClienteCreditoEntity>>(true, listarClientesContrato, Message.MsgCorrectoListarClientesContrato, true);
+                if (listarClientesContrato.Count == 0)
+                    return new Response<List<ClienteCreditoEntity>>(false, listarClientesContrato, Message.MsgValidaListarClientesContrato, true);
+                else
+                    return new Response<List<ClienteCreditoEntity>>(true, listarClientesContrato, Message.MsgCorrectoListarClientesContrato, true);
             }
             catch (Exception ex)
             {

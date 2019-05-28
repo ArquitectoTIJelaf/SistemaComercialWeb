@@ -196,6 +196,7 @@
 
         // Clientes Contrato
         public const string MsgCorrectoListarClientesContrato = "Correcto: ListarClientesContrato.";
+        public const string MsgValidaListarClientesContrato = "No se encontró ningún Cliente.";
         public const string MsgExcListarClientesContrato = "Excepción: ListarClientesContrato.";
 
         // Panel de Control

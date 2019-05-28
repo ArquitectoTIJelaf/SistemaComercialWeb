@@ -4559,8 +4559,12 @@
                         request: _request
                     })
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.Estado) {
                                 _this.list.clientes = res.data.Valor;
+
+                                if (!res.data.EsCorrecto)
+                                    APP.msg.warning(res.data.Mensaje);
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
