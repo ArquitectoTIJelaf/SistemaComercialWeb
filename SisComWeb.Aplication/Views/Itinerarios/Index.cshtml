@@ -497,7 +497,16 @@
             $('#appVueTipoPago').on('shown.bs.modal', function () {
                 appVueTipoPago.tipoPago = '01';
                 appVueTipoPago.$nextTick(function () {
-                    $("#txtImportePagadoC").focus();
+                    switch (appVueTipoPago.pickedBusVenta) {
+                        case '1':
+                            appVueTipoPago.importePagado = appVueTipoPago.sumaTotal;
+                            appVueTipoPago.vuelto = '0.00';
+                            $('#cboEmbarqueTP input[type=search]').focus();
+                            break;
+                        default:
+                            $("#txtImportePagadoC").focus();
+                            break;
+                    }
                 });
             });
 
@@ -1098,6 +1107,9 @@
                 disabledCredito: false,
                 disabledCampoNumSolicitud: true,
                 objCreditoCliente: {
+                    Ruc: '',
+                    RazonSocial: '',
+                    Direccion: '',
                     idContrato: 0,
                     IdRuc: 0,
                     CntBoletos: 0,
@@ -1619,9 +1631,13 @@
                         _this.list.ventas[_this.indexVenta].IdVenta = asientoSel.IdVenta;
                         _this.list.ventas[_this.indexVenta].FechaVen = asientoSel.FechaVenta;
                         _this.list.ventas[_this.indexVenta].Info = asientoSel.CodiUsuario + ' ' + asientoSel.NomUsuario + ' - ' + asientoSel.NomPuntoVenta + ' - ';
+                        _this.list.ventas[_this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
                         switch (_this.list.ventas[_this.indexVenta].FlagVenta) {
                             case '7':
-                                _this.list.ventas[_this.indexVenta].Info += '(PC)' + ' - ';
+                                _this.list.ventas[_this.indexVenta].Info += '(PS)' + ' - ';
+                                break;
+                            case '1':
+                                _this.list.ventas[_this.indexVenta].Info += '(VC)' + ' - ';
                                 break;
                         }
                         _this.list.ventas[_this.indexVenta].Info += asientoSel.NomOrigen + ' - ' + asientoSel.NomDestino;
@@ -1682,6 +1698,12 @@
                         IdVenta: 0,
                         FlagPrecioNormal: false
                     });
+                    
+                    if (this.pickedBusVenta === '1') { // Crédito
+                        this.list.ventas[this.indexVenta].Ruc = this.objCreditoCliente.Ruc;
+                        this.list.ventas[this.indexVenta].RazonSocial = this.objCreditoCliente.RazonSocial;
+                        this.list.ventas[this.indexVenta].Direccion = this.objCreditoCliente.Direccion;
+                    }
                 },
                 liberarAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
@@ -2481,9 +2503,11 @@
                     _this.list.ventas[_this.indexVenta].Edad = '';
                     _this.list.ventas[_this.indexVenta].Sexo = '';
                     _this.list.ventas[_this.indexVenta].Telefono = '';
-                    _this.list.ventas[_this.indexVenta].Ruc = '';
-                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                    _this.list.ventas[_this.indexVenta].Direccion = '';
+                    if (_this.pickedBusVenta !== '1') {
+                        _this.list.ventas[_this.indexVenta].Ruc = '';
+                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                        _this.list.ventas[_this.indexVenta].Direccion = '';
+                    }
                 },
                 clearRazSoc: function () {
                     var _this = this;
@@ -2567,20 +2591,32 @@
                     _this.disabledCamposTicket = false;
                     _this.disabledCamposTicket_Pase = false;
                     _this.disabledCampoNumSolicitud = true;
-                    // Crédito
-                    if (_this.pickedBusVenta !== '1') {
-                        _this.list.ventas[_this.indexVenta].Ruc = '';
-                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                        _this.list.ventas[_this.indexVenta].Direccion = '';
-
-                        _this.disabledPrecio = false;
-                        _this.disabledCredito = false;
-                        _this.objCreditoCliente.idContrato = 0;
-                        _this.objCreditoCliente.CntBoletos = 0;
-                        _this.objCreditoCliente.IdRuc = 0;
-                        _this.objCreditoCliente.SaldoBoletos = 0;
-                        _this.objCreditoCliente.IdPrecio = 0;
-                        _this.objCreditoCliente.Precio = 0;
+                    switch (_this.pickedBusVenta) {
+                        case '1':
+                            {
+                                if (!_this.list.ventas[_this.indexVenta].IdVenta) {
+                                    _this.list.ventas[_this.indexVenta].Ruc = _this.objCreditoCliente.Ruc;
+                                    _this.list.ventas[_this.indexVenta].RazonSocial = _this.objCreditoCliente.RazonSocial;
+                                    _this.list.ventas[_this.indexVenta].Direccion = _this.objCreditoCliente.Direccion;
+                                }
+                            }
+                            break;
+                        default:
+                            _this.list.ventas[_this.indexVenta].Ruc = '';
+                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                            _this.list.ventas[_this.indexVenta].Direccion = '';
+                            _this.disabledPrecio = false;
+                            _this.disabledCredito = false;
+                            _this.objCreditoCliente.Ruc = '';
+                            _this.objCreditoCliente.RazonSocial = '';
+                            _this.objCreditoCliente.Direccion = '';
+                            _this.objCreditoCliente.idContrato = 0;
+                            _this.objCreditoCliente.CntBoletos = 0;
+                            _this.objCreditoCliente.IdRuc = 0;
+                            _this.objCreditoCliente.SaldoBoletos = 0;
+                            _this.objCreditoCliente.IdPrecio = 0;
+                            _this.objCreditoCliente.Precio = 0;
+                            break;
                     }
                     _this.passNumDocToDocumento(true);
                     appRegistrarInfante.limpiarCampos();
@@ -3028,14 +3064,14 @@
                     this.list.ventas[this.indexVenta].Documento = e.target.value.toUpperCase();
                     this.$validator.validate('Tipo', this.list.ventas[this.indexVenta].CodiTipoDoc);
                 },
-                setCreditoCliente: function (_objPanelTxtPrecio, _auxItem) {
+                setCreditoCliente: async function (_objPanelTxtPrecio, _auxItem) {
                     // Valida 'disabledPrecio'
                     if (_objPanelTxtPrecio && _objPanelTxtPrecio.Valor === '1')
                         this.disabledPrecio = true;
 
-                    this.list.ventas[this.indexVenta].Ruc = _auxItem.RucCliente;
-                    this.list.ventas[this.indexVenta].RazonSocial = _auxItem.RazonSocial;
-
+                    this.objCreditoCliente.Ruc = _auxItem.RucCliente;
+                    this.objCreditoCliente.RazonSocial = _auxItem.RazonSocial;
+                    
                     this.objCreditoCliente.idContrato = _auxItem.IdContrato;
                     this.objCreditoCliente.IdRuc = _auxItem.IdRuc;
 
@@ -3045,6 +3081,11 @@
                     this.objCreditoCliente.Precio = _auxItem.Precio;
 
                     this.disabledCredito = true;
+                    this.list.ventas[this.indexVenta].Ruc = _auxItem.RucCliente;
+                    this.list.ventas[this.indexVenta].RazonSocial = _auxItem.RazonSocial;
+
+                    await appVueVenta.searchEmpresa();
+                    this.objCreditoCliente.Direccion = _.cloneDeep(this.list.ventas[this.indexVenta].Direccion);
                 },
                 setCreditoOpciones: async function (_request) {
                     // Agregamos nuevos valores (No están en la lista inicial).
@@ -3145,7 +3186,6 @@
                         objAsiento.Boleto = "";
                         objAsiento.CodiOrigen = 0;
                         objAsiento.Color = "";
-                        objAsiento.Direccion = "";
                         objAsiento.Edad = 0;
                         objAsiento.FechaNacimiento = "";
                         objAsiento.FechaVenta = "";
@@ -3164,14 +3204,15 @@
                         objAsiento.ObjAcompaniante.Parentesco = null;
                         objAsiento.ObjAcompaniante.Sexo = null;
                         objAsiento.PrecioVenta = 0;
-                        objAsiento.RazonSocial = "";
                         objAsiento.RecogeEn = "";
-                        objAsiento.RucContacto = "";
                         objAsiento.Sexo = "";
                         objAsiento.Sigla = "";
                         objAsiento.Telefono = "";
                         objAsiento.TipoBoleto = "";
                         objAsiento.TipoDocumento = "";
+                        objAsiento.RucContacto = "";
+                        objAsiento.RazonSocial = "";
+                        objAsiento.Direccion = "";
                     }
                 },
                 signalR_ActualizarTurnoPlano: function (_ListaVentasRealizadas) {
@@ -4518,7 +4559,7 @@
                 limpiarCreditoClientes: function () {
                     this.list.clientes = [];
                 },
-                sendRow: async function (item) {
+                sendRow: function (item) {
                     var objPanelTxtPrecio = appController.validatePanel('171');
 
                     var auxItem = {};
@@ -4533,8 +4574,6 @@
                     auxItem.Precio = item.Precio;
 
                     appController.sendDataCredito(objPanelTxtPrecio, auxItem);
-
-                    await appVueVenta.searchEmpresa();
 
                     this.cerrarCreditoClientes();
                 },
@@ -4681,7 +4720,7 @@
                     request.hospital = this.hospital;
 
                     // SweetAlert para 'fechaAbierta'
-                    if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar el Pase a Fecha Abierta?'))
+                    if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar la venta al Crédito a Fecha Abierta?'))
                         request.fechaAbierta = true;
                     else
                         request.fechaAbierta = false;

@@ -83,5 +83,7 @@
         public short CodiUsuario { get; set; }
 
         public string NomUsuario { get; set; }
+
+        public string NumeSolicitud { get; set; }
     }
 }

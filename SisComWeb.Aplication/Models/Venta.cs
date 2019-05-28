@@ -166,12 +166,22 @@ namespace SisComWeb.Aplication.Models
 
         public string LinkPag_FE { get; set; }
 
-        public string CodPoliza { get; set; }
-
         public string CodTerminal { get; set; }
 
         public byte TipImpresora { get; set; }
 
         public string CodX { get; set; }
+
+        public string PolizaNum { get; set; }
+
+        public string PolizaFechaReg { get; set; }
+
+        public string PolizaFechaVen { get; set; }
+
+        public byte EmpCodigo { get; set; }
+
+        public short PVentaCodigo { get; set; }
+
+        public string BusCodigo { get; set; }
     }
 }

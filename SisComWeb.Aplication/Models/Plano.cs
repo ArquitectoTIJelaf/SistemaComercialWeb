@@ -35,7 +35,6 @@
         public string TipoBoleto { get; set; }
         public string IdVenta { get; set; }
         public Acompaniante ObjAcompaniante { get; set; }
-
         public short CodiOrigen { get; set; }
         public short CodiDestino { get; set; }
         public string NomOrigen { get; set; }
@@ -44,6 +43,8 @@
         public string NomPuntoVenta { get; set; }
         public short CodiUsuario { get; set; }
         public string NomUsuario { get; set; }
+
+        public string NumeSolicitud { get; set; }
     }
 
     public class FiltroPlano

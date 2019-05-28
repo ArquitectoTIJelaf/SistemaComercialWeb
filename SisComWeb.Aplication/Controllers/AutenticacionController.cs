@@ -32,7 +32,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("post-usuario")]
-        public async Task<ActionResult> POST(short Codigo, string Clave, string Sucursal, string PuntoVenta, string NomSucursal, string NomPuntoVenta)
+        public async Task<ActionResult> POST(short Codigo, string Clave, string Sucursal, string PuntoVenta, string NomSucursal, string NomPuntoVenta, string Terminal)
         {
             try
             {
@@ -68,7 +68,8 @@ namespace SisComWeb.Aplication.Controllers
                         Nivel = (int)data["Nivel"],
                         NomSucursal = (string)data["NomSucursal"],
                         NomPuntoVenta = (string)data["NomPuntoVenta"],
-                        Terminal = (int)data["Terminal"]
+                        //Terminal = (int)data["Terminal"]
+                        Terminal = int.Parse(Terminal)
                     }
                 };
 

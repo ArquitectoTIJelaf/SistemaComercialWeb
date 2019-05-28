@@ -67,7 +67,6 @@ namespace SisComWeb.Aplication.Controllers
                 TipoBoleto = (string)x["TipoBoleto"],
                 IdVenta = (string)x["IdVenta"],
                 ObjAcompaniante = _ObjetoAcompaniante(x["ObjAcompaniante"]),
-
                 CodiOrigen = (short)x["CodiOrigen"],
                 CodiDestino = (short)x["CodiDestino"],
                 NomOrigen = (string)x["NomOrigen"],
@@ -75,7 +74,9 @@ namespace SisComWeb.Aplication.Controllers
                 CodiPuntoVenta = (short)x["CodiPuntoVenta"],
                 NomPuntoVenta = (string)x["NomPuntoVenta"],
                 CodiUsuario = (short)x["CodiUsuario"],
-                NomUsuario = (string)x["NomUsuario"]
+                NomUsuario = (string)x["NomUsuario"],
+
+                NumeSolicitud = (string)x["NumeSolicitud"]
             }).ToList();
 
             return lista;
@@ -149,18 +150,12 @@ namespace SisComWeb.Aplication.Controllers
                 // Para la vista 'BoletosVendidos'
                 NumeAsiento = (string)x["NumeAsiento"],
                 BoletoCompleto = (string)x["BoletoCompleto"],
-                // Para la tabla 'tb_impresion'
+                // Para el método 'ConvertirVentaToBase64'
                 IdVenta = (int)x["IdVenta"],
                 NomTipVenta = (string)x["NomTipVenta"],
                 BoletoTipo = (string)x["BoletoTipo"],
                 BoletoSerie = (string)x["BoletoSerie"],
                 BoletoNum = (string)x["BoletoNum"],
-                EmpRuc = (string)x["EmpRuc"],
-                EmpRazSocial = (string)x["EmpRazSocial"],
-                EmpDireccion = (string)x["EmpDireccion"],
-                EmpDirAgencia = (string)x["EmpDirAgencia"],
-                EmpTelefono1 = (string)x["EmpTelefono1"],
-                EmpTelefono2 = (string)x["EmpTelefono2"],
                 CodDocumento = (string)x["CodDocumento"],
                 EmisionFecha = (string)x["EmisionFecha"],
                 EmisionHora = (string)x["EmisionHora"],
@@ -178,16 +173,16 @@ namespace SisComWeb.Aplication.Controllers
                 PrecioDes = (string)x["PrecioDes"],
                 NomServicio = (string)x["NomServicio"],
                 FechaViaje = (string)x["FechaViaje"],
-
                 EmbarqueDir = (string)x["EmbarqueDir"],
-                EmbarqueHora = (string)x["BoletoCoEmbarqueHorampleto"],
+                EmbarqueHora = (string)x["EmbarqueHora"],
                 CodigoX_FE = (string)x["CodigoX_FE"],
-                LinkPag_FE = (string)x["LinkPag_FE"],
-                CodPoliza = (string)x["CodPoliza"],
-
                 CodTerminal = (string)x["CodTerminal"],
                 TipImpresora = (byte)x["TipImpresora"],
-                CodX = (string)x["CodX"]
+                CodX = (string)x["CodX"],
+
+                EmpCodigo = (byte)x["EmpCodigo"],
+                PVentaCodigo = (short)x["PVentaCodigo"],
+                BusCodigo = (string)x["BusCodigo"]
             }).ToList();
 
             return lista;
@@ -1324,12 +1319,6 @@ namespace SisComWeb.Aplication.Controllers
                                     + ",\"BoletoTipo\" : \"" + Listado[i].BoletoTipo + "\""
                                     + ",\"BoletoSerie\" : \"" + Listado[i].BoletoSerie + "\""
                                     + ",\"BoletoNum\" : \"" + Listado[i].BoletoNum + "\""
-                                    + ",\"EmpRuc\" : \"" + Listado[i].EmpRuc + "\""
-                                    + ",\"EmpRazSocial\" : \"" + Listado[i].EmpRazSocial + "\""
-                                    + ",\"EmpDireccion\" : \"" + Listado[i].EmpDireccion + "\""
-                                    + ",\"EmpDirAgencia\" : \"" + Listado[i].EmpDirAgencia + "\""
-                                    + ",\"EmpTelefono1\" : \"" + Listado[i].EmpTelefono1 + "\""
-                                    + ",\"EmpTelefono2\" : \"" + Listado[i].EmpTelefono2 + "\""
                                     + ",\"CodDocumento\" : \"" + Listado[i].CodDocumento + "\""
                                     + ",\"EmisionFecha\" : \"" + Listado[i].EmisionFecha + "\""
                                     + ",\"EmisionHora\" : \"" + Listado[i].EmisionHora + "\""
@@ -1350,11 +1339,13 @@ namespace SisComWeb.Aplication.Controllers
                                     + ",\"EmbarqueDir\" : \"" + Listado[i].EmbarqueDir + "\""
                                     + ",\"EmbarqueHora\" : \"" + Listado[i].EmbarqueHora + "\""
                                     + ",\"CodigoX_FE\" : \"" + Listado[i].CodigoX_FE + "\""
-                                    + ",\"LinkPag_FE\" : \"" + Listado[i].LinkPag_FE + "\""
-                                    + ",\"CodPoliza\" : \"" + Listado[i].CodPoliza + "\""
                                     + ",\"CodTerminal\" : \"" + Listado[i].CodTerminal + "\""
                                     + ",\"TipImpresora\": " + Listado[i].TipImpresora
                                     + ",\"CodX\" : \"" + Listado[i].CodX + "\""
+
+                                    + ",\"EmpCodigo\" : " + Listado[i].EmpCodigo
+                                    + ",\"PVentaCodigo\" : " + Listado[i].PVentaCodigo
+                                    + ",\"BusCodigo\" : \"" + Listado[i].BusCodigo + "\""
                                 + "}";
 
                         if (i < Listado.Count - 1)

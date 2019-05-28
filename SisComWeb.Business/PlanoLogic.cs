@@ -187,16 +187,22 @@ namespace SisComWeb.Business
             entidad.RecogeEn = item.RecogeEn;
             entidad.FlagVenta = item.FlagVenta;
 
-            if(entidad.FlagVenta == "7") // Pase de cortesía
-                entidad.Sigla = "PC";
-            else
-                entidad.Sigla = item.Sigla;
+            switch (entidad.FlagVenta) {
+                case "7": // Pase de cortesía
+                    entidad.Sigla = "PS";
+                    break;
+                case "1": // Crédito
+                    entidad.Sigla = "VC";
+                    break;
+                default:
+                    entidad.Sigla = item.Sigla;
+                    break;
+            }
 
             entidad.Boleto = item.Boleto;
             entidad.TipoBoleto = item.TipoBoleto;
             entidad.CodiOrigen = item.CodiOrigen;
             entidad.OrdenOrigen = item.OrdenOrigen;
-
             entidad.CodiDestino = item.CodiDestino;
             entidad.NomOrigen = item.NomOrigen;
             entidad.NomDestino = item.NomDestino;
@@ -204,6 +210,8 @@ namespace SisComWeb.Business
             entidad.NomPuntoVenta = item.NomPuntoVenta;
             entidad.CodiUsuario = item.CodiUsuario;
             entidad.NomUsuario = item.NomUsuario;
+            entidad.RucContacto = item.RucContacto;
+            entidad.NumeSolicitud = item.NumeSolicitud;
 
             switch (entidad.FlagVenta)
             {
@@ -234,7 +242,6 @@ namespace SisComWeb.Business
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(item.TipoDocumento, item.NumeroDocumento);
                 entidad.TipoDocumento = buscaPasajero.TipoDoc;
                 entidad.NumeroDocumento = buscaPasajero.NumeroDoc;
-                entidad.RucContacto = buscaPasajero.RucContacto;
                 entidad.Nombres = buscaPasajero.NombreCliente;
                 entidad.ApellidoPaterno = buscaPasajero.ApellidoPaterno;
                 entidad.ApellidoMaterno = buscaPasajero.ApellidoMaterno;
@@ -242,30 +249,11 @@ namespace SisComWeb.Business
                 entidad.Edad = buscaPasajero.Edad;
                 entidad.Telefono = buscaPasajero.Telefono;
                 entidad.Sexo = buscaPasajero.Sexo;
-
-                if (!string.IsNullOrEmpty(entidad.RucContacto))
-                {
-                    if (entidad.FlagVenta != "1")
-                    {
-                        var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
-                        entidad.RazonSocial = buscarEmpresa.RazonSocial;
-                        entidad.Direccion = buscarEmpresa.Direccion;
-                    }
-                    else {
-
-                    }
-                }
-                else
-                {
-                    entidad.RazonSocial = string.Empty;
-                    entidad.Direccion = string.Empty;
-                }
             }
             else
             {
                 entidad.TipoDocumento = string.Empty;
                 entidad.NumeroDocumento = string.Empty;
-                entidad.RucContacto = string.Empty;
                 entidad.Nombres = string.Empty;
                 entidad.ApellidoPaterno = string.Empty;
                 entidad.ApellidoMaterno = string.Empty;
@@ -273,6 +261,17 @@ namespace SisComWeb.Business
                 entidad.Edad = 0;
                 entidad.Telefono = string.Empty;
                 entidad.Sexo = string.Empty;
+            }
+
+            // Busca 'Empresa'
+            if (!string.IsNullOrEmpty(entidad.RucContacto))
+            {
+                var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+                entidad.RazonSocial = buscarEmpresa.RazonSocial;
+                entidad.Direccion = buscarEmpresa.Direccion;
+            }
+            else
+            {
                 entidad.RazonSocial = string.Empty;
                 entidad.Direccion = string.Empty;
             }

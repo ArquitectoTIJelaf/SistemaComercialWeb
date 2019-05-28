@@ -84,7 +84,14 @@ namespace SisComWeb.Repository
 
         public static EmpresaEntity BuscarEmpresaEmisor(byte CodiEmpresa)
         {
-            var entidad = new EmpresaEntity();
+            var entidad = new EmpresaEntity
+            {
+                Ruc = string.Empty,
+                RazonSocial = string.Empty,
+                Direccion = string.Empty,
+                Electronico = string.Empty,
+                Contingencia = string.Empty
+            };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -95,11 +102,11 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.Ruc = Reader.GetStringValue(drlector, "Ruc");
-                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
-                        entidad.Direccion = Reader.GetStringValue(drlector, "DIRECCION");
-                        entidad.Electronico = Reader.GetStringValue(drlector, "electronico");
-                        entidad.Contingencia = Reader.GetStringValue(drlector, "contingencia");
+                        entidad.Ruc = Reader.GetStringValue(drlector, "Ruc") ?? string.Empty;
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? string.Empty;
+                        entidad.Direccion = Reader.GetStringValue(drlector, "DIRECCION") ?? string.Empty;
+                        entidad.Electronico = Reader.GetStringValue(drlector, "electronico") ?? string.Empty;
+                        entidad.Contingencia = Reader.GetStringValue(drlector, "contingencia") ?? string.Empty;
                     }
                 }
             }
@@ -250,6 +257,34 @@ namespace SisComWeb.Repository
                         entidad.FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta");
                         entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
+        public static PolizaEntity ConsultaPoliza(int CodiEmpresa, string CodiBus)
+        {
+            var entidad = new PolizaEntity
+            {
+                NroPoliza = string.Empty,
+                FechaReg = string.Empty,
+                FechaVen = string.Empty
+            };
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Bus_Poliza_consulta";
+                db.AddParameter("@codi_Empresa", DbType.Int32, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? string.Empty;
+                        entidad.FechaReg = Reader.GetStringValue(drlector, "Fecha_Reg") ?? string.Empty;
+                        entidad.FechaVen = Reader.GetStringValue(drlector, "Fecha_Ven") ?? string.Empty;
                     }
                 }
             }

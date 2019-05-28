@@ -457,9 +457,12 @@ namespace SisComWeb.Business
 
                                         if (entidad.IdVenta > 0)
                                         {
-                                            // Registra 'DocumentoSUNAT'
+                                            //Registra 'DocumentoSUNAT'
                                             var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
-                                            if (!resRegistrarDocumentoSUNAT.Estado)
+
+                                            if (resRegistrarDocumentoSUNAT.Estado)
+                                                entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
+                                            else
                                                 return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
                                         }
                                         else
@@ -630,33 +633,20 @@ namespace SisComWeb.Business
                     if (!grabarAuditoria)
                         return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
-
-                    // Para 'Impresión'
-                    var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
-                    var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.CodiEmpresa, entidad.CodiPuntoVenta);
-                    // ----------------
-
-
                     // Añado 'ventaRealizada'
                     var ventaRealizada = new VentaRealizada
                     {
                         // Para la vista 'BoletosVendidos'
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         BoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),
-                        // Para la tabla 'tb_impresion'
+                        // Para el método 'ConvertirVentaToBase64'
                         IdVenta = entidad.IdVenta,
                         NomTipVenta = "EFECTIVO",
                         BoletoTipo = entidad.Tipo,
                         BoletoSerie = entidad.SerieBoleto.ToString("D3"),
                         BoletoNum = entidad.NumeBoleto.ToString("D8"),
-                        EmpRuc = buscarEmpresaEmisor.Ruc,
-                        EmpRazSocial = buscarEmpresaEmisor.RazonSocial,
-                        EmpDireccion = buscarEmpresaEmisor.Direccion,
-                        EmpDirAgencia = buscarAgenciaEmpresa.Direccion,
-                        EmpTelefono1 = buscarAgenciaEmpresa.Telefono1,
-                        EmpTelefono2 = buscarAgenciaEmpresa.Telefono2,
                         CodDocumento = entidad.CodiDocumento,
-                        EmisionFecha = entidad.FechaVenta,
+                        EmisionFecha = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
                         EmisionHora = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture),
                         CajeroCod = entidad.CodiUsuario,
                         CajeroNom = entidad.NomUsuario,
@@ -674,15 +664,15 @@ namespace SisComWeb.Business
                         FechaViaje = entidad.FechaViaje,
                         EmbarqueDir = entidad.DirEmbarque,
                         EmbarqueHora = entidad.HoraEmbarque,
-
-                        CodigoX_FE = string.Empty,
-                        LinkPag_FE = string.Empty,
-                        CodPoliza = string.Empty,
-
+                        CodigoX_FE = entidad.SignatureValue,
                         CodTerminal = validarTerminalElectronico.Tipo,
                         TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
-
-                        CodX = "1"
+                        CodX = "1",
+                        
+                        // Parámetros extras
+                        EmpCodigo = entidad.CodiEmpresa,
+                        PVentaCodigo = entidad.CodiPuntoVenta,
+                        BusCodigo = entidad.CodiBus,
                     };
                     listaVentasRealizadas.Add(ventaRealizada);
                 }
@@ -1094,6 +1084,30 @@ namespace SisComWeb.Business
 
                 foreach (var entidad in Listado)
                 {
+                    var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
+                    var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
+                    var consultaPoliza = VentaRepository.ConsultaPoliza(byte.Parse(entidad.EmpCodigo.ToString()), entidad.BusCodigo);
+                    var serviceFE = new Ws_SeeFacteSoapClient();
+                    var seguridadFE = new Security
+                    {
+                        ID = buscarEmpresaEmisor.Ruc,
+                        User = UserWebSUNAT
+                    };
+                    var paginaWebEmisor = serviceFE.GetParametro(seguridadFE).Rempresa.PaginaWebEmisor ?? string.Empty;
+
+                    entidad.EmpRuc = buscarEmpresaEmisor.Ruc;
+                    entidad.EmpRazSocial = buscarEmpresaEmisor.RazonSocial;
+                    entidad.EmpDireccion = buscarEmpresaEmisor.Direccion;
+                    entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
+                    entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
+                    entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
+
+                    entidad.LinkPag_FE = paginaWebEmisor;
+
+                    entidad.PolizaNum = consultaPoliza.NroPoliza;
+                    entidad.PolizaFechaReg = consultaPoliza.FechaReg;
+                    entidad.PolizaFechaVen = consultaPoliza.FechaVen;
+
                     var documento = CuadreImpresora.Cuadre.WriteText(entidad);
                     listaDocumentos.Add(documento);
                 }
@@ -1117,11 +1131,9 @@ namespace SisComWeb.Business
             {
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 var entidadFE = new SetInvoiceRequestBody();
-
+                
                 // Busca 'RucEmpresa'
                 var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
-                if (string.IsNullOrEmpty(buscarEmpresaEmisor.Ruc))
-                    return null;
 
                 var seguridadFE = new Security
                 {
@@ -1159,8 +1171,8 @@ namespace SisComWeb.Business
             try
             {
                 var serviceFE = new Ws_SeeFacteSoapClient();
-
-                ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, false);
+                
+                ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, true);
                 return ServFactElectResponse;
             }
             catch (Exception ex)
@@ -1180,8 +1192,6 @@ namespace SisComWeb.Business
 
                 // Busca 'RucEmpresa'
                 var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
-                if (string.IsNullOrEmpty(buscarEmpresaEmisor.Ruc))
-                    return null;
 
                 var seguridadFE = new Security
                 {

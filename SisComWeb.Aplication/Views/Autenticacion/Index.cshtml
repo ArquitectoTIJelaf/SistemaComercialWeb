@@ -74,14 +74,14 @@
                        placeholder="Password" />
             </div>
             <div style="padding-top: 30px !important; ">
-                <button id="btnLogIn" :disabled="!filledFiltro" type="submit" class="btn btn-info btn-block">INGRESAR</button>
+                <button id="btnLogIn" :disabled="!filledFiltro || disabledValidator" type="submit" class="btn btn-info btn-block">INGRESAR</button>
             </div>
         </div>
     </form>
 </div>
 
 @section scripts{
-    <script>
+<script>
 
         var appVueLogin = new Vue({
             el: '#appVueLogin',
@@ -96,16 +96,27 @@
                     sucursales: [],
                     puntosventa: [],
                     usuarios: []
-                }
+                },
+                disabledValidator: false,
+                Terminal: ''
             },
             mounted: function () {
                 this.getUsuarios('', null);
+                this.getTerminal();
                 this.$nextTick(() => {
                     $('#txtUsuario input[type=search]').focus();
                 });
             },
             methods: {
-                confirmUsuario(filtro) {
+                confirmUsuario: async function (filtro) {
+                    this.disabledValidator = true;
+
+                    // Valida 'Terminal'
+                    if (!this.Terminal) {
+                        APP.msg.error("No se encontró Terminal.");
+                        return;
+                    }
+
                     var input = {};
                     input.Codigo = filtro.Codigo;
                     input.Clave = filtro.Clave;
@@ -113,7 +124,8 @@
                     input.PuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
                     input.NomSucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.label : '';
                     input.NomPuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.label : '';
-                    APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
+                    input.Terminal = this.Terminal;
+                    await APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
                             if (res.data.Estado)
                                 $('#frmLogin').submit();
@@ -123,6 +135,18 @@
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+
+                    this.disabledValidator = false;
+                },
+                getTerminal: function () {
+                    var _this = this;
+
+                    axios({ method: "GET", "url": "http://localhost:9100/" })
+                        .then(res => {
+                            _this.Terminal = res.data[1].terminal;
+                        }, error => {
+                            APP.msg.error('Obtener Terminal: Ha ocurrido una excepción.');
+                        });
                 },
                 getSucursales() {
                     var _this = this;
@@ -240,5 +264,5 @@
             }
         });
 
-    </script>
+</script>
 }

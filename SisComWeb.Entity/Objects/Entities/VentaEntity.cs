@@ -166,6 +166,8 @@ namespace SisComWeb.Entity
         public bool FlagPrecioNormal { get; set; }
 
         public int IdRuc { get; set; }
+
+        public string SignatureValue { get; set; }
     }
 
     public class VentaRealizada
@@ -238,12 +240,22 @@ namespace SisComWeb.Entity
 
         public string LinkPag_FE { get; set; }
 
-        public string CodPoliza { get; set; }
-
         public string CodTerminal { get; set; }
 
         public byte TipImpresora { get; set; }
 
         public string CodX { get; set; }
+
+        public string PolizaNum { get; set; }
+
+        public string PolizaFechaReg { get; set; }
+
+        public string PolizaFechaVen { get; set; }
+
+        public byte EmpCodigo { get; set; }
+
+        public short PVentaCodigo { get; set; }
+
+        public string BusCodigo { get; set; }
     }
 }
