@@ -865,8 +865,8 @@
                                             <div class="form-group">
                                                 <label class="control-label">Teléfono</label>
                                                 <input v-model="list.ventas[indexVenta].Telefono"
-                                                       @@keypress.13.prevent="$refs.refRecoger.focus()"
-                                                       @@keypress.9.prevent="$refs.refRecoger.focus()"
+                                                       @@keypress.13.prevent="recorridoTxtTelefono"
+                                                       @@keypress.9.prevent="recorridoTxtTelefono"
                                                        id="txtTelefono"
                                                        ref="refTelefono"
                                                        class="form-control input-sm"

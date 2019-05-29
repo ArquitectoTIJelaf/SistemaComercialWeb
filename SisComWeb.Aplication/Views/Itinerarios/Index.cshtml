@@ -6,6 +6,8 @@
     var usuario = DataSession.UsuarioLogueado;
     var fechaActual = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
     var horaActual = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture);
+
+    var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
 }
 
 @Html.Partial("_Filtros")
@@ -641,6 +643,8 @@
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
 
         var nacionalidadPorDefault = 'PERUANA';
+
+        var UrlImprimirBoleto = '@urlImprimirBoleto';
 
         var selectAll = {
             id: '0',
@@ -1908,6 +1912,15 @@
                             this.$refs.refRegistrarNino.focus();
                     }
                 },
+                recorridoTxtTelefono: function () {
+                    var objPanelTelefono = appController.validatePanel('217');
+                    if (objPanelTelefono && objPanelTelefono.Valor === '1' && this.pickedBusVenta !== 'R') {
+                        if (this.list.ventas[this.indexVenta].Telefono)
+                            this.$refs.refRecoger.focus();
+                    }
+                    else
+                        this.$refs.refRecoger.focus();
+                },
                 searchUser: async function () {
                     var _this = this;
                     if (_this.list.ventas[_this.indexVenta].CodiTipoDoc
@@ -2391,6 +2404,7 @@
                     var _indexOfDireccion = -1;
                     var _indexOfNacionalidad = -1;
                     var _indexOfNroSolicitud = -1;
+                    var _indexOfTelefono = -1;
 
                     // Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null; });
@@ -2486,6 +2500,18 @@
                         APP.msg.warning('Ingrese nacionalidad.');
                         return true;
                     }
+                    // Teléfono
+                    var objPanelTelefono = appController.validatePanel('217');
+                    if (objPanelTelefono && objPanelTelefono.Valor === '1' && this.pickedBusVenta !== 'R') {
+                        _indexOfTelefono = _.findIndex(_this.list.ventas, o => { return o.Telefono.length < 7; });
+                        if (_indexOfTelefono !== -1) {
+                            _this.indexVenta = _indexOfTelefono;
+                            _this.$nextTick(() => { $('#txtTelefono').focus(); });
+                            APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
+                            return true;
+                        }
+                    }
+
                     if (_this.pickedBusVenta === '1') { // Crédito
                         _indexOfNroSolicitud = _.findIndex(_this.list.ventas, o => { return o.NroSolicitud === ''; });
                         if (_indexOfNroSolicitud !== -1) {
@@ -3813,13 +3839,13 @@
                         Listado: _ListaVentasRealizadas
                     })
                         .then(function (res) {
-                            var _listaBoletos = res.data.Valor;
+                            var _listaImpresiones = res.data.Valor;
                             if (res.data.Estado) {
-                                for (i = 0; i < _listaBoletos.length; i++) {
+                                for (i = 0; i < _listaImpresiones.length; i++) {
                                     (function (i) {
                                         setTimeout(function () {
                                             // Imprime 'Boleto'
-                                            _this.imprimirBoleto(_listaBoletos[i]);
+                                            _this.imprimirBoleto(_listaImpresiones[i]);
                                         }, i * 5000);
                                     })(i);
                                 }
@@ -3829,13 +3855,30 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                imprimirBoleto: function (_Boleto) {
-                    axios({ method: "GET", "url": "http://localhost:9099/?base=" + _Boleto })
-                        .then(res => {
-                            APP.msg.success('Boleto enviado a imprimir correctamente.');
-                        }, error => {
-                            APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
-                        });
+                imprimirBoleto: function (_Documentos) {
+                    var auxUrl = '';
+
+                    for (const doc in _Documentos) {
+                        var docValor = `${_Documentos[doc]}`;
+
+                        if (doc === 'Original')
+                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
+                        else if (doc === 'Copia1')
+                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I';
+                        else if (doc === 'Copia2')
+                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
+
+                        if (auxUrl && docValor) {
+                            axios({ method: "GET", "url": auxUrl })
+                                .then(res => {
+                                    APP.msg.success('Boleto enviado a imprimir correctamente.');
+                                }, error => {
+                                    APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                                });
+                        }
+
+                        auxUrl = '';
+                    }
                 }
             },
             computed: {

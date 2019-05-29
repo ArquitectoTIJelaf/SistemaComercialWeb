@@ -182,7 +182,8 @@ namespace SisComWeb.Aplication.Controllers
 
                 EmpCodigo = (byte)x["EmpCodigo"],
                 PVentaCodigo = (short)x["PVentaCodigo"],
-                BusCodigo = (string)x["BusCodigo"]
+                BusCodigo = (string)x["BusCodigo"],
+                EmbarqueCod = (short)x["EmbarqueCod"]
             }).ToList();
 
             return lista;
@@ -1346,6 +1347,7 @@ namespace SisComWeb.Aplication.Controllers
                                     + ",\"EmpCodigo\" : " + Listado[i].EmpCodigo
                                     + ",\"PVentaCodigo\" : " + Listado[i].PVentaCodigo
                                     + ",\"BusCodigo\" : \"" + Listado[i].BusCodigo + "\""
+                                    + ",\"EmbarqueCod\" : " + Listado[i].EmbarqueCod
                                 + "}";
 
                         if (i < Listado.Count - 1)
@@ -1362,18 +1364,23 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<List<string>> res = new Response<List<string>>()
+                Response<List<Impresion>> res = new Response<List<Impresion>>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = tmpResult["Valor"].ToObject<List<string>>()
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Impresion
+                    {
+                        Original = (string)x["Original"],
+                        Copia1 = (string)x["Copia1"],
+                        Copia2 = (string)x["Copia2"]
+                    }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Impresion>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

@@ -659,11 +659,12 @@ namespace SisComWeb.Business
                         CodTerminal = validarTerminalElectronico.Tipo,
                         TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
                         CodX = "1",
-                        
+
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
                         PVentaCodigo = entidad.CodiPuntoVenta,
                         BusCodigo = entidad.CodiBus,
+                        EmbarqueCod = entidad.CodiEmbarque
                     };
                     listaVentasRealizadas.Add(ventaRealizada);
                 }
@@ -1067,17 +1068,22 @@ namespace SisComWeb.Business
 
         #region IMPRESIÓN
 
-        public static Response<List<string>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
+        public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
         {
             try
             {
-                var listaDocumentos = new List<string>();
+                var listaImpresiones = new List<ImpresionEntity>();
+                var ListarPanelControl = CreditoRepository.ListarPanelControl();
+
+                var objPanelCopia1 = ListarPanelControl.Find(x => x.CodiPanel == "197");
+                var objPanelCopia2 = ListarPanelControl.Find(x => x.CodiPanel == "198");
 
                 foreach (var entidad in Listado)
                 {
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
                     var consultaPoliza = VentaRepository.ConsultaPoliza(byte.Parse(entidad.EmpCodigo.ToString()), entidad.BusCodigo);
+                    var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
                     var serviceFE = new Ws_SeeFacteSoapClient();
                     var seguridadFE = new Security
                     {
@@ -1092,23 +1098,38 @@ namespace SisComWeb.Business
                     entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
                     entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
                     entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
-
                     entidad.LinkPag_FE = paginaWebEmisor;
-
                     entidad.PolizaNum = consultaPoliza.NroPoliza;
                     entidad.PolizaFechaReg = consultaPoliza.FechaReg;
                     entidad.PolizaFechaVen = consultaPoliza.FechaVen;
+                    entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
-                    var documento = CuadreImpresora.Cuadre.WriteText(entidad);
-                    listaDocumentos.Add(documento);
+                    var original = CuadreImpresora.Cuadre.WriteText(entidad);
+
+                    var copia1 = string.Empty;
+                    if (objPanelCopia1 != null && objPanelCopia1.Valor == "1")
+                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad);
+
+                    var copia2 = string.Empty;
+                    if (objPanelCopia2 != null && objPanelCopia2.Valor == "1")
+                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad);
+
+                    var documentos = new ImpresionEntity()
+                    {
+                        Original = original,
+                        Copia1 = copia1,
+                        Copia2 = copia2
+                    };
+
+                    listaImpresiones.Add(documentos);
                 }
 
-                return new Response<List<string>>(true, listaDocumentos, Message.MsgCorrectoInsertarImpresion, true);
+                return new Response<List<ImpresionEntity>>(true, listaImpresiones, Message.MsgCorrectoConvertirVentaToBase64, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<string>>(false, null, Message.MsgExcInsertarImpresion, false);
+                return new Response<List<ImpresionEntity>>(false, null, Message.MsgExcConvertirVentaToBase64, false);
             }
         }
 

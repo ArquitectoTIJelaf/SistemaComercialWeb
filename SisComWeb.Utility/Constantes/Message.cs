@@ -191,8 +191,8 @@
         public const string MsgExcModificarVentaAFechaAbierta = "Excepción: ModificarVentaAFechaAbierta.";
 
         // Impresión
-        public const string MsgCorrectoInsertarImpresion = "Correcto: InsertarImpresion.";
-        public const string MsgExcInsertarImpresion = "Excepción: InsertarImpresion.";
+        public const string MsgCorrectoConvertirVentaToBase64 = "Correcto: ConvertirVentaToBase64.";
+        public const string MsgExcConvertirVentaToBase64 = "Excepción: ConvertirVentaToBase64.";
 
         // Clientes Contrato
         public const string MsgCorrectoListarClientesContrato = "Correcto: ListarClientesContrato.";

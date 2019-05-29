@@ -11,7 +11,7 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteText(VentaRealizada venta)
         {
             StringBuilder texto = new StringBuilder();
-            // Impresora Termica
+            // Impresora Térmica
             if (venta.TipImpresora == 1)
             {
                 texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "|||^"));
@@ -95,10 +95,65 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("Representación impresa de la Factura Electrónica");
                 texto.AppendLine("  Consulte el documento en: " + venta.LinkPag_FE);
                 texto.AppendLine(SplitStringPreserving("Al recibir el presente documento, acepto todos los términos y/o condiciones del contratado del servicio de transporte publicados en los letreros o en los banners y detallados en la página.", 80, "", false));
+                texto.AppendLine("");
                 texto.AppendLine(new string('-', 25));
                 texto.AppendLine("USUARIO CONFORME");
                 texto.AppendLine(".");
 
+                texto.AppendLine(" ");
+            }
+
+            byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
+            var boletoBase64 = Convert.ToBase64String(encodedText);
+
+            return boletoBase64;
+        }
+
+        public static string WriteTextCopy(VentaRealizada venta)
+        {
+            StringBuilder texto = new StringBuilder();
+
+            // Impresora Térmica
+            if (venta.TipImpresora == 1)
+            {
+                texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "||||^"));
+                texto.AppendLine(SplitStringPreserving("R.U.C. " + venta.EmpRuc, 30, "|||^"));
+                texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 42, ""));
+                texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 42, "^"));
+                texto.AppendLine("||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " DE VENTA ELECTRONICA", 29));
+                texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 17));
+                texto.AppendLine(" ");
+                texto.AppendLine("FECHA DE EMISION  : " + venta.EmisionFecha + " - " + venta.EmisionHora);
+                texto.AppendLine("^CAJERO                : " + venta.CajeroCod + " - " + venta.CajeroNom);
+                texto.AppendLine("---------------------------------------");
+                texto.AppendLine("");
+                texto.AppendLine("^TIPO VENTA: " + venta.NomTipVenta);
+                texto.AppendLine("---------------------------------------");
+                texto.AppendLine(" # DESCRIPCION                    TOTAL ");
+                texto.AppendLine("---------------------------------------");
+                texto.AppendLine(" 1 SERVICIO DE TRANSPORTE EN LA     " + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture));
+                texto.AppendLine("   RUTA: " + venta.NomOriPas + " - " + venta.NomDesPas);
+                texto.AppendLine("   SERVICIO: " + venta.NomServicio);
+                texto.AppendLine("   NRO ASIENTO: " + venta.NumeAsiento);
+                texto.AppendLine("   PASAJERO: " + venta.PasNombreCom);
+                texto.AppendLine("   DNI: " + venta.DocNumero);
+                texto.AppendLine("   FECHA VIAJE: " + venta.FechaViaje);
+                texto.AppendLine("   HORA EMBARQUE: " + venta.EmbarqueHora);
+                texto.AppendLine(SplitStringPreserving("LUGAR EMBARQUE: " + venta.EmbarqueDir, 40, "   ", false));
+                texto.AppendLine(SplitStringPreserving("DIREC. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
+                texto.AppendLine("   ");
+                texto.AppendLine("---------------------------------------");
+                texto.AppendLine(" ");
+                texto.AppendLine("      **** CONTROL INTERNO ***** ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine(" ");
+                texto.AppendLine("^---------------------------------------");
+                texto.AppendLine("^            USUARIO CONFORME     ");
                 texto.AppendLine(" ");
             }
 
@@ -136,7 +191,8 @@ namespace SisComWeb.CuadreImpresora
                 else
                     sb.AppendLine(starOFline + item.Value);
             }
-            return sb.ToString();
+
+            return sb.ToString().Substring(0, sb.Length - 2);
         }
 
         public static string PadBoth(string str, int length)

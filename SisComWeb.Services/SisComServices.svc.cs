@@ -599,7 +599,7 @@ namespace SisComWeb.Services
 
         #region IMPRESIÓN
 
-        public Response<List<string>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
+        public Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
         {
             try
             {
@@ -608,7 +608,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<string>>(false, null, Message.MsgExcInsertarImpresion, false);
+                return new Response<List<ImpresionEntity>>(false, null, Message.MsgExcConvertirVentaToBase64, false);
             }
         }
 

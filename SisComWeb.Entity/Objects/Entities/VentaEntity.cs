@@ -257,5 +257,9 @@ namespace SisComWeb.Entity
         public short PVentaCodigo { get; set; }
 
         public string BusCodigo { get; set; }
+
+        public short EmbarqueCod { get; set; }
+
+        public string EmbarqueDirAgencia { get; set; }
     }
 }
