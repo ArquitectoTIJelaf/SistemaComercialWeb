@@ -19,21 +19,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @*<paginate name="items" :list="list.clientes" :per="4">*@
-                                    @*<tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">*@
-                                    <tr v-for="item in list.clientes" @@dblclick="sendRow(item)">
+                                    <paginate name="items" :list="list.clientes" :per="10">
+                                    <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                         <td class="custom-td">{{item.RucCliente}}</td>
                                         <td class="custom-td">{{item.RazonSocial}}</td>
                                         <td class="custom-td">{{item.NumeContrato}}</td>
                                     </tr>
-                                    @*</paginate>*@
+                                    </paginate>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    @*<center>
+                    <center>
                         <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
-                    </center>*@
+                    </center>
                 </div>
             </div>
         </div>

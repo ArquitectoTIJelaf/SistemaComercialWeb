@@ -1553,5 +1553,46 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("buscarClientesPasaje")]
+        public async Task<ActionResult> BuscarClientesPasaje(string Nombre)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Nombre\" : \"" + Nombre + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscarClientesPasaje", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<ClientePasaje>> res = new Response<List<ClientePasaje>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new ClientePasaje
+                    {
+                        NumeroDoc = (string)x["NumeroDoc"],
+                        NombreCliente = (string)x["NombreCliente"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<ClientePasaje>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

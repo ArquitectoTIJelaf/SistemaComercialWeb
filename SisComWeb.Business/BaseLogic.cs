@@ -40,7 +40,8 @@ namespace SisComWeb.Business
         {
             try
             {
-                if (value == "NULL") value = string.Empty;
+                if (value == "null")
+                    value = string.Empty;
 
                 var lista = BaseRepository.ListaUsuariosAutocomplete(value);
                 return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuarios, true);

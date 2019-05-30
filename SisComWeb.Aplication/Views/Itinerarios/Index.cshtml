@@ -21,6 +21,7 @@
 @Html.Partial("_ClaveAutorizacion")
 @Html.Partial("_CreditoClientes")
 @Html.Partial("_CreditoOpciones")
+@Html.Partial("_BuscaClientePasaje")
 
 @section styles{
     <style type="text/css">
@@ -576,6 +577,17 @@
                 appVueCreditoOpciones.limpiarCreditoOpciones();
             });
 
+            $('#appVueBuscaClientePasaje').on('shown.bs.modal', function () {
+                $("#txtNombreBCP").focus();
+            });
+
+            $('#appVueBuscaClientePasaje').on('hidden.bs.modal', function () {
+                appVueBuscaClientePasaje.limpiarBuscaClientePasaje();
+                appVueBuscaClientePasaje.$nextTick(function () {
+                    $("#txtDocumento").focus();
+                });
+            });
+
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
                     keyBinds: {
@@ -790,7 +802,13 @@
                 },
                 sendCreditoOpciones: function (_request) {
                     appVueVenta.setCreditoOpciones(_request);
-                }
+                },
+                showBuscaClientePasaje: function () {
+                    appVueBuscaClientePasaje.show();
+                },
+                sendBuscaClientePasaje: async function (_item) {
+                    await appVueVenta.sendBuscaClientePasaje(_item);
+                },
             };
         })();
 
@@ -1707,7 +1725,7 @@
                         IdVenta: 0,
                         FlagPrecioNormal: false
                     });
-                    
+
                     if (this.pickedBusVenta === '1') { // Crédito
                         this.list.ventas[this.indexVenta].Ruc = this.objCreditoCliente.Ruc;
                         this.list.ventas[this.indexVenta].RazonSocial = this.objCreditoCliente.RazonSocial;
@@ -1934,6 +1952,13 @@
                             }), { timeout: 10000 })
                                 .then(res => {
                                     if (res.data.Estado) {
+                                        // Valida 'SetRuc'
+                                        debugger;
+                                        var validatorSetRuc = false;
+                                        var objPanelSetRuc = appController.validatePanel('13');
+                                        if (objPanelSetRuc && objPanelSetRuc.Valor === '1')
+                                            validatorSetRuc = true;
+
                                         switch (_this.pickedBusVenta) {
                                             case '7': // Pase de cortesía
                                                 {
@@ -1942,9 +1967,12 @@
                                                         _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
                                                         _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
                                                         _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
-                                                        _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
-                                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                                        _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+
+                                                        if (validatorSetRuc) {
+                                                            _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
+                                                            _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
+                                                            _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                        }
                                                     }
                                                 };
                                                 break;
@@ -1960,9 +1988,11 @@
                                                         _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
                                                         _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
                                                         if (_this.pickedBusVenta !== '1') {
-                                                            _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
-                                                            _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                                            _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                            if (validatorSetRuc) {
+                                                                _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
+                                                                _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
+                                                                _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                            } 
                                                         }
                                                     }
                                                     else {
@@ -3103,7 +3133,7 @@
 
                     this.objCreditoCliente.Ruc = _auxItem.RucCliente;
                     this.objCreditoCliente.RazonSocial = _auxItem.RazonSocial;
-                    
+
                     this.objCreditoCliente.idContrato = _auxItem.IdContrato;
                     this.objCreditoCliente.IdRuc = _auxItem.IdRuc;
 
@@ -3204,6 +3234,15 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     return resPrecioFecha;
+                },
+                showBuscaClientePasaje: function (e) {
+                    if (e.keyCode === 112) { // F1
+                        appController.showBuscaClientePasaje();
+                    }
+                },
+                sendBuscaClientePasaje: async function (_item) {
+                    this.list.ventas[this.indexVenta].Documento = _item.NumeroDoc;
+                    await this.searchUser();
                 },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
@@ -4578,6 +4617,7 @@
                 list: {
                     clientes: []
                 },
+                paginate: ['items'],
                 venta: {}
             },
             mounted: function () { },
@@ -4625,7 +4665,7 @@
                     this.list.clientes = [];
                 },
                 sendRow: function (item) {
-                    var objPanelTxtPrecio = appController.validatePanel('171');
+                    var objPanelTxtPrecio = appController.validatePanel('121');
 
                     var auxItem = {};
                     auxItem.RucCliente = item.RucCliente;
@@ -4641,7 +4681,7 @@
                     appController.sendDataCredito(objPanelTxtPrecio, auxItem);
 
                     this.cerrarCreditoClientes();
-                },
+                }
             },
             computed: {},
             watch: {}
@@ -4677,7 +4717,7 @@
                     var objPanelOpcionesHospital = appController.validatePanel('190');
                     if (objPanelOpcionesHospital && objPanelOpcionesHospital.Valor === '1')
                         this.showOpcionesHospital = true;
-                    
+
                     $('#appVueCreditoOpciones').modal('show');
                 },
                 getSecciones(_idContrato) {
@@ -4732,7 +4772,7 @@
                 },
                 recorrerCreditoOpciones: function (auxValidate) {
                     var auxResponse = false;
-                    
+
                     if (!this.seccion) {
                         $('#cboSeccion input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione una sección.');
@@ -4797,6 +4837,55 @@
                 },
                 sendCreditoOpciones: function (_request) {
                     appController.sendCreditoOpciones(_request);
+                }
+            },
+            computed: {},
+            watch: {}
+        });
+
+        var appVueBuscaClientePasaje = new Vue({
+            el: "#appVueBuscaClientePasaje",
+            data: {
+                list: {
+                    clientesPasaje: []
+                },
+                paginate: ['items'],
+                NombreBCP: ''
+            },
+            mounted: function () { },
+            methods: {
+                show: function () {
+                    window.addEventListener('keyup', this.esc);
+                    $('#appVueBuscaClientePasaje').modal('show');
+                },
+                getClientesPasaje() {
+                    var _this = this;
+                    APP.rq.axios.post(APP.base + '/itinerarios/buscarClientesPasaje/' + APP.util.getQueryParamByObject({
+                        Nombre: _this.NombreBCP
+                    }))
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.clientesPasaje = _.sortBy(res.data.Valor, [function (obj) { return obj.NombreCliente; }]);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarBuscaClientePasaje();
+                },
+                cerrarBuscaClientePasaje: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueBuscaClientePasaje').modal('hide');
+                },
+                limpiarBuscaClientePasaje: function () {
+                    this.list.clientesPasaje = [];
+                    this.NombreBCP = '';
+                },
+                sendRow: async function (item) {
+                    await appController.sendBuscaClientePasaje(item);
+                    this.cerrarBuscaClientePasaje();
                 }
             },
             computed: {},

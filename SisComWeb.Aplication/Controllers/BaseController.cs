@@ -99,7 +99,8 @@ namespace SisComWeb.Aplication.Controllers
         {
             try
             {
-                if (value == string.Empty) { value = "NULL"; }
+                if (string.IsNullOrEmpty(value))
+                    value = "null";
 
                 string result = string.Empty;
                 using (HttpClient client = new HttpClient())

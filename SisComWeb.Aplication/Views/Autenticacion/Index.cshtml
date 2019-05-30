@@ -170,11 +170,11 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                getUsuarios: async function (search, loading) {
+                getUsuarios: function (search, loading) {
                     var _this = this;
                     if (loading)
                         loading(true);
-                    await APP.rq.axios2.get(APP.base + '/base/get-usuarios' + APP.util.getQueryParamByObject({ value: search }))
+                    APP.rq.axios2.get(APP.base + '/base/get-usuarios' + APP.util.getQueryParamByObject({ value: search }))
                         .then(res => {
                             if (res.data.Estado) {
                                 if (loading)

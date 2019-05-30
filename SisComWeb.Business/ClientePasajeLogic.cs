@@ -262,5 +262,20 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcGrabarClientePasaje, false);
             }
         }
+
+        public static Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string Nombre)
+        {
+            try
+            {
+                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(Nombre);
+
+                return new Response<List<ClientePasajeEntity>>(true, BuscarClientesPasaje, Message.MsgCorrectoBuscarClientesPasaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<ClientePasajeEntity>>(false, null, Message.MsgExcBuscarClientesPasaje, false);
+            }
+        }
     }
 }

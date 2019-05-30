@@ -78,6 +78,9 @@
         public const string MsgCorrectoGrabarClientePasaje = "Correcto: GrabarClientePasaje.";
         public const string MsgExcGrabarClientePasaje = "Excepción: GrabarClientePasaje.";
 
+        public const string MsgCorrectoBuscarClientesPasaje = "Correcto: BuscarClientesPasaje.";
+        public const string MsgExcBuscarClientesPasaje = "Excepción: BuscarClientesPasaje.";
+
         // Empresa
         public const string MsgCorrectoBuscaEmpresa = "Correcto: BuscaEmpresa.";
         public const string MsgExcBuscaEmpresa = "Excepción: BuscaEmpresa.";

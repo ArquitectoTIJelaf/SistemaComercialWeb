@@ -296,6 +296,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string Nombre)
+        {
+            try
+            {
+                return ClientePasajeLogic.BuscarClientesPasaje(Nombre);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<ClientePasajeEntity>>(false, null, Message.MsgExcBuscarClientesPasaje, false);
+            }
+        }
+
         #endregion
 
         #region BÚSQUEDA ITINERARIO

@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -81,6 +82,31 @@ namespace SisComWeb.Repository
             }
 
             return entidad;
+        }
+
+        public static List<ClientePasajeEntity> BuscarClientesPasaje(string Nombre)
+        {
+            var Lista = new List<ClientePasajeEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Cliente_Pasajes_Buscar";
+                db.AddParameter("@Nombre", DbType.String, ParameterDirection.Input, Nombre);
+
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(new ClientePasajeEntity
+                        {
+                            NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? string.Empty,
+                            NombreCliente = Reader.GetStringValue(drlector, "Nombre_Completo") ?? string.Empty
+                        });
+                    }
+                }
+            }
+
+            return Lista;
         }
 
         #endregion

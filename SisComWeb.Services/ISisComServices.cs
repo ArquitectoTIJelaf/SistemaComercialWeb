@@ -106,6 +106,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "GrabarPasajero", ResponseFormat = WebMessageFormat.Json)]
         Response<bool> GrabarPasajero(List<ClientePasajeEntity> lista);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscarClientesPasaje", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string Nombre);
+
         #endregion
 
         #region BÚSQUEDA ITINERARIO
