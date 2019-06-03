@@ -26,6 +26,7 @@ namespace SisComWeb.Repository
                     {
                         entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
                         entidad.Imp = Reader.GetStringValue(drlector, "Imp");
+                        break;
                     }
                 }
             }
@@ -53,6 +54,7 @@ namespace SisComWeb.Repository
                     {
                         entidad.SerieBoleto = Reader.GetSmallIntValue(drlector, "Serie");
                         entidad.NumeBoleto = Reader.GetIntValue(drlector, "Numero");
+                        break;
                     }
                 }
             }
@@ -75,6 +77,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "NRO_LIQ");
+                        break;
                     }
                 }
             }
@@ -107,6 +110,7 @@ namespace SisComWeb.Repository
                         entidad.Direccion = Reader.GetStringValue(drlector, "DIRECCION") ?? string.Empty;
                         entidad.Electronico = Reader.GetStringValue(drlector, "electronico") ?? string.Empty;
                         entidad.Contingencia = Reader.GetStringValue(drlector, "contingencia") ?? string.Empty;
+                        break;
                     }
                 }
             }
@@ -131,6 +135,7 @@ namespace SisComWeb.Repository
                         entidad.Direccion = Reader.GetStringValue(drlector, "direccion");
                         entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1");
                         entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2");
+                        break;
                     }
                 }
             }
@@ -184,6 +189,7 @@ namespace SisComWeb.Repository
                         entidad.TotalBoletos = Reader.GetDecimalValue(drlector, "Total_Boletos");
                         entidad.BoletosLibres = Reader.GetDecimalValue(drlector, "Boletos_Libres");
                         entidad.BoletosPrecio = Reader.GetDecimalValue(drlector, "Boletos_Precio");
+                        break;
                     }
                 }
             }
@@ -229,6 +235,7 @@ namespace SisComWeb.Repository
                         entidad.FechViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
                         entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje") ?? string.Empty;
                         entidad.NumeAsiento = Reader.GetSmallIntValue(drlector, "NUME_ASIENTO");
+                        break;
                     }
                 }
             }
@@ -257,6 +264,7 @@ namespace SisComWeb.Repository
                         entidad.FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta");
                         entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
+                        break;
                     }
                 }
             }
@@ -285,6 +293,7 @@ namespace SisComWeb.Repository
                         entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? string.Empty;
                         entidad.FechaReg = Reader.GetStringValue(drlector, "Fecha_Reg") ?? string.Empty;
                         entidad.FechaVen = Reader.GetStringValue(drlector, "Fecha_Ven") ?? string.Empty;
+                        break;
                     }
                 }
             }
@@ -336,7 +345,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
                 db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.Concepto ?? "");
-
                 db.AddParameter("@IdContrato", DbType.Int32, ParameterDirection.Input, entidad.IdContrato);
                 db.AddParameter("@NroSolicitud", DbType.String, ParameterDirection.Input, entidad.NroSolicitud ?? "");
                 db.AddParameter("@IdAreaContrato", DbType.Int32, ParameterDirection.Input, entidad.IdArea);
@@ -344,6 +352,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, entidad.FechaCita ?? "");
                 db.AddParameter("@Id_hospital", DbType.Int32, ParameterDirection.Input, entidad.IdHospital);
                 db.AddParameter("@IdTabla", DbType.Int32, ParameterDirection.Input, entidad.IdPrecio);
+                db.AddParameter("@Precio_Normal", DbType.Decimal, ParameterDirection.Input, entidad.PrecioNormal);
 
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 
@@ -675,6 +684,52 @@ namespace SisComWeb.Repository
                         break;
                     }
                 }
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarDescuentoBoleto(DescuentoBoletoEntity entidad)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Descuentos_Boleto_Insertar";
+                db.AddParameter("@Usuario", DbType.Int16, ParameterDirection.Input, entidad.Usuario);
+                db.AddParameter("@Oficina", DbType.Int16, ParameterDirection.Input, entidad.Oficina);
+                db.AddParameter("@motivo", DbType.String, ParameterDirection.Input, entidad.Motivo);
+                db.AddParameter("@Boleto", DbType.String, ParameterDirection.Input, entidad.Boleto);
+                db.AddParameter("@Imp_Teorico", DbType.Decimal, ParameterDirection.Input, entidad.ImpTeorico);
+                db.AddParameter("@Imp_Real", DbType.Decimal, ParameterDirection.Input, entidad.ImpReal);
+                db.AddParameter("@Servicio", DbType.Byte, ParameterDirection.Input, entidad.Servicio);
+                db.AddParameter("@Origen", DbType.Int16, ParameterDirection.Input, entidad.Origen);
+                db.AddParameter("@Destino", DbType.Int16, ParameterDirection.Input, entidad.Destino);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarDescuentoVenta(int IdVenta, string Tipo, decimal CamDes, decimal ImpDes, string Obs)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "UPS_TB_DESCUENTO_VENTA_INSERT";
+                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@TIPO", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@CamDes", DbType.Decimal, ParameterDirection.Input, CamDes);
+                db.AddParameter("@ImpDes", DbType.Decimal, ParameterDirection.Input, ImpDes);
+                db.AddParameter("@obs", DbType.String, ParameterDirection.Input, Obs);
+
+                db.Execute();
+
+                valor = true;
             }
 
             return valor;

@@ -322,7 +322,7 @@
                                     <input type="radio" id="remotoBV" value="ND2" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="remotoBV" class="align-label-radio">Remoto</label>
                                 </div>
-                                <div class="col-md-1 ancho" @*@@click="changePickedBusVenta('ND3')"*@>
+                                <div class="col-md-1 ancho" @@click="changePickedBusVenta('99')">
                                     <input type="radio" id="retornoBV" value="ND3" v-model="pickedBusVenta" class="align-radio" disabled="disabled">
                                     <label for="retornoBV" class="align-label-radio">Retorno</label>
                                 </div>
@@ -1064,6 +1064,7 @@
                                                     <input v-model="list.ventas[indexVenta].Precio"
                                                            @@keypress.13.prevent="recorridoSectionVentas"
                                                            @@keypress.9.prevent="recorridoSectionVentas"
+                                                           @@keydown.112.prevent="showDescuentoControl($event)"
                                                            @@focus="focusPrecio($event)"
                                                            @@blur="validateRangePrice"
                                                            id="txtPrecio"

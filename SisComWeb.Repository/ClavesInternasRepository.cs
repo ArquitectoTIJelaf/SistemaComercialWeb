@@ -25,6 +25,7 @@ namespace SisComWeb.Repository
                         entidad.Oficina = Reader.GetIntValue(drlector, "oficina");
                         entidad.Pwd = Reader.GetStringValue(drlector, "pwd");
                         entidad.CodTipo = Reader.GetStringValue(drlector, "cod_tipo");
+                        break;
                     }
                 }
             }

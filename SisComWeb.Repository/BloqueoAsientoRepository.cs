@@ -53,7 +53,6 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetDecimalValue(drlector, "Resultado");
-                        break;
                     }
                 }
             }
@@ -78,7 +77,6 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetDecimalValue(drlector, "Resultado");
-                        break;
                     }
                 }
             }

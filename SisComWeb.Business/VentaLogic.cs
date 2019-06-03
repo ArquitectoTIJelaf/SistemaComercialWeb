@@ -111,7 +111,7 @@ namespace SisComWeb.Business
             try
             {
                 var valor = new VentaResponse();
-                var listaVentasRealizadas = new List<VentaRealizada>();
+                var listaVentasRealizadas = new List<VentaRealizadaEntity>();
                 var ListarPanelControl = new List<PanelControlEntity>();
 
                 foreach (var entidad in Listado)
@@ -502,6 +502,34 @@ namespace SisComWeb.Business
                             break;
                     }
 
+                    // Inserta 'DescuentoBoleto'
+                    if (entidad.ValidadorDescuento)
+                    {
+                        var descuentoBoleto = new DescuentoBoletoEntity()
+                        {
+                            Usuario = entidad.CodiUsuario,
+                            Oficina = entidad.CodiOficina,
+                            Motivo = entidad.ObservacionDescuento,
+                            Boleto = auxBoletoCompleto.Substring(1),
+                            ImpTeorico = entidad.PrecioNormal,
+                            ImpReal = entidad.PrecioVenta,
+                            Servicio = entidad.CodiServicio,
+                            Origen= entidad.CodiSucursal,
+                            Destino = entidad.CodiDestino
+                        };
+                        var insertarDescuentoBoleto = VentaRepository.InsertarDescuentoBoleto(descuentoBoleto);
+                        if (!insertarDescuentoBoleto)
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorInsertarDescuentoBoleto, false);
+                    }
+
+                    // Inserta 'DescuentoVenta'
+                    if (entidad.ValidadorDescuentoControl)
+                    {
+                        var insertarDescuentoVenta = VentaRepository.InsertarDescuentoVenta(entidad.IdVenta, entidad.DescuentoTipoDC, entidad.ImporteDescuentoDC, entidad.ImporteDescontadoDC, entidad.AutorizadoDC);
+                        if (!insertarDescuentoVenta)
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorInsertarDescuentoVenta, false);
+                    }
+
                     // Valida 'LiquidacionVentas'
                     var validarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
 
@@ -625,7 +653,7 @@ namespace SisComWeb.Business
                         return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
 
                     // Añado 'ventaRealizada'
-                    var ventaRealizada = new VentaRealizada
+                    var ventaRealizada = new VentaRealizadaEntity
                     {
                         // Para la vista 'BoletosVendidos'
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
@@ -690,7 +718,7 @@ namespace SisComWeb.Business
             try
             {
                 var valor = new VentaResponse();
-                var listaVentasRealizadas = new List<VentaRealizada>();
+                var listaVentasRealizadas = new List<VentaRealizadaEntity>();
 
                 foreach (var entidad in Listado)
                 {
@@ -766,7 +794,7 @@ namespace SisComWeb.Business
                     auxBoletoCompleto = BoletoFormatoCompleto("M", string.Empty, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8");
 
                     // Añado 'ventaRealizada'
-                    var ventaRealizada = new VentaRealizada
+                    var ventaRealizada = new VentaRealizadaEntity
                     {
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         BoletoCompleto = auxBoletoCompleto
@@ -974,7 +1002,7 @@ namespace SisComWeb.Business
             try
             {
                 var valor = new VentaResponse();
-                var listaVentasRealizadas = new List<VentaRealizada>();
+                var listaVentasRealizadas = new List<VentaRealizadaEntity>();
 
                 var postergarVenta = new bool();
 
@@ -1021,7 +1049,7 @@ namespace SisComWeb.Business
                 if (postergarVenta)
                 {
                     // Añado 'ventaRealizada'
-                    var ventaRealizada = new VentaRealizada
+                    var ventaRealizada = new VentaRealizadaEntity
                     {
                         NumeAsiento = filtro.NumeAsiento.ToString("D2"),
                         BoletoCompleto = string.Empty
@@ -1068,7 +1096,7 @@ namespace SisComWeb.Business
 
         #region IMPRESIÓN
 
-        public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
+        public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)
         {
             try
             {

@@ -48,6 +48,7 @@ namespace SisComWeb.Repository
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;
                         entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? string.Empty;
+                        break;
                     }
                 }
             }
@@ -77,6 +78,7 @@ namespace SisComWeb.Repository
                         entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? string.Empty;
                         entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
                         entidad.Telefono = Reader.GetStringValue(drlector, "Telefono") ?? string.Empty;
+                        break;
                     }
                 }
             }

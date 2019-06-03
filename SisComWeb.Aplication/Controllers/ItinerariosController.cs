@@ -348,7 +348,9 @@ namespace SisComWeb.Aplication.Controllers
                         CodiCopiloto = (string)data["CodiCopiloto"],
                         NombreCopiloto = (string)data["NombreCopiloto"],
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
-                        ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"])
+                        ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
+
+                        DescServicio = (string)data["DescServicio"]
                     }
                 };
 
@@ -758,6 +760,16 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Observacion\" : \"" + Listado[i].Observacion + "\"" +
                                     ",\"Credito\" : " + Listado[i].Credito +
                                     ",\"DirEmbarque\" : \"" + Listado[i].DirEmbarque + "\"" +
+                                    ",\"PrecioNormal\" : " + Listado[i].PrecioNormal +
+                                    ",\"ValidadorDescuento\" : " + Listado[i].ValidadorDescuento.ToString().ToLower() +
+                                    ",\"ObservacionDescuento\" : \"" + Listado[i].ObservacionDescuento + "\"" +
+
+                                    ",\"ValidadorDescuentoControl\" : " + Listado[i].ValidadorDescuentoControl.ToString().ToLower() +
+                                    ",\"DescuentoTipoDC\" : \"" + Listado[i].DescuentoTipoDC + "\"" +
+                                    ",\"ImporteDescuentoDC\" : " + Listado[i].ImporteDescuentoDC +
+                                    ",\"ImporteDescontadoDC\" : " + Listado[i].ImporteDescontadoDC +
+                                    ",\"AutorizadoDC\" : \"" + Listado[i].AutorizadoDC + "\"" +
+
                                     ",\"ObjAcompaniante\" : " +
                                     "{" +
                                         "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.CodiTipoDoc) + "\"" +
@@ -774,7 +786,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Concepto\" : \"" + Listado[i].Concepto + "\"" +
-                                    ",\"FechaAbierta\" : \"" + Listado[i].FechaAbierta.ToString().ToLower() + "\"" +
+                                    ",\"FechaAbierta\" : " + Listado[i].FechaAbierta.ToString().ToLower() +
                                     // RESERVA
                                     ",\"IdVenta\" : " + Listado[i].IdVenta +
                                     // CRÉDITO
@@ -969,7 +981,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("clave-autorizacion")]
-        public async Task<ActionResult> ClaveAutorizacion(string password)
+        public async Task<ActionResult> ClaveAutorizacion(string password, string CodiTipo)
         {
             try
             {
@@ -978,9 +990,9 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"CodiOficina\": " + usuario.CodiPuntoVenta + ","
-                                    + "\"Password\": \"" + password + "\","
-                                    + "\"CodiTipo\": " + Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD.ToString("D3") +
+                                    "\"CodiOficina\": " + usuario.CodiPuntoVenta +
+                                    ",\"Password\": \"" + password + "\"" +
+                                    ",\"CodiTipo\": \"" + int.Parse(CodiTipo).ToString("D3") + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

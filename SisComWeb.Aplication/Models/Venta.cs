@@ -64,6 +64,16 @@ namespace SisComWeb.Aplication.Models
         public string Observacion { get; set; }
         public decimal Credito { get; set; }
         public string DirEmbarque { get; set; }
+        public decimal PrecioNormal { get; set; }
+        public bool ValidadorDescuento { get; set; }
+        public string ObservacionDescuento { get; set; }
+
+        public bool ValidadorDescuentoControl { get; set; }
+        public string DescuentoTipoDC { get; set; }
+        public decimal ImporteDescuentoDC { get; set; }
+        public decimal ImporteDescontadoDC { get; set; }
+        public string AutorizadoDC { get; set; }
+
         public Acompaniante ObjAcompaniante { get; set; }
 
         // PASE DE CORTESÍA

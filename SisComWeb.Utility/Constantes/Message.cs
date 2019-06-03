@@ -145,6 +145,8 @@
         public const string MsgErrorGrabarPagoTarjetaCredito = "Error: GrabarPagoTarjetaCredito.";
         public const string MsgErrorGrabarPagoDelivery = "Error: GrabarPagoDelivery.";
         public const string MsgErrorGrabarAuditoria = "Error: GrabarAuditoria.";
+        public const string MsgErrorInsertarDescuentoBoleto = "Error: InsertarDescuentoBoleto.";
+        public const string MsgErrorInsertarDescuentoVenta = "Error: InsertarDescuentoVenta.";
 
         public const string MsgErrorGrabaVenta = "Error: GrabaVenta.";
         public const string MsgErrorGrabarCaja = "Error: GrabarCaja.";
@@ -168,7 +170,7 @@
         public const string MsgExcListaBeneficiarioPase = "Excepción: ListaBeneficiarioPase.";
 
         // Claves Internas
-        public const string MsgCorrectoClavesInternas = "La clave ingresada es correcta.";
+        public const string MsgCorrectoClavesInternas = "Clave correcta.";
         public const string MsgValidaClavesInternas = "La clave ingresada es incorrecta.";
         public const string MsgExcClavesInternas = "Excepción: ClavesInternas.";
 

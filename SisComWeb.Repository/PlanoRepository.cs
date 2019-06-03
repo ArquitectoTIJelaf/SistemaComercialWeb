@@ -77,6 +77,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "Nivel");
+                        break;
                     }
                 }
             }
@@ -105,6 +106,7 @@ namespace SisComWeb.Repository
                         entidad.PrecioNormal = Reader.GetRealValue(drlector, "Precio_Nor");
                         entidad.PrecioMinimo = Reader.GetRealValue(drlector, "Precio_Min");
                         entidad.PrecioMaximo = Reader.GetRealValue(drlector, "Precio_Max");
+                        break;
                     }
                 }
             }
@@ -140,6 +142,7 @@ namespace SisComWeb.Repository
                         entidad.Edad = Reader.GetStringValue(drlector, "EDAD") ?? string.Empty;
                         entidad.Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty;
                         entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO") ?? string.Empty;
+                        break;
                     }
                 }
             }
@@ -280,6 +283,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "orden");
+                        break;
                     }
                 }
             }
@@ -301,6 +305,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "color")) ?? string.Empty;
+                        break;
                     }
                 }
             }

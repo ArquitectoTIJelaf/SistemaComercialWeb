@@ -47,6 +47,10 @@ function animateScrollTop(duration = 800) {
     }
 }
 
+function jsFilterDosDecimales(_valor) {
+    return _valor.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 /*!********************* Prototype Vue */
 Vue.prototype.tran = function (key) {
     return APP.tran(key);

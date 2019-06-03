@@ -1,5 +1,4 @@
-﻿
-<div id="appVueTipoPago" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+﻿<div id="appVueTipoPago" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width: 500px; top:10%">
         <div class="modal-content">
             <div class="modal-header">
@@ -34,7 +33,8 @@
                                           :id="'cboTipoPagoTP'"
                                           :options="list.tiposPago"
                                           :placeholder="'TIPO PAGO'"
-                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos">
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                          @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -79,7 +79,8 @@
                                               :id="'cboTipoTargetaTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -92,6 +93,7 @@
                                            name="Número"
                                            @@keydown.13.native.prevent="nextInput('ARRIBOS')"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
                                            class="form-control input-sm"
                                            v-mask="'####-####-####-####'"
                                            v-validate="'formatoNumeroTarjeta: 16'"/>
@@ -166,7 +168,8 @@
                                               :id="'cboTipoTP'"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -193,7 +196,8 @@
                                               :id="'cboDistritoTP'"
                                               :options="list.distritos"
                                               :placeholder="'DISTRITO'"
-                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos">
+                                              @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -226,7 +230,8 @@
                                           label="Lugar"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
-                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')">
+                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')"
+                                          @@keydown.9.native.prevent="nextInput('EMBARQUE')">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -240,7 +245,8 @@
                                           label="Lugar"
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
-                                          @@keydown.13.native.prevent="nextInput('ARRIBOS')"
+                                          @@keydown.13.native.prevent="nextInput('ARRIBOS')
+                                          @@keydown.9.native.prevent="nextInput('ARRIBOS')"
                                           ref="refArriboTP">
                                     <div slot="no-options" class="text-danger" @@click="$refs.refArriboTP.open = false">No hay resultados</div>
                                 </v-select>

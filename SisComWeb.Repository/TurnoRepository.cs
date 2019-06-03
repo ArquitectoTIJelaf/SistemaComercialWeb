@@ -49,6 +49,8 @@ namespace SisComWeb.Repository
                         entidad.HoraPartida = Reader.GetStringValue(drlector, "Hora_Partida");
                         entidad.NroRutaInt = Reader.GetIntValue(drlector, "NRO_RUTA_INT");
                         entidad.Dias = Reader.GetSmallIntValue(drlector, "DIAS");
+                        entidad.DescServicio = Reader.GetStringValue(drlector, "DESC_SERVICIO");
+                        break;
                     }
                 }
             }

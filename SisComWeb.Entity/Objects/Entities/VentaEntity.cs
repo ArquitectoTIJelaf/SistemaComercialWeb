@@ -129,8 +129,15 @@ namespace SisComWeb.Entity
 
         public decimal Credito { get; set; }
 
+        public decimal PrecioNormal { get; set; }
+
+        public bool ValidadorDescuento { get; set; }
+
+        public string ObservacionDescuento { get; set; }
+
         public AcompanianteEntity ObjAcompaniante { get; set; }
 
+        // ANULACIÓN
         public string FechaVenta { get; set; }
 
         // PASE DE CORTESÍA
@@ -168,9 +175,20 @@ namespace SisComWeb.Entity
         public int IdRuc { get; set; }
 
         public string SignatureValue { get; set; }
+
+
+        public bool ValidadorDescuentoControl { get; set; }
+
+        public string DescuentoTipoDC { get; set; }
+
+        public decimal ImporteDescuentoDC { get; set; }
+
+        public decimal ImporteDescontadoDC { get; set; }
+
+        public string AutorizadoDC { get; set; }
     }
 
-    public class VentaRealizada
+    public class VentaRealizadaEntity
     {
         public int IdVenta { get; set; }
 
@@ -261,5 +279,26 @@ namespace SisComWeb.Entity
         public short EmbarqueCod { get; set; }
 
         public string EmbarqueDirAgencia { get; set; }
+    }
+
+    public class DescuentoBoletoEntity
+    {
+        public short Usuario { get; set; }
+
+        public short Oficina { get; set; }
+
+        public string Motivo { get; set; }
+
+        public string Boleto { get; set; }
+
+        public decimal ImpTeorico { get; set; }
+
+        public decimal ImpReal { get; set; }
+
+        public byte Servicio { get; set; }
+
+        public short Origen { get; set; }
+
+        public short Destino { get; set; }
     }
 }

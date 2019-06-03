@@ -1,38 +1,73 @@
-﻿<div id="appClaveAutorizacion" class="modal fade" role="dialog" data-backdrop="static">
+﻿@using SisComWeb.Aplication.Helpers;
+@{
+    var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
+}
+
+<div id="appClaveAutorizacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-sm" style="top:10%;">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="form-horizontal">
                     <div class="form-group m-b-0">
                         <div class="col-md-12 text-center">
+                            <template v-if="Tipo == '@claveDescuentoDePasajes'">
+                                <h2 style="margin: 0px; font-weight: 500; ">
+                                    Descuento
+                                </h2>
+                            </template>
+
                             <img src="~/wwwroot/plugins/images/users/user-shield-solid.svg" width="100" height="100" />
                         </div>
                         <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
-                            Esta acción requiere permisos extra. Por favor ingrese la contrase&ntilde;a de autorización.
+                            Necesita permiso para realizar esta acción, ingrese la clave de autorización.
                         </h5>
                     </div>
                     <div class="form-group m-b-5">
-                        <div class="col-md-12">
-                            <label class="col-md-3 control-label label-sm">Password:</label>
+                        <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
+                            <label class="col-md-3 control-label label-sm">Clave: </label>
                             <div class="col-md-9">
                                 <input v-model="password"
                                        id="txtContraseniaCA"
-                                       @@keypress.13.prevent="sendClaveAutorizacion"
+                                       @@keypress.13.prevent="recorrerClaveAutorizacion"
+                                       @@keypress.9.prevent="recorrerClaveAutorizacion"
                                        type="password"
                                        class="form-control input-sm"
-                                       placeholder="CONTRASEÑA"
+                                       placeholder="CLAVE"
+                                       maxlength="30"
                                        autocomplete="off">
                             </div>
                         </div>
                     </div>
+                    <div class="form-group m-b-5">
+                        <template v-if="Tipo == '@claveDescuentoDePasajes'">
+                            <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
+                                <label class="col-md-3 control-label label-sm">Obs.: </label>
+                                <div class="col-md-9">
+                                    <textarea v-model="observacion"
+                                              id="txtObservacionCA"
+                                              @@keypress.13.prevent="recorrerClaveAutorizacion"
+                                              @@keypress.9.prevent="recorrerClaveAutorizacion"
+                                              class="form-control input-sm"
+                                              placeholder="OBSERVACIÓN"
+                                              maxlength="150"
+                                              style="height: 50px; min-height: 50px; "
+                                              autocomplete="off">
+                                    </textarea>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="btnCerrarVenta" @@click="sendClaveAutorizacion" class="btn btn-info waves-effect waves-light text-left">
-                    <span class="fa fa-save fa-fw"></span>ACEPTAR
+                <button id="btnAceptarClaveAutorizacion"
+                        @@click="sendClaveAutorizacion"
+                        class="btn btn-info waves-effect waves-light text-left"
+                        :disabled="disabledBtnAceptar">
+                    <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button data-dismiss="modal" @@click="cerrarClaveAutorizacion" class="btn btn-inverse waves-effect waves-light text-left">
-                    <span class="glyphicon glyphicon-log-out fa-fw"></span>CANCELAR
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>
         </div>

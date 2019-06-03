@@ -71,6 +71,7 @@ namespace SisComWeb.Repository
                         entidad.CodiServicio = Reader.GetTinyIntValue(drlector, "Codi_Servicio");
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Servicio");
                         entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
+                        break;
                     }
                 }
             }
@@ -92,6 +93,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "codi_programacion");
+                        break;
                     }
                 }
             }
@@ -119,6 +121,7 @@ namespace SisComWeb.Repository
                         entidad.PlanBus = Reader.GetStringValue(drlector, "Plan_bus");
                         entidad.NumePasajeros = Reader.GetStringValue(drlector, "Nume_Pasajeros");
                         entidad.PlacBus = Reader.GetStringValue(drlector, "Plac_bus");
+                        break;
                     }
                 }
             }
@@ -147,6 +150,7 @@ namespace SisComWeb.Repository
                         entidad.NombreChofer = Reader.GetStringValue(drlector, "Nombre_Chofer");
                         entidad.CodiCopiloto = Reader.GetStringValue(drlector, "Codi_Copiloto");
                         entidad.NombreCopiloto = Reader.GetStringValue(drlector, "Nombre_Copiloto");
+                        break;
                     }
                 }
             }
@@ -214,6 +218,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "CantidadVenta");
+                        break;
                     }
                 }
             }

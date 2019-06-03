@@ -612,7 +612,7 @@ namespace SisComWeb.Services
 
         #region IMPRESIÓN
 
-        public Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizada> Listado)
+        public Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)
         {
             try
             {

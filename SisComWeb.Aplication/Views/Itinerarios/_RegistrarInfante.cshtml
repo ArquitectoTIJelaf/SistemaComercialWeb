@@ -1,5 +1,4 @@
-﻿
-<div id="appRegistrarInfante" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+﻿<div id="appVueRegistrarInfante" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" style="width: 500px; top:10%">
         <div class="modal-content">
             <div class="modal-header">
@@ -22,7 +21,8 @@
                                           :options="list.tipoDoc"
                                           :placeholder="'DOCUMENTO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -38,6 +38,7 @@
                                        name="Número"
                                        type="text"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
                                        class="form-control input-sm"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
@@ -54,6 +55,7 @@
                             <div class="col-md-10">
                                 <input v-model="Nombres"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
                                        id="txtNombresRA"
                                        type="text"
                                        maxlength="50"
@@ -71,6 +73,7 @@
                             <div class="col-md-12">
                                 <input v-model="ApellidoPaterno"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
                                        id="txtApellidoPaternoRA"
                                        type="text"
                                        maxlength="25"
@@ -86,6 +89,7 @@
                             <div class="col-md-12">
                                 <input v-model="ApellidoMaterno"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
                                        id="txtApellidoMaternoRA"
                                        type="text"
                                        maxlength="25"
@@ -134,7 +138,8 @@
                                           :options="list.sexos"
                                           :placeholder="'SEXO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -150,7 +155,8 @@
                                           :options="list.parentesco"
                                           :placeholder="'PARENTESCO'"
                                           :disabled="disabledCamposTicket"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco">
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
+                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -173,7 +179,6 @@
                 </button>
                 <button id="btnRegistrarAconpaniante"
                         @@click="saveAcompaniante"
-                        @@keypress.13.native.prevent="saveAcompaniante"
                         :disabled="!filledCampos || disabledBotones"
                         class="btn btn-primary waves-effect text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar

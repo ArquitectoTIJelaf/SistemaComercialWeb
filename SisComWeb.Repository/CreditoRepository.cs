@@ -56,6 +56,7 @@ namespace SisComWeb.Repository
                             Saldo = Reader.GetDecimalValue(drlector, "saldo"),
                             Marcador = Reader.GetStringValue(drlector, "marcador")
                         };
+                        break;
                     }
                 }
             }
@@ -98,6 +99,7 @@ namespace SisComWeb.Repository
                         entidad.MontoMenos = Reader.GetDecimalValue(drlector, "Monto_Menos");
                         entidad.St = Reader.GetStringValue(drlector, "st");
                         entidad.IdRuc = Reader.GetIntValue(drlector, "idRuc");
+                        break;
                     }
                 }
             }
@@ -150,6 +152,7 @@ namespace SisComWeb.Repository
                         entidad.MontoMenos = Reader.GetDecimalValue(drlector, "MontoMenos");
                         entidad.CntBol = Reader.GetIntValue(drlector, "CntBol");
                         entidad.Saldo = Reader.GetIntValue(drlector, "Saldo");
+                        break;
                     }
                 }
             }
@@ -200,6 +203,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetDecimalValue(drlector, "");
+                        break;
                     }
                 }
             }
@@ -220,6 +224,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "idregistro");
+                        break;
                     }
                 }
             }

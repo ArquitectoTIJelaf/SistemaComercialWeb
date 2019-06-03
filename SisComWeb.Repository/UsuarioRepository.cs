@@ -29,6 +29,7 @@ namespace SisComWeb.Repository
                         entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
                         entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
                         entidad.Terminal = Reader.GetIntValue(drlector, "Terminal");
+                        break;
                     }
                 }
             }

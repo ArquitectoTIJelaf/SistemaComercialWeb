@@ -43,9 +43,10 @@ namespace SisComWeb.Aplication.Models
         public string CodiCopiloto { get; set; }
         public string NombreCopiloto { get; set; }
         public List<DestinoRuta> ListaDestinosRuta { get; set; }
-
         public string FechaViaje { get; set; }
         public List<Base> ListaAuxDestinosRuta { get; set; }
+
+        public string DescServicio { get; set; }
     }
 
     public class FiltroItinerario

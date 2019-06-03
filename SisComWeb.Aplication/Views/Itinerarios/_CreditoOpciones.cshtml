@@ -17,7 +17,8 @@
                                           :options="list.secciones"
                                           :placeholder="'SECCIÓN'"
                                           :select-on-tab="true"
-                                          @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones"
+                                          @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -33,7 +34,8 @@
                                           :options="list.areas"
                                           :placeholder="'ÁREA'"
                                           :select-on-tab="true"
-                                          @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones"
+                                           @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -66,7 +68,8 @@
                                               :options="list.hospitales"
                                               :placeholder="'HOSPITAL'"
                                               :select-on-tab="true"
-                                              @@keydown.13.native.prevent="recorrerCreditoOpciones">
+                                              @@keydown.13.native.prevent="recorrerCreditoOpciones"
+                                               @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -92,10 +95,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="btnAceptar_CO" @@click="saveCreditoOpciones" @@keypress.13.native.prevent="saveCreditoOpciones" class="btn btn-primary waves-effect text-left">
+                    <button id="btnAceptar_CO" @@click="saveCreditoOpciones" class="btn btn-primary waves-effect text-left">
                         <span class="fa fa-save fa-fw"></span>Aceptar
                     </button>
-
                     <button @@click="cancelarCreditoOpciones" class="btn btn-inverse waves-effect waves-light text-left">
                         <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                     </button>

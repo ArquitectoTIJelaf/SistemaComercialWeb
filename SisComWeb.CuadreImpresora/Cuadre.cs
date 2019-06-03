@@ -8,7 +8,7 @@ namespace SisComWeb.CuadreImpresora
 {
     public class Cuadre
     {
-        public static string WriteText(VentaRealizada venta)
+        public static string WriteText(VentaRealizadaEntity venta)
         {
             StringBuilder texto = new StringBuilder();
             // Impresora Térmica
@@ -109,7 +109,7 @@ namespace SisComWeb.CuadreImpresora
             return boletoBase64;
         }
 
-        public static string WriteTextCopy(VentaRealizada venta)
+        public static string WriteTextCopy(VentaRealizadaEntity venta)
         {
             StringBuilder texto = new StringBuilder();
 
