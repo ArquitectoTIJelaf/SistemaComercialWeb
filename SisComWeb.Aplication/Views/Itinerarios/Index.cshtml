@@ -28,7 +28,25 @@
 @Html.Partial("_DescuentoControl")
 
 @section styles{
-    <style type="text/css">
+<style type="text/css">
+
+    .lblDescTipo::after {
+        background: var(--emp-color) !important;
+        width: 10px !important;
+        height: 10px !important;
+        top: 3px !important;
+        left: 3px !important;
+    }
+
+    .lblDescTipo::before {
+        border: 1px solid var(--emp-color) !important;
+    }
+
+    .lblDescTipo {
+        color: #313131 !important;
+        font-weight: 500 !important;
+        margin-right: 10px;
+    }
 
         .lblDescTipo::after {
             background: var(--emp-color) !important;
@@ -38,393 +56,379 @@
             left: 3px !important;
         }
 
-        .lblDescTipo::before {
-            border: 1px solid var(--emp-color) !important;
+    .lblBoletoTipoDir::before {
+        border: 1px solid var(--emp-color) !important;
+    }
+
+    .lblBoletoTipoDir {
+        color: #313131 !important;
+        font-weight: 500 !important;
+        margin-right: 10px;
+    }
+
+    input[type=checkbox][disabled] {
+        cursor: not-allowed !important;
+    }
+
+    .checkbox input[type=checkbox]:disabled + label {
+        cursor: not-allowed;
+    }
+
+    .form-control[disabled] {
+        background-color: inherit;
+    }
+
+    .ancho {
+        width: 23%;
+    }
+
+    #txtPrecio {
+        outline: 0 !important;
+        border-width: 0 0 2px !important;
+        border-color: var(--emp-color) !important;
+    }
+
+    .checkbox label::before {
+        border: 1px solid var(--emp-color);
+    }
+
+    button[disabled] {
+        cursor: not-allowed;
+    }
+
+    .v-select.disabled .open-indicator {
+        background-color: transparent !important;
+    }
+
+    #checkRegistrarNino {
+        align-items: center;
+        border: 1px solid var(--emp-color);
+        border-radius: 5px;
+        color: black;
+        display: inline-flex;
+        height: 31px;
+        margin: 0px;
+        padding-left: 25px;
+        padding-right: 5px;
+        text-align: center;
+    }
+
+    .v-select.disabled .dropdown-toggle input {
+        background-color: transparent !important;
+    }
+
+    #divOtrosTurnos ul {
+        display: block;
+        margin-left: 30%;
+    }
+
+    #appVueRegistrarInfante .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    #appVueTipoPago .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    a[disabled] {
+        pointer-events: none;
+    }
+
+    .panel-default .panel-heading {
+        height: auto;
+    }
+
+    .input-group-addon {
+        border-radius: 4px;
+        border: 1px solid rgb(228, 231, 234);
+        color: #2a97f4;
+        background-color: white;
+    }
+
+    ul.pagination {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        background-color: white;
+        padding: 5px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+        ul.pagination li {
+            display: inline;
         }
 
-        .lblDescTipo {
-            color: #313131 !important;
-            font-weight: 500 !important;
-            margin-right: 10px;
-        }
-
-        .lblDescTipo::after {
-            background: var(--emp-color) !important;
-            width: 10px !important;
-            height: 10px !important;
-            top: 3px !important;
-            left: 3px !important;
-        }
-
-        .lblBoletoTipoDir::before {
-            border: 1px solid var(--emp-color) !important;
-        }
-
-        .lblBoletoTipoDir {
-            color: #313131 !important;
-            font-weight: 500 !important;
-            margin-right: 10px;
-        }
-
-        input[type=checkbox][disabled] {
-            cursor: not-allowed !important;
-        }
-
-        .checkbox input[type=checkbox]:disabled + label {
-            cursor: not-allowed;
-        }
-
-        .form-control[disabled] {
-            background-color: inherit;
-        }
-
-        .ancho {
-            width: 23%;
-        }
-
-        #txtPrecio {
-            outline: 0 !important;
-            border-width: 0 0 2px !important;
-            border-color: var(--emp-color) !important;
-        }
-
-        .checkbox label::before {
-            border: 1px solid var(--emp-color);
-        }
-
-        button[disabled] {
-            cursor: not-allowed;
-        }
-
-        .v-select.disabled .open-indicator {
-            background-color: transparent !important;
-        }
-
-        #checkRegistrarNino {
-            align-items: center;
-            border: 1px solid var(--emp-color);
-            border-radius: 5px;
-            color: black;
-            display: inline-flex;
-            height: 31px;
-            margin: 0px;
-            padding-left: 25px;
-            padding-right: 5px;
-            text-align: center;
-        }
-
-        .v-select.disabled .dropdown-toggle input {
-            background-color: transparent !important;
-        }
-
-        #divOtrosTurnos ul {
-            display: block;
-            margin-left: 30%;
-        }
-
-        #appVueRegistrarInfante .form-horizontal .control-label {
-            text-align: left;
-        }
-
-        #appVueTipoPago .form-horizontal .control-label {
-            text-align: left;
-        }
-
-        a[disabled] {
-            pointer-events: none;
-        }
-
-        .panel-default .panel-heading {
-            height: auto;
-        }
-
-        .input-group-addon {
-            border-radius: 4px;
-            border: 1px solid rgb(228, 231, 234);
-            color: #2a97f4;
-            background-color: white;
-        }
-
-        ul.pagination {
-            display: inline-block;
-            padding: 0;
-            margin: 0;
-            background-color: white;
-            padding: 5px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-            ul.pagination li {
-                display: inline;
+            ul.pagination li a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+                transition: background-color .3s;
+                border: 1px solid #ddd;
+                margin: 0 4px;
+                border-radius: 50%;
             }
 
-                ul.pagination li a {
-                    color: black;
-                    float: left;
-                    padding: 8px 16px;
-                    text-decoration: none;
-                    transition: background-color .3s;
-                    border: 1px solid #ddd;
-                    margin: 0 4px;
-                    border-radius: 50%;
+                ul.pagination li a.active {
+                    background-color: #4CAF50;
+                    color: white;
+                    border: 1px solid #4CAF50;
                 }
 
-                    ul.pagination li a.active {
-                        background-color: #4CAF50;
-                        color: white;
-                        border: 1px solid #4CAF50;
-                    }
+                ul.pagination li a:hover:not(.active) {
+                    background-color: #ddd;
+                }
 
-                    ul.pagination li a:hover:not(.active) {
-                        background-color: #ddd;
-                    }
+    .pagination > li:first-child > a {
+        border-top-left-radius: 50%;
+        border-bottom-left-radius: 50%
+    }
 
-        .pagination > li:first-child > a {
-            border-top-left-radius: 50%;
-            border-bottom-left-radius: 50%
-        }
+    .pagination > li:last-child > a {
+        border-bottom-right-radius: 50%;
+        border-top-right-radius: 50%;
+    }
 
-        .pagination > li:last-child > a {
-            border-bottom-right-radius: 50%;
-            border-top-right-radius: 50%;
-        }
+    .table-responsive > ul {
+        display: none;
+    }
 
-        .table-responsive > ul {
-            display: none;
-        }
+    .btn-inverse:focus {
+        background-color: #A1ABB7 !important;
+        border: 1px solid #A1ABB7 !important;
+    }
 
-        .btn-inverse:focus {
-            background-color: #A1ABB7 !important;
-            border: 1px solid #A1ABB7 !important;
-        }
+    .container-bus {
+        display: inline-block;
+        width: 100%;
+        padding: 15px;
+    }
 
-        .container-bus {
-            display: inline-block;
-            width: 100%;
-            padding: 15px;
-        }
+    .img-bus {
+        float: left;
+    }
 
-        .img-bus {
-            float: left;
-        }
+    .form-bus {
+        background-color: #616e7e;
+        width: calc(100% - 108px);
+        border: 2px solid #4b4a4b;
+        border-radius: 0 8px 8px 0;
+        margin-bottom: 0;
+    }
 
-        .form-bus {
-            background-color: #616e7e;
-            width: calc(100% - 108px);
-            border: 2px solid #4b4a4b;
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 0;
-        }
+    .table-bus {
+        cursor: default;
+        background-color: white;
+        height: 252px;
+    }
 
-        .table-bus {
-            cursor: default;
-            background-color: white;
-            height: 252px;
-        }
+    .LI {
+        border-left: 2px solid #4b4a4b;
+        margin-left: 5px;
+        margin-right: 3px;
+        height: 100%;
+        display: block;
+    }
 
-        .LI {
-            border-left: 2px solid #4b4a4b;
-            margin-left: 5px;
-            margin-right: 3px;
-            height: 100%;
-            display: block;
-        }
+    .PU {
+        background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
+        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/puerta.png")") no-repeat center center;*/
+        display: block;
+        height: 95%;
+        min-width: 40px;
+    }
 
-        .PU {
-            background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
+    .VA {
+        display: block;
+        height: 95%;
+        min-width: 40px;
+    }
 
-        .VA {
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
+    .CU {
+        display: block;
+        height: 95%;
+        min-width: 40px;
+    }
 
-        .CU {
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
+    .BA {
+        background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
+        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/baño.png")") no-repeat center center;*/
+        display: block;
+        height: 95%;
+        min-width: 40px;
+    }
 
-        .BA {
-            background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
+    .TV {
+        background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
+        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/TV.png")") no-repeat center center;*/
+        display: block;
+        height: 95%;
+        min-width: 40px;
+    }
 
-        .TV {
-            background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
+    .EE {
+        background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
+        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/ESCALERA.png")") no-repeat center center;*/
+        background-color: #B2B2B2;
+        border-radius: 4px;
+        display: block;
+        height: 95%;
+        /*min-width: 40px;*/
+        margin: 0 10px 0 10px;
+    }
 
-        .EE {
-            background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
-            background-color: #B2B2B2;
-            border-radius: 4px;
-            display: block;
-            height: 95%;
-            /*min-width: 40px;*/
-            margin: 0 10px 0 10px;
-        }
+    .bus-td {
+        padding: 0 !important;
+        height: 48px;
+        border-color: transparent !important;
+        vertical-align: middle !important;
+        align-items: center;
+        text-align: center;
+    }
 
-        .bus-td {
-            padding: 0 !important;
-            height: 48px;
-            border-color: transparent !important;
-            vertical-align: middle !important;
-            align-items: center;
-            text-align: center;
-        }
+    .btn-bus {
+        padding: 5px;
+        height: 95% !important;
+        width: 95% !important;
+        font-weight: 900;
+        background-color: #f7fafc;
+        border: 1px solid #5b5b5c !important;
+        color: #333;
+        background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
+    }
 
-        .btn-bus {
-            padding: 5px;
-            height: 95% !important;
-            width: 95% !important;
-            font-weight: 900;
-            background-color: #f7fafc;
-            border: 1px solid #5b5b5c !important;
-            color: #333;
-            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
-        }
+    .number-of-seat {
+        display: block;
+        font-size: 14px;
+    }
 
-        .number-of-seat {
-            display: block;
-            font-size: 14px;
-        }
+    .icons-of-seat {
+        display: block;
+    }
 
-        .icons-of-seat {
-            display: block;
-        }
+    .ios-left {
+        position: relative;
+        left: -10%;
+        height: 95%;
+        min-width: 8px;
+    }
 
-        .ios-left {
-            position: relative;
-            left: -10%;
-            height: 95%;
-            min-width: 8px;
-        }
+    .ios-right {
+        position: relative;
+        right: -10%;
+    }
 
-        .ios-right {
-            position: relative;
-            right: -10%;
-        }
+    .ios-center {
+        position: relative;
+        height: 95%;
+    }
 
-        .ios-center {
-            position: relative;
-            height: 95%;
-        }
+    .check-with-label:checked + .label-for-check {
+    }
 
-        .check-with-label:checked + .label-for-check {
-        }
+    .active-chck {
+        color: #2A97F4;
+        font-weight: 500 !important;
+    }
 
-        .active-chck {
+    @@-webkit-keyframes pulseColor {
+        0% {
             color: #2A97F4;
-            font-weight: 500 !important;
         }
 
-        @@-webkit-keyframes pulseColor {
-            0% {
-                color: #2A97F4;
-            }
-
-            50% {
-                color: #198DF3;
-            }
-
-            51% {
-                color: #0A67B8;
-            }
-
-            100% {
-                color: #064072;
-            }
+        50% {
+            color: #198DF3;
         }
 
-        #btnActualizar:focus {
-            color: #2A97F4;
-            font-weight: 500 !important;
-            font-size: 16px;
-            -webkit-animation-name: pulseColor;
-            -webkit-animation-iteration-count: infinite;
-            -webkit-animation-duration: 1s;
+        51% {
+            color: #0A67B8;
         }
 
-        .animated {
-            -webkit-animation-duration: 400ms;
-            animation-duration: 400ms;
+        100% {
+            color: #064072;
         }
+    }
 
-        .align-radio {
-            float: left;
-            margin-right: 5px !important;
-            margin-top: 2px !important;
-        }
+    #btnActualizar:focus {
+        color: #2A97F4;
+        font-weight: 500 !important;
+        font-size: 16px;
+        -webkit-animation-name: pulseColor;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-duration: 1s;
+    }
 
-        .align-label-radio {
-            margin-bottom: 4px;
-        }
+    .animated {
+        -webkit-animation-duration: 400ms;
+        animation-duration: 400ms;
+    }
 
-        .placeh-ticket-venta::placeholder {
-            color: var(--emp-color);
-            opacity: 1;
-        }
+    .align-radio {
+        float: left;
+        margin-right: 5px !important;
+        margin-top: 2px !important;
+    }
 
-        .placeh-ticket-venta:-ms-input-placeholder {
-            color: var(--emp-color);
-        }
+    .align-label-radio {
+        margin-bottom: 4px;
+    }
 
-        .placeh-ticket-venta::-ms-input-placeholder {
-            color: var(--emp-color);
-        }
+    .placeh-ticket-venta::placeholder {
+        color: var(--emp-color);
+        opacity: 1;
+    }
 
-        #appVueTable {
-            /*height: calc(100vh - 265px);
+    .placeh-ticket-venta:-ms-input-placeholder {
+        color: var(--emp-color);
+    }
+
+    .placeh-ticket-venta::-ms-input-placeholder {
+        color: var(--emp-color);
+    }
+
+    #appVueTable {
+        /*height: calc(100vh - 265px);
             display: flex;*/
-            /*align-items: center;*/
-        }
+        /*align-items: center;*/
+    }
 
-        .content {
-            /*text-align: center;
+    .content {
+        /*text-align: center;
             width: 100%;*/
-        }
+    }
 
-        .boletosVendidos {
-            font-size: 16px !important;
-            font-weight: 500;
-            color: #004e90;
-            line-height: 0.5;
-            text-align: center;
-        }
+    .boletosVendidos {
+        font-size: 16px !important;
+        font-weight: 500;
+        color: #004e90;
+        line-height: 0.5;
+        text-align: center;
+    }
 
-        .boletosVendidosTitle {
-            font-weight: 500;
-            color: #6c7282;
-            font-size: 18px;
-            font-weight: 600;
-            font-family: monospace;
-            line-height: 15px;
-        }
+    .boletosVendidosTitle {
+        font-weight: 500;
+        color: #6c7282;
+        font-size: 18px;
+        font-weight: 600;
+        font-family: monospace;
+        line-height: 15px;
+    }
 
-        .faImgTitle {
-            font-size: 6em;
-            color: var(--emp-color);
-        }
+    .faImgTitle {
+        font-size: 6em;
+        color: var(--emp-color);
+    }
 
-        .colorHr {
-            margin-top: 5px;
-            background-color: cadetblue;
-        }
+    .colorHr {
+        margin-top: 5px;
+        background-color: cadetblue;
+    }
 
-        .mfBoletosVendidos {
-            text-align: center;
-        }
-    </style>
+    .mfBoletosVendidos {
+        text-align: center;
+    }
+</style>
 }
 
 @section scripts{
@@ -653,7 +657,7 @@
                             break;
                         case ClaveDescuentoDePasajes:
                             {
-                                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuento)
+                                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuento && !appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuentoControl)
                                     appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = _.cloneDeep(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal).toFixed(2);
                                 document.getElementById('txtPrecio').focus();
                             }
@@ -1283,10 +1287,11 @@
                 disabledCamposTicket: false,
                 disabledCamposTicket_Pase: false,
                 eventTxtNroAsientoVenta: '',
-                // Credito
+                // Crédito
                 disabledPrecio: false,
                 disabledCredito: false,
                 disabledCampoNumSolicitud: true,
+                disabledRazonSocial: false,
                 objCreditoCliente: {
                     Ruc: '',
                     RazonSocial: '',
@@ -1418,6 +1423,12 @@
                                 _this.limpiarVenta();
                                 _this.$nextTick(() => {
                                     _this.showPlano = true;
+
+                                    var objPanelDeshabilitarRazonSocial = appController.validatePanel('63');
+                                    if (objPanelDeshabilitarRazonSocial && objPanelDeshabilitarRazonSocial.Valor === '1')
+                                        _this.disabledRazonSocial = true;
+                                    else
+                                        _this.disabledRazonSocial = false;
                                 });
                             }
                             else {
@@ -2921,6 +2932,7 @@
                     else {
                         if (normal && max && min) {
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
+
                                 if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
                                     if (actual > normal) {
                                         APP.msg.warning('Descuento: El precio no puede ser mayor a ' + normal.toFixed(2) + '.');
@@ -2939,17 +2951,19 @@
                                 }
                             }
                             else {
-                                if (actual > max) {
-                                    APP.msg.warning('El precio no puede ser mayor a ' + max.toFixed(2) + '.');
-                                    this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
-                                    this.focusPrecio(event);
-                                    return;
-                                }
-                                else if (actual < min) {
-                                    APP.msg.warning('El precio no puede ser menor a ' + min.toFixed(2) + '.');
-                                    this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
-                                    this.focusPrecio(event);
-                                    return;
+                                if (!this.list.ventas[this.indexVenta].ValidadorDescuentoControl) {
+                                    if (actual > max) {
+                                        APP.msg.warning('El precio no puede ser mayor a ' + max.toFixed(2) + '.');
+                                        this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
+                                        this.focusPrecio(event);
+                                        return;
+                                    }
+                                    else if (actual < min) {
+                                        APP.msg.warning('El precio no puede ser menor a ' + min.toFixed(2) + '.');
+                                        this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
+                                        this.focusPrecio(event);
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -3367,8 +3381,8 @@
                 configEventKeyF5: function (e) {
                     if (e.keyCode === 116) {
                         if (this.showVentas) {
-                            e.preventDefault();
-                            appController.chargeTurnos();
+                            //e.preventDefault();
+                            //appController.chargeTurnos();
                         }
                     }
                 },
@@ -5088,7 +5102,7 @@
                             if (auxValidate === true) APP.msg.warning('Seleccione una fecha.');
                         }
                         else {
-                            var validateFechaCita = moment(this.fechaCita, 'DD/MM/YYYY').isBefore(moment(), 'day');
+                            var validateFechaCita = moment(this.fechaCita, 'DD/MM/YYYY').isAfter(moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY'), 'day');
 
                             if (auxValidate && this.boletoTipoDir === '0' && validateFechaCita) {
                                 document.getElementById('txtFechaCita').focus();

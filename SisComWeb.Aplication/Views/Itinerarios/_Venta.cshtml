@@ -938,7 +938,7 @@
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
-                                                                :disabled="disabledCamposTicket_Pase"
+                                                                :disabled="disabledCamposTicket_Pase || disabledCredito"
                                                                 v-on:click="consultaSunat">
                                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                                         </button>
@@ -957,7 +957,7 @@
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
-                                                               :disabled="disabledCamposTicket || disabledCredito"
+                                                               :disabled="disabledCamposTicket || disabledCredito || disabledRazonSocial"
                                                                v-validate="'required|min: 3'"
                                                                data-vv-as="Razón social">
                                                     </div>

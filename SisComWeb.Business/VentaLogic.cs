@@ -161,8 +161,10 @@ namespace SisComWeb.Business
 
                     // Valida 'TerminalElectronico'
                     var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
-                    if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo))
+                    if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo)) {
                         validarTerminalElectronico.Tipo = "M";
+                        validarTerminalElectronico.Imp = "3"; // Por el momento será 3.
+                    }
 
                     // Valida 'SaldoPaseCortesia', consulta 'Contrato' y otros
                     switch (FlagVenta)
@@ -690,6 +692,7 @@ namespace SisComWeb.Business
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
+
                         PVentaCodigo = entidad.CodiPuntoVenta,
                         BusCodigo = entidad.CodiBus,
                         EmbarqueCod = entidad.CodiEmbarque

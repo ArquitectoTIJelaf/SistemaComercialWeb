@@ -28,6 +28,7 @@
     <style>
         html {
             background: url("/wwwroot/plugins/images/users/FONDO_OPACO.jpg") no-repeat center center fixed;
+            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/FONDO_OPACO.jpg)") no-repeat center center fixed;*/
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;

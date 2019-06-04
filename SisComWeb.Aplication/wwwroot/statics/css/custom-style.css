@@ -567,7 +567,8 @@ body {
 }
 
 .custom-scroll-container ::-webkit-scrollbar-thumb:vertical {
-    background: url('/wwwroot/plugins/images/users/SCROLL2.png') no-repeat;
+    background: url("/wwwroot/plugins/images/users/SCROLL2.jpg") no-repeat;
+    /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/SCROLL2.jpg)") no-repeat;*/
     background-clip: padding-box;
     border: solid transparent;
     border-width: 1px;
