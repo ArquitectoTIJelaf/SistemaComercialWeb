@@ -610,6 +610,36 @@ namespace SisComWeb.Services
 
         #endregion
 
+        #region MANIFIESTO
+
+        public Response<string> VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta)
+        {
+            try
+            {
+                return VentaLogic.VerificaManifiestoPorPVenta(CodiProgramacion, Pvta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaManifiestoPorPVenta, false);
+            }
+        }
+
+        public Response<string> ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta)
+        {
+            try
+            {
+                return VentaLogic.ConsultaConfigManifiestoPorHora(CodiEmpresa, CodiSucursal, CodiPuntoVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaConfigManifiestoPorHora, false);
+            }
+        }
+
+        #endregion
+
         #region IMPRESIÓN
 
         public Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)

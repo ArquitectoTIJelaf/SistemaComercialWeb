@@ -85,5 +85,8 @@ namespace SisComWeb.Entity
         public string SecondColor { get; set; }
 
         public string DescServicio { get; set; }
+
+
+        public string X_Estado { get; set; }
     }
 }

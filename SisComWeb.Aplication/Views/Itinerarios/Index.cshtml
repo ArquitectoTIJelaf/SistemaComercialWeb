@@ -28,25 +28,7 @@
 @Html.Partial("_DescuentoControl")
 
 @section styles{
-<style type="text/css">
-
-    .lblDescTipo::after {
-        background: var(--emp-color) !important;
-        width: 10px !important;
-        height: 10px !important;
-        top: 3px !important;
-        left: 3px !important;
-    }
-
-    .lblDescTipo::before {
-        border: 1px solid var(--emp-color) !important;
-    }
-
-    .lblDescTipo {
-        color: #313131 !important;
-        font-weight: 500 !important;
-        margin-right: 10px;
-    }
+    <style type="text/css">
 
         .lblDescTipo::after {
             background: var(--emp-color) !important;
@@ -56,379 +38,397 @@
             left: 3px !important;
         }
 
-    .lblBoletoTipoDir::before {
-        border: 1px solid var(--emp-color) !important;
-    }
-
-    .lblBoletoTipoDir {
-        color: #313131 !important;
-        font-weight: 500 !important;
-        margin-right: 10px;
-    }
-
-    input[type=checkbox][disabled] {
-        cursor: not-allowed !important;
-    }
-
-    .checkbox input[type=checkbox]:disabled + label {
-        cursor: not-allowed;
-    }
-
-    .form-control[disabled] {
-        background-color: inherit;
-    }
-
-    .ancho {
-        width: 23%;
-    }
-
-    #txtPrecio {
-        outline: 0 !important;
-        border-width: 0 0 2px !important;
-        border-color: var(--emp-color) !important;
-    }
-
-    .checkbox label::before {
-        border: 1px solid var(--emp-color);
-    }
-
-    button[disabled] {
-        cursor: not-allowed;
-    }
-
-    .v-select.disabled .open-indicator {
-        background-color: transparent !important;
-    }
-
-    #checkRegistrarNino {
-        align-items: center;
-        border: 1px solid var(--emp-color);
-        border-radius: 5px;
-        color: black;
-        display: inline-flex;
-        height: 31px;
-        margin: 0px;
-        padding-left: 25px;
-        padding-right: 5px;
-        text-align: center;
-    }
-
-    .v-select.disabled .dropdown-toggle input {
-        background-color: transparent !important;
-    }
-
-    #divOtrosTurnos ul {
-        display: block;
-        margin-left: 30%;
-    }
-
-    #appVueRegistrarInfante .form-horizontal .control-label {
-        text-align: left;
-    }
-
-    #appVueTipoPago .form-horizontal .control-label {
-        text-align: left;
-    }
-
-    a[disabled] {
-        pointer-events: none;
-    }
-
-    .panel-default .panel-heading {
-        height: auto;
-    }
-
-    .input-group-addon {
-        border-radius: 4px;
-        border: 1px solid rgb(228, 231, 234);
-        color: #2a97f4;
-        background-color: white;
-    }
-
-    ul.pagination {
-        display: inline-block;
-        padding: 0;
-        margin: 0;
-        background-color: white;
-        padding: 5px;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-        ul.pagination li {
-            display: inline;
+        .lblDescTipo::before {
+            border: 1px solid var(--emp-color) !important;
         }
 
-            ul.pagination li a {
-                color: black;
-                float: left;
-                padding: 8px 16px;
-                text-decoration: none;
-                transition: background-color .3s;
-                border: 1px solid #ddd;
-                margin: 0 4px;
-                border-radius: 50%;
+        .lblDescTipo {
+            color: #313131 !important;
+            font-weight: 500 !important;
+            margin-right: 10px;
+        }
+
+            .lblDescTipo::after {
+                background: var(--emp-color) !important;
+                width: 10px !important;
+                height: 10px !important;
+                top: 3px !important;
+                left: 3px !important;
             }
 
-                ul.pagination li a.active {
-                    background-color: #4CAF50;
-                    color: white;
-                    border: 1px solid #4CAF50;
+        .lblBoletoTipoDir::before {
+            border: 1px solid var(--emp-color) !important;
+        }
+
+        .lblBoletoTipoDir {
+            color: #313131 !important;
+            font-weight: 500 !important;
+            margin-right: 10px;
+        }
+
+        input[type=checkbox][disabled] {
+            cursor: not-allowed !important;
+        }
+
+        .checkbox input[type=checkbox]:disabled + label {
+            cursor: not-allowed;
+        }
+
+        .form-control[disabled] {
+            background-color: inherit;
+        }
+
+        .ancho {
+            width: 23%;
+        }
+
+        #txtPrecio {
+            outline: 0 !important;
+            border-width: 0 0 2px !important;
+            border-color: var(--emp-color) !important;
+        }
+
+        .checkbox label::before {
+            border: 1px solid var(--emp-color);
+        }
+
+        button[disabled] {
+            cursor: not-allowed;
+        }
+
+        .v-select.disabled .open-indicator {
+            background-color: transparent !important;
+        }
+
+        #checkRegistrarNino {
+            align-items: center;
+            border: 1px solid var(--emp-color);
+            border-radius: 5px;
+            color: black;
+            display: inline-flex;
+            height: 31px;
+            margin: 0px;
+            padding-left: 25px;
+            padding-right: 5px;
+            text-align: center;
+        }
+
+        .v-select.disabled .dropdown-toggle input {
+            background-color: transparent !important;
+        }
+
+        #divOtrosTurnos ul {
+            display: block;
+            margin-left: 30%;
+        }
+
+        #appVueRegistrarInfante .form-horizontal .control-label {
+            text-align: left;
+        }
+
+        #appVueTipoPago .form-horizontal .control-label {
+            text-align: left;
+        }
+
+        a[disabled] {
+            pointer-events: none;
+        }
+
+        .panel-default .panel-heading {
+            height: auto;
+        }
+
+        .input-group-addon {
+            border-radius: 4px;
+            border: 1px solid rgb(228, 231, 234);
+            color: #2a97f4;
+            background-color: white;
+        }
+
+        ul.pagination {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            background-color: white;
+            padding: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+            ul.pagination li {
+                display: inline;
+            }
+
+                ul.pagination li a {
+                    color: black;
+                    float: left;
+                    padding: 8px 16px;
+                    text-decoration: none;
+                    transition: background-color .3s;
+                    border: 1px solid #ddd;
+                    margin: 0 4px;
+                    border-radius: 50%;
                 }
 
-                ul.pagination li a:hover:not(.active) {
-                    background-color: #ddd;
-                }
+                    ul.pagination li a.active {
+                        background-color: #4CAF50;
+                        color: white;
+                        border: 1px solid #4CAF50;
+                    }
 
-    .pagination > li:first-child > a {
-        border-top-left-radius: 50%;
-        border-bottom-left-radius: 50%
-    }
+                    ul.pagination li a:hover:not(.active) {
+                        background-color: #ddd;
+                    }
 
-    .pagination > li:last-child > a {
-        border-bottom-right-radius: 50%;
-        border-top-right-radius: 50%;
-    }
+        .pagination > li:first-child > a {
+            border-top-left-radius: 50%;
+            border-bottom-left-radius: 50%
+        }
 
-    .table-responsive > ul {
-        display: none;
-    }
+        .pagination > li:last-child > a {
+            border-bottom-right-radius: 50%;
+            border-top-right-radius: 50%;
+        }
 
-    .btn-inverse:focus {
-        background-color: #A1ABB7 !important;
-        border: 1px solid #A1ABB7 !important;
-    }
+        .table-responsive > ul {
+            display: none;
+        }
 
-    .container-bus {
-        display: inline-block;
-        width: 100%;
-        padding: 15px;
-    }
+        .btn-inverse:focus {
+            background-color: #A1ABB7 !important;
+            border: 1px solid #A1ABB7 !important;
+        }
 
-    .img-bus {
-        float: left;
-    }
+        .container-bus {
+            display: inline-block;
+            width: 100%;
+            padding: 15px;
+        }
 
-    .form-bus {
-        background-color: #616e7e;
-        width: calc(100% - 108px);
-        border: 2px solid #4b4a4b;
-        border-radius: 0 8px 8px 0;
-        margin-bottom: 0;
-    }
+        .img-bus {
+            float: left;
+        }
 
-    .table-bus {
-        cursor: default;
-        background-color: white;
-        height: 252px;
-    }
+        .form-bus {
+            background-color: #616e7e;
+            width: calc(100% - 108px);
+            border: 2px solid #4b4a4b;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 0;
+        }
 
-    .LI {
-        border-left: 2px solid #4b4a4b;
-        margin-left: 5px;
-        margin-right: 3px;
-        height: 100%;
-        display: block;
-    }
+        .table-bus {
+            cursor: default;
+            background-color: white;
+            height: 252px;
+        }
 
-    .PU {
-        background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
-        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/puerta.png")") no-repeat center center;*/
-        display: block;
-        height: 95%;
-        min-width: 40px;
-    }
+        .LI {
+            border-left: 2px solid #4b4a4b;
+            margin-left: 5px;
+            margin-right: 3px;
+            height: 100%;
+            display: block;
+        }
 
-    .VA {
-        display: block;
-        height: 95%;
-        min-width: 40px;
-    }
+        .PU {
+            background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
+            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/puerta.png")") no-repeat center center;*/
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
 
-    .CU {
-        display: block;
-        height: 95%;
-        min-width: 40px;
-    }
+        .VA {
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
 
-    .BA {
-        background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
-        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/baño.png")") no-repeat center center;*/
-        display: block;
-        height: 95%;
-        min-width: 40px;
-    }
+        .CU {
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
 
-    .TV {
-        background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
-        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/TV.png")") no-repeat center center;*/
-        display: block;
-        height: 95%;
-        min-width: 40px;
-    }
+        .BA {
+            background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
+            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/baño.png")") no-repeat center center;*/
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
 
-    .EE {
-        background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
-        /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/ESCALERA.png")") no-repeat center center;*/
-        background-color: #B2B2B2;
-        border-radius: 4px;
-        display: block;
-        height: 95%;
-        /*min-width: 40px;*/
-        margin: 0 10px 0 10px;
-    }
+        .TV {
+            background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
+            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/TV.png")") no-repeat center center;*/
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
 
-    .bus-td {
-        padding: 0 !important;
-        height: 48px;
-        border-color: transparent !important;
-        vertical-align: middle !important;
-        align-items: center;
-        text-align: center;
-    }
+        .EE {
+            background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
+            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/ESCALERA.png")") no-repeat center center;*/
+            background-color: #B2B2B2;
+            border-radius: 4px;
+            display: block;
+            height: 95%;
+            /*min-width: 40px;*/
+            margin: 0 10px 0 10px;
+        }
 
-    .btn-bus {
-        padding: 5px;
-        height: 95% !important;
-        width: 95% !important;
-        font-weight: 900;
-        background-color: #f7fafc;
-        border: 1px solid #5b5b5c !important;
-        color: #333;
-        background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
-    }
+        .bus-td {
+            padding: 0 !important;
+            height: 48px;
+            border-color: transparent !important;
+            vertical-align: middle !important;
+            align-items: center;
+            text-align: center;
+        }
 
-    .number-of-seat {
-        display: block;
-        font-size: 14px;
-    }
+        .btn-bus {
+            padding: 5px;
+            height: 95% !important;
+            width: 95% !important;
+            font-weight: 900;
+            background-color: #f7fafc;
+            border: 1px solid #5b5b5c !important;
+            color: #333;
+            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
+        }
 
-    .icons-of-seat {
-        display: block;
-    }
+        .number-of-seat {
+            display: block;
+            font-size: 14px;
+        }
 
-    .ios-left {
-        position: relative;
-        left: -10%;
-        height: 95%;
-        min-width: 8px;
-    }
+        .icons-of-seat {
+            display: block;
+        }
 
-    .ios-right {
-        position: relative;
-        right: -10%;
-    }
+        .ios-left {
+            position: relative;
+            left: -10%;
+            height: 95%;
+            min-width: 8px;
+        }
 
-    .ios-center {
-        position: relative;
-        height: 95%;
-    }
+        .ios-right {
+            position: relative;
+            right: -10%;
+        }
 
-    .check-with-label:checked + .label-for-check {
-    }
+        .ios-center {
+            position: relative;
+            height: 95%;
+        }
 
-    .active-chck {
-        color: #2A97F4;
-        font-weight: 500 !important;
-    }
+        .check-with-label:checked + .label-for-check {
+        }
 
-    @@-webkit-keyframes pulseColor {
-        0% {
+        .active-chck {
             color: #2A97F4;
+            font-weight: 500 !important;
         }
 
-        50% {
-            color: #198DF3;
+        @@-webkit-keyframes pulseColor {
+            0% {
+                color: #2A97F4;
+            }
+
+            50% {
+                color: #198DF3;
+            }
+
+            51% {
+                color: #0A67B8;
+            }
+
+            100% {
+                color: #064072;
+            }
         }
 
-        51% {
-            color: #0A67B8;
+        #btnActualizar:focus {
+            color: #2A97F4;
+            font-weight: 500 !important;
+            font-size: 16px;
+            -webkit-animation-name: pulseColor;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-duration: 1s;
         }
 
-        100% {
-            color: #064072;
+        .animated {
+            -webkit-animation-duration: 400ms;
+            animation-duration: 400ms;
         }
-    }
 
-    #btnActualizar:focus {
-        color: #2A97F4;
-        font-weight: 500 !important;
-        font-size: 16px;
-        -webkit-animation-name: pulseColor;
-        -webkit-animation-iteration-count: infinite;
-        -webkit-animation-duration: 1s;
-    }
+        .align-radio {
+            float: left;
+            margin-right: 5px !important;
+            margin-top: 2px !important;
+        }
 
-    .animated {
-        -webkit-animation-duration: 400ms;
-        animation-duration: 400ms;
-    }
+        .align-label-radio {
+            margin-bottom: 4px;
+        }
 
-    .align-radio {
-        float: left;
-        margin-right: 5px !important;
-        margin-top: 2px !important;
-    }
+        .placeh-ticket-venta::placeholder {
+            color: var(--emp-color);
+            opacity: 1;
+        }
 
-    .align-label-radio {
-        margin-bottom: 4px;
-    }
+        .placeh-ticket-venta:-ms-input-placeholder {
+            color: var(--emp-color);
+        }
 
-    .placeh-ticket-venta::placeholder {
-        color: var(--emp-color);
-        opacity: 1;
-    }
+        .placeh-ticket-venta::-ms-input-placeholder {
+            color: var(--emp-color);
+        }
 
-    .placeh-ticket-venta:-ms-input-placeholder {
-        color: var(--emp-color);
-    }
-
-    .placeh-ticket-venta::-ms-input-placeholder {
-        color: var(--emp-color);
-    }
-
-    #appVueTable {
-        /*height: calc(100vh - 265px);
+        #appVueTable {
+            /*height: calc(100vh - 265px);
             display: flex;*/
-        /*align-items: center;*/
-    }
+            /*align-items: center;*/
+        }
 
-    .content {
-        /*text-align: center;
+        .content {
+            /*text-align: center;
             width: 100%;*/
-    }
+        }
 
-    .boletosVendidos {
-        font-size: 16px !important;
-        font-weight: 500;
-        color: #004e90;
-        line-height: 0.5;
-        text-align: center;
-    }
+        .boletosVendidos {
+            font-size: 16px !important;
+            font-weight: 500;
+            color: #004e90;
+            line-height: 0.5;
+            text-align: center;
+        }
 
-    .boletosVendidosTitle {
-        font-weight: 500;
-        color: #6c7282;
-        font-size: 18px;
-        font-weight: 600;
-        font-family: monospace;
-        line-height: 15px;
-    }
+        .boletosVendidosTitle {
+            font-weight: 500;
+            color: #6c7282;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: monospace;
+            line-height: 15px;
+        }
 
-    .faImgTitle {
-        font-size: 6em;
-        color: var(--emp-color);
-    }
+        .faImgTitle {
+            font-size: 6em;
+            color: var(--emp-color);
+        }
 
-    .colorHr {
-        margin-top: 5px;
-        background-color: cadetblue;
-    }
+        .colorHr {
+            margin-top: 5px;
+            background-color: cadetblue;
+        }
 
-    .mfBoletosVendidos {
-        text-align: center;
-    }
-</style>
+        .mfBoletosVendidos {
+            text-align: center;
+        }
+    </style>
 }
 
 @section scripts{
@@ -782,6 +782,10 @@
 
         var CodiSucursal = '@usuario.CodiSucursal';
 
+        var CodiPuntoVenta = '@usuario.CodiPuntoVenta';
+
+        var Nivel = '@usuario.Nivel';
+
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
 
         var nacionalidadPorDefault = 'PERUANA';
@@ -793,6 +797,8 @@
         var ClaveDescuentoDePasajes = '@claveDescuentoDePasajes';
 
         var ClaveCambioPrecioBoletoViaje = '@claveCambioPrecioBoletoViaje';
+
+        var IngresoManualPasajes = false;
 
         var selectAll = {
             id: '0',
@@ -1272,7 +1278,8 @@
                 objTurno: {
                     FechaProgramacion: '',
                     HoraProgramacion: '',
-                    DescServicio: ''
+                    DescServicio: '',
+                    X_Estado: ''
                 },
                 Correlativo: '',
                 auxFocus: {
@@ -1405,6 +1412,9 @@
                                 _this.objTurno.FechaProgramacion = res.data.Valor.FechaProgramacion;
                                 _this.objTurno.HoraProgramacion = res.data.Valor.HoraProgramacion;
                                 _this.objTurno.DescServicio = res.data.Valor.DescServicio;
+
+                                _this.objTurno.X_Estado = res.data.Valor.X_Estado;
+
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                 // -------------------------------------------------------
                                 var auxResponse = await _this.limpiarAsientosBloqueados();
@@ -1662,6 +1672,20 @@
                     if (this.Correlativo === 'B000-00000000' || this.Correlativo === 'F000-00000000') {
                         APP.msg.error('No se encontró serie para el boleto.');
                         return;
+                    }
+
+                    // Valida 'Manifiesto'
+                    if (!IngresoManualPasajes) {
+
+                        // Valida y por dentro setea 'X_Estado'
+                        var resValidaManifiesto = await this.validaManifiesto(asientoSel);
+                        if (!resValidaManifiesto)
+                            return;
+
+                        if (!this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+                            return;
+                        }
                     }
 
                     // Valida 'Precio'
@@ -3562,6 +3586,114 @@
                         APP.msg.error(_data.Mensaje);
                     }
                 },
+                validaManifiesto: async function (_asientoSel) {
+                    var auxResponse = true;
+                    debugger;
+                    if ((Nivel === '1' || Nivel === '11') || !this.objTurno.X_Estado) {
+                        var objPanel_131 = appController.validatePanel('131');
+                        if (objPanel_131 && objPanel_131.Valor === '1') {
+                            var auxVerificaManifiestoPorPVenta = await this.verificaManifiestoPorPVenta(this.filtro.CodiProgramacion, CodiPuntoVenta)
+                            if (auxVerificaManifiestoPorPVenta === '0') {
+                                this.objTurno.X_Estado = '';
+                                return auxResponse;
+                            }
+                        }
+                        
+                        var objPanel_14 = appController.validatePanel('14');
+                        if (objPanel_14 && objPanel_14.Valor === '1') {
+
+                            var resValidaHoraProgramada = await this.validaHoraProgramada(this.filtro.CodiEmpresa.id, this.filtro.CodiSucursal.id, this.filtro.CodiPVOrigenBus.id);
+                            if (resValidaHoraProgramada === '1') { // Volver a '0'
+                                var auxValidate = moment(this.filtro.Turno, 'hh:mmA').isSameOrAfter(moment(), 'minute');
+                                if (auxValidate) {
+                                    this.objTurno.X_Estado = '';
+                                    return auxResponse;
+                                }
+                            }
+                            var auxHours = parseInt( resValidaHoraProgramada.substring(0, 2) ) || 0;
+                            var auxMinutes = parseInt( resValidaHoraProgramada.substring(3, 5) ) || 0;
+                            var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
+                            var auxValidate = auxHoraResult.isSameOrAfter(moment(), 'minute');
+                            if (!auxValidate) { // auxValidate
+                                this.objTurno.X_Estado = '';
+                                return auxResponse;
+                            }
+                        }
+                        else {
+                            var auxValidate = moment(this.filtro.Turno, 'hh:mmA').isSameOrAfter(moment(), 'minute');
+                            if (auxValidate) {
+                                this.objTurno.X_Estado = '';
+                                return auxResponse;
+                            }
+                        }
+
+                        if ((Nivel === '1' || Nivel === '11') || !this.objTurno.X_Estado) { // &&
+                            var resVerificaManifiesto = await this.verificaManifiesto();
+                            if (!resVerificaManifiesto)
+                                auxResponse = false;
+                        }
+
+                        if (!this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+                            auxResponse = false;
+                        }
+                    }
+
+                    return auxResponse;
+                },
+                verificaManifiestoPorPVenta: async function (_CodiProgramacion, _CodiPuntoVenta) {
+                    var auxResponse = '0';
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/verificaManifiestoPorPVenta', {
+                        CodiProgramacion: _CodiProgramacion,
+                        Pvta: _CodiPuntoVenta
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                validaHoraProgramada: async function (_CodiEmpresa, _CodiSucursal, _CodiPVOrigenBus) {
+                    var auxResponse = '0';
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaConfigManifiestoPorHora', {
+                        CodiEmpresa: _CodiEmpresa,
+                        CodiSucursal: _CodiSucursal,
+                        CodiPuntoVenta: _CodiPVOrigenBus
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                verificaManifiesto: async function () {
+                    var auxResponse = true;
+
+                    // SweetAlert para 'Manifiesto'
+                    if (await APP.msg.confirm('Manifiesto ya fue impreso', '¿Desea aperturar de nuevo la programación?')) { // COLOCAR SI PARA PRUEBAS.
+                        if (this.filtro.CodiSucursal.id !== CodiSucursal) {
+                            App.msg.warning('Operación no permitida por estar en una oficina diferente.');
+                            return auxResponse = false;
+                        }
+                        else
+                            debugger;
+                            // Mostrar pop-up. --> Incluir todo el pedazo de codigo de 'If flag_Anul = '1' '
+                    }
+                    else
+                        auxResponse = false;
+
+                    return auxResponse;
+                },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
                     if (objAsiento)
@@ -3922,6 +4054,7 @@
                 },
                 saveVenta: async function () {
                     var _this = this;
+
                     var auxListaVentasRealizadas = [];
                     _this.processing = true;
 

@@ -222,5 +222,12 @@
         // Precio Contrato
         public const string MsgCorrectoBuscarPrecio = "Correcto: BuscarPrecio.";
         public const string MsgExcBuscarPrecio = "Excepción: BuscarPrecio.";
+
+        // Manifiesto
+        public const string MsgCorrectoVerificaManifiestoPorPVenta = "Correcto: VerificaManifiestoPorPVenta.";
+        public const string MsgExcVerificaManifiestoPorPVenta = "Excepción: VerificaManifiestoPorPVenta.";
+
+        public const string MsgCorrectoConsultaConfigManifiestoPorHora = "Correcto: ConsultaConfigManifiestoPorHora.";
+        public const string MsgExcConsultaConfigManifiestoPorHora = "Excepción: ConsultaConfigManifiestoPorHora.";
     }
 }

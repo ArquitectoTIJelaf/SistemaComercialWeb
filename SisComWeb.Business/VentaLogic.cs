@@ -1097,6 +1097,48 @@ namespace SisComWeb.Business
 
         #endregion
 
+        #region MANIFIESTO
+
+        public static Response<string> VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta)
+        {
+            try
+            {
+                var verificaManifiestoPorPVenta = VentaRepository.VerificaManifiestoPorPVenta(CodiProgramacion, Pvta);
+
+                return new Response<string>(true, verificaManifiestoPorPVenta, Message.MsgCorrectoVerificaManifiestoPorPVenta, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaManifiestoPorPVenta, false);
+            }
+        }
+
+        public static Response<string> ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta)
+        {
+            try
+            {
+                var consultaConfigManifiestoPorHora = VentaRepository.ConsultaConfigManifiestoPorHora(CodiEmpresa, CodiSucursal, CodiPuntoVenta);
+
+                if (consultaConfigManifiestoPorHora == "0")
+                {
+                    consultaConfigManifiestoPorHora = VentaRepository.ConsultaConfigManifiestoPorHora(CodiEmpresa, CodiSucursal, 0);
+
+                    if (consultaConfigManifiestoPorHora == "0")
+                        consultaConfigManifiestoPorHora = VentaRepository.ConsultaConfigManifiestoPorHora(CodiEmpresa, 0, 0);
+                }
+
+                return new Response<string>(true, consultaConfigManifiestoPorHora, Message.MsgCorrectoConsultaConfigManifiestoPorHora, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaConfigManifiestoPorHora, false);
+            }
+        }
+
+        #endregion
+
         #region IMPRESIÓN
 
         public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)
@@ -1223,7 +1265,6 @@ namespace SisComWeb.Business
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return null;
             }
-
         }
 
         public static ResponseW AnularDocumentoSUNAT(VentaEntity entidad)

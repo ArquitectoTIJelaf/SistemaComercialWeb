@@ -349,8 +349,9 @@ namespace SisComWeb.Aplication.Controllers
                         NombreCopiloto = (string)data["NombreCopiloto"],
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
                         ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
+                        DescServicio = (string)data["DescServicio"],
 
-                        DescServicio = (string)data["DescServicio"]
+                        X_Estado = (string)data["X_Estado"]
                     }
                 };
 
@@ -1604,6 +1605,83 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<List<ClientePasaje>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaManifiestoPorPVenta")]
+        public async Task<ActionResult> VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + CodiProgramacion +
+                                    ",\"Pvta\" : " + Pvta +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaManifiestoPorPVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaConfigManifiestoPorHora")]
+        public async Task<ActionResult> ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiEmpresa\" : " + CodiEmpresa +
+                                    ",\"CodiSucursal\" : " + CodiSucursal +
+                                    ",\"CodiPuntoVenta\" : " + CodiPuntoVenta +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaConfigManifiestoPorHora", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
     }

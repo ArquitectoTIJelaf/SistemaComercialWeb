@@ -147,6 +147,29 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
+        public static ManifiestoEntity ConsultaManifiestoProgramacion(int prog, string Suc)
+        {
+            var entidad = new ManifiestoEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_TB_manifiesto_programacion_consulta";
+                db.AddParameter("@prog", DbType.Int32, ParameterDirection.Input, prog);
+                db.AddParameter("@Suc", DbType.String, ParameterDirection.Input, Suc);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.NumeManifiesto = Reader.GetStringValue(drlector, "Nume_Manifiesto");
+                        entidad.Est = Reader.GetStringValue(drlector, "est");
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
         #endregion
     }
 }

@@ -224,6 +224,18 @@ namespace SisComWeb.Services
 
         #endregion
 
+        #region MANIFIESTO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaManifiestoPorPVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaConfigManifiestoPorHora", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta);
+
+        #endregion
+
         #region IMPRESIÓN
 
         [OperationContract]

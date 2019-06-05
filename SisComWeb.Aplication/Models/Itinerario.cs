@@ -45,8 +45,9 @@ namespace SisComWeb.Aplication.Models
         public List<DestinoRuta> ListaDestinosRuta { get; set; }
         public string FechaViaje { get; set; }
         public List<Base> ListaAuxDestinosRuta { get; set; }
-
         public string DescServicio { get; set; }
+
+        public string X_Estado { get; set; }
     }
 
     public class FiltroItinerario

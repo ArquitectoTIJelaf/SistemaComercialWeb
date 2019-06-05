@@ -14,7 +14,7 @@ namespace SisComWeb.Business
             {
                 var obtenerBus = new BusEntity();
 
-                // Lista Itinerarios
+                // Busca Turno
                 var buscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
 
                 // Calcula 'FechaProgramacion'
@@ -95,6 +95,13 @@ namespace SisComWeb.Business
                         }
                     }
                 }
+
+                // Consulta 'ManifiestoProgramacion'
+                var ConsultaManifiestoProgramacion = TurnoRepository.ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
+                if (!string.IsNullOrEmpty(ConsultaManifiestoProgramacion.NumeManifiesto) && !string.IsNullOrEmpty(ConsultaManifiestoProgramacion.Est) && ConsultaManifiestoProgramacion.Est != "0")
+                    buscarTurno.X_Estado = "X";
+                else
+                    buscarTurno.X_Estado = "";
 
                 // Valida 'ProgramacionCerrada'
                 var validarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);

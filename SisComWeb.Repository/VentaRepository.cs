@@ -301,6 +301,50 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static string VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_VerificarManiXPvta";
+                db.AddParameter("@Codi_programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Pvta", DbType.Int16, ParameterDirection.Input, Pvta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = "1";
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static string ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_ConfManiXHora";
+                db.AddParameter("@codi_empresa", DbType.Int16, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@codi_sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
+                db.AddParameter("@Codi_puntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "") ?? "0";
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
