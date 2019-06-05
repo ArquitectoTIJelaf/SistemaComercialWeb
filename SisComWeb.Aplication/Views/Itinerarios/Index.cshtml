@@ -11,6 +11,7 @@
     var claveAcompañanteConMayorEdad = Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD;
     var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
     var claveCambioPrecioBoletoViaje = Constant.CLAVE_CAMBIO_DE_PRECIO_DE_BOLETO_DE_VIAJE;
+    var claveProgramacion = Constant.CLAVE_PROGRAMACION;
 }
 
 @Html.Partial("_Filtros")
@@ -798,6 +799,8 @@
 
         var ClaveCambioPrecioBoletoViaje = '@claveCambioPrecioBoletoViaje';
 
+        var ClaveProgramacion = '@claveProgramacion';
+
         var IngresoManualPasajes = false;
 
         var selectAll = {
@@ -915,8 +918,8 @@
                 showPostergacion: function () {
                     appVuePostergacion.show();
                 },
-                showRegistrarWithClave: function (_Tipo) {
-                    appClaveAutorizacion.show(_Tipo);
+                showClaveAutorizacion: async function (_Tipo) {
+                    await appClaveAutorizacion.show(_Tipo);
                 },
                 sendClaveAutorizacion: async function (_password, _Tipo, _observacion) {
                     await APP.rq.axios2.post(APP.base + '/itinerarios/clave-autorizacion' + APP.util.getQueryParamByObject({
@@ -2969,7 +2972,7 @@
                                             case '99': // Retorno
                                                 break;
                                             default:
-                                                appController.showRegistrarWithClave(ClaveDescuentoDePasajes);
+                                                appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
                                         }
                                     }
                                 }
@@ -3588,7 +3591,7 @@
                 },
                 validaManifiesto: async function (_asientoSel) {
                     var auxResponse = true;
-                    debugger;
+
                     if ((Nivel === '1' || Nivel === '11') || !this.objTurno.X_Estado) {
                         var objPanel_131 = appController.validatePanel('131');
                         if (objPanel_131 && objPanel_131.Valor === '1') {
@@ -3614,7 +3617,7 @@
                             var auxMinutes = parseInt( resValidaHoraProgramada.substring(3, 5) ) || 0;
                             var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
                             var auxValidate = auxHoraResult.isSameOrAfter(moment(), 'minute');
-                            if (!auxValidate) { // auxValidate
+                            if (auxValidate) {
                                 this.objTurno.X_Estado = '';
                                 return auxResponse;
                             }
@@ -3685,9 +3688,11 @@
                             App.msg.warning('Operación no permitida por estar en una oficina diferente.');
                             return auxResponse = false;
                         }
-                        else
-                            debugger;
-                            // Mostrar pop-up. --> Incluir todo el pedazo de codigo de 'If flag_Anul = '1' '
+                        else {
+                            var auxWaitModal = await appController.showClaveAutorizacion(ClaveProgramacion);
+                            alert('nunca debí salir.');
+                        }
+                        // Mostrar pop-up. --> Incluir todo el pedazo de codigo de 'If flag_Anul = '1' '.
                     }
                     else
                         auxResponse = false;
@@ -4543,8 +4548,8 @@
                         APP.msg.error(_data.Mensaje);
                     }
                 },
-                showRegistrarWithClave: function () {
-                    appController.showRegistrarWithClave(ClaveAcompañanteConMayorEdad);
+                showClaveAutorizacion: function () {
+                    appController.showClaveAutorizacion(ClaveAcompañanteConMayorEdad);
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) this.close();
@@ -5000,13 +5005,15 @@
                 disabledBtnAceptar: false
             },
             methods: {
-                show: function (_Tipo) {
+                show: async function (_Tipo) {
+                    debugger;
                     if (_Tipo)
                         this.Tipo = _Tipo;
                     else
                         this.Tipo = '';
 
                     this.limpiarClaveAutorizacion();
+
                     $('#appClaveAutorizacion').modal('show');
                 },
                 recorrerClaveAutorizacion: function (auxValidate) {
