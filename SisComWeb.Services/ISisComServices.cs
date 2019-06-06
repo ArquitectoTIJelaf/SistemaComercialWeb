@@ -234,6 +234,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ConsultaConfigManifiestoPorHora", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<string> ConsultaConfigManifiestoPorHora(short CodiEmpresa, short CodiSucursal, short CodiPuntoVenta);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ActualizarProgramacionManifiesto", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ActualizarProgramacionManifiesto(ManifiestoRequest request);
+
         #endregion
 
         #region IMPRESIÓN

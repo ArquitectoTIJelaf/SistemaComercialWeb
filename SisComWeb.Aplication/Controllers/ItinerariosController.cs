@@ -1684,5 +1684,50 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("actualizarProgramacionManifiesto")]
+        public async Task<ActionResult> ActualizarProgramacionManifiesto(ManifiestoRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiEmpresa\" : " + request.CodiEmpresa +
+                                    ",\"CodiProgramacion\" : " + request.CodiProgramacion +
+                                    ",\"CodiSucursal\" : " + usuario.CodiSucursal +
+                                    ",\"TipoApertura\" : " + request.TipoApertura.ToString().ToLower() +
+                                    ",\"CodiSucursalBus\" : " + request.CodiSucursalBus +
+                                    ",\"CodiUsuario\" : " + usuario.CodiUsuario +
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"NumBoleto\" : \"" + request.NumBoleto + "\"" +
+                                    ",\"CodiPuntoVenta\" : \"" + usuario.CodiPuntoVenta + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ActualizarProgramacionManifiesto", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

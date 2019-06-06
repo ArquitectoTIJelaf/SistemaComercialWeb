@@ -170,8 +170,8 @@
         public const string MsgExcListaBeneficiarioPase = "Excepción: ListaBeneficiarioPase.";
 
         // Claves Internas
-        public const string MsgCorrectoClavesInternas = "Clave correcta.";
-        public const string MsgValidaClavesInternas = "La clave ingresada es incorrecta.";
+        public const string MsgCorrectoClavesInternas = "Usuario autorizado.";
+        public const string MsgValidaClavesInternas = "Usuario no autorizado o clave incorrecta.";
         public const string MsgExcClavesInternas = "Excepción: ClavesInternas.";
 
         // Anular Venta
@@ -229,5 +229,11 @@
 
         public const string MsgCorrectoConsultaConfigManifiestoPorHora = "Correcto: ConsultaConfigManifiestoPorHora.";
         public const string MsgExcConsultaConfigManifiestoPorHora = "Excepción: ConsultaConfigManifiestoPorHora.";
+
+        public const string MsgCorrectoActualizarProgramacionManifiesto = "Correcto: ActualizarProgramacionManifiesto.";
+        public const string MsgErrorActualizarProgramacion = "Error: ActualizarProgramacionManifiesto.";
+        public const string MsgErrorGrabarAuditoriaProg = "Error: GrabarAuditoriaProg.";
+        public const string MsgErrorActualizarVentaManifiesto = "Error: ActualizarVentaManifiesto.";
+        public const string MsgExcActualizarProgramacionManifiesto = "Excepción: ActualizarProgramacionManifiesto.";
     }
 }

@@ -313,6 +313,76 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
     return _bool;
 };
 
+APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _bool = false;
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        text: _message || "¿Desea Continuar con la operación?",
+        input: 'password',
+        inputValidator: (value) => {
+            return !value && '¡Ingrese clave!';
+        },
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: _colorOfButton || "#DD6B55",
+        confirmButtonText: _textButtonConfirm || "Si",
+        cancelButtonText: _textButtonCancel || "No",
+        allowOutsideClick: false,
+        showLoaderOnConfirm: true,
+        preConfirm: async function (value) {
+            var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
+            if (resSendClaveAutorizacion && resSendClaveAutorizacion.Estado)
+                _bool = true;
+            else {
+                Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
+            }
+        }
+    })
+        .then(res => { })
+        .catch(error => {
+            APP.msg.error(error);
+        });
+
+    return _bool;
+};
+
+APP.msg.confirmWhitTwoRadioBtn = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _option = '';
+
+    var inputOptions = new Promise(function (resolve) {
+        resolve({
+            'true': 'Solo para vender<br /><p style="font-weight: 400; font-size: 12px; text-align: justify;"> Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con el mismo número de manifiesto.</p>',
+            'false': 'General<br /><p style="font-weight: 400; font-size: 12px; text-align: justify;">Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con un nuevo número de manifiesto.</p>'
+        });
+    });
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        text: _message || "",
+        input: 'radio',
+        inputOptions: inputOptions,
+        inputValidator: (value) => {
+            return !value && '¡Seleccione una opción!';
+        },
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: _colorOfButton || "#DD6B55",
+        confirmButtonText: _textButtonConfirm || "Si",
+        cancelButtonText: _textButtonCancel || "No",
+        allowOutsideClick: false,
+        width: '42em'
+    })
+        .then(res => {
+            _option = res.value;
+        })
+        .catch(error => {
+            APP.msg.error(error);
+        });
+
+    return _option;
+};
+
 APP.msg.ShowSaveAfterSale = async function (_title, _message) {
     var auxBool = false;
     await swal.fire({

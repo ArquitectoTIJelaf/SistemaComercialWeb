@@ -638,6 +638,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<bool> ActualizarProgramacionManifiesto(ManifiestoRequest request)
+        {
+            try
+            {
+                return ManifiestoLogic.ActualizarProgramacionManifiesto(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcActualizarProgramacionManifiesto, false);
+            }
+        }
+
         #endregion
 
         #region IMPRESIÓN
