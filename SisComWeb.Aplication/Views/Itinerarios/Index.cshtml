@@ -3,6 +3,8 @@
 
 @{
     ViewBag.Title = "Ventas";
+    var ImagePath = HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath;
+
     var usuario = DataSession.UsuarioLogueado;
     var fechaActual = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
     var horaActual = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture);
@@ -31,8 +33,8 @@
 @section styles{
     <style type="text/css">
 
-        [type="radio"]:checked,
-        [type="radio"]:not(:checked) {
+        .swal2-content [type="radio"]:checked,
+        .swal2-content [type="radio"]:not(:checked) {
             position: inherit !important;
         }
 
@@ -54,13 +56,13 @@
             margin-right: 10px;
         }
 
-            .lblDescTipo::after {
-                background: var(--emp-color) !important;
-                width: 10px !important;
-                height: 10px !important;
-                top: 3px !important;
-                left: 3px !important;
-            }
+        .lblBoletoTipoDir::after {
+            background: var(--emp-color) !important;
+            width: 10px !important;
+            height: 10px !important;
+            top: 3px !important;
+            left: 3px !important;
+        }
 
         .lblBoletoTipoDir::before {
             border: 1px solid var(--emp-color) !important;
@@ -237,14 +239,6 @@
             display: block;
         }
 
-        .PU {
-            background: url("/wwwroot/plugins/images/users/puerta.png") no-repeat center center;
-            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/puerta.png")") no-repeat center center;*/
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
-
         .VA {
             display: block;
             height: 95%;
@@ -255,33 +249,6 @@
             display: block;
             height: 95%;
             min-width: 40px;
-        }
-
-        .BA {
-            background: url("/wwwroot/plugins/images/users/baño.png") no-repeat center center;
-            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/baño.png")") no-repeat center center;*/
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
-
-        .TV {
-            background: url("/wwwroot/plugins/images/users/TV.png") no-repeat center center;
-            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/TV.png")") no-repeat center center;*/
-            display: block;
-            height: 95%;
-            min-width: 40px;
-        }
-
-        .EE {
-            background: url("/wwwroot/plugins/images/users/ESCALERA.png") no-repeat center center;
-            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/ESCALERA.png")") no-repeat center center;*/
-            background-color: #B2B2B2;
-            border-radius: 4px;
-            display: block;
-            height: 95%;
-            /*min-width: 40px;*/
-            margin: 0 10px 0 10px;
         }
 
         .bus-td {
@@ -435,6 +402,39 @@
             text-align: center;
         }
     </style>
+
+    <style type="text/css">
+        .PU {
+            background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/puerta.png)") no-repeat center center;
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
+
+        .BA {
+            background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/bano.png)") no-repeat center center;
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
+
+        .TV {
+            background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/TV.png)") no-repeat center center;
+            display: block;
+            height: 95%;
+            min-width: 40px;
+        }
+
+        .EE {
+            background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/ESCALERA.png)") no-repeat center center;
+            background-color: #B2B2B2;
+            border-radius: 4px;
+            display: block;
+            height: 95%;
+            /*min-width: 40px;*/
+            margin: 0 10px 0 10px;
+        }
+    </style>
 }
 
 @section scripts{
@@ -443,117 +443,15 @@
         $(document).ready(function () {
 
             //#region RECORRIDO ITINERARIOS
+
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
             $(document).on('blur', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').removeClass('active-chck');
             });
+
             //#endregion
-
-            $('#txtPrecio').on('keypress', function (e) {
-                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
-                var field = $(this);
-                key = e.keycode ? e.keycode : e.which;
-
-                if (key == 8) return true;
-                if (key > 47 && key < 58) {
-                    if (field.val() === "") return true;
-                    var existepto = (/[.]/).test(field.val());
-                    if (existepto === false) {
-                        regexp = /.[0-9]{2}$/; //parte entera 3
-                    }
-                    else {
-                        regexp = /.[0-9]{2}$/; //parte decimal 2
-                    }
-                    return !(regexp.test(field.val()));
-                }
-                if (key == 46) {
-                    if (field.val() === "") return false;
-                    regexp = /^[0-9]+$/;
-
-                    return regexp.test(field.val());
-                }
-                return false;
-            });
-
-            $('#txtImporteDescDC').on('keypress', function (e) {
-                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
-                var field = $(this);
-                key = e.keycode ? e.keycode : e.which;
-
-                if (key == 8) return true;
-                if (key > 47 && key < 58) {
-                    if (field.val() === "") return true;
-                    var existepto = (/[.]/).test(field.val());
-                    if (existepto === false) {
-                        regexp = /.[0-9]{2}$/; //parte entera 3
-                    }
-                    else {
-                        regexp = /.[0-9]{2}$/; //parte decimal 2
-                    }
-                    return !(regexp.test(field.val()));
-                }
-                if (key == 46) {
-                    if (field.val() === "") return false;
-                    regexp = /^[0-9]+$/;
-
-                    return regexp.test(field.val());
-                }
-                return false;
-            });
-
-            $('#txtTtarjetaCantTP').on('keypress', function (e) {
-                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
-                var field = $(this);
-                key = e.keycode ? e.keycode : e.which;
-
-                if (key == 8) return true;
-                if (key > 47 && key < 58) {
-                    if (field.val() === "") return true;
-                    var existepto = (/[.]/).test(field.val());
-                    if (existepto === false) {
-                        regexp = /.[0-9]{10}$/; //parte entera 10
-                    }
-                    else {
-                        regexp = /.[0-9]{2}$/; //parte decimal2
-                    }
-                    return !(regexp.test(field.val()));
-                }
-                if (key == 46) {
-                    if (field.val() === "") return false;
-                    regexp = /^[0-9]+$/;
-
-                    return regexp.test(field.val());
-                }
-                return false;
-            });
-
-            $('#txtEfectivoTP').on('keypress', function (e) {
-                // backspace = 8, enter = 13, ’0′ = 48, ’9′ = 57, ‘.’ = 46
-                var field = $(this);
-                key = e.keycode ? e.keycode : e.which;
-
-                if (key == 8) return true;
-                if (key > 47 && key < 58) {
-                    if (field.val() === "") return true;
-                    var existepto = (/[.]/).test(field.val());
-                    if (existepto === false) {
-                        regexp = /.[0-9]{10}$/; //parte entera 10
-                    }
-                    else {
-                        regexp = /.[0-9]{2}$/; //parte decimal2
-                    }
-                    return !(regexp.test(field.val()));
-                }
-                if (key == 46) {
-                    if (field.val() === "") return false;
-                    regexp = /^[0-9]+$/;
-
-                    return regexp.test(field.val());
-                }
-                return false;
-            });
 
             $('#appVueTipoPago').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueTipoPago.esc);
@@ -782,6 +680,8 @@
             }
         })
 
+        var ImagePath = '@ImagePath';
+
         var fechaActual = '@fechaActual';
 
         var horaActual = '@horaActual';
@@ -834,6 +734,51 @@
             else
                 return '';
         });
+
+        function jsValidarNumeroConDosDecimales(e) {
+            var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
+            var re2 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
+
+            switch (e.target.id) {
+                case 'txtPrecio':
+                    {
+                        var val = appVueVenta.list.ventas[appVueVenta.indexVenta].Precio;
+                        if (!re1.test(val)) {
+                            val = re2.exec(val);
+                            val ? appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = val[0] : appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = '';
+                        }
+                    };
+                    break;
+                case 'txtImporteDescDC':
+                    {
+                        var val = appVueDescuentoControl.ImporteDescuento;
+                        if (!re1.test(val)) {
+                            val = re2.exec(val);
+                            val ? appVueDescuentoControl.ImporteDescuento = val[0] : appVueDescuentoControl.ImporteDescuento = '';
+                        }
+                    };
+                    break;
+                case 'txtTtarjetaCantTP':
+                    {
+                        var val = appVueTipoPago.tarjetaCant;
+                        if (!re1.test(val)) {
+                            val = re2.exec(val);
+                            val ? appVueTipoPago.tarjetaCant = val[0] : appVueTipoPago.tarjetaCant = '';
+                        }
+                    };
+                    break;
+                case 'txtEfectivoTP':
+                    {
+                        var val = appVueTipoPago.efectivo;
+                        if (!re1.test(val)) {
+                            val = re2.exec(val);
+                            val ? appVueTipoPago.efectivo = val[0] : appVueTipoPago.efectivo = '';
+                        }
+                    };
+                    break;
+            }
+
+        }
 
         function formatoBoletoCompleto(_TipoBoleto, _Boleto) {
             return (_TipoBoleto === 'M' ? '0' : _TipoBoleto) + _Boleto;
@@ -1306,6 +1251,7 @@
                 disabledCamposTicket: false,
                 disabledCamposTicket_Pase: false,
                 eventTxtNroAsientoVenta: '',
+                eventTxtPrecio: '',
                 // Crédito
                 disabledPrecio: false,
                 disabledCredito: false,
@@ -1583,13 +1529,52 @@
                 bloquearAsiento: async function (asientoSel, auxBool_Click_Key) { // Click: True | Key: False
                     var _this = this;
                     var auxResponse = false;
-
-                    // Para setear variables de 'Crédito'
                     var tmpAsientoSel = {};
 
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS > 0) {
                         _this.liberarAsiento(asientoSel, true);
+                        return;
+                    }
+
+                    // Validar 'AsientoSel' vendido
+                    if (asientoSel.FlagVenta) {
+                        _this.fillDataAsientoVendido(asientoSel);
+                        return;
+                    }
+
+                    // Limpiar si el asiento anterior era solo vista
+                    if (_this.list.ventas[_this.indexVenta].FlagVenta)
+                        _this.limpiarVenta();
+
+                    // Valida 'Correlativo'
+                    if (this.Correlativo === 'B000-00000000' || this.Correlativo === 'F000-00000000') {
+                        APP.msg.error('No se encontró serie para el boleto.');
+                        return;
+                    }
+
+                    // Valida 'Manifiesto'
+                    if (!IngresoManualPasajes) {
+                        // Valida y por dentro setea 'X_Estado'
+                        var auxX_Estado = _.cloneDeep(this.objTurno.X_Estado);
+
+                        var resValidaManifiesto = await this.validaManifiesto();
+                        if (!resValidaManifiesto) {
+                            // Seteo el valor original de 'X_Estado'
+                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            return;
+                        }
+                        if (this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+                            // Seteo el valor original de 'X_Estado'
+                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            return;
+                        }
+                    }
+
+                    // Valida 'Precio'
+                    if (asientoSel.PrecioNormal === 0) {
+                        APP.msg.error('No se encontró precio del asiento.');
                         return;
                     }
 
@@ -1668,50 +1653,6 @@
                                 }
                                 break;
                         }
-                    }
-
-                    // Validar 'AsientoSel' vendido
-                    if (asientoSel.FlagVenta) {
-                        _this.fillDataAsientoVendido(asientoSel);
-                        return;
-                    }
-
-                    // Limpiar si el asiento anterior era solo vista
-                    if (_this.list.ventas[_this.indexVenta].FlagVenta)
-                        _this.limpiarVenta();
-
-                    // Valida 'Correlativo'
-                    if (this.Correlativo === 'B000-00000000' || this.Correlativo === 'F000-00000000') {
-                        APP.msg.error('No se encontró serie para el boleto.');
-                        return;
-                    }
-
-                    // Valida 'Manifiesto'
-                    if (!IngresoManualPasajes) {
-
-                        // Valida y por dentro setea 'X_Estado'
-                        var auxX_Estado = _.cloneDeep(this.objTurno.X_Estado);
-
-                        var resValidaManifiesto = await this.validaManifiesto(asientoSel);
-                        if (!resValidaManifiesto) {
-                            // Seteo valor original de 'X_Estado'
-                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-                            return;
-                        }
-                            
-
-                        if (!this.objTurno.X_Estado) {
-                            APP.msg.warning('El manifiesto ya fue emitido.');
-                            // Seteo valor original de 'X_Estado'
-                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-                            return;
-                        }
-                    }
-
-                    // Valida 'Precio'
-                    if (asientoSel.PrecioNormal === 0) {
-                        APP.msg.error('No se encontró precio del asiento.');
-                        return;
                     }
 
                     var input = {};
@@ -2080,8 +2021,9 @@
                         $('#cboDestinoPas_2 input[type=search]').focus();
                     else if (!_this.filtro.Turno)
                         document.getElementById('txtTurno').focus();
-                    else if (!_this.filtro.Fecha)
-                        document.getElementById('txtFecha_2').focus();
+                    else if (!_this.filtro.Fecha) {
+                        //document.getElementById('txtFecha_2').focus();
+                    }
                     else
                         appController.chargeTurnos();
                 },
@@ -2549,9 +2491,9 @@
                 },
                 iconVentaBus: function (Sexo, Edad) {
                     if (Edad < 18)
-                        return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/NINO.png';
+                        return Sexo === 'F' ? ImagePath + '/wwwroot/plugins/images/users/MUJER.png' : ImagePath + '/wwwroot/plugins/images/users/NINO.png';
                     else
-                        return Sexo === 'F' ? '/wwwroot/plugins/images/users/MUJER.png' : '/wwwroot/plugins/images/users/HOMBRE.png';
+                        return Sexo === 'F' ? ImagePath + '/wwwroot/plugins/images/users/MUJER.png' : ImagePath + '/wwwroot/plugins/images/users/HOMBRE.png';
                 },
                 showNombrePasajero: function (FechaVenta, Nombres, ApellidoPaterno, ApellidoMaterno) {
                     if (FechaVenta)
@@ -2965,12 +2907,19 @@
                         this.auxFocus.precio = true;
                     });
                 },
+                keyTxtPrecio: function (e) {
+                    this.eventTxtPrecio = e;
+                    this.$refs.refPrecio.blur();
+                },
                 validateRangePrice: function (event) {
+                    if (this.eventTxtPrecio)
+                        event = this.eventTxtPrecio;
+
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
                     var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
                     var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || 0);
                     var min = parseFloat(this.list.ventas[this.indexVenta].PrecioMin || 0);
-
+                    
                     if (!actual && !this.list.ventas[this.indexVenta].NroAsiento)
                         this.list.ventas[this.indexVenta].Precio = '';
                     else {
@@ -2990,6 +2939,7 @@
                                                 break;
                                             default:
                                                 appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
+                                                return;
                                         }
                                     }
                                 }
@@ -3016,6 +2966,14 @@
                     }
 
                     this.auxFocus.precio = false;
+
+                    switch (event.keyCode) {
+                        case 112:
+                            this.showDescuentoControl();
+                            break;
+                        default:
+                            this.recorridoSectionVentas();
+                    }
                 },
                 focusAsiento: function (event) {
                     event.target.select();
@@ -3550,25 +3508,22 @@
                             appController.showBuscaClientePasaje();
                     }
                 },
-                showDescuentoControl: function (e) {
-                    if (e.keyCode === 112) { // F1
+                showDescuentoControl: function () {
+                    // Valida que no se cruce con el otro 'Descuento'
+                    if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
+                        var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
+                        var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
 
-                        // Valida que no se cruce con el otro 'Descuento'
-                        if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
-                            var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
-                            var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
-
-                            if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
-                                if (actual < normal) {
-                                    if (this.pickedBusVenta !== '99')
-                                        return;
-                                }
+                        if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
+                            if (actual < normal) {
+                                if (this.pickedBusVenta !== '99')
+                                    return;
                             }
-
                         }
 
-                        appController.showDescuentoControl(this.list.ventas[this.indexVenta].Precio);
                     }
+
+                    appController.showDescuentoControl(this.list.ventas[this.indexVenta].Precio);
                 },
                 sendBuscaClientePasaje: async function (_item) {
                     this.list.ventas[this.indexVenta].Documento = _item.NumeroDoc;
@@ -3606,10 +3561,10 @@
                         APP.msg.error(_data.Mensaje);
                     }
                 },
-                validaManifiesto: async function (_asientoSel) {
+                validaManifiesto: async function () {
                     var auxResponse = true;
 
-                    if ((Nivel === '1' || Nivel === '11') || !this.objTurno.X_Estado) {
+                    if ((Nivel === '1' || Nivel === '11') || this.objTurno.X_Estado) {
                         var objPanel_131 = appController.validatePanel('131');
                         if (objPanel_131 && objPanel_131.Valor === '1') {
                             var auxVerificaManifiestoPorPVenta = await this.verificaManifiestoPorPVenta(this.filtro.CodiProgramacion, CodiPuntoVenta)
@@ -3618,12 +3573,12 @@
                                 return auxResponse;
                             }
                         }
-                        
+
                         var objPanel_14 = appController.validatePanel('14');
                         if (objPanel_14 && objPanel_14.Valor === '1') {
 
                             var resValidaHoraProgramada = await this.validaHoraProgramada(this.filtro.CodiEmpresa.id, this.filtro.CodiSucursal.id, this.filtro.CodiPVOrigenBus.id);
-                            if (resValidaHoraProgramada === '1') { // Volver a '0'
+                            if (resValidaHoraProgramada === '0') {
                                 var auxValidate = moment(this.filtro.Turno, 'hh:mmA').isSameOrAfter(moment(), 'minute');
                                 if (auxValidate) {
                                     this.objTurno.X_Estado = '';
@@ -3634,7 +3589,7 @@
                             var auxMinutes = parseInt( resValidaHoraProgramada.substring(3, 5) ) || 0;
                             var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
                             var auxValidate = auxHoraResult.isSameOrAfter(moment(), 'minute');
-                            if (!auxValidate) { // auxValidate
+                            if (auxValidate) {
                                 this.objTurno.X_Estado = '';
                                 return auxResponse;
                             }
@@ -3647,13 +3602,13 @@
                             }
                         }
 
-                        if ((Nivel === '1' || Nivel === '11') || !this.objTurno.X_Estado) { // &&
+                        if ((Nivel === '1' || Nivel === '11') && this.objTurno.X_Estado) {
                             var resVerificaManifiesto = await this.verificaManifiesto();
                             if (!resVerificaManifiesto)
                                 auxResponse = false;
                         }
 
-                        if (!this.objTurno.X_Estado) {
+                        if (this.objTurno.X_Estado) {
                             APP.msg.warning('El manifiesto ya fue emitido.');
                             auxResponse = false;
                         }
@@ -3795,6 +3750,9 @@
                         if (objAsiento)
                             objAsiento.NumeAsiento = parseInt(obj.NumeAsiento);
                     });
+                },
+                validarNumeroConDosDecimales: function () {
+                    jsValidarNumeroConDosDecimales(this.list.ventas[this.indexVenta].Precio);
                 }
             },
             computed: {
@@ -3870,14 +3828,19 @@
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
                     if (this.filtro.CodiEmpresa)
                         this.$refs.refEmpresa._data.typeAheadPointer = _.findIndex(this.list.empresas, { 'id': this.filtro.CodiEmpresa.id, 'label': this.filtro.CodiEmpresa.label });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiSucursal': function (newVal, oldVal) {
                     if (this.filtro.CodiSucursal)
                         this.$refs.refSucursal._data.typeAheadPointer = _.findIndex(this.list.sucursales, { 'id': this.filtro.CodiSucursal.id, 'label': this.filtro.CodiSucursal.label });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
-                    // Evita doble consulta cuando 'sendRow'
-                    if (!oldVal) return;
+                    // Evita doble consulta cuando 'getTurno'
+                    if (this.processing)
+                        return;
 
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
@@ -3892,22 +3855,32 @@
 
                     if (this.filtro.CodiOrigenBus)
                         this.$refs.refOrigenBus._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.origenesBus, { 'id': this.filtro.CodiOrigenBus.id, 'label': this.filtro.CodiOrigenBus.label }); });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
                     if (this.filtro.CodiPVOrigenBus)
                         this.$refs.refPVOrigenBus._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.pvOrigenesBus, { 'id': this.filtro.CodiPVOrigenBus.id, 'label': this.filtro.CodiPVOrigenBus.label }); });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiDestinoBus': function (newVal, oldVal) {
                     if (this.filtro.CodiDestinoBus)
                         this.$refs.refDestinoBus_2._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiDestinoBus.id, 'label': this.filtro.CodiDestinoBus.label }); });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiServicio': function (newVal, oldVal) {
                     if (this.filtro.CodiServicio)
                         this.$refs.refServicio._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.servicios, { 'id': this.filtro.CodiServicio.id, 'label': this.filtro.CodiServicio.label }); });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.CodiDestinoPas': function (newVal, oldVal) {
                     if (this.filtro.CodiDestinoPas)
                         this.$refs.refDestinoPas_2._data.typeAheadPointer = this.$nextTick(() => { _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestinoPas.id, 'label': this.filtro.CodiDestinoPas.label }); });
+                    else
+                        this.showPlano = false;
                 },
                 'filtro.Fecha': function (newVal, oldVal) {
                     if (newVal) {
@@ -4450,7 +4423,7 @@
                 Nombres: '',
                 ApellidoPaterno: '',
                 ApellidoMaterno: '',
-                FechaNac : '',
+                FechaNac: '',
                 Edad: '',
                 Sexo: null,
                 Parentesco: null,
@@ -4688,7 +4661,7 @@
                 fechaAbierta: false,
                 searchInTable: ''
             },
-            mounted: function () {},
+            mounted: function () { },
             methods: {
                 show: function () {
                     if (this.list.gerentes.length === 0)
@@ -4841,7 +4814,7 @@
                         });
                     }
                     else
-                         this.list.filterBeneficiarios = this.list.beneficiarios;
+                        this.list.filterBeneficiarios = this.list.beneficiarios;
                 }
             }
         });
@@ -5294,10 +5267,6 @@
                                 document.getElementById('txtFechaCita').focus();
                                 APP.msg.warning('Selecciona una fecha menor o igual a la fecha actual.');
                             }
-                            else if (!this.hospital) {
-                                $('#cboHospital input[type=search]').focus();
-                                if (auxValidate === true) APP.msg.warning('Seleccione un hospital.');
-                            }
                             else {
                                 document.getElementById('btnAceptar_CO').focus();
                                 auxResponse = true;
@@ -5313,7 +5282,7 @@
                 },
                 blurFechaCita: function () {
                     this.fechaCita = $('#txtFechaCita').val();
-                    this.recorrerCreditoOpciones();
+                    $('#cboHospital input[type=search]').focus();
                 },
                 saveCreditoOpciones: async function () {
                     if (!this.recorrerCreditoOpciones(true))

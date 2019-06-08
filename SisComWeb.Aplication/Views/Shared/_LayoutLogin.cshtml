@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var ImagePath = HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -14,19 +18,18 @@
     <link href="~/wwwroot/statics/css/custom-style.css" rel="stylesheet">
     @RenderSection("styles", required: false)
     <script type="text/javascript">
-            var main_globals = {};
-            main_globals.virtualPath = "@HttpContext.Current.Request.ApplicationPath";
-            main_globals.Path = "@HttpContext.Current.Request.Path";
-            main_globals.AbsolutePath = "@HttpContext.Current.Request.Url.AbsolutePath";
-            main_globals.Query = "@HttpContext.Current.Request.Url.Query";
-            main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
-            main_globals.flagDevelop = JSON.parse("true".toLowerCase());
+        var main_globals = {};
+        main_globals.virtualPath = "@HttpContext.Current.Request.ApplicationPath";
+        main_globals.Path = "@HttpContext.Current.Request.Path";
+        main_globals.AbsolutePath = "@HttpContext.Current.Request.Url.AbsolutePath";
+        main_globals.Query = "@HttpContext.Current.Request.Url.Query";
+        main_globals.PathAndQuery = "@HttpContext.Current.Request.Url.PathAndQuery";
+        main_globals.flagDevelop = JSON.parse("true".toLowerCase());
     </script>
 
     <style>
         html {
-            background: url("/wwwroot/plugins/images/users/FONDO.jpg") no-repeat center center fixed;
-            /*background: @@Url.Content("url(" + (HttpContext.Current.Request.Path == "/" ? "" : HttpContext.Current.Request.Path) + "/wwwroot/plugins/images/users/FONDO.jpg)") no-repeat center center fixed;*/
+            background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/FONDO.jpg)") no-repeat center center fixed;
             background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;

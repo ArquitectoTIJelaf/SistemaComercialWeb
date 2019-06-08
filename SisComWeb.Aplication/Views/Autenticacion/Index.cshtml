@@ -114,6 +114,7 @@
                     // Valida 'Terminal'
                     if (!this.Terminal) {
                         APP.msg.error("No se encontró Terminal.");
+                        this.disabledValidator = false;
                         return;
                     }
 

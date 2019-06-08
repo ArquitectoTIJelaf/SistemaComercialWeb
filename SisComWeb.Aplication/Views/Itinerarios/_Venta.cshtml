@@ -1023,7 +1023,7 @@
                                                           id="txtObservacion"
                                                           class="form-control input-sm"
                                                           placeholder="OBSERVACIÓN"
-                                                          style="height: 30px; min-height: 30px; "
+                                                          style="height: 30px; min-height: 30px; max-height: 60px; "
                                                           disabled="disabled">
                                                 </textarea>
                                             </div>
@@ -1035,7 +1035,7 @@
                                                     <textarea :value="list.ventas[indexVenta].Info"
                                                               id="txtInfo"
                                                               class="form-control input-sm"
-                                                              style="height: 50px; min-height: 50px; "
+                                                              style="height: 50px; min-height: 50px; max-height: 100px; "
                                                               disabled="disabled">
                                                 </textarea>
                                                 </div>
@@ -1062,18 +1062,20 @@
                                                 <div class="form-group text-center">
                                                     <label class="control-label" style="width: 100%; font-weight: 500; color: var(--emp-color);">Precio S/.</label>
                                                     <input v-model="list.ventas[indexVenta].Precio"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           @@keypress.9.prevent="recorridoSectionVentas"
-                                                           @@keydown.112.prevent="showDescuentoControl($event)"
-                                                           @@focus="focusPrecio($event)"
-                                                           @@blur="validateRangePrice"
                                                            id="txtPrecio"
                                                            ref="refPrecio"
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
+                                                           maxlength="6"
+                                                           onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                                           @@keypress.13.prevent="keyTxtPrecio($event)"
+                                                           @@keypress.9.prevent="keyTxtPrecio($event)"
+                                                           @@keydown.112.prevent="keyTxtPrecio($event)"
+                                                           @@focus="focusPrecio($event)"
+                                                           @@blur="validateRangePrice($event)"
                                                            :disabled="disabledCamposTicket || disabledPrecio"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color);"
-                                                           v-bind:class="{'placeh-ticket-venta': auxFocus.precio}">
+                                                           :class="{'placeh-ticket-venta': auxFocus.precio}"
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); ">
                                                 </div>
                                             </div>
                                         </div>

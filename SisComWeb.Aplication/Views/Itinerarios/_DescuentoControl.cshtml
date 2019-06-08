@@ -56,6 +56,8 @@
                                     <input v-model="ImporteDescuento"
                                            id="txtImporteDescDC"
                                            class="form-control input-sm"
+                                           maxlength="6"
+                                           onkeyup="jsValidarNumeroConDosDecimales(event)"
                                            @@keydown.13.prevent="recorrerDescuentoControl(true)"
                                            @@keydown.9.prevent="recorrerDescuentoControl(true)"
                                            type="text"

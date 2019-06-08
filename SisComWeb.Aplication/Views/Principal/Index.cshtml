@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "Principal";
     Layout = "~/Views/Shared/_LayoutPrincipal.cshtml";
+
+    var ImagePath = HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath;
 }
 
 @section styles{
@@ -48,7 +50,6 @@
     </style>
 }
 
-
 <div id="principal">
 
     <a href="@Url.Action("Index","Itinerarios")">
@@ -90,17 +91,30 @@
 
 @section scripts{
     <script type="text/javascript">
+
         var classOne = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
         var Class = 'item pulse animated';
+
+        var Img1 = '@ImagePath' + '/wwwroot/plugins/images/VENTA1.png';
+        var Img2 = '@ImagePath' + '/wwwroot/plugins/images/CLIENTE1.png';
+        var Img3 = '@ImagePath' + '/wwwroot/plugins/images/CORELA1.png';
+        var Img4 = '@ImagePath' + '/wwwroot/plugins/images/RUTAS1.png';
+        var Img5 = '@ImagePath' + '/wwwroot/plugins/images/LIQ1.png';
+
+        var Img6 = '@ImagePath' + '/wwwroot/plugins/images/VENTA2.png';
+        var Img7 = '@ImagePath' + '/wwwroot/plugins/images/CLIENTES2.png';
+        var Img8 = '@ImagePath' + '/wwwroot/plugins/images/CORELA2.png';
+        var Img9 = '@ImagePath' + '/wwwroot/plugins/images/RUTAS2.png';
+        var Img10 = '@ImagePath' + '/wwwroot/plugins/images/LIQU2.png';
 
         var Principal = new Vue({
             el: '#principal',
             data: {
-                img1: '/wwwroot/plugins/images/VENTA1.png',
-                img2: '/wwwroot/plugins/images/CLIENTE1.png',
-                img3: '/wwwroot/plugins/images/CORELA1.png',
-                img4: '/wwwroot/plugins/images/RUTAS1.png',
-                img5: '/wwwroot/plugins/images/LIQ1.png',
+                img1: Img1,
+                img2: Img2,
+                img3: Img3,
+                img4: Img4,
+                img5: Img5
             },
             mounted: function () {
                 window.addEventListener('keyup', function (event) {
@@ -114,52 +128,52 @@
             methods: {
                 changeImg1: function (index) {
                     if (index === 0) {
-                        this.img1 = '/wwwroot/plugins/images/VENTA2.png';
+                        this.img1 = Img6;
                         $('#itemVentas').removeClass().addClass(Class).one(classOne, function () {
                             $(this).removeClass().addClass('item');
                         });
                     } else {
-                        this.img1 = '/wwwroot/plugins/images/VENTA1.png';
+                        this.img1 = Img1;
                     }
                 },
                 changeImg2: function (index) {
                     if (index === 0) {
-                        this.img2 = '/wwwroot/plugins/images/CLIENTES2.png';
+                        this.img2 = Img7;
                         $('#itemClientes').removeClass().addClass(Class).one(classOne, function () {
                             $(this).removeClass().addClass('item');
                         });
                     } else {
-                        this.img2 = '/wwwroot/plugins/images/CLIENTE1.png';
+                        this.img2 = Img2;
                     }
                 },
                 changeImg3: function (index) {
                     if (index === 0) {
-                        this.img3 = '/wwwroot/plugins/images/CORELA2.png';
+                        this.img3 = Img8;
                         $('#itemCorrelativos').removeClass().addClass(Class).one(classOne, function () {
                             $(this).removeClass().addClass('item');
                         });
                     } else {
-                        this.img3 = '/wwwroot/plugins/images/CORELA1.png';
+                        this.img3 = Img3;
                     }
                 },
                 changeImg4: function (index) {
                     if (index === 0) {
-                        this.img4 = '/wwwroot/plugins/images/RUTAS2.png';
+                        this.img4 = Img9;
                         $('#itemRutas').removeClass().addClass(Class).one(classOne, function () {
                             $(this).removeClass().addClass('item');
                         });
                     } else {
-                        this.img4 = '/wwwroot/plugins/images/RUTAS1.png';
+                        this.img4 = Img4;
                     }
                 },
                 changeImg5: function (index) {
                     if (index === 0) {
-                        this.img5 = '/wwwroot/plugins/images/LIQU2.png';
+                        this.img5 = Img10;
                         $('#itemLiquidaciones').removeClass().addClass(Class).one(classOne, function () {
                             $(this).removeClass().addClass('item');
                         });
                     } else {
-                        this.img5 = '/wwwroot/plugins/images/LIQ1.png';
+                        this.img5 = Img5;
                     }
                 },
             }

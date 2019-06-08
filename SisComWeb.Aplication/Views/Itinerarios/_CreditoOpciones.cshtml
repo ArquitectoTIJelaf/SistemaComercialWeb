@@ -68,6 +68,7 @@
                                               :options="list.hospitales"
                                               :placeholder="'HOSPITAL'"
                                               :select-on-tab="true"
+                                              ref="refHospital"
                                               @@keydown.13.native.prevent="recorrerCreditoOpciones"
                                                @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>

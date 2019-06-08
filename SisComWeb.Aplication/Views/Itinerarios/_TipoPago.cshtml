@@ -105,11 +105,13 @@
                                     <label class="col-md-12 control-label label-sm">Monto Tarjeta:</label>
                                     <div class="col-md-12">
                                         <input v-model="tarjetaCant"
-                                               id="txtTtarjetaCantTP"
                                                @@input="calcMontos('T')"
+                                               id="txtTtarjetaCantTP"
+                                               class="form-control input-sm"
+                                               maxlength="6"
+                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                v-validate="'between:1, '+(sumaTotal-1)"
-                                               class="form-control input-sm"
                                                name="Monto Tarjeta"
                                                v-money
                                                v-only-digit
@@ -120,11 +122,13 @@
                                     <label class="col-md-12 control-label label-sm">Monto Efectivo:</label>
                                     <div class="col-md-12">
                                         <input v-model="efectivo"
-                                               id="txtEfectivoTP"
                                                @@input="calcMontos('E')"
+                                               id="txtEfectivoTP"
+                                               class="form-control input-sm"
+                                               maxlength="6"
+                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                v-validate="'between:1, '+sumaTotal"
-                                               class="form-control input-sm"
                                                name="Monto Efectivo"
                                                v-money
                                                v-only-digit
