@@ -655,11 +655,11 @@ namespace SisComWeb.Services
 
         #region IMPRESIÓN
 
-        public Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)
+        public Response<List<ImpresionEntity>> ConvertirVentaToBase64(VentaRealizadaRequest request)
         {
             try
             {
-                return VentaLogic.ConvertirVentaToBase64(Listado);
+                return VentaLogic.ConvertirVentaToBase64(request.ListaVentasRealizadas, request.TipoImpresion);
             }
             catch (Exception ex)
             {

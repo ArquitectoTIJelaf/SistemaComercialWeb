@@ -53,7 +53,11 @@ namespace SisComWeb.Repository
                             NomDestino = string.Empty,
                             NomPuntoVenta = string.Empty,
                             NomUsuario = string.Empty,
-                            NumeSolicitud = string.Empty
+                            NumeSolicitud = string.Empty,
+
+                            HoraVenta = string.Empty,
+                            EmbarqueDir = string.Empty,
+                            EmbarqueHora = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -189,6 +193,12 @@ namespace SisComWeb.Repository
                             CodiUsuario = Reader.GetSmallIntValue(drlector, "Codi_Usuario"),
                             NomUsuario = Reader.GetStringValue(drlector, "Nom_Usuario") ?? string.Empty,
                             NumeSolicitud = Reader.GetStringValue(drlector, "nume_solicitud") ?? string.Empty,
+
+                            HoraVenta = Reader.GetStringValue(drlector, "HORA_VENTA") ?? string.Empty,
+                            EmbarqueCod = Reader.GetSmallIntValue(drlector, "EmbarqueCod"),
+                            EmbarqueDir = Reader.GetStringValue(drlector, "EmbarqueDir") ?? string.Empty,
+                            EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora") ?? string.Empty,
+
                             // Para evitar Null's
                             Nombres = string.Empty,
                             ApellidoPaterno = string.Empty,
@@ -258,7 +268,11 @@ namespace SisComWeb.Repository
                             NomDestino = string.Empty,
                             NomPuntoVenta = string.Empty,
                             NomUsuario = string.Empty,
-                            NumeSolicitud = string.Empty
+                            NumeSolicitud = string.Empty,
+
+                            HoraVenta = string.Empty,
+                            EmbarqueDir = string.Empty,
+                            EmbarqueHora = string.Empty
                         };
                         Lista.Add(entidad);
                     }

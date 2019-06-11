@@ -244,7 +244,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConvertirVentaToBase64", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado);
+        Response<List<ImpresionEntity>> ConvertirVentaToBase64(VentaRealizadaRequest request);
 
         #endregion
     }

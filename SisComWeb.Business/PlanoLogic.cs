@@ -213,6 +213,11 @@ namespace SisComWeb.Business
             entidad.RucContacto = item.RucContacto;
             entidad.NumeSolicitud = item.NumeSolicitud;
 
+            entidad.HoraVenta = item.HoraVenta;
+            entidad.EmbarqueCod = item.EmbarqueCod;
+            entidad.EmbarqueDir = item.EmbarqueDir;
+            entidad.EmbarqueHora = item.EmbarqueHora;
+
             switch (entidad.FlagVenta)
             {
                 case "X": // Asiento bloqueado

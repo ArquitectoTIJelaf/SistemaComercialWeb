@@ -38,10 +38,13 @@ function formatToChar2(value) {
 }
 
 function animateScrollTop(duration = 800) {
-    if ($(".img-bus")[0].getBoundingClientRect().top !== $("#appVueNavarHeader")[0].getBoundingClientRect().height) {
+    var _heightOfBus = $(".img-bus")[0].getBoundingClientRect().top;
+    var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
+
+    if (_heightOfBus !== _heightOfHeader) {
         var _topOfBus = $('.img-bus').offset().top;
-        var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
         var value = _topOfBus - _heightOfHeader;
+
         if (!isNaN(value))
             $("html, body").animate({ scrollTop: value }, duration);
     }

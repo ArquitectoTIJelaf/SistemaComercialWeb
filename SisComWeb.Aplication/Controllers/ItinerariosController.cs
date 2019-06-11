@@ -75,8 +75,12 @@ namespace SisComWeb.Aplication.Controllers
                 NomPuntoVenta = (string)x["NomPuntoVenta"],
                 CodiUsuario = (short)x["CodiUsuario"],
                 NomUsuario = (string)x["NomUsuario"],
+                NumeSolicitud = (string)x["NumeSolicitud"],
 
-                NumeSolicitud = (string)x["NumeSolicitud"]
+                HoraVenta = (string)x["HoraVenta"],
+                EmbarqueCod = (short)x["EmbarqueCod"],
+                EmbarqueDir = (string)x["EmbarqueDir"],
+                EmbarqueHora = (string)x["EmbarqueHora"]
             }).ToList();
 
             return lista;
@@ -1312,7 +1316,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("convertir-venta-to-base64")]
-        public async Task<ActionResult> ConvertirVentaToBase64(List<VentaRealizada> Listado)
+        public async Task<ActionResult> ConvertirVentaToBase64(List<VentaRealizada> ListaVentasRealizadas, string TipoImpresion)
         {
             try
             {
@@ -1322,51 +1326,62 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     string _body = string.Empty;
 
-                    _body += "[";
-                    for (var i = 0; i < Listado.Count; i++)
+                    _body += "{";
+
+                    _body += "\"ListaVentasRealizadas\" : [";
+                    for (var i = 0; i < ListaVentasRealizadas.Count; i++)
                     {
                         _body += "{"
-                                    + "\"IdVenta\": " + Listado[i].IdVenta
-                                    + ",\"NomTipVenta\" : \"" + Listado[i].NomTipVenta + "\""
-                                    + ",\"NumeAsiento\" : \"" + Listado[i].NumeAsiento + "\""
-                                    + ",\"BoletoCompleto\" : \"" + Listado[i].BoletoCompleto + "\""
-                                    + ",\"BoletoTipo\" : \"" + Listado[i].BoletoTipo + "\""
-                                    + ",\"BoletoSerie\" : \"" + Listado[i].BoletoSerie + "\""
-                                    + ",\"BoletoNum\" : \"" + Listado[i].BoletoNum + "\""
-                                    + ",\"CodDocumento\" : \"" + Listado[i].CodDocumento + "\""
-                                    + ",\"EmisionFecha\" : \"" + Listado[i].EmisionFecha + "\""
-                                    + ",\"EmisionHora\" : \"" + Listado[i].EmisionHora + "\""
-                                    + ",\"CajeroCod\": " + Listado[i].CajeroCod
-                                    + ",\"CajeroNom\" : \"" + Listado[i].CajeroNom + "\""
-                                    + ",\"PasNombreCom\" : \"" + Listado[i].PasNombreCom + "\""
-                                    + ",\"PasRuc\" : \"" + Listado[i].PasRuc + "\""
-                                    + ",\"PasRazSocial\" : \"" + Listado[i].PasRazSocial + "\""
-                                    + ",\"PasDireccion\" : \"" + Listado[i].PasDireccion + "\""
-                                    + ",\"NomOriPas\" : \"" + Listado[i].NomOriPas + "\""
-                                    + ",\"NomDesPas\" : \"" + Listado[i].NomDesPas + "\""
-                                    + ",\"DocTipo\": " + Listado[i].DocTipo
-                                    + ",\"DocNumero\" : \"" + Listado[i].DocNumero + "\""
-                                    + ",\"PrecioCan\" : \"" + Listado[i].PrecioCan + "\""
-                                    + ",\"PrecioDes\" : \"" + Listado[i].PrecioDes + "\""
-                                    + ",\"NomServicio\" : \"" + Listado[i].NomServicio + "\""
-                                    + ",\"FechaViaje\" : \"" + Listado[i].FechaViaje + "\""
-                                    + ",\"EmbarqueDir\" : \"" + Listado[i].EmbarqueDir + "\""
-                                    + ",\"EmbarqueHora\" : \"" + Listado[i].EmbarqueHora + "\""
-                                    + ",\"CodigoX_FE\" : \"" + Listado[i].CodigoX_FE + "\""
-                                    + ",\"CodTerminal\" : \"" + Listado[i].CodTerminal + "\""
-                                    + ",\"TipImpresora\": " + Listado[i].TipImpresora
-                                    + ",\"CodX\" : \"" + Listado[i].CodX + "\""
+                                    + "\"IdVenta\": " + ListaVentasRealizadas[i].IdVenta
+                                    + ",\"NomTipVenta\" : \"" + ListaVentasRealizadas[i].NomTipVenta + "\""
+                                    + ",\"NumeAsiento\" : \"" + ListaVentasRealizadas[i].NumeAsiento + "\""
+                                    + ",\"BoletoCompleto\" : \"" + ListaVentasRealizadas[i].BoletoCompleto + "\""
+                                    + ",\"BoletoTipo\" : \"" + ListaVentasRealizadas[i].BoletoTipo + "\""
+                                    + ",\"BoletoSerie\" : \"" + ListaVentasRealizadas[i].BoletoSerie + "\""
+                                    + ",\"BoletoNum\" : \"" + ListaVentasRealizadas[i].BoletoNum + "\""
+                                    + ",\"CodDocumento\" : \"" + ListaVentasRealizadas[i].CodDocumento + "\""
+                                    + ",\"EmisionFecha\" : \"" + ListaVentasRealizadas[i].EmisionFecha + "\""
+                                    + ",\"EmisionHora\" : \"" + ListaVentasRealizadas[i].EmisionHora + "\""
+                                    + ",\"CajeroCod\": " + ListaVentasRealizadas[i].CajeroCod
+                                    + ",\"CajeroNom\" : \"" + ListaVentasRealizadas[i].CajeroNom + "\""
+                                    + ",\"PasNombreCom\" : \"" + ListaVentasRealizadas[i].PasNombreCom + "\""
+                                    + ",\"PasRuc\" : \"" + ListaVentasRealizadas[i].PasRuc + "\""
+                                    + ",\"PasRazSocial\" : \"" + ListaVentasRealizadas[i].PasRazSocial + "\""
+                                    + ",\"PasDireccion\" : \"" + ListaVentasRealizadas[i].PasDireccion + "\""
+                                    + ",\"NomOriPas\" : \"" + ListaVentasRealizadas[i].NomOriPas + "\""
+                                    + ",\"NomDesPas\" : \"" + ListaVentasRealizadas[i].NomDesPas + "\""
+                                    + ",\"DocTipo\": " + ListaVentasRealizadas[i].DocTipo
+                                    + ",\"DocNumero\" : \"" + ListaVentasRealizadas[i].DocNumero + "\""
+                                    + ",\"PrecioCan\" : \"" + ListaVentasRealizadas[i].PrecioCan + "\""
+                                    + ",\"PrecioDes\" : \"" + ListaVentasRealizadas[i].PrecioDes + "\""
+                                    + ",\"NomServicio\" : \"" + ListaVentasRealizadas[i].NomServicio + "\""
+                                    + ",\"FechaViaje\" : \"" + ListaVentasRealizadas[i].FechaViaje + "\""
+                                    + ",\"EmbarqueDir\" : \"" + ListaVentasRealizadas[i].EmbarqueDir + "\""
+                                    + ",\"EmbarqueHora\" : \"" + ListaVentasRealizadas[i].EmbarqueHora + "\""
+                                    + ",\"CodigoX_FE\" : \"" + ListaVentasRealizadas[i].CodigoX_FE + "\""
+                                    + ",\"CodTerminal\" : \"" + ListaVentasRealizadas[i].CodTerminal + "\""
+                                    + ",\"TipImpresora\": " + ListaVentasRealizadas[i].TipImpresora
+                                    + ",\"CodX\" : \"" + ListaVentasRealizadas[i].CodX + "\""
+                                    + ",\"EmpCodigo\" : " + ListaVentasRealizadas[i].EmpCodigo
+                                    + ",\"PVentaCodigo\" : " + ListaVentasRealizadas[i].PVentaCodigo
+                                    + ",\"BusCodigo\" : \"" + ListaVentasRealizadas[i].BusCodigo + "\""
+                                    + ",\"EmbarqueCod\" : " + ListaVentasRealizadas[i].EmbarqueCod
 
-                                    + ",\"EmpCodigo\" : " + Listado[i].EmpCodigo
-                                    + ",\"PVentaCodigo\" : " + Listado[i].PVentaCodigo
-                                    + ",\"BusCodigo\" : \"" + Listado[i].BusCodigo + "\""
-                                    + ",\"EmbarqueCod\" : " + Listado[i].EmbarqueCod
+                                    + ",\"CajeroOficina\" : " + usuario.CodiSucursal
+                                    + ",\"CajeroPVenta\" : " + usuario.CodiPuntoVenta
+                                    + ",\"CajeroTerminal\" : " + usuario.Terminal
                                 + "}";
 
-                        if (i < Listado.Count - 1)
+                        if (i < ListaVentasRealizadas.Count - 1)
                             _body += ",";
                     }
                     _body += "]";
+
+                    // TIPO DE VENTA
+                    _body += ",\"TipoImpresion\" : \"" + TipoImpresion + "\"";
+                    // -------------
+
+                    _body += "}";
 
                     HttpResponseMessage response = await client.PostAsync("ConvertirVentaToBase64", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

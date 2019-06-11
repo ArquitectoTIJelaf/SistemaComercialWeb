@@ -1,6 +1,7 @@
 ﻿using SisComWeb.Entity;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Text;
 
@@ -8,7 +9,10 @@ namespace SisComWeb.CuadreImpresora
 {
     public class Cuadre
     {
-        public static string WriteText(VentaRealizadaEntity venta)
+        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"].ToString();
+        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"].ToString();
+
+        public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {
             StringBuilder texto = new StringBuilder();
             // Impresora Térmica
@@ -54,11 +58,15 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("^      devoluciones, Conservar su      ");
                 texto.AppendLine("^      comprobante ante cualquier      ");
                 texto.AppendLine("^             eventualidad             ");
+                texto.AppendLine("");
+                if (TipoImpresion == TipoReimprimir)
+                {
+                    texto.AppendLine(SplitStringPreserving("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 40, ""));
+                }
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                                 venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,
                                                 venta.BoletoSerie, venta.BoletoNum, venta.PrecioCan,
                                                 venta.EmisionFecha, venta.DocTipo, venta.DocNumero));
-                texto.AppendLine(" ");
             }
             // Impresora Matricial
             else if (venta.TipImpresora == 3)
@@ -99,8 +107,6 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 25));
                 texto.AppendLine("USUARIO CONFORME");
                 texto.AppendLine(".");
-
-                texto.AppendLine(" ");
             }
 
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
@@ -109,7 +115,7 @@ namespace SisComWeb.CuadreImpresora
             return boletoBase64;
         }
 
-        public static string WriteTextCopy(VentaRealizadaEntity venta)
+        public static string WriteTextCopy(VentaRealizadaEntity venta, string TipoImpresion)
         {
             StringBuilder texto = new StringBuilder();
 
@@ -142,6 +148,10 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(SplitStringPreserving("LUGAR EMBARQUE: " + venta.EmbarqueDir, 40, "   ", false));
                 texto.AppendLine(SplitStringPreserving("DIREC. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
                 texto.AppendLine("   ");
+                if (TipoImpresion == TipoReimprimir)
+                {
+                    texto.AppendLine(SplitStringPreserving("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 40, ""));
+                }
                 texto.AppendLine("---------------------------------------");
                 texto.AppendLine(" ");
                 texto.AppendLine("      **** CONTROL INTERNO ***** ");

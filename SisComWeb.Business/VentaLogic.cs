@@ -23,6 +23,9 @@ namespace SisComWeb.Business
         private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
         private static readonly short CodiSerieReserva = short.Parse(ConfigurationManager.AppSettings["codiSerieReserva"]);
 
+        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"].ToString();
+        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"].ToString();
+
         #region BUSCAR CORRELATIVO
 
         public static Response<CorrelativoResponse> BuscaCorrelativo(CorrelativoRequest request)
@@ -42,8 +45,6 @@ namespace SisComWeb.Business
 
                 // Valida 'TerminalElectronico'
                 var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
-                if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo))
-                    validarTerminalElectronico.Tipo = "M";
 
                 // Seteo 'CodiTerminalElectronico'
                 valor.CodiTerminalElectronico = validarTerminalElectronico.Tipo;
@@ -161,10 +162,6 @@ namespace SisComWeb.Business
 
                     // Valida 'TerminalElectronico'
                     var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
-                    if (string.IsNullOrEmpty(validarTerminalElectronico.Tipo)) {
-                        validarTerminalElectronico.Tipo = "M";
-                        validarTerminalElectronico.Imp = "3"; // Por el momento será 3.
-                    }
 
                     // Valida 'SaldoPaseCortesia', consulta 'Contrato' y otros
                     switch (FlagVenta)
@@ -658,8 +655,8 @@ namespace SisComWeb.Business
                     var ventaRealizada = new VentaRealizadaEntity
                     {
                         // Para la vista 'BoletosVendidos'
-                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         BoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),
+                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         // Para el método 'ConvertirVentaToBase64'
                         IdVenta = entidad.IdVenta,
                         NomTipVenta = "EFECTIVO",
@@ -692,7 +689,6 @@ namespace SisComWeb.Business
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
-
                         PVentaCodigo = entidad.CodiPuntoVenta,
                         BusCodigo = entidad.CodiBus,
                         EmbarqueCod = entidad.CodiEmbarque
@@ -1141,7 +1137,7 @@ namespace SisComWeb.Business
 
         #region IMPRESIÓN
 
-        public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado)
+        public static Response<List<ImpresionEntity>> ConvertirVentaToBase64(List<VentaRealizadaEntity> Listado, string TipoImpresion)
         {
             try
             {
@@ -1157,13 +1153,27 @@ namespace SisComWeb.Business
                     var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
                     var consultaPoliza = VentaRepository.ConsultaPoliza(byte.Parse(entidad.EmpCodigo.ToString()), entidad.BusCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
-                    var serviceFE = new Ws_SeeFacteSoapClient();
-                    var seguridadFE = new Security
+                    var paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
+
+                    // Solo para 'Reimpresion'
+                    if (TipoImpresion == TipoReimprimir)
                     {
-                        ID = buscarEmpresaEmisor.Ruc,
-                        User = UserWebSUNAT
-                    };
-                    var paginaWebEmisor = serviceFE.GetParametro(seguridadFE).Rempresa.PaginaWebEmisor ?? string.Empty;
+                        var resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+                        var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
+
+                        entidad.NomTipVenta = "EFECTIVO";
+                        entidad.NumeAsiento = byte.Parse(entidad.NumeAsiento).ToString("D2");
+                        entidad.BoletoSerie = short.Parse(entidad.BoletoSerie).ToString("D3");
+                        entidad.BoletoNum = int.Parse(entidad.BoletoNum).ToString("D8");
+                        entidad.EmisionFecha = entidad.EmisionFecha;
+                        entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
+                        entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
+                        entidad.PrecioDes = DataUtility.MontoSolesALetras(entidad.PrecioCan.ToString("F2", CultureInfo.InvariantCulture));
+                        entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
+                        entidad.CodTerminal = validarTerminalElectronico.Tipo;
+                        entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
+                        entidad.CodX = "1";
+                    }
 
                     entidad.EmpRuc = buscarEmpresaEmisor.Ruc;
                     entidad.EmpRazSocial = buscarEmpresaEmisor.RazonSocial;
@@ -1177,15 +1187,15 @@ namespace SisComWeb.Business
                     entidad.PolizaFechaVen = consultaPoliza.FechaVen;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
-                    var original = CuadreImpresora.Cuadre.WriteText(entidad);
+                    var original = CuadreImpresora.Cuadre.WriteText(entidad, TipoImpresion);
 
                     var copia1 = string.Empty;
                     if (objPanelCopia1 != null && objPanelCopia1.Valor == "1")
-                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad);
+                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
 
                     var copia2 = string.Empty;
                     if (objPanelCopia2 != null && objPanelCopia2.Valor == "1")
-                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad);
+                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
 
                     var documentos = new ImpresionEntity()
                     {
@@ -1468,6 +1478,66 @@ namespace SisComWeb.Business
 
         }
 
+        public static string ObtenerPaginaWebEmisor(string Ruc)
+        {
+            try
+            {
+                var paginaWebEmisor = string.Empty;
+
+                var serviceFE = new Ws_SeeFacteSoapClient();
+                var seguridadFE = new Security
+                {
+                    ID = Ruc,
+                    User = UserWebSUNAT
+                };
+
+                paginaWebEmisor = serviceFE.GetParametro(seguridadFE).Rempresa.PaginaWebEmisor ?? string.Empty;
+
+                return paginaWebEmisor;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return null;
+            }
+        }
+
+        public static ResponseDocument ObtenerCodigoX(string Ruc, string DocTipo, short BoletoSerie, int BoletoNum)
+        {
+            try
+            {
+                var response = new ResponseDocument();
+                var auxTDocumento = string.Empty;
+
+                var serviceFE = new Ws_SeeFacteSoapClient();
+                var seguridadFE = new Security
+                {
+                    ID = Ruc,
+                    User = UserWebSUNAT
+                };
+
+                // Seteo 'auxTDocumento'
+                switch (DocTipo)
+                {
+                    case "F":
+                        auxTDocumento = "01";
+                        break;
+                    case "B":
+                        auxTDocumento = "03";
+                        break;
+                };
+
+                response = serviceFE.GetValidarDocument(seguridadFE, auxTDocumento, DocTipo + BoletoSerie.ToString("D3"), BoletoNum.ToString("D8"));
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return null;
+            }
+        }
+
         #endregion
 
         #region REUTILIZABLE
@@ -1503,6 +1573,8 @@ namespace SisComWeb.Business
         public static byte TipoDocumentoHomologadoParaFE(string TipoDocumento)
         {
             var valor = new byte();
+
+            TipoDocumento = byte.Parse(TipoDocumento).ToString("D2");
 
             if (TipoDocumento == "01")
                 valor = 1;

@@ -279,6 +279,13 @@ namespace SisComWeb.Entity
         public short EmbarqueCod { get; set; }
 
         public string EmbarqueDirAgencia { get; set; }
+
+
+        public short CajeroOficina { get; set; }
+
+        public short CajeroPVenta { get; set; }
+
+        public int CajeroTerminal { get; set; }
     }
 
     public class DescuentoBoletoEntity

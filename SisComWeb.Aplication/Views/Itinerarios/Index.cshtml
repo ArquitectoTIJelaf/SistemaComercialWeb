@@ -33,6 +33,35 @@
 @section styles{
     <style type="text/css">
 
+        #right-click-menu {
+            background: #FAFAFA;
+            border: 1px solid #BDBDBD;
+            box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+            display: block;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            width: 125px;
+            z-index: 999999;
+            cursor: pointer;
+        }
+
+            #right-click-menu li {
+                border-bottom: 1px solid #E0E0E0;
+                margin: 0;
+                padding: 5px 20px;
+            }
+
+                #right-click-menu li:last-child {
+                    border-bottom: none;
+                }
+
+                #right-click-menu li:hover {
+                    background: #1E88E5;
+                    color: #FAFAFA;
+                }
+
         .swal2-content [type="radio"]:checked,
         .swal2-content [type="radio"]:not(:checked) {
             position: inherit !important;
@@ -708,6 +737,10 @@
 
         var IngresoManualPasajes = false;
 
+        var TipoImprimir = 'Impresion';
+
+        var TipoReimprimir = 'Reimpresion';
+
         var selectAll = {
             id: '0',
             label: 'TODOS'
@@ -937,6 +970,12 @@
                 },
                 getDescServicio: function () {
                     return appVueVenta.objTurno.DescServicio;
+                },
+                validateAlgoritmoRuc: function (_Ruc) {
+                    return appVueVenta.validateAlgoritmoRuc(_Ruc);
+                },
+                convertirVentaToBase64: function (_ListaVentasRealizadas, _TipoImpresion) {
+                    appVueTipoPago.convertirVentaToBase64(_ListaVentasRealizadas, _TipoImpresion);
                 }
             };
         })();
@@ -1119,12 +1158,14 @@
                         return filtered;
                     }, []);
 
-                    appController.showVentas(item, turnos);
+                    await appController.showVentas(item, turnos);
 
-                    //await appController.showVentas(item, turnos);
-                    //this.$nextTick(() => {
-                    //    this.$refs.refNroAsientoVenta.focus();
-                    //});
+                    this.$nextTick(() => {
+                        //appVueVenta.$refs.refNroAsientoVenta.focus();
+
+                        var _topOfBus = $('.img-bus').offset().top;
+                        appVueVenta.top = _topOfBus + 'px';
+                    });
                 }
             },
             computed: {},
@@ -1273,7 +1314,12 @@
                 CorrelativoVentaFactura: '',
                 CorrelativoPaseBoleta: '',
                 CorrelativoPaseFactura: '',
-                CodiTerminalElectronico: ''
+                CodiTerminalElectronico: '',
+                // ContextMenu
+                showContextMenu: false,
+                itemSelected: null,
+                top: '0px',
+                left: '0px'
             },
             mounted: function () {
                 this.getEmpresas();
@@ -1391,7 +1437,6 @@
                                 _this.limpiarVenta();
                                 _this.$nextTick(() => {
                                     _this.showPlano = true;
-
                                     var objPanelDeshabilitarRazonSocial = appController.validatePanel('63');
                                     if (objPanelDeshabilitarRazonSocial && objPanelDeshabilitarRazonSocial.Valor === '1')
                                         _this.disabledRazonSocial = true;
@@ -2225,10 +2270,33 @@
                         });
                     }
                 },
+                validateAlgoritmoRuc: function (_Ruc) {
+                    var auxValidate = false;
+                    if (_Ruc.substring(0, 2) === '10' || _Ruc.substring(0, 2) === '20' ||
+                        _Ruc.substring(0, 2) === '15' || _Ruc.substring(0, 2) === '16' || _Ruc.substring(0, 2) === '17') {
+
+                        for (var suma = -(_Ruc % 10 < 2), i = 0; i < 11; i++ , _Ruc = _Ruc / 10 | 0) {
+                            suma += (_Ruc % 10) * (i % 7 + (i / 7 | 0) + 1);
+                        }
+
+                        if (suma % 11 === 0)
+                            auxValidate = true;
+                    }
+
+                    return auxValidate;
+                },
                 searchEmpresa: async function () {
                     var _this = this;
                     if (_this.list.ventas[_this.indexVenta].Ruc) {
                         if (_this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+
+                            // Valida 'algoritmo'
+                            var auxValidate = _this.validateAlgoritmoRuc(_this.list.ventas[_this.indexVenta].Ruc);
+                            if (!auxValidate) {
+                                APP.msg.warning('Ingrese un número de ruc válido.');
+                                return;
+                            }
+
                             if (!_this.list.ventas[_this.indexVenta].RazonSocial || _this.pickedBusVenta === '1') {
                                 await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
                                     rucContacto: _this.list.ventas[_this.indexVenta].Ruc
@@ -2319,8 +2387,15 @@
                 consultaSunat: function () {
                     var _this = this;
                     if (_this.list.ventas[_this.indexVenta].Ruc) {
-
                         if (_this.list.ventas[_this.indexVenta].Ruc.length === 11) {
+
+                            // Valida 'algoritmo'
+                            var auxValidate = _this.validateAlgoritmoRuc(_this.list.ventas[_this.indexVenta].Ruc);
+                            if (!auxValidate) {
+                                APP.msg.warning('Ingrese un número de ruc válido.');
+                                return;
+                            }
+
                             APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
                                 rucContacto: _this.list.ventas[_this.indexVenta].Ruc
                             }), { timeout: 10000 })
@@ -2601,6 +2676,7 @@
                     var _indexOfNacionalidad = -1;
                     var _indexOfNroSolicitud = -1;
                     var _indexOfTelefono = -1;
+                    var _indexOfAlgoritmoRuc = -1;
 
                     // Tipo de documento
                     _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null; });
@@ -2726,6 +2802,19 @@
                             APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
                             return true;
                         }
+                    }
+
+                    // Algoritmo de ruc
+                    _indexOfAlgoritmoRuc = _.findIndex(_this.list.ventas, o => {
+                        return !appController.validateAlgoritmoRuc(o.Ruc);
+                    });
+                    if (_indexOfAlgoritmoRuc !== -1) {
+                        _this.indexVenta = _indexOfAlgoritmoRuc;
+                        _this.$nextTick(() => {
+                            document.getElementById('txtRuc').focus();
+                        });
+                        APP.msg.warning('Ingrese un número de Ruc válido.');
+                        return true;
                     }
 
                     // Validación según 'pickedBusVenta'
@@ -3701,6 +3790,73 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                openMenu: function (e, _item) {
+                    this.showContextMenu = true;
+                    this.itemSelected = _item;
+
+                    var varScrollTop = $(window).scrollTop();
+
+                    Vue.nextTick(function () {
+                        this.$refs.right.focus();
+                        this.setMenu(e.y, e.x, varScrollTop);
+                    }.bind(this));
+
+                    e.preventDefault();
+                },
+                setMenu: function (top, left, varScrollTop) {
+                    if (varScrollTop)
+                        this.top = (top + varScrollTop - 105) + 'px';
+                    else
+                        this.top = (top + varScrollTop - 105) + 'px';
+
+                    this.left = (left - 25) + 'px';
+                },
+                closeMenu: function () {
+                    this.showContextMenu = false;
+                    this.itemSelected = null;
+                },
+                contextMenuReimprimir: function () {
+                    var ListaVentasRealizadas = [];
+
+                    if (this.itemSelected) {
+                        if (this.itemSelected.IdVenta) {
+                            var objVentaRealizada = {};
+                            objVentaRealizada.IdVenta = this.itemSelected.IdVenta;
+                            objVentaRealizada.NumeAsiento = this.itemSelected.NumeAsiento;
+                            objVentaRealizada.BoletoTipo = this.itemSelected.TipoBoleto;
+                            objVentaRealizada.BoletoSerie = this.itemSelected.Boleto.substring(0, 3);
+                            objVentaRealizada.BoletoNum = this.itemSelected.Boleto.substring(4);
+                            objVentaRealizada.CodDocumento = this.itemSelected.RucContacto ? '01' : '03';
+                            objVentaRealizada.EmisionFecha = this.itemSelected.FechaVenta;
+                            objVentaRealizada.EmisionHora = this.itemSelected.HoraVenta;
+                            objVentaRealizada.CajeroCod = this.itemSelected.CodiUsuario;
+                            objVentaRealizada.CajeroNom = this.itemSelected.NomUsuario;
+                            objVentaRealizada.PasNombreCom = this.itemSelected.Nombres + " " + this.itemSelected.ApellidoPaterno + " " + this.itemSelected.ApellidoMaterno;
+                            objVentaRealizada.PasRuc = this.itemSelected.RucContacto;
+                            objVentaRealizada.PasRazSocial = this.itemSelected.RazonSocial;
+                            objVentaRealizada.PasDireccion = this.itemSelected.Direccion;
+                            objVentaRealizada.NomOriPas = this.itemSelected.NomOrigen;
+                            objVentaRealizada.NomDesPas = this.itemSelected.NomDestino;
+                            objVentaRealizada.DocTipo = this.itemSelected.TipoDocumento;
+                            objVentaRealizada.DocNumero = this.itemSelected.NumeroDocumento;
+                            objVentaRealizada.PrecioCan = this.itemSelected.PrecioVenta;
+                            objVentaRealizada.NomServicio = this.filtro.CodiServicio.label;
+                            objVentaRealizada.FechaViaje = this.itemSelected.FechaViaje;
+                            objVentaRealizada.EmbarqueDir = this.itemSelected.EmbarqueDir;
+                            objVentaRealizada.EmbarqueHora = this.itemSelected.EmbarqueHora;
+                            objVentaRealizada.EmpCodigo = this.filtro.CodiEmpresa.id;
+                            objVentaRealizada.BusCodigo = this.objPlano.CodiBus;
+                            objVentaRealizada.PVentaCodigo = this.itemSelected.CodiPuntoVenta;
+                            objVentaRealizada.EmbarqueCod = this.itemSelected.EmbarqueCod;
+
+                            ListaVentasRealizadas.push(objVentaRealizada);
+                        }
+                    }
+
+                    appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
+
+                    this.closeMenu();
+                },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
                     if (objAsiento)
@@ -4211,8 +4367,8 @@
 
                     // Convierte las ventas realizadas en documentos 'base64'
                     // para mandarlos a 'imprimirBoleto'
-                    if (auxListaVentasRealizadas.length > 0)
-                        _this.convertirVentaToBase64(auxListaVentasRealizadas);
+                    if (auxListaVentasRealizadas && auxListaVentasRealizadas.length > 0)
+                        _this.convertirVentaToBase64(auxListaVentasRealizadas, TipoImprimir);
                 },
                 limpiarCampos: function () {
                     this.tipoPago = '';
@@ -4331,34 +4487,65 @@
                     document.getElementById('btnTipoPago').disabled = false;
                     $('#appVueTipoPago').modal('hide');
                 },
-                convertirVentaToBase64: function (_ListaVentasRealizadas) {
+                convertirVentaToBase64: function (_ListaVentasRealizadas, _TipoImpresion) {
                     var _this = this;
-                    APP.rq.axios2.post(APP.base + '/itinerarios/convertir-venta-to-base64', {
-                        Listado: _ListaVentasRealizadas
-                    })
-                        .then(function (res) {
-                            var _listaImpresiones = res.data.Valor;
-                            if (res.data.Estado) {
-                                for (i = 0; i < _listaImpresiones.length; i++) {
-                                    (function (i) {
-                                        setTimeout(function () {
-                                            // Imprime 'Boleto'
-                                            _this.imprimirBoleto(_listaImpresiones[i]);
-                                        }, i * 5000);
-                                    })(i);
-                                }
-                            }
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
+
+                    switch (_TipoImpresion) {
+                        case TipoImprimir:
+                            {
+                                APP.rq.axios2.post(APP.base + '/itinerarios/convertir-venta-to-base64', {
+                                    ListaVentasRealizadas: _ListaVentasRealizadas,
+                                    TipoImpresion: _TipoImpresion
+                                })
+                                    .then(function (res) {
+                                        var _listaImpresiones = res.data.Valor;
+                                        if (res.data.Estado) {
+                                            for (i = 0; i < _listaImpresiones.length; i++) {
+                                                (function (i) {
+                                                    setTimeout(function () {
+                                                        // Imprime 'Boleto'
+                                                        _this.imprimirBoleto(_listaImpresiones[i]);
+                                                    }, i * 5000);
+                                                })(i);
+                                            }
+                                        }
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            };
+                            break;
+                        case TipoReimprimir:
+                            {
+                                APP.rq.axios.post(APP.base + '/itinerarios/convertir-venta-to-base64', {
+                                    ListaVentasRealizadas: _ListaVentasRealizadas,
+                                    TipoImpresion: _TipoImpresion
+                                })
+                                    .then(function (res) {
+                                        var _listaImpresiones = res.data.Valor;
+                                        if (res.data.Estado) {
+                                            for (i = 0; i < _listaImpresiones.length; i++) {
+                                                (function (i) {
+                                                    setTimeout(function () {
+                                                        // Imprime 'Boleto'
+                                                        _this.imprimirBoleto(_listaImpresiones[i]);
+                                                    }, i * 5000);
+                                                })(i);
+                                            }
+                                        }
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            };
+                            break;
+                    }
                 },
                 imprimirBoleto: function (_Documentos) {
                     var auxUrl = '';
 
                     for (const doc in _Documentos) {
-                        var docValor = `${_Documentos[doc]}`
-
+                        var docValor = `${_Documentos[doc]}`;
 
                         if (doc === 'Original')
                             auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';

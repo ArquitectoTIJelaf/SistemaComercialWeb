@@ -197,5 +197,19 @@ namespace SisComWeb.Aplication.Models
         public short EmbarqueCod { get; set; }
 
         public string EmbarqueDirAgencia { get; set; }
+
+
+        public short CajeroOficina { get; set; }
+
+        public short CajeroPVenta { get; set; }
+
+        public int CajeroTerminal { get; set; }
+    }
+
+    public class VentaRealizadaRequest
+    {
+        public List<VentaRealizada> ListaVentasRealizadas { get; set; }
+
+        public string TipoImpresion { get; set; } // Impresion, Reimpresion
     }
 }

@@ -385,15 +385,29 @@
                                 <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
                             </div>
                             <div class="table-responsive form-bus">
+
+                                <template>
+                                    <ul id="right-click-menu"
+                                        tabindex="-1"
+                                        ref="right"
+                                        v-if="showContextMenu"
+                                        @@blur="closeMenu"
+                                        :style="{top: top, left: left}">
+                                        <li @@click="contextMenuReimprimir()">Reimprimir</li>
+                                    </ul>
+                                </template>
+
                                 <table id="tblLista" class="table table-bus">
                                     <tbody>
                                         <tr>
-                                            <td v-for="(item, key) in list.plano1" class="bus-td">
+                                            <td v-for="(item, key) in list.plano1"
+                                                class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
+                                                            @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
                                                             :disabled="disabledAsiento">
                                                         <template v-if="item.FechaVenta">
@@ -440,12 +454,14 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td v-for="(item, key) in list.plano2" class="bus-td">
+                                            <td v-for="(item, key) in list.plano2"
+                                                class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
+                                                            @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
                                                             :disabled="disabledAsiento">
                                                         <template v-if="item.FechaVenta">
@@ -492,12 +508,14 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td v-for="(item, key) in list.plano3" class="bus-td">
+                                            <td v-for="(item, key) in list.plano3"
+                                                class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
+                                                            @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
                                                             :disabled="disabledAsiento">
                                                         <template v-if="item.FechaVenta">
@@ -544,12 +562,14 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td v-for="(item, key) in list.plano4" class="bus-td">
+                                            <td v-for="(item, key) in list.plano4"
+                                                class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
+                                                            @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
                                                             :disabled="disabledAsiento">
                                                         <template v-if="item.FechaVenta">
@@ -596,12 +616,14 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td v-for="(item, key) in list.plano5" class="bus-td">
+                                            <td v-for="(item, key) in list.plano5"
+                                                class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
+                                                            @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
                                                             :disabled="disabledAsiento">
                                                         <template v-if="item.FechaVenta">

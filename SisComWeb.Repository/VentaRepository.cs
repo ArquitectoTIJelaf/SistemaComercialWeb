@@ -11,7 +11,11 @@ namespace SisComWeb.Repository
 
         public static TerminalElectronicoEntity ValidarTerminalElectronico(byte CodiEmpresa, short CodiSucursal, short CodiPuntoVenta, short CodiTerminal)
         {
-            var entidad = new TerminalElectronicoEntity();
+            var entidad = new TerminalElectronicoEntity()
+            {
+                Tipo = "M",
+                Imp = "3" // Por mientras se quemará el valor "3".
+            };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
