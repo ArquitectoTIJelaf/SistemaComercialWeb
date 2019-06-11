@@ -109,6 +109,8 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(".");
             }
 
+            texto.AppendLine("");
+
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
             var boletoBase64 = Convert.ToBase64String(encodedText);
 
