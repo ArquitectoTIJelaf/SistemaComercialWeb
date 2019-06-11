@@ -276,35 +276,6 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static PolizaEntity ConsultaPoliza(int CodiEmpresa, string CodiBus)
-        {
-            var entidad = new PolizaEntity
-            {
-                NroPoliza = string.Empty,
-                FechaReg = string.Empty,
-                FechaVen = string.Empty
-            };
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_Tb_Bus_Poliza_consulta";
-                db.AddParameter("@codi_Empresa", DbType.Int32, ParameterDirection.Input, CodiEmpresa);
-                db.AddParameter("@codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? string.Empty;
-                        entidad.FechaReg = Reader.GetStringValue(drlector, "Fecha_Reg") ?? string.Empty;
-                        entidad.FechaVen = Reader.GetStringValue(drlector, "Fecha_Ven") ?? string.Empty;
-                        break;
-                    }
-                }
-            }
-
-            return entidad;
-        }
-
         public static string VerificaManifiestoPorPVenta(int CodiProgramacion, short Pvta)
         {
             var valor = "0";
@@ -347,6 +318,36 @@ namespace SisComWeb.Repository
             }
 
             return valor;
+        }
+
+        public static PolizaEntity ConsultaNroPoliza(int CodiEmpresa, string CodiBus, string Fecha)
+        {
+            var entidad = new PolizaEntity()
+            {
+                NroPoliza = "",
+                FechaReg = "01/01/1900",
+                FechaVen = "01/01/1900"
+            };
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_NroPoliza";
+                db.AddParameter("@codi_Empresa", DbType.Int32, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, Fecha);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? "";
+                        entidad.FechaReg = Reader.GetStringValue(drlector, "Fecha_Reg") ?? "01/01/1900";
+                        entidad.FechaVen = Reader.GetStringValue(drlector, "Fecha_Ven") ?? "01/01/1900";
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
         }
 
         #endregion

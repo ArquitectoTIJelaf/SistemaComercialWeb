@@ -61,12 +61,18 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine(SplitStringPreserving("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 40, ""));
+                    texto.AppendLine(SplitStringPreserving("F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 42, "^"));
                 }
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                                 venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,
                                                 venta.BoletoSerie, venta.BoletoNum, venta.PrecioCan,
                                                 venta.EmisionFecha, venta.DocTipo, venta.DocNumero));
+
+                if (!string.IsNullOrEmpty(venta.PolizaNum))
+                {
+                    texto.AppendLine("");
+                    texto.AppendLine(SplitStringPreserving("Cubierto " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
+                }
             }
             // Impresora Matricial
             else if (venta.TipImpresora == 3)
@@ -104,6 +110,13 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("  Consulte el documento en: " + venta.LinkPag_FE);
                 texto.AppendLine(SplitStringPreserving("Al recibir el presente documento, acepto todos los términos y/o condiciones del contratado del servicio de transporte publicados en los letreros o en los banners y detallados en la página.", 80, "", false));
                 texto.AppendLine("");
+
+                if (!string.IsNullOrEmpty(venta.PolizaNum))
+                {
+                    texto.AppendLine(SplitStringPreserving("Cubierto " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
+                    texto.AppendLine("");
+                }
+
                 texto.AppendLine(new string('-', 25));
                 texto.AppendLine("USUARIO CONFORME");
                 texto.AppendLine(".");

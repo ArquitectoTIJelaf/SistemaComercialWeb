@@ -50,7 +50,7 @@
             #right-click-menu li {
                 border-bottom: 1px solid #E0E0E0;
                 margin: 0;
-                padding: 5px 20px;
+                padding: 5px 15px;
             }
 
                 #right-click-menu li:last-child {
@@ -1626,11 +1626,6 @@
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
                         switch (_this.pickedBusVenta) {
-                            case 'AN': // Anulación
-                                APP.msg.warning('Debe seleccionar un asiento vendido.');
-                                // Animación 'ScrollTop'
-                                animateScrollTop(800);
-                                return;
                             case '1': // Crédito
                                 {
                                     tmpAsientoSel = _.cloneDeep(asientoSel);
@@ -1775,10 +1770,6 @@
                                 switch (_this.pickedBusVenta) {
                                     case 'FA': // Fecha abierta
                                         _this.sendToFechaAbierta(asientoSel);
-                                        _fillData = true;
-                                        break;
-                                    case 'AN': // Anulación
-                                        _this.sendToAnularVenta(asientoSel);
                                         _fillData = true;
                                         break;
                                 }
@@ -2272,6 +2263,7 @@
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     var auxValidate = false;
+
                     if (_Ruc.substring(0, 2) === '10' || _Ruc.substring(0, 2) === '20' ||
                         _Ruc.substring(0, 2) === '15' || _Ruc.substring(0, 2) === '16' || _Ruc.substring(0, 2) === '17') {
 
@@ -3268,7 +3260,6 @@
                         case 'V': // Venta
                         case '7': // Pase de cortesía
                         case 'R': // Reserva
-                        case 'AN': // Anulación
                         case 'FA': // Fecha abierta
                         case 'PO': // Postergación
                         case '1': // Crédito
@@ -3849,10 +3840,28 @@
                             objVentaRealizada.EmbarqueCod = this.itemSelected.EmbarqueCod;
 
                             ListaVentasRealizadas.push(objVentaRealizada);
+
+                            appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
+                        }
+                        else {
+                            APP.msg.warning('Debe seleccionar un asiento vendido.');
+                            // Animación 'ScrollTop'
+                            animateScrollTop(800);
                         }
                     }
 
-                    appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
+                    this.closeMenu();
+                },
+                contextMenuAnular: function () {
+                    if (this.itemSelected) {
+                        if (this.itemSelected.IdVenta)
+                            this.sendToAnularVenta(this.itemSelected);
+                        else {
+                            APP.msg.warning('Debe seleccionar un asiento vendido.');
+                            // Animación 'ScrollTop'
+                            animateScrollTop(800);
+                        }
+                    }
 
                     this.closeMenu();
                 },

@@ -147,6 +147,7 @@
         public const string MsgErrorGrabarAuditoria = "Error: GrabarAuditoria.";
         public const string MsgErrorInsertarDescuentoBoleto = "Error: InsertarDescuentoBoleto.";
         public const string MsgErrorInsertarDescuentoVenta = "Error: InsertarDescuentoVenta.";
+        public const string MsgErrorConsultaNroPoliza = "El bus no cuenta con poliza de seguro.";
 
         public const string MsgErrorGrabaVenta = "Error: GrabaVenta.";
         public const string MsgErrorGrabarCaja = "Error: GrabarCaja.";

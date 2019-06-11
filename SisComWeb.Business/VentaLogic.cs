@@ -113,7 +113,13 @@ namespace SisComWeb.Business
             {
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
-                var ListarPanelControl = new List<PanelControlEntity>();
+                var ListarPanelControl = CreditoRepository.ListarPanelControl();
+                var consultaNroPoliza = new PolizaEntity()
+                {
+                    NroPoliza = "",
+                    FechaReg = "01/01/1900",
+                    FechaVen = "01/01/1900"
+                };
 
                 foreach (var entidad in Listado)
                 {
@@ -192,9 +198,6 @@ namespace SisComWeb.Business
                                 // Agrega validación de Precio que está en la vista.
                                 var validatorPrecioValor = false;
 
-                                if (ListarPanelControl.Count != 0)
-                                    ListarPanelControl = CreditoRepository.ListarPanelControl();
-
                                 var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "121");
                                 if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
                                     validatorPrecioValor = true;
@@ -217,6 +220,17 @@ namespace SisComWeb.Business
                                     }
                                 }
                             };
+                            break;
+                        default:
+                            {
+                                var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
+                                if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                                {
+                                    consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
+                                    if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
+                                        return new Response<VentaResponse>(true, valor, Message.MsgErrorConsultaNroPoliza, false);
+                                }
+                            }
                             break;
                     }
 
@@ -659,7 +673,6 @@ namespace SisComWeb.Business
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         // Para el método 'ConvertirVentaToBase64'
                         IdVenta = entidad.IdVenta,
-                        NomTipVenta = "EFECTIVO",
                         BoletoTipo = entidad.Tipo,
                         BoletoSerie = entidad.SerieBoleto.ToString("D3"),
                         BoletoNum = entidad.NumeBoleto.ToString("D8"),
@@ -685,7 +698,10 @@ namespace SisComWeb.Business
                         CodigoX_FE = entidad.SignatureValue,
                         CodTerminal = validarTerminalElectronico.Tipo,
                         TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
-                        CodX = "1",
+
+                        PolizaNum = consultaNroPoliza.NroPoliza,
+                        PolizaFechaReg = consultaNroPoliza.FechaReg,
+                        PolizaFechaVen = consultaNroPoliza.FechaVen,
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
@@ -1151,8 +1167,10 @@ namespace SisComWeb.Business
                 {
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
-                    var consultaPoliza = VentaRepository.ConsultaPoliza(byte.Parse(entidad.EmpCodigo.ToString()), entidad.BusCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
+
+                    var consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
+
                     var paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
 
                     // Solo para 'Reimpresion'
@@ -1160,8 +1178,7 @@ namespace SisComWeb.Business
                     {
                         var resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
                         var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
-
-                        entidad.NomTipVenta = "EFECTIVO";
+                        
                         entidad.NumeAsiento = byte.Parse(entidad.NumeAsiento).ToString("D2");
                         entidad.BoletoSerie = short.Parse(entidad.BoletoSerie).ToString("D3");
                         entidad.BoletoNum = int.Parse(entidad.BoletoNum).ToString("D8");
@@ -1172,9 +1189,14 @@ namespace SisComWeb.Business
                         entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
                         entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
-                        entidad.CodX = "1";
+
+                        entidad.PolizaNum = consultaNroPoliza.NroPoliza;
+                        entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
+                        entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
                     }
 
+                    entidad.NomTipVenta = "EFECTIVO";
+                    entidad.CodX = "1";
                     entidad.EmpRuc = buscarEmpresaEmisor.Ruc;
                     entidad.EmpRazSocial = buscarEmpresaEmisor.RazonSocial;
                     entidad.EmpDireccion = buscarEmpresaEmisor.Direccion;
@@ -1182,9 +1204,6 @@ namespace SisComWeb.Business
                     entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
                     entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
                     entidad.LinkPag_FE = paginaWebEmisor;
-                    entidad.PolizaNum = consultaPoliza.NroPoliza;
-                    entidad.PolizaFechaReg = consultaPoliza.FechaReg;
-                    entidad.PolizaFechaVen = consultaPoliza.FechaVen;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
                     var original = CuadreImpresora.Cuadre.WriteText(entidad, TipoImpresion);
