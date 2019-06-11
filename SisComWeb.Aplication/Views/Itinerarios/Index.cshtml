@@ -2759,6 +2759,18 @@
                         APP.msg.warning('El número de ruc debe ser de 11 dígitos.');
                         return true;
                     }
+                    // Algoritmo de ruc
+                    _indexOfAlgoritmoRuc = _.findIndex(_this.list.ventas, o => {
+                        return o.Ruc !== '' && o.Ruc.length === 11 && !appController.validateAlgoritmoRuc(o.Ruc);
+                    });
+                    if (_indexOfAlgoritmoRuc !== -1) {
+                        _this.indexVenta = _indexOfAlgoritmoRuc;
+                        _this.$nextTick(() => {
+                            document.getElementById('txtRuc').focus();
+                        });
+                        APP.msg.warning('Ingrese un número de Ruc válido.');
+                        return true;
+                    }
                     // Razón social
                     _indexOfRazSoc = _.findIndex(_this.list.ventas, o => { return o.Ruc.length === 11 && o.RazonSocial.length < 3; });
                     if (_indexOfRazSoc !== -1) {
@@ -2802,19 +2814,6 @@
                             APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
                             return true;
                         }
-                    }
-
-                    // Algoritmo de ruc
-                    _indexOfAlgoritmoRuc = _.findIndex(_this.list.ventas, o => {
-                        return !appController.validateAlgoritmoRuc(o.Ruc);
-                    });
-                    if (_indexOfAlgoritmoRuc !== -1) {
-                        _this.indexVenta = _indexOfAlgoritmoRuc;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtRuc').focus();
-                        });
-                        APP.msg.warning('Ingrese un número de Ruc válido.');
-                        return true;
                     }
 
                     // Validación según 'pickedBusVenta'
