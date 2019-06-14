@@ -182,6 +182,12 @@
         public const string MsgCorrectoAnularVenta = "Se anuló la venta correctamente.";
         public const string MsgExcAnularVenta = "Excepción: AnularVenta.";
 
+        public const string MsgCorrectoVerificaNC = "Correcto: VerificaNC.";
+        public const string MsgExcVerificaNC = "Excepción: VerificaNC.";
+
+        public const string MsgCorrectoConsultaControlTiempo = "Correcto: ConsultaControlTiempo.";
+        public const string MsgExcConsultaControlTiempo = "Excepción: ConsultaControlTiempo.";
+
         // Postergación
         public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: BuscarVentaxBoleto.";
         public const string MsgValidaBuscarVentaxBoleto = "No se encontraron resultados.";
@@ -206,8 +212,8 @@
         public const string MsgExcListarClientesContrato = "Excepción: ListarClientesContrato.";
 
         // Panel de Control
-        public const string MsgCorrectoListarPanelControl = "Correcto: ListarPanelControl.";
-        public const string MsgExcListarPanelControl = "Excepción: ListarPanelControl.";
+        public const string MsgCorrectoListarPanelesControl = "Correcto: ListarPanelesControl.";
+        public const string MsgExcListarPanelesControl = "Excepción: ListarPanelesControl.";
 
         // Contrato
         public const string MsgCorrectoConsultarContrato = "Correcto: ConsultarContrato.";

@@ -15,4 +15,23 @@ namespace SisComWeb.Entity
 
         public string TipoImpresion { get; set; } // Impresion, Reimpresion
     }
+
+    public class AnularVentaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public int CodiUsuario { get; set; }
+
+        public string CodiOficina { get; set; }
+
+        public string CodiPuntoVenta { get; set; }
+
+        public string Tipo { get; set; }
+
+        public string FlagVenta { get; set; }
+
+        public bool StAnulacion { get; set; }
+
+        public bool IngresoManualPasajes { get; set; }
+    }
 }

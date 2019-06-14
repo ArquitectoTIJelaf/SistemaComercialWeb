@@ -94,19 +94,28 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<PanelControlEntity>> ListarPanelControl()
+        public static Response<PanelControlResponse> ListarPanelesControl()
         {
             try
             {
                 // Lista 'PanelControl'
                 var listarPanelControl = CreditoRepository.ListarPanelControl();
 
-                return new Response<List<PanelControlEntity>>(true, listarPanelControl, Message.MsgCorrectoListarPanelControl, true);
+                // Lista 'PanelControlClave'
+                var listarPanelControlCalve = CreditoRepository.ListarPanelControlClave();
+
+                var panelControlResponse = new PanelControlResponse()
+                {
+                    ListarPanelControl = listarPanelControl,
+                    ListarPanelControlClave = listarPanelControlCalve
+                };
+
+                return new Response<PanelControlResponse>(true, panelControlResponse, Message.MsgCorrectoListarPanelesControl, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(CreditoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PanelControlEntity>>(false, null, Message.MsgExcListarPanelControl, false);
+                return new Response<PanelControlResponse>(false, null, Message.MsgExcListarPanelesControl, false);
             }
         }
 

@@ -124,7 +124,12 @@ namespace SisComWeb.Repository
 
         public static AgenciaEntity BuscarAgenciaEmpresa(byte CodiEmpresa, int CodiSucursal)
         {
-            var entidad = new AgenciaEntity();
+            var entidad = new AgenciaEntity()
+            {
+                Direccion = string.Empty,
+                Telefono1 = string.Empty,
+                Telefono2 = string.Empty
+            };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -136,9 +141,9 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.Direccion = Reader.GetStringValue(drlector, "direccion");
-                        entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1");
-                        entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2");
+                        entidad.Direccion = Reader.GetStringValue(drlector, "direccion") ?? string.Empty;
+                        entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1") ?? string.Empty;
+                        entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2") ?? string.Empty;
                         break;
                     }
                 }
@@ -290,6 +295,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = "1";
+                        break;
                     }
                 }
             }
@@ -340,14 +346,56 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? "";
-                        entidad.FechaReg = Reader.GetStringValue(drlector, "Fecha_Reg") ?? "01/01/1900";
-                        entidad.FechaVen = Reader.GetStringValue(drlector, "Fecha_Ven") ?? "01/01/1900";
+                        entidad.FechaReg = Reader.GetDateStringValue(drlector, "Fecha_Reg") ?? "01/01/1900";
+                        entidad.FechaVen = Reader.GetDateStringValue(drlector, "Fecha_Ven") ?? "01/01/1900";
                         break;
                     }
                 }
             }
 
             return entidad;
+        }
+
+        public static int VerificaNC(int IdVenta)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_VeriNc";
+                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "ID_VENTA");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static decimal ConsultaControlTiempo(string tipo)
+        {
+            var valor = new decimal();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Control_Tiempo";
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, tipo);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetDecimalValue(drlector, "tiempo");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
         }
 
         #endregion

@@ -187,6 +187,33 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
+        public static List<PanelControlEntity> ListarPanelControlClave()
+        {
+            var Lista = new List<PanelControlEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Sc_Wsp_Tb_Panel_Clave_Consulta";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new PanelControlEntity
+                        {
+                            CodiPanel = Reader.GetStringValue(drlector, "codi_panel"),
+                            Valor = Reader.GetStringValue(drlector, "valor"),
+                            Descripcion = Reader.GetStringValue(drlector, "descripcion"),
+                            TipoControl = Reader.GetStringValue(drlector, "Tipo_Control")
+                        };
+
+                        Lista.Add(entidad);
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
         public static decimal BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
         {
             var valor = new decimal();

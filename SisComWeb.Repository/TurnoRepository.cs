@@ -170,6 +170,51 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static string ConsultaPosCNT(string CodTab, string CodEmp)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Tabla_Consulta_Pos_CNT";
+                db.AddParameter("@COD_TAB", DbType.String, ParameterDirection.Input, CodTab);
+                db.AddParameter("@COD_EMP", DbType.String, ParameterDirection.Input, CodEmp);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "NOM_TIP") ?? "0";
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static int ConsultaAnulacionPorDia(int Pv, string F)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Anulacion_por_Dia_Consulta";
+                db.AddParameter("@pv", DbType.Int16, ParameterDirection.Input, Pv);
+                db.AddParameter("@f", DbType.String, ParameterDirection.Input, F);
+
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "cnt");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
     }
 }

@@ -13,6 +13,7 @@ namespace SisComWeb.Business
             try
             {
                 var obtenerBus = new BusEntity();
+                var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
                 // Busca Turno
                 var buscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
@@ -154,6 +155,19 @@ namespace SisComWeb.Business
 
                 // Lista 'DestinosRuta'
                 buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
+
+                // Seteo 'StAnulacion'
+                var objPanelCantidadAnulacion = ListarPanelControl.Find(x => x.CodiPanel == "65");
+                if (objPanelCantidadAnulacion != null && objPanelCantidadAnulacion.Valor == "1")
+                {
+                    var consultaPosCNT = TurnoRepository.ConsultaPosCNT("09", request.UsuarioCodiPVenta.ToString());
+                    var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(request.UsuarioCodiPVenta, DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+
+                    if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
+                        buscarTurno.StAnulacion = true;
+                }
+                else
+                    buscarTurno.StAnulacion = true;
 
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);
             }

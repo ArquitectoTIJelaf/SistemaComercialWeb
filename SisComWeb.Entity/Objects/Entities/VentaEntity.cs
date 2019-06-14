@@ -176,7 +176,6 @@ namespace SisComWeb.Entity
 
         public string SignatureValue { get; set; }
 
-
         public bool ValidadorDescuentoControl { get; set; }
 
         public string DescuentoTipoDC { get; set; }
@@ -186,6 +185,19 @@ namespace SisComWeb.Entity
         public decimal ImporteDescontadoDC { get; set; }
 
         public string AutorizadoDC { get; set; }
+
+        // Para 'VentaRealizada'
+        public string EmpDirAgencia { get; set; }
+
+        public string EmpTelefono1 { get; set; }
+
+        public string EmpTelefono2 { get; set; }
+
+        public string PolizaNum { get; set; }
+
+        public string PolizaFechaReg { get; set; }
+
+        public string PolizaFechaVen { get; set; }
     }
 
     public class VentaRealizadaEntity

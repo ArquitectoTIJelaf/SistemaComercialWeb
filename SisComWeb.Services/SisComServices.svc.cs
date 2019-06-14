@@ -509,16 +509,42 @@ namespace SisComWeb.Services
 
         #region ANULAR VENTA
 
-        public Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo, string FlagVenta)
+        public Response<byte> AnularVenta(AnularVentaRequest request)
         {
             try
             {
-                return VentaLogic.AnularVenta(IdVenta, CodiUsuario, CodiOficina, CodiPuntoVenta, Tipo, FlagVenta);
+                return VentaLogic.AnularVenta(request);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
+            }
+        }
+
+        public Response<int> VerificaNC(int IdVenta)
+        {
+            try
+            {
+                return VentaLogic.VerificaNC(IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaNC, false);
+            }
+        }
+
+        public Response<decimal> ConsultaControlTiempo(string tipo)
+        {
+            try
+            {
+                return VentaLogic.ConsultaControlTiempo(tipo);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<decimal>(false, 0, Message.MsgExcConsultaControlTiempo, false);
             }
         }
 
@@ -556,16 +582,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<PanelControlEntity>> ListarPanelControl()
+        public Response<PanelControlResponse> ListarPanelesControl()
         {
             try
             {
-                return CreditoLogic.ListarPanelControl();
+                return CreditoLogic.ListarPanelesControl();
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PanelControlEntity>>(false, null, Message.MsgExcListarPanelControl, false);
+                return new Response<PanelControlResponse>(false, null, Message.MsgExcListarPanelesControl, false);
             }
         }
 

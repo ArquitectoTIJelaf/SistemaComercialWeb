@@ -86,7 +86,6 @@
 
         public string NumeSolicitud { get; set; }
 
-
         public string HoraVenta { get; set; }
 
         public short EmbarqueCod { get; set; }
@@ -94,5 +93,8 @@
         public string EmbarqueDir { get; set; }
 
         public string EmbarqueHora { get; set; }
+
+
+        public string ImpManifiesto { get; set; }
     }
 }

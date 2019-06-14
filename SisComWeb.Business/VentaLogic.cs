@@ -120,6 +120,12 @@ namespace SisComWeb.Business
                     FechaReg = "01/01/1900",
                     FechaVen = "01/01/1900"
                 };
+                var buscarAgenciaEmpresa = new AgenciaEntity()
+                {
+                    Direccion = string.Empty,
+                    Telefono1 = string.Empty,
+                    Telefono2 = string.Empty
+                };
 
                 foreach (var entidad in Listado)
                 {
@@ -225,11 +231,11 @@ namespace SisComWeb.Business
                             {
                                 var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
                                 if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
-                                {
                                     consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
-                                    if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
-                                        return new Response<VentaResponse>(true, valor, Message.MsgErrorConsultaNroPoliza, false);
-                                }
+
+                                entidad.PolizaNum = consultaNroPoliza.NroPoliza;
+                                entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
+                                entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
                             }
                             break;
                     }
@@ -377,6 +383,12 @@ namespace SisComWeb.Business
 
                     // Siempre '+ 1' al 'NumeBoleto'
                     entidad.NumeBoleto = entidad.NumeBoleto + 1;
+
+                    // Busca 'AgenciaEmpresa' (E -> GenerarAdicionales, M -> También se va a necesitar.)
+                    buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.CodiEmpresa, entidad.CodiPuntoVenta);
+                    entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
+                    entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
+                    entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
 
                     // Graba 'Venta', 'FacturaciónElectrónica' y otros
                     switch (validarTerminalElectronico.Tipo)
@@ -699,9 +711,12 @@ namespace SisComWeb.Business
                         CodTerminal = validarTerminalElectronico.Tipo,
                         TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
 
-                        PolizaNum = consultaNroPoliza.NroPoliza,
-                        PolizaFechaReg = consultaNroPoliza.FechaReg,
-                        PolizaFechaVen = consultaNroPoliza.FechaVen,
+                        EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
+                        EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
+                        EmpTelefono2 = entidad.EmpTelefono2 ?? string.Empty,
+                        PolizaNum = entidad.PolizaNum,
+                        PolizaFechaReg = entidad.PolizaFechaReg,
+                        PolizaFechaVen = entidad.PolizaFechaVen,
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
@@ -903,14 +918,14 @@ namespace SisComWeb.Business
 
         #region ANULAR VENTA
 
-        public static Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo, string FlagVenta)
+        public static Response<byte> AnularVenta(AnularVentaRequest request)
         {
             try
             {
                 var anularVenta = new byte();
+                var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
-                var objVenta = VentaRepository.BuscarVentaById(IdVenta);
-
+                var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
                 if (objVenta.SerieBoleto == 0)
                     return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
 
@@ -923,7 +938,7 @@ namespace SisComWeb.Business
                         return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
                 }
 
-                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", CodiOficina, CodiPuntoVenta, string.Empty);
+                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                     return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
@@ -931,29 +946,29 @@ namespace SisComWeb.Business
                 {
                     NumeCaja = generarCorrelativoAuxiliar,
                     CodiEmpresa = objVenta.CodiEmpresa,
-                    CodiSucursal = short.Parse(CodiOficina),
+                    CodiSucursal = short.Parse(request.CodiOficina),
                     Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
                     Monto = objVenta.PrecioVenta,
-                    CodiUsuario = short.Parse(CodiUsuario.ToString()),
+                    CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                     Recibe = string.Empty,
                     CodiDestino = objVenta.CodiRuta.ToString(),
                     FechaViaje = objVenta.FechaViaje,
                     HoraViaje = "VNA",
-                    CodiPuntoVenta = short.Parse(CodiPuntoVenta),
-                    IdVenta = IdVenta,
+                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                    IdVenta = request.IdVenta,
                     Origen = "AB",
                     Modulo = "AP",
-                    Tipo = Tipo,
+                    Tipo = request.Tipo,
                     IdCaja = 0
                 };
                 var caja = VentaRepository.GrabarCaja(objCaja);
 
                 if (caja > 0)
                 {
-                    if (FlagVenta == "1")
+                    if (request.FlagVenta == "1")
                     {
                         // Consulta 'BoletoPorContrato'
-                        var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(IdVenta);
+                        var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(request.IdVenta);
                         if (consultaBoletoPorContrato > 0)
                         {
                             // Actualiza 'BoletosPorContrato'
@@ -970,7 +985,7 @@ namespace SisComWeb.Business
                             return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
                     }
 
-                    anularVenta = VentaRepository.AnularVenta(IdVenta, CodiUsuario);
+                    anularVenta = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
                     if (anularVenta > 0)
                         return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
                     else
@@ -983,6 +998,36 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
+            }
+        }
+
+        public static Response<int> VerificaNC(int IdVenta)
+        {
+            try
+            {
+                var verificaNC = VentaRepository.VerificaNC(IdVenta);
+
+                return new Response<int>(true, verificaNC, Message.MsgCorrectoVerificaNC, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaNC, false);
+            }
+        }
+
+        public static Response<decimal> ConsultaControlTiempo(string tipo)
+        {
+            try
+            {
+                var consultaControlTiempo = VentaRepository.ConsultaControlTiempo(tipo);
+
+                return new Response<decimal>(true, consultaControlTiempo, Message.MsgCorrectoConsultaControlTiempo, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<decimal>(false, 0, Message.MsgExcConsultaControlTiempo, false);
             }
         }
 
@@ -1166,16 +1211,22 @@ namespace SisComWeb.Business
                 foreach (var entidad in Listado)
                 {
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
-                    var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
-
-                    var consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
-
                     var paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
+                    var consultaNroPoliza = new PolizaEntity()
+                    {
+                        NroPoliza = "",
+                        FechaReg = "01/01/1900",
+                        FechaVen = "01/01/1900"
+                    };
+                    var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
+                    if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                        consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
 
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)
                     {
+                        var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
                         var resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
                         var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
                         
@@ -1189,10 +1240,13 @@ namespace SisComWeb.Business
                         entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
                         entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
-
                         entidad.PolizaNum = consultaNroPoliza.NroPoliza;
                         entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
                         entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
+
+                        entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
+                        entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
+                        entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
                     }
 
                     entidad.NomTipVenta = "EFECTIVO";
@@ -1200,9 +1254,6 @@ namespace SisComWeb.Business
                     entidad.EmpRuc = buscarEmpresaEmisor.Ruc;
                     entidad.EmpRazSocial = buscarEmpresaEmisor.RazonSocial;
                     entidad.EmpDireccion = buscarEmpresaEmisor.Direccion;
-                    entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
-                    entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
-                    entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
                     entidad.LinkPag_FE = paginaWebEmisor;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
@@ -1267,6 +1318,7 @@ namespace SisComWeb.Business
                 entidadFE.DocInvoice = new ArrayOfString();
                 // Genera 'Adicionales'
                 entidadFE.Aditional = GenerarAdicionales(entidad);
+
                 entidadFE.EnvioAsync = false;
 
                 bodyDocumentoSUNAT = entidadFE;
@@ -1286,7 +1338,7 @@ namespace SisComWeb.Business
             {
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 
-                ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, true);
+                ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, false);
                 return ServFactElectResponse;
             }
             catch (Exception ex)
@@ -1481,9 +1533,13 @@ namespace SisComWeb.Business
                 var array = new ArrayOfString();
                 var sb = new StringBuilder();
 
-                sb.Append("[CodAdicional]|[Descripcion]");
-                sb = sb.Replace("[CodAdicional]", "1");
-                sb = sb.Replace("[Descripcion]", string.Empty);
+                sb.Append("1|[CondicionPago]|2|[SucDir]|4|[NombreUsuario]|5|[IdVenta]|16|[NombreSucursal]|21|[PolizaNro]");
+                sb = sb.Replace("[CondicionPago]", entidad.FlagVenta == "1" ? "02" : "01");
+                sb = sb.Replace("[SucDir]", entidad.EmpDirAgencia);
+                sb = sb.Replace("[NombreUsuario]", entidad.CodiUsuario.ToString());
+                sb = sb.Replace("[IdVenta]", entidad.IdVenta.ToString());
+                sb = sb.Replace("[NombreSucursal]", entidad.CodiOficina.ToString());
+                sb = sb.Replace("[PolizaNro]", entidad.PolizaNum);
 
                 array.Add(sb.ToString());
 
@@ -1494,7 +1550,6 @@ namespace SisComWeb.Business
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return null;
             }
-
         }
 
         public static string ObtenerPaginaWebEmisor(string Ruc)

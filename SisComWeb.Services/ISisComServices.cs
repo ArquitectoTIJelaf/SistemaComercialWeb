@@ -187,8 +187,16 @@ namespace SisComWeb.Services
         #region ANULAR VENTA
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<byte> AnularVenta(int IdVenta, int CodiUsuario, string CodiOficina, string CodiPuntoVenta, string Tipo, string FlagVenta);
+        [WebInvoke(Method = "POST", UriTemplate = "AnularVenta", ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> AnularVenta(AnularVentaRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaNC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> VerificaNC(int IdVenta);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaControlTiempo", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<decimal> ConsultaControlTiempo(string tipo);
 
         #endregion
 
@@ -207,8 +215,8 @@ namespace SisComWeb.Services
         Response<List<ClienteCreditoEntity>> ListarClientesContrato(CreditoRequest request);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListarPanelControl", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<PanelControlEntity>> ListarPanelControl();
+        [WebInvoke(Method = "GET", UriTemplate = "ListarPanelesControl", ResponseFormat = WebMessageFormat.Json)]
+        Response<PanelControlResponse> ListarPanelesControl();
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultarContrato", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]

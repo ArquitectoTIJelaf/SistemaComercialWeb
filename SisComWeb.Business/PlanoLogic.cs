@@ -212,11 +212,12 @@ namespace SisComWeb.Business
             entidad.NomUsuario = item.NomUsuario;
             entidad.RucContacto = item.RucContacto;
             entidad.NumeSolicitud = item.NumeSolicitud;
-
             entidad.HoraVenta = item.HoraVenta;
             entidad.EmbarqueCod = item.EmbarqueCod;
             entidad.EmbarqueDir = item.EmbarqueDir;
             entidad.EmbarqueHora = item.EmbarqueHora;
+
+            entidad.ImpManifiesto = item.ImpManifiesto;
 
             switch (entidad.FlagVenta)
             {

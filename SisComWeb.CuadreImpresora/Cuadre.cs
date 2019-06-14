@@ -61,17 +61,17 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine(SplitStringPreserving("F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 42, "^"));
+                    texto.AppendLine("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("");
                 }
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                                 venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,
                                                 venta.BoletoSerie, venta.BoletoNum, venta.PrecioCan,
                                                 venta.EmisionFecha, venta.DocTipo, venta.DocNumero));
-
                 if (!string.IsNullOrEmpty(venta.PolizaNum))
                 {
                     texto.AppendLine("");
-                    texto.AppendLine(SplitStringPreserving("Cubierto " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
+                    texto.AppendLine(SplitStringPreserving("CUBIERTO " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
                 }
             }
             // Impresora Matricial
@@ -82,7 +82,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("FACT_ELE");
                 texto.AppendLine("@@@");
                 texto.AppendLine(PadBoth(venta.EmpRazSocial + " - " + "R.U.C. " + venta.EmpRuc, 80));
-                texto.AppendLine(PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA DE VENTA") + " ELECTRÓNICA: " + venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum, 80));
+                texto.AppendLine(PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA DE VENTA") + " ELECTRONICA: " + venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum, 80));
                 texto.AppendLine(PadBoth(venta.EmbarqueDir + " - " + venta.EmpDirAgencia, 80));
                 texto.AppendLine("FECHA Y HORA DE EMISION".PadRight(30) + (": " + venta.EmisionFecha + " - " + venta.EmisionHora + " - " + "CAJ.: " + venta.CajeroNom).PadRight(50));
                 texto.AppendLine("NRO RUC".PadRight(30) + (": " + venta.PasRuc).PadRight(50));
@@ -110,13 +110,16 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("  Consulte el documento en: " + venta.LinkPag_FE);
                 texto.AppendLine(SplitStringPreserving("Al recibir el presente documento, acepto todos los términos y/o condiciones del contratado del servicio de transporte publicados en los letreros o en los banners y detallados en la página.", 80, "", false));
                 texto.AppendLine("");
-
-                if (!string.IsNullOrEmpty(venta.PolizaNum))
+                if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine(SplitStringPreserving("Cubierto " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
+                    texto.AppendLine("FECHA DE REIMPRESION: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
                     texto.AppendLine("");
                 }
-
+                if (!string.IsNullOrEmpty(venta.PolizaNum))
+                {
+                    texto.AppendLine("CUBIERTO " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen);
+                    texto.AppendLine("");
+                }
                 texto.AppendLine(new string('-', 25));
                 texto.AppendLine("USUARIO CONFORME");
                 texto.AppendLine(".");
@@ -165,7 +168,8 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("   ");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine(SplitStringPreserving("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod + " - " + venta.CajeroNom, 40, ""));
+                    texto.AppendLine("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("");
                 }
                 texto.AppendLine("---------------------------------------");
                 texto.AppendLine(" ");
