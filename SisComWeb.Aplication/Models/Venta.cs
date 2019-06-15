@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace SisComWeb.Aplication.Models
 {
     public class Venta
     {
-
     }
 
     public class FiltroVenta
@@ -122,12 +118,6 @@ namespace SisComWeb.Aplication.Models
 
         public string BoletoNum { get; set; }
 
-        public string EmpRuc { get; set; }
-
-        public string EmpRazSocial { get; set; }
-
-        public string EmpDireccion { get; set; }
-
         public string EmpDirAgencia { get; set; }
 
         public string EmpTelefono1 { get; set; }
@@ -174,8 +164,6 @@ namespace SisComWeb.Aplication.Models
 
         public string CodigoX_FE { get; set; }
 
-        public string LinkPag_FE { get; set; }
-
         public string CodTerminal { get; set; }
 
         public byte TipImpresora { get; set; }
@@ -195,21 +183,5 @@ namespace SisComWeb.Aplication.Models
         public string BusCodigo { get; set; }
 
         public short EmbarqueCod { get; set; }
-
-        public string EmbarqueDirAgencia { get; set; }
-
-
-        public short CajeroOficina { get; set; }
-
-        public short CajeroPVenta { get; set; }
-
-        public int CajeroTerminal { get; set; }
-    }
-
-    public class VentaRealizadaRequest
-    {
-        public List<VentaRealizada> ListaVentasRealizadas { get; set; }
-
-        public string TipoImpresion { get; set; } // Impresion, Reimpresion
     }
 }

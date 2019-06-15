@@ -1031,6 +1031,21 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> ConsultaPanelNiveles(int codigo, int Nivel)
+        {
+            try
+            {
+                var consultaPanelNiveles = VentaRepository.ConsultaPanelNiveles(codigo, Nivel);
+
+                return new Response<string>(true, consultaPanelNiveles, Message.MsgCorrectoConsultaPanelNiveles, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPanelNiveles, false);
+            }
+        }
+
         #endregion
 
         #region BUSCAR VENTA POR BOLETO

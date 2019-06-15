@@ -94,7 +94,9 @@
 
         public string EmbarqueHora { get; set; }
 
-
         public string ImpManifiesto { get; set; }
+
+
+        public short CodiSucursal { get; set; }
     }
 }

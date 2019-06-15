@@ -188,6 +188,9 @@
         public const string MsgCorrectoConsultaControlTiempo = "Correcto: ConsultaControlTiempo.";
         public const string MsgExcConsultaControlTiempo = "Excepción: ConsultaControlTiempo.";
 
+        public const string MsgCorrectoConsultaPanelNiveles = "Correcto: ConsultaPanelNiveles.";
+        public const string MsgExcConsultaPanelNiveles = "Excepción: ConsultaPanelNiveles.";
+
         // Postergación
         public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: BuscarVentaxBoleto.";
         public const string MsgValidaBuscarVentaxBoleto = "No se encontraron resultados.";

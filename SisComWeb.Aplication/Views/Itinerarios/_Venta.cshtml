@@ -1127,22 +1127,12 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">&nbsp;</label>
-                                                <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
-                                                    <button @@click="cancelarReserva"
-                                                            class="btn btn-secondary btn-ticket btn-cancelar"
-                                                            style="width: 100%; color:white;">
-                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                        Cancelar Reserva
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <button @@click="cancelarBoletos"
-                                                            class="btn btn-secondary btn-ticket btn-cancelar"
-                                                            style="width: 100%; color:white;">
-                                                        <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
-                                                        Cancelar
-                                                    </button>
-                                                </template>
+                                                <button @@click="cancelarBoletos"
+                                                        class="btn btn-secondary btn-ticket btn-cancelar"
+                                                        style="width: 100%; color:white;">
+                                                    <span class="glyphicon glyphicon-remove fa-fw" style="top: 2px; "></span>
+                                                    Cancelar
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

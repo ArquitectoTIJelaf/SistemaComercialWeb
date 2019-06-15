@@ -198,6 +198,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ConsultaControlTiempo", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<decimal> ConsultaControlTiempo(string tipo);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaPanelNiveles", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaPanelNiveles(int codigo, int Nivel);
+
         #endregion
 
         #region FECHA ABIERTA

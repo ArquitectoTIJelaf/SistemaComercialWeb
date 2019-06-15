@@ -161,7 +161,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListarAsientosVendidos";
+                db.ProcedureName = "scwsp_ListarAsientosVendidos2";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 using (IDataReader drlector = db.GetDataReader())
@@ -198,8 +198,9 @@ namespace SisComWeb.Repository
                             EmbarqueCod = Reader.GetSmallIntValue(drlector, "EmbarqueCod"),
                             EmbarqueDir = Reader.GetStringValue(drlector, "EmbarqueDir") ?? string.Empty,
                             EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora") ?? string.Empty,
-
                             ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty,
+
+                            CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL"),
 
                             // Para evitar Null's
                             Nombres = string.Empty,

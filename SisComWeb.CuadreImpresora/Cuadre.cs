@@ -20,48 +20,49 @@ namespace SisComWeb.CuadreImpresora
             {
                 texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "|||^"));
                 texto.AppendLine(SplitStringPreserving("R.U.C. " + venta.EmpRuc, 30, "|||^"));
-                texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 42, "^"));
-                texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 42, "^"));
-                texto.AppendLine("|||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " DE VENTA ELECTRONICA", 29));
-                texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 17));
-                texto.AppendLine(" ");
-                texto.AppendLine("^FECHA DE EMISION  : " + venta.EmisionFecha + "-" + venta.EmisionHora);
-                texto.AppendLine("^NRO DOC           : " + venta.DocNumero);
-                texto.AppendLine("^PASAJERO          : " + venta.PasNombreCom);
-                texto.AppendLine("^COD.              : " + venta.CajeroCod);
-                texto.AppendLine("---------------------------------------");
-                texto.AppendLine("^DETALLE DE SERVICIO               ");
-                texto.AppendLine("---------------------------------------");
-                texto.AppendLine("||||^SERVICIO DE TRANSPORTE        ");
-                texto.AppendLine("^ORIGEN            : " + venta.NomOriPas);
-                texto.AppendLine("^DESTINO           : " + venta.NomDesPas);
-                texto.AppendLine("||||^SERVICIO        : " + venta.NomServicio);
+                texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 45, "^"));
+                texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 45, "^"));
+                texto.AppendLine("|||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " ELECTRÓNICA", 30));
+                texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 18));
+                texto.AppendLine("");
+                texto.AppendLine("^FECHA DE EMISIÓN : " + venta.EmisionFecha + " - " + venta.EmisionHora);
+                texto.AppendLine("^NRO. DOCUMENTO   : " + venta.DocNumero);
+                texto.AppendLine("^PASAJERO         : " + venta.PasNombreCom);
+                if (venta.BoletoTipo == "F")
+                {
+                    texto.AppendLine("^NRO. RUC         : " + venta.PasRuc);
+                    texto.AppendLine("^CLIENTE          : " + venta.PasRazSocial);
+                    texto.AppendLine("^DIRECCION        : " + venta.PasDireccion);
+                }
+                texto.AppendLine("^COD. CAJERO      : " + venta.CajeroCod);
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("^DETALLE DEL SERVICIO");
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("||||^SERVICIO DE TRANSPORTE");
+                texto.AppendLine("^ORIGEN           : " + venta.NomOriPas);
+                texto.AppendLine("^DESTINO          : " + venta.NomDesPas);
+                texto.AppendLine("||||^SERVICIO      : " + venta.NomServicio);
                 texto.AppendLine("|||^FECHA VIAJE    : " + venta.FechaViaje);
                 texto.AppendLine("|||^HORA DE SALIDA : " + venta.EmbarqueHora);
                 texto.AppendLine("|||^ASIENTO        : " + venta.NumeAsiento);
-                texto.AppendLine(SplitStringPreserving("DIREC.EMBARQUE : " + venta.EmbarqueDir, 40, "||||^", false));
-                texto.AppendLine("^---------------------------------------");
-                texto.AppendLine("|||^TOTAL        S/ " + venta.PrecioCan.ToString("F2").PadRight(12));
-                texto.AppendLine("^SON : " + venta.PrecioDes);
-                texto.AppendLine("---------------------------------------");
-                texto.AppendLine("^CODIGO : 98OyLYeKsSmBVaz/XSG2v1xmKbE=   ");
-                texto.AppendLine("^          Autorizado mediante          ");
-                texto.AppendLine("^             N° XXXXX/SUNAT             ");
-                texto.AppendLine("^ Representación impresa del comprobante ");
-                texto.AppendLine("^     Términos y condiciones, visite     ");
-                texto.AppendLine("^" + PadBoth(venta.LinkPag_FE, 39));
-                texto.AppendLine("^Debe presentarse 30 minutos antes de la hora de salida.");
-                texto.AppendLine("^  Al abordar el bus debe presentar la  ");
-                texto.AppendLine("^  representación impresa o digital del  ");
-                texto.AppendLine("^              comprobante.              ");
-                texto.AppendLine("^       No se aceptan cambios ni       ");
-                texto.AppendLine("^      devoluciones, Conservar su      ");
-                texto.AppendLine("^      comprobante ante cualquier      ");
-                texto.AppendLine("^             eventualidad             ");
+                texto.AppendLine(SplitStringPreserving("DIR.EMBARQUE: " + venta.EmbarqueDir, 30, "||||^", false));
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("|||^TOTAL" + ("S/ " + venta.PrecioCan.ToString("F2")).PadLeft(20));
+                texto.AppendLine("^SON: " + venta.PrecioDes);
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("^CÓDIGO: " + venta.CodigoX_FE);
+                texto.AppendLine(PadBoth("^Autorizado mediante", 45));
+                texto.AppendLine(PadBoth("^N° XXXXX/SUNAT", 45));
+                texto.AppendLine(PadBoth("^Representación impresa del comprobante.", 45));
+                texto.AppendLine(PadBoth("^Términos y condiciones, visite", 45));
+                texto.AppendLine(SplitStringPreserving(venta.LinkPag_FE, 45, "^", true));
+                texto.AppendLine(SplitStringPreserving("Debe presentarse 30 minutos antes de la hora de salida.", 45, "^", true));
+                texto.AppendLine(SplitStringPreserving("Al abordar el bus debe presentar la representación impresa o digital del comprobante.", 45, "^", true));
+                texto.AppendLine(SplitStringPreserving("No se aceptan cambios ni devoluciones, conservar su comprobante ante cualquier eventualidad.", 45, "^", true));
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("^FEC. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
                     texto.AppendLine("");
                 }
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
@@ -71,7 +72,7 @@ namespace SisComWeb.CuadreImpresora
                 if (!string.IsNullOrEmpty(venta.PolizaNum))
                 {
                     texto.AppendLine("");
-                    texto.AppendLine(SplitStringPreserving("CUBIERTO " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 42, "^"));
+                    texto.AppendLine(SplitStringPreserving("CUBIERTO " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 45, "^"));
                 }
             }
             // Impresora Matricial
@@ -82,29 +83,32 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("FACT_ELE");
                 texto.AppendLine("@@@");
                 texto.AppendLine(PadBoth(venta.EmpRazSocial + " - " + "R.U.C. " + venta.EmpRuc, 80));
-                texto.AppendLine(PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA DE VENTA") + " ELECTRONICA: " + venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum, 80));
+                texto.AppendLine(PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " ELECTRONICA: " + venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum, 80));
                 texto.AppendLine(PadBoth(venta.EmbarqueDir + " - " + venta.EmpDirAgencia, 80));
                 texto.AppendLine("FECHA Y HORA DE EMISION".PadRight(30) + (": " + venta.EmisionFecha + " - " + venta.EmisionHora + " - " + "CAJ.: " + venta.CajeroNom).PadRight(50));
-                texto.AppendLine("NRO RUC".PadRight(30) + (": " + venta.PasRuc).PadRight(50));
-                texto.AppendLine("CLIENTE".PadRight(30) + (": " + venta.PasRazSocial).PadRight(50));
-                texto.AppendLine("DIRECCION".PadRight(30) + (": " + venta.PasDireccion).PadRight(50));
+                if (venta.BoletoTipo == "F")
+                {
+                    texto.AppendLine("NRO. RUC".PadRight(30) + (": " + venta.PasRuc).PadRight(50));
+                    texto.AppendLine("CLIENTE".PadRight(30) + (": " + venta.PasRazSocial).PadRight(50));
+                    texto.AppendLine("DIRECCION".PadRight(30) + (": " + venta.PasDireccion).PadRight(50));
+                }
                 texto.AppendLine("DOC. CLIENTE".PadRight(30) + (": " + venta.DocNumero).PadRight(50));
                 texto.AppendLine("CONDICION DE VENTA".PadRight(30) + (": " + venta.NomTipVenta).PadRight(50));
                 texto.AppendLine("PASAJERO".PadRight(30) + (": " + venta.PasNombreCom).PadRight(50));
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine("    DESCRIPCION DEL SERVICIO".PadRight(30) + "TOTAL".PadLeft(50));
                 texto.AppendLine(new string('-', 80));
-                texto.AppendLine(("|||SERV. DE TRANSP. DE LA RUTA " + venta.NomOriPas + " - " + venta.NomDesPas + " / " + "SERVICIO:").PadRight(70) + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
-                texto.AppendLine(venta.NomServicio + " / " + "NRO ASIENTO: " + venta.NumeAsiento + " / " + "PASAJERO: " + venta.PasNombreCom);
+                texto.AppendLine(("|||SER. DE TRAN. DE LA RUTA " + venta.NomOriPas + " - " + venta.NomDesPas + " / " + "SERVICIO:").PadRight(70) + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
+                texto.AppendLine(venta.NomServicio + " / " + "NRO. ASIENTO: " + venta.NumeAsiento + " / " + "PASAJERO: " + venta.PasNombreCom);
                 texto.AppendLine(" / " + "DNI: " + venta.DocNumero + " / " + "FECHA VIAJE: " + venta.FechaViaje + " / " + "HORA VIAJE: " + venta.EmbarqueHora);
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine("SON: " + venta.PrecioDes);
                 texto.AppendLine(new string('-', 80));
-                texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(40) + PadBoth("OP. GRAVADA", 25) + "S/".PadLeft(5) + 0.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
+                texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(39) + PadBoth("OP. GRAVADA", 25) + "S/".PadLeft(5) + 0.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
                 texto.AppendLine("autorizado mediante: ".PadRight(40) + PadBoth("OP. INAFECTA", 25) + "S/".PadLeft(5) + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
                 texto.AppendLine("N° XXXXX/Sunat ".PadRight(40) + PadBoth("OP. EXONERADA", 25) + "S/".PadLeft(5) + 0.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
-                texto.AppendLine("I.G.V. 18%".PadLeft(65) + "S/".PadLeft(5) + 0.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
-                texto.AppendLine("IMPORTE TOTAL".PadLeft(65) + "S/".PadLeft(5) + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
+                texto.AppendLine("I.G.V. 18%".PadLeft(40) + "S/".PadLeft(5) + 0.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
+                texto.AppendLine("IMPORTE TOTAL".PadLeft(40) + "S/".PadLeft(5) + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture).PadLeft(10));
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine("Representación impresa de la Factura Electrónica");
                 texto.AppendLine("  Consulte el documento en: " + venta.LinkPag_FE);
@@ -121,7 +125,7 @@ namespace SisComWeb.CuadreImpresora
                     texto.AppendLine("");
                 }
                 texto.AppendLine(new string('-', 25));
-                texto.AppendLine("USUARIO CONFORME");
+                texto.AppendLine("  USUARIO CONFORME");
                 texto.AppendLine(".");
             }
 
@@ -142,19 +146,25 @@ namespace SisComWeb.CuadreImpresora
             {
                 texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "||||^"));
                 texto.AppendLine(SplitStringPreserving("R.U.C. " + venta.EmpRuc, 30, "|||^"));
-                texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 42, ""));
-                texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 42, "^"));
-                texto.AppendLine("||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " DE VENTA ELECTRONICA", 29));
-                texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 17));
-                texto.AppendLine(" ");
-                texto.AppendLine("FECHA DE EMISION  : " + venta.EmisionFecha + " - " + venta.EmisionHora);
-                texto.AppendLine("^CAJERO                : " + venta.CajeroCod + " - " + venta.CajeroNom);
-                texto.AppendLine("---------------------------------------");
+                texto.AppendLine(SplitStringPreserving(venta.EmpDireccion, 45, "^"));
+                texto.AppendLine(SplitStringPreserving("Agencia: " + venta.EmpDirAgencia, 45, "^"));
+                texto.AppendLine("||^" + PadBoth((venta.BoletoTipo == "F" ? "FACTURA" : "BOLETA") + " ELECTRÓNICA", 30));
+                texto.AppendLine("|^" + PadBoth(string.Format(venta.BoletoTipo + venta.BoletoSerie + "-" + venta.BoletoNum), 18));
+                texto.AppendLine("");
+                texto.AppendLine("^FECHA DE EMISIÓN : " + venta.EmisionFecha + " - " + venta.EmisionHora);
+                if (venta.BoletoTipo == "F")
+                {
+                    texto.AppendLine("^NRO. RUC         : " + venta.PasRuc);
+                    texto.AppendLine("^CLIENTE          : " + venta.PasRazSocial);
+                    texto.AppendLine("^DIRECCION        : " + venta.PasDireccion);
+                }
+                texto.AppendLine("^COD. CAJERO      : " + venta.CajeroCod);
+                texto.AppendLine(new string('-', 42));
                 texto.AppendLine("");
                 texto.AppendLine("^TIPO VENTA: " + venta.NomTipVenta);
-                texto.AppendLine("---------------------------------------");
-                texto.AppendLine(" # DESCRIPCION                    TOTAL ");
-                texto.AppendLine("---------------------------------------");
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine(" # DESCRIPCIÓN                      TOTAL");
+                texto.AppendLine(new string('-', 42));
                 texto.AppendLine(" 1 SERVICIO DE TRANSPORTE EN LA     " + venta.PrecioCan.ToString("F2", CultureInfo.InvariantCulture));
                 texto.AppendLine("   RUTA: " + venta.NomOriPas + " - " + venta.NomDesPas);
                 texto.AppendLine("   SERVICIO: " + venta.NomServicio);
@@ -164,25 +174,26 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("   FECHA VIAJE: " + venta.FechaViaje);
                 texto.AppendLine("   HORA EMBARQUE: " + venta.EmbarqueHora);
                 texto.AppendLine(SplitStringPreserving("LUGAR EMBARQUE: " + venta.EmbarqueDir, 40, "   ", false));
-                texto.AppendLine(SplitStringPreserving("DIREC. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
-                texto.AppendLine("   ");
+                texto.AppendLine(SplitStringPreserving("DIR. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
+                texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine("^F. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("^FEC. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
                     texto.AppendLine("");
                 }
-                texto.AppendLine("---------------------------------------");
-                texto.AppendLine(" ");
-                texto.AppendLine("      **** CONTROL INTERNO ***** ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine(" ");
-                texto.AppendLine("^---------------------------------------");
-                texto.AppendLine("^            USUARIO CONFORME     ");
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("");
+                texto.AppendLine(PadBoth("**** CONTROL INTERNO *****", 45));
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine("");
+                texto.AppendLine(new string('-', 42));
+                texto.AppendLine("^" + PadBoth("USUARIO CONFORME", 45));
+
                 texto.AppendLine(" ");
             }
 

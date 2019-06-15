@@ -193,7 +193,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Sc_Wsp_Tb_Panel_Clave_Consulta";
+                db.ProcedureName = "scwsp_Tb_Panel_Clave_Consulta";
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

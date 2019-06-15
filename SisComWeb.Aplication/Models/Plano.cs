@@ -48,23 +48,9 @@
         public short EmbarqueCod { get; set; }
         public string EmbarqueDir { get; set; }
         public string EmbarqueHora { get; set; }
-
         public string ImpManifiesto { get; set; }
-    }
 
-    public class FiltroPlano
-    {
-        public string PlanoBus { get; set; }
-        public int CodiProgramacion { get; set; }
-        public int CodiOrigen { get; set; }
-        public int CodiDestino { get; set; }
-        public string CodiBus { get; set; }
-        public string HoraViaje { get; set; }
-        public string FechaViaje { get; set; }
-        public int CodiServicio { get; set; }
-        public int CodiEmpresa { get; set; }
-        public string FechaProgramacion { get; set; }
-        public long NroViaje { get; set; }
+        public short CodiSucursal { get; set; }
     }
 
     public class FiltroBloqueoAsiento
@@ -76,6 +62,5 @@
         public byte NumeAsiento { get; set; }
         public string FechaProgramacion { get; set; }
         public double Precio { get; set; }
-        public int CodiTerminal { get; set; }
     }
 }

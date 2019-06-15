@@ -216,8 +216,9 @@ namespace SisComWeb.Business
             entidad.EmbarqueCod = item.EmbarqueCod;
             entidad.EmbarqueDir = item.EmbarqueDir;
             entidad.EmbarqueHora = item.EmbarqueHora;
-
             entidad.ImpManifiesto = item.ImpManifiesto;
+
+            entidad.CodiSucursal = item.CodiSucursal;
 
             switch (entidad.FlagVenta)
             {

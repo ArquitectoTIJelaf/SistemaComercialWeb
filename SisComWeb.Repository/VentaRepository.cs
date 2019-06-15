@@ -398,6 +398,28 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static string ConsultaPanelNiveles(int codigo, int Nivel)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_panel_Niveles_Trae";
+                db.AddParameter("@codigo", DbType.Int32, ParameterDirection.Input, codigo);
+                db.AddParameter("@Nivel", DbType.Int32, ParameterDirection.Input, Nivel);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = "1";
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

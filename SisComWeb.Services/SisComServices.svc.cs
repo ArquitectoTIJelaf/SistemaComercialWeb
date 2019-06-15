@@ -548,6 +548,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<string> ConsultaPanelNiveles(int codigo, int Nivel)
+        {
+            try
+            {
+                return VentaLogic.ConsultaPanelNiveles(codigo, Nivel);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPanelNiveles, false);
+            }
+        }
+
         #endregion
 
         #region FECHA ABIERTA
