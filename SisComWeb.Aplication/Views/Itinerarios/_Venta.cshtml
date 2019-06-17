@@ -683,7 +683,7 @@
                         <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                             <div class="col-md-1" style="height: 235px; width: 35px; padding-left: 0px; display: flex; align-items: center; ">
                                 <div v-if="indexVenta > 0"
-                                     @@click="leftSlider"
+                                     @@click="leftSlider('click')"
                                      class="bgc-emp"
                                      style="border-radius: 0px 10px 10px 0px; ">
                                     <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" />
@@ -1101,8 +1101,9 @@
                                                            @@focus="focusPrecio($event)"
                                                            @@blur="validateRangePrice($event)"
                                                            :disabled="disabledCamposTicket || disabledPrecio"
+                                                           :readonly="list.ventas[indexVenta].ReadonlyPrecio"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); " />
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; " />
                                                 </div>
                                             </div>
                                         </div>
@@ -1142,7 +1143,7 @@
                             </div>
                             <div class="col-md-1" style="height: 235px; width: 35px; padding: 0px 0px 0px 2px; display: flex; align-items: center; ">
                                 <div v-if="indexVenta < list.ventas.length - 1"
-                                     @@click="rightSlider"
+                                     @@click="rightSlider('click')"
                                      class="bgc-emp"
                                      style="border-radius: 10px 0px 0px 10px; ">
                                     <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%" />

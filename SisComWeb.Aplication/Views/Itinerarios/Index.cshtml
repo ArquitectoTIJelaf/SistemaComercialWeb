@@ -26,6 +26,7 @@
 @Html.Partial("_ClaveAutorizacion")
 @Html.Partial("_CreditoClientes")
 @Html.Partial("_CreditoOpciones")
+
 @Html.Partial("_BuscaClientePasaje")
 @Html.Partial("_DescuentoControl")
 
@@ -599,9 +600,12 @@
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescuentoDC = '';
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescontadoDC = '';
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].AutorizadoDC = '';
+
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].ReadonlyPrecio = false;
                                     }
 
-                                    appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = _.cloneDeep(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal).toFixed(2);
+                                    var auxPrecioNormal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
+                                    appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecioNormal.toFixed(2);
                                 }
                                     
                                 document.getElementById('txtPrecio').focus();
@@ -984,8 +988,7 @@
                     appVueDescuentoControl.show(_PrecioVenta);
                 },
                 getDescServicio: function () {
-                    //return appVueVenta.objTurno.DescServicio;
-                    return '1';
+                    return appVueVenta.objTurno.DescServicio;
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     return appVueVenta.validateAlgoritmoRuc(_Ruc);
@@ -1268,12 +1271,13 @@
                         BoletoTipoDir: '1',
                         FechaCita: '',
                         Hospital: null,
-
                         ValidadorDescuentoControl: false,
                         DescuentoTipoDC: '0',
                         ImporteDescuentoDC: '',
                         ImporteDescontadoDC: '',
-                        AutorizadoDC: ''
+                        AutorizadoDC: '',
+
+                        ReadonlyPrecio: false
                     }],
                     sexos: [
                         { 'id': 'M', 'label': 'MASCULINO' },
@@ -2228,14 +2232,24 @@
                     else
                         this.$refs.refRecoger.focus();
                 },
-                validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento) {
-                    var _this = this;
+                validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
                     var auxResponse = true;
 
-                    for (var objAsiento of _this.list.tempList) {
+                    for (var objAsiento of this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
                             if (objAsiento.TipoDocumento === _TipoDocumento && objAsiento.NumeroDocumento === _NumeroDocumento) {
                                 APP.msg.warning('Documento usado en otro asiento, ingrese otro.');
+                                auxResponse = false;
+                                return auxResponse;
+                            }
+                        }
+                    }
+
+                    for (var objAsiento of this.list.ventas) {
+                        
+                        if (objAsiento.NroAsiento !== _NroAsiento) {
+                            if (objAsiento.CodiTipoDoc.id === _TipoDocumento && objAsiento.Documento === _NumeroDocumento) {
+                                APP.msg.warning('Documento usado en otro boleto, ingrese otro.');
                                 auxResponse = false;
                                 return auxResponse;
                             }
@@ -2253,7 +2267,7 @@
                         // Valida 'DocumentoRepetido'
                         if (_this.pickedBusVenta !== 'R' && _this.pickedBusVenta !== 'FA') {
                             if (appController.validatePanel('107') === '1') {
-                                var resValidaDocumentoRepetido = _this.validaDocumentoRepetido(_this.list.ventas[_this.indexVenta].CodiTipoDoc.id, _this.list.ventas[_this.indexVenta].Documento);
+                                var resValidaDocumentoRepetido = _this.validaDocumentoRepetido(_this.list.ventas[_this.indexVenta].CodiTipoDoc.id, _this.list.ventas[_this.indexVenta].Documento, _this.list.ventas[_this.indexVenta].NroAsiento);
                                 if (!resValidaDocumentoRepetido)
                                     return;
                             }
@@ -2960,7 +2974,7 @@
                                         var resValidaDocumentoRepetido = true;
 
                                         _indexOfDocumentoRepetido = _.findIndex(_this.list.ventas, o => {
-                                            resValidaDocumentoRepetido = _this.validaDocumentoRepetido(o.CodiTipoDoc.id, o.Documento);
+                                            resValidaDocumentoRepetido = _this.validaDocumentoRepetido(o.CodiTipoDoc.id, o.Documento, o.NroAsiento);
                                             if (!resValidaDocumentoRepetido)
                                                 return true;
                                         });
@@ -2969,7 +2983,7 @@
                                             _this.$nextTick(() => {
                                                 document.getElementById('txtDocumento').focus();
                                             });
-                                            APP.msg.warning('Documento usado en otro asiento, ingrese otro.');
+
                                             return true;
                                         }
                                     }
@@ -3004,19 +3018,26 @@
                     var _this = this;
                     appController.showRegistrarInfante(_this.list.tiposDoc, _this.list.sexos);
                 },
-                leftSlider: function () {
+                leftSlider: function (type) {
                     if (this.indexVenta > 0)
                         this.indexVenta--;
                     $('#bannerVentas').removeClass().addClass('col-md-10 slideOutLeft animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                         $(this).removeClass().addClass('col-md-10');
                     });
+
+                    if (type === 'click' && this.list.ventas[this.indexVenta].Documento === '')
+                        this.recorridoSectionVentas();
+
                 },
-                rightSlider: function () {
+                rightSlider: function (type) {
                     if (this.indexVenta < this.list.ventas.length - 1)
                         this.indexVenta++;
                     $('#bannerVentas').removeClass().addClass('col-md-10 slideOutRight animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                         $(this).removeClass().addClass('col-md-10');
                     });
+
+                    if (type === 'click' && this.list.ventas[this.indexVenta].Documento === '')
+                        this.recorridoSectionVentas();
                 },
                 setDateAndCalcYears: function (dateString) {
                     if (dateString) {
@@ -3077,12 +3098,13 @@
                     _this.list.ventas[_this.indexVenta].BoletoTipoDir = '1';
                     _this.list.ventas[_this.indexVenta].FechaCita = '';
                     _this.list.ventas[_this.indexVenta].Hospital = null;
-
                     _this.list.ventas[_this.indexVenta].ValidadorDescuentoControl = false;
                     _this.list.ventas[_this.indexVenta].DescuentoTipoDC = '0';
                     _this.list.ventas[_this.indexVenta].ImporteDescuentoDC = '';
                     _this.list.ventas[_this.indexVenta].ImporteDescontadoDC = '';
                     _this.list.ventas[_this.indexVenta].AutorizadoDC = '';
+
+                    _this.list.ventas[_this.indexVenta].ReadonlyPrecio = false;
 
                     _this.errors.clear();
                     _this.checkRegistrarNino = false;
@@ -3091,7 +3113,7 @@
                     _this.disabledCamposTicket_Pase = false;
                     _this.disabledCampoNumSolicitud = true;
                     switch (_this.pickedBusVenta) {
-                        case '1':
+                        case '1': // 'Crédito'
                             {
                                 if (!_this.list.ventas[_this.indexVenta].IdVenta) {
                                     _this.list.ventas[_this.indexVenta].Ruc = _this.objCreditoCliente.Ruc;
@@ -3145,7 +3167,12 @@
 
                             switch (event.keyCode) {
                                 case 112:
-                                    appController.showDescuentoControl(this.list.ventas[this.indexVenta].Precio);
+                                    {
+                                        if (!this.list.ventas[this.indexVenta].ValidadorDescuento)
+                                            appController.showDescuentoControl(this.list.ventas[this.indexVenta].PrecioNormal);
+                                        else
+                                            APP.msg.warning('Ya se realizó un descuento.');
+                                    };
 
                                     this.eventTxtPrecio = '';
                                     return;
@@ -3154,6 +3181,7 @@
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
 
                                 if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
+
                                     if (actual > normal) {
                                         APP.msg.warning('Descuento: El precio no puede ser mayor a ' + normal.toFixed(2) + '.');
                                         this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
@@ -3985,6 +4013,11 @@
                         this.list.ventas[this.indexVenta].ValidadorDescuento = _data.Estado;
                         this.list.ventas[this.indexVenta].ObservacionDescuento = _observacion;
 
+                        var auxPrecio = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
+                        this.list.ventas[this.indexVenta].Precio = auxPrecio.toFixed(2);
+
+                        this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
+
                         APP.msg.success(_data.Mensaje);
                     }
                     else {
@@ -4001,6 +4034,7 @@
                         this.list.ventas[this.indexVenta].AutorizadoDC = _objValues.AutorizadoDC;
 
                         this.list.ventas[this.indexVenta].Precio = _.cloneDeep(_objValues.ImporteDescontadoDC);
+                        this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
 
                         $('#appVueDescuentoControl').modal('hide');
                         APP.msg.success(_data.Mensaje);
