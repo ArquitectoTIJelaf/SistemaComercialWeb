@@ -5,6 +5,7 @@
 
     var ImagePath = HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath;
     var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
+    var addTimeTurno = System.Configuration.ConfigurationManager.AppSettings["addTimeTurno"];
 
     var claveAcompañanteConMayorEdad = Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD;
     var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
@@ -546,7 +547,7 @@
 
             $('#appBoletosVendidos').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appBoletosVendidos.esc);
-                
+
                 document.getElementById('btnCerrarVenta').focus();
             });
 
@@ -590,8 +591,19 @@
                             break;
                         case ClaveDescuentoDePasajes:
                             {
-                                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuento && !appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuentoControl)
+                                if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuento) {
+
+                                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuentoControl) {
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuentoControl = false;
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].DescuentoTipoDC = '0';
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescuentoDC = '';
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescontadoDC = '';
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].AutorizadoDC = '';
+                                    }
+
                                     appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = _.cloneDeep(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal).toFixed(2);
+                                }
+                                    
                                 document.getElementById('txtPrecio').focus();
                             }
                             break;
@@ -709,32 +721,22 @@
             }
         })
 
-        var ImagePath = '@ImagePath';
-
-        var Usuario = @Html.Raw(Json.Encode(Model));
-
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
-
-        var nacionalidadPorDefault = 'PERUANA';
-
+        var Usuario = @Html.Raw(Json.Encode(Model));
+        var ImagePath = '@ImagePath';
         var UrlImprimirBoleto = '@urlImprimirBoleto';
+        var AddTimeTurno = '@addTimeTurno';
 
         var ClaveAcompañanteConMayorEdad = '@claveAcompañanteConMayorEdad';
-
         var ClaveDescuentoDePasajes = '@claveDescuentoDePasajes';
-
         var ClaveCambioPrecioBoletoViaje = '@claveCambioPrecioBoletoViaje';
-
         var ClaveProgramacion = '@claveProgramacion';
-
         var ClaveAnularFechaPasada = '@claveAnularFechaPasada';
-
         var ClaveMoverVentaFueraDeHora = '@claveMoverVentaFueraDeHora';
 
         var IngresoManualPasajes = false;
-
+        var nacionalidadPorDefault = 'PERUANA';
         var TipoImprimir = 'Impresion';
-
         var TipoReimprimir = 'Reimpresion';
 
         var selectAll = {
@@ -982,7 +984,8 @@
                     appVueDescuentoControl.show(_PrecioVenta);
                 },
                 getDescServicio: function () {
-                    return appVueVenta.objTurno.DescServicio;
+                    //return appVueVenta.objTurno.DescServicio;
+                    return '1';
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     return appVueVenta.validateAlgoritmoRuc(_Ruc);
@@ -1466,11 +1469,6 @@
                                 _this.limpiarVenta();
                                 _this.$nextTick(() => {
                                     _this.showPlano = true;
-                                    var valPanelDeshabilitarRazonSocial = appController.validatePanel('63');
-                                    if (valPanelDeshabilitarRazonSocial && valPanelDeshabilitarRazonSocial.Valor === '1')
-                                        _this.disabledRazonSocial = true;
-                                    else
-                                        _this.disabledRazonSocial = false;
                                 });
                             }
                             else {
@@ -1571,7 +1569,6 @@
                     }
                     appController.hideVentas();
                     await this.limpiarAsientosBloqueados();
-                    /*appVueFilter.nextStep(0);*/ // PUBLICADO
                 },
                 cerrarVentas: async function () {
                     await this.limpiarAsientosBloqueados();
@@ -1630,30 +1627,53 @@
                         _this.limpiarVenta();
 
                     // Valida 'Correlativo'
-                    if (this.Correlativo === 'B000-00000000' || this.Correlativo === 'F000-00000000') {
+                    if (_this.Correlativo === 'B000-00000000' || _this.Correlativo === 'F000-00000000') {
                         APP.msg.error('No se encontró serie para el boleto.');
 
                         _this.disabledAsiento = false;
                         return;
                     }
 
+                    // Valida 'FechaViaje'
+                    if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
+                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+
+                        _this.disabledAsiento = false;
+                        return;
+                    }
+
+                    // Valida 'TurnoDisponible'
+                    if (!IngresoManualPasajes) {
+                        if (appController.validatePanel('54') === '1') {
+
+                            var verificaTurnoDisponible = _this.verificaTurnoDisponible();
+                            if (!verificaTurnoDisponible) {
+                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
+
+                                _this.disabledAsiento = false;
+                                return;
+                            }
+                        }
+                    }
+
                     // Valida 'Manifiesto'
                     if (!IngresoManualPasajes) {
-                        // Valida y por dentro setea 'X_Estado'
-                        var auxX_Estado = _.cloneDeep(this.objTurno.X_Estado);
 
-                        var resValidaManifiesto = await this.validaManifiesto();
+                        // Valida y por dentro setea 'X_Estado'
+                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
+
+                        var resValidaManifiesto = await _this.validaManifiesto();
                         if (!resValidaManifiesto) {
                             // Seteo el valor original de 'X_Estado'
-                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
                             _this.disabledAsiento = false;
                             return;
                         }
-                        if (this.objTurno.X_Estado) {
+                        if (_this.objTurno.X_Estado) {
                             APP.msg.warning('El manifiesto ya fue emitido.');
                             // Seteo el valor original de 'X_Estado'
-                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
                             _this.disabledAsiento = false;
                             return;
@@ -1815,6 +1835,28 @@
                     _this.disabledAsiento = false;
                     return auxResponse;
                 },
+                verificaTurnoDisponible: function () {
+                    var auxResponse = false;
+
+                    if (this.filtro.Fecha === moment().format('DD/MM/YYYY')) {
+                        if (appController.validatePanel('14') === '1') {
+                            var auxHours = parseInt(AddTimeTurno.substring(0, 2)) || 0;
+                            var auxMinutes = parseInt(AddTimeTurno.substring(3, 5)) || 0;
+                            var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
+                            if (auxHoraResult.isSameOrAfter(moment(), 'minute')) {
+                                auxResponse = true;
+                            }
+                        }
+                        else {
+                            if (moment(this.filtro.Turno, 'hh:mmA').isSameOrAfter(moment(), 'minute'))
+                                auxResponse = true;
+                        }
+                    }
+                    else
+                        auxResponse = true;
+
+                    return auxResponse;
+                },
                 fillDataAsientoVendido: async function (asientoSel) {
                     var _this = this;
                     var _fillData = false;
@@ -1890,8 +1932,10 @@
                         animateScrollTop(800);
 
                         _this.limpiarVenta();
+
                         _this.list.ventas[_this.indexVenta].NroAsiento = String(asientoSel.NumeAsiento).padStart(2, '0');
                         _this.list.ventas[_this.indexVenta].CodiTipoDoc = _.find(_this.list.tiposDoc, { 'id': asientoSel.TipoDocumento }) || null;
+                        _this.passNumDocToDocumento();
                         _this.list.ventas[_this.indexVenta].Documento = asientoSel.NumeroDocumento;
                         _this.list.ventas[_this.indexVenta].Nombres = asientoSel.Nombres;
                         _this.list.ventas[_this.indexVenta].ApellidoPaterno = asientoSel.ApellidoPaterno;
@@ -2227,6 +2271,12 @@
                                         if (appController.validatePanel('13') === '1')
                                             validatorSetRuc = true;
 
+                                        // Valida editar 'RazonSocial'
+                                        if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
+                                            _this.disabledRazonSocial = true;
+                                        else
+                                            _this.disabledRazonSocial = false;
+
                                         switch (_this.pickedBusVenta) {
                                             case '7': // Pase de cortesía
                                                 {
@@ -2360,6 +2410,13 @@
                                 }), { timeout: 10000 })
                                     .then(res => {
                                         if (res.data.Estado) {
+
+                                            // Valida editar 'RazonSocial'
+                                            if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
+                                                _this.disabledRazonSocial = true;
+                                            else
+                                                _this.disabledRazonSocial = false;
+
                                             if (_this.pickedBusVenta !== '1') // Crédito
                                                 _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
 
@@ -2458,6 +2515,13 @@
                             }), { timeout: 10000 })
                                 .then(res => {
                                     if (res.data.Estado) {
+
+                                        // Valida editar 'RazonSocial'
+                                        if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
+                                            _this.disabledRazonSocial = true;
+                                        else
+                                            _this.disabledRazonSocial = false;
+
                                         if (_this.pickedBusVenta !== '1') // Crédito
                                             _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
                                         _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
@@ -3078,6 +3142,15 @@
                         this.list.ventas[this.indexVenta].Precio = '';
                     else {
                         if (normal && max && min) {
+
+                            switch (event.keyCode) {
+                                case 112:
+                                    appController.showDescuentoControl(this.list.ventas[this.indexVenta].Precio);
+
+                                    this.eventTxtPrecio = '';
+                                    return;
+                            }
+
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
 
                                 if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
@@ -3085,6 +3158,8 @@
                                         APP.msg.warning('Descuento: El precio no puede ser mayor a ' + normal.toFixed(2) + '.');
                                         this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
                                         this.focusPrecio(event);
+
+                                        this.eventTxtPrecio = '';
                                         return;
                                     }
                                     else if (actual < normal) {
@@ -3093,6 +3168,8 @@
                                                 break;
                                             default:
                                                 appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
+
+                                                this.eventTxtPrecio = '';
                                                 return;
                                         }
                                     }
@@ -3104,12 +3181,16 @@
                                         APP.msg.warning('El precio no puede ser mayor a ' + max.toFixed(2) + '.');
                                         this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
                                         this.focusPrecio(event);
+
+                                        this.eventTxtPrecio = '';
                                         return;
                                     }
                                     else if (actual < min) {
                                         APP.msg.warning('El precio no puede ser menor a ' + min.toFixed(2) + '.');
                                         this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
                                         this.focusPrecio(event);
+
+                                        this.eventTxtPrecio = '';
                                         return;
                                     }
                                 }
@@ -3121,13 +3202,8 @@
 
                     this.auxFocus.precio = false;
 
-                    switch (event.keyCode) {
-                        case 112:
-                            this.showDescuentoControl();
-                            break;
-                        default:
-                            this.recorridoSectionVentas();
-                    }
+                    this.eventTxtPrecio = '';
+                    this.recorridoSectionVentas();
                 },
                 focusAsiento: function (event) {
                     event.target.select();
@@ -3149,6 +3225,8 @@
                             this.list.ventas[this.indexVenta].NroAsiento = '';
                             this.$refs.refNroAsientoVenta.focus();
                             APP.msg.warning('Asiento no encontrado.');
+
+                            this.eventTxtNroAsientoVenta = '';
                             return;
                         }
 
@@ -3174,6 +3252,8 @@
                             var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                             if (!auxObj) {
                                 this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
+
+                                this.eventTxtNroAsientoVenta = '';
                                 return;
                             }
 
@@ -3493,10 +3573,33 @@
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
+                    _this.disabledAsiento = true;
 
-                    //_this.disabledAsiento = true;
+                    // Valida 'Manifiesto'
+                    if (!IngresoManualPasajes) {
+
+                        // Valida y por dentro setea 'X_Estado'
+                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
+
+                        var resValidaManifiesto = await _this.validaManifiesto();
+                        if (!resValidaManifiesto) {
+                            // Seteo el valor original de 'X_Estado'
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+
+                            return;
+                        }
+                        if (_this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+                            // Seteo el valor original de 'X_Estado'
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+
+                            return;
+                        }
+                    }
+
                     //var auxValidate = await _this.validaAnulacion(asientoSel);
-                    //_this.disabledAsiento = false;
+
+                    _this.disabledAsiento = false;
 
                     //if (!auxValidate)
                     //    return;
@@ -3871,23 +3974,6 @@
                         if (auxCodiTipoDoc && auxCodiTipoDoc.id === '1')
                             appController.showBuscaClientePasaje();
                     }
-                },
-                showDescuentoControl: function () {
-                    // Valida que no se cruce con el otro 'Descuento'
-                    if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
-                        var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
-                        var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
-
-                        if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
-                            if (actual < normal) {
-                                if (this.pickedBusVenta !== '99')
-                                    return;
-                            }
-                        }
-
-                    }
-
-                    appController.showDescuentoControl(this.list.ventas[this.indexVenta].Precio);
                 },
                 sendBuscaClientePasaje: async function (_item) {
                     this.list.ventas[this.indexVenta].Documento = _item.NumeroDoc;

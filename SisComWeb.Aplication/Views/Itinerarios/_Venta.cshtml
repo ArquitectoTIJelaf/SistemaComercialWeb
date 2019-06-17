@@ -1,5 +1,7 @@
 ﻿@using SisComWeb.Aplication.Helpers
-@{ var usuario = DataSession.UsuarioLogueado; }
+@{
+    var usuario = DataSession.UsuarioLogueado;
+}
 
 <style type="text/css">
     [type="radio"]:checked,
@@ -1100,7 +1102,7 @@
                                                            @@blur="validateRangePrice($event)"
                                                            :disabled="disabledCamposTicket || disabledPrecio"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); ">
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); " />
                                                 </div>
                                             </div>
                                         </div>
