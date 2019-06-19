@@ -39,7 +39,8 @@
                                        ref="refSeriePos"
                                        class="form-control input-sm"
                                        placeholder="0000"
-                                       v-mask="'N'.repeat(4)">
+                                       v-mask="'N'.repeat(4)"
+                                       autocomplete="off" />
                             </div>
                             <div class="col-md-6">
                                 <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
@@ -52,7 +53,8 @@
                                        ref="refNumeroPos"
                                        class="form-control input-sm"
                                        placeholder="0000000"
-                                       v-mask="'#'.repeat(7)">
+                                       v-mask="'#'.repeat(7)"
+                                       autocomplete="off" />
                             </div>
                             <div class="col-md-3">
                                 <label style="width: 100%">&nbsp;</label>
@@ -66,46 +68,46 @@
                         <div class="form-group m-b-5">
                             <div class="col-md-12 separate-in-form">
                                 <label class="control-label label-sm">Nombres</label>
-                                <input :value="objBeneficiario.Nombre" class="form-control input-sm" disabled/>
+                                <input :value="objBeneficiario.Nombre" class="form-control input-sm" disabled="disabled"/>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Apellido Paterno</label>
-                                    <input :value="objBeneficiario.ApellidoPaterno" class="form-control input-sm" disabled />
+                                    <input :value="objBeneficiario.ApellidoPaterno" class="form-control input-sm" disabled="disabled" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Apellido Materno</label>
-                                    <input :value="objBeneficiario.ApellidoMaterno" class="form-control input-sm" disabled />
+                                    <input :value="objBeneficiario.ApellidoMaterno" class="form-control input-sm" disabled="disabled" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Origen</label>
-                                    <input :value="objBeneficiario.NombOrigen" class="form-control input-sm" disabled />
+                                    <input :value="objBeneficiario.NombOrigen" class="form-control input-sm" disabled="disabled" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Destino</label>
-                                    <input :value="objBeneficiario.NombDestino" class="form-control input-sm" disabled />
+                                    <input :value="objBeneficiario.NombDestino" class="form-control input-sm" disabled="disabled" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-9">
                                     <label class="control-label label-sm">Servicio</label>
-                                    <input :value="objBeneficiario.NombServicio" class="form-control input-sm" disabled />
+                                    <input :value="objBeneficiario.NombServicio" class="form-control input-sm" disabled="disabled" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label label-sm">Asiento</label>
-                                    <input :value="objBeneficiario.NumeAsiento" class="form-control input-sm text-right" disabled />
+                                    <input :value="objBeneficiario.NumeAsiento" class="form-control input-sm text-right" disabled="disabled" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Fecha de viaje</label>
-                                    <input :value="objBeneficiario.FechViaje" class="form-control input-sm text-right" disabled />
+                                    <input :value="objBeneficiario.FechViaje" class="form-control input-sm text-right" disabled="disabled" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Hora de viaje</label>
-                                    <input :value="objBeneficiario.HoraViaje" class="form-control input-sm text-right" disabled />
+                                    <input :value="objBeneficiario.HoraViaje" class="form-control input-sm text-right" disabled="disabled" />
                                 </div>
                             </div>
                         </div>

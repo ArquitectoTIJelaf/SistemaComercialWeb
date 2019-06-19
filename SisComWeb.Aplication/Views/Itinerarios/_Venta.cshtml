@@ -259,7 +259,7 @@
                                                        id="txtTurno"
                                                        class="form-control input-sm dph"
                                                        placeholder="TURNO"
-                                                       autocomplete="off">
+                                                       autocomplete="off" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -271,9 +271,9 @@
                                                        @@blur="nextStep(9)"
                                                        type="text"
                                                        id="txtFecha_2"
-                                                       class="form-control input-sm dp"
+                                                       class="form-control input-sm dpFiltro"
                                                        placeholder="FECHA"
-                                                       autocomplete="off">
+                                                       autocomplete="off" />
                                             </div>
                                         </div>
                                     </div>
@@ -710,7 +710,8 @@
                                                            style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color)"
                                                            :class="{'placeh-ticket-venta': auxFocus.asiento}"
                                                            :disabled="disabledCampoNroAsiento"
-                                                           v-mask="'##'">
+                                                           v-mask="'##'"
+                                                           autocomplete="off">
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -758,7 +759,8 @@
                                                            class="form-control input-sm"
                                                            placeholder="DOCUMENTO"
                                                            :disabled="disabledCamposTicket_Pase"
-                                                           v-mask="mask.documento">
+                                                           v-mask="mask.documento"
+                                                           autocomplete="off">
                                                 </div>
                                             </div>
                                             <span v-if="list.ventas[indexVenta].CodiTipoDoc == null && list.ventas[indexVenta].Documento.length > 0" class="text-danger">{{ errors.first('Tipo') }}</span>
@@ -777,7 +779,8 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="NOMBRES"
                                                        maxlength="200"
-                                                       v-only-name>
+                                                       v-only-name
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -794,7 +797,8 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="PATERNO"
                                                        maxlength="50"
-                                                       v-only-name>
+                                                       v-only-name
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -811,7 +815,8 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="MATERNO"
                                                        maxlength="50"
-                                                       v-only-name>
+                                                       v-only-name
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2 text-center">
@@ -850,7 +855,8 @@
                                                                class="form-control input-sm dpyear"
                                                                placeholder="FECHA NAC."
                                                                :disabled="disabledCamposTicket"
-                                                               v-mask="'##/##/####'">
+                                                               v-mask="'##/##/####'"
+                                                               autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">
@@ -863,7 +869,8 @@
                                                                placeholder="E"
                                                                v-validate="'required|min_value: 1'"
                                                                style="cursor: not-allowed;"
-                                                               disabled="disabled">
+                                                               disabled="disabled"
+                                                               autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Edad') }}</span>
@@ -900,7 +907,8 @@
                                                        class="form-control input-sm"
                                                        placeholder="TELÉFONO"
                                                        :disabled="disabledCamposTicket"
-                                                       v-mask="'#'.repeat(9)">
+                                                       v-mask="'#'.repeat(9)"
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -914,7 +922,8 @@
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
                                                        :disabled="disabledCamposTicket"
-                                                       placeholder="RECOGER">
+                                                       placeholder="RECOGER"
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -924,7 +933,7 @@
                                                        id="txtReintegro"
                                                        class="form-control input-sm"
                                                        placeholder="REINTEGRO"
-                                                       disabled>
+                                                       disabled="disabled">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -938,7 +947,8 @@
                                                        class="form-control input-sm"
                                                        placeholder="Nº SOLICITUD"
                                                        v-mask="'#'.repeat(10)"
-                                                       :disabled="disabledCampoNumSolicitud">
+                                                       :disabled="disabledCampoNumSolicitud"
+                                                       autocomplete="off">
                                             </div>
                                         </div>
                                     </div>
@@ -962,6 +972,7 @@
                                                                data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
                                                                :disabled="disabledCamposTicket || disabledCredito"
+                                                               autocomplete="off"
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
@@ -986,7 +997,8 @@
                                                                placeholder="RAZÓN SOCIAL"
                                                                :disabled="disabledCamposTicket || disabledCredito || disabledRazonSocial"
                                                                v-validate="'required|min: 3'"
-                                                               data-vv-as="Razón social">
+                                                               data-vv-as="Razón social"
+                                                               autocomplete="off">
                                                     </div>
                                                     <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-5">{{ errors.first('razon_social') }}</span>
                                                 </div>
@@ -1007,7 +1019,8 @@
                                                            placeholder="DIRECCIÓN"
                                                            :disabled="disabledCamposTicket"
                                                            v-validate="'required'"
-                                                           data-vv-as="Dirección fiscal">
+                                                           data-vv-as="Dirección fiscal"
+                                                           autocomplete="off">
                                                 </div>
                                                 <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].Direccion.length < 1 && errors.has('direccion')" class="text-danger m-l-5">{{ errors.first('direccion') }}</span>
                                             </div>
@@ -1019,7 +1032,8 @@
                                                        id="txtFechaVen"
                                                        class="form-control input-sm"
                                                        placeholder="DD/MM/YYYY"
-                                                       disabled>
+                                                       disabled="disabled"
+                                                       autocomplete="off" />
                                             </div>
                                         </div>
                                         <div class="col-md-2">
@@ -1037,7 +1051,8 @@
                                                        placeholder="NACIONALIDAD"
                                                        :disabled="disabledCamposTicket"
                                                        v-validate="'required'"
-                                                       v-mask="'A'.repeat(30)">
+                                                       v-mask="'A'.repeat(30)"
+                                                       autocomplete="off" />
                                             </div>
                                             <span v-show="errors.has('nacionalidad')" class="text-danger m-l-5">{{ errors.first('nacionalidad') }}</span>
                                         </div>
@@ -1103,7 +1118,8 @@
                                                            :disabled="disabledCamposTicket || disabledPrecio"
                                                            :readonly="list.ventas[indexVenta].ReadonlyPrecio"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; " />
+                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
+                                                           autocomplete="off" />
                                                 </div>
                                             </div>
                                         </div>
@@ -1116,7 +1132,7 @@
                                                             ref="refTipoPago"
                                                             class="btn btn-secondary btn-ticket btn-venta"
                                                             style="width: 100%;"
-                                                            v-bind:disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
+                                                            :disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
                                                         <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
                                                             Confirmar Reserva
                                                         </template>

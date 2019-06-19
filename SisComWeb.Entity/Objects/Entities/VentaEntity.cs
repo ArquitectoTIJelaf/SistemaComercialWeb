@@ -93,7 +93,15 @@ namespace SisComWeb.Entity
         {
             get
             {
-                return Nombre.Split(',');
+                var tmpNombre = Nombre ?? string.Empty;
+                var tmpSplitNombre = tmpNombre.Split(',');
+
+                // Valida Split
+                if (tmpSplitNombre.Length != 3)
+                    tmpSplitNombre = new string[3];
+                // ------------
+
+                return tmpSplitNombre;
             }
         }
 

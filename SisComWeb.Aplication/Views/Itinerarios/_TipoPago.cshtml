@@ -13,7 +13,12 @@
                                 <label class="col-md-12 control-label label-sm" style="text-align:left !important">Monto Total:</label>
                             </div>
                             <div class="col-md-6">
-                                <input class="form-control input-sm" type="text" min="0" :value="sumaTotal | fixed2" readonly disabled style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:right;" />
+                                <input :value="sumaTotal | fixed2"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       min="0"
+                                       disabled="disabled"
+                                       style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:right;" />
                             </div>
                         </div>
                         <div class="col-md-6 separate-in-form">
@@ -21,7 +26,12 @@
                                 <label class="col-md-12 control-label label-sm" style="text-align:right !important">N° Asientos:</label>
                             </div>
                             <div class="col-md-6">
-                                <input class="form-control input-sm" type="number" min="0" v-model="cantAsientos" readonly disabled style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:center;" />
+                                <input v-model="cantAsientos"
+                                       class="form-control input-sm"
+                                       type="number"
+                                       min="0"
+                                       disabled="disabled"
+                                       style="background-color: rgb(247, 192, 110); font-weight: 500; text-align:center;" />
                             </div>
                         </div>
                     </div>
@@ -29,8 +39,8 @@
                         <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Tipo Pago:</label>
                             <div class="col-md-10">
-                                <v-select v-model="computedTipoPago"
-                                          :id="'cboTipoPagoTP'"
+                                <v-select id="cboTipoPagoTP"
+                                          v-model="computedTipoPago"
                                           :options="list.tiposPago"
                                           :placeholder="'TIPO PAGO'"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
@@ -46,26 +56,27 @@
                                     <div class="col-md-12">
                                         <input v-model="importePagado"
                                                id="txtImportePagadoC"
-                                               @@input="calcMontos('IPC')"
-                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               v-validate="'min_value:' + (sumaTotal)"
-                                               data-vv-as="Imp. Pagado"
                                                class="form-control input-sm"
                                                name="Imp. Pagado"
+                                               @@input="calcMontos('IPC')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               v-validate="'min_value:' + (sumaTotal)"
+                                               data-vv-as="Imp. Pagado"
                                                v-money
                                                v-only-digit
+                                               autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="col-md-12 control-label label-sm">Vuelto:</label>
                                     <div class="col-md-12">
-                                        <input v-model="vuelto"
-                                               id="txtEfectivoC"
-                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                        <input id="txtEfectivoC"
                                                class="form-control input-sm"
+                                               :value="vuelto"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;"
-                                               disabled />
+                                               disabled="disabled" />
                                     </div>
                                 </div>
                                 <span v-show="errors.has('Imp. Pagado')" class="text-danger m-l-10">{{errors.first('Imp. Pagado')}}</span>
@@ -75,8 +86,8 @@
                             <div class="col-md-6 separate-in-form">
                                 <label class="col-md-12 control-label label-sm">Tipo Tarjeta:</label>
                                 <div class="col-md-12">
-                                    <v-select v-model="tarjeta"
-                                              :id="'cboTipoTargetaTP'"
+                                    <v-select id="cboTipoTarjetaTP"
+                                              v-model="tarjeta"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
@@ -88,15 +99,15 @@
                             <div class="col-md-6 separate-in-form">
                                 <label class="col-md-12 control-label label-sm">Número:</label>
                                 <div class="col-md-12">
-                                    <input v-model="numeroTarjeta"
-                                           id="txtNumeroTP"
+                                    <input id="txtNumeroTP"
+                                           class="form-control input-sm"
                                            name="Número"
-                                           @@keydown.13.native.prevent="nextInput('ARRIBOS')"
+                                           v-model="numeroTarjeta"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
                                            @@keypress.9.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm"
                                            v-mask="'####-####-####-####'"
-                                           v-validate="'formatoNumeroTarjeta: 16'"/>
+                                           v-validate="'formatoNumeroTarjeta: 16'"
+                                           autocomplete="off" />
                                 </div>
                                 <span v-show="errors.has('Número')" class="text-danger m-l-10" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
@@ -104,49 +115,54 @@
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Monto Tarjeta:</label>
                                     <div class="col-md-12">
-                                        <input v-model="tarjetaCant"
-                                               @@input="calcMontos('T')"
-                                               id="txtTtarjetaCantTP"
+                                        <input id="txtTtarjetaCantTP"
                                                class="form-control input-sm"
-                                               maxlength="6"
-                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
-                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               v-validate="'between:1, '+(sumaTotal-1)"
                                                name="Monto Tarjeta"
+                                               v-model="tarjetaCant"
+                                               @@input="calcMontos('T')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                               v-validate="'between:1, '+(sumaTotal-1)"
                                                v-money
                                                v-only-digit
+                                               autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Monto Efectivo:</label>
                                     <div class="col-md-12">
-                                        <input v-model="efectivo"
-                                               @@input="calcMontos('E')"
-                                               id="txtEfectivoTP"
+                                        <input id="txtEfectivoTP"
                                                class="form-control input-sm"
-                                               maxlength="6"
-                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
-                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               v-validate="'between:1, '+sumaTotal"
                                                name="Monto Efectivo"
+                                               v-model="efectivo"
+                                               @@input="calcMontos('E')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                               v-validate="'between:1, '+sumaTotal"
                                                v-money
                                                v-only-digit
+                                               autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Imp. Pagado:</label>
                                     <div class="col-md-12">
-                                        <input v-model="importePagado"
-                                               id="txtImportePagdoTP"
-                                               @@input="calcMontos('IP')"
-                                               @@keypress.13.prevent="nextInput('NUMERO')"
-                                               v-validate="'min_value:' + (efectivo)"
+                                        <input id="txtImportePagadoTP"
                                                class="form-control input-sm"
                                                name="Imp. Pagado"
+                                               v-model="importePagado"
+                                               @@input="calcMontos('IP')"
+                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                               v-validate="'min_value:' + (efectivo)"
                                                v-money
                                                v-only-digit
+                                               autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
                                 </div>
@@ -154,10 +170,9 @@
                                     <label class="col-md-12 control-label label-sm">Vuelto:</label>
                                     <div class="col-md-12">
                                         <input v-model="vuelto"
-                                               @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                class="form-control input-sm"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;"
-                                               disabled />
+                                               disabled="disabled" />
                                     </div>
                                 </div>
                                 <span v-show="errors.has('Monto Tarjeta')" class="text-danger m-l-10">{{errors.first('Monto Tarjeta')}}</span>
@@ -168,8 +183,8 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Tipo:</label>
                                 <div class="col-md-10">
-                                    <v-select v-model="tarjeta"
-                                              :id="'cboTipoTP'"
+                                    <v-select id="cboTipoTP"
+                                              v-model="tarjeta"
                                               :options="list.tarjetas"
                                               :placeholder="'TIPO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
@@ -181,13 +196,15 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Número:</label>
                                 <div class="col-md-10">
-                                    <input v-model="numeroTarjeta"
-                                           id="txtNumeroTP"
-                                           name="Número"
-                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                    <input id="txtNumeroTP"
                                            class="form-control input-sm"
+                                           name="Número"
+                                           v-model="numeroTarjeta"
+                                           @@keypress.13.prevent="recorridoSectionTipoPagos"
+                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
                                            v-mask="'####-####-####-####'"
-                                           v-validate="'formatoNumeroTarjeta: 16'" />
+                                           v-validate="'formatoNumeroTarjeta: 16'"
+                                           autocomplete="off" />
                                 </div>
                                 <span v-show="errors.has('Número')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Número') }}</span>
                             </div>
@@ -196,8 +213,8 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Distrito:</label>
                                 <div class="col-md-10">
-                                    <v-select v-model="distrito"
-                                              :id="'cboDistritoTP'"
+                                    <v-select id="cboDistritoTP"
+                                              v-model="distrito"
                                               :options="list.distritos"
                                               :placeholder="'DISTRITO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
@@ -209,33 +226,39 @@
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Dirección:</label>
                                 <div class="col-md-10">
-                                    <input v-model="direccion"
-                                           id="txtDireccionTP"
+                                    <input id="txtDireccionTP"
+                                           class="form-control input-sm"
+                                           maxlength="50"
+                                           v-model="direccion"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm" />
+                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           autocomplete="off" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
-                                <label class="col-md-2 control-label label-sm">Observ.:</label>
+                                <label class="col-md-2 control-label label-sm">Obs.:</label>
                                 <div class="col-md-10">
-                                    <input v-model="observacion"
-                                           id="txtObservTP"
+                                    <input id="txtObservTP"
+                                           class="form-control input-sm"
+                                           maxlength="50"
+                                           v-model="observacion"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           class="form-control input-sm" />
+                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           autocomplete="off" />
                                 </div>
                             </div>
                         </template>
                         <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Embarques:</label>
                             <div class="col-md-10">
-                                <v-select v-model="embarque"
-                                          :id="'cboEmbarqueTP'"
-                                          :get-option-label="getLabelEmbarqueArribo"
+                                <v-select id="cboEmbarqueTP"
                                           label="Lugar"
+                                          v-model="embarque"
+                                          :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.embarques"
                                           :placeholder="'EMBARQUE'"
-                                          @@keydown.13.native.prevent="nextInput('EMBARQUE')"
-                                          @@keydown.9.native.prevent="nextInput('EMBARQUE')">
+                                          @@keydown.13.native.prevent="recorridoSectionTipoPagos"
+                                          @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -243,14 +266,14 @@
                         <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Arribos:</label>
                             <div class="col-md-10">
-                                <v-select v-model="arribo"
-                                          :id="'cboArriboTP'"
-                                          :get-option-label="getLabelEmbarqueArribo"
+                                <v-select id="cboArriboTP"
                                           label="Lugar"
+                                          v-model="arribo"
+                                          :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.arribos"
                                           :placeholder="'ARRIBO'"
-                                          @@keydown.13.native.prevent="nextInput('ARRIBOS')"
-                                          @@keydown.9.native.prevent="nextInput('ARRIBOS')"
+                                          @@keydown.13.native.prevent="$refs.refBtnAceptarTP.focus"
+                                          @@keydown.9.native.prevent="$refs.refBtnAceptarTP.focus"
                                           ref="refArriboTP">
                                     <div slot="no-options" class="text-danger" @@click="$refs.refArriboTP.open = false">No hay resultados</div>
                                 </v-select>
@@ -260,7 +283,11 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="saveVenta" id="btnSaveVentaTipoPago" :disabled="!filledCampos || processing" class="btn btn-primary waves-effect text-left">
+                <button id="btnSaveVentaTipoPago"
+                        class="btn btn-primary waves-effect text-left"
+                        ref="refBtnAceptarTP"
+                        @@click="saveVenta"
+                        :disabled="processing">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light text-left">

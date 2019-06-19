@@ -62,7 +62,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Documento", DbType.String, ParameterDirection.Input, entidad.AuxCodigoBF_Interno);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
                 db.AddParameter("@Sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
-                db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, entidad.TipoPago);
+                // Condición especial 'entidad.TipoPago': (Multipago = "02")
+                db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, (entidad.TipoPago == "02" ? "03" : entidad.TipoPago));
+                // -----------------------------------------------
                 db.AddParameter("@Fecha_Viaje", DbType.String, ParameterDirection.Input, entidad.FechaViaje);
                 db.AddParameter("@Hora_Viaje", DbType.String, ParameterDirection.Input, entidad.HoraViaje);
                 db.AddParameter("@Nacionalidad", DbType.String, ParameterDirection.Input, entidad.Nacionalidad);

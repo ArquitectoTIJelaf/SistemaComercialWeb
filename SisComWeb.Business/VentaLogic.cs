@@ -589,7 +589,7 @@ namespace SisComWeb.Business
                     {
                         case "01": // Contado
                             break;
-                        case "02": // Múltiple pago ("02")
+                        case "02": // Múltiple pago
                         case "03": // Tarjeta de crédito    
                             {
                                 //  Genera 'CorrelativoAuxiliar'
@@ -1280,7 +1280,7 @@ namespace SisComWeb.Business
 
                     var copia2 = string.Empty;
                     if (objPanelCopia2 != null && objPanelCopia2.Valor == "1")
-                        copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
+                        copia2 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
 
                     var documentos = new ImpresionEntity()
                     {

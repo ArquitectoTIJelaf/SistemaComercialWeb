@@ -524,6 +524,7 @@
                 else {
                     if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante.CodiTipoDoc &&
                         appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante.Documento)
+
                         appVueVenta.checkRegistrarNino = true;
                     else {
                         appVueVenta.checkRegistrarNino = false;
@@ -667,13 +668,13 @@
                 window.removeEventListener('keyup', appVueDescuentoControl.esc);
             });
 
-            if ($('.dpyear').length) {
-                $('.dpyear').datetimepicker({
+            if ($('.dpFiltro').length) {
+                $('.dpFiltro').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
-                            if (!e[0].previousElementSibling.value) {
-                                this.date(moment().subtract(1, 'years').format('DD/MM/YYYY'));
-                            }
+                            if (!e[0].previousElementSibling.value)
+                                this.date(moment().format('DD/MM/YYYY'));
+
                             this.hide();
                         }
                     },
@@ -685,8 +686,37 @@
                     keepOpen: false,
                     toolbarPlacement: 'top',
                     format: 'DD/MM/YYYY',
-                    defaultDate: moment().subtract(1, 'years'),
-                    maxDate: moment().subtract(1, 'years'),
+                    defaultDate: moment(),
+                    maxDate: moment().add(1, 'year'),
+                    minDate: moment().subtract(1, 'year'),
+                    tooltips: {
+                        today: 'Ir a la fecha actual',
+                        clear: 'Borrar fecha',
+                        close: 'Cerrar selector'
+                    }
+                });
+            }
+
+            if ($('.dpyear').length) {
+                $('.dpyear').datetimepicker({
+                    keyBinds: {
+                        enter: function (e) {
+                            if (!e[0].previousElementSibling.value)
+                                this.date(moment().subtract(1, 'year').format('DD/MM/YYYY'));
+
+                            this.hide();
+                        }
+                    },
+                    useCurrent: false,
+                    locale: 'es',
+                    showTodayButton: false,
+                    showClose: false,
+                    showClear: false,
+                    keepOpen: false,
+                    toolbarPlacement: 'top',
+                    format: 'DD/MM/YYYY',
+                    defaultDate: moment().subtract(1, 'year'),
+                    maxDate: moment().subtract(1, 'year'),
                     minDate: moment().subtract(150, 'years'),
                     tooltips: {
                         today: 'Ir a la fecha actual',
@@ -700,9 +730,9 @@
                 $('.dpyearnino').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
-                            if (!e[0].previousElementSibling.value) {
-                                this.date(moment().subtract(2, 'days').format('DD/MM/YYYY'));
-                            }
+                            if (!e[0].previousElementSibling.value)
+                                this.date(moment().subtract(1, 'day').format('DD/MM/YYYY'));
+
                             this.hide();
                         }
                     },
@@ -714,8 +744,9 @@
                     keepOpen: false,
                     toolbarPlacement: 'top',
                     format: 'DD/MM/YYYY',
-                    defaultDate: moment().subtract(2, 'days'),
-                    maxDate: moment().subtract(2, 'days'),
+                    defaultDate: moment().subtract(1, 'day'),
+                    maxDate: moment().subtract(1, 'day'),
+                    minDate: moment().subtract(150, 'years'),
                     tooltips: {
                         today: 'Ir a la fecha actual',
                         clear: 'Borrar fecha',
@@ -750,6 +781,12 @@
 
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
+
+            // Valida Split
+            if (nombreConcat.length !== 3)
+                nombreConcat = ['', '', ''];
+            // ------------
+
             return `${nombreConcat[2]} ${nombreConcat[0]} ${nombreConcat[1]}`;
         });
 
@@ -998,6 +1035,16 @@
                 },
                 disabledAsientos: function (_value) {
                     appVueVenta.disabledAsiento = _value;
+                },
+                refreshItinerarios: function () {
+                    appVueFilter.search();
+                },
+                setDataTempDescuentoControl: function () {
+                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].ValidadorDescuentoControl) {
+                        appVueDescuentoControl.DescuentoTipo = appVueVenta.list.ventas[appVueVenta.indexVenta].DescuentoTipoDC;
+                        appVueDescuentoControl.ImporteDescuento = appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescuentoDC;
+                        appVueDescuentoControl.ImporteDescontado = appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescontadoDC;
+                    }
                 }
             };
         })();
@@ -1376,7 +1423,7 @@
                     }
                 });
 
-                window.addEventListener('keydown', this.configEventKeyF5);
+                //window.addEventListener('keydown', this.configEventKeyF5);
             },
             methods: {
                 chargeVentas: async function (item, turnos) {
@@ -1572,6 +1619,9 @@
                         $('#btnDesplegar').click();
                     }
                     appController.hideVentas();
+
+                    appController.refreshItinerarios();
+
                     await this.limpiarAsientosBloqueados();
                 },
                 cerrarVentas: async function () {
@@ -1774,6 +1824,14 @@
                                 }
                                 break;
                         }
+                    }
+
+                    // Valida la cantidad de asientos bloqueados a la vez
+                    if (_this.list.ventas.length > 9) {
+                        APP.msg.warning('Solo puede bloquear hasta 10 asientos a la vez.');
+
+                        _this.disabledAsiento = false;
+                        return;
                     }
 
                     var input = {};
@@ -2238,7 +2296,7 @@
                     for (var objAsiento of this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
                             if (objAsiento.TipoDocumento === _TipoDocumento && objAsiento.NumeroDocumento === _NumeroDocumento) {
-                                APP.msg.warning('Documento usado en otro asiento, ingrese otro.');
+                                APP.msg.warning('Documento usado en el asiento ' + objAsiento.Tipo + ', ingrese otro.');
                                 auxResponse = false;
                                 return auxResponse;
                             }
@@ -2249,7 +2307,7 @@
                         
                         if (objAsiento.NroAsiento !== _NroAsiento) {
                             if (objAsiento.CodiTipoDoc.id === _TipoDocumento && objAsiento.Documento === _NumeroDocumento) {
-                                APP.msg.warning('Documento usado en otro boleto, ingrese otro.');
+                                APP.msg.warning('Documento usado en el asiento ' + objAsiento.NroAsiento + ', ingrese otro.');
                                 auxResponse = false;
                                 return auxResponse;
                             }
@@ -2273,99 +2331,97 @@
                             }
                         }
 
-                        if (!_this.list.ventas[_this.indexVenta].IdCliente) {
-                            await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
-                                tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
-                                numeroDoc: _this.list.ventas[_this.indexVenta].Documento
-                            }), { timeout: 10000 })
-                                .then(res => {
-                                    if (res.data.Estado) {
-                                        // Valida 'SetRuc'
-                                        var validatorSetRuc = false;
-                                        if (appController.validatePanel('13') === '1')
-                                            validatorSetRuc = true;
+                        await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                            tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
+                            numeroDoc: _this.list.ventas[_this.indexVenta].Documento
+                        }), { timeout: 10000 })
+                            .then(res => {
+                                if (res.data.Estado) {
+                                    // Valida 'SetRuc'
+                                    var validatorSetRuc = false;
+                                    if (appController.validatePanel('13') === '1')
+                                        validatorSetRuc = true;
 
-                                        // Valida editar 'RazonSocial'
-                                        if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
-                                            _this.disabledRazonSocial = true;
-                                        else
-                                            _this.disabledRazonSocial = false;
+                                    // Valida editar 'RazonSocial'
+                                    if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
+                                        _this.disabledRazonSocial = true;
+                                    else
+                                        _this.disabledRazonSocial = false;
 
-                                        switch (_this.pickedBusVenta) {
-                                            case '7': // Pase de cortesía
-                                                {
-                                                    if (res.data.Valor.IdCliente > 0) {
-                                                        _this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
-                                                        _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
-                                                        _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
-                                                        _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
+                                    switch (_this.pickedBusVenta) {
+                                        case '7': // Pase de cortesía
+                                            {
+                                                if (res.data.Valor.IdCliente > 0) {
+                                                    _this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
+                                                    _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
+                                                    _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
+                                                    _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
 
+                                                    if (validatorSetRuc) {
+                                                        _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
+                                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
+                                                        _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                                    }
+                                                }
+                                            };
+                                            break;
+                                        default:
+                                            {
+                                                if (res.data.Valor.IdCliente > 0) {
+                                                    _this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
+                                                    _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.NombreCliente;
+                                                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                                    _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
+                                                    _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
+                                                    _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
+                                                    _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
+                                                    if (_this.pickedBusVenta !== '1') {
                                                         if (validatorSetRuc) {
                                                             _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
                                                             _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
                                                             _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
                                                         }
                                                     }
-                                                };
-                                                break;
-                                            default:
-                                                {
-                                                    if (res.data.Valor.IdCliente > 0) {
-                                                        _this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
+                                                }
+                                                else {
+                                                    if (res.data.Valor.NombreCliente && res.data.Valor.ApellidoPaterno && res.data.Valor.ApellidoPaterno) {
                                                         _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.NombreCliente;
                                                         _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
                                                         _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
-                                                        _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
-                                                        _this.list.ventas[_this.indexVenta].Edad = res.data.Valor.Edad;
-                                                        _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
-                                                        _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
-                                                        if (_this.pickedBusVenta !== '1') {
-                                                            if (validatorSetRuc) {
-                                                                _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
-                                                                _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                                                _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
-                                                            }
-                                                        }
                                                     }
                                                     else {
-                                                        if (res.data.Valor.NombreCliente && res.data.Valor.ApellidoPaterno && res.data.Valor.ApellidoPaterno) {
-                                                            _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.NombreCliente;
-                                                            _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
-                                                            _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
-                                                        }
-                                                        else {
-                                                            _this.list.ventas[_this.indexVenta].Nombres = '';
-                                                            _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                                                            _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                                                        }
-                                                        _this.list.ventas[_this.indexVenta].IdCliente = 0;
-                                                        _this.list.ventas[_this.indexVenta].FechaNac = '';
-                                                        $('#txtFechaNac').data("DateTimePicker").clear();
-                                                        _this.list.ventas[_this.indexVenta].Edad = '';
-                                                        _this.list.ventas[_this.indexVenta].Sexo = null;
-                                                        _this.list.ventas[_this.indexVenta].Telefono = '';
-                                                        if (_this.pickedBusVenta !== '1') {
-                                                            _this.list.ventas[_this.indexVenta].Ruc = '';
-                                                            _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                                                            _this.list.ventas[_this.indexVenta].Direccion = '';
-                                                        }
+                                                        _this.list.ventas[_this.indexVenta].Nombres = '';
+                                                        _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
+                                                        _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
                                                     }
-                                                };
-                                        }
-                                        if (!res.data.EsCorrecto) APP.msg.warning(res.data.Mensaje);
+                                                    _this.list.ventas[_this.indexVenta].IdCliente = 0;
+                                                    _this.list.ventas[_this.indexVenta].FechaNac = '';
+                                                    $('#txtFechaNac').data("DateTimePicker").clear();
+                                                    _this.list.ventas[_this.indexVenta].Edad = '';
+                                                    _this.list.ventas[_this.indexVenta].Sexo = null;
+                                                    _this.list.ventas[_this.indexVenta].Telefono = '';
+                                                    if (_this.pickedBusVenta !== '1') {
+                                                        _this.list.ventas[_this.indexVenta].Ruc = '';
+                                                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
+                                                        _this.list.ventas[_this.indexVenta].Direccion = '';
+                                                    }
+                                                }
+                                            };
                                     }
-                                    else
-                                        APP.msg.error(res.data.Mensaje);
-                                })
-                                .catch(err => {
-                                    if (err.code === "ECONNABORTED") {
-                                        APP.msg.warning('No se pudo cargar los datos del pasajero.');
-                                        _this.$refs.refNombres.focus();
-                                    }
-                                    else
-                                        APP.rq.axios_handler_error_alert;
-                                });
-                        }
+                                    if (!res.data.EsCorrecto) APP.msg.warning(res.data.Mensaje);
+                                }
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED") {
+                                    APP.msg.warning('No se pudo cargar los datos del pasajero.');
+                                    _this.$refs.refNombres.focus();
+                                }
+                                else
+                                    APP.rq.axios_handler_error_alert;
+                            });
 
                         _this.$nextTick(() => {
                             _this.$validator.validate('Edad');
@@ -3534,7 +3590,11 @@
                 },
                 setPaseCortesia: async function (_beneficiario) {
                     var _this = this;
-                    var nomBen = (_beneficiario.NombreBeneficiario) ? _beneficiario.NombreBeneficiario.split(',') : [];
+                    var nomBen = (_beneficiario.NombreBeneficiario) ? _beneficiario.NombreBeneficiario.split(',') : [''];
+                    // Valida Split
+                    if (nomBen.length !== 3)
+                        nomBen = ['', '', ''];
+                    // ------------
                     _this.list.ventas[_this.indexVenta].CodiTipoDoc = _.find(_this.list.tiposDoc, { 'id': _beneficiario.TipoDocumento.replace(/0/g, '') }) || null;
                     // ---------------------------------------------------------------------------------------------------------------
                     if (_this.list.ventas[_this.indexVenta].CodiTipoDoc && _this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '1')
@@ -3877,12 +3937,12 @@
                 // COLOCAR: FALTA SERVICIOS.
 
                 configEventKeyF5: function (e) {
-                    if (e.keyCode === 116) {
-                        if (this.showVentas) {
-                            //e.preventDefault();
-                            //appController.chargeTurnos();
-                        }
-                    }
+                    //if (e.keyCode === 116) {
+                    //    if (this.showVentas) {
+                    //        e.preventDefault();
+                    //        appController.chargeTurnos();
+                    //    }
+                    //}
                 },
                 setDocumento: function (e) {
                     this.list.ventas[this.indexVenta].Documento = e.target.value.toUpperCase();
@@ -4328,9 +4388,6 @@
                         if (objAsiento)
                             objAsiento.NumeAsiento = parseInt(obj.NumeAsiento);
                     });
-                },
-                validarNumeroConDosDecimales: function () {
-                    jsValidarNumeroConDosDecimales(this.list.ventas[this.indexVenta].Precio);
                 }
             },
             computed: {
@@ -4658,6 +4715,9 @@
                 saveVenta: async function () {
                     var _this = this;
 
+                    if (!_this.recorridoSectionTipoPagos(true))
+                        return;
+
                     var auxListaVentasRealizadas = [];
                     _this.processing = true;
 
@@ -4810,96 +4870,168 @@
                     this.vuelto = '';
                     this.processing = false;
                 },
-                recorridoSectionTipoPagos: function () {
-                    var _this = this;
-                    if (!_this.computedTipoPago)
+                recorridoSectionTipoPagos: function (auxValidate) {
+                    var auxResponse = false;
+
+                    if (!this.computedTipoPago) {
                         $('#cboTipoPagoTP input[type=search]').focus();
-                    else if (_this.tipoPago === '01') {
-                        if (!_this.importePagado)
+                        if (auxValidate === true) APP.msg.warning('Seleccione un tipo de pago.');
+
+                        return auxResponse;
+                    }   
+                    else if (this.tipoPago === '01') {
+                        if (!this.importePagado) {
                             document.getElementById('txtImportePagadoC').focus();
-                        else if (!_this.embarque)
-                            $('#cboEmbarqueTP input[type=search]').focus();
-                        else if (!_this.arribo)
-                            $('#cboArriboTP input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese el importe pagado.');
+
+                            return auxResponse;
+                        }
+                        else if (parseFloat(this.importePagado) < parseFloat(this.sumaTotal)) {
+                            document.getElementById('txtImportePagadoC').focus();
+
+                            return auxResponse;
+                        }   
                     }
-                    else if (_this.tipoPago === '02') {
-                        if (!_this.tarjeta)
-                            $('#cboTipoTargetaTP input[type=search]').focus();
-                        else if (!_this.numeroTarjeta)
+                    else if (this.tipoPago === '02') {
+                        if (!this.tarjeta) {
+                            $('#cboTipoTarjetaTP input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione un tipo de tarjeta.');
+
+                            return auxResponse;
+                        }
+                        else if (!this.numeroTarjeta) {
                             document.getElementById('txtNumeroTP').focus();
-                        else if (!_this.tarjetaCant)
+                            if (auxValidate === true) APP.msg.warning('Ingrese número de tarjeta.');
+
+                            return auxResponse;
+                        }
+                        else if (this.numeroTarjeta.length !== 19) {
+                            document.getElementById('txtNumeroTP').focus();
+
+                            return auxResponse;
+                        }
+                        else if (!this.tarjetaCant) {
                             document.getElementById('txtTtarjetaCantTP').focus();
-                        else if (!_this.efectivo)
+                            if (auxValidate === true) APP.msg.warning('Ingrese el monto de tarjeta.');
+
+                            return auxResponse;
+                        }
+                        else if (parseFloat(this.tarjetaCant) >= parseFloat(this.sumaTotal)) {
+                            document.getElementById('txtTtarjetaCantTP').focus();
+
+                            return auxResponse;
+                        }
+                        else if (!this.efectivo) {
                             document.getElementById('txtEfectivoTP').focus();
-                        else if (!_this.importePagado)
-                            document.getElementById('txtImportePagdoTP').focus();
-                        else if (!_this.arribo)
-                            $('#cboArriboTP input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese el monto en efectivo.');
+
+                            return auxResponse;
+                        }
+                        else if (!this.importePagado) {
+                            document.getElementById('txtImportePagadoTP').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese el importe pagado.');
+
+                            return auxResponse;
+                        }
+                        else if (parseFloat(this.importePagado) < parseFloat(this.efectivo)) {
+                            document.getElementById('txtImportePagadoTP').focus();
+
+                            return auxResponse;
+                        }
                     }
-                    else if (_this.tipoPago === '03') {
-                        if (!_this.tarjeta)
+                    else if (this.tipoPago === '03') {
+                        if (!this.tarjeta) {
                             $('#cboTipoTP input[type=search]').focus();
-                        else if (!_this.numeroTarjeta)
+                            if (auxValidate === true) APP.msg.warning('Seleccione un tipo de tarjeta.');
+
+                            return auxResponse;
+                        }
+                        else if (!this.numeroTarjeta) {
                             document.getElementById('txtNumeroTP').focus();
-                        else if (!_this.embarque)
-                            $('#cboEmbarqueTP input[type=search]').focus();
-                        else if (!_this.arribo)
-                            $('#cboArriboTP input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese número de tarjeta.');
+
+                            return auxResponse;
+                        }  
+                        else if (this.numeroTarjeta.length !== 19) {
+                            document.getElementById('txtNumeroTP').focus();
+
+                            return auxResponse;
+                        }
                     }
-                    else if (_this.tipoPago === '04') {
-                        if (!_this.distrito)
+                    else if (this.tipoPago === '04') {
+                        if (!this.distrito) {
                             $('#cboDistritoTP input[type=search]').focus();
-                        else if (!_this.direccion)
+                            if (auxValidate === true) APP.msg.warning('Seleccione un distrito.');
+
+                            return auxResponse;
+                        }
+                        else if (!this.direccion) {
                             document.getElementById('txtDireccionTP').focus();
-                        else if (!_this.observacion)
+                            if (auxValidate === true) APP.msg.warning('Ingrese dirección.');
+
+                            return auxResponse;
+                        }
+                        else if (!this.observacion) {
                             document.getElementById('txtObservTP').focus();
-                        else if (!_this.embarque)
-                            $('#cboEmbarqueTP input[type=search]').focus();
-                        else if (!_this.arribo)
-                            $('#cboArriboTP input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese observación.');
+
+                            return auxResponse;
+                        }
                     }
-                },
-                nextInput: function (input) {
-                    if (input === 'ARRIBOS')
-                        document.getElementById('btnSaveVentaTipoPago').focus();
-                    else if (input === 'NUMERO')
+
+                    if (!this.embarque) {
                         $('#cboEmbarqueTP input[type=search]').focus();
-                    else if (input === "EMBARQUE")
+                        if (auxValidate === true) APP.msg.warning('Seleccione un embarque.');
+
+                        return auxResponse;
+                    }
+                    else if (!this.arribo && auxValidate !== true) {
                         $('#cboArriboTP input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione un arribo.');
+
+                        return auxResponse;
+                    }
+                    else
+                        auxResponse = true;
+
+                    return auxResponse;
                 },
                 getLabelEmbarqueArribo: function (option) {
                     return `${option.Lugar} - ${option.Hora}`
                 },
                 calcMontos: function (tipo) {
-                    var _this = this;
-                    var sumaTotal = parseFloat(_this.sumaTotal);
-                    var efectivo = parseFloat(_this.efectivo);
-                    var tarjetaCant = parseFloat(_this.tarjetaCant);
-                    var importePagado = parseFloat(_this.importePagado);
+                    // Solución al error de digitar '12345' pero solo muestra '1234'
+                    if (this.importePagado.length > 4)
+                        this.importePagado = this.importePagado.substring(0, 4);
+
+                    var sumaTotal = parseFloat(this.sumaTotal);
+                    var efectivo = parseFloat(this.efectivo);
+                    var tarjetaCant = parseFloat(this.tarjetaCant);
+                    var importePagado = parseFloat(this.importePagado);
 
                     if (tipo === 'IPC') {
                         if (importePagado >= sumaTotal)
-                            _this.vuelto = parseFloat(importePagado - sumaTotal).toFixed(2);
+                            this.vuelto = parseFloat(importePagado - sumaTotal).toFixed(2);
                         else
-                            _this.vuelto = '';
+                            this.vuelto = '';
                     }
                     else if (tipo === 'T') {
                         if (sumaTotal >= tarjetaCant)
-                            _this.efectivo = parseFloat(sumaTotal - tarjetaCant).toFixed(2);
+                            this.efectivo = parseFloat(sumaTotal - tarjetaCant).toFixed(2);
                         else
-                            _this.efectivo = '';
+                            this.efectivo = '';
                     }
                     else if (tipo === 'E') {
                         if (sumaTotal >= efectivo)
-                            _this.tarjetaCant = parseFloat(sumaTotal - efectivo).toFixed(2);
+                            this.tarjetaCant = parseFloat(sumaTotal - efectivo).toFixed(2);
                         else
-                            _this.tarjetaCant = '';
+                            this.tarjetaCant = '';
                     }
                     else if (tipo === 'IP') {
                         if (importePagado >= efectivo)
-                            _this.vuelto = parseFloat(importePagado - efectivo).toFixed(2);
+                            this.vuelto = parseFloat(importePagado - efectivo).toFixed(2);
                         else
-                            _this.vuelto = '';
+                            this.vuelto = '';
                     }
                 },
                 esc: function (event) {
@@ -4969,6 +5101,9 @@
                     for (const doc in _Documentos) {
                         var docValor = `${_Documentos[doc]}`;
 
+                        if (!docValor)
+                            docValor = " ";
+
                         if (doc === 'Original')
                             auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
                         else if (doc === 'Copia1')
@@ -4976,7 +5111,7 @@
                         else if (doc === 'Copia2')
                             auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
 
-                        if (auxUrl && docValor) {
+                        if (auxUrl) {
                             axios({ method: "GET", "url": auxUrl })
                                 .then(res => {
                                     APP.msg.success('Boleto enviado a imprimir correctamente.');
@@ -5008,16 +5143,10 @@
                         }
                         else
                             this.tipoPago = '';
-                    }
-                },
-                filledCampos: function () {
-                    var _this = this;
-                    switch (this.tipoPago) {
-                        case '01': return parseFloat(_this.importePagado) >= parseFloat(_this.sumaTotal) && _this.embarque /*&& _this.arribo*/;
-                        case '02': return _this.tarjeta && _this.numeroTarjeta && _this.numeroTarjeta.length === 19 && _this.tarjetaCant && parseFloat(_this.importePagado) >= parseFloat(_this.efectivo) && _this.embarque /*&& _this.arribo*/;
-                        case '03': return _this.tarjeta && _this.numeroTarjeta && _this.numeroTarjeta.length === 19 && _this.embarque /*&& _this.arribo*/;
-                        case '04': return _this.distrito && _this.direccion && _this.observacion && _this.embarque /*&& _this.arribo*/;
-                        default: return false;
+
+                        this.$nextTick(function () {
+                            this.recorridoSectionTipoPagos();
+                        });
                     }
                 }
             },
@@ -5100,35 +5229,63 @@
                             this.Edad = '';
                     });
                 },
-                recorridoSectionParentesco: function () {
-                    var _this = this;
-                    if (!_this.CodiTipoDoc) {
+                recorridoSectionParentesco: function (auxValidate) {
+                    var auxResponse = false;
+
+                    var auxEdad = parseFloat(this.Edad) || 0;
+
+                    if (!this.CodiTipoDoc) {
                         $('#cboTipoDocRA input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                     }
-                    else if (!_this.Documento)
+                    else if (!this.Documento) {
                         document.getElementById('txtDocumentoRA').focus();
-                    else if (!_this.Nombres)
-                        document.getElementById('txtNombresRA').focus();
-                    else if (!_this.ApellidoPaterno)
-                        document.getElementById('txtApellidoPaternoRA').focus();
-                    else if (!_this.ApellidoMaterno)
-                        document.getElementById('txtApellidoMaternoRA').focus();
-                    else if (!_this.FechaNac)
-                        document.getElementById('txtFechaNacRA').focus();
-                    else if (!_this.Sexo)
-                        $('#cboSexoRA input[type=search]').focus();
-                    else if (!_this.Parentesco)
-                        $('#cboParentescoRA input[type=search]').focus();
-                    else {
-                        _this.$nextTick(function () {
-                            if (_this.Edad > 5)
-                                document.getElementById('btnIngresarConClave').focus();
-                            else
-                                document.getElementById('btnRegistrarAconpaniante').focus();
-                        });
+                        if (auxValidate === true) APP.msg.warning('Ingrese documento.');
                     }
+                    else if (this.Documento.length < 8) {
+                        document.getElementById('txtDocumentoRA').focus();
+                    }
+                    else if (!this.Nombres) {
+                        document.getElementById('txtNombresRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Ingrese nombres.');
+                    }
+                    else if (!this.ApellidoPaterno) {
+                        document.getElementById('txtApellidoPaternoRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Ingrese apellido paterno.');
+                    }
+                    else if (!this.ApellidoMaterno) {
+                        document.getElementById('txtApellidoMaternoRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Ingrese apellido materno.');
+                    }
+                    else if (!this.FechaNac) {
+                        document.getElementById('txtFechaNacRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione fecha de nacimiento.');
+                    }
+                    else if (!this.Sexo) {
+                        $('#cboSexoRA input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione sexo.');
+                    }
+                    else if (!this.Parentesco) {
+                        $('#cboParentescoRA input[type=search]').focus();
+                        if (auxValidate === true) APP.msg.warning('Seleccione el parentesco.');
+                    }
+                    else {
+                        if (auxEdad > 5 && !this.enableSaveWithClaveAutorizacion) {
+                            if (auxValidate === true) APP.msg.warning('Edad mayor a 5 años, es necesario ingresar clave para continuar.');
+                        }
+                        else
+                            auxResponse = true;
+                        
+                        document.getElementById('btnRegistrarAconpaniante').focus();
+                    }
+
+                    return auxResponse;
                 },
                 saveAcompaniante: function () {
+
+                    if (!this.recorridoSectionParentesco(true))
+                        return;
+
                     var ObjAcompaniante = {};
                     ObjAcompaniante.CodiTipoDoc = !this.CodiTipoDoc ? '' : this.CodiTipoDoc.id;
                     ObjAcompaniante.Documento = this.Documento;
@@ -5154,6 +5311,10 @@
                     this.Parentesco = _.find(this.list.parentesco, { 'id': _ObjAcompaniante.Parentesco }) || null;
                     if (_ObjAcompaniante.NombreCompleto) {
                         var arrayDeNombres = _ObjAcompaniante.NombreCompleto.split(',');
+                        // Valida Split
+                        if (arrayDeNombres.length !== 3)
+                            arrayDeNombres = ['', '', ''];
+                        // ------------
                         this.Nombres = arrayDeNombres[0];
                         this.ApellidoPaterno = arrayDeNombres[1];
                         this.ApellidoMaterno = arrayDeNombres[2];
@@ -5207,26 +5368,7 @@
                     this.recorridoSectionVentas();
                 },
             },
-            computed: {
-                filledCampos: function () {
-                    var _this = this;
-                    if (_this.enableSaveWithClaveAutorizacion === true)
-                        return true;
-                    else {
-                        return (
-                            _this.CodiTipoDoc &&
-                            _this.Documento.length >= 8 &&
-                            _this.Nombres &&
-                            _this.ApellidoPaterno &&
-                            _this.ApellidoMaterno &&
-                            _this.FechaNac &&
-                            _this.Edad < 5 &&
-                            _this.Sexo &&
-                            _this.Parentesco
-                        )
-                    }
-                }
-            },
+            computed: {},
             watch: {
                 CodiTipoDoc: function (newValue) {
                     if (newValue) {
@@ -5546,6 +5688,12 @@
                                 _this.showBeneficiario = true;
                                 _this.objBeneficiario = _.cloneDeep(res.data.Valor);
                                 var nombresSplit = _this.objBeneficiario.NombresConcat.split(',');
+
+                                // Valida Split
+                                if (nombresSplit.length !== 3)
+                                    nombresSplit = ['', '', ''];
+                                // ------------
+
                                 _this.objBeneficiario.Nombre = nombresSplit[0];
                                 _this.objBeneficiario.ApellidoPaterno = nombresSplit[1];
                                 _this.objBeneficiario.ApellidoMaterno = nombresSplit[2];
@@ -5980,6 +6128,9 @@
             mounted: function () { },
             methods: {
                 show: function (_PrecioVenta) {
+                    debugger;
+                    appController.setDataTempDescuentoControl();
+
                     this.ImporteBoleto = _PrecioVenta;
                     $('#appVueDescuentoControl').modal('show');
                 },

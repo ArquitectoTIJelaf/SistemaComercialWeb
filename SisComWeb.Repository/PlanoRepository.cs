@@ -199,16 +199,17 @@ namespace SisComWeb.Repository
                             EmbarqueDir = Reader.GetStringValue(drlector, "EmbarqueDir") ?? string.Empty,
                             EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora") ?? string.Empty,
                             ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty,
-
                             CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL"),
 
+                            Nombres = Reader.GetStringValue(drlector, "NombreCompleto") ?? string.Empty,
+                            Edad = Reader.GetByteValue(drlector, "EDAD"),
+                            Telefono = Reader.GetStringValue(drlector, "TELEFONO") ?? string.Empty,
+                            Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty,
+
                             // Para evitar Null's
-                            Nombres = string.Empty,
                             ApellidoPaterno = string.Empty,
                             ApellidoMaterno = string.Empty,
                             FechaNacimiento = string.Empty,
-                            Telefono = string.Empty,
-                            Sexo = string.Empty,
                             RazonSocial = string.Empty,
                             Direccion = string.Empty,
                             Codigo = string.Empty,

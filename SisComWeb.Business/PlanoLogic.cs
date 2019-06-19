@@ -217,8 +217,23 @@ namespace SisComWeb.Business
             entidad.EmbarqueDir = item.EmbarqueDir;
             entidad.EmbarqueHora = item.EmbarqueHora;
             entidad.ImpManifiesto = item.ImpManifiesto;
-
             entidad.CodiSucursal = item.CodiSucursal;
+
+            entidad.TipoDocumento = item.TipoDocumento.TrimStart('0'); // Formato de la vista: Combo 'tiposDoc' = {"1", "4", "7"}
+            entidad.NumeroDocumento = item.NumeroDocumento;
+            entidad.Nombres = item.SplitNombres[0];
+            entidad.ApellidoPaterno = item.SplitNombres[1];
+            entidad.ApellidoMaterno = item.SplitNombres[2];
+            entidad.Sexo = item.Sexo;
+
+            if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
+            {
+                // Busca 'Pasajero'
+                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
+                entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
+                entidad.Edad = buscaPasajero.Edad; // La tabla 'Tb_Boleto_Ruta' no contiene 'Edad'
+                entidad.Telefono = buscaPasajero.Telefono; // La tabla 'Tb_Boleto_Ruta' no contiene 'Telefono'
+            }
 
             switch (entidad.FlagVenta)
             {
@@ -243,33 +258,6 @@ namespace SisComWeb.Business
                     break;
             }
 
-            // Busca 'Pasajero'
-            if (!string.IsNullOrEmpty(item.TipoDocumento) && !string.IsNullOrEmpty(item.NumeroDocumento))
-            {
-                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(item.TipoDocumento, item.NumeroDocumento);
-                entidad.TipoDocumento = buscaPasajero.TipoDoc;
-                entidad.NumeroDocumento = buscaPasajero.NumeroDoc;
-                entidad.Nombres = buscaPasajero.NombreCliente;
-                entidad.ApellidoPaterno = buscaPasajero.ApellidoPaterno;
-                entidad.ApellidoMaterno = buscaPasajero.ApellidoMaterno;
-                entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
-                entidad.Edad = buscaPasajero.Edad;
-                entidad.Telefono = buscaPasajero.Telefono;
-                entidad.Sexo = buscaPasajero.Sexo;
-            }
-            else
-            {
-                entidad.TipoDocumento = string.Empty;
-                entidad.NumeroDocumento = string.Empty;
-                entidad.Nombres = string.Empty;
-                entidad.ApellidoPaterno = string.Empty;
-                entidad.ApellidoMaterno = string.Empty;
-                entidad.FechaNacimiento = string.Empty;
-                entidad.Edad = 0;
-                entidad.Telefono = string.Empty;
-                entidad.Sexo = string.Empty;
-            }
-
             // Busca 'Empresa'
             if (!string.IsNullOrEmpty(entidad.RucContacto))
             {
@@ -284,8 +272,8 @@ namespace SisComWeb.Business
             }
 
             // Busca 'Acompaniante'
-            if (!string.IsNullOrEmpty(item.IdVenta))
-                entidad.ObjAcompaniante = PlanoRepository.BuscaAcompaniante(item.IdVenta);
+            if (!string.IsNullOrEmpty(entidad.IdVenta))
+                entidad.ObjAcompaniante = PlanoRepository.BuscaAcompaniante(entidad.IdVenta);
             else
                 entidad.ObjAcompaniante = null;
         }

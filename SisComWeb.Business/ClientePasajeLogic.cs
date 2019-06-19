@@ -20,6 +20,14 @@ namespace SisComWeb.Business
             try
             {
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
+
+                // Valida 'FechaNacimiento'
+                if (buscaPasajero.FechaNacimiento == "01/01/1900")
+                {
+                    buscaPasajero.FechaNacimiento = string.Empty;
+                    buscaPasajero.Edad = 0;
+                }
+
                 var buscaEmpresa = new RucEntity();
 
                 if (!string.IsNullOrEmpty(buscaPasajero.RucContacto))
@@ -119,14 +127,22 @@ namespace SisComWeb.Business
 
                 if (res.IsSuccessStatusCode)
                 {
-                    var result = res.Content.ReadAsStringAsync().Result;
+                    var result = res.Content.ReadAsStringAsync().Result ?? string.Empty;
                     string[] arrayNombreCompleto = result.Split('|');
+
+                    // Valida Split
+                    if (arrayNombreCompleto.Length != 3)
+                        arrayNombreCompleto = new string[3];
+                    // ------------
 
                     entidad.ApellidoPaterno = arrayNombreCompleto[0];
                     entidad.ApellidoMaterno = arrayNombreCompleto[1];
                     entidad.Nombres = arrayNombreCompleto[2];
 
-                    return new Response<ReniecEntity>(true, entidad, Message.MsgCorrectoConsultaRENIEC, true);
+                    if(!string.IsNullOrEmpty(entidad.ApellidoPaterno) && !string.IsNullOrEmpty(entidad.ApellidoMaterno) && !string.IsNullOrEmpty(entidad.Nombres))
+                        return new Response<ReniecEntity>(true, entidad, Message.MsgCorrectoConsultaRENIEC, true);
+                    else
+                        return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, false);
                 }
                 else
                     return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, false);

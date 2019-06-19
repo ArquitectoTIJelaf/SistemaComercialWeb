@@ -15,9 +15,9 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Documento:</label>
                             <div class="col-md-10">
-                                <v-select v-model="CodiTipoDoc"
-                                          :id="'cboTipoDocRA'"
+                                <v-select id="cboTipoDocRA"
                                           label="label"
+                                          v-model="CodiTipoDoc"
                                           :options="list.tipoDoc"
                                           :placeholder="'DOCUMENTO'"
                                           :disabled="disabledCamposTicket"
@@ -32,19 +32,19 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Número:</label>
                             <div class="col-md-10">
-                                <input :value="Documento.toUpperCase()"
-                                       @@input="Documento = $event.target.value.toUpperCase()"
-                                       id="txtDocumentoRA"
+                                <input id="txtDocumentoRA"
+                                       class="form-control input-sm"
                                        name="Número"
                                        type="text"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
-                                       class="form-control input-sm"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
                                        :disabled="disabledCamposTicket"
+                                       :value="Documento.toUpperCase()"
+                                       @@input="Documento = $event.target.value.toUpperCase()"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.prevent="recorridoSectionParentesco"
                                        v-mask="mask.documento"
-                                       v-validate="'min: ' + validateMinNumero">
+                                       v-validate="'min: ' + validateMinNumero" />
                             </div>
                             <span v-show="errors.has('Número')" class="text-danger m-l-5" style="display: inline-block; margin-top: 5px; ">{{ errors.first('Número') }}</span>
                         </div>
@@ -53,16 +53,16 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Nombres:</label>
                             <div class="col-md-10">
-                                <input v-model="Nombres"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
-                                       id="txtNombresRA"
-                                       type="text"
-                                       maxlength="50"
+                                <input id="txtNombresRA"
                                        class="form-control input-sm"
+                                       type="text"
                                        placeholder="NOMBRES"
-                                       :disabled="disabledCamposTicket"
+                                       maxlength="50"
                                        autocomplete="off"
+                                       v-model="Nombres"
+                                       :disabled="disabledCamposTicket"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.prevent="recorridoSectionParentesco"
                                        v-only-name>
                             </div>
                         </div>
@@ -71,15 +71,15 @@
                         <div class="col-md-6">
                             <label class="col-md-12 control-label label-sm">Apellido Paterno:</label>
                             <div class="col-md-12">
-                                <input v-model="ApellidoPaterno"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
-                                       id="txtApellidoPaternoRA"
+                                <input id="txtApellidoPaternoRA"
+                                       class="form-control input-sm"
                                        type="text"
                                        maxlength="25"
-                                       class="form-control input-sm"
                                        placeholder="APELLIDO PATERNO"
+                                       v-model="ApellidoPaterno"
                                        :disabled="disabledCamposTicket"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.prevent="recorridoSectionParentesco"
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -87,15 +87,15 @@
                         <div class="col-md-6">
                             <label class="col-md-12 control-label label-sm">Apellido Materno:</label>
                             <div class="col-md-12">
-                                <input v-model="ApellidoMaterno"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.native.prevent="recorridoSectionParentesco"
-                                       id="txtApellidoMaternoRA"
+                                <input id="txtApellidoMaternoRA"
+                                       class="form-control input-sm"
                                        type="text"
                                        maxlength="25"
-                                       class="form-control input-sm"
                                        placeholder="APELLIDO MATERNO"
+                                       v-model="ApellidoMaterno"
                                        :disabled="disabledCamposTicket"
+                                       @@keypress.13.prevent="recorridoSectionParentesco"
+                                       @@keydown.9.prevent="recorridoSectionParentesco"
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -105,12 +105,12 @@
                         <div class="col-md-5">
                             <label class="col-md-12 label-sm">Fecha Nacimiento:</label>
                             <div class="col-md-12">
-                                <input @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                       v-model="FechaNac"
-                                       type="text"
-                                       id="txtFechaNacRA"
+                                <input id="txtFechaNacRA"
                                        class="form-control input-sm dpyearnino"
+                                       type="text"
                                        placeholder="FECHA NAC."
+                                       v-model="FechaNac"
+                                       @@blur="setDateAndCalcYears($event.target.value.trim())"
                                        :disabled="disabledCamposTicket"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">
@@ -119,22 +119,21 @@
                         <div class="col-md-3">
                             <label class="col-md-12 label-sm">Edad:</label>
                             <div class="col-md-12">
-                                <input :value="Edad"
-                                       type="text"
-                                       id="txtEdadRA"
+                                <input id="txtEdadRA"
                                        class="form-control input-sm"
+                                       type="text"
                                        placeholder="EDAD"
-                                       style="text-align: center; "
                                        disabled="disabled"
-                                       autocomplete="off">
+                                       :value="Edad"
+                                       style="text-align: center; " />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <label class="col-md-12 label-sm">Sexo:</label>
                             <div class="col-md-12">
-                                <v-select v-model="Sexo"
-                                          :id="'cboSexoRA'"
+                                <v-select id="cboSexoRA"
                                           label="label"
+                                          v-model="Sexo"
                                           :options="list.sexos"
                                           :placeholder="'SEXO'"
                                           :disabled="disabledCamposTicket"
@@ -149,9 +148,9 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Parentesco:</label>
                             <div class="col-md-10">
-                                <v-select v-model="Parentesco"
-                                          :id="'cboParentescoRA'"
+                                <v-select id="cboParentescoRA"
                                           label="label"
+                                          v-model="Parentesco"
                                           :options="list.parentesco"
                                           :placeholder="'PARENTESCO'"
                                           :disabled="disabledCamposTicket"
@@ -175,12 +174,12 @@
                         @@click="showClaveAutorizacion"
                         :disabled="disabledBotones"
                         class="btn btn-info waves-effect text-left"
-                        v-show="Edad > 5">
+                        v-show="Edad > 5 && !enableSaveWithClaveAutorizacion">
                     <span class="fa fa-save fa-fw"></span>Ingresar con Clave
                 </button>
                 <button id="btnRegistrarAconpaniante"
                         @@click="saveAcompaniante"
-                        :disabled="!filledCampos || disabledBotones"
+                        :disabled="disabledBotones"
                         class="btn btn-primary waves-effect text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>

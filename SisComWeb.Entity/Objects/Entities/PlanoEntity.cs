@@ -96,7 +96,23 @@
 
         public string ImpManifiesto { get; set; }
 
-
         public short CodiSucursal { get; set; }
+
+
+        public string[] SplitNombres
+        {
+            get
+            {
+                var tmpNombres = Nombres ?? string.Empty;
+                var tmpSplitNombres = tmpNombres.Split(',');
+
+                // Valida Split
+                if (tmpSplitNombres.Length != 3)
+                    tmpSplitNombres = new string[3];
+                // ------------
+
+                return tmpSplitNombres;
+            }
+        }
     }
 }
