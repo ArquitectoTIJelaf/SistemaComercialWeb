@@ -86,14 +86,17 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static List<ClientePasajeEntity> BuscarClientesPasaje(string Nombre)
+        public static List<ClientePasajeEntity> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
         {
             var Lista = new List<ClientePasajeEntity>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_Tb_Cliente_Pasajes_Buscar";
-                db.AddParameter("@Nombre", DbType.String, ParameterDirection.Input, Nombre);
+                db.AddParameter("@campo", DbType.String, ParameterDirection.Input, campo);
+                db.AddParameter("@nombres", DbType.String, ParameterDirection.Input, nombres);
+                db.AddParameter("@paterno", DbType.String, ParameterDirection.Input, paterno);
+                db.AddParameter("@materno", DbType.String, ParameterDirection.Input, materno);
 
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -102,7 +105,9 @@ namespace SisComWeb.Repository
                         Lista.Add(new ClientePasajeEntity
                         {
                             NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? string.Empty,
-                            NombreCliente = Reader.GetStringValue(drlector, "Nombre_Completo") ?? string.Empty
+                            NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? string.Empty,
+                            ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_p") ?? string.Empty,
+                            ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? string.Empty
                         });
                     }
                 }

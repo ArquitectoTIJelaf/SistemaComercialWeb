@@ -279,11 +279,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string Nombre)
+        public static Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
         {
             try
             {
-                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(Nombre);
+                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(campo, nombres, paterno, materno);
 
                 return new Response<List<ClientePasajeEntity>>(true, BuscarClientesPasaje, Message.MsgCorrectoBuscarClientesPasaje, true);
             }

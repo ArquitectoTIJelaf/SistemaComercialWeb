@@ -2,52 +2,95 @@
     <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" class="close" @@click="cerrarBuscaClientePasaje">&times;</button>
-            <h4 class="modal-title"><b>Busca Pasajero</b></h4>
-        </div>
-        <div class="modal-body">
-            <div class="form-horizontal">
-                <div class="form-group m-b-5">
-                    <div class="col-md-12">
-                        <label class="col-md-2 control-label label-sm">Nombre:</label>
-                        <div class="col-md-10">
-                            <input v-model="NombreBCP"
-                                   @@keydown.13.prevent="getClientesPasaje"
-                                   id="txtNombreBCP"
-                                   type="text"
-                                   class="form-control input-sm"
-                                   placeholder="NOMBRE"
-                                   autocomplete="off" />
+                <button type="button" class="close" @@click="cerrarBuscaClientePasaje">&times;</button>
+                <h4 class="modal-title"><b>Busca Pasajero</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-3 control-label label-sm" style="text-align: center; ">Nombres:</label>
+                            <div class="col-md-9">
+                                <input id="txtNombreBCP"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       maxlength="100"
+                                       placeholder="NOMBRES"
+                                       v-model="NombreBCP"
+                                       @@keydown.13.prevent="$refs.refApePaternoBCP.focus()"
+                                       @@keydown.9.prevent="$refs.refApePaternoBCP.focus()"
+                                       v-only-name
+                                       autocomplete="off" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group m-b-5">
-                    <div class="custom-scroll-container">
-                        <div class="table-responsive" style="background-color: #616e7e;">
-                            <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
-                                <thead>
-                                    <tr>
-                                        <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">DNI</th>
-                                        <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Nombre</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <paginate name="items" :list="list.clientesPasaje" :per="10">
-                                        <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                            <td class="custom-td">{{item.NumeroDoc}}</td>
-                                            <td class="custom-td">{{item.NombreCliente}}</td>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-3 control-label label-sm" style="text-align: center; ">A. Paterno:</label>
+                            <div class="col-md-9">
+                                <input id="txtApePaternoBCP"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       maxlength="50"
+                                       placeholder="APELLIDO PATERNO"
+                                       v-model="ApePaternoBCP"
+                                       ref="refApePaternoBCP"
+                                       @@keydown.13.prevent="$refs.refApeMaternoBCP.focus()"
+                                       @@keydown.9.prevent="$refs.refApeMaternoBCP.focus()"
+                                       v-only-name
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12">
+                            <label class="col-md-3 control-label label-sm" style="text-align: center; ">A. Materno:</label>
+                            <div class="col-md-9">
+                                <input id="txtApeMaternoBCP"
+                                       type="text"
+                                       class="form-control input-sm"
+                                       maxlength="50"
+                                       placeholder="APELLIDO MATERNO"
+                                       v-model="ApeMaternoBCP"
+                                       ref="refApeMaternoBCP"
+                                       @@keydown.13.prevent="getClientesPasaje"
+                                       @@keydown.9.prevent="getClientesPasaje"
+                                       v-only-name
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="custom-scroll-container">
+                            <div class="table-responsive" style="background-color: #616e7e;">
+                                <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">DNI</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Nombres</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">A. Paterno</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">A. Materno</th>
                                         </tr>
-                                    </paginate>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <paginate ref="paginatorBCP" name="items" :list="list.clientesPasaje" :per="5">
+                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td class="custom-td">{{item.NumeroDoc}}</td>
+                                                <td class="custom-td">{{item.NombreCliente}}</td>
+                                                <td class="custom-td">{{item.ApellidoPaterno}}</td>
+                                                <td class="custom-td">{{item.ApellidoMaterno}}</td>
+                                            </tr>
+                                        </paginate>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                        <center>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                        </center>
                     </div>
-                    <center>
-                        <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
-                    </center>
                 </div>
             </div>
-        </div>
             <div class="modal-footer">
                 <button @@click="cerrarBuscaClientePasaje" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar

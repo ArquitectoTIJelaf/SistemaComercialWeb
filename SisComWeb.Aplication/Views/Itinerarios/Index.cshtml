@@ -646,9 +646,6 @@
 
             $('#appVueBuscaClientePasaje').on('hidden.bs.modal', function () {
                 appVueBuscaClientePasaje.limpiarBuscaClientePasaje();
-                appVueBuscaClientePasaje.$nextTick(function () {
-                    document.getElementById('txtDocumento').focus();
-                });
 
                 window.removeEventListener('keyup', appVueBuscaClientePasaje.esc);
             });
@@ -1045,6 +1042,9 @@
                         appVueDescuentoControl.ImporteDescuento = appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescuentoDC;
                         appVueDescuentoControl.ImporteDescontado = appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescontadoDC;
                     }
+                },
+                recorridoSectionVentas: function () {
+                    appVueVenta.recorridoSectionVentas();
                 }
             };
         })();
@@ -1905,9 +1905,9 @@
                             var auxHours = parseInt(AddTimeTurno.substring(0, 2)) || 0;
                             var auxMinutes = parseInt(AddTimeTurno.substring(3, 5)) || 0;
                             var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
-                            if (auxHoraResult.isSameOrAfter(moment(), 'minute')) {
+
+                            if (auxHoraResult.isSameOrAfter(moment(), 'minute'))
                                 auxResponse = true;
-                            }
                         }
                         else {
                             if (moment(this.filtro.Turno, 'hh:mmA').isSameOrAfter(moment(), 'minute'))
@@ -5472,6 +5472,11 @@
                                 _this.totalBoletos = res.data.Valor.BoletoTotal;
                                 _this.list.beneficiarios = res.data.Valor.ListaBeneficiarios;
                                 _this.list.filterBeneficiarios = _.cloneDeep(_this.list.beneficiarios);
+
+                                _this.$nextTick(() => {
+                                    if (_this.$refs.paginatorPC && _this.list.filterBeneficiarios.length > 0)
+                                        _this.$refs.paginatorPC.goToPage(1);
+                                });
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -5883,6 +5888,11 @@
 
                                 if (!res.data.EsCorrecto)
                                     APP.msg.warning(res.data.Mensaje);
+
+                                _this.$nextTick(() => {
+                                    if (_this.$refs.paginatorCC && _this.list.clientes.length > 0)
+                                        _this.$refs.paginatorCC.goToPage(1);
+                                });
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -6075,7 +6085,9 @@
                     clientesPasaje: []
                 },
                 paginate: ['items'],
-                NombreBCP: ''
+                NombreBCP: '',
+                ApePaternoBCP: '',
+                ApeMaternoBCP: ''
             },
             mounted: function () { },
             methods: {
@@ -6084,12 +6096,34 @@
                 },
                 getClientesPasaje() {
                     var _this = this;
+
+                    document.getElementById('txtApeMaternoBCP').blur();
+
+                    // Calculamos 'tmpCampo'
+                    var tmpCampo = '';
+                    if (_this.NombreBCP)
+                        tmpCampo = 'nombres';
+                    else if (_this.ApePaternoBCP)
+                        tmpCampo = 'paterno';
+                    else if (_this.ApeMaternoBCP)
+                        tmpCampo = 'materno';
+                    // ---------------------
+
                     APP.rq.axios.post(APP.base + '/itinerarios/buscarClientesPasaje/' + APP.util.getQueryParamByObject({
-                        Nombre: _this.NombreBCP
+                        campo: tmpCampo,
+                        nombres: _this.NombreBCP,
+                        paterno: _this.ApePaternoBCP,
+                        materno: _this.ApeMaternoBCP
                     }))
                         .then(res => {
-                            if (res.data.Estado)
-                                _this.list.clientesPasaje = _.sortBy(res.data.Valor, [function (obj) { return obj.NombreCliente; }]);
+                            if (res.data.Estado) {
+                                _this.list.clientesPasaje = _.sortBy(res.data.Valor, ['NombreCliente', 'ApellidoPaterno', 'ApellidoMaterno']);
+
+                                _this.$nextTick(function () {
+                                    if (_this.$refs.paginatorBCP && _this.list.clientesPasaje.length > 0)
+                                        _this.$refs.paginatorBCP.goToPage(1);
+                                })
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -6101,14 +6135,24 @@
                 },
                 cerrarBuscaClientePasaje: function () {
                     $('#appVueBuscaClientePasaje').modal('hide');
+
+                    this.$nextTick(function () {
+                        document.getElementById('txtDocumento').focus();
+                    });
                 },
                 limpiarBuscaClientePasaje: function () {
                     this.list.clientesPasaje = [];
                     this.NombreBCP = '';
+                    this.ApePaternoBCP = '';
+                    this.ApeMaternoBCP = '';
                 },
                 sendRow: async function (item) {
                     await appController.sendBuscaClientePasaje(item);
-                    this.cerrarBuscaClientePasaje();
+                    $('#appVueBuscaClientePasaje').modal('hide');
+
+                    this.$nextTick(function () {
+                        appController.recorridoSectionVentas();
+                    });
                 }
             },
             computed: {},

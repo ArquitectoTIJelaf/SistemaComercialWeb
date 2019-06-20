@@ -19,7 +19,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <paginate name="items" :list="list.clientes" :per="10">
+                                    <paginate ref="paginatorCC" name="items" :list="list.clientes" :per="10">
                                     <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                         <td class="custom-td">{{item.RucCliente}}</td>
                                         <td class="custom-td">{{item.RazonSocial}}</td>

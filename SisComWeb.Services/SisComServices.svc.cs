@@ -296,11 +296,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string Nombre)
+        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
         {
             try
             {
-                return ClientePasajeLogic.BuscarClientesPasaje(Nombre);
+                return ClientePasajeLogic.BuscarClientesPasaje(campo, nombres, paterno, materno);
             }
             catch (Exception ex)
             {

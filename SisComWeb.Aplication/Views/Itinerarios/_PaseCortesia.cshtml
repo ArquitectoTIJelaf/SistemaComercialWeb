@@ -90,7 +90,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <paginate name="items" :list="list.filterBeneficiarios" :per="3">
+                                        <paginate ref="paginatorPC" name="items" :list="list.filterBeneficiarios" :per="3">
                                             <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                                 <td class="custom-td">{{item.NombreBeneficiario | formatNombre}}</td>
                                                 <td class="custom-td">{{item.Documento}}</td>
