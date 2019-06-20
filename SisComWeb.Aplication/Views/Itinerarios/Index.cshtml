@@ -3661,38 +3661,38 @@
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
-                    _this.disabledAsiento = true;
+                    //_this.disabledAsiento = true;
 
-                    // Valida 'Manifiesto'
-                    if (!IngresoManualPasajes) {
+                    //// Valida 'Manifiesto'
+                    //if (!IngresoManualPasajes) {
 
-                        // Valida y por dentro setea 'X_Estado'
-                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
+                    //    // Valida y por dentro setea 'X_Estado'
+                    //    var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
 
-                        var resValidaManifiesto = await _this.validaManifiesto();
-                        if (!resValidaManifiesto) {
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                    //    var resValidaManifiesto = await _this.validaManifiesto();
+                    //    if (!resValidaManifiesto) {
+                    //        // Seteo el valor original de 'X_Estado'
+                    //        _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
-                            return;
-                        }
-                        if (_this.objTurno.X_Estado) {
-                            APP.msg.warning('El manifiesto ya fue emitido.');
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                    //        return;
+                    //    }
+                    //    if (_this.objTurno.X_Estado) {
+                    //        APP.msg.warning('El manifiesto ya fue emitido.');
+                    //        // Seteo el valor original de 'X_Estado'
+                    //        _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
-                            return;
-                        }
-                    }
+                    //        return;
+                    //    }
+                    //}
 
                     //var auxValidate = await _this.validaAnulacion(asientoSel);
 
-                    _this.disabledAsiento = false;
+                    //_this.disabledAsiento = false;
 
                     //if (!auxValidate)
                     //    return;
 
-                    return; // Eliminarlo
+                    //return; // Eliminarlo
 
                     // En un caso específico, el SignalR limpia 'asientoSel', por eso:
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
@@ -3759,7 +3759,6 @@
 
                                     if (resConfirmWhitPassword) {
                                         valPanelAnularFechaPasada = '2';
-
                                         var validaControlTiempo = await this.validaControlTiempo(_asientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
                                         if (validaControlTiempo)
                                             return auxResponse = true;
@@ -3848,72 +3847,83 @@
 
                     debugger; // Comenzar a verificar.
 
-                    var verificaLiquiComiDet = await this.verificaLiquiComiDet(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    if (verificaLiquiComiDet !== 0) {
-                        APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
-                        return auxResponse = false;
-                    }
+                    //var verificaLiquiComiDet = await this.verificaLiquiComiDet(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //if (verificaLiquiComiDet !== 0) {
+                    //    APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
+                    //    return auxResponse = false;
+                    //}
 
-                    var verificaLiquiComi = await this.verificaLiquiComi(this.filtro.CodiProgramacion, _asientoSel.CodiPuntoVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    if (verificaLiquiComi === 1) {
-                        APP.msg.warning('El boleto se encuentra liquidado.');
-                        return auxResponse = false;
-                    }
+                    //var verificaLiquiComi = await this.verificaLiquiComi(this.filtro.CodiProgramacion, _asientoSel.CodiPuntoVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //if (verificaLiquiComi === 1) {
+                    //    APP.msg.warning('El boleto se encuentra liquidado.');
+                    //    return auxResponse = false;
+                    //}
 
-                    var tmpSwIndica = "0";
+                    //var tmpSwIndica = "0";
 
-                    if (appController.validatePanel('163') === '1' && _valPanelAnularFechaPasada !== '2') {
+                    //if (appController.validatePanel('163') === '1' && _valPanelAnularFechaPasada !== '2') {
 
-                        var consultaPanelNiveles = await this.consultaPanelNiveles("5", Usuario.Nivel); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                        if (consultaPanelNiveles === '1') {
+                    //    var consultaPanelNiveles = await this.consultaPanelNiveles("5", Usuario.Nivel); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //    if (consultaPanelNiveles === '1') {
 
-                            if (moment(_asientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
-                                && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
+                    //        if (moment(_asientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
+                    //            && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
 
-                                APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _asientoSel.FechaVenta + '.');
-                                return auxResponse = false;
-                            }
+                    //            APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _asientoSel.FechaVenta + '.');
+                    //            return auxResponse = false;
+                    //        }
 
-                            tmpSwIndica = "1";
-                        }
-                        else {
-                            tmpSwIndica = "0";
-                            APP.msg.warning('Solo los administradores pueden anular comprobantes.');
-                            return auxResponse = false;
-                        }
-                    }
+                    //        tmpSwIndica = "1";
+                    //    }
+                    //    else {
+                    //        tmpSwIndica = "0";
+                    //        APP.msg.warning('Solo los administradores pueden anular comprobantes.');
+                    //        return auxResponse = false;
+                    //    }
+                    //}
 
-                    if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '1')
-                        return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    else if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '0') { // Verificar que sean los mismos tipos de datos.
-                        APP.msg.warning('Solo puede anular este asiento la sucursal ' + this.list.origenesPas.find(x => x.id === _asientoSel.CodiSucursal).label + '.'); // Verificar tipos de valor.
-                        return auxResponse = false;
-                    }
-                    else if (Usuario.CodiPuntoVenta !== _asientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') { // Verificar que sean los mismos tipos de datos.
-                        APP.msg.warning('Solo puede anular este asiento el punto de venta ' + _asientoSel.NomPuntoVenta + '.');
-                        return auxResponse = false;
-                    }
-                    else if (_asientoSel.CodiUsuario != Usuario.CodiUsuario) {
+                    //if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '1')
+                    //    return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
+                    //else if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '0') { // Verificar que sean los mismos tipos de datos.
+                    //    APP.msg.warning('Solo puede anular este asiento la sucursal ' + this.list.origenesPas.find(x => x.id === _asientoSel.CodiSucursal).label + '.'); // Verificar tipos de valor.
+                    //    return auxResponse = false;
+                    //}
+                    //else if (Usuario.CodiPuntoVenta !== _asientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') { // Verificar que sean los mismos tipos de datos.
+                    //    APP.msg.warning('Solo puede anular este asiento el punto de venta ' + _asientoSel.NomPuntoVenta + '.');
+                    //    return auxResponse = false;
+                    //}
+                    //else if (_asientoSel.CodiUsuario != Usuario.CodiUsuario) {
 
-                        if (tmpSwIndica === '0') {
-                            if (appController.validatePanel('40') === '1')
-                                APP.msg.warning('Solo puede anular este asiento el usuario que lo vendió.');
-                            else
-                                return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                        }
-                        else
-                            return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    }
-                    else if (_asientoSel.FlagVenta === 'R') {
-                        await this.cancelarReserva(_asientoSel);
-                        /* auxValidate = false;*/ // No continuar, ya que ya se está cancelando la 'Reserva', verificar cuando se acabe el script.
-                    }
-                    else {
+                    //    if (tmpSwIndica === '0') {
+                    //        if (appController.validatePanel('40') === '1')
+                    //            APP.msg.warning('Solo puede anular este asiento el usuario que lo vendió.');
+                    //        else
+                    //            return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
+                    //    }
+                    //    else
+                    //        return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
+                    //}
+                    //else if (_asientoSel.FlagVenta === 'R') {
+                    //    await this.cancelarReserva(_asientoSel);
+                    //    /* auxValidate = false;*/ // No continuar, ya que ya se está cancelando la 'Reserva', verificar cuando se acabe el script.
+                    //}
+                    //else {
                         //var consultaIdaVuelta = await this.consultaIdaVuelta(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
                         //if (consultaIdaVuelta) {
-                        //    // De la línea de 150, un poco más arriba.
+                    var tmpObjAsiento = {};
+                    var auxBoletoCompleto = formatoBoletoCompleto(_asientoSel.TipoBoleto, _asientoSel.Boleto);
+                    tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
+                    tmpObjAsiento.OrigenBoleto = _asientoSel.NomOrigen;
+                    tmpObjAsiento.DestinoBoleto = _asientoSel.NomDestino;
+                    tmpObjAsiento.NroAsiento = String(_asientoSel.NumeAsiento).padStart(2, '0');
+                            
+                            await APP.msg.infoBoletoPromocionadoConDescuento(''
+                                ,'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe: '
+                                , tmpObjAsiento);
+
+                            return auxResponse = false;
                         //}
-                    }
+                    //}
 
                     return auxValidate;
                 },
@@ -4202,13 +4212,14 @@
                             auxResponse = false;
                         }
                         else {
-                            var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion('Autorización', 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveProgramacion);
+                            var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion('Autorización',
+                                'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveProgramacion);
                             if (resConfirmWhitPassword) {
-                                var resConfirmWhitTwoRadioBtn = await APP.msg.confirmWhitTwoRadioBtn('Aperturar programación', '');
+                                var resConfirmAperturaProgramacion = await APP.msg.confirmAperturaProgramacion('Aperturar programación', '');
 
-                                if (resConfirmWhitTwoRadioBtn) {
+                                if (resConfirmAperturaProgramacion) {
                                     var tmpTipoApertura = false;
-                                    if (resConfirmWhitTwoRadioBtn === 'true')
+                                    if (resConfirmAperturaProgramacion === 'true')
                                         tmpTipoApertura = true;
 
                                     await this.actualizarProgramacionManifiesto(tmpTipoApertura);
@@ -6109,6 +6120,34 @@
                         tmpCampo = 'materno';
                     // ---------------------
 
+                    // Validaciones para evitar consulta muy grande.
+                    switch (tmpCampo) {
+                        case 'nombres':
+                            {
+                                if (_this.NombreBCP.length < 3) {
+                                    APP.msg.warning('Ingrese como mínimo 3 caracteres.');
+                                    document.getElementById('txtNombreBCP').focus();
+                                    return;
+                                }
+                            }
+                            break;
+                        case 'paterno':
+                            if (_this.ApePaternoBCP.length < 3) {
+                                APP.msg.warning('Ingrese como mínimo 3 caracteres.');
+                                document.getElementById('txtApePaternoBCP').focus();
+                                return;
+                            }
+                            break;
+                        case 'materno':
+                            if (_this.ApeMaternoBCP.length < 3) {
+                                APP.msg.warning('Ingrese como mínimo 3 caracteres.');
+                                document.getElementById('txtApeMaternoBCP').focus();
+                                return;
+                            }
+                            break;
+                    }
+                    // ---------------------------------------------
+
                     APP.rq.axios.post(APP.base + '/itinerarios/buscarClientesPasaje/' + APP.util.getQueryParamByObject({
                         campo: tmpCampo,
                         nombres: _this.NombreBCP,
@@ -6172,7 +6211,6 @@
             mounted: function () { },
             methods: {
                 show: function (_PrecioVenta) {
-                    debugger;
                     appController.setDataTempDescuentoControl();
 
                     this.ImporteBoleto = _PrecioVenta;

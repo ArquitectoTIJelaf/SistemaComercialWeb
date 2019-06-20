@@ -300,6 +300,21 @@ APP.msg.errorWithoutTime = function (msg) {
     });
 };
 
+APP.msg.ShowSaveAfterSale = async function (_title, _message) {
+    var auxBool = false;
+    await swal.fire({
+        title: _title || "Buen trabajo!",
+        text: _message || "Hiciste clic en el botón!",
+        type: "success"
+    }).then(res => {
+        if (res.value) auxBool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return auxBool;
+};
+
 APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _bool = false;
     await swal({
@@ -350,13 +365,19 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
     return _bool;
 };
 
-APP.msg.confirmWhitTwoRadioBtn = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+APP.msg.confirmAperturaProgramacion = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _option = '';
 
     var inputOptions = new Promise(function (resolve) {
         resolve({
-            'true': 'Solo para vender<br /><p style="font-weight: 400; font-size: 12px; text-align: justify;"> Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con el mismo número de manifiesto.</p>',
-            'false': 'General<br /><p style="font-weight: 400; font-size: 12px; text-align: justify;">Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con un nuevo número de manifiesto.</p>'
+            'true':
+                'Solo para vender' + '<br />' +
+                '<p style="font-weight: 400; font-size: 12px; text-align: justify;" >' +
+                'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con el mismo número de manifiesto.</p>',
+            'false':
+                'General' + '<br />' +
+                '<p style="font-weight: 400; font-size: 12px; text-align: justify;" >' +
+                'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con un nuevo número de manifiesto.</p>'
         });
     });
 
@@ -386,19 +407,26 @@ APP.msg.confirmWhitTwoRadioBtn = async function (_title, _message, _textButtonCo
     return _option;
 };
 
-APP.msg.ShowSaveAfterSale = async function (_title, _message) {
-    var auxBool = false;
-    await swal.fire({
-        title: _title || "Buen trabajo!",
-        text: _message || "Hiciste clic en el botón!",
-        type: "success"
-    }).then(res => {
-        if (res.value) auxBool = res.value;
-    }).catch(error => {
-        APP.msg.error(error);
-    });
-
-    return auxBool;
+APP.msg.infoBoletoPromocionadoConDescuento = async function (_title, _message, objAsiento, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _bool = false;
+    await swal({
+        title: _title || "Mensaje del sistema",
+        html:
+            _message + '<br />' +
+            'Nro. de Boleto     : ' + objAsiento.NroBoleto + '<br />' +
+            'Origen de Boleto   : ' + objAsiento.OrigenBoleto + '<br />' +
+            'Destino de Boleto  : ' + objAsiento.DestinoBoleto + '<br />' +
+            'Nro. de Asiento    : ' + objAsiento.NroAsiento
+        ,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: _colorOfButton || "#DD6B55",
+        confirmButtonText: _textButtonConfirm || "Si",
+        cancelButtonText: _textButtonCancel || "No",
+        allowOutsideClick: false
+    }).then(res => { if (res.value) _bool = res.value; })
+        .catch(error => { APP.msg.error(error); });
+    return _bool;
 };
 
 /*!********************* Messages */
