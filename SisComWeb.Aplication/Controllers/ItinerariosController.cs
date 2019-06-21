@@ -50,10 +50,10 @@ namespace SisComWeb.Aplication.Controllers
                 Nombres = (string)x["Nombres"],
                 NumeAsiento = (int)x["NumeAsiento"],
                 NumeroDocumento = (string)x["NumeroDocumento"],
-                PrecioMaximo = (int)x["PrecioMaximo"],
-                PrecioMinimo = (int)x["PrecioMinimo"],
-                PrecioNormal = (int)x["PrecioNormal"],
-                PrecioVenta = (int)x["PrecioVenta"],
+                PrecioMaximo = (decimal)x["PrecioMaximo"],
+                PrecioMinimo = (decimal)x["PrecioMinimo"],
+                PrecioNormal = (decimal)x["PrecioNormal"],
+                PrecioVenta = (decimal)x["PrecioVenta"],
                 RecogeEn = (string)x["RecogeEn"],
                 RucContacto = (string)x["RucContacto"],
                 Telefono = (string)x["Telefono"],
@@ -731,7 +731,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"RucCliente\" : \"" + Listado[i].RucCliente + "\"" +
                                     ",\"NumeAsiento\" : " + Listado[i].NumeAsiento +
                                     ",\"FlagVenta\" : \"" + Listado[i].FlagVenta + "\"" +
-                                    ",\"PrecioVenta\" : " + Listado[i].PrecioVenta +
+                                    ",\"PrecioVenta\" : \"" + Listado[i].PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture) + "\"" +
                                     ",\"Nombre\" : \"" + Listado[i].Nombre + "\"" +
                                     ",\"Edad\" : " + Listado[i].Edad +
                                     ",\"Telefono\" : \"" + Listado[i].Telefono + "\"" +
@@ -846,7 +846,7 @@ namespace SisComWeb.Aplication.Controllers
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch
+            catch(Exception ex)
             {
                 return Json(new Response<List<Venta>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }

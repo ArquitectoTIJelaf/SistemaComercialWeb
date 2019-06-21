@@ -17,10 +17,10 @@
         public string Nombres { get; set; }
         public int NumeAsiento { get; set; }
         public string NumeroDocumento { get; set; }
-        public int PrecioMaximo { get; set; }
-        public int PrecioMinimo { get; set; }
-        public int PrecioNormal { get; set; }
-        public int PrecioVenta { get; set; }
+        public decimal PrecioMaximo { get; set; }
+        public decimal PrecioMinimo { get; set; }
+        public decimal PrecioNormal { get; set; }
+        public decimal PrecioVenta { get; set; }
         public string RecogeEn { get; set; }
         public string RucContacto { get; set; }
         public string Telefono { get; set; }

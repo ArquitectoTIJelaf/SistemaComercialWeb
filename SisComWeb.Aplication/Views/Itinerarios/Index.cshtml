@@ -605,7 +605,7 @@
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ReadonlyPrecio = false;
                                     }
 
-                                    var auxPrecioNormal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
+                                    var auxPrecioNormal = parseFloat(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal || 0);
                                     appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecioNormal.toFixed(2);
                                 }
                                     
@@ -1022,7 +1022,8 @@
                     appVueDescuentoControl.show(_PrecioVenta);
                 },
                 getDescServicio: function () {
-                    return appVueVenta.objTurno.DescServicio;
+                    //return appVueVenta.objTurno.DescServicio;
+                    return '1';
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     return appVueVenta.validateAlgoritmoRuc(_Ruc);
@@ -3208,9 +3209,9 @@
                     this.$refs.refPrecio.blur();
                 },
                 validateRangePrice: function (event) {
+                    debugger;
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
-
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
                     var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
                     var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || 0);
@@ -3226,8 +3227,11 @@
                                     {
                                         if (!this.list.ventas[this.indexVenta].ValidadorDescuento)
                                             appController.showDescuentoControl(this.list.ventas[this.indexVenta].PrecioNormal);
-                                        else
+                                        else {
                                             APP.msg.warning('Ya se realizó un descuento.');
+                                            document.getElementById('txtPrecio').focus();
+                                        }
+                                            
                                     };
 
                                     this.eventTxtPrecio = '';
@@ -3236,7 +3240,7 @@
 
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
 
-                                if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
+                                if (!this.list.ventas[this.indexVenta].ValidadorDescuento && !this.list.ventas[this.indexVenta].ValidadorDescuentoControl) {
 
                                     if (actual > normal) {
                                         APP.msg.warning('Descuento: El precio no puede ser mayor a ' + normal.toFixed(2) + '.');
@@ -4726,8 +4730,18 @@
                 saveVenta: async function () {
                     var _this = this;
 
-                    if (!_this.recorridoSectionTipoPagos(true))
-                        return;
+                    switch (_this.pickedBusVenta) {
+                        case 'R': // Reserva
+                        case '7': // Pase de cortesía
+                            break;
+                        default:
+                            {
+                                if (!_this.recorridoSectionTipoPagos(true))
+                                    return;
+                            };
+                            break;
+                    }
+                    
 
                     var auxListaVentasRealizadas = [];
                     _this.processing = true;

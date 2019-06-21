@@ -465,7 +465,6 @@ namespace SisComWeb.Services
             }
         }
 
-
         public Response<VentaBeneficiarioEntity> BuscarVentaxBoleto(string Tipo, short Serie, int Numero, short CodiEmpresa)
         {
             try

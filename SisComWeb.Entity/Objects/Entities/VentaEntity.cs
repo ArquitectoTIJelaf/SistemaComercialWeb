@@ -109,7 +109,7 @@ namespace SisComWeb.Entity
         {
             get
             {
-                return "POR EL SERVICIO DE TRANPORTE DE LA RUTA " + NomOrigen + " - " + NomDestino + " / SERVICIO : " + NomServicio + " NRO ASIENTO: " + NumeAsiento.ToString("D2") + " / PASAJERO: " + SplitNombre[0] + " " + SplitNombre[1] + " " + SplitNombre[2] + " /DNI: " + Dni + " FECHA VIAJE: " + FechaViaje + " / HORA VIAJE: " + HoraViaje + "/1/" + PrecioVenta.ToString("F2", CultureInfo.InvariantCulture);
+                return "POR EL SERVICIO DE TRANPORTE DE LA RUTA " + NomOrigen + " - " + NomDestino + " / SERVICIO : " + NomServicio + " NRO ASIENTO: " + NumeAsiento.ToString("D2") + " / PASAJERO: " + SplitNombre[0] + " " + SplitNombre[1] + " " + SplitNombre[2] + " /DNI: " + Dni + " FECHA VIAJE: " + FechaViaje + " / HORA VIAJE: " + HoraViaje + "/1/" + PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture);
             }
         }
 

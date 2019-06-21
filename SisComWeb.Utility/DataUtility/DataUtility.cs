@@ -16,38 +16,24 @@ namespace SisComWeb.Utility
         {
             string Valor = string.Empty;
 
-            // ********Declara variables de tipo cadena************
-            string palabras, entero, dec, flag;
-            palabras = string.Empty;
-            dec = string.Empty;
-            entero = string.Empty;
-            flag = string.Empty;
+            // ********** Declara variables de tipo cadena **********
+            string entero = string.Empty;
+            string dec = string.Empty;
+            string palabras = string.Empty;
+            string flag = "N";
 
-            // ********Declara variables de tipo entero***********
-            int num, x, y;
-            flag = "N";
+            // ********** Declara variables de tipo entero **********
+            int num = new int();
+            int y = new int();
 
-            // **********Número Negativo***********
+            // ********** Número negativo **********
             if (numero.Substring(1, 1) == "-")
             {
                 numero = numero.Substring(2, numero.ToString().Length - 1).ToString();
                 palabras = "menos ";
             }
 
-            // **********Si tiene ceros a la izquierda*************
-            for (x = 0; x <= numero.ToString().Length - 1; x++)
-            {
-                if (numero.Substring(0, 1) == "0")
-                {
-                    numero = numero.Substring(2, numero.ToString().Length - 1).ToString().Trim();
-                    if (numero.ToString().Trim().Length == 0)
-                        palabras = string.Empty;
-                }
-                else
-                    break;
-            }
-
-            // *********Dividir parte entera y decimal************
+            // ********** Dividir parte entera y decimal **********
             for (y = 0; y <= numero.Length - 1; y++)
             {
                 if (numero.Substring(y, 1) == ".")
@@ -58,10 +44,7 @@ namespace SisComWeb.Utility
                     dec = dec + numero.Substring(y, 1);
             }
 
-            if (dec.Length == 1)
-                dec = dec + "0";
-
-            // **********proceso de conversión***********
+            // ********** Proceso de conversión **********
             flag = "N";
 
             if (decimal.Parse(numero) <= 999999999)
@@ -75,12 +58,12 @@ namespace SisComWeb.Utility
                         case 6:
                         case 9:
                             {
-                                // **********Asigna las palabras para las centenas***********
+                                // ********** Asigna las palabras para las centenas **********
                                 switch (entero.Substring(num - 1, 1))
                                 {
                                     case "1":
                                         {
-                                            if (entero.Substring((num - 1) + 1, 1) == "0" & entero.Substring((num - 1) + 2, 1) == "0")
+                                            if (entero.Substring((num - 1) + 1, 1) == "0" && entero.Substring((num - 1) + 2, 1) == "0")
                                                 palabras = palabras + "cien ";
                                             else
                                                 palabras = palabras + "ciento ";
@@ -142,7 +125,7 @@ namespace SisComWeb.Utility
                         case 5:
                         case 8:
                             {
-                                // *********Asigna las palabras para las decenas************
+                                // ********** Asigna las palabras para las decenas **********
                                 switch (entero.Substring(num - 1, 1))
                                 {
                                     case "1":
@@ -321,9 +304,10 @@ namespace SisComWeb.Utility
                         case 4:
                         case 7:
                             {
-                                // *********Asigna las palabras para las unidades*********
+                                // ********** Asigna las palabras para las unidades *********
                                 switch (entero.Substring(num - 1, 1))
                                 {
+
                                     case "1":
                                         {
                                             if (flag == "N")
@@ -398,28 +382,36 @@ namespace SisComWeb.Utility
                             }
                     }
 
-                    // ***********Asigna la palabra mil***************
+                    // ********** Asigna la palabra mil **********
                     if (y == 4)
                     {
-                        if (entero.Substring(6, 1) != "0" | entero.Substring(5, 1) != "0" | entero.Substring(4, 1) != "0" | (entero.Substring(6, 1) == "0" & entero.Substring(5, 1) == "0" & entero.Substring(4, 1) == "0" & entero.Length <= 6))
-                            palabras = palabras + "mil ";
+                        if (entero.Length == 4)
+                        {
+                            if (entero.Substring(0, 1) == "1")
+                                palabras = "mil ";
+                            else
+                                palabras = palabras + "mil ";
+                        }
                     }
 
-                    // **********Asigna la palabra millón*************
+                    // ********** Asigna la palabra millón **********
                     if (y == 7)
                     {
-                        if (entero.Length == 7 & entero.Substring(0, 1) == "1")
-                            palabras = palabras + "millón ";
-                        else
-                            palabras = palabras + "millones ";
+                        if (entero.Length == 7)
+                        {
+                            if (entero.Substring(0, 1) == "1")
+                                palabras = palabras + "millón ";
+                            else
+                                palabras = palabras + "millones ";
+                        }
                     }
                 }
 
-                // **********Une la parte entera y la parte decimal*************
-                if (dec != string.Empty && int.Parse(dec) > 0)
-                    Valor = palabras + "con " + Convert.ToString(Convert.ToInt32(dec)) + "/100 soles";
+                // ********** Une la parte entera y la parte decimal *************
+                if (string.IsNullOrEmpty(palabras))
+                    Valor = "cero con " + dec + "/100 soles";
                 else
-                    Valor = palabras + "con 00/100 soles";
+                    Valor = palabras + "con " + dec + "/100 soles";
             }
             else
                 Valor = string.Empty;
