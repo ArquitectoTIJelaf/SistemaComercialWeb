@@ -138,10 +138,19 @@ Vue.filter('year', function (value) {
     return '' + y;
 });
 
-Vue.filter('tipos', function (value) {
+Vue.filter('sexo', function (value) {
     if (!value) return '';
     value = value.toString();
-    return value == "A" ? 'Accesorio' : 'Vestido';
+    return value === "M" ? 'MASCULINO' : value === "F" ? 'FEMENINO' : '';
+});
+
+Vue.filter('diaSemana', function (value) {
+    if (!value) return '';
+    value = value.toString();
+    var dias = ["DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"];
+    var data = value.split('/');
+    var dt = new Date(data[1] + ' ' + data[0] + ', ' + data[2] + ' 12:00:00');
+    return dias[dt.getUTCDay()];
 });
 
 Vue.filter('estados', function (value) {

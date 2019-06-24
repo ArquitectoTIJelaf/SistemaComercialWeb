@@ -51,7 +51,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
                 db.AddParameter("@Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -75,7 +75,7 @@ namespace SisComWeb.Repository
                 db.ProcedureName = "scwsp_ValidarLiquidacionVentas";
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, CodiUsuario);
                 db.AddParameter("@Fecha", DbType.String, ParameterDirection.Input, Fecha);
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -104,7 +104,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarEmpresaEmisor";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -160,7 +160,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscaBeneficiariosPases";
                 db.AddParameter("@Codi_Socio", DbType.String, ParameterDirection.Input, CodiSocio);
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -418,6 +418,88 @@ namespace SisComWeb.Repository
             }
 
             return valor;
+        }
+
+        public static BuscaEntity ConsultaF9Elec(int Serie, int Numero, string Tipo, int CodEmpresa)
+        {
+            var entidad = new BuscaEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_VentaConsultaF9Elec";
+                db.AddParameter("@serie", DbType.Int32, ParameterDirection.Input, Serie);
+                db.AddParameter("@numero", DbType.Int32, ParameterDirection.Input, Numero);      
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@empresa", DbType.Int32, ParameterDirection.Input, CodEmpresa);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.FechaProgramacion = Reader.GetDateStringValue(drlector, "Fech_programacion");
+                        entidad.Tipo = Reader.GetStringValue(drlector, "tipo");
+                        entidad.SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO");
+                        entidad.NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO");
+                        entidad.CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA");
+                        entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL");
+                        entidad.CodiProgramacion = Reader.GetIntValue(drlector, "CODI_PROGRAMACION");
+                        entidad.CodiSubruta = Reader.GetIntValue(drlector, "CODI_SUBRUTA");
+                        entidad.CodiCliente = Reader.GetIntValue(drlector, "CODI_Cliente");
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE");
+                        entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA");
+                        entidad.NumeAsiento = Reader.GetByteValue(drlector, "NUME_ASIENTO");
+                        entidad.FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA");
+                        entidad.FechaVenta = Reader.GetDateStringValue(drlector, "FECH_VENTA");
+                        entidad.RecoVenta = Reader.GetStringValue(drlector, "RECO_VENTA");
+                        entidad.ClavUsuario = Reader.GetIntValue(drlector, "CLAV_USUARIO");
+                        entidad.IndiAnulado = Reader.GetStringValue(drlector, "INDI_ANULADO");
+                        entidad.FechaAnulacion = Reader.GetDateStringValue(drlector, "FECH_ANULACION");
+                        entidad.Dni = Reader.GetStringValue(drlector, "DNI");
+                        entidad.Edad = Reader.GetByteValue(drlector, "EDAD");
+                        entidad.Telefono = Reader.GetStringValue(drlector, "TELEFONO");
+                        entidad.Nombre = Reader.GetStringValue(drlector, "NOMBRE");
+                        entidad.CodiEsca = Reader.GetIntValue(drlector, "CODI_ESCA");
+                        entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Punto_Venta");
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
+                        entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "cod_origen");
+                        entidad.PerAutoriza = Reader.GetIntValue(drlector, "per_autoriza");
+                        entidad.ClavUsuario1 = Reader.GetIntValue(drlector, "clav_usuario1");
+                        entidad.EstadoAsiento = Reader.GetStringValue(drlector, "ESTADO_ASIENTO");
+                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO");
+                        entidad.TipoPago = Reader.GetStringValue(drlector, "tipo_pago");
+                        entidad.CodiSucursalVenta = Reader.GetIntValue(drlector, "SUC_VENTA");
+                        entidad.IdVenta = Reader.GetIntValue(drlector, "id_venta");
+                        entidad.ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto");
+                        entidad.IdVentaWeb = Reader.GetIntValue(drlector, "Id_VentaWeb");
+                        entidad.ImpManifiesto = Reader.GetDecimalValue(drlector, "imp_manifiesto");
+                        entidad.TipoVenta = Reader.GetStringValue(drlector, "TIPO_V");
+                        entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
+                        entidad.HoraProgramacion = Reader.GetStringValue(drlector, "Hora_programacion");
+                        entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
+                        entidad.Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad");
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
+        public static void ActualizaF9Elec(int IdVenta, string Dni, string Nombre, string Ruc, int Edad, string Telefono, string RecoVenta, string TipoDoc, string Nacionalidad)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Update_F9_2";
+                db.AddParameter("@Id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@dni", DbType.String, ParameterDirection.Input, Dni);
+                db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, Nombre);
+                db.AddParameter("@Nit_Cliente", DbType.String, ParameterDirection.Input, Ruc);
+                db.AddParameter("@EDAD", DbType.Int16, ParameterDirection.Input, Edad);
+                db.AddParameter("@TELEFONO", DbType.String, ParameterDirection.Input, Telefono);
+                db.AddParameter("@RECO_VENTA", DbType.String, ParameterDirection.Input, RecoVenta);
+                db.AddParameter("@tipo_doc", DbType.String, ParameterDirection.Input, TipoDoc);
+                db.AddParameter("@Nacionidad", DbType.String, ParameterDirection.Input, Nacionalidad);
+                db.Execute();
+            }
         }
 
         #endregion

@@ -708,5 +708,34 @@ namespace SisComWeb.Services
         }
 
         #endregion
+
+        #region BUSCA
+
+        public Response<BuscaEntity> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa)
+        {
+            try
+            {
+                return VentaLogic.BuscaBoletoF9(Serie, Numero, Tipo, CodEmpresa);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<BuscaEntity>(false, null, Message.MsgExcBuscaBoletoF9, false);
+            }
+        }
+
+        public Response<bool> ActualizaBoletoF9(BoletoF9Request request)
+        {
+            try
+            {
+                return VentaLogic.ActualizaBoletoF9(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
+            }
+        }
+        #endregion
     }
 }

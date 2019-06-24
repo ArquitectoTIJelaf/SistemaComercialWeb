@@ -30,6 +30,8 @@
 @Html.Partial("_BuscaClientePasaje")
 @Html.Partial("_DescuentoControl")
 
+@Html.Partial("_ModificacionBoleto")
+
 @section styles{
     <style type="text/css">
 
@@ -608,7 +610,7 @@
                                     var auxPrecioNormal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || 0);
                                     appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecioNormal.toFixed(2);
                                 }
-                                    
+
                                 document.getElementById('txtPrecio').focus();
                             }
                             break;
@@ -663,7 +665,7 @@
                 });
 
                 window.removeEventListener('keyup', appVueDescuentoControl.esc);
-            });
+            });            
 
             if ($('.dpFiltro').length) {
                 $('.dpFiltro').datetimepicker({
@@ -776,6 +778,8 @@
             label: 'TODOS'
         };
 
+        var rutas = [];
+
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
 
@@ -802,6 +806,25 @@
             }
             else
                 return '';
+        });
+
+        Vue.filter('tipoDocumento', function (value) {
+            if (!value) return '';
+            value = parseInt(value);
+            var response = '';
+            switch (value) {
+                case 1: response = 'DNI'; break;
+                case 4: response = 'PASAPORTE'; break;
+                case 7: response = 'C.EXTRANJERIA'; break;
+                default: response = ''; break;
+            }
+            return response;
+        });
+
+        Vue.filter('rutas', function (value) {
+            if (!value) return '';
+            value = value.toString();
+            return _.filter(rutas, function (o) { return o.id == value; })[0].label;
         });
 
         function jsValidarNumeroConDosDecimales(e) {
@@ -1045,6 +1068,24 @@
                 },
                 recorridoSectionVentas: function () {
                     appVueVenta.recorridoSectionVentas();
+                },
+                getCurrentCorrelativo: function () {
+                    var correlativo = '';
+                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta === '') {
+                        correlativo = appVueVenta.Correlativo;
+                    } else {
+                        var value = appVueVenta.list.ventas[appVueVenta.indexVenta].NroVenta;
+                        var auxCeroPorSigno = value.substring(1, 2);
+                        if (auxCeroPorSigno === '-') {
+                            auxCeroPorSigno = '0';
+                            value = value.substring(0, 1) + auxCeroPorSigno + value.substring(2);
+                        }
+                        // -------------------------
+                        var auxValue = value.substring(5);
+                        auxValue = auxValue.padStart(8, '0');
+                        correlativo =  value.substring(0, 5) + auxValue;
+                    }
+                    return correlativo;
                 }
             };
         })();
@@ -1096,6 +1137,9 @@
                                 _this.list.destinosBus.unshift(selectAll);
                                 _this.list.oficinas_backup = _.cloneDeep(res.data.Valor);
                                 _this.list.oficinas_backup.unshift(selectAll);
+
+                                rutas = _.cloneDeep(res.data.Valor);
+
                                 _this.$nextTick(() => {
                                     _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === String(Usuario.CodiSucursal));
                                 });
@@ -2304,7 +2348,7 @@
                     }
 
                     for (var objAsiento of this.list.ventas) {
-                        
+
                         if (objAsiento.NroAsiento !== _NroAsiento) {
                             if (objAsiento.CodiTipoDoc.id === _TipoDocumento && objAsiento.Documento === _NumeroDocumento) {
                                 APP.msg.warning('Documento usado en el asiento ' + objAsiento.NroAsiento + ', ingrese otro.');
@@ -3916,7 +3960,7 @@
                     tmpObjAsiento.OrigenBoleto = _asientoSel.NomOrigen;
                     tmpObjAsiento.DestinoBoleto = _asientoSel.NomDestino;
                     tmpObjAsiento.NroAsiento = String(_asientoSel.NumeAsiento).padStart(2, '0');
-                            
+
                             await APP.msg.infoBoletoPromocionadoConDescuento(''
                                 ,'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe: '
                                 , tmpObjAsiento);
@@ -4889,7 +4933,7 @@
                         if (auxValidate === true) APP.msg.warning('Seleccione un tipo de pago.');
 
                         return auxResponse;
-                    }   
+                    }
                     else if (this.tipoPago === '01') {
                         if (!this.importePagado) {
                             document.getElementById('txtImportePagadoC').focus();
@@ -4901,7 +4945,7 @@
                             document.getElementById('txtImportePagadoC').focus();
 
                             return auxResponse;
-                        }   
+                        }
                     }
                     else if (this.tipoPago === '02') {
                         if (!this.tarjeta) {
@@ -4962,7 +5006,7 @@
                             if (auxValidate === true) APP.msg.warning('Ingrese número de tarjeta.');
 
                             return auxResponse;
-                        }  
+                        }
                         else if (this.numeroTarjeta.length !== 19) {
                             document.getElementById('txtNumeroTP').focus();
 
@@ -5286,7 +5330,7 @@
                         }
                         else
                             auxResponse = true;
-                        
+
                         document.getElementById('btnRegistrarAconpaniante').focus();
                     }
 
@@ -6315,6 +6359,160 @@
 
                     document.getElementById('txtImporteDescDC').focus();
                 }
+            }
+        });
+
+        var appVueModificacionBoleto = new Vue({
+            el: "#appVueModificacionBoleto",
+            data: {
+                filtro: {
+                    idVenta	: 0,
+                    dni: '',
+                    nombre: '',		
+                    ruc: '',	
+                    edad: '',		
+                    telefono: '',	
+                    recoger: '',	
+                    tipoDoc: '',	
+                    nacionidad: ''
+                },
+                item: {
+                    codEmpresa: 0,
+                    empresa: '',
+                    tipo: 'M',
+                    serie: '',
+                    numero: '',
+                    destinoBus: '',
+                    turno: '',
+                    ruta: '',
+                    dia: '',
+                    fechaViaje: '',
+                    fechaVenta: '',
+                    correlativoSinTipo: '',
+                    sexo: '',
+                    razSocial: '',
+                    asiento: '',
+                    precio: '',
+                    observacion: '',
+                    nombre: '',
+                    apepat: '',
+                    apemat: ''
+                },
+                showData: false
+            },
+            mounted: function () {
+                let _this = this;
+                window.addEventListener('keydown', _this.configEventKeyF9);
+                $('#appVueModificacionBoleto').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+                    _this.$refs.refMBNumero.focus();
+                });
+            },
+            methods: {
+                show: function () {
+                    this.limpiarModBoleto();
+                    $('#appVueModificacionBoleto').modal('show');
+                    this.setData();
+                },
+                setData: function () {
+                    let _this = this;
+                    var correlativo = appController.getCurrentCorrelativo();
+                    _this.item.tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
+                    _this.item.serie = correlativo.substring(1, 4);
+                    _this.item.numero = correlativo.substring(5, 13);
+                    _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: Confirmar
+                    _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: Confirmar
+                },
+                configEventKeyF9: function (event) {
+                    if (event.keyCode === 120) {
+                        if (appVueVenta.showVentas) {
+                            this.show();
+                        }                        
+                    }
+                },
+                searchData: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/buscaBoletoF9' + APP.util.getQueryParamByObject({
+                        Serie: _this.item.serie,
+                        Numero: _this.item.numero,
+                        Tipo: _this.item.tipo,
+                        CodEmpresa: _this.item.codEmpresa
+                    }))
+                        .then(res => {
+                            debugger;
+                            _this.filtro.idVenta = res.data.Valor.IdVenta;
+                            _this.filtro.dni = res.data.Valor.Dni;
+                            _this.filtro.nombre = res.data.Valor.Nombre;
+                            _this.filtro.ruc = res.data.Valor.RucCliente;
+                            _this.filtro.edad = res.data.Valor.Edad;
+                            _this.filtro.telefono = res.data.Valor.Telefono;
+                            _this.filtro.recoger = res.data.Valor.RecoVenta;
+                            _this.filtro.tipoDoc = res.data.Valor.TipoDocumento;
+                            _this.filtro.nacionidad = res.data.Valor.Nacionalidad;
+                            _this.item.codEmpresa = res.data.Valor.CodiEmpresa;
+                            _this.item.destinoBus = res.data.Valor.CodiRuta;
+                            _this.item.turno = res.data.Valor.HoraProgramacion;
+                            _this.item.ruta = res.data.Valor.CodiSubruta;
+                            _this.item.dia = res.data.Valor.FechaProgramacion;
+                            _this.item.fechaViaje = res.data.Valor.FechaProgramacion;
+                            _this.item.fechaVenta = res.data.Valor.FechaVenta;
+                            _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
+                            _this.item.sexo = res.data.Valor.Sexo;
+                            _this.item.razSocial = res.data.Valor.RazonSocial;
+                            _this.item.asiento = res.data.Valor.NumeAsiento;
+                            _this.item.precio = res.data.Valor.PrecioVenta;
+                            //_this.item.observacion = res.data.Valor.Observacion;
+                            _this.item.nombre = res.data.Valor.SplitNombre[0];
+                            _this.item.apepat = res.data.Valor.SplitNombre[1];
+                            _this.item.apemat = res.data.Valor.SplitNombre[2];
+                            
+                            _this.showData = true;
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                    _this.$nextTick(() => {
+                        _this.$refs.refMBRecoger.focus();
+                    });
+                },
+                cancelarModBoleto: function () {
+                    $('#appVueModificacionBoleto').modal('hide');
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();                        
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueModificacionBoleto').modal('hide');
+                },
+                limpiarModBoleto: function () {
+                    let _this = this;
+                    _this.showData = false;
+                },
+                saveModBoleto: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
+                        IdVenta: _this.filtro.idVenta,
+                        Dni: _this.filtro.dni,
+                        Nombre: _this.filtro.nombre,
+                        Ruc: _this.filtro.ruc,
+                        Edad: _this.filtro.edad,
+                        Telefono: _this.filtro.telefono,
+                        RecoVenta: _this.filtro.recoger,
+                        TipoDoc: _this.filtro.tipoDoc,
+                        Nacionalidad: _this.filtro.nacionidad
+                    }))
+                        .then(res => {
+                            if (res.data.Valor) {
+                                APP.msg.info(res.data.Mensaje);
+                                _this.close();
+                            } else APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                }
+            },
+            computed: {},
+            watch: {
             }
         });
 

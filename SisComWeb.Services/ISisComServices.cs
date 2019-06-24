@@ -259,5 +259,16 @@ namespace SisComWeb.Services
         Response<List<ImpresionEntity>> ConvertirVentaToBase64(VentaRealizadaRequest request);
 
         #endregion
+
+        #region BUSCA
+        
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BuscaBoletoF9", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<BuscaEntity> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ActualizaBoletoF9", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ActualizaBoletoF9(BoletoF9Request request);
+        #endregion
     }
 }

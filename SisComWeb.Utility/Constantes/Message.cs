@@ -245,5 +245,13 @@
         public const string MsgErrorGrabarAuditoriaProg = "Error: GrabarAuditoriaProg.";
         public const string MsgErrorActualizarVentaManifiesto = "Error: ActualizarVentaManifiesto.";
         public const string MsgExcActualizarProgramacionManifiesto = "Excepción: ActualizarProgramacionManifiesto.";
+
+        //Buscar Boleto F9
+        public const string MsgCorrectoBuscaBoletoF9 = "Correcto: BuscaBoletoF9.";
+        public const string MsgExcBuscaBoletoF9 = "Excepción: BuscaBoletoF9.";
+        public const string MsgErrorBuscaBoletoF9 = "El número de boleto no existe.";
+
+        public const string MsgCorrectoActualizaBoletoF9 = "Correcto: Se actualizó el boleto correctamente.";
+        public const string MsgExActualizaBoletoF9 = "Excepción: Error al actualizar boleto.";
     }
 }
