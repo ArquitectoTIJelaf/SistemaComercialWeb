@@ -74,6 +74,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListaAreas/{idContrato}", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaAreas(string idContrato);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveAnuRei", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuariosClaveAnuRei();
+
         #endregion
 
         #region LOGIN

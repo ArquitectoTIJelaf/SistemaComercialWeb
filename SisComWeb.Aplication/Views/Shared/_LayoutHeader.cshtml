@@ -1,4 +1,5 @@
-﻿@using SisComWeb.Aplication.Helpers
+﻿@using System.Globalization
+@using SisComWeb.Aplication.Helpers
 @{
     var usuario = DataSession.UsuarioLogueado;
 }
@@ -151,7 +152,7 @@
         </ul>
         <div class="top-left-part" style="width: 100% !important; height: 20px; background-color: #0e2843; font-size: 11px; ">
             <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
-                TERMINAL @usuario.Terminal.ToString("D3") / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToShortDateString()
+                TERMINAL @usuario.Terminal.ToString("D3") / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToString("DD/MM//YYYY", CultureInfo.InvariantCulture)
             </p>
         </div>
     </div>

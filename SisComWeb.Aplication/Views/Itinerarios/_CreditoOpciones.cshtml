@@ -12,7 +12,7 @@
                             <label class="col-md-2 control-label label-sm">Sección:</label>
                             <div class="col-md-10">
                                 <v-select v-model="seccion"
-                                          :id="'cboSeccion'"
+                                          id="cboSeccion"
                                           label="label"
                                           :options="list.secciones"
                                           :placeholder="'SECCIÓN'"
@@ -29,7 +29,7 @@
                             <label class="col-md-2 control-label label-sm">Área:</label>
                             <div class="col-md-10">
                                 <v-select v-model="area"
-                                          :id="'cboArea'"
+                                          id="cboArea"
                                           label="label"
                                           :options="list.areas"
                                           :placeholder="'ÁREA'"
@@ -47,13 +47,13 @@
                                 <label class="col-md-2 control-label label-sm">Fecha cita:</label>
                                 <div class="col-md-10">
                                     <input v-model="fechaCita"
-                                           v-mask="'##/##/####'"
-                                           @@focus="$event.target.select()"
-                                           @@blur="blurFechaCita"
-                                           type="text"
                                            id="txtFechaCita"
                                            class="form-control input-sm dpFiltro"
                                            placeholder="FECHA CITA"
+                                           type="text"
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurFechaCita"
+                                           v-mask="'##/##/####'"
                                            autocomplete="off" />
                                 </div>
                             </div>
@@ -63,7 +63,7 @@
                                 <label class="col-md-2 control-label label-sm">Hospital:</label>
                                 <div class="col-md-10">
                                     <v-select v-model="hospital"
-                                              :id="'cboHospital'"
+                                              id="cboHospital"
                                               label="label"
                                               :options="list.hospitales"
                                               :placeholder="'HOSPITAL'"

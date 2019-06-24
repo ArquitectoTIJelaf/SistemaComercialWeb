@@ -302,6 +302,7 @@ APP.msg.errorWithoutTime = function (msg) {
 
 APP.msg.ShowSaveAfterSale = async function (_title, _message) {
     var auxBool = false;
+
     await swal.fire({
         title: _title || "Buen trabajo!",
         text: _message || "Hiciste clic en el botón!",
@@ -317,6 +318,7 @@ APP.msg.ShowSaveAfterSale = async function (_title, _message) {
 
 APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _bool = false;
+
     await swal({
         title: _title || "Mensaje del sistema",
         text: _message || "¿Desea Continuar con la operación?",
@@ -326,8 +328,12 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
         confirmButtonText: _textButtonConfirm || "Si",
         cancelButtonText: _textButtonCancel || "No",
         allowOutsideClick: false
-    }).then(res => { if (res.value) _bool = res.value; })
-        .catch(error => { APP.msg.error(error); });
+    }).then(res => {
+        if (res.value) _bool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
     return _bool;
 };
 
@@ -356,11 +362,11 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
                 Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
             }
         }
-    })
-        .then(res => { })
-        .catch(error => {
-            APP.msg.error(error);
-        });
+    }).then(res => {
+
+    }).catch(error => {
+        APP.msg.error(error);
+    });
 
     return _bool;
 };
@@ -372,11 +378,11 @@ APP.msg.confirmAperturaProgramacion = async function (_title, _message, _textBut
         resolve({
             'true':
                 'Solo para vender' + '<br />' +
-                '<p style="font-weight: 400; font-size: 12px; text-align: justify;" >' +
+                '<p style="font-weight: 400; font-size: 12px; text-align: justify; " >' +
                 'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con el mismo número de manifiesto.</p>',
             'false':
                 'General' + '<br />' +
-                '<p style="font-weight: 400; font-size: 12px; text-align: justify;" >' +
+                '<p style="font-weight: 400; font-size: 12px; text-align: justify; " >' +
                 'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con un nuevo número de manifiesto.</p>'
         });
     });
@@ -396,36 +402,127 @@ APP.msg.confirmAperturaProgramacion = async function (_title, _message, _textBut
         cancelButtonText: _textButtonCancel || "No",
         allowOutsideClick: false,
         width: '42em'
-    })
-        .then(res => {
-            _option = res.value;
-        })
-        .catch(error => {
-            APP.msg.error(error);
-        });
+    }).then(res => {
+        _option = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
 
     return _option;
 };
 
-APP.msg.infoBoletoPromocionadoConDescuento = async function (_title, _message, objAsiento, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+APP.msg.infoBoletoPromocionadoConDescuento = async function (_title, _message, _objAsiento) {
     var _bool = false;
+
     await swal({
         title: _title || "Mensaje del sistema",
         html:
-            _message + '<br />' +
-            'Nro. de Boleto     : ' + objAsiento.NroBoleto + '<br />' +
-            'Origen de Boleto   : ' + objAsiento.OrigenBoleto + '<br />' +
-            'Destino de Boleto  : ' + objAsiento.DestinoBoleto + '<br />' +
-            'Nro. de Asiento    : ' + objAsiento.NroAsiento
+            '<p style="font-weight: 300; font-size: 13px; text-align: justify; line-height: normal; " >' +
+            _message +
+            '</p>' +
+            '<table style="text-align: left; display: unset; ">' +
+            '<tr><td>Número de Boleto</td><td> : ' + _objAsiento.NroBoleto + '</td></tr>' +
+            '<tr><td>Origen de Boleto</td><td> : ' + _objAsiento.OrigenBoleto + '</td></tr>' +
+            '<tr><td>Destino de Boleto</td><td> : ' + _objAsiento.DestinoBoleto + '</td></tr>' +
+            '<tr><td>Número de Asiento</td><td> : ' + _objAsiento.NroAsiento + '</td></tr>' +
+            '</table>'
         ,
+        type: "info",
+        allowOutsideClick: false
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return _bool;
+};
+
+APP.msg.confirmClaveFechaActualCodiUsuario = async function (_title, _message, _codiUsuario, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _bool = false;
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        text: _message || "¿Desea Continuar con la operación?",
+        input: 'password',
+        inputValidator: (value) => {
+            return !value && '¡Ingrese clave!';
+        },
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: _colorOfButton || "#DD6B55",
         confirmButtonText: _textButtonConfirm || "Si",
         cancelButtonText: _textButtonCancel || "No",
-        allowOutsideClick: false
-    }).then(res => { if (res.value) _bool = res.value; })
-        .catch(error => { APP.msg.error(error); });
+        allowOutsideClick: false,
+        showLoaderOnConfirm: true,
+        preConfirm: async function (value) {
+            if (value === moment().format('DD') + moment().format('MM') + String(_codiUsuario))
+                _bool = true;
+            else {
+                Swal.showValidationMessage('Clave incorrecta.');
+            }
+        }
+    }).then(res => {
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return _bool;
+};
+
+APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _message, _listUsuariosClaveAnuRei, _objUsuario, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _bool = false;
+    debugger;
+    var auxDisabled = '';
+    if (_objUsuario.disabled)
+        auxDisabled = 'disabled="disabled"';
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        html:
+            '<p style="font-weight: 300; font-size: 13px; text-align: justify; line-height: normal; " >' +
+            _message +
+            '</p>' +
+            '<select id="cboUsuariosAnuRei" class="swal2-input"' + auxDisabled + '>' +
+            '<option value="' + _objUsuario.id + '">' + _objUsuario.id + ' - ' + _objUsuario.label + '</option>' +
+            `${_listUsuariosClaveAnuRei.map(usu => `<option value="${usu.id}">${usu.id} - ${usu.label}</option>`)} `+
+            '</select>'
+        ,
+        input: 'password',
+        inputPlaceholder: 'CLAVE',
+        inputValidator: (value) => {
+            return !value && '¡Ingrese clave!';
+        },
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: _colorOfButton || "#DD6B55",
+        confirmButtonText: _textButtonConfirm || "Si",
+        cancelButtonText: _textButtonCancel || "No",
+        allowOutsideClick: false,
+        showLoaderOnConfirm: true,
+        preConfirm: async function (value) {
+            debugger;
+            //var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
+            //if (resSendClaveAutorizacion && resSendClaveAutorizacion.Estado)
+            //    _bool = true;
+            //else {
+            //    Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
+            //}
+
+            //return new Promise(function (resolve) {
+            //    resolve([
+            //        $('#swal-input1').val(),
+            //        $('#swal-input2').val()
+            //    ])
+            //})
+        }
+    }).then(res => {
+
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
     return _bool;
 };
 

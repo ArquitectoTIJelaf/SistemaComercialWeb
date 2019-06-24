@@ -10,11 +10,11 @@
 
         public int Nivel { get; set; }
 
-        public double PrecioNormal { get; set; }
+        public decimal PrecioNormal { get; set; }
 
-        public double PrecioMinimo { get; set; }
+        public decimal PrecioMinimo { get; set; }
 
-        public double PrecioMaximo { get; set; }
+        public decimal PrecioMaximo { get; set; }
 
         public byte NumeAsiento { get; set; }
 
@@ -30,7 +30,7 @@
 
         public string Nacionalidad { get; set; }
 
-        public double PrecioVenta { get; set; }
+        public decimal PrecioVenta { get; set; }
 
         public string RecogeEn { get; set; }
 
@@ -98,7 +98,6 @@
 
         public short CodiSucursal { get; set; }
 
-
         public string[] SplitNombres
         {
             get
@@ -114,5 +113,13 @@
                 return tmpSplitNombres;
             }
         }
+
+        public short ClavUsuarioReintegro { get; set; }
+
+        public short SucVentaReintegro { get; set; }
+
+        public decimal PrecVentaReintegro { get; set; }
+
+        public string TipoPago { get; set; }
     }
 }

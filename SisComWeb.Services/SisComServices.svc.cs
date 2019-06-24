@@ -210,6 +210,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaUsuariosClaveAnuRei()
+        {
+            try
+            {
+                return BaseLogic.ListaUsuariosClaveAnuRei();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN

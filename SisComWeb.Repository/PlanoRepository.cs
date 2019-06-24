@@ -57,8 +57,9 @@ namespace SisComWeb.Repository
                             HoraVenta = string.Empty,
                             EmbarqueDir = string.Empty,
                             EmbarqueHora = string.Empty,
+                            ImpManifiesto = string.Empty,
 
-                            ImpManifiesto = string.Empty
+                            TipoPago = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -108,9 +109,9 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.PrecioNormal = Reader.GetRealValue(drlector, "Precio_Nor");
-                        entidad.PrecioMinimo = Reader.GetRealValue(drlector, "Precio_Min");
-                        entidad.PrecioMaximo = Reader.GetRealValue(drlector, "Precio_Max");
+                        entidad.PrecioNormal = Reader.GetDecimalValue(drlector, "Precio_Nor");
+                        entidad.PrecioMinimo = Reader.GetDecimalValue(drlector, "Precio_Min");
+                        entidad.PrecioMaximo = Reader.GetDecimalValue(drlector, "Precio_Max");
                         break;
                     }
                 }
@@ -177,7 +178,7 @@ namespace SisComWeb.Repository
                             FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje"),
                             FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta"),
                             Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad") ?? string.Empty,
-                            PrecioVenta = Reader.GetRealValue(drlector, "Precio_Venta"),
+                            PrecioVenta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
                             RecogeEn = Reader.GetStringValue(drlector, "Recoge_En") ?? string.Empty,
                             Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")) ?? string.Empty,
                             FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty,
@@ -200,11 +201,12 @@ namespace SisComWeb.Repository
                             EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora") ?? string.Empty,
                             ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty,
                             CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL"),
-
                             Nombres = Reader.GetStringValue(drlector, "NombreCompleto") ?? string.Empty,
                             Edad = Reader.GetByteValue(drlector, "EDAD"),
                             Telefono = Reader.GetStringValue(drlector, "TELEFONO") ?? string.Empty,
                             Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty,
+
+                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago") ?? string.Empty,
 
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,
@@ -244,9 +246,9 @@ namespace SisComWeb.Repository
                             CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen"),
                             CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino"),
                             // Para evitar Null's
-                            TipoDocumento =  string.Empty,
-                            NumeroDocumento =  string.Empty,
-                            RucContacto =  string.Empty,
+                            TipoDocumento = string.Empty,
+                            NumeroDocumento = string.Empty,
+                            RucContacto = string.Empty,
                             FechaViaje = string.Empty,
                             FechaVenta = string.Empty,
                             Nacionalidad = string.Empty,
@@ -276,8 +278,9 @@ namespace SisComWeb.Repository
                             HoraVenta = string.Empty,
                             EmbarqueDir = string.Empty,
                             EmbarqueHora = string.Empty,
+                            ImpManifiesto = string.Empty,
 
-                            ImpManifiesto = string.Empty
+                            TipoPago = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -330,6 +333,32 @@ namespace SisComWeb.Repository
             }
 
             return valor;
+        }
+
+        public static ReintegroEntity ConsultarReintegro(int serie, int nume, int emp, string tipo)
+        {
+            var entidad = new ReintegroEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_ele";
+                db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, serie);
+                db.AddParameter("@nume", DbType.Int16, ParameterDirection.Input, nume);
+                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, emp);
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, tipo);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.ClavUsuario = Reader.GetSmallIntValue(drlector, "clav_usuario");
+                        entidad.SucVenta = Reader.GetSmallIntValue(drlector, "suc_venta");
+                        entidad.PrecVenta = Reader.GetDecimalValue(drlector, "prec_venta");
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
         }
 
         #endregion

@@ -51,6 +51,7 @@
     <Compile Include="Objects\Entities\AcompanianteEntity.cs" />
     <Compile Include="Objects\Entities\BeneficiarioEntity.cs" />
     <Compile Include="Objects\Entities\EmpresaEntity.cs" />
+    <Compile Include="Objects\Entities\Reintegro.cs" />
     <Compile Include="Objects\Entities\TarjetaCreditoEntity.cs" />
     <Compile Include="Objects\Entities\ProgramacionEntity.cs" />
     <Compile Include="Objects\Entities\PlanoEntity.cs" />
@@ -85,7 +86,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\Others\Response.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SisComWeb.Utility\SisComWeb.Utility.csproj">
+      <Project>{88FA9491-735C-4A7F-AE8A-C26E679788CD}</Project>
+      <Name>SisComWeb.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

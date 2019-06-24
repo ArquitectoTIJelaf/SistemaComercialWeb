@@ -49,7 +49,7 @@ namespace SisComWeb.Business
 
                         // Obtiene 'PrecioAsiento'
                         var obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, entidad.Nivel.ToString());
-                        
+
                         // En caso de no encontrar resultado
                         if (obtenerPrecioAsiento.PrecioNormal == 0 && obtenerPrecioAsiento.PrecioMinimo == 0 && obtenerPrecioAsiento.PrecioMaximo == 0)
                         {
@@ -96,24 +96,24 @@ namespace SisComWeb.Business
                                                     item.Color = PlanoRepository.ObtenerColorDestino(request.CodiServicio, item.CodiDestino);
 
                                                 item.FlagVenta = "VI";
-                                                MatchPlano(entidad, item);
+                                                MatchPlano(entidad, item, request);
                                             }
                                             else
                                             {
                                                 if (short.Parse(entidad.OrdenOrigen) > short.Parse(item.OrdenOrigen)) {
                                                     item.FlagVenta = "VI";
-                                                    MatchPlano(entidad, item);
+                                                    MatchPlano(entidad, item, request);
                                                 }
                                             }
                                         }
                                     }
                                     else if (short.Parse(item.OrdenOrigen) == short.Parse(ordenOrigenPasajero))
                                     {
-                                        MatchPlano(entidad, item);
+                                        MatchPlano(entidad, item, request);
                                     }
                                     else
                                     {
-                                        MatchPlano(entidad, item);
+                                        MatchPlano(entidad, item, request);
                                     }
                                 }
                                 else if (short.Parse(ordenDestino) == short.Parse(ordenOrigenPasajero))
@@ -179,7 +179,7 @@ namespace SisComWeb.Business
             }
         }
 
-        public static void MatchPlano(PlanoEntity entidad, PlanoEntity item)
+        public static void MatchPlano(PlanoEntity entidad, PlanoEntity item, PlanoRequest request)
         {
             entidad.NumeAsiento = item.NumeAsiento;
             entidad.Nacionalidad = item.Nacionalidad;
@@ -218,13 +218,14 @@ namespace SisComWeb.Business
             entidad.EmbarqueHora = item.EmbarqueHora;
             entidad.ImpManifiesto = item.ImpManifiesto;
             entidad.CodiSucursal = item.CodiSucursal;
-
             entidad.TipoDocumento = item.TipoDocumento.TrimStart('0'); // Formato de la vista: Combo 'tiposDoc' = {"1", "4", "7"}
             entidad.NumeroDocumento = item.NumeroDocumento;
             entidad.Nombres = item.SplitNombres[0];
             entidad.ApellidoPaterno = item.SplitNombres[1];
             entidad.ApellidoMaterno = item.SplitNombres[2];
             entidad.Sexo = item.Sexo;
+
+            entidad.TipoPago = item.TipoPago;
 
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {
@@ -276,6 +277,16 @@ namespace SisComWeb.Business
                 entidad.ObjAcompaniante = PlanoRepository.BuscaAcompaniante(entidad.IdVenta);
             else
                 entidad.ObjAcompaniante = null;
+
+            // Consulta 'Reintegro'
+            if (!string.IsNullOrEmpty(entidad.Boleto))
+            {
+                var consultarReintegro = PlanoRepository.ConsultarReintegro(short.Parse(entidad.Boleto.Substring(0, 3)), short.Parse(entidad.Boleto.Substring(4)), int.Parse(request.CodiEmpresa.ToString()), entidad.TipoBoleto);
+                entidad.ClavUsuarioReintegro = consultarReintegro.ClavUsuario;
+                entidad.SucVentaReintegro = consultarReintegro.SucVenta;
+                entidad.PrecVentaReintegro = consultarReintegro.PrecVenta;
+            }
+            
         }
     }
 }

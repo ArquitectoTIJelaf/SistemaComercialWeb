@@ -419,6 +419,10 @@ namespace SisComWeb.Utility
             return Valor.ToUpper();
         }
 
+        public static string ConvertDecimalToStringWithTwoDecimals(decimal number) {
+            return number.ToString("F2", CultureInfo.InvariantCulture);
+        }
+
         public static string ConvertListToXml<T>(T lista, string nombreXmlRoot)
         {
             string cadenaXml = string.Empty;

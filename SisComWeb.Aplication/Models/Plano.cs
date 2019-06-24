@@ -49,8 +49,12 @@
         public string EmbarqueDir { get; set; }
         public string EmbarqueHora { get; set; }
         public string ImpManifiesto { get; set; }
-
         public short CodiSucursal { get; set; }
+        public short ClavUsuarioReintegro { get; set; }
+        public short SucVentaReintegro { get; set; }
+        public decimal PrecVentaReintegro { get; set; }
+
+        public string TipoPago { get; set; }
     }
 
     public class FiltroBloqueoAsiento
@@ -61,6 +65,6 @@
         public short CodiDestino { get; set; }
         public byte NumeAsiento { get; set; }
         public string FechaProgramacion { get; set; }
-        public double Precio { get; set; }
+        public decimal Precio { get; set; }
     }
 }

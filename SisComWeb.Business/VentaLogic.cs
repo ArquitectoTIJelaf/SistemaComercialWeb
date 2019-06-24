@@ -702,7 +702,7 @@ namespace SisComWeb.Business
                         DocTipo = TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
                         DocNumero = entidad.Dni,
                         PrecioCan = entidad.PrecioVenta,
-                        PrecioDes = DataUtility.MontoSolesALetras(entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture)),
+                        PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)),
                         NomServicio = entidad.NomServicio,
                         FechaViaje = entidad.FechaViaje,
                         EmbarqueDir = entidad.DirEmbarque,
@@ -1251,7 +1251,7 @@ namespace SisComWeb.Business
                         entidad.EmisionFecha = entidad.EmisionFecha;
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
                         entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
-                        entidad.PrecioDes = DataUtility.MontoSolesALetras(entidad.PrecioCan.ToString("0.##", CultureInfo.InvariantCulture));
+                        entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
                         entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
                         entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
@@ -1466,12 +1466,12 @@ namespace SisComWeb.Business
                 sb = sb.Replace("[FecEmision]", DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[HoraEmision]", DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
                 sb = sb.Replace("[TMoneda]", "PEN");
-                sb = sb.Replace("[ImporteTotalVenta]", entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture));
+                sb = sb.Replace("[ImporteTotalVenta]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
                 sb = sb.Replace("[EnviarEmail]", string.Empty);
                 sb = sb.Replace("[CorreoCliente]", string.Empty);
                 sb = sb.Replace("[TipoCambio]", string.Empty);
                 sb = sb.Replace("[TValorOperacionGravada]", "0.00");
-                sb = sb.Replace("[TValorOperacionInafecta]", entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture));
+                sb = sb.Replace("[TValorOperacionInafecta]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
                 sb = sb.Replace("[TValorOperacionExo]", "0.00");
                 sb = sb.Replace("[PorcIgv]", "0.00");
                 sb = sb.Replace("[SumIgvTotal]", "0.00");
@@ -1494,7 +1494,7 @@ namespace SisComWeb.Business
                 sb = sb.Replace("[FechConsumo]", "01/01/1900");
                 sb = sb.Replace("[TVentaGratuita]", "0.00");
                 sb = sb.Replace("[DescuentoGlobal]", "0.00");
-                sb = sb.Replace("[MontoLetras]", DataUtility.MontoSolesALetras(entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture)));
+                sb = sb.Replace("[MontoLetras]", DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)));
                 return sb.ToString();
             }
             catch (Exception ex)
@@ -1519,14 +1519,14 @@ namespace SisComWeb.Business
                 sb = sb.Replace("[UnidadMedida]", "ZZ");
                 sb = sb.Replace("[CantidadItem]", "1");
                 sb = sb.Replace("[Descripcion]", entidad.DescripcionProducto);
-                sb = sb.Replace("[ValorUnitario]", entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture));
-                sb = sb.Replace("[PrecioVenta]", entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture));
+                sb = sb.Replace("[ValorUnitario]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
+                sb = sb.Replace("[PrecioVenta]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
                 sb = sb.Replace("[CodAFIgvxItem]", "10");
                 sb = sb.Replace("[AFIgvxItem]", "0.00");
                 sb = sb.Replace("[CodAFIscxItem]", "02");
                 sb = sb.Replace("[AFIscxItem]", "0.00");
                 sb = sb.Replace("[AFOtroxItem]", "0.00");
-                sb = sb.Replace("[ValorVenta]", entidad.PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture));
+                sb = sb.Replace("[ValorVenta]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
                 sb = sb.Replace("[VRefGratuita]", "0.00");
                 sb = sb.Replace("[VDescuento]", "0.00");
 

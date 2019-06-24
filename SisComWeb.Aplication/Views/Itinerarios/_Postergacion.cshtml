@@ -12,12 +12,12 @@
                             <label class="col-md-2 control-label label-sm">Empresa:</label>
                             <div class="col-md-10">
                                 <v-select v-model="filtro.empresa"
+                                          id="cboEmpresaPos"
                                           @@keydown.13.native.prevent="$refs.refSeriePos.focus()"
                                           @@keypress.9.prevent="$refs.refSeriePos.focus()"
                                           :options="list.empresas"
                                           :placeholder="'EMPRESA'"
                                           :select-on-tab="true"
-                                          :id="'cboEmpresaPos'"
                                           ref="refEmpresaPos"
                                           label="label">
                                     <template slot="option" slot-scope="option">
@@ -31,28 +31,28 @@
                             <div class="col-md-3">
                                 <label class="control-label label-sm" for="txtSeriePos">Serie:</label>
                                 <input v-model="filtro.serie"
+                                       id="txtSeriePos"
+                                       class="form-control input-sm"
+                                       placeholder="0000"
+                                       ref="refSeriePos"
                                        @@keypress.13.prevent="recorrido"
                                        @@keydown.9.prevent="recorrido"
                                        @@focus="$event.target.select()"
                                        @@blur="blurSerie"
-                                       id="txtSeriePos"
-                                       ref="refSeriePos"
-                                       class="form-control input-sm"
-                                       placeholder="0000"
                                        v-mask="'N'.repeat(4)"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-6">
                                 <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
                                 <input v-model="filtro.documento"
+                                       id="txtNumeroPos"
+                                       class="form-control input-sm"
+                                       placeholder="0000000"
+                                       ref="refNumeroPos"
                                        @@keypress.13.prevent="recorrido"
                                        @@keydown.9.prevent="recorrido"
                                        @@focus="$event.target.select()"
                                        @@blur="blurNumero"
-                                       id="txtNumeroPos"
-                                       ref="refNumeroPos"
-                                       class="form-control input-sm"
-                                       placeholder="0000000"
                                        v-mask="'#'.repeat(7)"
                                        autocomplete="off" />
                             </div>

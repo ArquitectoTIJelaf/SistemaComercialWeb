@@ -13,6 +13,7 @@
     var claveProgramacion = Constant.CLAVE_PROGRAMACION;
     var claveAnularFechaPasada = Constant.CLAVE_ANULAR_BOLETOS_DE_FECHAS_PASADAS;
     var claveMoverVentaFueraDeHora = Constant.CLAVE_CLAVE_PARA_MOVER_VENTA_FUERA_DE_HORA;
+    var claveAnulacionTarjetaCredito = Constant.CLAVE_ANULACION_DE_TARJETA_DE_CREDITO;
 }
 
 @Html.Partial("_Filtros")
@@ -553,10 +554,14 @@
                 document.getElementById('btnCerrarVenta').focus();
             });
 
-            $('#appBoletosVendidos').on('hidden.bs.modal', function () {
-                appController.chargeTurnos();
+            $('#appBoletosVendidos').on('hidden.bs.modal', async function () {
+                await appController.chargeTurnos();
                 appVueTipoPago.processing = false;
-                appController.disabledAsientos(false);
+
+                // Convierte las ventas realizadas en documentos 'base64'
+                // para mandarlos a 'imprimirBoleto'
+                if (appBoletosVendidos.boletos && appBoletosVendidos.boletos.length > 0)
+                    appVueTipoPago.convertirVentaToBase64(appBoletosVendidos.boletos, TipoImprimir)
 
                 window.removeEventListener('keyup', appBoletosVendidos.esc);
             });
@@ -765,6 +770,7 @@
         var ClaveProgramacion = '@claveProgramacion';
         var ClaveAnularFechaPasada = '@claveAnularFechaPasada';
         var ClaveMoverVentaFueraDeHora = '@claveMoverVentaFueraDeHora';
+        var ClaveAnulacionTarjetaCredito = '@claveAnulacionTarjetaCredito';
 
         var IngresoManualPasajes = false;
         var nacionalidadPorDefault = 'PERUANA';
@@ -1022,8 +1028,7 @@
                     appVueDescuentoControl.show(_PrecioVenta);
                 },
                 getDescServicio: function () {
-                    //return appVueVenta.objTurno.DescServicio;
-                    return '1';
+                    return appVueVenta.objTurno.DescServicio;
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     return appVueVenta.validateAlgoritmoRuc(_Ruc);
@@ -1077,7 +1082,7 @@
                 $(".preloader").fadeIn();
                 this.getSucursales();
                 this.$nextTick(() => {
-                    $('#cboDestinoPas input[type=search]').focus();
+                    $('#cboDestinoBus input[type=search]').focus();
                     $(".preloader").fadeOut();
                 });
             },
@@ -1333,7 +1338,8 @@
                     ],
                     tempList: [],
                     panelControl: [],
-                    panelControlClave: []
+                    panelControlClave: [],
+                    usuariosClaveAnuRei: []
                 },
                 objPlano: {
                     CodiBus: '',
@@ -1536,6 +1542,7 @@
                         if (_this.showTextTurnos) {
                             animateScrollTop(800);
                             _this.$refs.refNroAsientoVenta.focus();
+                            appController.disabledAsientos(false);
                         }
                     });
                 },
@@ -2305,7 +2312,7 @@
                     }
 
                     for (var objAsiento of this.list.ventas) {
-                        
+
                         if (objAsiento.NroAsiento !== _NroAsiento) {
                             if (objAsiento.CodiTipoDoc.id === _TipoDocumento && objAsiento.Documento === _NumeroDocumento) {
                                 APP.msg.warning('Documento usado en el asiento ' + objAsiento.NroAsiento + ', ingrese otro.');
@@ -2335,7 +2342,7 @@
                         await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
-                        }), { timeout: 10000 })
+                        }), { timeout: 5000 })
                             .then(res => {
                                 if (res.data.Estado) {
                                     // Valida 'SetRuc'
@@ -2478,7 +2485,7 @@
                             if (!_this.list.ventas[_this.indexVenta].RazonSocial || _this.pickedBusVenta === '1') {
                                 await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
                                     rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                                }), { timeout: 10000 })
+                                }), { timeout: 5000 })
                                     .then(res => {
                                         if (res.data.Estado) {
 
@@ -2549,7 +2556,7 @@
 
                         APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
-                        }), { timeout: 10000 })
+                        }), { timeout: 5000 })
                             .then(res => {
                                 if (res.data.Estado) {
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.Nombres;
@@ -2583,7 +2590,7 @@
 
                             APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
                                 rucContacto: _this.list.ventas[_this.indexVenta].Ruc
-                            }), { timeout: 10000 })
+                            }), { timeout: 5000 })
                                 .then(res => {
                                     if (res.data.Estado) {
 
@@ -3209,7 +3216,6 @@
                     this.$refs.refPrecio.blur();
                 },
                 validateRangePrice: function (event) {
-                    debugger;
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || 0);
@@ -3231,7 +3237,7 @@
                                             APP.msg.warning('Ya se realizó un descuento.');
                                             document.getElementById('txtPrecio').focus();
                                         }
-                                            
+
                                     };
 
                                     this.eventTxtPrecio = '';
@@ -3665,88 +3671,83 @@
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
-                    //_this.disabledAsiento = true;
-
-                    //// Valida 'Manifiesto'
-                    //if (!IngresoManualPasajes) {
-
-                    //    // Valida y por dentro setea 'X_Estado'
-                    //    var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
-
-                    //    var resValidaManifiesto = await _this.validaManifiesto();
-                    //    if (!resValidaManifiesto) {
-                    //        // Seteo el valor original de 'X_Estado'
-                    //        _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                    //        return;
-                    //    }
-                    //    if (_this.objTurno.X_Estado) {
-                    //        APP.msg.warning('El manifiesto ya fue emitido.');
-                    //        // Seteo el valor original de 'X_Estado'
-                    //        _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                    //        return;
-                    //    }
-                    //}
-
-                    //var auxValidate = await _this.validaAnulacion(asientoSel);
-
-                    //_this.disabledAsiento = false;
-
-                    //if (!auxValidate)
-                    //    return;
-
-                    //return; // Eliminarlo
-
                     // En un caso específico, el SignalR limpia 'asientoSel', por eso:
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
 
-                    var auxBoletoCompleto = formatoBoletoCompleto(tmpAsientoSel.TipoBoleto, tmpAsientoSel.Boleto);
-                    if (await APP.msg.confirm('Anular Venta',
-                        'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será anulado, ¿Desea continuar?')) {
-                        APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
-                            IdVenta: tmpAsientoSel.IdVenta,
-                            Tipo: tmpAsientoSel.TipoBoleto,
-                            FlagVenta: tmpAsientoSel.FlagVenta,
-                            StAnulacion: _this.objTurno.StAnulacion,
-                            IngresoManualPasajes: IngresoManualPasajes
-                        }))
-                            .then(async function (res) {
-                                await appController.chargeTurnos();
+                    //_this.disabledAsiento = true;
 
-                                if (res.data.Estado) {
-                                    _this.$nextTick(() => {
-                                        if (res.data.EsCorrecto)
-                                            APP.msg.info(res.data.Mensaje);
-                                        else
-                                            APP.msg.warning(res.data.Mensaje);
-                                    });
+                    // Valida 'Manifiesto'
+                    if (!IngresoManualPasajes) {
 
-                                    // callSignalR_LiberarAsiento
-                                    callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, tmpAsientoSel.Tipo);
-                                }
-                                else {
-                                    _this.$nextTick(() => {
-                                        APP.msg.error(res.data.Mensaje);
-                                    });
-                                }
-                            })
-                            .catch(APP.rq.axios_handler_error_alert);
+                        // Valida y por dentro setea 'X_Estado'
+                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
+
+                        var resValidaManifiesto = await _this.validaManifiesto();
+                        if (!resValidaManifiesto) {
+                            // Seteo el valor original de 'X_Estado'
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+
+                            return;
+                        }
+                        if (_this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+                            // Seteo el valor original de 'X_Estado'
+                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+
+                            return;
+                        }
                     }
-                    else
-                        _this.limpiarVenta();
+
+                    //var auxValidate = await _this.validaAnulacion(tmpAsientoSel);
+
+                    //_this.disabledAsiento = false;
+
+                    if (!auxValidate)
+                        return;
+
+                    alert('El anular está en proceso.');
+                    return; // Eliminarlo
+
+                    APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
+                        IdVenta: tmpAsientoSel.IdVenta,
+                        Tipo: tmpAsientoSel.TipoBoleto,
+                        FlagVenta: tmpAsientoSel.FlagVenta,
+                        StAnulacion: _this.objTurno.StAnulacion,
+                        IngresoManualPasajes: IngresoManualPasajes
+                    }))
+                        .then(async function (res) {
+                            await appController.chargeTurnos();
+
+                            if (res.data.Estado) {
+                                _this.$nextTick(() => {
+                                    if (res.data.EsCorrecto)
+                                        APP.msg.info(res.data.Mensaje);
+                                    else
+                                        APP.msg.warning(res.data.Mensaje);
+                                });
+
+                                // callSignalR_LiberarAsiento
+                                callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, tmpAsientoSel.Tipo);
+                            }
+                            else {
+                                _this.$nextTick(() => {
+                                    APP.msg.error(res.data.Mensaje);
+                                });
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
-                validaAnulacion: async function (_asientoSel) {
+                validaAnulacion: async function (_tmpAsientoSel) {
                     var auxResponse = false;
                     var valPanelAnularFechaPasada = _.cloneDeep(appController.validatePanel('59')); // dd_an
                     var valPanelAnularOtroPVenta = appController.validatePanel('60'); // An_Venta
                     var valPanelAnular125 = appController.validatePanel('125'); // An_Venta_Suc
 
-                    var verificaNC = await this.verificaNC(_asientoSel.IdVenta);
+                    var verificaNC = await this.verificaNC(_tmpAsientoSel.IdVenta);
                     if (verificaNC != 0)
                         return auxResponse;
 
-                    if (!this.objTurno.StAnulacion && _asientoSel.FlagVenta != "AB") {
+                    if (!this.objTurno.StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
                         APP.msg.warning('Se ha superado la cantidad máxima de boletos para anular.');
                         return auxResponse;
                     }
@@ -3763,7 +3764,7 @@
 
                                     if (resConfirmWhitPassword) {
                                         valPanelAnularFechaPasada = '2';
-                                        var validaControlTiempo = await this.validaControlTiempo(_asientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
+                                        var validaControlTiempo = await this.validaControlTiempo(_tmpAsientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
                                         if (validaControlTiempo)
                                             return auxResponse = true;
                                         else
@@ -3782,10 +3783,10 @@
 
                         var resValidaManifiesto = await this.validaManifiesto();
                         if (!resValidaManifiesto)
-                            return;
+                            return auxResponse;
                     }
 
-                    var validaControlTiempo = await this.validaControlTiempo(_asientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
+                    var validaControlTiempo = await this.validaControlTiempo(_tmpAsientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
                     if (validaControlTiempo)
                         auxResponse = true;
 
@@ -3807,7 +3808,7 @@
 
                     return auxResponse;
                 },
-                validaControlTiempo: async function (_asientoSel, _valPanelAnularFechaPasada, _valPanelAnular125, _valPanelAnularOtroPVenta) {
+                validaControlTiempo: async function (_tmpAsientoSel, _valPanelAnularFechaPasada, _valPanelAnular125, _valPanelAnularOtroPVenta) {
                     var auxValidate = true;
 
                     if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isSameOrBefore(moment(), 'day')) {
@@ -3826,7 +3827,7 @@
                                             'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveMoverVentaFueraDeHora);
                                         if (!resConfirmWhitPassword) {
                                             APP.msg.warning('Usuario no autorizado.');
-                                            return auxResponse = false;
+                                            return auxValidate = false;
                                         }
                                     }
                                 }
@@ -3835,7 +3836,7 @@
                     }
 
                     if (Usuario.Nivel === 14 || Usuario.Nivel === 15 || Usuario.Nivel === 16)
-                        return auxResponse = false;
+                        return auxValidate = false;
 
                     //if (XCIERRE === '1') {
                     //    APP.msg.warning('La programación se encuentra cerrada.');
@@ -3843,24 +3844,24 @@
                     //}
 
                     if (!(Usuario.Nivel === 11 || Usuario.Nivel === 1 || Usuario.Nivel === 2 || Usuario.Nivel === 4 || Usuario.Nivel === 3 || Usuario.Nivel === 50)) {
-                        if (_asientoSel.ImpManifiesto === 'X') {
+                        if (_tmpAsientoSel.ImpManifiesto === 'X') {
                             APP.msg.warning('No se puede anular boleto porque tienen manifiesto impreso.');
-                            return auxResponse = false;
+                            return auxValidate = false;
                         }
                     }
 
                     debugger; // Comenzar a verificar.
 
-                    //var verificaLiquiComiDet = await this.verificaLiquiComiDet(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //var verificaLiquiComiDet = await this.verificaLiquiComiDet(_tmpAsientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
                     //if (verificaLiquiComiDet !== 0) {
                     //    APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
-                    //    return auxResponse = false;
+                    //    return auxValidate = false;
                     //}
 
-                    //var verificaLiquiComi = await this.verificaLiquiComi(this.filtro.CodiProgramacion, _asientoSel.CodiPuntoVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //var verificaLiquiComi = await this.verificaLiquiComi(this.filtro.CodiProgramacion, _tmpAsientoSel.CodiPuntoVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
                     //if (verificaLiquiComi === 1) {
                     //    APP.msg.warning('El boleto se encuentra liquidado.');
-                    //    return auxResponse = false;
+                    //    return auxValidate = false;
                     //}
 
                     //var tmpSwIndica = "0";
@@ -3870,11 +3871,11 @@
                     //    var consultaPanelNiveles = await this.consultaPanelNiveles("5", Usuario.Nivel); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
                     //    if (consultaPanelNiveles === '1') {
 
-                    //        if (moment(_asientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
+                    //        if (moment(_tmpAsientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
                     //            && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
 
-                    //            APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _asientoSel.FechaVenta + '.');
-                    //            return auxResponse = false;
+                    //            APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _tmpAsientoSel.FechaVenta + '.');
+                    //            return auxValidate = false;
                     //        }
 
                     //        tmpSwIndica = "1";
@@ -3882,21 +3883,21 @@
                     //    else {
                     //        tmpSwIndica = "0";
                     //        APP.msg.warning('Solo los administradores pueden anular comprobantes.');
-                    //        return auxResponse = false;
+                    //        return auxValidate = false;
                     //    }
                     //}
 
-                    //if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '1')
+                    //if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '1')
                     //    return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //else if (Usuario.CodiSucursal !== _asientoSel.CodiSucursal && _valPanelAnular125 === '0') { // Verificar que sean los mismos tipos de datos.
-                    //    APP.msg.warning('Solo puede anular este asiento la sucursal ' + this.list.origenesPas.find(x => x.id === _asientoSel.CodiSucursal).label + '.'); // Verificar tipos de valor.
-                    //    return auxResponse = false;
+                    //else if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '0') { // Verificar que sean los mismos tipos de datos.
+                    //    APP.msg.warning('Solo puede anular este asiento la sucursal ' + this.list.origenesPas.find(x => x.id === _tmpAsientoSel.CodiSucursal).label + '.'); // Verificar tipos de valor.
+                    //    return auxValidate = false;
                     //}
-                    //else if (Usuario.CodiPuntoVenta !== _asientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') { // Verificar que sean los mismos tipos de datos.
-                    //    APP.msg.warning('Solo puede anular este asiento el punto de venta ' + _asientoSel.NomPuntoVenta + '.');
-                    //    return auxResponse = false;
+                    //else if (Usuario.CodiPuntoVenta !== _tmpAsientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') { // Verificar que sean los mismos tipos de datos.
+                    //    APP.msg.warning('Solo puede anular este asiento el punto de venta ' + _tmpAsientoSel.NomPuntoVenta + '.');
+                    //    return auxValidate = false;
                     //}
-                    //else if (_asientoSel.CodiUsuario != Usuario.CodiUsuario) {
+                    //else if (_tmpAsientoSel.CodiUsuario != Usuario.CodiUsuario) {
 
                     //    if (tmpSwIndica === '0') {
                     //        if (appController.validatePanel('40') === '1')
@@ -3907,26 +3908,122 @@
                     //    else
                     //        return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
                     //}
-                    //else if (_asientoSel.FlagVenta === 'R') {
-                    //    await this.cancelarReserva(_asientoSel);
+                    //else if (_tmpAsientoSel.FlagVenta === 'R') {
+                    //    await this.cancelarReserva(_tmpAsientoSel);
                     //    /* auxValidate = false;*/ // No continuar, ya que ya se está cancelando la 'Reserva', verificar cuando se acabe el script.
                     //}
                     //else {
-                        //var consultaIdaVuelta = await this.consultaIdaVuelta(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                        //if (consultaIdaVuelta) {
-                    var tmpObjAsiento = {};
-                    var auxBoletoCompleto = formatoBoletoCompleto(_asientoSel.TipoBoleto, _asientoSel.Boleto);
-                    tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
-                    tmpObjAsiento.OrigenBoleto = _asientoSel.NomOrigen;
-                    tmpObjAsiento.DestinoBoleto = _asientoSel.NomDestino;
-                    tmpObjAsiento.NroAsiento = String(_asientoSel.NumeAsiento).padStart(2, '0');
-                            
-                            await APP.msg.infoBoletoPromocionadoConDescuento(''
-                                ,'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe: '
-                                , tmpObjAsiento);
+                    //    var consultaIdaVuelta = await this.consultaIdaVuelta(_tmpAsientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
+                    //    if (consultaIdaVuelta) {
+                            //var tmpObjAsiento = {};
+                            //var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
+                            //tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
+                            //tmpObjAsiento.OrigenBoleto = _tmpAsientoSel.NomOrigen;
+                            //tmpObjAsiento.DestinoBoleto = _tmpAsientoSel.NomDestino;
+                            //tmpObjAsiento.NroAsiento = String(_tmpAsientoSel.NumeAsiento).padStart(2, '0');
 
-                            return auxResponse = false;
+                            //await APP.msg.infoBoletoPromocionadoConDescuento(''
+                            //    , 'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe anular el boleto: '
+                            //    , tmpObjAsiento);
+
+                    //        return auxValidate = false;
+                    //    }
+
+                    //if (_tmpAsientoSel.FlagVenta === '5') {
+                    //        APP.msg.warning('El boleto está emitido como delegación, no se puede anular.');
+                    //        return auxValidate = false;
+                    //    }
+
+                    //if (_tmpAsientoSel.FlagVenta === '7') {
+                    //        if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
+                    //            APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
+                    //            return auxValidate = false;
+                    //        }
+                    //    }
+
+                    //if (_tmpAsientoSel.FlagVenta === 'Y') {
+                    //        if (appController.validatePanel('32') !== '1') {
+                    //            APP.msg.warning('No se puede anular un Vale remoto.');
+                    //            return auxValidate = false;
+                    //        }
+                    //    }
+
+                        //if (x === 2)
+                        //    return; // Goto100
+                        // x = 2;
+                    
+                    //if (_tmpAsientoSel.PrecVentaReintegro > 0) {
+                    //    if (await APP.msg.confirm('', 'El asiento cuenta con reintegro, para anular el reintegro debe presionar XX, caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar?')) {
+                    //        if (appController.validatePanel('231') === '1') {
+
+                    //            var resConfirmClaveFechaActualCodiUsuario = await APP.msg.confirmClaveFechaActualCodiUsuario('Anular boleto'
+                    //                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                    //                , Usuario.CodiUsuario);
+                    //            if (!resConfirmClaveFechaActualCodiUsuario) {
+                    //                return auxValidate = false;
+                    //            }
+                    //        }
+                    //    }
+                    //    else
+                    //        return auxValidate = false;
+                    //}
+
+                    var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
+
+                    if (await APP.msg.confirm('Anular Venta',
+                        'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será anulado, ¿Desea continuar?')) {
+
+                        //if (appController.validatePanel('221') === '1') {
+                        //    if (_tmpAsientoSel.TipoPago === '03') {
+
+                        //        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                        //            'Anular boleto (T.P. Crédito)'
+                        //            , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                        //            , ClaveAnulacionTarjetaCredito);
+                        //        if (!resConfirmWhitPassword)
+                        //            return auxValidate = false;
+                        //    }
                         //}
+
+                        if (_tmpAsientoSel.Boleto.substring(0, 3) === '000' && _tmpAsientoSel.FlagVenta === 'T') {
+                            APP.msg.warning('No se puede anular, primero confirme el asiento.');
+                            return auxValidate = false;
+                        }
+
+                        if (_tmpAsientoSel.FlagVenta !== 'R') {
+                            // ACCION = "03" -> Si no se llega a utilizar, eliminar.
+                            if (appController.validatePanel('234') === '1') {
+
+                                await this.listaUsuariosClaveAnuRei();
+
+                                var objUsuario = {
+                                    disabled: false,
+                                    id: "0",
+                                    label: "SELECCIONE"
+                                };
+
+                                if (appController.validatePanel('147') === '1') {
+                                    objUsuario.disabled = true;
+                                    objUsuario.id = Usuario.CodiUsuario;
+                                    objUsuario.label = Usuario.Nombre;
+                                }
+
+                                var resConfirmClaveAutorizacionWhitUsuarioAndObs = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
+                                    'Anular boleto'
+                                    , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado e ingrese la clave de autorización.'
+                                    , this.list.usuariosClaveAnuRei
+                                    , objUsuario);
+                                if (!resConfirmClaveAutorizacionWhitUsuarioAndObs)
+                                    return auxValidate = false;
+                            }
+                            //else {
+
+                            //}
+                        }
+                    }
+                    else
+                        this.limpiarVenta();
+
                     //}
 
                     return auxValidate;
@@ -3950,6 +4047,21 @@
 
                 // COLOCAR: FALTA SERVICIOS.
 
+                listaUsuariosClaveAnuRei: async function () {
+                    var _this = this;
+
+                    if (_this.list.usuariosClaveAnuRei && _this.list.usuariosClaveAnuRei.length > 0)
+                        return;
+
+                    await APP.rq.axios2.get(APP.base + '/base/get-usuario-claveAnuRei')
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.usuariosClaveAnuRei = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 configEventKeyF5: function (e) {
                     //if (e.keyCode === 116) {
                     //    if (this.showVentas) {
@@ -4741,7 +4853,6 @@
                             };
                             break;
                     }
-                    
 
                     var auxListaVentasRealizadas = [];
                     _this.processing = true;
@@ -4846,6 +4957,8 @@
                         return;
                     }
 
+                    appController.disabledAsientos(true);
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
                         Listado: listado,
                         FlagVenta: _this.pickedBusVenta
@@ -4853,9 +4966,6 @@
                         .then(async function (res) {
                             if (res.data.Estado) {
                                 appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, _this.pickedBusVenta, tmpCantidadVendida);
-
-                                // Guarda ventas realizadas
-                                auxListaVentasRealizadas = res.data.Valor.ListaVentasRealizadas;
 
                                 // callSignalR_ActualizarTurnoPlano
                                 callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
@@ -4871,11 +4981,6 @@
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
-
-                    // Convierte las ventas realizadas en documentos 'base64'
-                    // para mandarlos a 'imprimirBoleto'
-                    if (auxListaVentasRealizadas && auxListaVentasRealizadas.length > 0)
-                        _this.convertirVentaToBase64(auxListaVentasRealizadas, TipoImprimir);
                 },
                 limpiarCampos: function () {
                     this.tipoPago = '';
@@ -5613,7 +5718,6 @@
                     _this.boletos = _boletosVendidos;
                     _this.pickedBusVenta = _pickedBusVenta;
                     _this.tmpCantidadVendida = _tmpCantidadVendida;
-                    appController.disabledAsientos(true);
 
                     $('#appBoletosVendidos').modal('show');
                 },

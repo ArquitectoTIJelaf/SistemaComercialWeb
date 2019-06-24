@@ -26,13 +26,13 @@
             </div>
             <div class="separate-in-form">
                 <v-select v-model="codigoUsuario"
+                          id="txtUsuario"
+                          label="label"
                           :options="list.usuarios"
                           :placeholder="'--- Seleccione usuario ---'"
                           :filterable="false"
                           @@search="getUsuarios"
                           :select-on-tab="true"
-                          :id="'txtUsuario'"
-                          label="label"
                           ref="usuario">
                     <template slot="option" slot-scope="option">
                         <div>{{ option.id }} - {{ option.label }}</div>
@@ -43,7 +43,7 @@
             <div v-show="filtro.Codigo && filtro.Codigo === '@JLMrootCode'">
                 <div class="separate-in-form">
                     <v-select v-model="filtro.Sucursal"
-                              :id="'cboSucursal'"
+                              id="cboSucursal"
                               label="label"
                               :get-option-label="getLabel"
                               :options="list.sucursales"
@@ -54,7 +54,7 @@
                 </div>
                 <div class="separate-in-form">
                     <v-select v-model="filtro.PuntoVenta"
-                              :id="'cboPuntoVenta'"
+                              id="cboPuntoVenta"
                               label="label"
                               :get-option-label="getLabel"
                               :options="list.puntosventa"
@@ -66,12 +66,12 @@
             </div>
             <div class="separate-in-form">
                 <input id="txtContrasena"
-                       v-model="filtro.Clave"
-                       @@keypress.13="recorrido"
                        type="password"
                        name="txtClave"
                        class="form-control input-sm"
                        placeholder="Password"
+                       v-model="filtro.Clave"
+                       @@keypress.13="recorrido"
                        autocomplete="off" />
             </div>
             <div style="padding-top: 30px !important; ">

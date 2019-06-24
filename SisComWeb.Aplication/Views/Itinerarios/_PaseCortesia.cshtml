@@ -12,7 +12,7 @@
                             <label class="col-md-2 control-label label-sm">Gerente:</label>
                             <div class="col-md-10">
                                 <v-select v-model="gerente"
-                                          :id="'cboGerentePC'"
+                                          id="cboGerentePC"
                                           label="label"
                                           :options="list.gerentes"
                                           :placeholder="'GERENTE'"
@@ -29,11 +29,11 @@
                             <label class="col-md-2 control-label label-sm">Solicitante:</label>
                             <div class="col-md-10">
                                 <v-select v-model="solicitante"
+                                          id="cboSolicitantePC"
+                                          label="label"
                                           :options="list.solicitantes"
                                           :placeholder="'SOLICITANTE'"
                                           :select-on-tab="true"
-                                          :id="'cboSolicitantePC'"
-                                          label="label"
                                           @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
                                           ref="refSolicitantePC">
                                     <template slot="option" slot-scope="option">
@@ -49,13 +49,13 @@
                             <label class="col-md-2 control-label label-sm">Concepto:</label>
                             <div class="col-md-10">
                                 <input v-model="concepto"
+                                       id="txtConceptoPC"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       name="Concepto"
+                                       placeholder="CONCEPTO"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
                                        @@keydown.9.native.prevent="recorridoPaseCortesia"
-                                       id="txtConceptoPC"
-                                       name="Concepto"
-                                       type="text"
-                                       class="form-control input-sm"
-                                       placeholder="CONCEPTO"
                                        v-validate="'required'"
                                        autocomplete="off" />
                             </div>
@@ -67,12 +67,12 @@
                             <label class="col-md-2 control-label label-sm">Beneficiario:</label>
                             <div class="col-md-10">
                                 <input v-model="searchInTable"
+                                       id="txtBeneficiarioPC"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="BENEFICIARIO"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
                                        @@keydown.9.native.prevent="recorridoPaseCortesia"
-                                       id="txtBeneficiarioPC"
-                                       type="text"
-                                       class="form-control input-sm"
-                                       placeholder="BENEFICIARIO"
                                        autocomplete="off" />
                             </div>
                         </div>

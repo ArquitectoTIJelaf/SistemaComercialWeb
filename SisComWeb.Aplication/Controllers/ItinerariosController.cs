@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
 using SisComWeb.Aplication.Models;
+using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -81,8 +82,12 @@ namespace SisComWeb.Aplication.Controllers
                 EmbarqueDir = (string)x["EmbarqueDir"],
                 EmbarqueHora = (string)x["EmbarqueHora"],
                 ImpManifiesto = (string)x["ImpManifiesto"],
+                CodiSucursal = (short)x["CodiSucursal"],
+                ClavUsuarioReintegro = (short)x["ClavUsuarioReintegro"],
+                SucVentaReintegro = (short)x["SucVentaReintegro"],
+                PrecVentaReintegro = (decimal)x["PrecVentaReintegro"],
 
-                CodiSucursal = (short)x["CodiSucursal"]
+                TipoPago = (string)x["TipoPago"]
             }).ToList();
 
             return lista;
@@ -641,7 +646,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiDestino\" : " + filtro.CodiDestino +
                                     ",\"NumeAsiento\" : " + filtro.NumeAsiento +
                                     ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
-                                    ",\"Precio\" : " + filtro.Precio +
+                                    ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.Precio) + "\"" +
                                     ",\"CodiTerminal\" : " + int.Parse(usuario.Terminal.ToString("D3")) +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BloqueoAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -731,7 +736,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"RucCliente\" : \"" + Listado[i].RucCliente + "\"" +
                                     ",\"NumeAsiento\" : " + Listado[i].NumeAsiento +
                                     ",\"FlagVenta\" : \"" + Listado[i].FlagVenta + "\"" +
-                                    ",\"PrecioVenta\" : \"" + Listado[i].PrecioVenta.ToString("0.##", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"PrecioVenta\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].PrecioVenta) + "\"" +
                                     ",\"Nombre\" : \"" + Listado[i].Nombre + "\"" +
                                     ",\"Edad\" : " + Listado[i].Edad +
                                     ",\"Telefono\" : \"" + Listado[i].Telefono + "\"" +
@@ -770,16 +775,16 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiZona\" : \"" + Listado[i].CodiZona + "\"" +
                                     ",\"Direccion\" : \"" + Listado[i].Direccion + "\"" +
                                     ",\"Observacion\" : \"" + Listado[i].Observacion + "\"" +
-                                    ",\"Credito\" : " + Listado[i].Credito +
+                                    ",\"Credito\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].Credito) + "\"" +
                                     ",\"DirEmbarque\" : \"" + Listado[i].DirEmbarque + "\"" +
-                                    ",\"PrecioNormal\" : " + Listado[i].PrecioNormal +
+                                    ",\"PrecioNormal\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].PrecioNormal) + "\"" +
                                     ",\"ValidadorDescuento\" : " + Listado[i].ValidadorDescuento.ToString().ToLower() +
                                     ",\"ObservacionDescuento\" : \"" + Listado[i].ObservacionDescuento + "\"" +
 
                                     ",\"ValidadorDescuentoControl\" : " + Listado[i].ValidadorDescuentoControl.ToString().ToLower() +
                                     ",\"DescuentoTipoDC\" : \"" + Listado[i].DescuentoTipoDC + "\"" +
-                                    ",\"ImporteDescuentoDC\" : " + Listado[i].ImporteDescuentoDC +
-                                    ",\"ImporteDescontadoDC\" : " + Listado[i].ImporteDescontadoDC +
+                                    ",\"ImporteDescuentoDC\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].ImporteDescuentoDC) + "\"" +
+                                    ",\"ImporteDescontadoDC\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].ImporteDescontadoDC) + "\"" +
                                     ",\"AutorizadoDC\" : \"" + Listado[i].AutorizadoDC + "\"" +
 
                                     ",\"ObjAcompaniante\" : " +
@@ -846,7 +851,7 @@ namespace SisComWeb.Aplication.Controllers
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch
             {
                 return Json(new Response<List<Venta>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
@@ -1400,7 +1405,6 @@ namespace SisComWeb.Aplication.Controllers
                         SaldoBoletos = (int)x["SaldoBoletos"],
                         IdPrecio = (int)x["IdPrecio"],
                         Precio = (decimal)x["Precio"]
-
                     }).ToList(),
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

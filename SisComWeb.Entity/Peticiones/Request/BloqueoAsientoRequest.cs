@@ -14,7 +14,7 @@
 
         public string FechaProgramacion { get; set; }
 
-        public double Precio { get; set; }
+        public decimal Precio { get; set; }
 
         public int CodiTerminal { get; set; }
     }

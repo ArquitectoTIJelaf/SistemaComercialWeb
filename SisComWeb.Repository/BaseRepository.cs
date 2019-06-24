@@ -72,6 +72,10 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["idAreaContrato"]);
                     item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
                     break;
+                case 16:
+                    item.id = DataUtility.ObjectToString(reader["USUARIO"]);
+                    item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -383,6 +387,25 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 15));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaUsuariosClaveAnuRei()
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Scwsp_vw_tb_Mantenimiento_ClaveAnuRei_Consulta";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 16));
                     }
                 }
             }

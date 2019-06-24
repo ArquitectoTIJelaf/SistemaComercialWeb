@@ -15,10 +15,10 @@
                                     <div class="form-group">
                                         <label class="control-label">Origen pasajero:</label>
                                         <v-select v-model="filtro.CodiOrigen"
+                                                  id="cboOrigenPas"
                                                   :options="list.origenesPas"
                                                   :placeholder="'ORIGEN PAS.'"
                                                   :select-on-tab="true"
-                                                  :id="'cboOrigenPas'"
                                                   :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(1)"                                                  
                                                   ref="refOrigenPas">
@@ -33,10 +33,10 @@
                                     <div class="form-group">
                                         <label class="control-label">Destino pasajero:</label>
                                         <v-select v-model="filtro.CodiDestino"
+                                                  id="cboDestinoPas"
                                                   :options="list.destinosPas"
                                                   :placeholder="'DESTINO PAS.'"
                                                   :select-on-tab="true"
-                                                  :id="'cboDestinoPas'"
                                                   :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(2)"
                                                   ref="refDestinoPas">
@@ -51,10 +51,10 @@
                                     <div class="form-group">
                                         <label class="control-label">Destino bus:</label>
                                         <v-select v-model="filtro.CodiRuta"
+                                                  id="cboDestinoBus"
                                                   :options="list.destinosBus"
                                                   :placeholder="'DESTINO BUS'"
                                                   :select-on-tab="true"
-                                                  :id="'cboDestinoBus'"
                                                   :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(3)"
                                                   ref="refDestinoBus">
@@ -72,13 +72,13 @@
                                         <div class="input-group input-sm group-strench">
                                             <label class="control-label">Fecha desde:</label>
                                             <input v-model="filtro.FechaViaje"
+                                                   id="txtFecha"
+                                                   class="form-control input-sm dpFiltro"
+                                                   type="text"
+                                                   placeholder="DD/MM/YYYY"
                                                    v-mask="'##/##/####'"                                                   
                                                    @@focus="$event.target.select()"
                                                    @@blur="nextStep(4)"
-                                                   type="text"
-                                                   id="txtFecha"
-                                                   class="form-control input-sm dpFiltro"
-                                                   placeholder="DD/MM/YYYY"
                                                    autocomplete="off" />
                                         </div>
                                     </div>
@@ -87,13 +87,13 @@
                                     <div class="form-group">
                                         <label class="control-label">Hora desde:</label>
                                         <input v-model="filtro.Hora"
+                                               id="txtHora"
+                                               class="form-control input-sm dph"
+                                               type="text"
+                                               placeholder="HH:MM AM"
                                                v-mask="'##:## AM'"
                                                @@focus="$event.target.select()"
                                                @@blur="nextStep(5)"
-                                               type="text"
-                                               id="txtHora"
-                                               class="form-control input-sm dph"
-                                               placeholder="HH:MM AM"
                                                autocomplete="off" />
                                     </div>
                                 </div>
