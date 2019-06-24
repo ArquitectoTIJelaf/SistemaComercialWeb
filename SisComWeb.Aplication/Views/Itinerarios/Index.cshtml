@@ -665,7 +665,7 @@
                 });
 
                 window.removeEventListener('keyup', appVueDescuentoControl.esc);
-            });            
+            });
 
             if ($('.dpFiltro').length) {
                 $('.dpFiltro').datetimepicker({
@@ -6368,12 +6368,12 @@
                 filtro: {
                     idVenta	: 0,
                     dni: '',
-                    nombre: '',		
-                    ruc: '',	
-                    edad: '',		
-                    telefono: '',	
-                    recoger: '',	
-                    tipoDoc: '',	
+                    nombre: '',
+                    ruc: '',
+                    edad: '',
+                    telefono: '',
+                    recoger: '',
+                    tipoDoc: '',
                     nacionidad: ''
                 },
                 item: {
@@ -6398,10 +6398,14 @@
                     apepat: '',
                     apemat: ''
                 },
-                showData: false
+                showData: false,
+                panel: true
             },
             mounted: function () {
                 let _this = this;
+
+                _this.panel = (appController.validatePanel(241) === '1') ? true : false ;
+
                 window.addEventListener('keydown', _this.configEventKeyF9);
                 $('#appVueModificacionBoleto').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
@@ -6420,14 +6424,14 @@
                     _this.item.tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
                     _this.item.serie = correlativo.substring(1, 4);
                     _this.item.numero = correlativo.substring(5, 13);
-                    _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: Confirmar
-                    _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: Confirmar
+                    _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label;
+                    _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                 },
                 configEventKeyF9: function (event) {
                     if (event.keyCode === 120) {
                         if (appVueVenta.showVentas) {
                             this.show();
-                        }                        
+                        }
                     }
                 },
                 searchData: async function () {
@@ -6465,7 +6469,7 @@
                             _this.item.nombre = res.data.Valor.SplitNombre[0];
                             _this.item.apepat = res.data.Valor.SplitNombre[1];
                             _this.item.apemat = res.data.Valor.SplitNombre[2];
-                            
+
                             _this.showData = true;
                         })
                         .catch(APP.rq.axios_handler_error_alert);
@@ -6478,7 +6482,7 @@
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
-                        this.close();                        
+                        this.close();
                     }
                 },
                 close: function () {
@@ -6487,28 +6491,59 @@
                 },
                 limpiarModBoleto: function () {
                     let _this = this;
+                    _this.filtro.idVenta = 0;
+                    _this.filtro.dni = '';
+                    _this.filtro.nombre = '';
+                    _this.filtro.ruc = '';
+                    _this.filtro.edad = '';
+                    _this.filtro.telefono = '';
+                    _this.filtro.recoger = '';
+                    _this.filtro.tipoDoc = '';
+                    _this.filtro.nacionidad = '';
+                    _this.item.codEmpresa = 0;
+                    _this.item.empresa = '';
+                    _this.item.tipo = 'M';
+                    _this.item.serie = '';
+                    _this.item.numero = '';
+                    _this.item.destinoBus = '';
+                    _this.item.turno = '';
+                    _this.item.ruta = '';
+                    _this.item.dia = '';
+                    _this.item.fechaViaje = '';
+                    _this.item.fechaVenta = '';
+                    _this.item.correlativoSinTipo = '';
+                    _this.item.sexo = '';
+                    _this.item.razSocial = '';
+                    _this.item.asiento = '';
+                    _this.item.precio = '';
+                    _this.item.observacion = '';
+                    _this.item.nombre = '';
+                    _this.item.apepat = '';
+                    _this.item.apemat = '';
                     _this.showData = false;
                 },
                 saveModBoleto: async function () {
                     let _this = this;
-                    await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
-                        IdVenta: _this.filtro.idVenta,
-                        Dni: _this.filtro.dni,
-                        Nombre: _this.filtro.nombre,
-                        Ruc: _this.filtro.ruc,
-                        Edad: _this.filtro.edad,
-                        Telefono: _this.filtro.telefono,
-                        RecoVenta: _this.filtro.recoger,
-                        TipoDoc: _this.filtro.tipoDoc,
-                        Nacionalidad: _this.filtro.nacionidad
-                    }))
-                        .then(res => {
-                            if (res.data.Valor) {
-                                APP.msg.info(res.data.Mensaje);
-                                _this.close();
-                            } else APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
+                    if (_this.filtro.idVenta !== 0) {
+                        await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
+                            IdVenta: _this.filtro.idVenta,
+                            Dni: _this.filtro.dni,
+                            Nombre: _this.filtro.nombre,
+                            Ruc: _this.filtro.ruc,
+                            Edad: _this.filtro.edad,
+                            Telefono: _this.filtro.telefono,
+                            RecoVenta: _this.filtro.recoger,
+                            TipoDoc: _this.filtro.tipoDoc,
+                            Nacionalidad: _this.filtro.nacionidad
+                        }))
+                            .then(res => {
+                                if (res.data.Valor) {
+                                    APP.msg.info(res.data.Mensaje);
+                                    _this.close();
+                                } else APP.msg.error(res.data.Mensaje);
+                            })
+                            .catch(APP.rq.axios_handler_error_alert);
+                    }
                 }
             },
             computed: {},

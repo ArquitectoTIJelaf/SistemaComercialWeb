@@ -49,7 +49,7 @@
                                 <input v-model="item.serie"
                                        @@keypress.13.prevent="$refs.refMBNumero.focus()"
                                        @@keypress.9.prevent="$refs.refMBNumero.focus()"
-                                       class="form-control input-sm"
+                                       class="form-control input-sm"                                       
                                        ref="refMBSerie" />
                             </div>
                             <div class="col-xs-8">
@@ -123,7 +123,7 @@
                             <div class="">
                                 <input :value="item.correlativoSinTipo"
                                        class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
+                                       style="background-color:rgb(253, 249, 205); font-weight:500;"
                                        disabled />
                             </div>
                         </div>
@@ -254,12 +254,13 @@
             </div>
             <div class="modal-footer">
                 <button @@click="saveModBoleto"
+                        v-show="panel"
                         ref="refMBSave"
                         :disabled="errors.any()"
-                        class="btn btn-outline btn-rounded btn-info">
+                        class="btn btn-primary waves-effect waves-light">
                     <span class="glyphicon glyphicon-saved fa-fw"></span>Guardar
                 </button>
-                <button @@click="close" class="btn btn-outline btn-rounded btn-info">
+                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>
