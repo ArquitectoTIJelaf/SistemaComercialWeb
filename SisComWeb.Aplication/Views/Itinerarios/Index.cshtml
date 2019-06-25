@@ -4018,33 +4018,6 @@
                             await APP.msg.infoBoletoPromocionadoConDescuento(
                                 ''
                                 , 'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe anular el boleto: '
-=======
-                    //    if (tmpSwIndica === '0') {
-                    //        if (appController.validatePanel('40') === '1')
-                    //            APP.msg.warning('Solo puede anular este asiento el usuario que lo vendió.');
-                    //        else
-                    //            return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //    }
-                    //    else
-                    //        return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //}
-                    //else if (_asientoSel.FlagVenta === 'R') {
-                    //    await this.cancelarReserva(_asientoSel);
-                    //    /* auxValidate = false;*/ // No continuar, ya que ya se está cancelando la 'Reserva', verificar cuando se acabe el script.
-                    //}
-                    //else {
-                        //var consultaIdaVuelta = await this.consultaIdaVuelta(_asientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                        //if (consultaIdaVuelta) {
-                    var tmpObjAsiento = {};
-                    var auxBoletoCompleto = formatoBoletoCompleto(_asientoSel.TipoBoleto, _asientoSel.Boleto);
-                    tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
-                    tmpObjAsiento.OrigenBoleto = _asientoSel.NomOrigen;
-                    tmpObjAsiento.DestinoBoleto = _asientoSel.NomDestino;
-                    tmpObjAsiento.NroAsiento = String(_asientoSel.NumeAsiento).padStart(2, '0');
-
-                            await APP.msg.infoBoletoPromocionadoConDescuento(''
-                                ,'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe: '
->>>>>>> 510a8974dcab4f8f95783d03972bc23b2e95b25b
                                 , tmpObjAsiento);
 
                             return auxValidate = false;
