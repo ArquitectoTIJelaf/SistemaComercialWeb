@@ -1773,7 +1773,7 @@
                             }
                         }
                     }
-
+                    
                     // Valida 'Manifiesto'
                     if (!IngresoManualPasajes) {
 
@@ -2513,6 +2513,7 @@
                 },
                 validateAlgoritmoRuc: function (_Ruc) {
                     var auxValidate = false;
+                    var tmpRuc = _.cloneDeep(_Ruc);
 
                     if (_Ruc.substring(0, 2) === '10' || _Ruc.substring(0, 2) === '20' ||
                         _Ruc.substring(0, 2) === '15' || _Ruc.substring(0, 2) === '16' || _Ruc.substring(0, 2) === '17') {
@@ -2523,6 +2524,14 @@
 
                         if (suma % 11 === 0)
                             auxValidate = true;
+                        else {
+                            if (tmpRuc.charAt(10) === '1') {
+                                var auxResto = suma % 11;
+                                var auxComplemento = 11 - auxResto;
+                                if (String(auxComplemento) === tmpRuc.charAt(10))
+                                    auxValidate = true;
+                            }
+                        }
                     }
 
                     return auxValidate;
@@ -3749,6 +3758,7 @@
                             // Seteo el valor original de 'X_Estado'
                             _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
+                            _this.disabledAsiento = false;
                             return;
                         }
                         if (_this.objTurno.X_Estado) {
@@ -3756,16 +3766,16 @@
                             // Seteo el valor original de 'X_Estado'
                             _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
 
+                            _this.disabledAsiento = false;
                             return;
                         }
                     }
                     
                     var auxValidate = await _this.validaAnulacion(tmpAsientoSel);
-
-                    _this.disabledAsiento = false;
-
-                    if (!auxValidate)
+                    if (!auxValidate) {
+                        _this.disabledAsiento = false;
                         return;
+                    }
 
                     APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                         IdVenta: tmpAsientoSel.IdVenta,
