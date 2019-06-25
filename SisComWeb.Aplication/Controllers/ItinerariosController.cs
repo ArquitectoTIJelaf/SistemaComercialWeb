@@ -2125,5 +2125,133 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("buscaBoletoF9")]
+        public async Task<ActionResult> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Serie\" : " + Serie +
+                                    ",\"Numero\" : " + Numero +
+                                    ",\"Tipo\" : \"" + Tipo + "\"" +
+                                    ",\"CodEmpresa\" : " + CodEmpresa +                                    
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Busca> res = new Response<Busca>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Busca()
+                    {
+                        FechaProgramacion = (string)data["FechaProgramacion"],
+                        Tipo = (string)data["Tipo"],
+                        SerieBoleto = (short)data["SerieBoleto"],
+                        NumeBoleto = (int)data["NumeBoleto"],
+                        CodiEmpresa = (byte)data["CodiEmpresa"],
+                        CodiSucursal = (short)data["CodiSucursal"],
+                        CodiProgramacion = (int)data["CodiProgramacion"],
+                        CodiSubruta = (int)data["CodiSubruta"],
+                        CodiCliente = (int)data["CodiCliente"],
+                        RucCliente = (string)data["RucCliente"],
+                        PrecioVenta = (int)data["PrecioVenta"],
+                        NumeAsiento = (byte)data["NumeAsiento"],
+                        FlagVenta = (string)data["FlagVenta"],
+                        FechaVenta = (string)data["FechaVenta"],
+                        RecoVenta = (string)data["RecoVenta"],
+                        ClavUsuario = (int)data["ClavUsuario"],
+                        IndiAnulado = (string)data["IndiAnulado"],
+                        FechaAnulacion = (string)data["FechaAnulacion"],
+                        Dni = (string)data["Dni"],
+                        Edad = (byte)data["Edad"],
+                        Telefono = (string)data["Telefono"],
+                        Nombre = (string)data["Nombre"],
+                        CodiEsca = (int)data["CodiEsca"],
+                        CodiPuntoVenta = (short)data["CodiPuntoVenta"],
+                        TipoDocumento = (string)data["TipoDocumento"],
+                        CodiOrigen = (short)data["CodiOrigen"],
+                        PerAutoriza = (int)data["PerAutoriza"],
+                        ClavUsuario1 = (int)data["ClavUsuario1"],
+                        EstadoAsiento = (string)data["EstadoAsiento"],
+                        Sexo = (string)data["Sexo"],
+                        TipoPago = (string)data["TipoPago"],
+                        CodiSucursalVenta = (int)data["CodiSucursalVenta"],
+                        IdVenta = (int)data["IdVenta"],
+                        ValeRemoto = (string)data["ValeRemoto"],
+                        IdVentaWeb = (int)data["IdVentaWeb"],
+                        ImpManifiesto = (int)data["ImpManifiesto"],
+                        TipoVenta = (string)data["TipoVenta"],
+                        CodiRuta = (short)data["CodiRuta"],
+                        HoraProgramacion = (string)data["HoraProgramacion"],
+                        CodiServicio = (byte)data["CodiServicio"],
+                        Nacionalidad = (string)data["Nacionalidad"],
+                        RazonSocial = (string)data["RazonSocial"],
+                        DireccionFiscal = (string)data["DireccionFiscal"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("actualizaBoletoF9")]
+        public async Task<ActionResult> ActualizaBoletoF9(FiltroBoleto request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : \"" + request.IdVenta + "\"" +
+                                    ",\"Dni\" : \"" + request.Dni + "\"" +
+                                    ",\"Nombre\" : \"" + request.Nombre + "\"" +
+                                    ",\"Ruc\" : \"" + request.Ruc + "\"" +
+                                    ",\"Edad\" : \"" + request.Edad + "\"" +
+                                    ",\"Telefono\" : \"" + request.Telefono + "\"" +
+                                    ",\"RecoVenta\" : \"" + request.RecoVenta + "\"" +
+                                    ",\"TipoDoc\" : \"" + request.TipoDoc + "\"" +
+                                    ",\"Nacionalidad\" :  \"" + request.Nacionalidad + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ActualizaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

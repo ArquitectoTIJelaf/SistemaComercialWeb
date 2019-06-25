@@ -1781,5 +1781,54 @@ namespace SisComWeb.Business
         }
 
         #endregion
+
+        #region BUSCAR
+
+        public static Response<BuscaEntity> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa)
+        {
+            try
+            {
+                var valor = VentaRepository.ConsultaF9Elec(Serie, Numero, Tipo, CodEmpresa);
+
+                // Busca 'Empresa'
+                if (!string.IsNullOrEmpty(valor.RucCliente))
+                {
+                    var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(valor.RucCliente);
+                    valor.RazonSocial = buscarEmpresa.RazonSocial;
+                    valor.DireccionFiscal = buscarEmpresa.Direccion;
+                }
+                else
+                {
+                    valor.RazonSocial = string.Empty;
+                    valor.DireccionFiscal = string.Empty;
+                }
+
+                if (valor.IdVenta == 0)
+                {
+                    return new Response<BuscaEntity>(false, null, Message.MsgErrorBuscaBoletoF9, true);
+                }
+                return new Response<BuscaEntity>(true, valor, Message.MsgCorrectoBuscaBoletoF9, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<BuscaEntity>(false, null, Message.MsgExcBuscaBoletoF9, false);
+            }
+        }
+
+        public static Response<bool> ActualizaBoletoF9(BoletoF9Request request)
+        {
+            try
+            {
+                VentaRepository.ActualizaF9Elec(request.IdVenta, request.Dni, request.Nombre, request.Ruc, request.Edad, request.Telefono, request.RecoVenta, request.TipoDoc, request.Nacionalidad);
+                return new Response<bool>(true, true, Message.MsgCorrectoActualizaBoletoF9, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
+            }
+        }
+        #endregion
     }
 }

@@ -273,5 +273,13 @@
         // Auditoria
         public const string MsgCorrectoGrabarAuditoria = "Correcto: GrabarAuditoria.";
         public const string MsgExcGrabarAuditoria = "Excepción: GrabarAuditoria.";
+
+        //Buscar Boleto F9
+        public const string MsgCorrectoBuscaBoletoF9 = "Correcto: BuscaBoletoF9.";
+        public const string MsgExcBuscaBoletoF9 = "Excepción: BuscaBoletoF9.";
+        public const string MsgErrorBuscaBoletoF9 = "El número de boleto no existe.";
+
+        public const string MsgCorrectoActualizaBoletoF9 = "Correcto: Se actualizó el boleto correctamente.";
+        public const string MsgExActualizaBoletoF9 = "Excepción: Error al actualizar boleto.";
     }
 }
