@@ -7,5 +7,7 @@ namespace SisComWeb.Entity
         public List<PanelControlEntity> ListarPanelControl { get; set; }
 
         public List<PanelControlEntity> ListarPanelControlClave { get; set; }
+
+        public List<PanelControlNivelEntity> ListarPanelControlNivel { get; set; }
     }
 }

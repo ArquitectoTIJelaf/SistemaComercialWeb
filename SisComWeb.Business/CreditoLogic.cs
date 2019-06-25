@@ -104,10 +104,14 @@ namespace SisComWeb.Business
                 // Lista 'PanelControlClave'
                 var listarPanelControlCalve = CreditoRepository.ListarPanelControlClave();
 
+                // Lista 'PanelControlNiveles'
+                var listarPanelControlNivel = CreditoRepository.ListarPanelControlNivel();
+
                 var panelControlResponse = new PanelControlResponse()
                 {
                     ListarPanelControl = listarPanelControl,
-                    ListarPanelControlClave = listarPanelControlCalve
+                    ListarPanelControlClave = listarPanelControlCalve,
+                    ListarPanelControlNivel = listarPanelControlNivel
                 };
 
                 return new Response<PanelControlResponse>(true, panelControlResponse, Message.MsgCorrectoListarPanelesControl, true);

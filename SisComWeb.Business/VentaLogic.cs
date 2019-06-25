@@ -603,7 +603,7 @@ namespace SisComWeb.Business
                                 // Graba 'Caja'
                                 var objCajaEntity = new CajaEntity
                                 {
-                                    NumeCaja = generarCorrelativoAuxiliar,
+                                    NumeCaja = int.Parse(generarCorrelativoAuxiliar).ToString("D7"),
                                     CodiEmpresa = entidad.CodiEmpresa,
                                     CodiSucursal = entidad.CodiOficina,
                                     Boleto = auxBoletoCompleto.Substring(1),
@@ -660,7 +660,7 @@ namespace SisComWeb.Business
                         Boleto = auxBoletoCompleto.Substring(1),
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         NomOficina = entidad.NomOficina,
-                        NomPuntoVenta = entidad.NomPuntoVenta,
+                        NomPuntoVenta = entidad.CodiPuntoVenta.ToString(),
                         Pasajero = entidad.Nombre,
                         FechaViaje = entidad.FechaViaje,
                         HoraViaje = entidad.HoraViaje,
@@ -944,7 +944,7 @@ namespace SisComWeb.Business
 
                 CajaEntity objCaja = new CajaEntity
                 {
-                    NumeCaja = generarCorrelativoAuxiliar,
+                    NumeCaja = int.Parse(generarCorrelativoAuxiliar).ToString("D7"),
                     CodiEmpresa = objVenta.CodiEmpresa,
                     CodiSucursal = short.Parse(request.CodiOficina),
                     Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
@@ -1043,6 +1043,111 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgExcConsultaPanelNiveles, false);
+            }
+        }
+
+        public static Response<int> VerificaLiquidacionComiDet(int IdVenta)
+        {
+            try
+            {
+                var verificaLiquidacionComiDet = VentaRepository.VerificaLiquidacionComiDet(IdVenta);
+
+                return new Response<int>(true, verificaLiquidacionComiDet, Message.MsgCorrectoVerificaLiquidacionComiDet, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaLiquidacionComiDet, false);
+            }
+        }
+
+        public static Response<string> VerificaLiquidacionComi(int CodiProgramacion, int Pvta)
+        {
+            try
+            {
+                var verificaLiquidacionComi = VentaRepository.VerificaLiquidacionComi(CodiProgramacion, Pvta);
+
+                return new Response<string>(true, verificaLiquidacionComi, Message.MsgCorrectoVerificaLiquidacionComi, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaLiquidacionComi, false);
+            }
+        }
+
+        public static Response<bool> ConsultaVentaIdaV(int IdVenta)
+        {
+            try
+            {
+                var consultaVentaIdaV = VentaRepository.ConsultaVentaIdaV(IdVenta);
+
+                return new Response<bool>(true, consultaVentaIdaV, Message.MsgCorrectoConsultaVentaIdaV, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaVentaIdaV, false);
+            }
+        }
+
+        public static Response<bool> GrabarAuditoria(AuditoriaEntity entidad)
+        {
+            try
+            {
+                var grabarAuditoria = VentaRepository.GrabarAuditoria(entidad);
+
+                return new Response<bool>(true, grabarAuditoria, Message.MsgCorrectoGrabarAuditoria, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcGrabarAuditoria, false);
+            }
+        }
+
+        public static Response<bool> ConsultaClaveAnuRei(int CodiUsuario, string Clave)
+        {
+            try
+            {
+                var consultaClaveAnuRei = VentaRepository.ConsultaClaveAnuRei(CodiUsuario, Clave);
+
+                return new Response<bool>(true, consultaClaveAnuRei, Message.MsgCorrectoConsultaClaveAnuRei, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaClaveAnuRei, false);
+            }
+        }
+
+        public static Response<bool> ConsultaClaveControl(short Usuario, string Pwd)
+        {
+            try
+            {
+                var consultaClaveControl = VentaRepository.ConsultaClaveControl(Usuario, Pwd);
+
+                return new Response<bool>(true, consultaClaveControl, Message.MsgCorrectoConsultaClaveControl, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaClaveControl, false);
+            }
+        }
+
+        public static Response<bool> InsertarUsuarioPorVenta(string Usuario, string Accion, decimal IdVenta, string Motivo)
+        {
+            try
+            {
+                var insertarUsuarioPorVenta = VentaRepository.InsertarUsuarioPorVenta(Usuario, Accion, IdVenta, Motivo);
+
+                return new Response<bool>(true, insertarUsuarioPorVenta, Message.MsgCorrectoInsertarUsuarioPorVenta, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcInsertarUsuarioPorVenta, false);
             }
         }
 

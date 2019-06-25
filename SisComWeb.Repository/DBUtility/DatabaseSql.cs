@@ -205,7 +205,7 @@ namespace SisComWeb.Repository
                     return command.ExecuteReader(CommandBehavior.SequentialAccess);
                 }
             }
-            catch (Exception ex)
+            catch
             {
 
                 throw;

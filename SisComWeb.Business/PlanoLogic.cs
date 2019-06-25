@@ -281,7 +281,7 @@ namespace SisComWeb.Business
             // Consulta 'Reintegro'
             if (!string.IsNullOrEmpty(entidad.Boleto))
             {
-                var consultarReintegro = PlanoRepository.ConsultarReintegro(short.Parse(entidad.Boleto.Substring(0, 3)), short.Parse(entidad.Boleto.Substring(4)), int.Parse(request.CodiEmpresa.ToString()), entidad.TipoBoleto);
+                var consultarReintegro = PlanoRepository.ConsultarReintegro(short.Parse(entidad.Boleto.Substring(0, 3)), int.Parse(entidad.Boleto.Substring(4)), request.CodiEmpresa, entidad.TipoBoleto);
                 entidad.ClavUsuarioReintegro = consultarReintegro.ClavUsuario;
                 entidad.SucVentaReintegro = consultarReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultarReintegro.PrecVenta;

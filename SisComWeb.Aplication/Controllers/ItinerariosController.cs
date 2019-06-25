@@ -221,6 +221,18 @@ namespace SisComWeb.Aplication.Controllers
             return lista;
         }
 
+        private static List<PanelControlNivel> _listaPanelControlNivel(JToken list)
+        {
+            List<PanelControlNivel> lista = list.Select(x => new PanelControlNivel
+            {
+                Codigo = (int)x["Codigo"],
+                Descripcion = (string)x["Descripcion"],
+                Nivel = (byte)x["Nivel"]
+            }).ToList();
+
+            return lista;
+        }
+
         [Route("")]
         public ActionResult Index()
         {
@@ -1094,15 +1106,14 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (int)tmpResult["Valor"],
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                    Valor = (int)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<int>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1131,15 +1142,14 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (decimal)tmpResult["Valor"],
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                    Valor = (decimal)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1169,15 +1179,288 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (string)tmpResult["Valor"],
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                    Valor = (string)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<string>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaLiquidacionComiDet")]
+        public async Task<ActionResult> VerificaLiquidacionComiDet(int IdVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\": " + IdVenta +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("VerificaLiquidacionComiDet", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaLiquidacionComi")]
+        public async Task<ActionResult> VerificaLiquidacionComi(int CodiProgramacion, int Pvta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\": " + CodiProgramacion +
+                                    ",\"Pvta\": " + Pvta +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("VerificaLiquidacionComi", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaVentaIdaV")]
+        public async Task<ActionResult> ConsultaVentaIdaV(int IdVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\": " + IdVenta +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("ConsultaVentaIdaV", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("grabarAuditoria")]
+        public async Task<ActionResult> GrabarAuditoria(AuditoriaRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiUsuario\" : " + request.CodiUsuario +
+                                    ",\"NomUsuario\" :  \"" + (request.NomUsuario ?? string.Empty) + "\"" +
+                                    ",\"Tabla\" : \"" + (request.Tabla ?? string.Empty) + "\"" +
+                                    ",\"TipoMovimiento\" : \"" + (request.TipoMovimiento ?? string.Empty) + "\"" +
+                                    ",\"Boleto\" : \"" + (request.Boleto ?? string.Empty) + "\"" +
+                                    ",\"NumeAsiento\" : \"" + (request.NumeAsiento ?? string.Empty) + "\"" +
+                                    ",\"NomOficina\" : \"" + (request.NomOficina ?? string.Empty) + "\"" +
+                                    ",\"NomPuntoVenta\" : \"" + (request.NomPuntoVenta ?? string.Empty) + "\"" +
+                                    ",\"Pasajero\" : \"" + (request.Pasajero ?? string.Empty) + "\"" +
+                                    ",\"FechaViaje\" : \"" + (request.FechaViaje ?? string.Empty) + "\"" +
+                                    ",\"HoraViaje\" : \"" + (request.HoraViaje ?? string.Empty) + "\"" +
+                                    ",\"NomDestino\" : \"" + (request.NomDestino ?? string.Empty) + "\"" +
+                                    ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(request.Precio) + "\"" +
+                                    ",\"Obs1\" : \"" + (request.Obs1 ?? string.Empty).ToUpper() + "\"" +
+                                    ",\"Obs2\" : \"" + (request.Obs2 ?? string.Empty).ToUpper() + "\"" +
+                                    ",\"Obs3\" : \"" + (request.Obs3 ?? string.Empty).ToUpper() + "\"" +
+                                    ",\"Obs4\" : \"" + (request.Obs4 ?? string.Empty).ToUpper() + "\"" +
+                                    ",\"Obs5\" : \"" + (request.Obs5 ?? string.Empty).ToUpper() + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("GrabarAuditoria", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaClaveAnuRei")]
+        public async Task<ActionResult> ConsultaClaveAnuRei(int CodiUsuario, string Clave)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiUsuario\": " + CodiUsuario +
+                                    ",\"Clave\": \"" + Clave + "\"" +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("ConsultaClaveAnuRei", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaClaveControl")]
+        public async Task<ActionResult> ConsultaClaveControl(short Usuario, string Pwd)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Usuario\": " + Usuario +
+                                    ",\"Pwd\": \"" + Pwd + "\"" +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("ConsultaClaveControl", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("insertarUsuarioPorVenta")]
+        public async Task<ActionResult> InsertarUsuarioPorVenta(string Usuario, string Accion, decimal IdVenta, string Motivo)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Usuario\": \"" + Usuario + "\"" +
+                                    ",\"Accion\": \"" + Accion + "\"" +
+                                    ",\"IdVenta\": " + IdVenta +
+                                    ",\"Motivo\": \"" + Motivo + "\"" +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("InsertarUsuarioPorVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1350,7 +1633,7 @@ namespace SisComWeb.Aplication.Controllers
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = (byte)tmpResult["Valor"],
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
@@ -1405,15 +1688,14 @@ namespace SisComWeb.Aplication.Controllers
                         SaldoBoletos = (int)x["SaldoBoletos"],
                         IdPrecio = (int)x["IdPrecio"],
                         Precio = (decimal)x["Precio"]
-                    }).ToList(),
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                    }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1547,7 +1829,8 @@ namespace SisComWeb.Aplication.Controllers
                     Valor = new PanelControlResponse
                     {
                         ListarPanelControl = _listaPanelControl(data["ListarPanelControl"]),
-                        ListarPanelControlClave = _listaPanelControl(data["ListarPanelControlClave"])
+                        ListarPanelControlClave = _listaPanelControl(data["ListarPanelControlClave"]),
+                        ListarPanelControlNivel = _listaPanelControlNivel(data["ListarPanelControlNivel"])
                     }
                 };
 

@@ -78,6 +78,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveAnuRei", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaUsuariosClaveAnuRei();
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveControl", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuariosClaveControl();
+
         #endregion
 
         #region LOGIN
@@ -205,6 +209,34 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultaPanelNiveles", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<string> ConsultaPanelNiveles(int codigo, int Nivel);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaLiquidacionComiDet", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> VerificaLiquidacionComiDet(int IdVenta);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaLiquidacionComi", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> VerificaLiquidacionComi(int CodiProgramacion, int Pvta);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaVentaIdaV", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ConsultaVentaIdaV(int IdVenta);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GrabarAuditoria", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> GrabarAuditoria(AuditoriaEntity entidad);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaClaveAnuRei", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ConsultaClaveAnuRei(int CodiUsuario, string Clave);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaClaveControl", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ConsultaClaveControl(short Usuario, string Pwd);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "InsertarUsuarioPorVenta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> InsertarUsuarioPorVenta(string Usuario, string Accion, decimal IdVenta, string Motivo);
 
         #endregion
 

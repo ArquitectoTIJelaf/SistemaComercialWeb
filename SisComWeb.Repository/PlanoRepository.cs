@@ -342,9 +342,9 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_ele";
-                db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, serie);
-                db.AddParameter("@nume", DbType.Int16, ParameterDirection.Input, nume);
-                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, emp);
+                db.AddParameter("@serie", DbType.Int32, ParameterDirection.Input, serie);
+                db.AddParameter("@nume", DbType.Int32, ParameterDirection.Input, nume);
+                db.AddParameter("@emp", DbType.Int32, ParameterDirection.Input, emp);
                 db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, tipo);
                 using (IDataReader drlector = db.GetDataReader())
                 {

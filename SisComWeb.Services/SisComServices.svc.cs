@@ -219,7 +219,20 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveAnuRei, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaUsuariosClaveControl()
+        {
+            try
+            {
+                return BaseLogic.ListaUsuariosClaveControl();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
         }
 
@@ -570,6 +583,97 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgExcConsultaPanelNiveles, false);
+            }
+        }
+
+        public Response<int> VerificaLiquidacionComiDet(int IdVenta)
+        {
+            try
+            {
+                return VentaLogic.VerificaLiquidacionComiDet(IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaLiquidacionComiDet, false);
+            }
+        }
+
+        public Response<string> VerificaLiquidacionComi(int CodiProgramacion, int Pvta)
+        {
+            try
+            {
+                return VentaLogic.VerificaLiquidacionComi(CodiProgramacion, Pvta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaLiquidacionComi, false);
+            }
+        }
+
+        public Response<bool> ConsultaVentaIdaV(int IdVenta)
+        {
+            try
+            {
+                return VentaLogic.ConsultaVentaIdaV(IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaVentaIdaV, false);
+            }
+        }
+
+        public Response<bool> GrabarAuditoria(AuditoriaEntity entidad)
+        {
+            try
+            {
+                return VentaLogic.GrabarAuditoria(entidad);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcGrabarAuditoria, false);
+            }
+        }
+
+        public Response<bool> ConsultaClaveAnuRei(int CodiUsuario, string Clave)
+        {
+            try
+            {
+                return VentaLogic.ConsultaClaveAnuRei(CodiUsuario, Clave);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaClaveAnuRei, false);
+            }
+        }
+
+        public Response<bool> ConsultaClaveControl(short Usuario, string Pwd)
+        {
+            try
+            {
+                return VentaLogic.ConsultaClaveControl(Usuario, Pwd);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaClaveControl, false);
+            }
+        }
+
+        public Response<bool> InsertarUsuarioPorVenta(string Usuario, string Accion, decimal IdVenta, string Motivo)
+        {
+            try
+            {
+                return VentaLogic.InsertarUsuarioPorVenta(Usuario, Accion, IdVenta, Motivo);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcInsertarUsuarioPorVenta, false);
             }
         }
 

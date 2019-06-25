@@ -1009,6 +1009,15 @@
 
                     return auxResponse;
                 },
+                validatePanelNivel: function (_codigo, _nivel) {
+                    var auxResponse = "0";
+
+                    var objPanel = _.find(appVueVenta.list.panelControlNivel, { 'Codigo': _codigo, 'Nivel': _nivel });
+                    if (objPanel)
+                        auxResponse = "1";
+
+                    return auxResponse;
+                },
                 sendDataCredito: function (_auxItem) {
                     appVueVenta.setCreditoCliente( _auxItem);
                 },
@@ -1339,7 +1348,9 @@
                     tempList: [],
                     panelControl: [],
                     panelControlClave: [],
-                    usuariosClaveAnuRei: []
+                    panelControlNivel: [],
+                    usuariosClaveAnuRei: [],
+                    usuariosClaveControl: []
                 },
                 objPlano: {
                     CodiBus: '',
@@ -1614,6 +1625,7 @@
                             if (res.data.Estado) {
                                 _this.list.panelControl = res.data.Valor.ListarPanelControl;
                                 _this.list.panelControlClave = res.data.Valor.ListarPanelControlClave;
+                                _this.list.panelControlNivel = res.data.Valor.ListarPanelControlNivel;
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -1957,7 +1969,8 @@
                     }
 
                     if (_this.list.ventas.length > 1 || (!_this.list.ventas[_this.indexVenta].FlagVenta && _this.list.ventas[_this.indexVenta].NroAsiento)) {
-                        _fillData = await APP.msg.confirm('Confirmar acción',
+                        _fillData = await APP.msg.confirm(
+                            'Confirmar acción',
                             'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?');
                         if (_fillData) {
                             await _this.cancelarBoletos();
@@ -2802,7 +2815,8 @@
                                 var validatorDocumento = _.findIndex(_this.list.ventas, o => { return o.Documento !== ''; });
 
                                 if (auxLength > 1 && validatorDocumento === (auxLength - 1)) {
-                                    if (await APP.msg.confirm('Copiar datos',
+                                    if (await APP.msg.confirm(
+                                        'Copiar datos',
                                         '¿Desea copiar los datos de este ticket para todos los demás?')) {
 
                                         for (var i = auxLength - 2; i >= 0; i--) {
@@ -3463,7 +3477,8 @@
                 cancelarReserva: async function (_asientoSel) { // Verificar, se acaba de actualizar.
                     var _this = this;
 
-                    if (await APP.msg.confirm('Cancelar Reserva',
+                    if (await APP.msg.confirm(
+                        'Cancelar Reserva',
                         'La reserva N° ' + this.$options.filters.formatNroVenta(_asientoSel.Boleto) + ' será cancelada, ¿Desea continuar?')) {
                         APP.rq.axios2.post(APP.base + '/itinerarios/cancelar-reserva', { IdVenta: _asientoSel.IdVenta })
                             .then(async function (res) {
@@ -3472,7 +3487,7 @@
                                 if (res.data.Estado) {
                                     _this.$nextTick(() => {
                                         if (res.data.EsCorrecto)
-                                            APP.msg.info(res.data.Mensaje);
+                                            APP.msg.success(res.data.Mensaje);
                                         else
                                             APP.msg.warning(res.data.Mensaje);
                                     });
@@ -3510,7 +3525,8 @@
                         case '1': // Crédito
                             {
                                 if (_this.list.ventas.length > 1) {
-                                    if (await APP.msg.confirm('Confirmar acción',
+                                    if (await APP.msg.confirm(
+                                        'Confirmar acción',
                                         'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?')) {
                                         await _this.cancelarBoletos();
                                         _this.pickedBusVenta = value;
@@ -3528,7 +3544,8 @@
                                         _this.limpiarVenta();
                                     }
                                     else {
-                                        if (await APP.msg.confirm('Confirmar acción',
+                                        if (await APP.msg.confirm(
+                                            'Confirmar acción',
                                             'Se perderán los asientos bloqueados sin vender, ¿Desea continuar?')) {
                                             await _this.cancelarBoletos();
                                             _this.pickedBusVenta = value;
@@ -3634,7 +3651,8 @@
 
                     if (parseInt(tmpAsientoSel.IdVenta)) {
                         var auxBoletoCompleto = formatoBoletoCompleto(tmpAsientoSel.TipoBoleto, tmpAsientoSel.Boleto);
-                        if (await APP.msg.confirm('Enviar a Fecha Abierta',
+                        if (await APP.msg.confirm(
+                            'Enviar a Fecha Abierta',
                             'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')) {
                             APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
@@ -3674,7 +3692,7 @@
                     // En un caso específico, el SignalR limpia 'asientoSel', por eso:
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
 
-                    //_this.disabledAsiento = true;
+                    _this.disabledAsiento = true;
 
                     // Valida 'Manifiesto'
                     if (!IngresoManualPasajes) {
@@ -3697,16 +3715,13 @@
                             return;
                         }
                     }
+                    
+                    var auxValidate = await _this.validaAnulacion(tmpAsientoSel);
 
-                    //var auxValidate = await _this.validaAnulacion(tmpAsientoSel);
-
-                    //_this.disabledAsiento = false;
+                    _this.disabledAsiento = false;
 
                     if (!auxValidate)
                         return;
-
-                    alert('El anular está en proceso.');
-                    return; // Eliminarlo
 
                     APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                         IdVenta: tmpAsientoSel.IdVenta,
@@ -3739,6 +3754,7 @@
                 },
                 validaAnulacion: async function (_tmpAsientoSel) {
                     var auxResponse = false;
+
                     var valPanelAnularFechaPasada = _.cloneDeep(appController.validatePanel('59')); // dd_an
                     var valPanelAnularOtroPVenta = appController.validatePanel('60'); // An_Venta
                     var valPanelAnular125 = appController.validatePanel('125'); // An_Venta_Suc
@@ -3749,6 +3765,7 @@
 
                     if (!this.objTurno.StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
                         APP.msg.warning('Se ha superado la cantidad máxima de boletos para anular.');
+
                         return auxResponse;
                     }
 
@@ -3759,8 +3776,10 @@
 
                                 if (appController.validatePanelClave('23') === '1') {
 
-                                    var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion('Anular boleto de fecha pasada',
-                                        'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveAnularFechaPasada);
+                                    var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                        'Anular boleto de fecha pasada'
+                                        , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                        , ClaveAnularFechaPasada);
 
                                     if (resConfirmWhitPassword) {
                                         valPanelAnularFechaPasada = '2';
@@ -3772,11 +3791,13 @@
                                     }
                                     else {
                                         APP.msg.warning('Usuario no autorizado.');
+
                                         return auxResponse;
                                     }
                                 }
 
                                 APP.msg.warning('No se puede anular boletos de fechas pasadas.');
+
                                 return auxResponse;
                             }
                         }
@@ -3788,7 +3809,7 @@
 
                     var validaControlTiempo = await this.validaControlTiempo(_tmpAsientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
                     if (validaControlTiempo)
-                        auxResponse = true;
+                        return auxResponse = true;
 
                     return auxResponse;
                 },
@@ -3823,10 +3844,13 @@
                                     var auxDiffMinutes = moment().diff(moment(this.filtro.Turno, 'hh:mmA'), 'minute');
                                     if ((auxDiffMinutes / 60) < controlTiempo) {
 
-                                        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion('Anular boleto fuera de hora',
-                                            'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveMoverVentaFueraDeHora);
+                                        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                            'Anular boleto fuera de hora',
+                                            'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                            , ClaveMoverVentaFueraDeHora);
                                         if (!resConfirmWhitPassword) {
                                             APP.msg.warning('Usuario no autorizado.');
+
                                             return auxValidate = false;
                                         }
                                     }
@@ -3840,161 +3864,204 @@
 
                     //if (XCIERRE === '1') {
                     //    APP.msg.warning('La programación se encuentra cerrada.');
-                    //    auxResponse = false;
+
+                    //    return auxValidate = false;
                     //}
 
                     if (!(Usuario.Nivel === 11 || Usuario.Nivel === 1 || Usuario.Nivel === 2 || Usuario.Nivel === 4 || Usuario.Nivel === 3 || Usuario.Nivel === 50)) {
                         if (_tmpAsientoSel.ImpManifiesto === 'X') {
                             APP.msg.warning('No se puede anular boleto porque tienen manifiesto impreso.');
+
                             return auxValidate = false;
                         }
                     }
 
-                    debugger; // Comenzar a verificar.
+                    var verificaLiquidacionComiDet = await this.verificaLiquidacionComiDet(_tmpAsientoSel.IdVenta);
+                    if (verificaLiquidacionComiDet !== 0) {
+                        APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
 
-                    //var verificaLiquiComiDet = await this.verificaLiquiComiDet(_tmpAsientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    //if (verificaLiquiComiDet !== 0) {
-                    //    APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
-                    //    return auxValidate = false;
-                    //}
+                        return auxValidate = false;
+                    }
 
-                    //var verificaLiquiComi = await this.verificaLiquiComi(this.filtro.CodiProgramacion, _tmpAsientoSel.CodiPuntoVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    //if (verificaLiquiComi === 1) {
-                    //    APP.msg.warning('El boleto se encuentra liquidado.');
-                    //    return auxValidate = false;
-                    //}
+                    var verificaLiquidacionComi = await this.verificaLiquidacionComi(this.filtro.CodiProgramacion, _tmpAsientoSel.CodiPuntoVenta);
+                    if (verificaLiquidacionComi === "1") {
+                        APP.msg.warning('El boleto se encuentra liquidado.');
 
-                    //var tmpSwIndica = "0";
+                        return auxValidate = false;
+                    }
 
-                    //if (appController.validatePanel('163') === '1' && _valPanelAnularFechaPasada !== '2') {
+                    var tmpSwIndica = "0";
 
-                    //    var consultaPanelNiveles = await this.consultaPanelNiveles("5", Usuario.Nivel); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    //    if (consultaPanelNiveles === '1') {
+                    if (appController.validatePanel('163') === '1' && _valPanelAnularFechaPasada !== '2') {
 
-                    //        if (moment(_tmpAsientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
-                    //            && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
+                        var consultaPanelNiveles = appController.validatePanel(5, Usuario.Nivel);
+                        if (consultaPanelNiveles === '1') {
 
-                    //            APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _tmpAsientoSel.FechaVenta + '.');
-                    //            return auxValidate = false;
-                    //        }
+                            if (moment(_tmpAsientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
+                                && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
 
-                    //        tmpSwIndica = "1";
-                    //    }
-                    //    else {
-                    //        tmpSwIndica = "0";
-                    //        APP.msg.warning('Solo los administradores pueden anular comprobantes.');
-                    //        return auxValidate = false;
-                    //    }
-                    //}
+                                APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _tmpAsientoSel.FechaVenta + '.');
 
-                    //if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '1')
-                    //    return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //else if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '0') { // Verificar que sean los mismos tipos de datos.
-                    //    APP.msg.warning('Solo puede anular este asiento la sucursal ' + this.list.origenesPas.find(x => x.id === _tmpAsientoSel.CodiSucursal).label + '.'); // Verificar tipos de valor.
-                    //    return auxValidate = false;
-                    //}
-                    //else if (Usuario.CodiPuntoVenta !== _tmpAsientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') { // Verificar que sean los mismos tipos de datos.
-                    //    APP.msg.warning('Solo puede anular este asiento el punto de venta ' + _tmpAsientoSel.NomPuntoVenta + '.');
-                    //    return auxValidate = false;
-                    //}
-                    //else if (_tmpAsientoSel.CodiUsuario != Usuario.CodiUsuario) {
+                                return auxValidate = false;
+                            }
 
-                    //    if (tmpSwIndica === '0') {
-                    //        if (appController.validatePanel('40') === '1')
-                    //            APP.msg.warning('Solo puede anular este asiento el usuario que lo vendió.');
-                    //        else
-                    //            return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //    }
-                    //    else
-                    //        return; // ACA VA EL LA FUNCION QUE REEMPLAZA A 'GoTo 150'
-                    //}
-                    //else if (_tmpAsientoSel.FlagVenta === 'R') {
-                    //    await this.cancelarReserva(_tmpAsientoSel);
-                    //    /* auxValidate = false;*/ // No continuar, ya que ya se está cancelando la 'Reserva', verificar cuando se acabe el script.
-                    //}
-                    //else {
-                    //    var consultaIdaVuelta = await this.consultaIdaVuelta(_tmpAsientoSel.IdVenta); // FALTA SERVICIO, PREGUNTAR PARÁMETROS.
-                    //    if (consultaIdaVuelta) {
-                            //var tmpObjAsiento = {};
-                            //var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
-                            //tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
-                            //tmpObjAsiento.OrigenBoleto = _tmpAsientoSel.NomOrigen;
-                            //tmpObjAsiento.DestinoBoleto = _tmpAsientoSel.NomDestino;
-                            //tmpObjAsiento.NroAsiento = String(_tmpAsientoSel.NumeAsiento).padStart(2, '0');
+                            tmpSwIndica = "1";
+                        }
+                        else {
+                            APP.msg.warning('Solo los administradores pueden anular comprobantes.');
 
-                            //await APP.msg.infoBoletoPromocionadoConDescuento(''
-                            //    , 'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe anular el boleto: '
-                            //    , tmpObjAsiento);
+                            return auxValidate = false;
+                        }
+                    }                                                            
+                    if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '1') {
 
-                    //        return auxValidate = false;
-                    //    }
+                        var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
+                        if (validaPorFlagVenta)
+                            return auxValidate;
+                        else
+                            return auxValidate = false;
+                    }
+                    else if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '0') {
+                        APP.msg.warning('Solo puede anular este boleto la sucursal ' + appVueFilter.list.origenesPas.find(x => x.id === String(_tmpAsientoSel.CodiSucursal)).label + '.');
 
-                    //if (_tmpAsientoSel.FlagVenta === '5') {
-                    //        APP.msg.warning('El boleto está emitido como delegación, no se puede anular.');
-                    //        return auxValidate = false;
-                    //    }
+                        return auxValidate = false;
+                    }
+                    else if (Usuario.CodiPuntoVenta !== _tmpAsientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') {
+                        APP.msg.warning('Solo puede anular este boleto el punto de venta ' + _tmpAsientoSel.NomPuntoVenta + '.');
 
-                    //if (_tmpAsientoSel.FlagVenta === '7') {
-                    //        if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
-                    //            APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
-                    //            return auxValidate = false;
-                    //        }
-                    //    }
+                        return auxValidate = false;
+                    }
+                    else if (_tmpAsientoSel.CodiUsuario !== Usuario.CodiUsuario) {
 
-                    //if (_tmpAsientoSel.FlagVenta === 'Y') {
-                    //        if (appController.validatePanel('32') !== '1') {
-                    //            APP.msg.warning('No se puede anular un Vale remoto.');
-                    //            return auxValidate = false;
-                    //        }
-                    //    }
+                        if (tmpSwIndica === '0') {
+                            if (appController.validatePanel('40') === '1') {
+                                await APP.msg.infoMessage(
+                                    ''
+                                    , 'Solo puede anular este boleto el usuario que lo vendió.'
+                                );
+                            }
+                            else {
+                                var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
+                                if (validaPorFlagVenta)
+                                    return auxValidate;
+                                else
+                                    return auxValidate = false;
+                            }
+                        }
+                        else {
+                            var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
+                            if (validaPorFlagVenta)
+                                return auxValidate;
+                            else
+                                return auxValidate = false;
+                        }
+                    }
+                    else if (_tmpAsientoSel.FlagVenta === 'R') {
+                        await this.cancelarReserva(_tmpAsientoSel);
 
-                        //if (x === 2)
-                        //    return; // Goto100
-                        // x = 2;
+                        return auxValidate = false;
+                    }
+                    else {
+                        var consultaVentaIdaV = await this.consultaVentaIdaV(_tmpAsientoSel.IdVenta);
+                        if (consultaVentaIdaV) {
+                            var tmpObjAsiento = {};
+                            var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
+                            tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
+                            tmpObjAsiento.OrigenBoleto = _tmpAsientoSel.NomOrigen;
+                            tmpObjAsiento.DestinoBoleto = _tmpAsientoSel.NomDestino;
+                            tmpObjAsiento.NroAsiento = String(_tmpAsientoSel.NumeAsiento).padStart(2, '0');
+
+                            await APP.msg.infoBoletoPromocionadoConDescuento(
+                                ''
+                                , 'El boleto que intenta anular es un boleto ida y vuelta promocionado con descuento, para proceder primero debe anular el boleto: '
+                                , tmpObjAsiento);
+
+                            return auxValidate = false;
+                        }
+
+                        if (_tmpAsientoSel.FlagVenta === '5') {
+                            APP.msg.warning('El boleto está emitido como delegación, no se puede anular.');
+
+                            return auxValidate = false;
+                        }
+
+                        var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
+                        if (validaPorFlagVenta)
+                            return auxValidate;
+                        else
+                            return auxValidate = false;
+                    }
+
+                    return auxValidate;
+                },
+                validaPorFlagVenta: async function (_tmpAsientoSel, _valPanelAnularFechaPasada) {
+                    var auxValidate = true;
+
+                    if (_tmpAsientoSel.FlagVenta === '7') {
+                        if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
+                            APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
+
+                            return auxValidate = false;
+                        }
+                    }
+
+                    if (_tmpAsientoSel.FlagVenta === 'Y') {
+                        if (appController.validatePanel('32') !== '1') {
+                            APP.msg.warning('No se puede anular un Vale remoto.');
+
+                            return auxValidate = false;
+                        }
+                    }
+
+                    //if (x === 2)
+                    //    return; // Goto100
+                    // x = 2;
                     
-                    //if (_tmpAsientoSel.PrecVentaReintegro > 0) {
-                    //    if (await APP.msg.confirm('', 'El asiento cuenta con reintegro, para anular el reintegro debe presionar XX, caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar?')) {
-                    //        if (appController.validatePanel('231') === '1') {
+                    if (_tmpAsientoSel.PrecVentaReintegro > 0) {
+                        if (await APP.msg.confirm(
+                            ''
+                            , 'El asiento cuenta con reintegro, para anular el reintegro debe presionar XX, caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar?')) {
+                            if (appController.validatePanel('231') === '1') {
 
-                    //            var resConfirmClaveFechaActualCodiUsuario = await APP.msg.confirmClaveFechaActualCodiUsuario('Anular boleto'
-                    //                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                    //                , Usuario.CodiUsuario);
-                    //            if (!resConfirmClaveFechaActualCodiUsuario) {
-                    //                return auxValidate = false;
-                    //            }
-                    //        }
-                    //    }
-                    //    else
-                    //        return auxValidate = false;
-                    //}
-
+                                var resConfirmClaveFechaActualCodiUsuario = await APP.msg.confirmClaveFechaActualCodiUsuario(
+                                    'Anular boleto'
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , Usuario.CodiUsuario);
+                                if (!resConfirmClaveFechaActualCodiUsuario) 
+                                    return auxValidate = false;
+                            }
+                        }
+                        else
+                            return auxValidate = false;
+                    }
+                    
                     var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
 
-                    if (await APP.msg.confirm('Anular Venta',
-                        'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será anulado, ¿Desea continuar?')) {
+                    if (await APP.msg.confirm(
+                        'Anular Venta'
+                        , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será anulado, ¿Desea continuar?')) {
 
-                        //if (appController.validatePanel('221') === '1') {
-                        //    if (_tmpAsientoSel.TipoPago === '03') {
+                        if (appController.validatePanel('221') === '1') {
+                            if (_tmpAsientoSel.TipoPago === '03') {
 
-                        //        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
-                        //            'Anular boleto (T.P. Crédito)'
-                        //            , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                        //            , ClaveAnulacionTarjetaCredito);
-                        //        if (!resConfirmWhitPassword)
-                        //            return auxValidate = false;
-                        //    }
-                        //}
+                                var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                    'Anular boleto (T.P. Crédito)'
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClaveAnulacionTarjetaCredito);
+                                if (!resConfirmWhitPassword)
+                                    return auxValidate = false;
+                            }
+                        }
 
                         if (_tmpAsientoSel.Boleto.substring(0, 3) === '000' && _tmpAsientoSel.FlagVenta === 'T') {
                             APP.msg.warning('No se puede anular, primero confirme el asiento.');
+
                             return auxValidate = false;
                         }
 
                         if (_tmpAsientoSel.FlagVenta !== 'R') {
-                            // ACCION = "03" -> Si no se llega a utilizar, eliminar.
-                            if (appController.validatePanel('234') === '1') {
 
-                                await this.listaUsuariosClaveAnuRei();
+                            if (appController.validatePanel('234') === '1') {
 
                                 var objUsuario = {
                                     disabled: false,
@@ -4007,24 +4074,99 @@
                                     objUsuario.id = Usuario.CodiUsuario;
                                     objUsuario.label = Usuario.Nombre;
                                 }
+                                else
+                                    await this.listaUsuariosClaveAnuRei();
 
-                                var resConfirmClaveAutorizacionWhitUsuarioAndObs = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
+                                var objResponse = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
                                     'Anular boleto'
-                                    , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado e ingrese la clave de autorización.'
+                                    , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado, ingrese el motivo y la clave de autorización.'
                                     , this.list.usuariosClaveAnuRei
-                                    , objUsuario);
-                                if (!resConfirmClaveAutorizacionWhitUsuarioAndObs)
+                                    , objUsuario
+                                    , '234'); // Utilizamos 'código panel' para diferenciar el consumo de servicios del 'sweet alert' reutilizable.
+                                if (objResponse && objResponse.Estado) {
+                                    var objAuditoria = {};
+                                    objAuditoria.CodiUsuario = Usuario.CodiUsuario;
+                                    objAuditoria.NomUsuario = Usuario.Nombre;
+                                    objAuditoria.Tabla = "VENTA";
+                                    objAuditoria.TipoMovimiento = "AUTORIZACION_ANU";
+                                    objAuditoria.Boleto = _tmpAsientoSel.Boleto;
+                                    objAuditoria.NumeAsiento = "";
+                                    objAuditoria.NomOficina = Usuario.NomSucursal;
+                                    objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
+                                    objAuditoria.Pasajero = "";
+                                    objAuditoria.FechaViaje = "01/01/1900";
+                                    objAuditoria.HoraViaje = "";
+                                    objAuditoria.NomDestino = "";
+                                    objAuditoria.Precio = 0.00;
+                                    objAuditoria.Obs1 = "";
+                                    objAuditoria.Obs2 = "Terminal" + String(Usuario.Terminal).padStart(3, '0');
+                                    objAuditoria.Obs3 = "AUTORIZA CODIGO:" + objResponse.UsuarioId + " NOMBRE:" + objResponse.UsuarioLabel;
+                                    objAuditoria.Obs4 = objResponse.Motivo;
+                                    objAuditoria.Obs5 = "";
+
+                                    var resGrabarAuditoria = await this.grabarAuditoria(objAuditoria);
+                                    if (!resGrabarAuditoria)
+                                        return auxValidate = false;
+                                }
+                                else
                                     return auxValidate = false;
                             }
-                            //else {
+                            else {
 
-                            //}
+                                if (_valPanelAnularFechaPasada !== '2') {
+
+                                    if (appController.validatePanelClave('36') === '1') {
+
+                                        var objUsuario = {
+                                            disabled: false,
+                                            id: "0",
+                                            label: "SELECCIONE"
+                                        };
+
+                                        if (appController.validatePanel('147') === '1') {
+                                            objUsuario.disabled = true;
+                                            objUsuario.id = Usuario.CodiUsuario;
+                                            objUsuario.label = Usuario.Nombre;
+                                        }
+                                        else
+                                            await this.listaUsuariosClaveControl();
+
+                                        var objResponse = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
+                                            'Anular boleto'
+                                            , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado, ingrese el motivo y la clave de autorización.'
+                                            , this.list.usuariosClaveControl
+                                            , objUsuario
+                                            , '36'); // Utilizamos 'código panel' para diferenciar el consumo de servicios del 'sweet alert' reutilizable.
+                                        if (objResponse && objResponse.Estado) {
+
+                                            var resInsertarUsuarioPorVenta = await this.insertarUsuarioPorVenta(Usuario.CodiUsuario, "03", _tmpAsientoSel.IdVenta, objResponse.Motivo);
+                                            if (!resInsertarUsuarioPorVenta)
+                                                return auxValidate = false;
+                                        }
+                                        else
+                                            return auxValidate = false;
+                                    }
+                                }
+                                else {
+                                    if (appController.validatePanelClave('23') === '1') {
+
+                                        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                            'Anular boleto de fecha pasada'
+                                            , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                            , ClaveAnularFechaPasada);
+                                        if (!resConfirmWhitPassword) {
+                                            APP.msg.warning('No se puede anular el boleto.');
+                                            return auxValidate = false;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                    else
+                    else {
                         this.limpiarVenta();
-
-                    //}
+                        return auxValidate = false;
+                    }
 
                     return auxValidate;
                 },
@@ -4044,9 +4186,55 @@
 
                     return auxResponse;
                 },
+                verificaLiquidacionComiDet: async function (_IdVenta) {
+                    var auxResponse = 0;
 
-                // COLOCAR: FALTA SERVICIOS.
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/verificaLiquidacionComiDet', {
+                        IdVenta: _IdVenta
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
 
+                    return auxResponse;
+                },
+                verificaLiquidacionComi: async function (_CodiProgramacion, _CodiPuntoVenta) {
+                    var auxResponse = "0";
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/verificaLiquidacionComi', {
+                        CodiProgramacion: _CodiProgramacion,
+                        Pvta: _CodiPuntoVenta
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                consultaVentaIdaV: async function (_IdVenta) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaVentaIdaV', {
+                        IdVenta: _IdVenta
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
                 listaUsuariosClaveAnuRei: async function () {
                     var _this = this;
 
@@ -4061,6 +4249,90 @@
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                consultaClaveAnuRei: async function (_CodiUsuario, _Clave) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaClaveAnuRei', {
+                        CodiUsuario: _CodiUsuario,
+                        Clave: _Clave
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                grabarAuditoria: async function (_objAuditoria) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/grabarAuditoria', {
+                        request: _objAuditoria
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                listaUsuariosClaveControl: async function () {
+                    var _this = this;
+
+                    if (_this.list.usuariosClaveControl && _this.list.usuariosClaveControl.length > 0)
+                        return;
+
+                    await APP.rq.axios2.get(APP.base + '/base/get-usuario-claveControl')
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.usuariosClaveControl = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                consultaClaveControl: async function (_Usuario, _Pwd) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaClaveControl', {
+                        Usuario: _Usuario,
+                        Pwd: _Pwd
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                insertarUsuarioPorVenta: async function (_Usuario, _Accion, _IdVenta, _Motivo) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/insertarUsuarioPorVenta', {
+                        Usuario: _Usuario,
+                        Accion: _Accion,
+                        IdVenta: _IdVenta,
+                        Motivo: _Motivo
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
                 },
                 configEventKeyF5: function (e) {
                     //if (e.keyCode === 116) {
@@ -4322,16 +4594,22 @@
                     var auxResponse = true;
 
                     // SweetAlert para 'Manifiesto'
-                    if (await APP.msg.confirm('Manifiesto ya fue impreso', '¿Desea aperturar de nuevo la programación?')) {
+                    if (await APP.msg.confirm(
+                        'Manifiesto ya fue impreso'
+                        , '¿Desea aperturar de nuevo la programación?')) {
                         if (this.filtro.CodiSucursal.id !== String(Usuario.CodiSucursal)) {
                             App.msg.warning('Operación no permitida por estar en una oficina diferente.');
                             auxResponse = false;
                         }
                         else {
-                            var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion('Autorización',
-                                'Necesita permiso para realizar esta acción, ingrese la clave de autorización.', ClaveProgramacion);
+                            var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                'Autorización',
+                                'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                , ClaveProgramacion);
                             if (resConfirmWhitPassword) {
-                                var resConfirmAperturaProgramacion = await APP.msg.confirmAperturaProgramacion('Aperturar programación', '');
+                                var resConfirmAperturaProgramacion = await APP.msg.confirmAperturaProgramacion(
+                                    'Aperturar programación'
+                                    , '');
 
                                 if (resConfirmAperturaProgramacion) {
                                     var tmpTipoApertura = false;
@@ -5679,7 +5957,9 @@
 
                         if (auxValidate) {
                             // SweetAlert para 'fechaAbierta'
-                            if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar el Pase a Fecha Abierta?'))
+                            if (await APP.msg.confirm(
+                                'Confirmar acción'
+                                , '¿Desea enviar el Pase a Fecha Abierta?'))
                                 _this.fechaAbierta = true;
 
                             await appController.sendPaseCortesia(item);
@@ -6190,7 +6470,9 @@
                     request.hospital = this.hospital;
 
                     // SweetAlert para 'fechaAbierta'
-                    if (await APP.msg.confirm('Confirmar acción', '¿Desea enviar la venta al Crédito a Fecha Abierta?'))
+                    if (await APP.msg.confirm(
+                        'Confirmar acción'
+                        , '¿Desea enviar la venta al Crédito a Fecha Abierta?'))
                         request.fechaAbierta = true;
                     else
                         request.fechaAbierta = false;

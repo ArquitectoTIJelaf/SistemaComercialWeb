@@ -337,6 +337,24 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
     return _bool;
 };
 
+APP.msg.infoMessage = async function (_title, _message) {
+    var _bool = false;
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        text: _message || "¿Desea Continuar con la operación?",
+        type: "info",
+        allowOutsideClick: false
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return _bool;
+};
+
 APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _bool = false;
 
@@ -471,12 +489,25 @@ APP.msg.confirmClaveFechaActualCodiUsuario = async function (_title, _message, _
     return _bool;
 };
 
-APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _message, _listUsuariosClaveAnuRei, _objUsuario, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
-    var _bool = false;
-    debugger;
+APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _message, _listUsuariosSA, _objUsuario, _codiPanel, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+    var _objResponse = {
+        Estado: false,
+        UsuarioId: "0",
+        UsuarioLabel: "",
+        Motivo: ""
+    };
+
     var auxDisabled = '';
-    if (_objUsuario.disabled)
+    var optionDefault = '';
+
+    if (_objUsuario.disabled) {
         auxDisabled = 'disabled="disabled"';
+        optionDefault = '<option value="' + _objUsuario.id + '|' + _objUsuario.label + '">' + _objUsuario.id + ' - ' + _objUsuario.label + '</option>';
+    }
+    else {
+        auxDisabled = '';
+        optionDefault = '<option value="0|SELECCIONE">Seleccione</option>';
+    }
 
     await swal({
         title: _title || "Mensaje del sistema",
@@ -484,10 +515,13 @@ APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _mes
             '<p style="font-weight: 300; font-size: 13px; text-align: justify; line-height: normal; " >' +
             _message +
             '</p>' +
-            '<select id="cboUsuariosAnuRei" class="swal2-input"' + auxDisabled + '>' +
-            '<option value="' + _objUsuario.id + '">' + _objUsuario.id + ' - ' + _objUsuario.label + '</option>' +
-            `${_listUsuariosClaveAnuRei.map(usu => `<option value="${usu.id}">${usu.id} - ${usu.label}</option>`)} `+
-            '</select>'
+            '<select id="cboUsuariosSA" class="swal2-input" style="display: flex; "' + auxDisabled + '>' +
+            optionDefault +
+            `${_listUsuariosSA.map(usu => `<option value="${usu.id}|${usu.label}">${usu.id} - ${usu.label}</option>`)} `+
+            '</select>' +
+            '<textarea id="txtMotivo" class="swal2-textarea" placeholder="MOTIVO" maxlength="200"' +
+            'style="display: flex; height: 60px; resize: none; " >' +
+            '</textarea>'
         ,
         input: 'password',
         inputPlaceholder: 'CLAVE',
@@ -502,20 +536,42 @@ APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _mes
         allowOutsideClick: false,
         showLoaderOnConfirm: true,
         preConfirm: async function (value) {
-            debugger;
-            //var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
-            //if (resSendClaveAutorizacion && resSendClaveAutorizacion.Estado)
-            //    _bool = true;
-            //else {
-            //    Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
-            //}
+            var auxCboUsuariosSA = document.getElementById('cboUsuariosSA').value;
+            var valueCboId = auxCboUsuariosSA.substring(0, auxCboUsuariosSA.indexOf('|'));
+            var valueCboLabel = auxCboUsuariosSA.substring(auxCboUsuariosSA.indexOf('|') + 1);
 
-            //return new Promise(function (resolve) {
-            //    resolve([
-            //        $('#swal-input1').val(),
-            //        $('#swal-input2').val()
-            //    ])
-            //})
+            var valueTxtArea = document.getElementById('txtMotivo').value;
+
+            if (valueCboId === '0') {
+                document.getElementById('cboUsuariosSA').focus();
+                Swal.showValidationMessage('Seleccione un usuario.');
+            }
+            else if (valueTxtArea === '') {
+                document.getElementById('txtMotivo').focus();
+                Swal.showValidationMessage('Ingrese motivo.');
+            }
+            else {
+                var resService = '';
+
+                switch (_codiPanel) {
+                    case '234':
+                        resService = await appVueVenta.consultaClaveAnuRei(valueCboId, value);
+                        break;
+                    case '36':
+                        resService = await appVueVenta.consultaClaveControl(valueCboId, value);
+                        break;
+                }
+
+                if (resService) {
+                    _objResponse.Estado = resService;
+                    _objResponse.UsuarioId = valueCboId;
+                    _objResponse.UsuarioLabel = valueCboLabel;
+                    _objResponse.Motivo = valueTxtArea;
+                }
+                else {
+                    Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
+                }
+            }
         }
     }).then(res => {
 
@@ -523,7 +579,7 @@ APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs = async function (_title, _mes
         APP.msg.error(error);
     });
 
-    return _bool;
+    return _objResponse;
 };
 
 /*!********************* Messages */

@@ -214,6 +214,32 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
+        public static List<PanelControlNivelEntity> ListarPanelControlNivel()
+        {
+            var Lista = new List<PanelControlNivelEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_panel_Niveles_Consulta";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        var entidad = new PanelControlNivelEntity
+                        {
+                            Codigo = Reader.GetIntValue(drlector, "codigo"),
+                            Descripcion = Reader.GetStringValue(drlector, "descripcion"),
+                            Nivel = Reader.GetByteValue(drlector, "nivel")
+                        };
+
+                        Lista.Add(entidad);
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
         public static decimal BuscarPrecio(string fechaViaje, string nivel, string hora, string idPrecio)
         {
             var valor = new decimal();

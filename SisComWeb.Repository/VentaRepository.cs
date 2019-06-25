@@ -420,6 +420,109 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static int VerificaLiquidacionComiDet(int IdVenta)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_liquidacionComi_Det_Verifica";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "Id_lquidaciondet");
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static string VerificaLiquidacionComi(int CodiProgramacion, int Pvta)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Cierre_LiquiComi_Verifica";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Pvta", DbType.Int32, ParameterDirection.Input, Pvta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "estado");
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static bool ConsultaVentaIdaV(int IdVenta)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_TB_VENTA_IDA_V_Consulta";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = true;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static bool ConsultaClaveAnuRei(int CodiUsuario, string Clave)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_tb_Mantenimiento_ClaveAnuRei_Consulta";
+                db.AddParameter("@Codi_Usuario", DbType.Int32, ParameterDirection.Input, CodiUsuario);
+                db.AddParameter("@Clave", DbType.String, ParameterDirection.Input, Clave);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = true;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static bool ConsultaClaveControl(short Usuario, string Pwd)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_tb_control_Pwd_Consulta";
+                db.AddParameter("@USUARIO", DbType.Int16, ParameterDirection.Input, Usuario);
+                db.AddParameter("@PWD", DbType.String, ParameterDirection.Input, Pwd);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = true;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -847,6 +950,26 @@ namespace SisComWeb.Repository
                 db.AddParameter("@CamDes", DbType.Decimal, ParameterDirection.Input, CamDes);
                 db.AddParameter("@ImpDes", DbType.Decimal, ParameterDirection.Input, ImpDes);
                 db.AddParameter("@obs", DbType.String, ParameterDirection.Input, Obs);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarUsuarioPorVenta(string Usuario, string Accion, decimal IdVenta, string Motivo)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Usuario_X_Venta_Insert";
+                db.AddParameter("@usuario", DbType.String, ParameterDirection.Input, Usuario);
+                db.AddParameter("@accion", DbType.String, ParameterDirection.Input, Accion);
+                db.AddParameter("@id_venta", DbType.Decimal, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@motivo", DbType.String, ParameterDirection.Input, Motivo);
 
                 db.Execute();
 

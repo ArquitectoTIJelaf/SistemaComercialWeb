@@ -13,10 +13,21 @@ namespace SisComWeb.Aplication.Models
         public string TipoControl { get; set; }
     }
 
+    public class PanelControlNivel
+    {
+        public int Codigo { get; set; }
+
+        public string Descripcion { get; set; }
+
+        public byte Nivel { get; set; }
+    }
+
     public class PanelControlResponse
     {
         public List<PanelControl> ListarPanelControl { get; set; }
 
         public List<PanelControl> ListarPanelControlClave { get; set; }
+
+        public List<PanelControlNivel> ListarPanelControlNivel { get; set; }
     }
 }

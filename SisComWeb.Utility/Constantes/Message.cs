@@ -18,6 +18,12 @@
         public const string MsgCorrectoValidaUsuario = "Correcto: ValidaUsuario.";
         public const string MsgExcValidaUsuario = "Excepción: ValidaUsuario.";
 
+        public const string MsgCorrectoListaUsuariosClaveAnuRei = "Correcto: ListaUsuariosClaveAnuRei.";
+        public const string MsgExcListaUsuariosClaveAnuRei = "Excepción: ListaUsuariosClaveAnuRei.";
+
+        public const string MsgCorrectoListaUsuariosClaveConrol = "Correcto: ListaUsuariosClaveConrol.";
+        public const string MsgExcListaUsuariosClaveConrol = "Excepción: ListaUsuariosClaveConrol.";
+
         // Servicios
         public const string MsgCorrectoListaServicios = "Correcto: ListaServicios.";
         public const string MsgExcListaServicios = "Excepción: ListaServicios.";
@@ -191,6 +197,24 @@
         public const string MsgCorrectoConsultaPanelNiveles = "Correcto: ConsultaPanelNiveles.";
         public const string MsgExcConsultaPanelNiveles = "Excepción: ConsultaPanelNiveles.";
 
+        public const string MsgCorrectoVerificaLiquidacionComiDet = "Correcto: VerificaLiquidacionComiDet.";
+        public const string MsgExcVerificaLiquidacionComiDet = "Excepción: VerificaLiquidacionComiDet.";
+
+        public const string MsgCorrectoVerificaLiquidacionComi = "Correcto: VerificaLiquidacionComi.";
+        public const string MsgExcVerificaLiquidacionComi = "Excepción: VerificaLiquidacionComi.";
+
+        public const string MsgCorrectoConsultaVentaIdaV = "Correcto: ConsultaVentaIdaV.";
+        public const string MsgExcConsultaVentaIdaV = "Excepción: ConsultaVentaIdaV.";
+
+        public const string MsgCorrectoConsultaClaveAnuRei = "Correcto: ConsultaClaveAnuRei.";
+        public const string MsgExcConsultaClaveAnuRei = "Excepción: ConsultaClaveAnuRei.";
+
+        public const string MsgCorrectoConsultaClaveControl = "Correcto: ConsultaClaveControl.";
+        public const string MsgExcConsultaClaveControl = "Excepción: ConsultaClaveControl.";
+
+        public const string MsgCorrectoInsertarUsuarioPorVenta = "Correcto: InsertarUsuarioPorVenta.";
+        public const string MsgExcInsertarUsuarioPorVenta = "Excepción: InsertarUsuarioPorVenta.";
+
         // Postergación
         public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: BuscarVentaxBoleto.";
         public const string MsgValidaBuscarVentaxBoleto = "No se encontraron resultados.";
@@ -245,5 +269,9 @@
         public const string MsgErrorGrabarAuditoriaProg = "Error: GrabarAuditoriaProg.";
         public const string MsgErrorActualizarVentaManifiesto = "Error: ActualizarVentaManifiesto.";
         public const string MsgExcActualizarProgramacionManifiesto = "Excepción: ActualizarProgramacionManifiesto.";
+
+        // Auditoria
+        public const string MsgCorrectoGrabarAuditoria = "Correcto: GrabarAuditoria.";
+        public const string MsgExcGrabarAuditoria = "Excepción: GrabarAuditoria.";
     }
 }
