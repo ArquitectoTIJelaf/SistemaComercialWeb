@@ -14,8 +14,8 @@
                                 <v-select v-model="gerente"
                                           id="cboGerentePC"
                                           label="label"
+                                          placeholder="GERENTE"
                                           :options="list.gerentes"
-                                          :placeholder="'GERENTE'"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
                                           @@keydown.9.native.prevent="recorridoPaseCortesia">
@@ -31,10 +31,11 @@
                                 <v-select v-model="solicitante"
                                           id="cboSolicitantePC"
                                           label="label"
+                                          placeholder="SOLICITANTE"
                                           :options="list.solicitantes"
-                                          :placeholder="'SOLICITANTE'"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
+                                          @@keydown.9.native.prevent="fillBeneficiario(solicitante)"
                                           ref="refSolicitantePC">
                                     <template slot="option" slot-scope="option">
                                         <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>

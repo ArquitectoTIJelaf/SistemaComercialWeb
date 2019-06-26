@@ -224,16 +224,22 @@ namespace SisComWeb.Business
             entidad.ApellidoPaterno = item.SplitNombres[1];
             entidad.ApellidoMaterno = item.SplitNombres[2];
             entidad.Sexo = item.Sexo;
-
             entidad.TipoPago = item.TipoPago;
+
+            entidad.Edad = item.Edad;
+            entidad.Telefono = item.Telefono;
 
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {
                 // Busca 'Pasajero'
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
                 entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
-                entidad.Edad = buscaPasajero.Edad; // La tabla 'Tb_Boleto_Ruta' no contiene 'Edad'
-                entidad.Telefono = buscaPasajero.Telefono; // La tabla 'Tb_Boleto_Ruta' no contiene 'Telefono'
+
+                if (entidad.Edad == 0 && string.IsNullOrEmpty(entidad.Telefono))
+                {
+                    entidad.Edad = buscaPasajero.Edad; // La tabla 'Tb_Boleto_Ruta' no contiene 'Edad'
+                    entidad.Telefono = buscaPasajero.Telefono; // La tabla 'Tb_Boleto_Ruta' no contiene 'Telefono'
+                }
             }
 
             switch (entidad.FlagVenta)

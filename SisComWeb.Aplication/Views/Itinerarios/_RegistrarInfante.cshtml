@@ -16,10 +16,10 @@
                             <label class="col-md-2 control-label label-sm">Documento:</label>
                             <div class="col-md-10">
                                 <v-select id="cboTipoDocRA"
+                                          placeholder="DOCUMENTO"
                                           label="label"
                                           v-model="CodiTipoDoc"
                                           :options="list.tipoDoc"
-                                          :placeholder="'DOCUMENTO'"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @@keydown.9.native.prevent="recorridoSectionParentesco">
@@ -132,10 +132,10 @@
                             <label class="col-md-12 label-sm">Sexo:</label>
                             <div class="col-md-12">
                                 <v-select id="cboSexoRA"
+                                          placeholder="SEXO"
                                           label="label"
                                           v-model="Sexo"
                                           :options="list.sexos"
-                                          :placeholder="'SEXO'"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @@keydown.9.native.prevent="recorridoSectionParentesco">
@@ -149,10 +149,10 @@
                             <label class="col-md-2 control-label label-sm">Parentesco:</label>
                             <div class="col-md-10">
                                 <v-select id="cboParentescoRA"
+                                          placeholder="PARENTESCO"
                                           label="label"
                                           v-model="Parentesco"
                                           :options="list.parentesco"
-                                          :placeholder="'PARENTESCO'"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @@keydown.9.native.prevent="recorridoSectionParentesco">

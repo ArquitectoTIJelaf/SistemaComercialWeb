@@ -70,13 +70,14 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Empresa:</label>
-                                    <v-select v-model="filtro.CodiEmpresa"
+                                    <v-select id="cboEmpresa"
+                                              placeholder="EMPRESA"
+                                              v-model="filtro.CodiEmpresa"
                                               :options="list.empresas"
-                                              :placeholder="'EMPRESA'"
                                               :select-on-tab="true"
-                                              id="cboEmpresa"
                                               :get-option-label="getLabel"
                                               @@keydown.13.native.prevent="nextStep(1)"
+                                              @@keydown.9.native.prevent="nextStep(1)"
                                               ref="refEmpresa">
                                         <template slot="option" slot-scope="option">
                                             <div @@click="nextStep(1)">{{ option.id }} - {{ option.label }}</div>
@@ -143,13 +144,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Sucursal:</label>
-                                                <v-select v-model="filtro.CodiSucursal"
+                                                <v-select id="cboSucursal"
+                                                          placeholder="SUCURSAL"
+                                                          v-model="filtro.CodiSucursal"
                                                           :options="list.sucursales"
-                                                          :placeholder="'SUCURSAL'"
                                                           :select-on-tab="true"
-                                                          id="cboSucursal"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(2)"
+                                                          @@keydown.9.native.prevent="nextStep(2)"
                                                           ref="refSucursal">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(2)">{{ option.id }} - {{ option.label }}</div>
@@ -161,13 +163,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Origen bus:</label>
-                                                <v-select v-model="filtro.CodiOrigenBus"
+                                                <v-select id="cboOrigenBus"
+                                                          placeholder="ORIGEN BUS"
+                                                          v-model="filtro.CodiOrigenBus"
                                                           :options="list.origenesBus"
-                                                          :placeholder="'ORIGEN BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboOrigenBus"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(3)"
+                                                          @@keydown.9.native.prevent="nextStep(3)"
                                                           ref="refOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(3)">{{ option.id }} - {{ option.label }}</div>
@@ -179,13 +182,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">P.V. Origen bus:</label>
-                                                <v-select v-model="filtro.CodiPVOrigenBus"
+                                                <v-select id="cboPVOrigenBus"
+                                                          placeholder="P.V. ORIGEN BUS"
+                                                          v-model="filtro.CodiPVOrigenBus"
                                                           :options="list.pvOrigenesBus"
-                                                          :placeholder="'P.V. ORIGEN BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboPVOrigenBus"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(4)"
+                                                          @@keydown.9.native.prevent="nextStep(4)"
                                                           ref="refPVOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(4)">{{ option.id }} - {{ option.label }}</div>
@@ -197,13 +201,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Destino bus:</label>
-                                                <v-select v-model="filtro.CodiDestinoBus"
+                                                <v-select id="cboDestinoBus_2"
+                                                          placeholder="DESTINO BUS"
+                                                          v-model="filtro.CodiDestinoBus"
                                                           :options="list.destinosBus"
-                                                          :placeholder="'DESTINO BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboDestinoBus_2"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(5)"
+                                                          @@keydown.9.native.prevent="nextStep(5)"
                                                           ref="refDestinoBus_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(5)">{{ option.id }} - {{ option.label }}</div>
@@ -215,13 +220,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Servicio:</label>
-                                                <v-select v-model="filtro.CodiServicio"
+                                                <v-select id="cboServicio"
+                                                          placeholder="SERVICIO"
+                                                          v-model="filtro.CodiServicio"
                                                           :options="list.servicios"
-                                                          :placeholder="'SERVICIO'"
                                                           :select-on-tab="true"
-                                                          id="cboServicio"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(6)"
+                                                          @@keydown.9.native.prevent="nextStep(6)"
                                                           ref="refServicio">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(6)">{{ option.id }} - {{ option.label }}</div>
@@ -233,13 +239,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Destino pasajero:</label>
-                                                <v-select v-model="filtro.CodiDestinoPas"
+                                                <v-select id="cboDestinoPas_2"
+                                                          placeholder="DESTINO PASAJERO"
+                                                          v-model="filtro.CodiDestinoPas"
                                                           :options="list.destinosPas"
-                                                          :placeholder="'DESTINO PASAJERO'"
                                                           :select-on-tab="true"
-                                                          id="cboDestinoPas_2"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(7)"
+                                                          @@keydown.9.native.prevent="nextStep(7)"
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
@@ -717,14 +724,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">Tipo doc.</label>
-                                                    <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                    <v-select id="cboTipoDoc"
+                                                              placeholder="TIPO"
+                                                              ref="refTipoDoc"
+                                                              v-model="list.ventas[indexVenta].CodiTipoDoc"
                                                               @@keydown.13.native.prevent="passNumDocToDocumento"
                                                               @@keydown.9.native.prevent="passNumDocToDocumento"
                                                               :options="list.tiposDoc"
-                                                              :placeholder="'TIPO'"
                                                               :select-on-tab="true"
-                                                              id="cboTipoDoc"
-                                                              ref="refTipoDoc"
                                                               :get-option-label="labelOfDocumento"
                                                               :disabled="disabledCamposTicket_Pase"
                                                               name="Tipo"
@@ -878,16 +885,16 @@
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
-                                                    <v-select v-model="list.ventas[indexVenta].Sexo"
+                                                    <v-select id="cboSexo"
+                                                              placeholder="SEXO"
+                                                              label="label"
+                                                              v-model="list.ventas[indexVenta].Sexo"
                                                               @@keydown.13.native.prevent="$refs.refTelefono.focus()"
-                                                              @@keypress.9.prevent="$refs.refTelefono.focus()"
+                                                              @@keypress.9.native.prevent="$refs.refTelefono.focus()"
                                                               :options="list.sexos"
-                                                              :placeholder="'SEXO'"
                                                               :select-on-tab="true"
-                                                              id="cboSexo"
                                                               :disabled="disabledCamposTicket_Pase"
-                                                              ref="refSexo"
-                                                              label="label">
+                                                              ref="refSexo">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
                                                         </template>

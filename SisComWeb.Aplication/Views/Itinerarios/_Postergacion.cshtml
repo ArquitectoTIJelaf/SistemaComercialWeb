@@ -13,10 +13,10 @@
                             <div class="col-md-10">
                                 <v-select v-model="filtro.empresa"
                                           id="cboEmpresaPos"
+                                          placeholder="EMPRESA"
                                           @@keydown.13.native.prevent="$refs.refSeriePos.focus()"
-                                          @@keypress.9.prevent="$refs.refSeriePos.focus()"
+                                          @@keypress.9.native.prevent="$refs.refSeriePos.focus()"
                                           :options="list.empresas"
-                                          :placeholder="'EMPRESA'"
                                           :select-on-tab="true"
                                           ref="refEmpresaPos"
                                           label="label">

@@ -565,7 +565,6 @@ namespace SisComWeb.Business
                         if (!actualizarLiquidacionVentas)
                             return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
                     }
-                    
                     // Graba 'LiquidacionVentas'
                     else
                     {
@@ -1330,9 +1329,9 @@ namespace SisComWeb.Business
 
                 foreach (var entidad in Listado)
                 {
+                    var paginaWebEmisor = string.Empty;
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
-                    var paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
                     var consultaNroPoliza = new PolizaEntity()
                     {
                         NroPoliza = "",
@@ -1342,6 +1341,10 @@ namespace SisComWeb.Business
                     var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
                     if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
                         consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
+
+                    // Solo para 'Terminales electrónicos'
+                    if (entidad.BoletoTipo != "M")
+                        paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
 
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)
