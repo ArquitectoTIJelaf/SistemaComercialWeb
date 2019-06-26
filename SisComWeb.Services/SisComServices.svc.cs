@@ -386,6 +386,32 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<string> ConsultaManifiestoProgramacion(int Prog, string Suc)
+        {
+            try
+            {
+                return TurnoLogic.ConsultaManifiestoProgramacion(Prog, Suc);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaManifiestoProgramacion, false);
+            }
+        }
+
+        public Response<bool> ObtenerStAnulacion(string CodTab, int Pv, string F)
+        {
+            try
+            {
+                return TurnoLogic.ObtenerStAnulacion(CodTab, Pv, F);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcObtenerStAnulacion, false);
+            }
+        }
+
         #endregion
 
         #region BLOQUEO ASIENTO

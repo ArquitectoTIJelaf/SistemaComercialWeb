@@ -142,6 +142,14 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "MuestraTurno", ResponseFormat = WebMessageFormat.Json)]
         Response<ItinerarioEntity> MuestraTurno(TurnoRequest request);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaManifiestoProgramacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaManifiestoProgramacion(int Prog, string Suc);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ObtenerStAnulacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ObtenerStAnulacion(string CodTab, int Pv, string F);
+
         #endregion
 
         #region BLOQUEO ASIENTO

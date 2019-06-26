@@ -87,8 +87,5 @@ namespace SisComWeb.Entity
         public string DescServicio { get; set; }
 
         public string X_Estado { get; set; }
-
-
-        public bool StAnulacion { get; set; }
     }
 }

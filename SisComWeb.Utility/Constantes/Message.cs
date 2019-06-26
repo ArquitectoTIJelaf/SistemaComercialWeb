@@ -279,7 +279,15 @@
         public const string MsgExcBuscaBoletoF9 = "Excepción: BuscaBoletoF9.";
         public const string MsgErrorBuscaBoletoF9 = "El número de boleto no existe.";
 
-        public const string MsgCorrectoActualizaBoletoF9 = "Correcto: Se actualizó el boleto correctamente.";
+        public const string MsgCorrectoActualizaBoletoF9 = "Se actualizó el boleto correctamente.";
         public const string MsgExActualizaBoletoF9 = "Excepción: Error al actualizar boleto.";
+
+        // StAnulacion
+        public const string MsgCorrectoObtenerStAnulacion = "Correcto: ObtenerStAnulacion.";
+        public const string MsgExcObtenerStAnulacion = "Excepción: ObtenerStAnulacion.";
+
+        // Manifiesto
+        public const string MsgCorrectoConsultaManifiestoProgramacion = "Correcto: ConsultaManifiestoProgramacion.";
+        public const string MsgExcConsultaManifiestoProgramacion = "Excepción: ConsultaManifiestoProgramacion.";
     }
 }

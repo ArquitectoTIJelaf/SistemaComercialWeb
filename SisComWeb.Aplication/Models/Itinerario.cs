@@ -47,8 +47,6 @@ namespace SisComWeb.Aplication.Models
         public List<Base> ListaAuxDestinosRuta { get; set; }
         public string DescServicio { get; set; }
         public string X_Estado { get; set; }
-
-        public bool StAnulacion { get; set; }
     }
 
     public class FiltroItinerario

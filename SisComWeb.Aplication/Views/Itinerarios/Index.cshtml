@@ -1101,6 +1101,11 @@
                         correlativo =  value.substring(0, 5) + auxValue;
                     }
                     return correlativo;
+                },
+                validaManifiestoProgramacion: async function() {
+                    var auxResponse = false;
+                    auxResponse = await appVueVenta.validaManifiestoProgramacion();
+                    return auxResponse;
                 }
             };
         })();
@@ -1420,8 +1425,7 @@
                     FechaProgramacion: '',
                     HoraProgramacion: '',
                     DescServicio: '',
-                    X_Estado: '',
-                    StAnulacion: false
+                    X_Estado: ''
                 },
                 Correlativo: '',
                 auxFocus: {
@@ -1561,8 +1565,6 @@
                                 _this.objTurno.HoraProgramacion = res.data.Valor.HoraProgramacion;
                                 _this.objTurno.DescServicio = res.data.Valor.DescServicio;
                                 _this.objTurno.X_Estado = res.data.Valor.X_Estado;
-
-                                _this.objTurno.StAnulacion = res.data.Valor.StAnulacion;
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                 // -------------------------------------------------------
@@ -1773,30 +1775,11 @@
                             }
                         }
                     }
-                    
+
                     // Valida 'Manifiesto'
-                    if (!IngresoManualPasajes) {
-
-                        // Valida y por dentro setea 'X_Estado'
-                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
-
-                        var resValidaManifiesto = await _this.validaManifiesto();
-                        if (!resValidaManifiesto) {
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                            _this.disabledAsiento = false;
-                            return;
-                        }
-                        if (_this.objTurno.X_Estado) {
-                            APP.msg.warning('El manifiesto ya fue emitido.');
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                            _this.disabledAsiento = false;
-                            return;
-                        }
-                    }
+                    var resValidaManifiestoProgramacion = await this.validaManifiestoProgramacion();
+                    if (!resValidaManifiestoProgramacion)
+                        return;
 
                     // Valida 'Precio'
                     if (asientoSel.PrecioNormal === 0) {
@@ -1959,6 +1942,54 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     _this.disabledAsiento = false;
+                    return auxResponse;
+                },
+                validaManifiestoProgramacion: async function () {
+                    var auxResponse = true;
+
+                    if (!IngresoManualPasajes) {
+
+                        // Obtenemos 'X_Estado'
+                        this.objTurno.X_Estado = await this.obtenerManifiestoProgramacion(this.filtro.CodiProgramacion, this.filtro.CodiSucursal.id);
+
+                        // Valida y por dentro setea 'X_Estado'
+                        var auxX_Estado = _.cloneDeep(this.objTurno.X_Estado);
+
+                        var resValidaManifiesto = await this.validaManifiesto();
+                        if (!resValidaManifiesto) {
+
+                            // Seteo el valor original de 'X_Estado'
+                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            this.disabledAsiento = false;
+                            return auxResponse = false;
+                        }
+                        if (this.objTurno.X_Estado) {
+                            APP.msg.warning('El manifiesto ya fue emitido.');
+
+                            // Seteo el valor original de 'X_Estado'
+                            this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
+                            this.disabledAsiento = false;
+                            return auxResponse = false;
+                        }
+                    }
+
+                    return auxResponse;
+                },
+                obtenerManifiestoProgramacion: async function (_Prog, _Suc) {
+                    var auxResponse = '';
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaManifiestoProgramacion', {
+                        Suc: _Suc,
+                        Prog: _Prog
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
                     return auxResponse;
                 },
                 verificaTurnoDisponible: function () {
@@ -3748,30 +3779,14 @@
                     _this.disabledAsiento = true;
 
                     // Valida 'Manifiesto'
-                    if (!IngresoManualPasajes) {
+                    var resValidaManifiestoProgramacion = await this.validaManifiestoProgramacion();
+                    if (!resValidaManifiestoProgramacion)
+                        return;
 
-                        // Valida y por dentro setea 'X_Estado'
-                        var auxX_Estado = _.cloneDeep(_this.objTurno.X_Estado);
+                    // Obtenemos '_StAnulacion'
+                    var _StAnulacion = await _this.obtenerStAnulacion("09", Usuario.CodiPuntoVenta, moment().format('DD/MM/YYYY'));
 
-                        var resValidaManifiesto = await _this.validaManifiesto();
-                        if (!resValidaManifiesto) {
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                            _this.disabledAsiento = false;
-                            return;
-                        }
-                        if (_this.objTurno.X_Estado) {
-                            APP.msg.warning('El manifiesto ya fue emitido.');
-                            // Seteo el valor original de 'X_Estado'
-                            _this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-
-                            _this.disabledAsiento = false;
-                            return;
-                        }
-                    }
-                    
-                    var auxValidate = await _this.validaAnulacion(tmpAsientoSel);
+                    var auxValidate = await _this.validaAnulacion(tmpAsientoSel, _StAnulacion);
                     if (!auxValidate) {
                         _this.disabledAsiento = false;
                         return;
@@ -3781,7 +3796,7 @@
                         IdVenta: tmpAsientoSel.IdVenta,
                         Tipo: tmpAsientoSel.TipoBoleto,
                         FlagVenta: tmpAsientoSel.FlagVenta,
-                        StAnulacion: _this.objTurno.StAnulacion,
+                        StAnulacion: _StAnulacion,
                         IngresoManualPasajes: IngresoManualPasajes
                     }))
                         .then(async function (res) {
@@ -3806,7 +3821,25 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                validaAnulacion: async function (_tmpAsientoSel) {
+                obtenerStAnulacion: async function (_CodTab, _Pv, _F) {
+                    var auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/obtenerStAnulacion', {
+                        CodTab: _CodTab,
+                        Pv: _Pv,
+                        F: _F
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                validaAnulacion: async function (_tmpAsientoSel, _StAnulacion) {
                     var auxResponse = false;
 
                     var valPanelAnularFechaPasada = _.cloneDeep(appController.validatePanel('59')); // dd_an
@@ -3817,7 +3850,7 @@
                     if (verificaNC != 0)
                         return auxResponse;
 
-                    if (!this.objTurno.StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
+                    if (!_StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
                         APP.msg.warning('Se ha superado la cantidad máxima de boletos para anular.');
 
                         return auxResponse;
@@ -5186,7 +5219,11 @@
                             break;
                     }
 
-                    var auxListaVentasRealizadas = [];
+                    // Valida 'Manifiesto'
+                    var resValidaManifiestoProgramacion = await appController.validaManifiestoProgramacion();
+                    if (!resValidaManifiestoProgramacion)
+                        return;
+
                     _this.processing = true;
 
                     $("#appVueTipoPago").modal('hide');
@@ -6853,7 +6890,6 @@
                         CodEmpresa: _this.item.codEmpresa
                     }))
                         .then(res => {
-                            debugger;
                             _this.filtro.idVenta = res.data.Valor.IdVenta;
                             _this.filtro.dni = res.data.Valor.Dni;
                             _this.filtro.nombre = res.data.Valor.Nombre;
@@ -6957,8 +6993,7 @@
                 }
             },
             computed: {},
-            watch: {
-            }
+            watch: {}
         });
 
     </script>

@@ -98,9 +98,9 @@ namespace SisComWeb.Business
                 }
 
                 // Consulta 'ManifiestoProgramacion'
-                var ConsultaManifiestoProgramacion = TurnoRepository.ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
-                if (!string.IsNullOrEmpty(ConsultaManifiestoProgramacion.NumeManifiesto) && !string.IsNullOrEmpty(ConsultaManifiestoProgramacion.Est) && ConsultaManifiestoProgramacion.Est != "0")
-                    buscarTurno.X_Estado = "X";
+                var resConsultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
+                if (resConsultaManifiestoProgramacion.Estado)
+                    buscarTurno.X_Estado = resConsultaManifiestoProgramacion.Valor;
                 else
                     buscarTurno.X_Estado = "";
 
@@ -156,25 +156,55 @@ namespace SisComWeb.Business
                 // Lista 'DestinosRuta'
                 buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
 
-                // Seteo 'StAnulacion'
-                var objPanelCantidadAnulacion = ListarPanelControl.Find(x => x.CodiPanel == "65");
-                if (objPanelCantidadAnulacion != null && objPanelCantidadAnulacion.Valor == "1")
-                {
-                    var consultaPosCNT = TurnoRepository.ConsultaPosCNT("09", request.UsuarioCodiPVenta.ToString());
-                    var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(request.UsuarioCodiPVenta, DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
-
-                    if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
-                        buscarTurno.StAnulacion = true;
-                }
-                else
-                    buscarTurno.StAnulacion = true;
-
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(TurnoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<ItinerarioEntity>(false, null, Message.MsgExcMuestraTurno, false);
+            }
+        }
+
+        public static Response<string> ConsultaManifiestoProgramacion(int Prog, string Suc)
+        {
+            try
+            {
+                var valor = string.Empty;
+
+                var consultaManifiestoProgramacion = TurnoRepository.ConsultaManifiestoProgramacion(Prog, Suc);
+                if (!string.IsNullOrEmpty(consultaManifiestoProgramacion.NumeManifiesto)
+                    && !string.IsNullOrEmpty(consultaManifiestoProgramacion.Est)
+                    && consultaManifiestoProgramacion.Est != "0")
+
+                    valor = "X";
+
+                return new Response<string>(true, valor, Message.MsgCorrectoConsultaManifiestoProgramacion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaManifiestoProgramacion, false);
+            }
+        }
+
+        public static Response<bool> ObtenerStAnulacion(string CodTab, int Pv, string F)
+        {
+            try
+            {
+                var valor = new bool();
+
+                var consultaPosCNT = TurnoRepository.ConsultaPosCNT(CodTab, Pv.ToString()); // CodEmp -> Usuario.CodiPuntoVenta
+                var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(Pv, F);
+
+                if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
+                    valor = true;
+
+                return new Response<bool>(true, valor, Message.MsgCorrectoObtenerStAnulacion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcObtenerStAnulacion, false);
             }
         }
     }

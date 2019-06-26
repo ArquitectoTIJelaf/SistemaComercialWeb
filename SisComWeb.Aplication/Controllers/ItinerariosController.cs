@@ -335,8 +335,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-
-                                    ",\"UsuarioCodiPVenta\" : " + usuario.CodiPuntoVenta +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -391,9 +389,7 @@ namespace SisComWeb.Aplication.Controllers
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
                         ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
                         DescServicio = (string)data["DescServicio"],
-                        X_Estado = (string)data["X_Estado"],
-
-                        StAnulacion = (bool)data["StAnulacion"]
+                        X_Estado = (string)data["X_Estado"]
                     }
                 };
 
@@ -2233,6 +2229,79 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Nacionalidad\" :  \"" + request.Nacionalidad + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ActualizaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaManifiestoProgramacion")]
+        public async Task<ActionResult> ConsultaManifiestoProgramacion(int Prog, string Suc)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Prog\" : " + Prog +
+                                    ",\"Suc\" : \"" + Suc + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaManifiestoProgramacion", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("obtenerStAnulacion")]
+        public async Task<ActionResult> ObtenerStAnulacion(string CodTab, int Pv, string F)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodTab\" : \"" + CodTab + "\"" +
+                                    ",\"Pv\" : " + Pv +
+                                    ",\"F\" : \"" + F + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ObtenerStAnulacion", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }
