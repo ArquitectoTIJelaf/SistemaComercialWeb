@@ -1106,6 +1106,9 @@
                     var auxResponse = false;
                     auxResponse = await appVueVenta.validaManifiestoProgramacion();
                     return auxResponse;
+                },
+                getEmpresas: function () {
+                    return appVueVenta._data.list.empresas;
                 }
             };
         })();
@@ -6824,7 +6827,7 @@
                     nacionidad: ''
                 },
                 item: {
-                    codEmpresa: 0,
+                    codEmpresa: '',
                     empresa: '',
                     tipo: 'M',
                     serie: '',
@@ -6844,6 +6847,9 @@
                     nombre: '',
                     apepat: '',
                     apemat: ''
+                },
+                list: {
+                    empresas: []
                 },
                 showData: false,
                 panel: true
@@ -6872,7 +6878,12 @@
                     _this.item.serie = correlativo.substring(1, 4);
                     _this.item.numero = correlativo.substring(5, 13);
                     _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label;
+                    debugger;
                     _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
+                    _this.$nextTick(() => {
+                        if (_this.list.empresas.length == 0)
+                            _this.list.empresas = appController.getEmpresas();
+                    });
                 },
                 configEventKeyF9: function (event) {
                     if (event.keyCode === 120) {
@@ -6922,6 +6933,9 @@
                     _this.$nextTick(() => {
                         _this.$refs.refMBRecoger.focus();
                     });
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
                 },
                 cancelarModBoleto: function () {
                     $('#appVueModificacionBoleto').modal('hide');
@@ -6992,7 +7006,25 @@
                     }
                 }
             },
-            computed: {},
+            computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.item.codEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.item.codEmpresa)
+                        }                            
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.item.codEmpresa = value.id;
+                                this.$refs.refMBSerie.focus()
+                            }
+                        } else {
+                            this.item.codEmpresa = '';
+                        }
+                    }
+                }
+            },
             watch: {}
         });
 

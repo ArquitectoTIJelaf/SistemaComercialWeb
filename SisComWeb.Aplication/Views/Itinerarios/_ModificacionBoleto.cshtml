@@ -12,7 +12,20 @@
                         <div class="col-md-5 separate-in-form">
                             <label class="control-label label-sm">Empresa:</label>
                             <div class="">
-                                <input :value="item.empresa" class="form-control input-sm" disabled />
+                                @*<input :value="item.empresa" class="form-control input-sm" disabled />*@
+                                <v-select v-model="filtroCodiEmpresa"
+                                          :options="list.empresas"
+                                          :placeholder="'EMPRESA'"
+                                          :select-on-tab="true"
+                                          id="cboEmpresa"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent=""
+                                          ref="refMBEmpresa">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
                             </div>
                         </div>
                         <div class="col-md-4 separate-in-form p-b-10" style="display:flex;">
@@ -49,7 +62,7 @@
                                 <input v-model="item.serie"
                                        @@keypress.13.prevent="$refs.refMBNumero.focus()"
                                        @@keypress.9.prevent="$refs.refMBNumero.focus()"
-                                       class="form-control input-sm"                                       
+                                       class="form-control input-sm"
                                        ref="refMBSerie" />
                             </div>
                             <div class="col-xs-8">
@@ -242,13 +255,13 @@
                             </div>
                         </div>
                         @*<div class="col-md-3 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Observación:</label>
-                            <div class="">
-                                <input :value="item.observacion"
-                                       class="form-control input-sm"
-                                       disabled />
-                            </div>
-                        </div>*@
+                                <label class="control-label label-sm">Observación:</label>
+                                <div class="">
+                                    <input :value="item.observacion"
+                                           class="form-control input-sm"
+                                           disabled />
+                                </div>
+                            </div>*@
                     </div>
                 </div>
             </div>
