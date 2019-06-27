@@ -110,8 +110,9 @@
                                        type="text"
                                        placeholder="FECHA NAC."
                                        v-model="FechaNac"
-                                       @@blur="setDateAndCalcYears($event.target.value.trim())"
                                        :disabled="disabledCamposTicket"
+                                       @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                       onkeydown="bloquearEventsFechaHora(event)"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">
                             </div>

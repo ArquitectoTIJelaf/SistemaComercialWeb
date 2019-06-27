@@ -693,14 +693,6 @@
 
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
-                    keyBinds: {
-                        enter: function (e) {
-                            if (!e[0].previousElementSibling.value)
-                                this.date(moment().subtract(1, 'year').format('DD/MM/YYYY'));
-
-                            this.hide();
-                        }
-                    },
                     useCurrent: false,
                     locale: 'es',
                     showTodayButton: false,
@@ -842,8 +834,11 @@
                     case 'txtFechaCita':
                         appVueCreditoOpciones.blurFechaCita();
                         break;
+                    case 'txtFechaNac':
+                        document.getElementById('txtFechaNac').blur();
+                        break;
                     case 'txtFechaNacRA':
-                        appVueRegistrarInfante.setDateAndCalcYears(e.target.value.trim());
+                        document.getElementById('txtFechaNacRA').blur();
                         break;
                 }
             }
@@ -1193,9 +1188,6 @@
                     var _this = this;
                     _this.processing = true;
 
-                    // Si 'FechaViaje' está vacío
-                    $('#txtFecha').val() === '' ? _this.filtro.FechaViaje = moment().format('DD/MM/YYYY') : _this.filtro.FechaViaje = $('#txtFecha').val();
-
                     var input = {};
                     input.CodiOrigen = _this.filtro.CodiOrigen.id;
                     input.CodiDestino = _this.filtro.CodiDestino.id;
@@ -1240,11 +1232,16 @@
                                 document.getElementById('txtFecha').focus();
                                 break;
                             case 4:
-                                this.filtro.FechaViaje = $('#txtFecha').val();
-                                document.getElementById('txtHora').focus();
+                                {
+                                    if (!document.getElementById('txtFecha').value)
+                                        document.getElementById('txtFecha').value = moment().format('DD/MM/YYYY');
+
+                                    this.filtro.FechaViaje = document.getElementById('txtFecha').value;
+                                    document.getElementById('txtHora').focus();
+                                };
                                 break;
                             case 5:
-                                this.filtro.Hora = $('#txtHora').val();
+                                this.filtro.Hora = document.getElementById('txtHora').value;
                                 $('#chckTodos:first').focus();
                                 break;
                             case 6:
@@ -2974,16 +2971,20 @@
                             document.getElementById('txtTurno').focus();
                             break;
                         case 8:
-                            this.filtro.Turno = $('#txtTurno').val();
                             document.getElementById('txtFecha_2').focus();
                             break;
                         case 9:
-                            this.filtro.Fecha = $('#txtFecha_2').val();
                             this.recorridoSectionFilter();
                             break;
                         default:
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
                             this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
+
+                            this.$nextTick(() => {
+                                var auxIndexCodiDestinoPas = _.findIndex(_this.list.destinosPas, { 'id': _this.filtro.CodiDestinoPas.id, 'label': _this.filtro.CodiDestinoPas.label });
+                                _this.$refs.refDestinoPas_2.typeAheadPointer = (auxIndexCodiDestinoPas >= 0 ? auxIndexCodiDestinoPas : 0);
+                            });
+
                             this.recorridoSectionFilter();
                     }
                 },
@@ -3301,6 +3302,11 @@
                         this.recorridoSectionVentas();
                 },
                 setDateAndCalcYears: function (dateString) {
+                    if (!document.getElementById('txtFechaNac').value) {
+                        document.getElementById('txtFechaNac').value = moment().subtract(1, 'year').format('DD/MM/YYYY');
+                        dateString = moment().subtract(1, 'year').format('DD/MM/YYYY');
+                    }
+
                     if (dateString) {
                         this.list.ventas[this.indexVenta].FechaNac = dateString;
                         var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
@@ -3502,11 +3508,33 @@
                 },
                 focusTurno: function (event) {
                     event.target.select();
-                    this.showPlano = false;
+                },
+                blurTurno: function () {
+                    if (!document.getElementById('txtTurno').value)
+                        document.getElementById('txtTurno').value = moment().format('hh:mm A');
+                    
+                    var jsTurno = document.getElementById('txtTurno').value.replace(' ', '');
+                    var vueTurno = this.filtro.Turno.replace(' ', '');
+
+                    if (jsTurno !== vueTurno) {
+                        this.filtro.Turno = jsTurno;
+                        this.showPlano = false;
+                    }
                 },
                 focusFechaViaje: function (event) {
                     event.target.select();
-                    this.showPlano = false;
+                },
+                blurFechaViaje: function () {
+                    if (!document.getElementById('txtFecha_2').value)
+                        document.getElementById('txtFecha_2').value = moment().format('DD/MM/YYYY');
+
+                    var jsFecha = document.getElementById('txtFecha_2').value;
+                    var vueFecha = this.filtro.Fecha;
+
+                    if (jsFecha !== vueFecha) {
+                        this.filtro.Fecha = jsFecha;
+                        this.showPlano = false;
+                    }
                 },
                 enterTxtNroAsientoVenta: function (e) {
                     this.eventTxtNroAsientoVenta = e;
@@ -5821,6 +5849,11 @@
                     this.disabledCamposTicket = false;
                 },
                 setDateAndCalcYears: function (dateString) {
+                    if (!document.getElementById('txtFechaNacRA').value) {
+                        document.getElementById('txtFechaNacRA').value = moment().subtract(1, 'day').format('DD/MM/YYYY');
+                        dateString = moment().subtract(1, 'day').format('DD/MM/YYYY');
+                    }
+
                     this.$nextTick(() => {
                         if (dateString) {
                             this.FechaNac = dateString;
@@ -6642,7 +6675,10 @@
                     return auxResponse;
                 },
                 blurFechaCita: function () {
-                    this.fechaCita = $('#txtFechaCita').val();
+                    if (!document.getElementById('txtFechaCita').value)
+                        document.getElementById('txtFechaCita').value = moment().format('DD/MM/YYYY');
+
+                    this.fechaCita = document.getElementById('txtFechaCita').value;
                     $('#cboHospital input[type=search]').focus();
                 },
                 saveCreditoOpciones: async function () {

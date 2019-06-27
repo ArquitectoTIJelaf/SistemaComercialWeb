@@ -1685,14 +1685,15 @@ namespace SisComWeb.Aplication.Controllers
                         SaldoBoletos = (int)x["SaldoBoletos"],
                         IdPrecio = (int)x["IdPrecio"],
                         Precio = (decimal)x["Precio"]
-                    }).ToList()
+                    }).ToList(),
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<ClienteCredito>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

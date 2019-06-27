@@ -265,6 +265,7 @@
                                                        v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
                                                        @@focus="focusTurno($event)"
+                                                       @@blur="blurTurno()"
                                                        onkeydown="bloquearEventsFechaHora(event)"
                                                        autocomplete="off" />
                                             </div>
@@ -279,6 +280,7 @@
                                                        v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
                                                        @@focus="focusFechaViaje($event)"
+                                                       @@blur="blurFechaViaje()"
                                                        onkeydown="bloquearEventsFechaHora(event)"
                                                        autocomplete="off" />
                                             </div>
@@ -855,13 +857,14 @@
                                                 <div class="col-md-8">
                                                     <div class="form-group">
                                                         <label class="control-label">Fecha nac.</label>
-                                                        <input v-model="list.ventas[indexVenta].FechaNac"
-                                                               @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                               id="txtFechaNac"
-                                                               ref="refFechaNac"
+                                                        <input id="txtFechaNac"
                                                                class="form-control input-sm dpyear"
                                                                placeholder="FECHA NAC."
+                                                               ref="refFechaNac"
                                                                :disabled="disabledCamposTicket"
+                                                               v-model="list.ventas[indexVenta].FechaNac"
+                                                               @@blur="setDateAndCalcYears($event.target.value.trim())"
+                                                               onkeydown="bloquearEventsFechaHora(event)"
                                                                v-mask="'##/##/####'"
                                                                autocomplete="off">
                                                     </div>
