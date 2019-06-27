@@ -19,7 +19,7 @@ namespace SisComWeb.Business
                 // Busca PlanoBus
                 var buscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus);
                 if (buscarPlanoBus.Count == 0)
-                    return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgValidaMuestraPlano, false);
+                    return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgValidaMuestraPlano, true);
 
                 // Lista 'AsientosVendidos'
                 var listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.CodiProgramacion, request.NroViaje);

@@ -390,14 +390,15 @@ namespace SisComWeb.Aplication.Controllers
                         ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
                         DescServicio = (string)data["DescServicio"],
                         X_Estado = (string)data["X_Estado"]
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<Itinerario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Itinerario>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

@@ -149,7 +149,12 @@ namespace SisComWeb.Business
                 };
                 var resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
                 if (resMuestraPlano.Estado)
-                    buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
+                {
+                    if (resMuestraPlano.EsCorrecto)
+                        buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
+                    else
+                        return new Response<ItinerarioEntity>(true, buscarTurno, resMuestraPlano.Mensaje, false);
+                } 
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
 

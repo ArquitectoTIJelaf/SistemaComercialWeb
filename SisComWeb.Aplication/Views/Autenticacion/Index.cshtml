@@ -67,8 +67,8 @@
                        class="form-control input-sm"
                        placeholder="Password"
                        v-model="filtro.Clave"
-                       @@keydown.13.prevent="recorrido"
-                       @@keydown.9.prevent="recorrido"
+                       @@keydown.13.prevent="confirmUsuario(filtro)"
+                       @@keydown.9.prevent="confirmUsuario(filtro)"
                        autocomplete="off" />
             </div>
             <div style="padding-top: 30px !important; ">
@@ -230,10 +230,9 @@
                             if (this.list.usuarios.find(x => x.id === value.id)) {
                                 this.filtro.Codigo = value.id;
 
-                                //this.$nextTick(function () {
-                                //    debugger;
-                                //    this.recorrido();
-                                //});
+                                this.$nextTick(function () {
+                                    this.recorrido();
+                                });
                             }
                         }
                         else
@@ -265,7 +264,6 @@
                         this.getSucursales();
 
                     this.$nextTick(function () {
-                        debugger;
                         this.recorrido();
                     });
                 }

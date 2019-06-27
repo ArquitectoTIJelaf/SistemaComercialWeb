@@ -258,28 +258,30 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Turno:</label>
-                                                <input v-model="filtro.Turno"
+                                                <input id="txtTurno"
+                                                       class="form-control input-sm dph"
+                                                       type="text"
+                                                       placeholder="TURNO"
+                                                       v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
                                                        @@focus="$event.target.select()"
+                                                       onkeydown="bloquearEventsFechaHora(event)"
                                                        @@blur="nextStep(8)"
-                                                       type="text"
-                                                       id="txtTurno"
-                                                       class="form-control input-sm dph"
-                                                       placeholder="TURNO"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group ">
                                                 <label class="control-label">Fecha Viaje:</label>
-                                                <input v-model="filtro.Fecha"
+                                                <input id="txtFecha_2"
+                                                       class="form-control input-sm dpFiltro"
+                                                       type="text"
+                                                       placeholder="FECHA"
+                                                       v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
                                                        @@focus="$event.target.select()"
+                                                       onkeydown="bloquearEventsFechaHora(event)"
                                                        @@blur="nextStep(9)"
-                                                       type="text"
-                                                       id="txtFecha_2"
-                                                       class="form-control input-sm dpFiltro"
-                                                       placeholder="FECHA"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
