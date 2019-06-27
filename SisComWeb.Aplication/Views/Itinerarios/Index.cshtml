@@ -834,10 +834,10 @@
                         appVueFilter.nextStep(5);
                         break;
                     case 'txtTurno':
-                        document.getElementById('txtTurno').blur();
+                        appVueVenta.nextStep(8);
                         break;
                     case 'txtFecha_2':
-                        document.getElementById('txtFecha_2').blur();
+                        appVueVenta.nextStep(9);
                         break;
                     case 'txtFechaCita':
                         appVueCreditoOpciones.blurFechaCita();
@@ -3499,6 +3499,14 @@
                 focusAsiento: function (event) {
                     event.target.select();
                     this.auxFocus.asiento = true;
+                },
+                focusTurno: function (event) {
+                    event.target.select();
+                    this.showPlano = false;
+                },
+                focusFechaViaje: function (event) {
+                    event.target.select();
+                    this.showPlano = false;
                 },
                 enterTxtNroAsientoVenta: function (e) {
                     this.eventTxtNroAsientoVenta = e;

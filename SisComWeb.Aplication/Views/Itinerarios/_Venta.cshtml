@@ -264,9 +264,8 @@
                                                        placeholder="TURNO"
                                                        v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
-                                                       @@focus="$event.target.select()"
+                                                       @@focus="focusTurno($event)"
                                                        onkeydown="bloquearEventsFechaHora(event)"
-                                                       @@blur="nextStep(8)"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
@@ -279,9 +278,8 @@
                                                        placeholder="FECHA"
                                                        v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
-                                                       @@focus="$event.target.select()"
+                                                       @@focus="focusFechaViaje($event)"
                                                        onkeydown="bloquearEventsFechaHora(event)"
-                                                       @@blur="nextStep(9)"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
