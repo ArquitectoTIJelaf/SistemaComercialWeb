@@ -224,6 +224,12 @@
         public const string MsgErrorPostergarVenta = "Error: PostergarVenta.";
         public const string MsgExcPostergarVenta = "Excepción: PostergarVenta.";
 
+        public const string MsgCorrectoConsultaSumaBoletosPostergados = "Correcto: ConsultaSumaBoletosPostergados.";
+        public const string MsgExcConsultaSumaBoletosPostergados = "Excepción: ConsultaSumaBoletosPostergados.";
+
+        public const string MsgCorrectoConsultaPos = "Correcto: ConsultaPos.";
+        public const string MsgExcConsultaPos = "Excepción: ConsultaPos.";
+
         // Fecha Abierta
         public const string MsgCorrectoModificarVentaAFechaAbierta = "Se envió a Fecha Abierta correctamente.";
         public const string MsgErrorModificarVentaAFechaAbierta = "Solicitud cancelada, la venta ya ha sido enviada a Fecha Abierta.";

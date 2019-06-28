@@ -543,6 +543,32 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<string> ConsultaPos(string CodTab, string CodEmp)
+        {
+            try
+            {
+                return VentaLogic.ConsultaPos(CodTab, CodEmp);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
+            }
+        }
+
+        public Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            try
+            {
+                return VentaLogic.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
+            }
+        }
+
         public Response<byte> EliminarReserva(int IdVenta)
         {
             try

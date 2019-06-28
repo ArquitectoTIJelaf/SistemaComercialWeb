@@ -587,6 +587,50 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static string ConsultaPos(string CodTab, string CodEmp)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Tabla_Consulta_Pos";
+                db.AddParameter("@COD_TAB", DbType.String, ParameterDirection.Input, CodTab);
+                db.AddParameter("@COD_EMP", DbType.String, ParameterDirection.Input, CodEmp);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "MES_CON") ?? "0";
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static int ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Bol_Postergados_Consulta_Suma_Ele";
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@numero", DbType.String, ParameterDirection.Input, Numero);
+                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, Emp);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "");
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

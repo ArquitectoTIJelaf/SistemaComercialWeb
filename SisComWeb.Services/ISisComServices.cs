@@ -195,6 +195,14 @@ namespace SisComWeb.Services
         Response<VentaResponse> PostergarVenta(PostergarVentaRequest filtro);
 
         [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaPos", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaPos(string CodTab, string CodEmp);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaSumaBoletosPostergados", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp);
+
+        [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<byte> EliminarReserva(int IdVenta);
 

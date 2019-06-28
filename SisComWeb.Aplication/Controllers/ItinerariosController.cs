@@ -104,7 +104,7 @@ namespace SisComWeb.Aplication.Controllers
             // ------------
 
             JObject data = (JObject)obj;
-            
+
             objeto.CodiTipoDoc = (string)data["TipoDocumento"];
             objeto.Documento = (string)data["NumeroDocumento"];
             objeto.NombreCompleto = (string)data["NombreCompleto"];
@@ -1563,7 +1563,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<byte>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<VentaResponse>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1601,7 +1601,80 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<byte>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaPos")]
+        public async Task<ActionResult> ConsultaPos(string CodTab, string CodEmp)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodTab\" : \"" + CodTab + "\"" +
+                                    ",\"CodEmp\" : \"" + CodEmp + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaPos", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consultaSumaBoletosPostergados")]
+        public async Task<ActionResult> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Tipo\": \"" + Tipo + "\"" +
+                                    "\"Numero\": \"" + Numero + "\"" +
+                                    "\"Emp\": \"" + Emp + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultaSumaBoletosPostergados", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1637,7 +1710,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<byte>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -1798,7 +1871,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<Impresion>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Impresion>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -2138,7 +2211,7 @@ namespace SisComWeb.Aplication.Controllers
                                     "\"Serie\" : " + Serie +
                                     ",\"Numero\" : " + Numero +
                                     ",\"Tipo\" : \"" + Tipo + "\"" +
-                                    ",\"CodEmpresa\" : " + CodEmpresa +                                    
+                                    ",\"CodEmpresa\" : " + CodEmpresa +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -2205,7 +2278,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Busca>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

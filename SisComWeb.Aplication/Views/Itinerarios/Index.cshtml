@@ -14,6 +14,7 @@
     var claveAnularFechaPasada = Constant.CLAVE_ANULAR_BOLETOS_DE_FECHAS_PASADAS;
     var claveMoverVentaFueraDeHora = Constant.CLAVE_CLAVE_PARA_MOVER_VENTA_FUERA_DE_HORA;
     var claveAnulacionTarjetaCredito = Constant.CLAVE_ANULACION_DE_TARJETA_DE_CREDITO;
+    var clavePostergacionesBoleto = Constant.CLAVE_POSTERGACIONES_DE_BOLETO;
 }
 
 @Html.Partial("_Filtros")
@@ -755,6 +756,8 @@
         var ClaveAnularFechaPasada = '@claveAnularFechaPasada';
         var ClaveMoverVentaFueraDeHora = '@claveMoverVentaFueraDeHora';
         var ClaveAnulacionTarjetaCredito = '@claveAnulacionTarjetaCredito';
+        var ClavePostergacionesBoleto = '@clavePostergacionesBoleto';
+        var ClaveFlag9 = '109';
 
         var IngresoManualPasajes = false;
         var nacionalidadPorDefault = 'PERUANA';
@@ -1007,6 +1010,8 @@
                                 case ClaveProgramacion:
                                 case ClaveAnularFechaPasada:
                                 case ClaveMoverVentaFueraDeHora:
+                                case ClavePostergacionesBoleto:
+                                case ClaveFlag9:
                                     auxResponse = res.data;
                                     break;
                             }
@@ -3865,15 +3870,19 @@
 
                     if (parseInt(tmpAsientoSel.IdVenta)) {
 
-                        //// Valida 'FechaAbierta'
-                        //var validateFechaAbierta = await _this.validateFechaAbierta();
-                        //if (!validateFechaAbierta)
-                        //    return;
-
                         var auxBoletoCompleto = formatoBoletoCompleto(tmpAsientoSel.TipoBoleto, tmpAsientoSel.Boleto);
-                        if (await APP.msg.confirm(
-                            'Enviar a Fecha Abierta',
-                            'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')) {
+
+                        var resConfirm = await APP.msg.confirm(
+                            'Enviar a Fecha Abierta'
+                            , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')
+
+                        if (resConfirm) {
+
+                            // Valida 'FechaAbierta'
+                            var validateFechaAbierta = await _this.validateFechaAbierta(tmpAsientoSel);
+                            if (!validateFechaAbierta)
+                                return;
+
                             APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
@@ -3907,9 +3916,115 @@
                     else
                         appController.showPostergacion();
                 },
-                validateFechaAbierta: async function () {
+                validateFechaAbierta: async function (_tmpAsientoSel) {
+                    var auxValidate = true;
 
-                    //if (this.filtro.Fecha < )
+                    if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
+
+                        var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                            'Enviar boleto a Fecha Abierta'
+                            , 'Boleto de fecha pasada, necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                            , ClavePostergacionesBoleto);
+
+                        if (!resConfirmClaveAutorizacion)
+                            return auxValidate = false;
+
+                        if (!(Usuario.Nivel === 11 || Usuario.Nivel === 1 || Usuario.Nivel === 2
+                            || Usuario.Nivel === 4 || Usuario.Nivel === 3 || Usuario.Nivel === 50)) {
+
+                            if (_tmpAsientoSel.ImpManifiesto === 'X') {
+                                APP.msg.warning('No se puede enviar a Fecha Abierta el boleto porque tienen manifiesto impreso.');
+                                return auxValidate = false;
+                            }
+                        }
+
+                        var consultaVentaIdaV = await this.consultaVentaIdaV(_tmpAsientoSel.IdVenta);
+                        if (consultaVentaIdaV) {
+                            var tmpObjAsiento = {};
+                            var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
+                            tmpObjAsiento.NroBoleto = this.$options.filters.formatNroVenta(auxBoletoCompleto);
+                            tmpObjAsiento.OrigenBoleto = _tmpAsientoSel.NomOrigen;
+                            tmpObjAsiento.DestinoBoleto = _tmpAsientoSel.NomDestino;
+                            tmpObjAsiento.NroAsiento = String(_tmpAsientoSel.NumeAsiento).padStart(2, '0');
+
+                            await APP.msg.infoBoletoPromocionadoConDescuento(
+                                ''
+                                , 'El boleto que intenta enviar a Fecha Abierta es un boleto ida y vuelta promocionado con descuento, para proceder primero debe anular el boleto: '
+                                , tmpObjAsiento);
+
+                            return auxValidate = false;
+                        }
+
+                        var resConsultaPos = await this.consultaPos('79', '02');
+                        var resConsultaSumaBoletosPostergados = await this.consultaSumaBoletosPostergados(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto, this.filtro.CodiEmpresa.id);
+
+                        if (resConsultaPos !== '0') {
+                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+
+                                var resConfirmClaveAutorizacion02 = true;
+
+                                if (appController.validatePanelClave('28') === '1') {
+                                    resConfirmClaveAutorizacion02 = await APP.msg.confirmClaveAutorizacion(
+                                        'Enviar boleto a Fecha Abierta'
+                                        , 'Ha llegado al tope de fecha abierta para este boleto, ingrese la clave de autorización.'
+                                        , ClavePostergacionesBoleto);
+
+                                    if (!resConfirmClaveAutorizacion02)
+                                        return auxValidate = false;
+                                }
+                            }
+                        }
+
+                        if (appController.validatePanel('151') === '1') {
+                            if (_tmpAsientoSel.FlagVenta === '9') {
+
+                                var resConfirmClaveAutorizacion03 = await APP.msg.confirmClaveAutorizacion(
+                                    'Enviar boleto a Fecha Abierta'
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClaveFlag9);
+
+                                if (!resConfirmClaveAutorizacion03)
+                                    return auxValidate = false;
+                            }
+                        }
+                    }
+
+                    return auxValidate;
+                },
+                consultaPos: async function (_CodTab, _CodEmp) {
+                    var auxResponse = '0';
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaPos', {
+                        CodTab: _CodTab,
+                        CodEmp: _CodEmp
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                consultaSumaBoletosPostergados: async function (_Tipo, _Numero, _Emp) {
+                    var auxResponse = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaSumaBoletosPostergados', {
+                        Tipo: _Tipo,
+                        Numero: _Numero,
+                        Emp: _Emp
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
@@ -4003,12 +4118,12 @@
 
                                 if (appController.validatePanelClave('23') === '1') {
 
-                                    var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                    var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                                         'Anular boleto de fecha pasada'
                                         , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                         , ClaveAnularFechaPasada);
 
-                                    if (resConfirmWhitPassword) {
+                                    if (resConfirmClaveAutorizacion) {
                                         valPanelAnularFechaPasada = '2';
                                         var validaControlTiempo = await this.validaControlTiempo(_tmpAsientoSel, valPanelAnularFechaPasada, valPanelAnular125, valPanelAnularOtroPVenta);
                                         if (validaControlTiempo)
@@ -4071,11 +4186,11 @@
                                     var auxDiffMinutes = moment().diff(moment(this.filtro.Turno, 'hh:mmA'), 'minute');
                                     if ((auxDiffMinutes / 60) < controlTiempo) {
 
-                                        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                        var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                                             'Anular boleto fuera de hora',
                                             'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                             , ClaveMoverVentaFueraDeHora);
-                                        if (!resConfirmWhitPassword) {
+                                        if (!resConfirmClaveAutorizacion) {
                                             APP.msg.warning('Usuario no autorizado.');
 
                                             return auxValidate = false;
@@ -4271,11 +4386,11 @@
                         if (appController.validatePanel('221') === '1') {
                             if (_tmpAsientoSel.TipoPago === '03') {
 
-                                var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                                     'Anular boleto (T.P. Crédito)'
                                     , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                     , ClaveAnulacionTarjetaCredito);
-                                if (!resConfirmWhitPassword)
+                                if (!resConfirmClaveAutorizacion)
                                     return auxValidate = false;
                             }
                         }
@@ -4377,11 +4492,11 @@
                                 else {
                                     if (appController.validatePanelClave('23') === '1') {
 
-                                        var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                                        var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                                             'Anular boleto de fecha pasada'
                                             , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                             , ClaveAnularFechaPasada);
-                                        if (!resConfirmWhitPassword) {
+                                        if (!resConfirmClaveAutorizacion) {
                                             APP.msg.warning('No se puede anular el boleto.');
                                             return auxValidate = false;
                                         }
@@ -4829,11 +4944,11 @@
                             auxResponse = false;
                         }
                         else {
-                            var resConfirmWhitPassword = await APP.msg.confirmClaveAutorizacion(
+                            var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                                 'Autorización',
                                 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                 , ClaveProgramacion);
-                            if (resConfirmWhitPassword) {
+                            if (resConfirmClaveAutorizacion) {
                                 var resConfirmAperturaProgramacion = await APP.msg.confirmAperturaProgramacion(
                                     'Aperturar programación'
                                     , '');

@@ -1250,6 +1250,36 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> ConsultaPos(string CodTab, string CodEmp)
+        {
+            try
+            {
+                var consultaPos = VentaRepository.ConsultaPos(CodTab, CodEmp);
+
+                return new Response<string>(true, consultaPos, Message.MsgCorrectoConsultaPos, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
+            }
+        }
+
+        public static Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            try
+            {
+                var consultaSumaBoletosPostergados = VentaRepository.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+
+                return new Response<int>(true, consultaSumaBoletosPostergados, Message.MsgCorrectoConsultaSumaBoletosPostergados, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
+            }
+        }
+
         #endregion
 
         #region MODIFICAR VENTA FECHA ABIERTA
