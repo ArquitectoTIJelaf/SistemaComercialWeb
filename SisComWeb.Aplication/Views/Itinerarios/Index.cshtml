@@ -2980,11 +2980,6 @@
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
                             this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
 
-                            this.$nextTick(() => {
-                                var auxIndexCodiDestinoPas = _.findIndex(_this.list.destinosPas, { 'id': _this.filtro.CodiDestinoPas.id, 'label': _this.filtro.CodiDestinoPas.label });
-                                _this.$refs.refDestinoPas_2.typeAheadPointer = (auxIndexCodiDestinoPas >= 0 ? auxIndexCodiDestinoPas : 0);
-                            });
-
                             this.recorridoSectionFilter();
                     }
                 },
@@ -3512,7 +3507,7 @@
                 blurTurno: function () {
                     if (!document.getElementById('txtTurno').value)
                         document.getElementById('txtTurno').value = moment().format('hh:mm A');
-                    
+
                     var jsTurno = document.getElementById('txtTurno').value.replace(' ', '');
                     var vueTurno = this.filtro.Turno.replace(' ', '');
 
@@ -3869,6 +3864,12 @@
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
 
                     if (parseInt(tmpAsientoSel.IdVenta)) {
+
+                        //// Valida 'FechaAbierta'
+                        //var validateFechaAbierta = await _this.validateFechaAbierta();
+                        //if (!validateFechaAbierta)
+                        //    return;
+
                         var auxBoletoCompleto = formatoBoletoCompleto(tmpAsientoSel.TipoBoleto, tmpAsientoSel.Boleto);
                         if (await APP.msg.confirm(
                             'Enviar a Fecha Abierta',
@@ -3905,6 +3906,10 @@
                     }
                     else
                         appController.showPostergacion();
+                },
+                validateFechaAbierta: async function () {
+
+                    //if (this.filtro.Fecha < )
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
@@ -4134,7 +4139,7 @@
 
                             return auxValidate = false;
                         }
-                    }                                                            
+                    }
                     if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '1') {
 
                         var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
@@ -4238,7 +4243,7 @@
                     //if (x === 2)
                     //    return; // Goto100
                     // x = 2;
-                    
+
                     if (_tmpAsientoSel.PrecVentaReintegro > 0) {
                         if (await APP.msg.confirm(
                             ''
@@ -4249,14 +4254,14 @@
                                     'Anular boleto'
                                     , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                     , Usuario.CodiUsuario);
-                                if (!resConfirmClaveFechaActualCodiUsuario) 
+                                if (!resConfirmClaveFechaActualCodiUsuario)
                                     return auxValidate = false;
                             }
                         }
                         else
                             return auxValidate = false;
                     }
-                    
+
                     var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
 
                     if (await APP.msg.confirm(
