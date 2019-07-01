@@ -289,5 +289,9 @@
         // Manifiesto
         public const string MsgCorrectoConsultaManifiestoProgramacion = "Correcto: ConsultaManifiestoProgramacion.";
         public const string MsgExcConsultaManifiestoProgramacion = "Excepción: ConsultaManifiestoProgramacion.";
+
+        // Fecha Abierta
+        public const string MsgCorrectoVentaConsultaF6 = "Correcto: VentaConsultaF6.";
+        public const string MsgExcVentaConsultaF6 = "Excepción: VentaConsultaF6.";
     }
 }

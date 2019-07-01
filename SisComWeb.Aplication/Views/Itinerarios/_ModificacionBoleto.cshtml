@@ -1,6 +1,6 @@
 ﻿
 <div id="appVueModificacionBoleto" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg" :class="{'has-bugs': errors.any()}" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="close">&times;</button>
@@ -12,7 +12,6 @@
                         <div class="col-md-5 separate-in-form">
                             <label class="control-label label-sm">Empresa:</label>
                             <div class="">
-                                @*<input :value="item.empresa" class="form-control input-sm" disabled />*@
                                 <v-select v-model="filtroCodiEmpresa"
                                           :options="list.empresas"
                                           :placeholder="'EMPRESA'"

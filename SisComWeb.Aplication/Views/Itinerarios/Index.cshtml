@@ -32,6 +32,7 @@
 @Html.Partial("_DescuentoControl")
 
 @Html.Partial("_ModificacionBoleto")
+@Html.Partial("_FechaAbierta")
 
 @section styles{
     <style type="text/css">
@@ -785,6 +786,7 @@
         };
 
         var rutas = [];
+        var empresas = [];
 
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
@@ -831,6 +833,12 @@
             if (!value) return '';
             value = value.toString();
             return _.filter(rutas, function (o) { return o.id == value; })[0].label;
+        });
+
+        Vue.filter('empresas', function (value) {
+            if (!value) return '';
+            value = value.toString();
+            return _.filter(empresas, function (o) { return o.id == value; })[0].label;
         });
 
         function jsValidarNumeroConDosDecimales(e) {
@@ -965,6 +973,9 @@
                 },
                 showPostergacion: function () {
                     appVuePostergacion.show();
+                },
+                showFechaAbierta: function () {
+                    appVueFechaAbierta.show();
                 },
                 showClaveAutorizacion: async function (_Tipo) {
                     await appClaveAutorizacion.show(_Tipo);
@@ -1612,7 +1623,7 @@
                         .then(res => {
                             if (res.data.Estado) {
                                 _this.list.empresas = _.cloneDeep(res.data.Valor);
-                                _this.empresas = _.cloneDeep(res.data.Valor);
+                                empresas = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -3772,7 +3783,7 @@
                             _this.limpiarVenta();
                     }
                     else
-                        appController.showPostergacion();
+                        appController.showFechaAbierta();
                 },
                 sendToAnularVenta: async function (asientoSel) {
                     var _this = this;
@@ -4002,7 +4013,7 @@
 
                             return auxValidate = false;
                         }
-                    }                                                            
+                    }
                     if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '1') {
 
                         var validaPorFlagVenta = await this.validaPorFlagVenta(_tmpAsientoSel, _valPanelAnularFechaPasada);
@@ -4106,7 +4117,7 @@
                     //if (x === 2)
                     //    return; // Goto100
                     // x = 2;
-                    
+
                     if (_tmpAsientoSel.PrecVentaReintegro > 0) {
                         if (await APP.msg.confirm(
                             ''
@@ -4117,14 +4128,14 @@
                                     'Anular boleto'
                                     , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
                                     , Usuario.CodiUsuario);
-                                if (!resConfirmClaveFechaActualCodiUsuario) 
+                                if (!resConfirmClaveFechaActualCodiUsuario)
                                     return auxValidate = false;
                             }
                         }
                         else
                             return auxValidate = false;
                     }
-                    
+
                     var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
 
                     if (await APP.msg.confirm(
@@ -6901,33 +6912,34 @@
                         CodEmpresa: _this.item.codEmpresa
                     }))
                         .then(res => {
-                            _this.filtro.idVenta = res.data.Valor.IdVenta;
-                            _this.filtro.dni = res.data.Valor.Dni;
-                            _this.filtro.nombre = res.data.Valor.Nombre;
-                            _this.filtro.ruc = res.data.Valor.RucCliente;
-                            _this.filtro.edad = res.data.Valor.Edad;
-                            _this.filtro.telefono = res.data.Valor.Telefono;
-                            _this.filtro.recoger = res.data.Valor.RecoVenta;
-                            _this.filtro.tipoDoc = res.data.Valor.TipoDocumento;
-                            _this.filtro.nacionidad = res.data.Valor.Nacionalidad;
-                            _this.item.codEmpresa = res.data.Valor.CodiEmpresa;
-                            _this.item.destinoBus = res.data.Valor.CodiRuta;
-                            _this.item.turno = res.data.Valor.HoraProgramacion;
-                            _this.item.ruta = res.data.Valor.CodiSubruta;
-                            _this.item.dia = res.data.Valor.FechaProgramacion;
-                            _this.item.fechaViaje = res.data.Valor.FechaProgramacion;
-                            _this.item.fechaVenta = res.data.Valor.FechaVenta;
-                            _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
-                            _this.item.sexo = res.data.Valor.Sexo;
-                            _this.item.razSocial = res.data.Valor.RazonSocial;
-                            _this.item.asiento = res.data.Valor.NumeAsiento;
-                            _this.item.precio = res.data.Valor.PrecioVenta;
-                            //_this.item.observacion = res.data.Valor.Observacion;
-                            _this.item.nombre = res.data.Valor.SplitNombre[0];
-                            _this.item.apepat = res.data.Valor.SplitNombre[1];
-                            _this.item.apemat = res.data.Valor.SplitNombre[2];
-
-                            _this.showData = true;
+                            if (res.data.Valor) {
+                                _this.filtro.idVenta = res.data.Valor.IdVenta;
+                                _this.filtro.dni = res.data.Valor.Dni;
+                                _this.filtro.nombre = res.data.Valor.Nombre;
+                                _this.filtro.ruc = res.data.Valor.RucCliente;
+                                _this.filtro.edad = res.data.Valor.Edad;
+                                _this.filtro.telefono = res.data.Valor.Telefono;
+                                _this.filtro.recoger = res.data.Valor.RecoVenta;
+                                _this.filtro.tipoDoc = res.data.Valor.TipoDocumento;
+                                _this.filtro.nacionidad = res.data.Valor.Nacionalidad;
+                                //_this.item.codEmpresa = res.data.Valor.CodiEmpresa;
+                                _this.item.destinoBus = res.data.Valor.CodiRuta;
+                                _this.item.turno = res.data.Valor.HoraProgramacion;
+                                _this.item.ruta = res.data.Valor.CodiSubruta;
+                                _this.item.dia = res.data.Valor.FechaProgramacion;
+                                _this.item.fechaViaje = res.data.Valor.FechaProgramacion;
+                                _this.item.fechaVenta = res.data.Valor.FechaVenta;
+                                _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
+                                _this.item.sexo = res.data.Valor.Sexo;
+                                _this.item.razSocial = res.data.Valor.RazonSocial;
+                                _this.item.asiento = res.data.Valor.NumeAsiento;
+                                _this.item.precio = res.data.Valor.PrecioVenta;
+                                //_this.item.observacion = res.data.Valor.Observacion;
+                                _this.item.nombre = res.data.Valor.SplitNombre[0];
+                                _this.item.apepat = res.data.Valor.SplitNombre[1];
+                                _this.item.apemat = res.data.Valor.SplitNombre[2];
+                                _this.showData = true;
+                            } else APP.msg.warning('No se encontró resultados');                            
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                     _this.$nextTick(() => {
@@ -7011,7 +7023,7 @@
                     get: function () {
                         if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.item.codEmpresa)) {
                             return this.list.empresas.find(x => x.id === this.item.codEmpresa)
-                        }                            
+                        }
                     },
                     set: function (value) {
                         if (value !== '' && value !== null) {
@@ -7026,6 +7038,228 @@
                 }
             },
             watch: {}
+        });
+
+        var appVueFechaAbierta = new Vue({
+            el: '#appVueFechaAbierta',
+            data: {
+                filtro: {
+                    IdVenta: 0,
+                    CodiProgramacion: '',
+                    NumeAsiento: '',
+                    CodiServicio: '',
+                    FechaViaje: '',
+                    HoraViaje: '',
+                    NroViaje: '',
+                    FechaProgramacion: '',
+                    CodiEmpresa: '',
+                    CodiSucursal: '',
+                    CodiRuta: '',
+                    CodiBus: '',
+                    HoraProgramacion: '',
+                },
+                item: {
+                    Nombre: '',
+                    Dni: '',
+                    Fecha: '',
+                    Tipo: '',
+                    Serie: '',
+                    Numero: '',
+                    CodEmpresa: ''
+                },
+                table: {
+                    Nombre: '',
+                    Tipo: '',
+                    Serie: '',
+                    Numero: '',
+                    FechaVenta: '',
+                    Precio: '',
+                    Origen: '',
+                    Destino: '',
+                    Empresa: ''
+                },
+                list: {
+                    pasajeros: [],
+                    empresas: []
+                },
+                paginate: ['items'],
+                showData: false,
+                panel: true
+            },
+            mounted: function () {
+                let _this = this;
+
+                //_this.panel = (appController.validatePanel(241) === '1') ? true : false;
+
+                $('#appVueFechaAbierta').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+                    _this.$refs.refFAEmpresa.$el.querySelector('input').focus();
+                });
+            },
+            methods: {
+                show: function () {
+                    this.limpiarFA();
+                    $('#appVueFechaAbierta').modal('show');
+                    this.setData();
+                },
+                setData: function () {
+                    let _this = this;
+                    var correlativo = appController.getCurrentCorrelativo();
+                    //_this.item.Tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
+                    //_this.item.Serie = correlativo.substring(1, 4);
+                    //_this.item.Numero = correlativo.substring(5, 13);
+                    _this.item.CodEmpresa = appVueVenta.$refs.refEmpresa.value.id;
+                    _this.$nextTick(() => {
+                        if (_this.list.empresas.length == 0) {
+                            _this.list.empresas = appController.getEmpresas();
+                            _this.list.empresas.unshift(selectAll);
+                        }
+                    });
+                },
+                searchData: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF6' + APP.util.getQueryParamByObject(_this.item))
+                        .then(res => {
+                            if (res.data.Valor.length > 0) {
+                                _this.list.pasajeros = res.data.Valor;
+                                _this.showData = true;
+                            } else APP.msg.warning('No se encontró resultados');
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                sendRow: async function (item) {
+                    let _this = this;
+
+                    var _origen = String(appVueVenta.filtro.CodiSucursal.id);
+                    var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
+                    //TODO: Consultar si destino es CodiSubruta
+                    if (_origen === String(item.CodiOrigen) && _destino === String(item.CodiSubruta)) {
+                        var input = {};
+                        input.IdVenta = parseInt(item.IdVenta);
+                        input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
+                        input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
+                        input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+                        input.FechaViaje = appVueVenta.filtro.Fecha;
+                        input.HoraViaje = appVueVenta.filtro.Turno;
+                        input.NroViaje = appVueVenta.filtro.NroViaje;
+                        input.FechaProgramacion = appVueVenta.objTurno.FechaProgramacion;
+                        input.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
+                        input.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
+                        input.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
+                        input.CodiBus = appVueVenta.objPlano.CodiBus;
+                        input.HoraProgramacion = appVueVenta.objTurno.HoraProgramacion;
+
+                        // Limpiar 'AsientosBloqueados'
+                        var auxResponse = await appVueVenta.cancelarBoletos();
+                        if (!auxResponse) {
+                            APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
+                            return;
+                        }
+
+                        await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
+                            .then(async function (res) {
+                                await _this.close();
+                                await appController.chargeTurnos();
+
+                                if (res.data.Estado) {
+                                    _this.$nextTick(() => {
+                                        if (res.data.EsCorrecto)
+                                            APP.msg.info('Se confirmó a Fecha Abierta correctamente');
+                                        else
+                                            APP.msg.warning(res.data.Mensaje);
+                                    });
+                                }
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+
+                                // callSignalR_ActualizarTurnoPlano
+                                callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
+                            })
+                            .catch(APP.rq.axios_handler_error_alert);
+                    }
+                    else
+                        APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueFechaAbierta').modal('hide');
+                    appController.liberarAsientoActual();
+                },
+                limpiarFA: function () {
+                    let _this = this;
+                    _this.filtro.IdVenta = 0;
+                    _this.filtro.CodiProgramacion = '';
+                    _this.filtro.NumeAsiento = '';
+                    _this.filtro.CodiServicio = '';
+                    _this.filtro.FechaViaje = '';
+                    _this.filtro.HoraViaje = '';
+                    _this.filtro.NroViaje = '';
+                    _this.filtro.FechaProgramacion = '';
+                    _this.filtro.CodiEmpresa = '';
+                    _this.filtro.CodiSucursal = '';
+                    _this.filtro.CodiRuta = '';
+                    _this.filtro.CodiBus = '';
+                    _this.filtro.HoraProgramacion = '';
+                    _this.item.Nombre = '';
+                    _this.item.Dni = '';
+                    _this.item.Fecha = '';
+                    _this.item.Tipo = '';
+                    _this.item.Serie = '';
+                    _this.item.Numero = '';
+                    _this.item.CodEmpresa = '';
+                    _this.list.pasajeros = [];
+                    _this.showData = false;
+                },
+                saveFA: async function () {
+                    let _this = this;
+                    if (_this.filtro.idVenta !== 0) {
+                        await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
+                            IdVenta: _this.filtro.idVenta,
+                            Dni: _this.filtro.dni,
+                            Nombre: _this.filtro.nombre,
+                            Ruc: _this.filtro.ruc,
+                            Edad: _this.filtro.edad,
+                            Telefono: _this.filtro.telefono,
+                            RecoVenta: _this.filtro.recoger,
+                            TipoDoc: _this.filtro.tipoDoc,
+                            Nacionalidad: _this.filtro.nacionidad
+                        }))
+                            .then(res => {
+                                if (res.data.Valor) {
+                                    APP.msg.info(res.data.Mensaje);
+                                    _this.close();
+                                } else APP.msg.error(res.data.Mensaje);
+                            })
+                            .catch(APP.rq.axios_handler_error_alert);
+                    }
+                }
+            },
+            computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.item.CodEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.item.CodEmpresa)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.item.CodEmpresa = value.id;
+                            }
+                        } else {
+                            this.item.CodEmpresa = '';
+                        }
+                    }
+                }
+            }
         });
 
     </script>

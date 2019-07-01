@@ -104,7 +104,7 @@ namespace SisComWeb.Aplication.Controllers
             // ------------
 
             JObject data = (JObject)obj;
-            
+
             objeto.CodiTipoDoc = (string)data["TipoDocumento"];
             objeto.Documento = (string)data["NumeroDocumento"];
             objeto.NombreCompleto = (string)data["NombreCompleto"];
@@ -2136,7 +2136,7 @@ namespace SisComWeb.Aplication.Controllers
                                     "\"Serie\" : " + Serie +
                                     ",\"Numero\" : " + Numero +
                                     ",\"Tipo\" : \"" + Tipo + "\"" +
-                                    ",\"CodEmpresa\" : " + CodEmpresa +                                    
+                                    ",\"CodEmpresa\" : " + CodEmpresa +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -2203,7 +2203,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Busca>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -2313,6 +2313,59 @@ namespace SisComWeb.Aplication.Controllers
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("ventaConsultaF6")]
+        public async Task<ActionResult> VentaConsultaF6(FiltroFechaAbierta filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Nombre\" : \"" + (filtro.Nombre ?? "") + "\"" +
+                                    ",\"Dni\" : \"" + (filtro.Dni ?? "") + "\"" +
+                                    ",\"Fecha\" : \"" + (filtro.Fecha ?? "") + "\"" +
+                                    ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
+                                    ",\"Serie\" : \"" + (filtro.Serie ?? "0") + "\"" +
+                                    ",\"Numero\" : \"" + (filtro.Numero ?? "0") + "\"" +
+                                    ",\"CodEmpresa\" : \"" + (filtro.CodEmpresa ?? "0") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VentaConsultaF6", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<FechaAbierta>> res = new Response<List<FechaAbierta>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new FechaAbierta
+                    {
+                        Nombre = (string)x["Nombre"],
+                        Tipo = (string)x["Tipo"],
+                        Serie = (string)x["Serie"],
+                        Numero = (string)x["Numero"],
+                        FechaVenta = (string)x["FechaVenta"],
+                        PrecioVenta = (string)x["PrecioVenta"],
+                        CodiSubruta = (string)x["CodiSubruta"],
+                        CodiOrigen = (string)x["CodiOrigen"],
+                        CodiEmpresa = (string)x["CodiEmpresa"],
+                        IdVenta = (string)x["IdVenta"]
+                    }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);

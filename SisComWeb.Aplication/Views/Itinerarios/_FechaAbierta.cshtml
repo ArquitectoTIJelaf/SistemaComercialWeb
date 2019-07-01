@@ -1,0 +1,174 @@
+﻿
+<div id="appVueFechaAbierta" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Buscar Pasajeros</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-5 separate-in-form">
+                            <label class="control-label label-sm">Empresa:</label>
+                            <div class="">
+                                <v-select v-model="filtroCodiEmpresa"
+                                          :options="list.empresas"
+                                          :placeholder="'EMPRESA'"
+                                          :select-on-tab="true"
+                                          id="cboEmpresa"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent="$refs.refFASerie.focus();"
+                                          ref="refFAEmpresa">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="$refs.refFASerie.focus();">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 separate-in-form p-b-10" style="display:flex;">
+                            <div class="m-t-20">
+                                <div class="col-xs-4">
+                                    <input type="radio" id="rdoFAManual" class="rbDescTipo" value="M" v-model="item.Tipo">
+                                    <label for="rdoFAManual"
+                                           class="lblDescTipo"
+                                           style="line-height: inherit; ">
+                                        Manual
+                                    </label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input type="radio" id="rdoFABoleta" class="rbDescTipo" value="B" v-model="item.Tipo">
+                                    <label for="rdoFABoleta"
+                                           class="lblDescTipo"
+                                           style="line-height: inherit; ">
+                                        Boleta
+                                    </label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <input type="radio" id="rdoFAFactura" class="rbDescTipo" value="F" v-model="item.Tipo">
+                                    <label for="rdoFAFactura"
+                                           class="lblDescTipo"
+                                           style="line-height: inherit; ">
+                                        Factura
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-xs-12 separate-in-form">
+                            <label class="col-xs-12 control-label label-sm" style="text-align:left;">Número:</label>
+                            <div class="col-xs-4">
+                                <input v-model="item.Serie"
+                                       @@keypress.13.prevent="$refs.refFANumero.focus()"
+                                       @@keypress.9.prevent="$refs.refFANumero.focus()"
+                                       @@focus="$event.target.select()"
+                                       @@blur="item.serie = ($event.target.value).padStart(3,0)"
+                                       class="form-control input-sm"
+                                       ref="refFASerie" />
+                            </div>
+                            <div class="col-xs-8">
+                                <input v-model="item.Numero"
+                                       @@keypress.13.prevent="$refs.refFANombre.focus()"
+                                       @@keypress.9.prevent="$refs.refFANombre.focus()"
+                                       @@focus="$event.target.select()"
+                                       @@blur="item.numero = ($event.target.value).padStart(8,0)"
+                                       class="form-control input-sm"
+                                       ref="refFANumero" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-10 p-0">
+                            <div class="col-md-6 separate-in-form">
+                                <label class="control-label label-sm">Nombre:</label>
+                                <div class="">
+                                    <input v-model="item.Nombre" 
+                                           class="form-control input-sm"
+                                           @@keypress.13.prevent="$refs.refFADni.focus()"
+                                           @@keypress.9.prevent="$refs.refFADni.focus()"
+                                           ref="refFANombre"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-6 separate-in-form">
+                                <label class="control-label label-sm">Dni:</label>
+                                <div class="">
+                                    <input v-model="item.Dni" 
+                                           class="form-control input-sm" 
+                                           @@keypress.13.prevent="$refs.refFAFecha.focus()"
+                                           @@keypress.9.prevent="$refs.refFAFecha.focus()"
+                                           ref="refFADni"/>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xs-6 separate-in-form">
+                                <label class="control-label label-sm">Fecha Emisión:</label>
+                                <div class="">
+                                    <input v-model="item.Fecha"
+                                           @@focus="$event.target.select()"
+                                           @@blur="item.Fecha = $event.target.value; $refs.refFABuscar.focus();"
+                                           v-mask="'##/##/####'"
+                                           class="form-control input-sm dp"
+                                           ref="refFAFecha"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 separate-in-form text-center">
+                            <label style="width: 100%">&nbsp;</label>
+                            <button @@click="searchData" 
+                                    @*:disabled="!filledCampos"*@ 
+                                    class="btn btn-primary btn-block-custom waves-effect waves-light"
+                                    ref="refFABuscar">
+                                <span class="fa fa-search fa-fw"></span>Buscar
+                            </button>
+                        </div>
+                    </div>
+                    <template v-if="showData">
+                        <div class="form-group m-b-5">
+                            <div class="custom-scroll-container">
+                                <div class="table-responsive" style="background-color: #616e7e;">
+                                    <table class="table table-hover" style="cursor:default;background-color:white;">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Nombre</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Tipo</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Serie</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Número</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Fecha&nbsp;Venta</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Precio</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Origen</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Destino</th>
+                                                <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Empresa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <paginate ref="paginatorFA" name="items" :list="list.pasajeros" :per="10">
+                                                <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
+                                                    <td class="custom-td">{{item.Nombre | formatNombre}}</td>
+                                                    <td class="custom-td">{{item.Tipo}}</td>
+                                                    <td class="custom-td">{{item.Serie}}</td>
+                                                    <td class="custom-td">{{item.Numero}}</td>
+                                                    <td class="custom-td">{{item.FechaVenta}}</td>
+                                                    <td class="custom-td">{{item.PrecioVenta | money}}</td>
+                                                    <td class="custom-td">{{item.CodiOrigen | rutas}}</td>
+                                                    <td class="custom-td">{{item.CodiSubruta | rutas}}</td>
+                                                    <td class="custom-td">{{item.CodiEmpresa | empresas}}</td>
+                                                </tr>
+                                            </paginate>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <center>
+                                <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            </center>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

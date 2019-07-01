@@ -1611,7 +1611,7 @@ $(function () {
         $('.dp').datetimepicker({
             keyBinds: {
                 enter: function (e) {
-                    if (!e[0].previousElementSibling.value) {
+                    if (e[0].previousElementSibling && !e[0].previousElementSibling.value) {
                         this.date(moment());
                     }
                     this.hide();
