@@ -14,8 +14,8 @@
                                 <v-select v-model="seccion"
                                           id="cboSeccion"
                                           label="label"
+                                          placeholder="SECCIÓN"
                                           :options="list.secciones"
-                                          :placeholder="'SECCIÓN'"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorrerCreditoOpciones"
                                           @@keydown.9.native.prevent="recorrerCreditoOpciones">
@@ -31,11 +31,11 @@
                                 <v-select v-model="area"
                                           id="cboArea"
                                           label="label"
+                                          placeholder="ÁREA"
                                           :options="list.areas"
-                                          :placeholder="'ÁREA'"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                           @@keydown.9.native.prevent="recorrerCreditoOpciones">
+                                          @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -52,6 +52,8 @@
                                            placeholder="FECHA CITA"
                                            type="text"
                                            @@focus="$event.target.select()"
+                                           @@keydown.13.prevent="recorrerFechaCita()"
+                                           @@keydown.9.prevent="recorrerFechaCita()"
                                            @@blur="blurFechaCita"
                                            v-mask="'##/##/####'"
                                            autocomplete="off" />
@@ -65,12 +67,12 @@
                                     <v-select v-model="hospital"
                                               id="cboHospital"
                                               label="label"
+                                              placeholder="HOSPITAL"
                                               :options="list.hospitales"
-                                              :placeholder="'HOSPITAL'"
                                               :select-on-tab="true"
                                               ref="refHospital"
                                               @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                               @@keydown.9.native.prevent="recorrerCreditoOpciones">
+                                              @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>

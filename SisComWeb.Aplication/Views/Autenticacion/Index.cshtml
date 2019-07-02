@@ -10,6 +10,7 @@
             border-color: #66afe9;
             border-color: rgb(102, 175, 233);
         }
+
         #appVueLogin {
             width: 300px;
         }
@@ -27,16 +28,13 @@
             <div class="separate-in-form">
                 <v-select v-model="codigoUsuario"
                           id="txtUsuario"
-                          label="label"
+                          placeholder="--- Seleccione usuario ---"
                           :options="list.usuarios"
-                          :placeholder="'--- Seleccione usuario ---'"
+                          :select-on-tab="true"
+                          :get-option-label="getLabel"
                           :filterable="false"
                           @@search="getUsuarios"
-                          :select-on-tab="true"
                           ref="usuario">
-                    <template slot="option" slot-scope="option">
-                        <div>{{ option.id }} - {{ option.label }}</div>
-                    </template>
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
@@ -44,22 +42,20 @@
                 <div class="separate-in-form">
                     <v-select v-model="filtro.Sucursal"
                               id="cboSucursal"
-                              label="label"
+                              placeholder="Sucursal"
                               :get-option-label="getLabel"
                               :options="list.sucursales"
-                              :select-on-tab="true"
-                              :placeholder="'Sucursal'">
+                              :select-on-tab="true">
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
                 <div class="separate-in-form">
                     <v-select v-model="filtro.PuntoVenta"
                               id="cboPuntoVenta"
-                              label="label"
+                              placeholder="Punto de Venta"
                               :get-option-label="getLabel"
                               :options="list.puntosventa"
-                              :select-on-tab="true"
-                              :placeholder="'Punto de Venta'">
+                              :select-on-tab="true">
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
@@ -71,7 +67,8 @@
                        class="form-control input-sm"
                        placeholder="Password"
                        v-model="filtro.Clave"
-                       @@keypress.13="recorrido"
+                       @@keydown.13.prevent="confirmUsuario(filtro)"
+                       @@keydown.9.prevent="confirmUsuario(filtro)"
                        autocomplete="off" />
             </div>
             <div style="padding-top: 30px !important; ">
@@ -82,13 +79,15 @@
 </div>
 
 @section scripts{
-<script>
+    <script>
+
+        var UsuarioJML = '@JLMrootCode';
 
         var appVueLogin = new Vue({
             el: '#appVueLogin',
             data: {
                 filtro: {
-                    Codigo: 0,
+                    Codigo: '0',
                     Clave: '',
                     Sucursal: null,
                     PuntoVenta: null
@@ -122,10 +121,10 @@
                     var input = {};
                     input.Codigo = filtro.Codigo;
                     input.Clave = filtro.Clave;
-                    input.Sucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.id : '0';
-                    input.PuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.id : '0';
-                    input.NomSucursal = filtro.Codigo === '@JLMrootCode' ? filtro.Sucursal.label : '';
-                    input.NomPuntoVenta = filtro.Codigo === '@JLMrootCode' ? filtro.PuntoVenta.label : '';
+                    input.Sucursal = filtro.Codigo === UsuarioJML ? filtro.Sucursal.id : '0';
+                    input.PuntoVenta = filtro.Codigo === UsuarioJML ? filtro.PuntoVenta.id : '0';
+                    input.NomSucursal = filtro.Codigo === UsuarioJML ? filtro.Sucursal.label : '';
+                    input.NomPuntoVenta = filtro.Codigo === UsuarioJML ? filtro.PuntoVenta.label : '';
                     input.Terminal = this.Terminal;
                     await APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
@@ -192,14 +191,13 @@
                     return `${option.id} - ${option.label}`
                 },
                 recorrido() {
-                    var _this = this;
-                    if (_this.filtro.Codigo === '@JLMrootCode' && !_this.filtro.Sucursal)
+                    if (this.filtro.Codigo === UsuarioJML && !this.filtro.Sucursal)
                         $('#cboSucursal input[type=search]').focus();
-                    else if (_this.filtro.Codigo === '@JLMrootCode' && !_this.filtro.PuntoVenta)
+                    else if (this.filtro.Codigo === UsuarioJML && !this.filtro.PuntoVenta)
                         $('#cboPuntoVenta input[type=search]').focus();
-                    else if (_this.filtro.Codigo === 0)
+                    else if (this.filtro.Codigo === '0')
                         $('#cboUsuario input[type=search]').focus();
-                    else if (!_this.filtro.Clave)
+                    else if (!this.filtro.Clave)
                         document.getElementById("txtContrasena").focus();
                     else
                         document.getElementById("btnLogIn").focus();
@@ -207,19 +205,18 @@
             },
             computed: {
                 filledFiltro: function() {
-                    var _this = this;
-                    if (_this.filtro.Codigo) {
-                        if (_this.filtro.Codigo === '@JLMrootCode') {
+                    if (this.filtro.Codigo) {
+                        if (this.filtro.Codigo === UsuarioJML) {
                             return (
-                                _this.filtro.Sucursal &&
-                                _this.filtro.PuntoVenta &&
-                                _this.filtro.Codigo > 0 &&
-                                _this.filtro.Clave) ? true : false;
+                                this.filtro.Sucursal &&
+                                this.filtro.PuntoVenta &&
+                                parseInt(this.filtro.Codigo) > 0 &&
+                                this.filtro.Clave) ? true : false;
                         }
                         else {
                             return (
-                                _this.filtro.Codigo > 0 &&
-                                _this.filtro.Clave) ? true : false;
+                                parseInt(this.filtro.Codigo) > 0 &&
+                                this.filtro.Clave) ? true : false;
                         }
                     }
                 },
@@ -232,11 +229,14 @@
                         if (value) {
                             if (this.list.usuarios.find(x => x.id === value.id)) {
                                 this.filtro.Codigo = value.id;
-                                this.recorrido();
+
+                                this.$nextTick(function () {
+                                    this.recorrido();
+                                });
                             }
                         }
                         else
-                            this.filtro.Codigo = '';
+                            this.filtro.Codigo = '0';
                     }
                 }
             },
@@ -250,13 +250,17 @@
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
                     }
-                    this.recorrido();
+                    this.$nextTick(function () {
+                        this.recorrido();
+                    });
                 },
                 'filtro.PuntoVenta': function (newVal, oldVal) {
-                    this.recorrido();
+                    this.$nextTick(function () {
+                        this.recorrido();
+                    });
                 },
                 'filtro.Codigo': function (newVal, oldVal) {
-                    if (this.filtro.Codigo === '@JLMrootCode' && this.list.sucursales.length === 0)
+                    if (this.filtro.Codigo === UsuarioJML && this.list.sucursales.length === 0)
                         this.getSucursales();
 
                     this.$nextTick(function () {
@@ -266,5 +270,5 @@
             }
         });
 
-</script>
+    </script>
 }

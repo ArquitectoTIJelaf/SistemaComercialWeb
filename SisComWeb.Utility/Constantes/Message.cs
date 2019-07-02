@@ -122,6 +122,7 @@
         // RENIEC
         public const string MsgCorrectoConsultaRENIEC = "Correcto: ConsultaRENIEC.";
         public const string MsgErrorConsultaRENIEC = "RENIEC: No se encontraron datos.";
+        public const string MsgErrorServicioConsultaRENIEC = "RENIEC: El servicio no se encuentra disponible.";
         public const string MsgExcConsultaRENIEC = "Excepción: ConsultaRENIEC.";
 
         // SUNAT
@@ -223,6 +224,12 @@
         public const string MsgCorrectoPostergarVenta = "Se postergó venta correctamente.";
         public const string MsgErrorPostergarVenta = "Error: PostergarVenta.";
         public const string MsgExcPostergarVenta = "Excepción: PostergarVenta.";
+
+        public const string MsgCorrectoConsultaSumaBoletosPostergados = "Correcto: ConsultaSumaBoletosPostergados.";
+        public const string MsgExcConsultaSumaBoletosPostergados = "Excepción: ConsultaSumaBoletosPostergados.";
+
+        public const string MsgCorrectoConsultaPos = "Correcto: ConsultaPos.";
+        public const string MsgExcConsultaPos = "Excepción: ConsultaPos.";
 
         // Fecha Abierta
         public const string MsgCorrectoModificarVentaAFechaAbierta = "Se envió a Fecha Abierta correctamente.";

@@ -1607,15 +1607,18 @@ Handlebars.registerHelper("prettifyDateHour", function (timestamp) {
 $(function () {
 
     if ($('.dp').length) {
-
         $('.dp').datetimepicker({
             keyBinds: {
                 enter: function (e) {
-                    if (e[0].previousElementSibling && !e[0].previousElementSibling.value) {
+                    if (e && !e[0].previousElementSibling.value)
                         this.date(moment());
-                    }
+
                     this.hide();
-                }
+                },
+                up: null,
+                down: null,
+                left: null,
+                right: null
             },
             useCurrent: false,
             locale: 'es',
@@ -1634,15 +1637,18 @@ $(function () {
     }
 
     if ($('.dph').length) {
-
         $('.dph').datetimepicker({
             keyBinds: {
                 enter: function (e) {
-                    if (!e[0].previousElementSibling.value) {
+                    if (e && !e[0].previousElementSibling.value)
                         this.date(moment());
-                    }
+
                     this.hide();
-                }
+                },
+                up: null,
+                down: null,
+                left: null,
+                right: null
             },
             useCurrent: false,
             locale: 'es',
@@ -1652,8 +1658,6 @@ $(function () {
             keepOpen: false,
             toolbarPlacement: 'top',
             format: 'hh:mm A',
-            //viewDate: '03:25 PM',
-            //defaultDate: new Date(),
             tooltips: {
                 today: 'Ir a la hora actual',
                 clear: 'Borrar hora',
@@ -1885,4 +1889,5 @@ Vue.directive('money', function (el, binding, vnode) {
         } 
     });
 });
+
 /**************************************/

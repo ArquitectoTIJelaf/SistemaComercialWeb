@@ -565,7 +565,6 @@ namespace SisComWeb.Business
                         if (!actualizarLiquidacionVentas)
                             return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
                     }
-                    
                     // Graba 'LiquidacionVentas'
                     else
                     {
@@ -1251,6 +1250,36 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> ConsultaPos(string CodTab, string CodEmp)
+        {
+            try
+            {
+                var consultaPos = VentaRepository.ConsultaPos(CodTab, CodEmp);
+
+                return new Response<string>(true, consultaPos, Message.MsgCorrectoConsultaPos, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
+            }
+        }
+
+        public static Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            try
+            {
+                var consultaSumaBoletosPostergados = VentaRepository.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+
+                return new Response<int>(true, consultaSumaBoletosPostergados, Message.MsgCorrectoConsultaSumaBoletosPostergados, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
+            }
+        }
+
         #endregion
 
         #region MODIFICAR VENTA FECHA ABIERTA
@@ -1330,9 +1359,9 @@ namespace SisComWeb.Business
 
                 foreach (var entidad in Listado)
                 {
+                    var paginaWebEmisor = string.Empty;
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
-                    var paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
                     var consultaNroPoliza = new PolizaEntity()
                     {
                         NroPoliza = "",
@@ -1342,6 +1371,10 @@ namespace SisComWeb.Business
                     var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
                     if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
                         consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
+
+                    // Solo para 'Terminales electrónicos'
+                    if (entidad.BoletoTipo != "M")
+                        paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
 
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)

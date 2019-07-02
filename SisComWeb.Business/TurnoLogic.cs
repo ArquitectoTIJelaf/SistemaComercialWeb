@@ -107,9 +107,16 @@ namespace SisComWeb.Business
                     buscarTurno.X_Estado = "";
 
                 // Valida 'ProgramacionCerrada'
-                var validarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
-                if (validarProgramacionCerrada == 1)
+                var resValidarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
+                if (resValidarProgramacionCerrada == 1)
                     buscarTurno.ProgramacionCerrada = true;
+
+                // Consulta 'BloqueoAsientoCantidad_Max'
+                var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
+                if (consultaBloqueoAsientoCantidad_Max == 0)
+                    buscarTurno.CantidadMaxBloqAsi = 10;
+                else
+                    buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
 
                 // Obtiene 'TotalVentas'
                 if (buscarTurno.CodiProgramacion > 0)
@@ -151,7 +158,12 @@ namespace SisComWeb.Business
                 };
                 var resMuestraPlano = PlanoLogic.MuestraPlano(requestPlano);
                 if (resMuestraPlano.Estado)
-                    buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
+                {
+                    if (resMuestraPlano.EsCorrecto)
+                        buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
+                    else
+                        return new Response<ItinerarioEntity>(true, buscarTurno, resMuestraPlano.Mensaje, false);
+                } 
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
 

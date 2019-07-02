@@ -322,11 +322,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
+        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId)
         {
             try
             {
-                return ClientePasajeLogic.BuscarClientesPasaje(campo, nombres, paterno, materno);
+                return ClientePasajeLogic.BuscarClientesPasaje(campo, nombres, paterno, materno, TipoDocId);
             }
             catch (Exception ex)
             {
@@ -540,6 +540,32 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<VentaResponse>(false, null, Message.MsgExcPostergarVenta, false);
+            }
+        }
+
+        public Response<string> ConsultaPos(string CodTab, string CodEmp)
+        {
+            try
+            {
+                return VentaLogic.ConsultaPos(CodTab, CodEmp);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
+            }
+        }
+
+        public Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        {
+            try
+            {
+                return VentaLogic.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
             }
         }
 

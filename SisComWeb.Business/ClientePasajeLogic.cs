@@ -44,7 +44,7 @@ namespace SisComWeb.Business
                 if (TipoDoc == "1" && string.IsNullOrEmpty(buscaPasajero.NumeroDoc))
                 {
                     var resConsultaRENIEC = ConsultaRENIEC(NumeroDoc);
-                    if (resConsultaRENIEC.Estado)
+                    if (resConsultaRENIEC.EsCorrecto)
                     {
                         buscaPasajero.ApellidoPaterno = resConsultaRENIEC.Valor.ApellidoPaterno;
                         buscaPasajero.ApellidoMaterno = resConsultaRENIEC.Valor.ApellidoMaterno;
@@ -60,7 +60,7 @@ namespace SisComWeb.Business
                     if (string.IsNullOrEmpty(buscaEmpresa.RucCliente))
                     {
                         var resConsultaSUNAT = ConsultaSUNAT(buscaPasajero.RucContacto);
-                        if (resConsultaSUNAT.Estado)
+                        if (resConsultaSUNAT.EsCorrecto)
                         {
                             buscaPasajero.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
                             buscaPasajero.Direccion = resConsultaSUNAT.Valor.Direccion;
@@ -89,7 +89,7 @@ namespace SisComWeb.Business
                 if (string.IsNullOrEmpty(buscaEmpresa.RucCliente))
                 {
                     var resConsultaSUNAT = ConsultaSUNAT(RucContacto);
-                    if (resConsultaSUNAT.Estado)
+                    if (resConsultaSUNAT.EsCorrecto)
                     {
                         buscaEmpresa.RazonSocial = resConsultaSUNAT.Valor.RazonSocial;
                         buscaEmpresa.Direccion = resConsultaSUNAT.Valor.Direccion;
@@ -139,13 +139,13 @@ namespace SisComWeb.Business
                     entidad.ApellidoMaterno = arrayNombreCompleto[1];
                     entidad.Nombres = arrayNombreCompleto[2];
 
-                    if(!string.IsNullOrEmpty(entidad.ApellidoPaterno) && !string.IsNullOrEmpty(entidad.ApellidoMaterno) && !string.IsNullOrEmpty(entidad.Nombres))
+                    if (!string.IsNullOrEmpty(entidad.ApellidoPaterno) && !string.IsNullOrEmpty(entidad.ApellidoMaterno) && !string.IsNullOrEmpty(entidad.Nombres))
                         return new Response<ReniecEntity>(true, entidad, Message.MsgCorrectoConsultaRENIEC, true);
                     else
-                        return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, false);
+                        return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, true);
                 }
                 else
-                    return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, false);
+                    return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, true);
             }
             catch (Exception ex)
             {
@@ -207,10 +207,10 @@ namespace SisComWeb.Business
                         return new Response<RucEntity>(true, entidad, Message.MsgCorrectoConsultaSUNAT, true);
                     }
                     else
-                        return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, false);
+                        return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, true);
                 }
                 else
-                    return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, false);
+                    return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, true);
             }
             catch (Exception ex)
             {
@@ -241,7 +241,8 @@ namespace SisComWeb.Business
                     }
 
                     // Valida 'RucContacto'
-                    if (string.IsNullOrEmpty(entidad.RucContacto)) continue;
+                    if (string.IsNullOrEmpty(entidad.RucContacto))
+                        continue;
 
                     // Busca 'Empresa'
                     var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
@@ -279,11 +280,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
+        public static Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId)
         {
             try
             {
-                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(campo, nombres, paterno, materno);
+                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(campo, nombres, paterno, materno, TipoDocId);
 
                 return new Response<List<ClientePasajeEntity>>(true, BuscarClientesPasaje, Message.MsgCorrectoBuscarClientesPasaje, true);
             }

@@ -16,11 +16,12 @@
                                         <label class="control-label">Origen pasajero:</label>
                                         <v-select v-model="filtro.CodiOrigen"
                                                   id="cboOrigenPas"
+                                                  placeholder="ORIGEN PASAJERO"
                                                   :options="list.origenesPas"
-                                                  :placeholder="'ORIGEN PAS.'"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
-                                                  @@keydown.13.native.prevent="nextStep(1)"                                                  
+                                                  @@keydown.13.native.prevent="nextStep(1)"
+                                                  @@keydown.9.native.prevent="nextStep(1)"
                                                   ref="refOrigenPas">
                                             <template slot="option" slot-scope="option">
                                                 <div @@click="nextStep(1)">{{ option.id }} - {{ option.label }}</div>
@@ -34,11 +35,12 @@
                                         <label class="control-label">Destino pasajero:</label>
                                         <v-select v-model="filtro.CodiDestino"
                                                   id="cboDestinoPas"
+                                                  placeholder="DESTINO PASAJERO"
                                                   :options="list.destinosPas"
-                                                  :placeholder="'DESTINO PAS.'"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(2)"
+                                                  @@keydown.9.native.prevent="nextStep(2)"
                                                   ref="refDestinoPas">
                                             <template slot="option" slot-scope="option">
                                                 <div @@click="nextStep(2)">{{ option.id }} - {{ option.label }}</div>
@@ -52,11 +54,12 @@
                                         <label class="control-label">Destino bus:</label>
                                         <v-select v-model="filtro.CodiRuta"
                                                   id="cboDestinoBus"
+                                                  placeholder="DESTINO BUS"
                                                   :options="list.destinosBus"
-                                                  :placeholder="'DESTINO BUS'"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
                                                   @@keydown.13.native.prevent="nextStep(3)"
+                                                  @@keydown.9.native.prevent="nextStep(3)"
                                                   ref="refDestinoBus">
                                             <template slot="option" slot-scope="option">
                                                 <div @@click="nextStep(3)">{{ option.id }} - {{ option.label }}</div>
@@ -76,9 +79,11 @@
                                                    class="form-control input-sm dpFiltro"
                                                    type="text"
                                                    placeholder="DD/MM/YYYY"
-                                                   v-mask="'##/##/####'"                                                   
+                                                   v-mask="'##/##/####'"
                                                    @@focus="$event.target.select()"
-                                                   @@blur="nextStep(4)"
+                                                   @@keydown.13.prevent="nextStep(4)"
+                                                   @@keydown.9.prevent="nextStep(4)"
+                                                   @@blur="blurFechaViaje()"
                                                    autocomplete="off" />
                                         </div>
                                     </div>
@@ -93,7 +98,9 @@
                                                placeholder="HH:MM AM"
                                                v-mask="'##:## AM'"
                                                @@focus="$event.target.select()"
-                                               @@blur="nextStep(5)"
+                                               @@keydown.13.prevent="nextStep(5)"
+                                               @@keydown.9.prevent="nextStep(5)"
+                                               @@blur="blurHora()"
                                                autocomplete="off" />
                                     </div>
                                 </div>
@@ -101,11 +108,17 @@
                                     <div class="form-group">
                                         <div class="col-md-7 checkbox-list">
                                             <div style="width: 100%">
-                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(6)" style="display: inline-block; margin: 0 25px 15px 0;">
+                                                <div class="checkbox checkbox-info checkbox-circle"
+                                                     @@keydown.13.prevent="nextStep(6)"
+                                                     @@keydown.9.prevent="nextStep(6)"
+                                                     style="display: inline-block; margin: 0 25px 15px 0; ">
                                                     <input id="chckTodos" type="checkbox" class="check-with-label" v-model="filtro.TodosTurnos">
                                                     <label for="chckTodos" class="label-for-check">TODOS</label>
                                                 </div>
-                                                <div class="checkbox checkbox-info checkbox-circle" @@keypress.13.prevent="nextStep(7)" style="display: inline-block;">
+                                                <div class="checkbox checkbox-info checkbox-circle"
+                                                     @@keydown.13.prevent="nextStep(7)"
+                                                     @@keydown.9.prevent="nextStep(7)"
+                                                     style="display: inline-block; ">
                                                     <input id="chckProgramados" type="checkbox" class="check-with-label" v-model="filtro.SoloProgramados">
                                                     <label for="chckProgramados" class="label-for-check">PROGRAMADOS</label>
                                                 </div>

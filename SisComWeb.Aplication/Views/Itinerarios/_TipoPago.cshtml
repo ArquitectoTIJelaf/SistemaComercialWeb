@@ -40,9 +40,10 @@
                             <label class="col-md-2 control-label label-sm">Tipo Pago:</label>
                             <div class="col-md-10">
                                 <v-select id="cboTipoPagoTP"
+                                          placeholder="TIPO PAGO"
+                                          label="label"
                                           v-model="computedTipoPago"
                                           :options="list.tiposPago"
-                                          :placeholder="'TIPO PAGO'"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -87,9 +88,10 @@
                                 <label class="col-md-12 control-label label-sm">Tipo Tarjeta:</label>
                                 <div class="col-md-12">
                                     <v-select id="cboTipoTarjetaTP"
+                                              placeholder="TIPO"
+                                              label="label"
                                               v-model="tarjeta"
                                               :options="list.tarjetas"
-                                              :placeholder="'TIPO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -184,9 +186,10 @@
                                 <label class="col-md-2 control-label label-sm">Tipo:</label>
                                 <div class="col-md-10">
                                     <v-select id="cboTipoTP"
+                                              placeholder="TIPO"
+                                              label="label"
                                               v-model="tarjeta"
                                               :options="list.tarjetas"
-                                              :placeholder="'TIPO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -214,9 +217,10 @@
                                 <label class="col-md-2 control-label label-sm">Distrito:</label>
                                 <div class="col-md-10">
                                     <v-select id="cboDistritoTP"
+                                              placeholder="DISTRITO"
+                                              label="label"
                                               v-model="distrito"
                                               :options="list.distritos"
-                                              :placeholder="'DISTRITO'"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -252,11 +256,11 @@
                             <label class="col-md-2 control-label label-sm">Embarques:</label>
                             <div class="col-md-10">
                                 <v-select id="cboEmbarqueTP"
+                                          placeholder="EMBARQUE"
                                           label="Lugar"
                                           v-model="embarque"
                                           :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.embarques"
-                                          :placeholder="'EMBARQUE'"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           @@keydown.9.native.prevent="recorridoSectionTipoPagos">
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -267,11 +271,11 @@
                             <label class="col-md-2 control-label label-sm">Arribos:</label>
                             <div class="col-md-10">
                                 <v-select id="cboArriboTP"
+                                          placeholder="ARRIBO"
                                           label="Lugar"
                                           v-model="arribo"
                                           :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.arribos"
-                                          :placeholder="'ARRIBO'"
                                           @@keydown.13.native.prevent="$refs.refBtnAceptarTP.focus"
                                           @@keydown.9.native.prevent="$refs.refBtnAceptarTP.focus"
                                           ref="refArriboTP">

@@ -215,6 +215,28 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static short ConsultaBloqueoAsientoCantidad_Max(byte CodiEmpresa)
+        {
+            var valor = new short();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "sc_wsp_Consulta_Tb_BloqueAsiento_Cantidad_Max";
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetSmallIntValue(drlector, "Cantidad");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
     }
 }

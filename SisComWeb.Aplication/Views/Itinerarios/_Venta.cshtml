@@ -70,13 +70,14 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Empresa:</label>
-                                    <v-select v-model="filtro.CodiEmpresa"
+                                    <v-select id="cboEmpresa"
+                                              placeholder="EMPRESA"
+                                              v-model="filtro.CodiEmpresa"
                                               :options="list.empresas"
-                                              :placeholder="'EMPRESA'"
                                               :select-on-tab="true"
-                                              id="cboEmpresa"
                                               :get-option-label="getLabel"
                                               @@keydown.13.native.prevent="nextStep(1)"
+                                              @@keydown.9.native.prevent="nextStep(1)"
                                               ref="refEmpresa">
                                         <template slot="option" slot-scope="option">
                                             <div @@click="nextStep(1)">{{ option.id }} - {{ option.label }}</div>
@@ -143,13 +144,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Sucursal:</label>
-                                                <v-select v-model="filtro.CodiSucursal"
+                                                <v-select id="cboSucursal"
+                                                          placeholder="SUCURSAL"
+                                                          v-model="filtro.CodiSucursal"
                                                           :options="list.sucursales"
-                                                          :placeholder="'SUCURSAL'"
                                                           :select-on-tab="true"
-                                                          id="cboSucursal"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(2)"
+                                                          @@keydown.9.native.prevent="nextStep(2)"
                                                           ref="refSucursal">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(2)">{{ option.id }} - {{ option.label }}</div>
@@ -161,13 +163,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Origen bus:</label>
-                                                <v-select v-model="filtro.CodiOrigenBus"
+                                                <v-select id="cboOrigenBus"
+                                                          placeholder="ORIGEN BUS"
+                                                          v-model="filtro.CodiOrigenBus"
                                                           :options="list.origenesBus"
-                                                          :placeholder="'ORIGEN BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboOrigenBus"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(3)"
+                                                          @@keydown.9.native.prevent="nextStep(3)"
                                                           ref="refOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(3)">{{ option.id }} - {{ option.label }}</div>
@@ -179,13 +182,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">P.V. Origen bus:</label>
-                                                <v-select v-model="filtro.CodiPVOrigenBus"
+                                                <v-select id="cboPVOrigenBus"
+                                                          placeholder="P.V. ORIGEN BUS"
+                                                          v-model="filtro.CodiPVOrigenBus"
                                                           :options="list.pvOrigenesBus"
-                                                          :placeholder="'P.V. ORIGEN BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboPVOrigenBus"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(4)"
+                                                          @@keydown.9.native.prevent="nextStep(4)"
                                                           ref="refPVOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(4)">{{ option.id }} - {{ option.label }}</div>
@@ -197,13 +201,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Destino bus:</label>
-                                                <v-select v-model="filtro.CodiDestinoBus"
+                                                <v-select id="cboDestinoBus_2"
+                                                          placeholder="DESTINO BUS"
+                                                          v-model="filtro.CodiDestinoBus"
                                                           :options="list.destinosBus"
-                                                          :placeholder="'DESTINO BUS'"
                                                           :select-on-tab="true"
-                                                          id="cboDestinoBus_2"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(5)"
+                                                          @@keydown.9.native.prevent="nextStep(5)"
                                                           ref="refDestinoBus_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(5)">{{ option.id }} - {{ option.label }}</div>
@@ -215,13 +220,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Servicio:</label>
-                                                <v-select v-model="filtro.CodiServicio"
+                                                <v-select id="cboServicio"
+                                                          placeholder="SERVICIO"
+                                                          v-model="filtro.CodiServicio"
                                                           :options="list.servicios"
-                                                          :placeholder="'SERVICIO'"
                                                           :select-on-tab="true"
-                                                          id="cboServicio"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(6)"
+                                                          @@keydown.9.native.prevent="nextStep(6)"
                                                           ref="refServicio">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(6)">{{ option.id }} - {{ option.label }}</div>
@@ -233,13 +239,14 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Destino pasajero:</label>
-                                                <v-select v-model="filtro.CodiDestinoPas"
+                                                <v-select id="cboDestinoPas_2"
+                                                          placeholder="DESTINO PASAJERO"
+                                                          v-model="filtro.CodiDestinoPas"
                                                           :options="list.destinosPas"
-                                                          :placeholder="'DESTINO PASAJERO'"
                                                           :select-on-tab="true"
-                                                          id="cboDestinoPas_2"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(7)"
+                                                          @@keydown.9.native.prevent="nextStep(7)"
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
@@ -251,28 +258,32 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Turno:</label>
-                                                <input v-model="filtro.Turno"
-                                                       v-mask="'##:## AM'"
-                                                       @@focus="$event.target.select()"
-                                                       @@blur="nextStep(8)"
-                                                       type="text"
-                                                       id="txtTurno"
+                                                <input id="txtTurno"
                                                        class="form-control input-sm dph"
+                                                       type="text"
                                                        placeholder="TURNO"
+                                                       v-model="filtro.Turno"
+                                                       v-mask="'##:## AM'"
+                                                       @@focus="focusTurno($event)"
+                                                       @@keydown.13.prevent="nextStep(8)"
+                                                       @@keydown.9.prevent="nextStep(8)"
+                                                       @@blur="blurTurno()"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group ">
                                                 <label class="control-label">Fecha Viaje:</label>
-                                                <input v-model="filtro.Fecha"
-                                                       v-mask="'##/##/####'"
-                                                       @@focus="$event.target.select()"
-                                                       @@blur="nextStep(9)"
-                                                       type="text"
-                                                       id="txtFecha_2"
+                                                <input id="txtFecha_2"
                                                        class="form-control input-sm dpFiltro"
+                                                       type="text"
                                                        placeholder="FECHA"
+                                                       v-model="filtro.Fecha"
+                                                       v-mask="'##/##/####'"
+                                                       @@focus="focusFecha($event)"
+                                                       @@keydown.13.prevent="nextStep(9)"
+                                                       @@keydown.9.prevent="nextStep(9)"
+                                                       @@blur="blurFecha()"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
@@ -717,14 +728,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label class="control-label">Tipo doc.</label>
-                                                    <v-select v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                    <v-select id="cboTipoDoc"
+                                                              placeholder="TIPO"
+                                                              ref="refTipoDoc"
+                                                              v-model="list.ventas[indexVenta].CodiTipoDoc"
                                                               @@keydown.13.native.prevent="passNumDocToDocumento"
                                                               @@keydown.9.native.prevent="passNumDocToDocumento"
                                                               :options="list.tiposDoc"
-                                                              :placeholder="'TIPO'"
                                                               :select-on-tab="true"
-                                                              id="cboTipoDoc"
-                                                              ref="refTipoDoc"
                                                               :get-option-label="labelOfDocumento"
                                                               :disabled="disabledCamposTicket_Pase"
                                                               name="Tipo"
@@ -750,7 +761,7 @@
                                                     </button>
                                                     <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
                                                            @@input="setDocumento($event)"
-                                                           @@keypress.13.prevent="searchUser"
+                                                           @@keydown.13.prevent="searchUser"
                                                            @@keydown.9.prevent="searchUser"
                                                            @@keyup.backspace="clearUser"
                                                            @@keydown.112.prevent="showBuscaClientePasaje($event)"
@@ -770,8 +781,8 @@
                                                 <label class="control-label">Nombres</label>
                                                 <input :value="list.ventas[indexVenta].Nombres.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nombres = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       @@keypress.9.prevent="recorridoSectionVentas"
+                                                       @@keydown.13.prevent="recorridoSectionVentas"
+                                                       @@keydown.9.prevent="recorridoSectionVentas"
                                                        id="txtNombres"
                                                        ref="refNombres"
                                                        class="form-control input-sm"
@@ -788,8 +799,8 @@
                                                 <label class="control-label">Apellido paterno</label>
                                                 <input :value="list.ventas[indexVenta].ApellidoPaterno.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].ApellidoPaterno = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       @@keypress.9.prevent="recorridoSectionVentas"
+                                                       @@keydown.13.prevent="recorridoSectionVentas"
+                                                       @@keydown.9.prevent="recorridoSectionVentas"
                                                        id="txtApellidoPaterno"
                                                        ref="refApellidoPaterno"
                                                        class="form-control input-sm"
@@ -806,8 +817,8 @@
                                                 <label class="control-label">Apellido materno</label>
                                                 <input :value="list.ventas[indexVenta].ApellidoMaterno.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].ApellidoMaterno = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoSectionVentas"
-                                                       @@keypress.9.prevent="recorridoSectionVentas"
+                                                       @@keydown.13.prevent="recorridoSectionVentas"
+                                                       @@keydown.9.prevent="recorridoSectionVentas"
                                                        id="txtApellidoMaterno"
                                                        ref="refApellidoMaterno"
                                                        class="form-control input-sm"
@@ -848,13 +859,16 @@
                                                 <div class="col-md-8">
                                                     <div class="form-group">
                                                         <label class="control-label">Fecha nac.</label>
-                                                        <input v-model="list.ventas[indexVenta].FechaNac"
-                                                               @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                                               id="txtFechaNac"
-                                                               ref="refFechaNac"
+                                                        <input id="txtFechaNac"
                                                                class="form-control input-sm dpyear"
                                                                placeholder="FECHA NAC."
+                                                               ref="refFechaNac"
                                                                :disabled="disabledCamposTicket"
+                                                               v-model="list.ventas[indexVenta].FechaNac"
+                                                               @@focus="$event.target.select()"
+                                                               @@keydown.13.prevent="recorrerFechaNac()"
+                                                               @@keydown.9.prevent="recorrerFechaNac()"
+                                                               @@blur="setDateAndCalcYears()"
                                                                v-mask="'##/##/####'"
                                                                autocomplete="off">
                                                     </div>
@@ -878,16 +892,16 @@
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
-                                                    <v-select v-model="list.ventas[indexVenta].Sexo"
+                                                    <v-select id="cboSexo"
+                                                              placeholder="SEXO"
+                                                              label="label"
+                                                              v-model="list.ventas[indexVenta].Sexo"
                                                               @@keydown.13.native.prevent="$refs.refTelefono.focus()"
-                                                              @@keypress.9.prevent="$refs.refTelefono.focus()"
+                                                              @@keydown.9.native.prevent="$refs.refTelefono.focus()"
                                                               :options="list.sexos"
-                                                              :placeholder="'SEXO'"
                                                               :select-on-tab="true"
-                                                              id="cboSexo"
                                                               :disabled="disabledCamposTicket_Pase"
-                                                              ref="refSexo"
-                                                              label="label">
+                                                              ref="refSexo">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
                                                         </template>
@@ -900,8 +914,8 @@
                                             <div class="form-group">
                                                 <label class="control-label">Teléfono</label>
                                                 <input v-model="list.ventas[indexVenta].Telefono"
-                                                       @@keypress.13.prevent="recorridoTxtTelefono"
-                                                       @@keypress.9.prevent="recorridoTxtTelefono"
+                                                       @@keydown.13.prevent="recorridoTxtTelefono"
+                                                       @@keydown.9.prevent="recorridoTxtTelefono"
                                                        id="txtTelefono"
                                                        ref="refTelefono"
                                                        class="form-control input-sm"
@@ -916,8 +930,8 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="recorridoTxtRecoger"
-                                                       @@keypress.9.prevent="recorridoTxtRecoger"
+                                                       @@keydown.13.prevent="recorridoTxtRecoger"
+                                                       @@keydown.9.prevent="recorridoTxtRecoger"
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
@@ -940,8 +954,8 @@
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keypress.13.prevent="recorridoTxtNroSolicitud"
-                                                       @@keypress.9.prevent="recorridoTxtNroSolicitud"
+                                                       @@keydown.13.prevent="recorridoTxtNroSolicitud"
+                                                       @@keydown.9.prevent="recorridoTxtNroSolicitud"
                                                        id="txtNroSolicitud"
                                                        ref="refNroSolicitud"
                                                        class="form-control input-sm"
@@ -959,7 +973,7 @@
                                                     <div class="form-group">
                                                         <label class="control-label" style="width: 100%; ">RUC</label>
                                                         <input v-model="list.ventas[indexVenta].Ruc"
-                                                               @@keypress.13.prevent="searchEmpresa"
+                                                               @@keydown.13.prevent="searchEmpresa"
                                                                @@keydown.9.prevent="searchEmpresa"
                                                                @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"
@@ -987,8 +1001,8 @@
                                                         <label class="control-label">Razón social</label>
                                                         <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
                                                                @@input="list.ventas[indexVenta].RazonSocial = $event.target.value.toUpperCase()"
-                                                               @@keypress.13.prevent="$refs.refDireccion.focus()"
-                                                               @@keypress.9.prevent="$refs.refDireccion.focus()"
+                                                               @@keydown.13.prevent="$refs.refDireccion.focus()"
+                                                               @@keydown.9.prevent="$refs.refDireccion.focus()"
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
                                                                name="razon_social"
@@ -1009,8 +1023,8 @@
                                                     <label class="control-label">Dirección fiscal</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keypress.13.prevent="recorridoSectionVentas"
-                                                           @@keypress.9.prevent="recorridoSectionVentas"
+                                                           @@keydown.13.prevent="recorridoSectionVentas"
+                                                           @@keydown.9.prevent="recorridoSectionVentas"
                                                            id="txtDireccion"
                                                            ref="refDireccion"
                                                            name="direccion"
@@ -1041,8 +1055,8 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keypress.13.prevent="$refs.refRegistrarNino.focus()"
-                                                       @@keypress.9.prevent="$refs.refRegistrarNino.focus()"
+                                                       @@keydown.13.prevent="$refs.refRegistrarNino.focus()"
+                                                       @@keydown.9.prevent="$refs.refRegistrarNino.focus()"
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
@@ -1087,8 +1101,8 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="checkedRegistrarNino"
-                                                               @@keypress.13.prevent="passSinceRegistrarNino"
-                                                               @@keypress.9.prevent="passSinceRegistrarNino"
+                                                               @@keydown.13.prevent="passSinceRegistrarNino"
+                                                               @@keydown.9.prevent="passSinceRegistrarNino"
                                                                id="chckRegistrarNino"
                                                                ref="refRegistrarNino"
                                                                class="check-with-label"
@@ -1110,8 +1124,8 @@
                                                            placeholder="0.00"
                                                            maxlength="6"
                                                            onkeyup="jsValidarNumeroConDosDecimales(event)"
-                                                           @@keypress.13.prevent="keyTxtPrecio($event)"
-                                                           @@keypress.9.prevent="keyTxtPrecio($event)"
+                                                           @@keydown.13.prevent="keyTxtPrecio($event)"
+                                                           @@keydown.9.prevent="keyTxtPrecio($event)"
                                                            @@keydown.112.prevent="keyTxtPrecio($event)"
                                                            @@focus="focusPrecio($event)"
                                                            @@blur="validateRangePrice($event)"

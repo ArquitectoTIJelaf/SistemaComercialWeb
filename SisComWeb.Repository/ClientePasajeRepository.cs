@@ -86,7 +86,7 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static List<ClientePasajeEntity> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
+        public static List<ClientePasajeEntity> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId)
         {
             var Lista = new List<ClientePasajeEntity>();
 
@@ -97,6 +97,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@nombres", DbType.String, ParameterDirection.Input, nombres);
                 db.AddParameter("@paterno", DbType.String, ParameterDirection.Input, paterno);
                 db.AddParameter("@materno", DbType.String, ParameterDirection.Input, materno);
+                db.AddParameter("@Tipo_Doc_id", DbType.String, ParameterDirection.Input, TipoDocId);
 
                 using (IDataReader drlector = db.GetDataReader())
                 {

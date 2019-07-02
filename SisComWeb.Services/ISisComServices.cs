@@ -116,7 +116,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscarClientesPasaje", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno);
+        Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId);
 
         #endregion
 
@@ -193,6 +193,14 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "PostergarVenta", ResponseFormat = WebMessageFormat.Json)]
         Response<VentaResponse> PostergarVenta(PostergarVentaRequest filtro);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaPos", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaPos(string CodTab, string CodEmp);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaSumaBoletosPostergados", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
