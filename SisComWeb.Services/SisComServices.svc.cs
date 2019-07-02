@@ -905,5 +905,21 @@ namespace SisComWeb.Services
             }
         }
         #endregion
+
+        #region FECHA ABIERTA
+
+        public Response<List<FechaAbiertaEntity>> VentaConsultaF6(FechaAbiertaRequest request)
+        {
+            try
+            {
+                return FechaAbiertaLogic.VentaConsultaF6(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<FechaAbiertaEntity>>(false, null, Message.MsgExActualizaBoletoF9, false);
+            }
+        }
+        #endregion
     }
 }

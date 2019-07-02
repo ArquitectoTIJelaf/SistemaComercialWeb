@@ -322,5 +322,12 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ActualizaBoletoF9", ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ActualizaBoletoF9(BoletoF9Request request);
         #endregion
+
+        #region FECHA ABIERTA
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VentaConsultaF6", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<FechaAbiertaEntity>> VentaConsultaF6(FechaAbiertaRequest request);
+        #endregion
     }
 }
