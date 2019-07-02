@@ -79,9 +79,11 @@
                                                    class="form-control input-sm dpFiltro"
                                                    type="text"
                                                    placeholder="DD/MM/YYYY"
-                                                   v-mask="'##/##/####'"                                                   
+                                                   v-mask="'##/##/####'"
                                                    @@focus="$event.target.select()"
-                                                   onkeydown="bloquearEventsFechaHora(event)"
+                                                   @@keydown.13.prevent="nextStep(4)"
+                                                   @@keydown.9.prevent="nextStep(4)"
+                                                   @@blur="blurFechaViaje()"
                                                    autocomplete="off" />
                                         </div>
                                     </div>
@@ -96,7 +98,9 @@
                                                placeholder="HH:MM AM"
                                                v-mask="'##:## AM'"
                                                @@focus="$event.target.select()"
-                                               onkeydown="bloquearEventsFechaHora(event)"
+                                               @@keydown.13.prevent="nextStep(5)"
+                                               @@keydown.9.prevent="nextStep(5)"
+                                               @@blur="blurHora()"
                                                autocomplete="off" />
                                     </div>
                                 </div>

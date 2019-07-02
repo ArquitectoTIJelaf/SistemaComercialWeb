@@ -1608,6 +1608,18 @@ $(function () {
 
     if ($('.dp').length) {
         $('.dp').datetimepicker({
+            keyBinds: {
+                enter: function (e) {
+                    if (e && !e[0].previousElementSibling.value)
+                        this.date(moment());
+
+                    this.hide();
+                },
+                up: null,
+                down: null,
+                left: null,
+                right: null
+            },
             useCurrent: false,
             locale: 'es',
             showTodayButton: false,
@@ -1626,6 +1638,18 @@ $(function () {
 
     if ($('.dph').length) {
         $('.dph').datetimepicker({
+            keyBinds: {
+                enter: function (e) {
+                    if (e && !e[0].previousElementSibling.value)
+                        this.date(moment());
+
+                    this.hide();
+                },
+                up: null,
+                down: null,
+                left: null,
+                right: null
+            },
             useCurrent: false,
             locale: 'es',
             showTodayButton: false,
@@ -1865,4 +1889,5 @@ Vue.directive('money', function (el, binding, vnode) {
         } 
     });
 });
+
 /**************************************/

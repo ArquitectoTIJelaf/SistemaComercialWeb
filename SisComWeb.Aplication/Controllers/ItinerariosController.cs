@@ -389,7 +389,9 @@ namespace SisComWeb.Aplication.Controllers
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
                         ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
                         DescServicio = (string)data["DescServicio"],
-                        X_Estado = (string)data["X_Estado"]
+                        X_Estado = (string)data["X_Estado"],
+
+                        CantidadMaxBloqAsi = (short)data["CantidadMaxBloqAsi"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -529,14 +531,15 @@ namespace SisComWeb.Aplication.Controllers
                         ApellidoPaterno = (string)data["ApellidoPaterno"],
                         ApellidoMaterno = (string)data["ApellidoMaterno"],
                         Nombres = (string)data["Nombres"]
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<ReniecEntity>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<ReniecEntity>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -569,14 +572,15 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         RazonSocial = (string)data["RazonSocial"],
                         Direccion = (string)data["Direccion"]
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<Ruc>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Ruc>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

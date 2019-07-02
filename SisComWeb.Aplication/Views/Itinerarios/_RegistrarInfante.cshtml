@@ -111,8 +111,10 @@
                                        placeholder="FECHA NAC."
                                        v-model="FechaNac"
                                        :disabled="disabledCamposTicket"
-                                       @@blur="setDateAndCalcYears($event.target.value.trim())"
-                                       onkeydown="bloquearEventsFechaHora(event)"
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="recorrerFechaNac()"
+                                       @@keydown.9.prevent="recorrerFechaNac()"
+                                       @@blur="setDateAndCalcYears()"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">
                             </div>

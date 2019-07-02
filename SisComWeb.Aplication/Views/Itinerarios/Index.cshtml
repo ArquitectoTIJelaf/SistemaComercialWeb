@@ -673,6 +673,18 @@
 
             if ($('.dpFiltro').length) {
                 $('.dpFiltro').datetimepicker({
+                    keyBinds: {
+                        enter: function (e) {
+                            if (e && !e[0].previousElementSibling.value)
+                                this.date(moment());
+
+                            this.hide();
+                        },
+                        up: null,
+                        down: null,
+                        left: null,
+                        right: null
+                    },
                     useCurrent: false,
                     locale: 'es',
                     showTodayButton: false,
@@ -694,6 +706,18 @@
 
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
+                    keyBinds: {
+                        enter: function (e) {
+                            if (e && !e[0].previousElementSibling.value)
+                                this.date(moment().subtract(1, 'year'));
+
+                            this.hide();
+                        },
+                        up: null,
+                        down: null,
+                        left: null,
+                        right: null
+                    },
                     useCurrent: false,
                     locale: 'es',
                     showTodayButton: false,
@@ -704,7 +728,7 @@
                     format: 'DD/MM/YYYY',
                     defaultDate: moment().subtract(1, 'year'),
                     maxDate: moment().subtract(1, 'year'),
-                    minDate: moment().subtract(150, 'years'),
+                    minDate: moment().subtract(100, 'years'),
                     tooltips: {
                         today: 'Ir a la fecha actual',
                         clear: 'Borrar fecha',
@@ -717,11 +741,15 @@
                 $('.dpyearnino').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
-                            if (!e[0].previousElementSibling.value)
-                                this.date(moment().subtract(1, 'day').format('DD/MM/YYYY'));
+                            if (e && !e[0].previousElementSibling.value)
+                                this.date(moment().subtract(1, 'day'));
 
                             this.hide();
-                        }
+                        },
+                        up: null,
+                        down: null,
+                        left: null,
+                        right: null
                     },
                     useCurrent: false,
                     locale: 'es',
@@ -733,7 +761,7 @@
                     format: 'DD/MM/YYYY',
                     defaultDate: moment().subtract(1, 'day'),
                     maxDate: moment().subtract(1, 'day'),
-                    minDate: moment().subtract(150, 'years'),
+                    minDate: moment().subtract(100, 'years'),
                     tooltips: {
                         today: 'Ir a la fecha actual',
                         clear: 'Borrar fecha',
@@ -817,35 +845,6 @@
             value = value.toString();
             return _.filter(rutas, function (o) { return o.id == value; })[0].label;
         });
-
-        function bloquearEventsFechaHora(e) {
-            if (e.keyCode === 13 || e.keyCode === 9) {
-                e.stopImmediatePropagation(); // Desactiva el evento puesto por Jquery (Permite que no se bloqueen las direccionales).
-                switch (e.target.id) {
-                    case 'txtFecha':
-                        appVueFilter.nextStep(4);
-                        break;
-                    case 'txtHora':
-                        appVueFilter.nextStep(5);
-                        break;
-                    case 'txtTurno':
-                        appVueVenta.nextStep(8);
-                        break;
-                    case 'txtFecha_2':
-                        appVueVenta.nextStep(9);
-                        break;
-                    case 'txtFechaCita':
-                        appVueCreditoOpciones.blurFechaCita();
-                        break;
-                    case 'txtFechaNac':
-                        document.getElementById('txtFechaNac').blur();
-                        break;
-                    case 'txtFechaNacRA':
-                        document.getElementById('txtFechaNacRA').blur();
-                        break;
-                }
-            }
-        }
 
         function jsValidarNumeroConDosDecimales(e) {
             var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
@@ -1124,6 +1123,11 @@
                     auxResponse = await appVueVenta.validaManifiestoProgramacion();
                     return auxResponse;
                 },
+                verificaTurnoDisponible: async function () {
+                    var auxResponse = false;
+                    auxResponse = await appVueVenta.verificaTurnoDisponible();
+                    return auxResponse;
+                },
                 getEmpresas: function () {
                     return _.cloneDeep(appVueVenta.list.empresas);
                 }
@@ -1221,6 +1225,8 @@
                         $('#cboDestinoPas input[type=search]').focus();
                     else if (!this.filtro.CodiRuta)
                         $('#cboDestinoBus input[type=search]').focus();
+                    else if (!this.filtro.FechaViaje)
+                        document.getElementById('txtFecha').focus();
                     else
                         this.search();
                 },
@@ -1237,16 +1243,9 @@
                                 document.getElementById('txtFecha').focus();
                                 break;
                             case 4:
-                                {
-                                    if (!document.getElementById('txtFecha').value)
-                                        document.getElementById('txtFecha').value = moment().format('DD/MM/YYYY');
-
-                                    this.filtro.FechaViaje = document.getElementById('txtFecha').value;
-                                    document.getElementById('txtHora').focus();
-                                };
+                                document.getElementById('txtHora').focus();
                                 break;
                             case 5:
-                                this.filtro.Hora = document.getElementById('txtHora').value;
                                 $('#chckTodos:first').focus();
                                 break;
                             case 6:
@@ -1255,9 +1254,19 @@
                             case 7:
                                 document.getElementById('buscar').focus();
                                 break;
-                            default: this.recorrido();
+                            default:
+                                this.recorrido();
                         }
                     });
+                },
+                blurFechaViaje: function () {
+                    if (!document.getElementById('txtFecha').value)
+                        document.getElementById('txtFecha').value = moment().format('DD/MM/YYYY');
+
+                    this.filtro.FechaViaje = document.getElementById('txtFecha').value;
+                },
+                blurHora: function () {
+                    this.filtro.Hora = document.getElementById('txtHora').value;
                 }
             },
             watch: {
@@ -1470,7 +1479,8 @@
                     FechaProgramacion: '',
                     HoraProgramacion: '',
                     DescServicio: '',
-                    X_Estado: ''
+                    X_Estado: '',
+                    CantidadMaxBloqAsi: 0
                 },
                 Correlativo: '',
                 auxFocus: {
@@ -1633,6 +1643,8 @@
                                 _this.objTurno.HoraProgramacion = res.data.Valor.HoraProgramacion;
                                 _this.objTurno.DescServicio = res.data.Valor.DescServicio;
                                 _this.objTurno.X_Estado = res.data.Valor.X_Estado;
+
+                                _this.objTurno.CantidadMaxBloqAsi = res.data.Valor.CantidadMaxBloqAsi;
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                 // -------------------------------------------------------
@@ -1845,7 +1857,7 @@
 
                     // Valida 'Precio'
                     if (asientoSel.PrecioNormal === 0) {
-                        APP.msg.error('No se encontró precio del asiento.');
+                        APP.msg.warning('No se encontró precio del asiento.');
 
                         _this.disabledAsiento = false;
                         return;
@@ -1936,8 +1948,8 @@
                     }
 
                     // Valida la cantidad de asientos bloqueados a la vez
-                    if (_this.list.ventas.length > 9) {
-                        APP.msg.warning('Solo puede bloquear hasta 10 asientos a la vez.');
+                    if (_this.list.ventas.length >= _this.objTurno.CantidadMaxBloqAsi) {
+                        APP.msg.warning('Solo puede bloquear hasta ' + _this.objTurno.CantidadMaxBloqAsi + ' asiento(s) a la vez.');
 
                         _this.disabledAsiento = false;
                         return;
@@ -2372,57 +2384,53 @@
                     return auxResponse;
                 },
                 recorridoSectionFilter: function () {
-                    var _this = this;
-                    if (!_this.filtro.CodiEmpresa)
+                    if (!this.filtro.CodiEmpresa)
                         $('#cboEmpresa input[type=search]').focus();
-                    else if (!_this.filtro.CodiSucursal)
+                    else if (!this.filtro.CodiSucursal)
                         $('#cboSucursal input[type=search]').focus();
-                    else if (!_this.filtro.CodiOrigenBus)
+                    else if (!this.filtro.CodiOrigenBus)
                         $('#cboOrigenBus input[type=search]').focus();
-                    else if (!_this.filtro.CodiPVOrigenBus)
+                    else if (!this.filtro.CodiPVOrigenBus)
                         $('#cboPVOrigenBus input[type=search]').focus();
-                    else if (!_this.filtro.CodiDestinoBus)
+                    else if (!this.filtro.CodiDestinoBus)
                         $('#cboDestinoBus_2 input[type=search]').focus();
-                    else if (!_this.filtro.CodiServicio)
+                    else if (!this.filtro.CodiServicio)
                         $('#cboServicio input[type=search]').focus();
-                    else if (!_this.filtro.CodiDestinoPas)
+                    else if (!this.filtro.CodiDestinoPas)
                         $('#cboDestinoPas_2 input[type=search]').focus();
-                    else if (!_this.filtro.Turno)
+                    else if (!this.filtro.Turno)
                         document.getElementById('txtTurno').focus();
-                    else if (!_this.filtro.Fecha) {
+                    else if (!this.filtro.Fecha) {
                         //document.getElementById('txtFecha_2').focus();
                     }
                     else
                         appController.chargeTurnos();
                 },
                 recorridoSectionVentas: function () {
-                    var _this = this;
-                    _this.$nextTick(() => {
-                        if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc)
-                            $('#cboTipoDoc input[type=search]').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].Documento)
-                            document.getElementById('txtDocumento').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].Nombres)
-                            document.getElementById('txtNombres').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].ApellidoPaterno)
-                            document.getElementById('txtApellidoPaterno').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].ApellidoMaterno)
-                            document.getElementById('txtApellidoMaterno').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].FechaNac)
-                            document.getElementById('txtFechaNac').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].Sexo)
-                            $('#cboSexo input[type=search]').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].Nacionalidad)
-                            document.getElementById('txtNacionalidad').focus();
-                        else if (!_this.list.ventas[_this.indexVenta].NroAsiento)
-                            document.getElementById('txtNroAsientoVenta').focus();
-                        else if (_this.list.ventas.length > 0 && _this.indexVenta === _this.list.ventas.length - 1)
-                            document.getElementById('btnTipoPago').focus();
-                        else {
-                            _this.rightSlider();
-                            _this.recorridoSectionVentas();
-                        }
-                    });
+                    if (!this.list.ventas[this.indexVenta].CodiTipoDoc)
+                        $('#cboTipoDoc input[type=search]').focus();
+                    else if (!this.list.ventas[this.indexVenta].Documento)
+                        document.getElementById('txtDocumento').focus();
+                    else if (!this.list.ventas[this.indexVenta].Nombres)
+                        document.getElementById('txtNombres').focus();
+                    else if (!this.list.ventas[this.indexVenta].ApellidoPaterno)
+                        document.getElementById('txtApellidoPaterno').focus();
+                    else if (!this.list.ventas[this.indexVenta].ApellidoMaterno)
+                        document.getElementById('txtApellidoMaterno').focus();
+                    else if (!this.list.ventas[this.indexVenta].FechaNac)
+                        document.getElementById('txtFechaNac').focus();
+                    else if (!this.list.ventas[this.indexVenta].Sexo)
+                        $('#cboSexo input[type=search]').focus();
+                    else if (!this.list.ventas[this.indexVenta].Nacionalidad)
+                        document.getElementById('txtNacionalidad').focus();
+                    else if (!this.list.ventas[this.indexVenta].NroAsiento)
+                        document.getElementById('txtNroAsientoVenta').focus();
+                    else if (this.list.ventas.length > 0 && this.indexVenta === (this.list.ventas.length - 1))
+                        document.getElementById('btnTipoPago').focus();
+                    else {
+                        this.rightSlider();
+                        this.recorridoSectionVentas();
+                    }
                 },
                 recorridoTxtRecoger: function () {
                     if (this.pickedBusVenta !== '1') // Crédito
@@ -2541,7 +2549,9 @@
                                                 }
                                             };
                                     }
-                                    if (!res.data.EsCorrecto) APP.msg.warning(res.data.Mensaje);
+
+                                    if (!res.data.EsCorrecto)
+                                        APP.msg.warning(res.data.Mensaje);
                                 }
                                 else
                                     APP.msg.error(res.data.Mensaje);
@@ -2727,13 +2737,17 @@
                             numeroDoc: _this.list.ventas[_this.indexVenta].Documento
                         }), { timeout: 5000 })
                             .then(res => {
-                                if (res.data.Estado) {
+                                if (res.data.EsCorrecto) {
                                     _this.list.ventas[_this.indexVenta].Nombres = res.data.Valor.Nombres;
                                     _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
                                     _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
                                 }
-                                else
-                                    APP.msg.error(res.data.Mensaje);
+                                else {
+                                    if (res.data.Estado)
+                                        APP.msg.warning(res.data.Mensaje);
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                }
                             })
                             .catch(err => {
                                 if (err.code === "ECONNABORTED") {
@@ -2761,7 +2775,7 @@
                                 rucContacto: _this.list.ventas[_this.indexVenta].Ruc
                             }), { timeout: 5000 })
                                 .then(res => {
-                                    if (res.data.Estado) {
+                                    if (res.data.EsCorrecto) {
 
                                         // Valida editar 'RazonSocial'
                                         if (appController.validatePanel('63') === '1' && res.data.Valor.RazonSocial)
@@ -2773,8 +2787,12 @@
                                             _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
                                         _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
                                     }
-                                    else
-                                        APP.msg.error(res.data.Mensaje);
+                                    else {
+                                        if (res.data.Estado)
+                                            APP.msg.warning(res.data.Mensaje);
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    }
                                 })
                                 .catch(err => {
                                     if (err.code === "ECONNABORTED") {
@@ -2979,6 +2997,7 @@
                             document.getElementById('txtFecha_2').focus();
                             break;
                         case 9:
+                            this.filtro.Fecha = (this.filtro.Fecha ? this.filtro.Fecha : moment().format('DD/MM/YYYY'));
                             this.recorridoSectionFilter();
                             break;
                         default:
@@ -2989,14 +3008,12 @@
                     }
                 },
                 showTipoPago: async function () {
-                    var _this = this;
-
                     // Copiar datos del último Ticket para todos los demás.
-                    switch (_this.pickedBusVenta) {
+                    switch (this.pickedBusVenta) {
                         case 'R':
                             {
-                                var auxLength = _this.list.ventas.length;
-                                var validatorDocumento = _.findIndex(_this.list.ventas, o => { return o.Documento !== ''; });
+                                var auxLength = this.list.ventas.length;
+                                var validatorDocumento = _.findIndex(this.list.ventas, o => { return o.Documento !== ''; });
 
                                 if (auxLength > 1 && validatorDocumento === (auxLength - 1)) {
                                     if (await APP.msg.confirm(
@@ -3004,21 +3021,21 @@
                                         '¿Desea copiar los datos de este ticket para todos los demás?')) {
 
                                         for (var i = auxLength - 2; i >= 0; i--) {
-                                            _this.list.ventas[i].ApellidoMaterno = _.cloneDeep(_this.list.ventas[auxLength - 1].ApellidoMaterno);
-                                            _this.list.ventas[i].ApellidoPaterno = _.cloneDeep(_this.list.ventas[auxLength - 1].ApellidoPaterno);
-                                            _this.list.ventas[i].CodiTipoDoc = _.cloneDeep(_this.list.ventas[auxLength - 1].CodiTipoDoc);
-                                            _this.list.ventas[i].Direccion = _.cloneDeep(_this.list.ventas[auxLength - 1].Direccion);
-                                            _this.list.ventas[i].Documento = _.cloneDeep(_this.list.ventas[auxLength - 1].Documento);
-                                            _this.list.ventas[i].Edad = _.cloneDeep(_this.list.ventas[auxLength - 1].Edad);
-                                            _this.list.ventas[i].FechaNac = _.cloneDeep(_this.list.ventas[auxLength - 1].FechaNac);
-                                            _this.list.ventas[i].IdCliente = _.cloneDeep(_this.list.ventas[auxLength - 1].IdCliente);
-                                            _this.list.ventas[i].Nacionalidad = _.cloneDeep(_this.list.ventas[auxLength - 1].Nacionalidad);
-                                            _this.list.ventas[i].Nombres = _.cloneDeep(_this.list.ventas[auxLength - 1].Nombres);
-                                            _this.list.ventas[i].RazonSocial = _.cloneDeep(_this.list.ventas[auxLength - 1].RazonSocial);
-                                            _this.list.ventas[i].Recoger = _.cloneDeep(_this.list.ventas[auxLength - 1].Recoger);
-                                            _this.list.ventas[i].Ruc = _.cloneDeep(_this.list.ventas[auxLength - 1].Ruc);
-                                            _this.list.ventas[i].Sexo = _.cloneDeep(_this.list.ventas[auxLength - 1].Sexo);
-                                            _this.list.ventas[i].Telefono = _.cloneDeep(_this.list.ventas[auxLength - 1].Telefono);
+                                            this.list.ventas[i].ApellidoMaterno = _.cloneDeep(this.list.ventas[auxLength - 1].ApellidoMaterno);
+                                            this.list.ventas[i].ApellidoPaterno = _.cloneDeep(this.list.ventas[auxLength - 1].ApellidoPaterno);
+                                            this.list.ventas[i].CodiTipoDoc = _.cloneDeep(this.list.ventas[auxLength - 1].CodiTipoDoc);
+                                            this.list.ventas[i].Direccion = _.cloneDeep(this.list.ventas[auxLength - 1].Direccion);
+                                            this.list.ventas[i].Documento = _.cloneDeep(this.list.ventas[auxLength - 1].Documento);
+                                            this.list.ventas[i].Edad = _.cloneDeep(this.list.ventas[auxLength - 1].Edad);
+                                            this.list.ventas[i].FechaNac = _.cloneDeep(this.list.ventas[auxLength - 1].FechaNac);
+                                            this.list.ventas[i].IdCliente = _.cloneDeep(this.list.ventas[auxLength - 1].IdCliente);
+                                            this.list.ventas[i].Nacionalidad = _.cloneDeep(this.list.ventas[auxLength - 1].Nacionalidad);
+                                            this.list.ventas[i].Nombres = _.cloneDeep(this.list.ventas[auxLength - 1].Nombres);
+                                            this.list.ventas[i].RazonSocial = _.cloneDeep(this.list.ventas[auxLength - 1].RazonSocial);
+                                            this.list.ventas[i].Recoger = _.cloneDeep(this.list.ventas[auxLength - 1].Recoger);
+                                            this.list.ventas[i].Ruc = _.cloneDeep(this.list.ventas[auxLength - 1].Ruc);
+                                            this.list.ventas[i].Sexo = _.cloneDeep(this.list.ventas[auxLength - 1].Sexo);
+                                            this.list.ventas[i].Telefono = _.cloneDeep(this.list.ventas[auxLength - 1].Telefono);
                                         }
                                     }
                                 }
@@ -3026,234 +3043,216 @@
                             break;
                     }
 
-                    if (!_this.errorsInTicketsVenta()) {
-                        document.getElementById('btnTipoPago').disabled = true;
-                        if (_this.pickedBusVenta !== '1') {
-                            _this.saveUser();
-                        }
+                    if (!this.errorsInTicketsVenta())
+                        return;
 
-                        var input = {};
-                        input.CodiEmpresa = _this.filtro.CodiEmpresa.id;
-                        input.CodiOrigen = _this.filtro.CodiSucursal.id;
-                        input.CodiDestino = _this.filtro.CodiDestinoPas.id;
-                        input.CodiProgramacion = _this.filtro.CodiProgramacion;
-                        input.FlagVenta = _this.pickedBusVenta;
-                        input.FechaViaje = _this.filtro.Fecha;
-                        input.HoraViaje = _this.filtro.Turno;
-                        input.CodiServicio = _this.filtro.CodiServicio.id;
-                        input.NomDestino = _this.filtro.CodiDestinoPas.label;
-                        input.NomServicio = _this.filtro.CodiServicio.label;
-                        input.NomOrigen = _this.filtro.CodiSucursal.label;
-                        input.NroViaje = _this.filtro.NroViaje;
-                        input.FechaProgramacion = _this.objTurno.FechaProgramacion;
-                        input.HoraProgramacion = _this.objTurno.HoraProgramacion;
-                        input.CodiBus = _this.objPlano.CodiBus;
-                        input.CodiSucursal = _this.filtro.CodiOrigenBus.id;
-                        input.CodiRuta = _this.filtro.CodiDestinoBus.id;
+                    document.getElementById('btnTipoPago').disabled = true;
 
-                        input.IdContrato = _this.objCreditoCliente.idContrato;
-                        input.IdPrecio = _this.objCreditoCliente.IdPrecio;
-                        input.IdRuc = _this.objCreditoCliente.IdRuc;
+                    if (this.pickedBusVenta !== '1')
+                        this.saveUser();
 
-                        appController.showTipoPago(_this.list.embarques, _this.list.arribos, input, _this.list.ventas, _this.pickedBusVenta);
-                    }
+                    var input = {};
+                    input.CodiEmpresa = this.filtro.CodiEmpresa.id;
+                    input.CodiOrigen = this.filtro.CodiSucursal.id;
+                    input.CodiDestino = this.filtro.CodiDestinoPas.id;
+                    input.CodiProgramacion = this.filtro.CodiProgramacion;
+                    input.FlagVenta = this.pickedBusVenta;
+                    input.FechaViaje = this.filtro.Fecha;
+                    input.HoraViaje = this.filtro.Turno;
+                    input.CodiServicio = this.filtro.CodiServicio.id;
+                    input.NomDestino = this.filtro.CodiDestinoPas.label;
+                    input.NomServicio = this.filtro.CodiServicio.label;
+                    input.NomOrigen = this.filtro.CodiSucursal.label;
+                    input.NroViaje = this.filtro.NroViaje;
+                    input.FechaProgramacion = this.objTurno.FechaProgramacion;
+                    input.HoraProgramacion = this.objTurno.HoraProgramacion;
+                    input.CodiBus = this.objPlano.CodiBus;
+                    input.CodiSucursal = this.filtro.CodiOrigenBus.id;
+                    input.CodiRuta = this.filtro.CodiDestinoBus.id;
+
+                    input.IdContrato = this.objCreditoCliente.idContrato;
+                    input.IdPrecio = this.objCreditoCliente.IdPrecio;
+                    input.IdRuc = this.objCreditoCliente.IdRuc;
+
+                    appController.showTipoPago(this.list.embarques, this.list.arribos, input, this.list.ventas, this.pickedBusVenta);
                 },
                 errorsInTicketsVenta: function () {
-                    var _this = this;
-                    var _indexOfTipoDoc = -1;
-                    var _indexOfDocumento = -1;
-                    var _indexOfNombres = -1;
-                    var _indexOfApellidoPaterno = -1;
-                    var _indexOfApellidoMaterno = -1;
-                    var _indexOfEdad = -1;
-                    var _indexOfSexo = -1;
-                    var _indexOfRuc = -1;
-                    var _indexOfRazSoc = -1;
-                    var _indexOfDireccion = -1;
-                    var _indexOfNacionalidad = -1;
-                    var _indexOfNroSolicitud = -1;
-                    var _indexOfTelefono = -1;
-                    var _indexOfAlgoritmoRuc = -1;
+                    var auxValidate = true;
 
-                    // Tipo de documento
-                    _indexOfTipoDoc = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc === null; });
-                    if (_indexOfTipoDoc !== -1) {
-                        _this.indexVenta = _indexOfTipoDoc;
-                        _this.$nextTick(() => {
-                            $('#cboTipoDoc input[type=search]').focus();
-                        });
-                        APP.msg.warning('Seleccione un tipo de documento.');
-                        return true;
-                    }
-                    // Número de documento, caso DNI
-                    _indexOfDocumento = _.findIndex(_this.list.ventas, o => { return o.CodiTipoDoc.id === '1' && o.Documento.length < 8; });
-                    if (_indexOfDocumento !== -1) {
-                        _this.indexVenta = _indexOfDocumento;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtDocumento').focus();
-                        });
-                        APP.msg.warning('El DNI no puede tener menos de 8 carácteres.');
-                        return true;
-                    }
-                    // Nombre(s)
-                    _indexOfNombres = _.findIndex(_this.list.ventas, o => { return o.Nombres === ''; });
-                    if (_indexOfNombres !== -1) {
-                        _this.indexVenta = _indexOfNombres;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtNombres').focus();
-                        });
-                        APP.msg.warning('Ingrese nombre.');
-                        return true;
-                    }
-                    // Apellido paterno
-                    _indexOfApellidoPaterno = _.findIndex(_this.list.ventas, o => { return o.ApellidoPaterno === ''; });
-                    if (_indexOfApellidoPaterno !== -1) {
-                        _this.indexVenta = _indexOfApellidoPaterno;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtApellidoPaterno').focus();
-                        });
-                        APP.msg.warning('Ingrese apellido paterno.');
-                        return true;
-                    }
-                    // Apellido materno
-                    _indexOfApellidoMaterno = _.findIndex(_this.list.ventas, o => { return o.ApellidoMaterno === ''; });
-                    if (_indexOfApellidoMaterno !== -1) {
-                        _this.indexVenta = _indexOfApellidoMaterno;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtApellidoMaterno').focus();
-                        });
-                        APP.msg.warning('Ingrese apellido materno.');
-                        return true;
-                    }
-                    // Edad
-                    _indexOfEdad = _.findIndex(_this.list.ventas, o => { return parseInt(o.Edad) === 0; });
-                    if (_indexOfEdad !== -1) {
-                        _this.indexVenta = _indexOfEdad;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtFechaNac').focus();
-                        });
-                        APP.msg.warning('Seleccione una fecha válida, la edad no puede ser 0.');
-                        return true;
-                    }
-                    // Tipo de sexo
-                    _indexOfSexo = _.findIndex(_this.list.ventas, o => { return o.Sexo === null; });
-                    if (_indexOfSexo !== -1) {
-                        _this.indexVenta = _indexOfSexo;
-                        _this.$nextTick(() => {
-                            $('#cboSexo input[type=search]').focus();
-                        });
-                        APP.msg.warning('Seleccione un sexo.');
-                        return true;
-                    }
-                    // Número de ruc
-                    _indexOfRuc = _.findIndex(_this.list.ventas, o => { return o.Ruc !== '' && o.Ruc.length !== 11; });
-                    if (_indexOfRuc !== -1) {
-                        _this.indexVenta = _indexOfRuc;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtRuc').focus();
-                            _this.$validator.validate('ruc');
-                        });
-                        APP.msg.warning('El número de ruc debe ser de 11 dígitos.');
-                        return true;
-                    }
-                    // Algoritmo de ruc
-                    _indexOfAlgoritmoRuc = _.findIndex(_this.list.ventas, o => {
-                        return o.Ruc !== '' && o.Ruc.length === 11 && !appController.validateAlgoritmoRuc(o.Ruc);
-                    });
-                    if (_indexOfAlgoritmoRuc !== -1) {
-                        _this.indexVenta = _indexOfAlgoritmoRuc;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtRuc').focus();
-                        });
-                        APP.msg.warning('Ingrese un número de Ruc válido.');
-                        return true;
-                    }
-                    // Razón social
-                    _indexOfRazSoc = _.findIndex(_this.list.ventas, o => { return o.Ruc.length === 11 && o.RazonSocial.length < 3; });
-                    if (_indexOfRazSoc !== -1) {
-                        _this.indexVenta = _indexOfRazSoc;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtRazonSocial').focus();
-                            _this.$validator.validate('razon_social');
-                        });
-                        APP.msg.warning('La razón social no puede tener menos de 3 carácteres.');
-                        return true;
-                    }
-                    // Dirección
-                    _indexOfDireccion = _.findIndex(_this.list.ventas, o => { return o.Ruc.length === 11 && o.Direccion === ''; });
-                    if (_indexOfDireccion !== -1) {
-                        _this.indexVenta = _indexOfDireccion;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtDireccion').focus();
-                        });
-                        APP.msg.warning('Ingrese dirección fiscal.');
-                        return true;
-                    }
-                    // Nacionalidad
-                    _indexOfNacionalidad = _.findIndex(_this.list.ventas, o => { return o.Nacionalidad === ''; });
-                    if (_indexOfNacionalidad !== -1) {
-                        _this.indexVenta = _indexOfNacionalidad;
-                        _this.$nextTick(() => {
-                            document.getElementById('txtNacionalidad').focus();
-                        });
-                        APP.msg.warning('Ingrese nacionalidad.');
-                        return true;
-                    }
-                    // Teléfono
-                    if (appController.validatePanel('217') === '1' && this.pickedBusVenta !== 'R') {
-                        _indexOfTelefono = _.findIndex(_this.list.ventas, o => { return o.Telefono.length < 7; });
-                        if (_indexOfTelefono !== -1) {
-                            _this.indexVenta = _indexOfTelefono;
-                            _this.$nextTick(() => {
-                                document.getElementById('txtTelefono').focus();
+                    for (i = 0; i < this.list.ventas.length; i++) {
+                        if (!this.list.ventas[i].CodiTipoDoc) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Seleccione tipo de documento.');
+
+                            this.$nextTick(() => {
+                                $('#cboTipoDoc input[type=search]').focus();
                             });
-                            APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
-                            return true;
+                        }
+                        else if (this.list.ventas[i].CodiTipoDoc.id === '1' && this.list.ventas[i].Documento.length < 8) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese DNI de 8 dígitos.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtDocumento').focus();
+                            });
+                        }
+                        else if (this.list.ventas[i].CodiTipoDoc.id === '4' && this.list.ventas[i].Documento.length < 5) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese pasaporte de 5 caracteres como mínimo.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtDocumento').focus();
+                            });
+                        }
+                        else if (this.list.ventas[i].CodiTipoDoc.id === '7' && this.list.ventas[i].Documento.length < 5) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese carnet de extranjería de 5 caracteres como mínimo.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtDocumento').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].Nombres) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese nombres.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtNombres').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].ApellidoPaterno) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese apellido paterno.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtApellidoPaterno').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].ApellidoMaterno) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese apellido materno.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtApellidoMaterno').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].Edad || this.list.ventas[i].Edad == '0') {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Seleccione una fecha válida, la edad debe ser mayor a 0.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtFechaNac').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].Sexo) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Seleccione sexo.');
+
+                            this.$nextTick(() => {
+                                $('#cboSexo input[type=search]').focus();
+                            });
+                        }
+                        else if (this.pickedBusVenta !== 'R' && appController.validatePanel('217') === '1') {
+
+                            if (this.list.ventas[i].Telefono.length < 7) {
+                                this.indexVenta = i;
+                                auxValidate = false;
+                                APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
+
+                                this.$nextTick(() => {
+                                    document.getElementById('txtTelefono').focus();
+                                });
+                            }
+                        }
+                        else if (this.list.ventas[i].Ruc && this.list.ventas[i].Ruc.length !== 11) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese RUC de 11 dígitos.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtRuc').focus();
+                            });
+                        }
+                        else if (this.list.ventas[i].Ruc && !appController.validateAlgoritmoRuc(this.list.ventas[i].Ruc)) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese un número de RUC válido.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtRuc').focus();
+                            });
+                        }
+                        else if (this.list.ventas[i].Ruc && this.list.ventas[i].RazonSocial.length < 3) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese una razón social de 3 caracteres como mínimo.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtRazonSocial').focus();
+                            });
+                        }
+                        else if (this.list.ventas[i].Ruc && !this.list.ventas[i].Direccion) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese dirección fiscal.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtDireccion').focus();
+                            });
+                        }
+                        else if (!this.list.ventas[i].Nacionalidad) {
+                            this.indexVenta = i;
+                            auxValidate = false;
+                            APP.msg.warning('Ingrese nacionalidad.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtNacionalidad').focus();
+                            });
+                        }
+                        else if (this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA' && appController.validatePanel('107') === '1') {
+
+                            var resValidaDocumentoRepetido = this.validaDocumentoRepetido(
+                                this.list.ventas[i].CodiTipoDoc.id,
+                                this.list.ventas[i].Documento,
+                                this.list.ventas[i].NroAsiento);
+
+                            if (!resValidaDocumentoRepetido)
+                                auxValidate = false;
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtDocumento').focus();
+                            });
+                        }
+                        else {
+                            // Validación según 'pickedBusVenta'
+                            switch (this.pickedBusVenta) {
+                                case '1': // Crédito
+                                    {
+                                        if (!this.list.ventas[i].NroSolicitud) {
+                                            APP.msg.warning('Ingrese número de solicitud.');
+                                            this.indexVenta = i;
+                                            auxValidate = false;
+
+                                            this.$nextTick(() => {
+                                                document.getElementById('txtNroSolicitud').focus();
+                                            });
+                                        }
+                                    };
+                                    break;
+                            }
                         }
                     }
 
-                    // Validación según 'pickedBusVenta'
-                    switch (_this.pickedBusVenta) {
-                        case '1': // Crédito
-                            {
-                                _indexOfNroSolicitud = _.findIndex(_this.list.ventas, o => { return o.NroSolicitud === ''; });
-                                if (_indexOfNroSolicitud !== -1) {
-                                    _this.indexVenta = _indexOfNroSolicitud;
-                                    _this.$nextTick(() => {
-                                        document.getElementById('txtNroSolicitud').focus();
-                                    });
-                                    APP.msg.warning('Ingrese número de solicitud.');
-                                    return true;
-                                }
-                            };
-                            break;
-                        default:
-                            {
-                                if (_this.pickedBusVenta !== 'R' && _this.pickedBusVenta !== 'FA') {
-                                    if (appController.validatePanel('107') === '1') {
-
-                                        var _indexOfDocumentoRepetido = -1;
-                                        var resValidaDocumentoRepetido = true;
-
-                                        _indexOfDocumentoRepetido = _.findIndex(_this.list.ventas, o => {
-                                            resValidaDocumentoRepetido = _this.validaDocumentoRepetido(o.CodiTipoDoc.id, o.Documento, o.NroAsiento);
-                                            if (!resValidaDocumentoRepetido)
-                                                return true;
-                                        });
-                                        if (_indexOfDocumentoRepetido !== -1) {
-                                            _this.indexVenta = _indexOfDocumentoRepetido;
-                                            _this.$nextTick(() => {
-                                                document.getElementById('txtDocumento').focus();
-                                            });
-
-                                            return true;
-                                        }
-                                    }
-                                }
-                            };
-                    }
-
-                    return false;
+                    return auxValidate;
                 },
                 clearUser: function () {
                     var _this = this;
@@ -3301,26 +3300,24 @@
                     if (type === 'click' && this.list.ventas[this.indexVenta].Documento === '')
                         this.recorridoSectionVentas();
                 },
-                setDateAndCalcYears: function (dateString) {
-                    if (!document.getElementById('txtFechaNac').value) {
-                        document.getElementById('txtFechaNac').value = moment().subtract(1, 'year').format('DD/MM/YYYY');
-                        dateString = moment().subtract(1, 'year').format('DD/MM/YYYY');
-                    }
+                recorrerFechaNac: function () {
+                    this.list.ventas[this.indexVenta].FechaNac = (this.list.ventas[this.indexVenta].FechaNac ? this.list.ventas[this.indexVenta].FechaNac : moment().subtract(1, 'year').format('DD/MM/YYYY'));
 
-                    if (dateString) {
-                        this.list.ventas[this.indexVenta].FechaNac = dateString;
-                        var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
-                        this.list.ventas[this.indexVenta].Edad = '' + moment().diff(auxFechaNac, 'years');
-                        this.$nextTick(() => {
-                            this.$validator.validate('Edad');
-                            if (!this.list.ventas[this.indexVenta].Sexo)
-                                this.recorridoSectionVentas();
-                            else
-                                this.$refs.refTelefono.focus();
-                        });
-                    }
-                    else
-                        this.list.ventas[this.indexVenta].Edad = '';
+                    this.$nextTick(() => {
+                        this.$validator.validate('Edad');
+
+                        if (!this.list.ventas[this.indexVenta].Sexo)
+                            this.recorridoSectionVentas();
+                        else
+                            this.$refs.refTelefono.focus();
+                    });
+                },
+                setDateAndCalcYears: function () {
+                    if (!document.getElementById('txtFechaNac').value)
+                        document.getElementById('txtFechaNac').value = moment().subtract(1, 'year').format('DD/MM/YYYY');
+
+                    this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
+                    this.list.ventas[this.indexVenta].Edad = '' + moment().diff(moment(this.list.ventas[this.indexVenta].FechaNac, 'DD/MM/YYYY'), 'years');
                 },
                 limpiarVenta: function () {
                     var _this = this;
@@ -3513,28 +3510,16 @@
                     if (!document.getElementById('txtTurno').value)
                         document.getElementById('txtTurno').value = moment().format('hh:mm A');
 
-                    var jsTurno = document.getElementById('txtTurno').value.replace(' ', '');
-                    var vueTurno = this.filtro.Turno.replace(' ', '');
-
-                    if (jsTurno !== vueTurno) {
-                        this.filtro.Turno = jsTurno;
-                        this.showPlano = false;
-                    }
+                    this.filtro.Turno = document.getElementById('txtTurno').value;
                 },
-                focusFechaViaje: function (event) {
+                focusFecha: function (event) {
                     event.target.select();
                 },
-                blurFechaViaje: function () {
+                blurFecha: function () {
                     if (!document.getElementById('txtFecha_2').value)
                         document.getElementById('txtFecha_2').value = moment().format('DD/MM/YYYY');
 
-                    var jsFecha = document.getElementById('txtFecha_2').value;
-                    var vueFecha = this.filtro.Fecha;
-
-                    if (jsFecha !== vueFecha) {
-                        this.filtro.Fecha = jsFecha;
-                        this.showPlano = false;
-                    }
+                    this.filtro.Fecha = document.getElementById('txtFecha_2').value;
                 },
                 enterTxtNroAsientoVenta: function (e) {
                     this.eventTxtNroAsientoVenta = e;
@@ -3642,21 +3627,22 @@
                     var codiTipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
                     if (codiTipoDoc) {
                         id = codiTipoDoc.id;
-                        if (id === '1') { //DNI
+                        if (id === '1') { // DNI
                             _this.mask.documento = "#".repeat(8);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = nacionalidadPorDefault;
                         }
-                        else if (id === '4') { //PASAPORTE
+                        else if (id === '4') { // PASAPORTE
                             _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
-                        else if (id === '7') { //CARNET EXTRANJERIA
+                        else if (id === '7') { // CARNET DE EXTRANJERÍA
                             _this.mask.documento = "N".repeat(15);
                             _this.list.ventas[_this.indexVenta].Nacionalidad = '';
                         }
                     }
 
-                    if (auxValidate !== true) this.recorridoSectionVentas();
+                    if (auxValidate !== true)
+                        this.recorridoSectionVentas();
                 },
                 passSinceRegistrarNino: function () {
                     var _this = this;
@@ -5243,21 +5229,25 @@
                 'filtro.CodiDestinoPas': function (newVal, oldVal) {
                     this.showPlano = false;
                 },
+                'filtro.Turno': function (newVal, oldVal) {
+                    if (newVal.replace(' ', '') !== oldVal.replace(' ', ''))
+                        this.showPlano = false;
+                },
                 'filtro.Fecha': function (newVal, oldVal) {
-                    if (newVal) {
-                        if (String(newVal.id).replace(/\s/g, '').length > 0) {
-                            var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd') || '';
-                            document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
-                        }
+                    if (moment(newVal, 'DD/MM/YYYY').isValid()) {
+                        var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd') || '';
+                        document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
                     }
                     else
                         document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
+
+                    this.showPlano = false;
                 },
                 'list.ventas': {
                     handler: function (after, before) {
                         this.slider = this.list.ventas.length;
                     },
-                    deep: true,
+                    deep: true
                 },
                 listVentasCampoRuc: function (newVal, oldVal) {
                     switch (this.pickedBusVenta) {
@@ -5451,6 +5441,18 @@
                                     return;
                             };
                             break;
+                    }
+
+                    // Valida 'TurnoDisponible'
+                    if (!IngresoManualPasajes) {
+                        if (appController.validatePanel('54') === '1') {
+
+                            var resVerificaTurnoDisponible = appController.verificaTurnoDisponible();
+                            if (!resVerificaTurnoDisponible) {
+                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                return;
+                            }
+                        }
                     }
 
                     // Valida 'Manifiesto'
@@ -5968,22 +5970,19 @@
                     this.validateMinNumero = '0';
                     this.disabledCamposTicket = false;
                 },
-                setDateAndCalcYears: function (dateString) {
-                    if (!document.getElementById('txtFechaNacRA').value) {
-                        document.getElementById('txtFechaNacRA').value = moment().subtract(1, 'day').format('DD/MM/YYYY');
-                        dateString = moment().subtract(1, 'day').format('DD/MM/YYYY');
-                    }
+                recorrerFechaNac: function () {
+                    this.FechaNac = (this.FechaNac ? this.FechaNac : moment().subtract(1, 'day').format('DD/MM/YYYY'));
 
                     this.$nextTick(() => {
-                        if (dateString) {
-                            this.FechaNac = dateString;
-                            var auxFechaNac = moment(dateString, 'DD/MM/YYYY');
-                            this.Edad = '' + moment().diff(auxFechaNac, 'years');
-                            this.recorridoSectionParentesco();
-                        }
-                        else
-                            this.Edad = '';
+                        this.recorridoSectionParentesco();
                     });
+                },
+                setDateAndCalcYears: function () {
+                    if (!document.getElementById('txtFechaNacRA').value)
+                        document.getElementById('txtFechaNacRA').value = moment().subtract(1, 'day').format('DD/MM/YYYY');
+
+                    this.FechaNac = document.getElementById('txtFechaNacRA').value;
+                    this.Edad = '' + moment().diff(moment(this.FechaNac, 'DD/MM/YYYY'), 'years');
                 },
                 recorridoSectionParentesco: function (auxValidate) {
                     var auxResponse = false;
@@ -6102,45 +6101,22 @@
                 },
                 close: function () {
                     $('#appVueRegistrarInfante').modal('hide');
-                },
-                passNumDocToDocumento: function () {
-                    var _this = this;
-                    var codiTipoDoc = _this.list.ventas[_this.indexVenta].CodiTipoDoc;
-                    if (codiTipoDoc) {
-                        id = codiTipoDoc.id;
-                        if (id === "1") { //DNI
-                            _this.mask.documento = "#".repeat(8);
-                            _this.list.ventas[_this.indexVenta].Nacionalidad = nacionalidadPorDefault;
-                        }
-                        else if (id === "4") { //PASAPORTE
-                            _this.mask.documento = "N".repeat(15);
-                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                        }
-                        else if (id === "7") { //CARNET EXTRANJERIA
-                            _this.mask.documento = "N".repeat(15);
-                            _this.list.ventas[_this.indexVenta].Nacionalidad = '';
-                        }
-                    }
-                    this.recorridoSectionVentas();
-                },
+                }
             },
             computed: {},
             watch: {
                 CodiTipoDoc: function (newValue) {
                     if (newValue) {
                         var id = newValue.id;
-                        if (id === "1") {
-                            //DNI
+                        if (id === "1") { // DNI
                             this.mask.documento = "#".repeat(8);
                             this.validateMinNumero = '8';
                         }
-                        else if (id === "4") {
-                            //PASAPORTE
+                        else if (id === "4") { // PASAPORTE
                             this.mask.documento = "N".repeat(15);
                             this.validateMinNumero = '15';
                         }
-                        else if (id === "7") {
-                            //CARNET EXTRANJERIA
+                        else if (id === "7") { // CARNET DE EXTRANJERÍA
                             this.mask.documento = "N".repeat(15);
                             this.validateMinNumero = '15';
                         }
@@ -6794,12 +6770,14 @@
 
                     return auxResponse;
                 },
+                recorrerFechaCita: function () {
+                    $('#cboHospital input[type=search]').focus();
+                },
                 blurFechaCita: function () {
                     if (!document.getElementById('txtFechaCita').value)
                         document.getElementById('txtFechaCita').value = moment().format('DD/MM/YYYY');
 
                     this.fechaCita = document.getElementById('txtFechaCita').value;
-                    $('#cboHospital input[type=search]').focus();
                 },
                 saveCreditoOpciones: async function () {
                     if (!this.recorrerCreditoOpciones(true))

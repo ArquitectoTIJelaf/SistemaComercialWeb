@@ -122,6 +122,7 @@
         // RENIEC
         public const string MsgCorrectoConsultaRENIEC = "Correcto: ConsultaRENIEC.";
         public const string MsgErrorConsultaRENIEC = "RENIEC: No se encontraron datos.";
+        public const string MsgErrorServicioConsultaRENIEC = "RENIEC: El servicio no se encuentra disponible.";
         public const string MsgExcConsultaRENIEC = "Excepción: ConsultaRENIEC.";
 
         // SUNAT

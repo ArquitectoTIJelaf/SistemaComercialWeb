@@ -52,7 +52,9 @@
                                            placeholder="FECHA CITA"
                                            type="text"
                                            @@focus="$event.target.select()"
-                                           onkeydown="bloquearEventsFechaHora(event)"
+                                           @@keydown.13.prevent="recorrerFechaCita()"
+                                           @@keydown.9.prevent="recorrerFechaCita()"
+                                           @@blur="blurFechaCita"
                                            v-mask="'##/##/####'"
                                            autocomplete="off" />
                                 </div>
@@ -70,7 +72,7 @@
                                               :select-on-tab="true"
                                               ref="refHospital"
                                               @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                               @@keydown.9.native.prevent="recorrerCreditoOpciones">
+                                              @@keydown.9.native.prevent="recorrerCreditoOpciones">
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
