@@ -17,5 +17,8 @@
         public string CodiCopiloto { get; set; }
 
         public string NombreCopiloto { get; set; }
+
+
+        public string Activo { get; set; }
     }
 }

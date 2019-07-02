@@ -6867,9 +6867,7 @@
             },
             mounted: function () {
                 let _this = this;
-
-                _this.panel = (appController.validatePanel(241) === '1') ? true : false ;
-
+                
                 window.addEventListener('keydown', _this.configEventKeyF9);
                 $('#appVueModificacionBoleto').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
@@ -6878,7 +6876,8 @@
             },
             methods: {
                 show: function () {
-                    this.limpiarModBoleto();
+                    this.limpiarModBoleto(true);
+                    this.panel = (appController.validatePanel('241') === '1') ? true : false;
                     $('#appVueModificacionBoleto').modal('show');
                     this.setData();
                 },
@@ -6889,7 +6888,6 @@
                     _this.item.serie = correlativo.substring(1, 4);
                     _this.item.numero = correlativo.substring(5, 13);
                     _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label;
-                    debugger;
                     _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
@@ -6939,7 +6937,10 @@
                                 _this.item.apepat = res.data.Valor.SplitNombre[1];
                                 _this.item.apemat = res.data.Valor.SplitNombre[2];
                                 _this.showData = true;
-                            } else APP.msg.warning('No se encontró resultados');                            
+                            } else {
+                                _this.limpiarModBoleto(false);
+                                APP.msg.warning('No se encontró resultados');
+                            }                            
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                     _this.$nextTick(() => {
@@ -6961,8 +6962,15 @@
                     window.removeEventListener('keyup', this.esc);
                     $('#appVueModificacionBoleto').modal('hide');
                 },
-                limpiarModBoleto: function () {
+                limpiarModBoleto: function (_all) {
                     let _this = this;
+                    if (_all) {
+                        _this.item.codEmpresa = 0;
+                        _this.item.empresa = '';
+                        _this.item.tipo = 'M';
+                        _this.item.serie = '';
+                        _this.item.numero = '';
+                    }
                     _this.filtro.idVenta = 0;
                     _this.filtro.dni = '';
                     _this.filtro.nombre = '';
@@ -6971,12 +6979,7 @@
                     _this.filtro.telefono = '';
                     _this.filtro.recoger = '';
                     _this.filtro.tipoDoc = '';
-                    _this.filtro.nacionidad = '';
-                    _this.item.codEmpresa = 0;
-                    _this.item.empresa = '';
-                    _this.item.tipo = 'M';
-                    _this.item.serie = '';
-                    _this.item.numero = '';
+                    _this.filtro.nacionidad = '';                    
                     _this.item.destinoBus = '';
                     _this.item.turno = '';
                     _this.item.ruta = '';

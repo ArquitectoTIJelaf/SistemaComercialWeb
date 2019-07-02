@@ -389,7 +389,8 @@ namespace SisComWeb.Aplication.Controllers
                         ListaDestinosRuta = _ListaDestinosRuta(data["ListaDestinosRuta"]),
                         ListaAuxDestinosRuta = _ListaAuxDestinosRuta(data["ListaDestinosRuta"]),
                         DescServicio = (string)data["DescServicio"],
-                        X_Estado = (string)data["X_Estado"]
+                        X_Estado = (string)data["X_Estado"],
+                        Activo = (string)data["Activo"]
                     }
                 };
 
