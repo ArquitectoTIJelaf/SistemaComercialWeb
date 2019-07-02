@@ -322,11 +322,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
+        public Response<List<ClientePasajeEntity>> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId)
         {
             try
             {
-                return ClientePasajeLogic.BuscarClientesPasaje(campo, nombres, paterno, materno);
+                return ClientePasajeLogic.BuscarClientesPasaje(campo, nombres, paterno, materno, TipoDocId);
             }
             catch (Exception ex)
             {

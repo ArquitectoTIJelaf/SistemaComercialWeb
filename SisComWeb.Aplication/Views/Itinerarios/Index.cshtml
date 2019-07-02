@@ -1077,8 +1077,8 @@
                 sendCreditoOpciones: function (_request) {
                     appVueVenta.setCreditoOpciones(_request);
                 },
-                showBuscaClientePasaje: function () {
-                    appVueBuscaClientePasaje.show();
+                showBuscaClientePasaje: function (_CodiTipoDocId) {
+                    appVueBuscaClientePasaje.show(_CodiTipoDocId);
                 },
                 sendBuscaClientePasaje: async function (_item) {
                     await appVueVenta.sendBuscaClientePasaje(_item);
@@ -3111,19 +3111,19 @@
                                 document.getElementById('txtDocumento').focus();
                             });
                         }
-                        else if (this.list.ventas[i].CodiTipoDoc.id === '4' && this.list.ventas[i].Documento.length < 5) {
+                        else if (this.list.ventas[i].CodiTipoDoc.id === '4' && this.list.ventas[i].Documento.length < 8) {
                             this.indexVenta = i;
                             auxValidate = false;
-                            APP.msg.warning('Ingrese pasaporte de 5 caracteres como mínimo.');
+                            APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
 
                             this.$nextTick(() => {
                                 document.getElementById('txtDocumento').focus();
                             });
                         }
-                        else if (this.list.ventas[i].CodiTipoDoc.id === '7' && this.list.ventas[i].Documento.length < 5) {
+                        else if (this.list.ventas[i].CodiTipoDoc.id === '7' && this.list.ventas[i].Documento.length < 8) {
                             this.indexVenta = i;
                             auxValidate = false;
-                            APP.msg.warning('Ingrese carnet de extranjería de 5 caracteres como mínimo.');
+                            APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
 
                             this.$nextTick(() => {
                                 document.getElementById('txtDocumento').focus();
@@ -4032,6 +4032,20 @@
 
                     _this.disabledAsiento = true;
 
+                    // Valida 'TurnoDisponible'
+                    if (!IngresoManualPasajes) {
+                        if (appController.validatePanel('54') === '1') {
+
+                            var verificaTurnoDisponible = _this.verificaTurnoDisponible();
+                            if (!verificaTurnoDisponible) {
+                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
+
+                                _this.disabledAsiento = false;
+                                return;
+                            }
+                        }
+                    }
+
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await this.validaManifiestoProgramacion();
                     if (!resValidaManifiestoProgramacion)
@@ -4797,9 +4811,8 @@
                 },
                 showBuscaClientePasaje: function (e) {
                     if (e.keyCode === 112) { // F1
-                        var auxCodiTipoDoc = this.list.ventas[this.indexVenta].CodiTipoDoc;
-                        if (auxCodiTipoDoc && auxCodiTipoDoc.id === '1')
-                            appController.showBuscaClientePasaje();
+                        if (this.list.ventas[this.indexVenta].CodiTipoDoc)
+                            appController.showBuscaClientePasaje(this.list.ventas[this.indexVenta].CodiTipoDoc.id);
                     }
                 },
                 sendBuscaClientePasaje: async function (_item) {
@@ -5463,6 +5476,7 @@
                             var resVerificaTurnoDisponible = appController.verificaTurnoDisponible();
                             if (!resVerificaTurnoDisponible) {
                                 APP.msg.warning('La hora de viaje ya pasó, verificar.');
+
                                 return;
                             }
                         }
@@ -5767,8 +5781,8 @@
                 },
                 calcMontos: function (tipo) {
                     // Solución al error de digitar '12345' pero solo muestra '1234'
-                    if (this.importePagado.length > 4)
-                        this.importePagado = this.importePagado.substring(0, 4);
+                    if (this.importePagado.length > 6)
+                        this.importePagado = this.importePagado.substring(0, 6);
 
                     var sumaTotal = parseFloat(this.sumaTotal);
                     var efectivo = parseFloat(this.efectivo);
@@ -6006,12 +6020,17 @@
                         $('#cboTipoDocRA input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                     }
-                    else if (!this.Documento) {
+                    else if (this.CodiTipoDoc.id === '1' && this.Documento.length < 8) {
                         document.getElementById('txtDocumentoRA').focus();
-                        if (auxValidate === true) APP.msg.warning('Ingrese documento.');
+                        if (auxValidate === true) APP.msg.warning('Ingrese DNI de 8 dígitos.');
                     }
-                    else if (this.Documento.length < 8) {
+                    else if (this.CodiTipoDoc.id === '4' && this.Documento.length < 5) {
                         document.getElementById('txtDocumentoRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
+                    }
+                    else if (this.CodiTipoDoc.id === '7' && this.Documento.length < 5) {
+                        document.getElementById('txtDocumentoRA').focus();
+                        if (auxValidate === true) APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
                     }
                     else if (!this.Nombres) {
                         document.getElementById('txtNombresRA').focus();
@@ -6127,11 +6146,11 @@
                         }
                         else if (id === "4") { // PASAPORTE
                             this.mask.documento = "N".repeat(15);
-                            this.validateMinNumero = '15';
+                            this.validateMinNumero = '8';
                         }
                         else if (id === "7") { // CARNET DE EXTRANJERÍA
                             this.mask.documento = "N".repeat(15);
-                            this.validateMinNumero = '15';
+                            this.validateMinNumero = '8';
                         }
                     }
                 }
@@ -6831,11 +6850,14 @@
                 paginate: ['items'],
                 NombreBCP: '',
                 ApePaternoBCP: '',
-                ApeMaternoBCP: ''
+                ApeMaternoBCP: '',
+                TipoDocId: ''
             },
             mounted: function () { },
             methods: {
-                show: function () {
+                show: function (_CodiTipoDocId) {
+                    this.TipoDocId = _CodiTipoDocId;
+
                     $('#appVueBuscaClientePasaje').modal('show');
                 },
                 getClientesPasaje() {
@@ -6885,7 +6907,8 @@
                         campo: tmpCampo,
                         nombres: _this.NombreBCP,
                         paterno: _this.ApePaternoBCP,
-                        materno: _this.ApeMaternoBCP
+                        materno: _this.ApeMaternoBCP,
+                        TipoDocId: _this.TipoDocId
                     }))
                         .then(res => {
                             if (res.data.Estado) {
@@ -6917,6 +6940,7 @@
                     this.NombreBCP = '';
                     this.ApePaternoBCP = '';
                     this.ApeMaternoBCP = '';
+                    this.TipoDocId = '';
                 },
                 sendRow: async function (item) {
                     await appController.sendBuscaClientePasaje(item);

@@ -2043,7 +2043,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("buscarClientesPasaje")]
-        public async Task<ActionResult> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno)
+        public async Task<ActionResult> BuscarClientesPasaje(string campo, string nombres, string paterno, string materno, string TipoDocId)
         {
             try
             {
@@ -2056,6 +2056,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"nombres\" : \"" + nombres + "\"" +
                                     ",\"paterno\" : \"" + paterno + "\"" +
                                     ",\"materno\" : \"" + materno + "\"" +
+                                    ",\"TipoDocId\" : \"" + TipoDocId + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscarClientesPasaje", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
