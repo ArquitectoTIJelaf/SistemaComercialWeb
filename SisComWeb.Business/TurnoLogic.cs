@@ -13,7 +13,6 @@ namespace SisComWeb.Business
             try
             {
                 var obtenerBus = new BusEntity();
-                var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
                 // Busca Turno
                 var buscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
@@ -206,11 +205,18 @@ namespace SisComWeb.Business
             try
             {
                 var valor = new bool();
+                var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
-                var consultaPosCNT = TurnoRepository.ConsultaPosCNT(CodTab, Pv.ToString()); // CodEmp -> Usuario.CodiPuntoVenta
-                var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(Pv, F);
+                var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
+                if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
+                {
+                    var consultaPosCNT = TurnoRepository.ConsultaPosCNT(CodTab, Pv.ToString()); // CodEmp -> Usuario.CodiPuntoVenta
+                    var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(Pv, F);
 
-                if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
+                    if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
+                        valor = true;
+                }
+                else
                     valor = true;
 
                 return new Response<bool>(true, valor, Message.MsgCorrectoObtenerStAnulacion, true);
