@@ -2444,8 +2444,48 @@ namespace SisComWeb.Aplication.Controllers
                         CodiSubruta = (string)x["CodiSubruta"],
                         CodiOrigen = (string)x["CodiOrigen"],
                         CodiEmpresa = (string)x["CodiEmpresa"],
-                        IdVenta = (string)x["IdVenta"]
+                        IdVenta = (string)x["IdVenta"],
+                        StRemoto = (string)x["StRemoto"],
+                        Dni = (string)x["Dni"],
+                        TipoDoc = (string)x["TipoDoc"]
                     }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+        //validateNivelAsiento
+        [HttpGet]
+        [Route("validateNivelAsiento")]
+        public async Task<ActionResult> ValidateNivelAsiento(int IdVenta, string CodiBus, string Asiento)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + IdVenta +
+                                    ",\"CodiBus\" : \"" + (CodiBus ?? "000") + "\"" +
+                                    ",\"Asiento\" : \"" + (Asiento ?? "00") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidateNivelAsiento", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);

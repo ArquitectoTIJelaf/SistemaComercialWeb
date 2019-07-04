@@ -313,7 +313,7 @@ namespace SisComWeb.Services
         #endregion
 
         #region BUSCA
-        
+
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "BuscaBoletoF9", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<BuscaEntity> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa);
@@ -328,6 +328,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VentaConsultaF6", ResponseFormat = WebMessageFormat.Json)]
         Response<List<FechaAbiertaEntity>> VentaConsultaF6(FechaAbiertaRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidateNivelAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ValidateNivelAsiento(int IdVenta, string CodiBus, string Asiento);
         #endregion
     }
 }

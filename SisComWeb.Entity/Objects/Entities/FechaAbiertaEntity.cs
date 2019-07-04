@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SisComWeb.Entity.Objects.Entities
+﻿namespace SisComWeb.Entity.Objects.Entities
 {
     public class FechaAbiertaEntity
     {
@@ -18,5 +12,8 @@ namespace SisComWeb.Entity.Objects.Entities
         public string CodiOrigen { get; set; }
         public string CodiEmpresa { get; set; }
         public string IdVenta { get; set; }
+        public string StRemoto { get; set; }
+        public string Dni { get; set; }
+        public string TipoDoc { get; set; }
     }
 }

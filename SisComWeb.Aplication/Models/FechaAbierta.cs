@@ -17,6 +17,9 @@ namespace SisComWeb.Aplication.Models
         public string CodiOrigen { get; set; }
         public string CodiEmpresa { get; set; }
         public string IdVenta { get; set; }
+        public string StRemoto { get; set; }
+        public string Dni { get; set; }
+        public string TipoDoc { get; set; }
     }
 
     public class FiltroFechaAbierta
