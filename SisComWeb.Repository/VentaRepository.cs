@@ -258,21 +258,17 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarVentaxId";
+                db.ProcedureName = "scwsp_BuscarVentaxId_02";
                 db.AddParameter("@Id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         entidad.CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA");
-                        entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "Precio_Venta");
-                        entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
-                        entidad.FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
                         entidad.SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO");
                         entidad.NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO");
-                        entidad.FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta");
-                        entidad.Tipo = Reader.GetStringValue(drlector, "Tipo");
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
+                        entidad.PerAutoriza = Reader.GetStringValue(drlector, "per_autoriza");
                         break;
                     }
                 }
@@ -631,6 +627,106 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static bool VerificaVentaPromoKmt(int IdVenta)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_venta_promo_kmt_Verifica";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = true;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static int ConsultaPagoTarjetaVenta(int IdVenta)
+        {
+            var valor = new int();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_PagoTarjetaVenta_Trae_Id_Caja";
+                db.AddParameter("@id_venta", DbType.String, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "idcaja");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static VentaEntity ConsultaVentaReintegro(string Ser, string Bol, string Emp, string Tipo)
+        {
+            var entidad = new VentaEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.AddParameter("@Ser", DbType.String, ParameterDirection.Input, Ser);
+                db.AddParameter("@Bol", DbType.String, ParameterDirection.Input, Bol);
+                db.AddParameter("@Emp", DbType.String, ParameterDirection.Input, Emp);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.IdVenta = Reader.GetIntValue(drlector, "id_venta");
+                        entidad.CodiEsca = Reader.GetStringValue(drlector, "codi_esca");
+                        entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal");
+                        entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA");
+                        entidad.TipoPago = Reader.GetStringValue(drlector, "tipo_pago");
+                        entidad.CodiUsuario = Reader.GetSmallIntValue(drlector, "clav_usuario");
+                        entidad.Tipo = Reader.GetStringValue(drlector, "tipo");
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE");
+                        entidad.FechaVenta = Reader.GetDateStringValue(drlector, "FECH_VENTA");
+                        entidad.CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA");
+
+                        entidad.SucVenta = Reader.GetSmallIntValue(drlector, "SUC_VENTA");
+
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
+        public static CajaEntity ConsultaCajaPase(string Nume)
+        {
+            var entidad = new CajaEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_caja_COnsulta_Pase";
+                db.AddParameter("@nume", DbType.String, ParameterDirection.Input, Nume);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.Monto = Reader.GetDecimalValue(drlector, "MONT_CAJA");
+                        entidad.IdCaja = Reader.GetIntValue(drlector, "idcaja");
+
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -840,7 +936,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_GrabarCaja";
+                db.ProcedureName = "scwsp_GrabarCaja02";
                 db.AddParameter("@Nume_Caja", DbType.String, ParameterDirection.Input, entidad.NumeCaja);
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, entidad.CodiSucursal);
@@ -856,6 +952,23 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Origen", DbType.String, ParameterDirection.Input, entidad.Origen);
                 db.AddParameter("@Modulo", DbType.String, ParameterDirection.Input, entidad.Modulo);
                 db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, entidad.Tipo);
+
+                db.AddParameter("@Nom_Usario", DbType.String, ParameterDirection.Input, entidad.NomUsuario);
+                db.AddParameter("@CONC_CAJA", DbType.String, ParameterDirection.Input, entidad.ConcCaja);
+                db.AddParameter("@TIPO_VALE", DbType.String, ParameterDirection.Input, entidad.TipoVale);
+                db.AddParameter("@CODI_BUS", DbType.String, ParameterDirection.Input, entidad.CodiBus);
+                db.AddParameter("@CODI_CHOFER", DbType.String, ParameterDirection.Input, entidad.CodiChofer);
+                db.AddParameter("@CODI_GASTO", DbType.String, ParameterDirection.Input, entidad.CodiGasto);
+                db.AddParameter("@INDI_ANULADO", DbType.String, ParameterDirection.Input, entidad.IndiAnulado);
+                db.AddParameter("@TIPO_DESCUENTO", DbType.String, ParameterDirection.Input, entidad.TipoDescuento);
+                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, entidad.TipoDoc);
+                db.AddParameter("@TIPO_GASTO", DbType.String, ParameterDirection.Input, entidad.TipoGasto);
+                db.AddParameter("@LIQUI", DbType.Decimal, ParameterDirection.Input, entidad.Liqui);
+                db.AddParameter("@DIFERENCIA", DbType.Decimal, ParameterDirection.Input, entidad.Diferencia);
+                db.AddParameter("@VOUCHER", DbType.String, ParameterDirection.Input, entidad.Voucher);
+                db.AddParameter("@ASIENTO", DbType.String, ParameterDirection.Input, entidad.Asiento);
+                db.AddParameter("@RUC", DbType.String, ParameterDirection.Input, entidad.Ruc);
+
                 db.AddParameter("@IdCaja", DbType.Int32, ParameterDirection.Output, entidad.IdCaja);
 
                 db.Execute();
@@ -1103,6 +1216,149 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nacionidad", DbType.String, ParameterDirection.Input, Nacionalidad);
                 db.Execute();
             }
+        }
+
+        public static bool ActualizarVentaPromokmt(int IdVentaCan)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_venta_promo_kmt_Update";
+                db.AddParameter("@id_venta_can", DbType.Int32, ParameterDirection.Input, IdVentaCan);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool EliminarVentaPromokmt(int IdVenta)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_venta_promo_kmt_Update";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool ActualizarCajaAnulacion(int IdCaja)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_caja_Update_Anula_id";
+                db.AddParameter("@idcaja", DbType.Int32, ParameterDirection.Input, IdCaja);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool EliminarPoliza(int IdVenta)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Poliza_Delete";
+                db.AddParameter("@idventa", DbType.Int32, ParameterDirection.Input, IdVenta);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarAnulacionPorDia(string Fecha, int Pventa, int Cnt)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Anulacion_por_Dia_Insert";
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, Fecha);
+                db.AddParameter("@pventa", DbType.Int32, ParameterDirection.Input, Pventa);
+                db.AddParameter("@cnt", DbType.Int32, ParameterDirection.Input, Cnt);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool ActualizarAnulacionPorDia(string Fecha, int Pventa)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Anulacion_por_Dia_Update";
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, Fecha);
+                db.AddParameter("@pventa", DbType.Int32, ParameterDirection.Input, Pventa);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool ActualizarBoletosPorSocio(string Socio, string Mes, string Ann)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_boletos_x_socio_Update";
+                db.AddParameter("@socio", DbType.String, ParameterDirection.Input, Socio);
+                db.AddParameter("@mes", DbType.String, ParameterDirection.Input, Mes);
+                db.AddParameter("@ann", DbType.String, ParameterDirection.Input, Ann);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool ActualizarBoletosPorSocioV(string Socio, string Mes, string Ann)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_boletos_x_socio_Update_V";
+                db.AddParameter("@socio", DbType.String, ParameterDirection.Input, Socio);
+                db.AddParameter("@mes", DbType.String, ParameterDirection.Input, Mes);
+                db.AddParameter("@ann", DbType.String, ParameterDirection.Input, Ann);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
         }
 
         #endregion

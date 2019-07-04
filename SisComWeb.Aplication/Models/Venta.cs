@@ -124,11 +124,7 @@ namespace SisComWeb.Aplication.Models
 
     public class FiltroVenta
     {
-        public short SerieBoleto { get; set; }
-        public int NumeBoleto { get; set; }
         public byte CodiEmpresa { get; set; }
-        public short CodiOficina { get; set; } // Usuario
-        public short CodiPuntoVenta { get; set; } // Usuario
         public short CodiOrigen { get; set; } // Pasajero
         public short CodiDestino { get; set; } // Pasajero
         public int CodiProgramacion { get; set; }
@@ -139,12 +135,8 @@ namespace SisComWeb.Aplication.Models
         public string Nombre { get; set; }
         public byte Edad { get; set; }
         public string Telefono { get; set; }
-        public short CodiUsuario { get; set; }
         public string Dni { get; set; }
-        public string NomUsuario { get; set; }
         public string TipoDocumento { get; set; }
-        public string CodiDocumento { get; set; }
-        public string Tipo { get; set; }
         public string Sexo { get; set; }
         public string TipoPago { get; set; }
         public string FechaViaje { get; set; }
@@ -155,9 +147,6 @@ namespace SisComWeb.Aplication.Models
         public short CodiArribo { get; set; }
         public string HoraEmbarque { get; set; }
         public byte NivelAsiento { get; set; }
-        public string CodiTerminal { get; set; }
-        public string NomOficina { get; set; } // Del Usuario
-        public string NomPuntoVenta { get; set; } // Del Usuario
         public string NomDestino { get; set; } // Pasajero
         public string NomEmpresaRuc { get; set; }
         public string DirEmpresaRuc { get; set; }
@@ -191,8 +180,6 @@ namespace SisComWeb.Aplication.Models
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; } // Código de gerente que autoriza el pase
         public string CodiSocio { get; set; } // Código de socio solictante
-        public string Mes { get; set; }
-        public string Anno { get; set; }
         public string Concepto { get; set; }
         public bool FechaAbierta { get; set; }
 
@@ -299,5 +286,41 @@ namespace SisComWeb.Aplication.Models
         public string BusCodigo { get; set; }
 
         public short EmbarqueCod { get; set; }
+    }
+
+    public class AnularVentaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public string Tipo { get; set; }
+
+        public string FlagVenta { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string FechaVenta { get; set; }
+
+        public string TipoPago { get; set; }
+
+        public string ValeRemoto { get; set; }
+
+        public short CodiUsuarioBoleto { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string NomPasajero { get; set; }
+
+        public string HoraViaje { get; set; }
+
+        public string NomDestinoPas { get; set; }
+
+        public string CodiEsca { get; set; }
+
+
+        public string CodiDestinoPas { get; set; }
+
+        public bool IngresoManualPasajes { get; set; }
     }
 }

@@ -4059,12 +4059,24 @@
                         _this.disabledAsiento = false;
                         return;
                     }
-
+                 
                     APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                         IdVenta: tmpAsientoSel.IdVenta,
                         Tipo: tmpAsientoSel.TipoBoleto,
                         FlagVenta: tmpAsientoSel.FlagVenta,
-                        StAnulacion: _StAnulacion,
+                        PrecioVenta: tmpAsientoSel.PrecioVenta,
+                        FechaViaje: tmpAsientoSel.FechaViaje,
+                        FechaVenta: tmpAsientoSel.FechaVenta,
+                        TipoPago: tmpAsientoSel.TipoPago,
+                        ValeRemoto: tmpAsientoSel.ValeRemoto,
+                        CodiUsuarioBoleto: tmpAsientoSel.CodiUsuario,
+                        NumeAsiento: tmpAsientoSel.NumeAsiento,
+                        NomPasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
+                        HoraViaje: _this.filtro.Turno,
+                        NomDestinoPas: _this.filtro.CodiDestinoPas.label,
+                        CodiEsca: tmpAsientoSel.CodiEsca,
+
+                        CodiDestinoPas: _this.filtro.CodiDestinoPas.id,
                         IngresoManualPasajes: IngresoManualPasajes
                     }))
                         .then(async function (res) {
@@ -7120,8 +7132,6 @@
             mounted: function () {
                 let _this = this;
 
-                _this.panel = (appController.validatePanel(241) === '1') ? true : false ;
-
                 window.addEventListener('keydown', _this.configEventKeyF9);
                 $('#appVueModificacionBoleto').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
@@ -7130,6 +7140,8 @@
             },
             methods: {
                 show: function () {
+                    this.panel = (appController.validatePanel('241') === '1') ? true : false;
+
                     this.limpiarModBoleto();
                     $('#appVueModificacionBoleto').modal('show');
                     this.setData();

@@ -617,6 +617,23 @@ namespace SisComWeb.Business
                                     Origen = entidad.TipoPago == "03" ? "VT" : "PA",
                                     Modulo = entidad.TipoPago == "03" ? "PV" : "VT",
                                     Tipo = entidad.Tipo,
+
+                                    NomUsuario = entidad.NomUsuario,
+                                    ConcCaja = entidad.Tipo != "M" ? auxBoletoCompleto : string.Empty,
+                                    TipoVale = "S",
+                                    CodiBus = "",
+                                    CodiChofer = "",
+                                    CodiGasto = "",
+                                    IndiAnulado = "F",
+                                    TipoDescuento = "",
+                                    TipoDoc = "XX",
+                                    TipoGasto = "P",
+                                    Liqui = 0M,
+                                    Diferencia = 0M,
+                                    Voucher = "PA",
+                                    Asiento = "",
+                                    Ruc = "N",
+
                                     IdCaja = 0
                                 };
 
@@ -924,69 +941,257 @@ namespace SisComWeb.Business
                 var anularVenta = new byte();
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
+                var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
+
                 var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
                 if (objVenta.SerieBoleto == 0)
                     return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
 
                 // Valida 'AnularDocumentoSUNAT'
-                if (objVenta.Tipo != "M")
+                if (request.Tipo != "M" && request.FlagVenta != "Y")
                 {
                     // Anula 'DocumentoSUNAT'
+                    objVenta.Tipo = request.Tipo;
+                    objVenta.FechaVenta = request.FechaVenta;
+
                     var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVenta);
                     if (!resAnularDocumentoSUNAT.Estado)
                         return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
                 }
+                
+                if (request.FlagVenta == "8" || request.FlagVenta == "7")
+                    // Actualiza 'VentaPromokmt'
+                    VentaRepository.ActualizarVentaPromokmt(request.IdVenta);
 
+                // Verifica 'VentaPromokmt'
+                if (VentaRepository.VerificaVentaPromoKmt(request.IdVenta))
+                    // Elimina 'VentaPromokmt'
+                    VentaRepository.EliminarVentaPromokmt(request.IdVenta);
+
+                if (request.TipoPago == "03")
+                {
+                    if (request.FechaVenta == DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture))
+                    {
+                        // Consulta 'PagoTarjetaVenta'
+                        var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(request.IdVenta);
+                        // Actualiza 'CajaAnulacion'
+                        VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
+                    }
+                }
+
+                if (request.FlagVenta == "1")
+                {
+                    if (request.CodiUsuarioBoleto == request.CodiUsuario)
+                    {
+                        VentaRepository.ActualizarCajaAnulacion(int.Parse(request.ValeRemoto ?? "0"));
+                    }
+
+                    // Consulta 'BoletoPorContrato'
+                    var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(request.IdVenta);
+                    if (consultaBoletoPorContrato > 0)
+                    {
+                        // Actualiza 'BoletosPorContrato'
+                        var actualizarBoletosPorContrato = CreditoRepository.ActualizarBoletosPorContrato(consultaBoletoPorContrato.ToString());
+                        if (!actualizarBoletosPorContrato)
+                            return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosPorContrato, true);
+
+                        // Actualiza 'BoletosStock'
+                        var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("0", objVenta.IdPrecio.ToString(), "1"); // Se está suponiendo que 'FlagPrecioNormal' siempre es 'false'.
+                        if (!actualizarBoletosStock)
+                            return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosStock, true);
+                    }
+                    else
+                        return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
+                }
+
+                // Genera 'CorrelativoAuxiliar'
                 var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                     return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                CajaEntity objCaja = new CajaEntity
+                // Graba 'Caja'
+                var objCaja = new CajaEntity
                 {
                     NumeCaja = int.Parse(generarCorrelativoAuxiliar).ToString("D7"),
                     CodiEmpresa = objVenta.CodiEmpresa,
                     CodiSucursal = short.Parse(request.CodiOficina),
                     Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
-                    Monto = objVenta.PrecioVenta,
+                    Monto = request.PrecioVenta,
                     CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                     Recibe = string.Empty,
-                    CodiDestino = objVenta.CodiRuta.ToString(),
-                    FechaViaje = objVenta.FechaViaje,
+                    CodiDestino = request.CodiDestinoPas,
+                    FechaViaje = request.FechaViaje,
                     HoraViaje = "VNA",
                     CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
                     IdVenta = request.IdVenta,
                     Origen = "AB",
                     Modulo = "AP",
                     Tipo = request.Tipo,
+
+                    NomUsuario = request.NomUsuario,
+                    ConcCaja = request.Tipo != "M" ? (objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7")) : string.Empty,
+                    TipoVale = "S",
+                    CodiBus = "",
+                    CodiChofer = "",
+                    CodiGasto = "",
+                    IndiAnulado = "F",
+                    TipoDescuento = "",
+                    TipoDoc = "XX",
+                    TipoGasto = "P",
+                    Liqui = 0M,
+                    Diferencia = 0M,
+                    Voucher = "PA",
+                    Asiento = "",
+                    Ruc = "N",
+
                     IdCaja = 0
                 };
-                var caja = VentaRepository.GrabarCaja(objCaja);
+                var grabarCaja = VentaRepository.GrabarCaja(objCaja);
 
-                if (caja > 0)
+                if (grabarCaja > 0)
                 {
-                    if (request.FlagVenta == "1")
-                    {
-                        // Consulta 'BoletoPorContrato'
-                        var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(request.IdVenta);
-                        if (consultaBoletoPorContrato > 0)
-                        {
-                            // Actualiza 'BoletosPorContrato'
-                            var actualizarBoletosPorContrato = CreditoRepository.ActualizarBoletosPorContrato(consultaBoletoPorContrato.ToString());
-                            if (!actualizarBoletosPorContrato)
-                                return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosPorContrato, true);
-
-                            // Actualiza 'BoletosStock'
-                            var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("0", objVenta.IdPrecio.ToString(), "1"); // Se está suponiendo que es 'FlagPrecioNormal' siempre es 'false'.
-                            if (!actualizarBoletosStock)
-                                return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosStock, true);
-                        }
-                        else
-                            return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
-                    }
-
+                    // Anula 'Venta'
                     anularVenta = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
                     if (anularVenta > 0)
+                    {
+                        // Elimina 'Poliza'
+                        VentaRepository.EliminarPoliza(request.IdVenta);
+
+                        if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
+                        {
+                            // Consulta 'AnulacionPorDia'
+                            var ConsultaAnulacionPorDia =  TurnoRepository.ConsultaAnulacionPorDia(int.Parse(request.CodiPuntoVenta), DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+                            if (ConsultaAnulacionPorDia <= 0)
+                                // Inserta 'AnulacionPorDia'
+                                VentaRepository.InsertarAnulacionPorDia(DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture), int.Parse(request.CodiPuntoVenta), 1); // 1 -> Porque se anula uno por uno.
+                            else
+                                // Actualiza 'AnulacionPorDia'
+                                VentaRepository.ActualizarAnulacionPorDia(DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture), int.Parse(request.CodiPuntoVenta));
+                        }
+
+                        // Graba 'Auditoria'
+                        var objAuditoriaEntity = new AuditoriaEntity
+                        {
+                            CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                            NomUsuario = request.NomUsuario,
+                            Tabla = "VENTA",
+                            TipoMovimiento = "ANULACION",
+                            Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
+                            NumeAsiento = request.NumeAsiento.ToString("D2"),
+                            NomOficina = request.NomOficina,
+                            NomPuntoVenta = request.CodiPuntoVenta.ToString(),
+                            Pasajero = request.NomPasajero,
+                            FechaViaje = request.FechaViaje,
+                            HoraViaje = request.HoraViaje,
+                            NomDestino = request.NomDestinoPas,
+                            Precio = request.PrecioVenta,
+                            Obs1 = "ANULACION DE BOLETO",
+                            Obs2 = "TERMINAL" + request.Terminal.ToString("D3"),
+                            Obs3 = string.Empty,
+                            Obs4 = string.Empty,
+                            Obs5 = string.Empty
+                        };
+                        VentaRepository.GrabarAuditoria(objAuditoriaEntity);
+
+                        // Anulación de su respectivo 'Reintegro'
+                        if (!string.IsNullOrEmpty(request.CodiEsca))
+                        {
+                            // Consulta 'VentaReintegro'
+                            var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1,3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0,1));
+
+                            if (objReintegro.IdVenta > 0)
+                            {
+                                if (objReintegro.TipoPago == "03")
+                                {
+                                    // Consulta 'PagoTarjetaVenta'
+                                    var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(objReintegro.IdVenta);
+
+                                    // Actualiza 'CajaAnulacion'
+                                    VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
+                                }
+
+                                // Valida 'AnularDocumentoSUNAT'
+                                if (request.CodiEsca.Substring(0, 1) != "M")
+                                {
+                                    // Anula 'DocumentoSUNAT'
+                                    var objVentaReintegro = new VentaEntity
+                                    {
+                                        CodiEmpresa = objReintegro.CodiEmpresa,
+                                        SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
+                                        NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
+                                        Tipo = objReintegro.Tipo,
+                                        FechaVenta = objReintegro.FechaVenta
+                                    };
+
+                                    var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVentaReintegro);
+                                    if (!resAnularDocumentoSUNAT.Estado)
+                                        return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
+                                }
+
+                                // Genera 'CorrelativoAuxiliar'
+                                var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
+                                if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
+                                    return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
+
+                                // Graba 'CajaReintegro'
+                                var objCajaReintegro = new CajaEntity
+                                {
+                                    NumeCaja = int.Parse(generarCorrelativoAuxiliarReintegro).ToString("D7"),
+                                    CodiEmpresa = objReintegro.CodiEmpresa,
+                                    CodiSucursal = short.Parse(request.CodiOficina),
+                                    Boleto = request.CodiEsca.Substring(1),
+                                    Monto = objReintegro.PrecioVenta,
+                                    CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                                    Recibe = "RE",
+                                    CodiDestino = request.CodiDestinoPas,
+                                    FechaViaje = "01/01/1900",
+                                    HoraViaje = "VNA",
+                                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                                    IdVenta = objReintegro.IdVenta,
+                                    Origen = "AR",
+                                    Modulo = "PV",
+                                    Tipo = request.CodiEsca.Substring(0, 1),
+
+                                    NomUsuario = request.NomUsuario,
+                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
+                                    TipoVale = "S",
+                                    CodiBus = "",
+                                    CodiChofer = "",
+                                    CodiGasto = "",
+                                    IndiAnulado = "F",
+                                    TipoDescuento = "RE",
+                                    TipoDoc = "",
+                                    TipoGasto = "P",
+                                    Liqui = 0M,
+                                    Diferencia = 0M,
+                                    Voucher = "RE",
+                                    Asiento = "",
+                                    Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
+
+                                    IdCaja = 0
+                                };
+                                var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                            }
+                        }
+
+                        // Anulaciòn para 'Pase'
+                        if (request.FlagVenta == "7")
+                        {
+                            // Actualiza 'BoletosPorSocio'
+                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("MM"), Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("yyyy"));
+
+                            // Consulta 'CajaPase'
+                            var consultaCajaPase = VentaRepository.ConsultaCajaPase(objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"));
+
+                            if (consultaCajaPase.IdCaja > 0)
+                            {
+                                // Actualiza 'BoletoPorSocioV'
+                                VentaRepository.ActualizarBoletosPorSocioV(objVenta.PerAutoriza, DateTime.Now.ToString("MM", CultureInfo.InvariantCulture), DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture));
+                            }
+                        }
+
                         return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+                    }
                     else
                         return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
                 }
