@@ -920,6 +920,19 @@ namespace SisComWeb.Services
                 return new Response<List<FechaAbiertaEntity>>(false, null, Message.MsgExActualizaBoletoF9, false);
             }
         }
+
+        public Response<bool> ValidateNivelAsiento(int IdVenta, string CodiBus, string Asiento)
+        {
+            try
+            {
+                return FechaAbiertaLogic.ValidateNivelAsiento(IdVenta, CodiBus, Asiento);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
+            }
+        }
         #endregion
     }
 }

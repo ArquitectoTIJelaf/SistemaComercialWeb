@@ -39,13 +39,56 @@ namespace SisComWeb.Repository
                             CodiSubruta = Reader.GetStringValue(drlector, "CODI_SUBRUTA"),
                             CodiOrigen = Reader.GetStringValue(drlector, "COD_ORIGEN"),
                             CodiEmpresa = Reader.GetStringValue(drlector, "CODI_EMPRESA"),
-                            IdVenta = Reader.GetStringValue(drlector, "id_venta")
+                            IdVenta = Reader.GetStringValue(drlector, "id_venta"),
+                            StRemoto = Reader.GetStringValue(drlector, "st_remoto"),
+                            Dni = Reader.GetStringValue(drlector, "DNI"),
+                            TipoDoc = Reader.GetStringValue(drlector, "TIPO_DOC")
                         });
                     }
                 }
             }
 
             return lista;
+        }
+
+        //Nivel de asiento del boleto vendido
+        public static int NivelAsientoVentaDerivada(int IdVenta)
+        {
+            int NivelAsiento = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Derivada_Nivel_asi";
+                db.AddParameter("@id", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        NivelAsiento = Reader.GetIntValue(drlector, "nivel_asi");
+                    }
+                }
+            }
+            return NivelAsiento;
+        }
+
+        public static int NivelDelAsiento(string CodiBus, string Asiento)
+        {
+            int Nivel = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_asientonivel";
+                db.AddParameter("@bus", DbType.String, ParameterDirection.Input, CodiBus);
+                db.AddParameter("@as", DbType.String, ParameterDirection.Input, Asiento);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Nivel = Reader.GetIntValue(drlector, "nivel");
+                    }
+                }
+            }
+            return Nivel;
         }
         #endregion
     }

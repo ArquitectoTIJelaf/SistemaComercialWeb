@@ -302,5 +302,7 @@
         // Fecha Abierta
         public const string MsgCorrectoVentaConsultaF6 = "Correcto: VentaConsultaF6.";
         public const string MsgExcVentaConsultaF6 = "Excepción: VentaConsultaF6.";
+
+        public const string MsgExcValidateNivelAsiento = "Excepción: ValidateNivelAsiento";
     }
 }

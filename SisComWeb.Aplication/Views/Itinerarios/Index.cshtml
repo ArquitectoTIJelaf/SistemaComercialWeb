@@ -15,6 +15,10 @@
     var claveMoverVentaFueraDeHora = Constant.CLAVE_CLAVE_PARA_MOVER_VENTA_FUERA_DE_HORA;
     var claveAnulacionTarjetaCredito = Constant.CLAVE_ANULACION_DE_TARJETA_DE_CREDITO;
     var clavePostergacionesBoleto = Constant.CLAVE_POSTERGACIONES_DE_BOLETO;
+
+    var claveFechaAbiertaABolPasados = Constant.CLAVE_FECHA_ABIERTA_A_BOL_PASADOS;
+    var claveConfirmacionDeBoletosRemotosSinManifiesto = Constant.CLAVE_CONFIRMACION_DE_BOLETOS_REMOTOS_SIN_MANIFIESTO;
+    var claveCambioDeNivelDeAsiento = Constant.CLAVE_CAMBIO_DE_NIVEL_DE_ASIENTO;
 }
 
 @Html.Partial("_Filtros")
@@ -788,6 +792,10 @@
         var ClavePostergacionesBoleto = '@clavePostergacionesBoleto';
         var ClaveFlag9 = '109';
 
+        var ClaveFechaAbiertaABolPasados = '@claveFechaAbiertaABolPasados';
+        var ClaveConfirmacionDeBoletosRemotosSinManifiesto = '@claveConfirmacionDeBoletosRemotosSinManifiesto';
+        var ClaveCambioDeNivelDeAsiento = '@claveCambioDeNivelDeAsiento';
+
         var IngresoManualPasajes = false;
         var nacionalidadPorDefault = 'PERUANA';
         var TipoImprimir = 'Impresion';
@@ -988,8 +996,8 @@
                 showPostergacion: function () {
                     appVuePostergacion.show();
                 },
-                showFechaAbierta: function () {
-                    appVueFechaAbierta.show();
+                showFechaAbierta: function (asientoSel) {
+                    appVueFechaAbierta.show(asientoSel);
                 },
                 showClaveAutorizacion: async function (_Tipo) {
                     await appClaveAutorizacion.show(_Tipo);
@@ -1022,6 +1030,8 @@
                                 case ClaveMoverVentaFueraDeHora:
                                 case ClavePostergacionesBoleto:
                                 case ClaveFlag9:
+                                case ClaveFechaAbiertaABolPasados:
+
                                     auxResponse = res.data;
                                     break;
                             }
@@ -1654,8 +1664,9 @@
                                 _this.objTurno.HoraProgramacion = res.data.Valor.HoraProgramacion;
                                 _this.objTurno.DescServicio = res.data.Valor.DescServicio;
                                 _this.objTurno.X_Estado = res.data.Valor.X_Estado;
-
                                 _this.objTurno.CantidadMaxBloqAsi = res.data.Valor.CantidadMaxBloqAsi;
+
+                                _this.objTurno.Xcierre = res.data.Valor.Activo;
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                 // -------------------------------------------------------
@@ -1841,9 +1852,9 @@
                         return;
                     }
 
-                    // Valida 'FechaViaje'
-                    if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
-                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                    // Valida 'Precio'
+                    if (asientoSel.PrecioNormal === 0) {
+                        APP.msg.warning('No se encontró precio del asiento.');
 
                         _this.disabledAsiento = false;
                         return;
@@ -1863,18 +1874,43 @@
                         }
                     }
 
+                    // Valida 'FechaViaje'
+                    if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
+                        switch (_this.pickedBusVenta) {
+                            case 'FA':
+                                {
+                                    if (appController.validatePanelClave('25') === '1') {
+
+                                        var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                            'Confirmar Fecha Abierta'
+                                            , 'Este boleto es de fecha pasada, ingrese la clave de autorización.'
+                                            , ClaveFechaAbiertaABolPasados);
+
+                                        if (!resConfirmClaveAutorizacion) {
+                                            APP.msg.warning('No se puede procesar datos de fechas pasadas');
+                                            _this.disabledAsiento = false;
+                                            return;
+                                        }
+                                    }
+
+                                    if (this.objTurno.Xcierre === '1') {
+                                        APP.msg.warning('La programación se encuentra cerrada.');
+                                        _this.disabledAsiento = false;
+                                        return;
+                                    }
+                                }
+                                break;
+                            default:
+                                APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                                _this.disabledAsiento = false;
+                                return;
+                        }
+                    }
+
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await this.validaManifiestoProgramacion();
                     if (!resValidaManifiestoProgramacion)
                         return;
-
-                    // Valida 'Precio'
-                    if (asientoSel.PrecioNormal === 0) {
-                        APP.msg.warning('No se encontró precio del asiento.');
-
-                        _this.disabledAsiento = false;
-                        return;
-                    }
 
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
@@ -1954,6 +1990,16 @@
                                             return;
                                         }
 
+                                    }
+                                }
+                                break;
+                            case 'FA':
+                                {
+                                    if (Usuario.Nivel === 8 || Usuario.Nivel === 14 || Usuario.Nivel === 15) {
+                                        APP.msg.warning("Para vender Fecha Abierta, debe tener un plano activo");
+
+                                        _this.disabledAsiento = false;
+                                        return;
                                     }
                                 }
                                 break;
@@ -3913,7 +3959,7 @@
                             _this.limpiarVenta();
                     }
                     else
-                        appController.showFechaAbierta();
+                        appController.showFechaAbierta(asientoSel);
                 },
                 validateFechaAbierta: async function (_tmpAsientoSel) {
                     var auxValidate = true;
@@ -7140,9 +7186,9 @@
             },
             methods: {
                 show: function () {
+                    this.limpiarModBoleto(true);
                     this.panel = (appController.validatePanel('241') === '1') ? true : false;
 
-                    this.limpiarModBoleto();
                     $('#appVueModificacionBoleto').modal('show');
                     this.setData();
                 },
@@ -7202,7 +7248,10 @@
                                 _this.item.apepat = res.data.Valor.SplitNombre[1];
                                 _this.item.apemat = res.data.Valor.SplitNombre[2];
                                 _this.showData = true;
-                            } else APP.msg.warning('No se encontró resultados');                            
+                            } else {
+                                _this.limpiarModBoleto(false);
+                                APP.msg.warning('No se encontró resultados');
+                            }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                     _this.$nextTick(() => {
@@ -7224,8 +7273,15 @@
                     window.removeEventListener('keyup', this.esc);
                     $('#appVueModificacionBoleto').modal('hide');
                 },
-                limpiarModBoleto: function () {
+                limpiarModBoleto: function (_all) {
                     let _this = this;
+                    if (_all) {
+                        _this.item.codEmpresa = 0;
+                        _this.item.empresa = '';
+                        _this.item.tipo = 'M';
+                        _this.item.serie = '';
+                        _this.item.numero = '';
+                    }
                     _this.filtro.idVenta = 0;
                     _this.filtro.dni = '';
                     _this.filtro.nombre = '';
@@ -7235,11 +7291,6 @@
                     _this.filtro.recoger = '';
                     _this.filtro.tipoDoc = '';
                     _this.filtro.nacionidad = '';
-                    _this.item.codEmpresa = 0;
-                    _this.item.empresa = '';
-                    _this.item.tipo = 'M';
-                    _this.item.serie = '';
-                    _this.item.numero = '';
                     _this.item.destinoBus = '';
                     _this.item.turno = '';
                     _this.item.ruta = '';
@@ -7347,6 +7398,7 @@
                 },
                 paginate: ['items'],
                 showData: false,
+                asientoSel: {},
                 panel: true
             },
             mounted: function () {
@@ -7360,8 +7412,10 @@
                 });
             },
             methods: {
-                show: function () {
+                show: function (asientoSel) {
+                    debugger;
                     this.limpiarFA();
+                    this.asientoSel = asientoSel;
                     $('#appVueFechaAbierta').modal('show');
                     this.setData();
                 },
@@ -7392,6 +7446,47 @@
                 },
                 sendRow: async function (item) {
                     let _this = this;
+                    var resConfirmClaveAutorizacion = false;
+                    var flagAuditoria = false;
+
+                    if (item.StRemoto === '1') {
+
+                        resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                            'Confirmar Boleto Postergado'
+                            , 'Para confirmar el boleto postergado, ingrese la clave de autorización.'
+                            , ClaveConfirmacionDeBoletosRemotosSinManifiesto);
+
+                        if (!resConfirmClaveAutorizacion) {
+                            APP.msg.warning('El usuario no está autorizado para esta transacción');
+                            return;
+                        } else {
+                            flagAuditoria = true;
+                        }
+                    }
+
+                    var validateAsiento = await _this.validateNivelAsiento(parseInt(item.IdVenta), appVueVenta.objPlano.CodiBus, _this.asientoSel.Tipo);
+
+                    if (validateAsiento) {
+                        if (!validateAsiento.Valor) {
+                            resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                'Cambiar Nivel de Asiento'
+                                , validateAsiento.Mensaje + ', para cambiar de nivel ingrese la clave de autorización.'
+                                , ClaveCambioDeNivelDeAsiento);
+
+                            if (!resConfirmClaveAutorizacion) {
+                                APP.msg.warning('El usuario no está autorizado para esta transacción');
+                                return;
+                            }
+                        }
+                    } else return;
+
+                    if (appController.validatePanel('107') === '1') {
+
+                        if ((_.findIndex(appVueVenta.list.tempList, (o) => { return o.NumeroDocumento === item.Dni && o.TipoDocumento === item.TipoDoc; })) < 0) {
+                            APP.msg.warning('El DNI está usándose en otro asiento.');
+                            return;
+                        }
+                    }
 
                     var _origen = String(appVueVenta.filtro.CodiSucursal.id);
                     var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
@@ -7426,8 +7521,32 @@
 
                                 if (res.data.Estado) {
                                     _this.$nextTick(() => {
-                                        if (res.data.EsCorrecto)
+                                        if (res.data.EsCorrecto) {
+                                            if (flagAuditoria) {
+                                                var objAuditoria = {};
+                                                objAuditoria.CodiUsuario = Usuario.CodiUsuario;
+                                                objAuditoria.NomUsuario = Usuario.Nombre;
+                                                objAuditoria.Tabla = "FECHAABIERTA";
+                                                objAuditoria.TipoMovimiento = "CLAVE";
+                                                objAuditoria.Boleto = _this.$options.filters.concatZero(item.Serie, 3) + '-' + _this.$options.filters.concatZero(item.Numero, 8);
+                                                objAuditoria.NumeAsiento = _this.asientoSel.Tipo;
+                                                objAuditoria.NomOficina = Usuario.NomSucursal;
+                                                objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
+                                                objAuditoria.Pasajero = item.Nombre;
+                                                objAuditoria.FechaViaje = item.FechaVenta;
+                                                objAuditoria.HoraViaje = "";
+                                                objAuditoria.NomDestino = _this.$options.filters.rutas(item.CodiSubruta);
+                                                objAuditoria.Precio = item.PrecioVenta;
+                                                objAuditoria.Obs1 = "TERMINAL " + String(Usuario.Terminal).padStart(3, '0');
+                                                objAuditoria.Obs2 = "INGRESO DE CLAVE DE BOLETOS DE PASADOS";
+                                                objAuditoria.Obs3 = "";
+                                                objAuditoria.Obs4 = "";
+                                                objAuditoria.Obs5 = "";
+
+                                                appVueVenta.grabarAuditoria(objAuditoria);
+                                            }
                                             APP.msg.info('Se confirmó a Fecha Abierta correctamente');
+                                        }
                                         else
                                             APP.msg.warning(res.data.Mensaje);
                                     });
@@ -7442,6 +7561,20 @@
                     }
                     else
                         APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
+                },
+                validateNivelAsiento: async function (idVenta, codiBus, asiento) {
+                    debugger;
+                    var retorno = null;
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/validateNivelAsiento' + APP.util.getQueryParamByObject({
+                        IdVenta: idVenta,
+                        CodiBus: codiBus,
+                        Asiento: asiento
+                    }))
+                        .then(res => {
+                            retorno = res.data;
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                    return retorno;
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -7480,6 +7613,7 @@
                     _this.item.CodEmpresa = '';
                     _this.list.pasajeros = [];
                     _this.showData = false;
+                    _this.asientoSel = {};
                 },
                 saveFA: async function () {
                     let _this = this;

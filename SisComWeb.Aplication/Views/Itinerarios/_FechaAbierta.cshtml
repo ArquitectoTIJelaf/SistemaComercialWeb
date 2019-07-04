@@ -59,20 +59,22 @@
                             <label class="col-xs-12 control-label label-sm" style="text-align:left;">Número:</label>
                             <div class="col-xs-4">
                                 <input v-model="item.Serie"
+                                       class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refFANumero.focus()"
                                        @@keypress.9.prevent="$refs.refFANumero.focus()"
                                        @@focus="$event.target.select()"
-                                       @@blur="item.serie = ($event.target.value).padStart(3,0)"
-                                       class="form-control input-sm"
+                                       @@blur="item.Serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
+                                       v-mask="'#'.repeat(4)"                                       
                                        ref="refFASerie" />
                             </div>
                             <div class="col-xs-8">
                                 <input v-model="item.Numero"
+                                       class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refFANombre.focus()"
                                        @@keypress.9.prevent="$refs.refFANombre.focus()"
                                        @@focus="$event.target.select()"
-                                       @@blur="item.numero = ($event.target.value).padStart(8,0)"
-                                       class="form-control input-sm"
+                                       @@blur="item.Numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
+                                       v-mask="'#'.repeat(8)"
                                        ref="refFANumero" />
                             </div>
                         </div>
@@ -144,8 +146,8 @@
                                                 <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
                                                     <td class="custom-td">{{item.Nombre | formatNombre}}</td>
                                                     <td class="custom-td">{{item.Tipo}}</td>
-                                                    <td class="custom-td">{{item.Serie}}</td>
-                                                    <td class="custom-td">{{item.Numero}}</td>
+                                                    <td class="custom-td">{{item.Serie | concatZero(3)}}</td>
+                                                    <td class="custom-td">{{item.Numero | concatZero(8)}}</td>
                                                     <td class="custom-td">{{item.FechaVenta}}</td>
                                                     <td class="custom-td">{{item.PrecioVenta | money}}</td>
                                                     <td class="custom-td">{{item.CodiOrigen | rutas}}</td>

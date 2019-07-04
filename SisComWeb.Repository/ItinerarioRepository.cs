@@ -150,6 +150,7 @@ namespace SisComWeb.Repository
                         entidad.NombreChofer = Reader.GetStringValue(drlector, "Nombre_Chofer");
                         entidad.CodiCopiloto = Reader.GetStringValue(drlector, "Codi_Copiloto");
                         entidad.NombreCopiloto = Reader.GetStringValue(drlector, "Nombre_Copiloto");
+                        entidad.Activo = Reader.GetStringValue(drlector, "Activo");
                         break;
                     }
                 }

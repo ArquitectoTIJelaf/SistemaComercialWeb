@@ -50,6 +50,8 @@ namespace SisComWeb.Business
                     buscarTurno.NombreChofer = obtenerBus.NombreChofer ?? "NINGUNO";
                     buscarTurno.CodiCopiloto = obtenerBus.CodiCopiloto ?? "00000";
                     buscarTurno.NombreCopiloto = obtenerBus.NombreCopiloto ?? "NINGUNO";
+
+                    buscarTurno.Activo = obtenerBus.Activo ?? "";
                 }
                 else
                 {

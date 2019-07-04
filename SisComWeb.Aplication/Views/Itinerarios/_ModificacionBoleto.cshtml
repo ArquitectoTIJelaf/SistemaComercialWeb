@@ -59,46 +59,54 @@
                             <label class="col-xs-12 control-label label-sm" style="text-align:left;">Número:</label>
                             <div class="col-xs-4">
                                 <input v-model="item.serie"
+                                       class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBNumero.focus()"
                                        @@keypress.9.prevent="$refs.refMBNumero.focus()"
-                                       class="form-control input-sm"
+                                       @@blur="item.serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
+                                       v-mask="'#'.repeat(4)"
                                        ref="refMBSerie" />
                             </div>
                             <div class="col-xs-8">
                                 <input v-model="item.numero"
+                                       class="form-control input-sm"
                                        @@keypress.13.prevent="searchData"
                                        @@keypress.9.prevent="searchData"
-                                       class="form-control input-sm"
+                                       @@blur="item.numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
+                                       v-mask="'#'.repeat(8)"
                                        ref="refMBNumero" />
                             </div>
                         </div>
                     </div>
                     <div class="form-group m-b-5 bordergray" v-show="showData">
-                        <div class="col-md-2 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Destino Bus:</label>
-                            <div class="">
-                                <input :value="item.destinoBus | rutas"
-                                       class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
-                                       disabled />
+                        <div class="col-md-5 p-0">
+                            <div class="col-md-9 p-0">
+                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Destino Bus:</label>
+                                    <div class="">
+                                        <input :value="item.destinoBus | rutas"
+                                               class="form-control input-sm"
+                                               style="background-color:rgb(253, 249, 205);"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Ruta:</label>
+                                    <div class="">
+                                        <input :value="item.ruta | rutas"
+                                               class="form-control input-sm"
+                                               style="background-color:rgb(253, 249, 205);"
+                                               disabled />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-1 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Turno:</label>
-                            <div class="">
-                                <input :value="item.turno"
-                                       class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
-                                       disabled />
-                            </div>
-                        </div>
-                        <div class="col-md-2 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Ruta:</label>
-                            <div class="">
-                                <input :value="item.ruta | rutas"
-                                       class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
-                                       disabled />
+                            <div class="col-md-3 col-xs-6 separate-in-form">
+                                <label class="control-label label-sm">Turno:</label>
+                                <div class="">
+                                    <input :value="item.turno"
+                                           class="form-control input-sm"
+                                           style="background-color:rgb(253, 249, 205);"
+                                           disabled />
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-5 p-0">
@@ -141,54 +149,68 @@
                         </div>
                     </div>
                     <div class="form-group m-b-5" v-show="showData">
-                        <div class="col-md-2 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Tipo Documento:</label>
-                            <div class="">
-                                <input :value="filtro.tipoDoc | tipoDocumento"
-                                       class="form-control input-sm"
-                                       disabled />
-                            </div>
-                        </div>
-                        <div class="col-md-7 p-0">
-                            <div class="col-md-4 col-xs-6 separate-in-form">
-                                <label class="control-label label-sm">Nombre:</label>
+                        <div class="col-md-3 p-0">
+                            <div class="col-md-6 col-xs-6 separate-in-form">
+                                <label class="control-label label-sm">Tipo Doc.:</label>
                                 <div class="">
-                                    <input :value="item.nombre"
+                                    <input :value="filtro.tipoDoc | tipoDocumento"
                                            class="form-control input-sm"
                                            disabled />
                                 </div>
                             </div>
-                            <div class="col-md-4 col-xs-6 separate-in-form">
-                                <label class="control-label label-sm">Apellido Paterno:</label>
+                            <div class="col-md-6 col-xs-6 separate-in-form">
+                                <label class="control-label label-sm">Documento:</label>
                                 <div class="">
-                                    <input :value="item.apepat"
-                                           class="form-control input-sm"
-                                           disabled />
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-6 separate-in-form">
-                                <label class="control-label label-sm">Palliedo Materno:</label>
-                                <div class="">
-                                    <input :value="item.apemat"
+                                    <input :value="filtro.dni"
                                            class="form-control input-sm"
                                            disabled />
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-1 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Edad:</label>
-                            <div class="">
-                                <input :value="filtro.edad"
-                                       class="form-control input-sm"
-                                       disabled />
+                        <div class="col-md-9 p-0">
+                            <div class="col-md-8 p-0">
+                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Nombre:</label>
+                                    <div class="">
+                                        <input :value="item.nombre"
+                                               class="form-control input-sm"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Apellido Paterno:</label>
+                                    <div class="">
+                                        <input :value="item.apepat"
+                                               class="form-control input-sm"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Palliedo Materno:</label>
+                                    <div class="">
+                                        <input :value="item.apemat"
+                                               class="form-control input-sm"
+                                               disabled />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2 col-xs-6 separate-in-form">
-                            <label class="control-label label-sm">Sexo:</label>
-                            <div class="">
-                                <input :value="item.sexo | sexo"
-                                       class="form-control input-sm"
-                                       disabled />
+                            <div class="col-md-4 p-0">
+                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Edad:</label>
+                                    <div class="">
+                                        <input :value="filtro.edad"
+                                               class="form-control input-sm"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Sexo:</label>
+                                    <div class="">
+                                        <input :value="item.sexo | sexo"
+                                               class="form-control input-sm"
+                                               disabled />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-6 separate-in-form">
@@ -222,6 +244,7 @@
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBNacionalidad.focus()"
                                        @@keypress.9.prevent="$refs.refMBNacionalidad.focus()"
+                                       :disabled="!panel"
                                        maxlength="30"
                                        ref="refMBRecoger" />
                             </div>
@@ -249,18 +272,11 @@
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBSave.focus()"
                                        @@keypress.9.prevent="$refs.refMBSave.focus()"
+                                       :disabled="!panel"
                                        maxlength="30"
                                        ref="refMBNacionalidad" />
                             </div>
                         </div>
-                        @*<div class="col-md-3 col-xs-6 separate-in-form">
-                                <label class="control-label label-sm">Observación:</label>
-                                <div class="">
-                                    <input :value="item.observacion"
-                                           class="form-control input-sm"
-                                           disabled />
-                                </div>
-                            </div>*@
                     </div>
                 </div>
             </div>
