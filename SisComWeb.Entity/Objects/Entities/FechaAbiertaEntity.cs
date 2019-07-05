@@ -15,5 +15,7 @@
         public string StRemoto { get; set; }
         public string Dni { get; set; }
         public string TipoDoc { get; set; }
+
+        public string CodiEsca { get; set; }
     }
 }
