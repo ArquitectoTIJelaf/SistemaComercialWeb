@@ -1882,16 +1882,19 @@
                                 {
                                     if (appController.validatePanelClave('25') === '1') {
 
-                                        var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                                            'Confirmar Fecha Abierta'
-                                            , 'Este boleto es de fecha pasada, ingrese la clave de autorización.'
-                                            , ClaveFechaAbiertaABolPasados);
+                                        //var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                        //    `${_.padStart(ClaveFechaAbiertaABolPasados, 3, '0')} - Confirmar Fecha Abierta`
+                                        //    , 'Este boleto es de fecha pasada, ingrese la clave de autorización.'
+                                        //    , ClaveFechaAbiertaABolPasados);
 
-                                        if (!resConfirmClaveAutorizacion) {
-                                            APP.msg.warning('No se puede procesar datos de fechas pasadas');
-                                            _this.disabledAsiento = false;
-                                            return;
-                                        }
+                                        //if (!resConfirmClaveAutorizacion) {
+                                        //    APP.msg.warning('No se puede procesar datos de fechas pasadas');
+                                        //    _this.disabledAsiento = false;
+                                        //    return;
+                                        //}
+                                        APP.msg.warning('No se puede procesar datos de fechas pasadas');
+                                        _this.disabledAsiento = false;
+                                        return;
                                     }
 
                                     if (this.objTurno.Xcierre === '1') {
@@ -7410,12 +7413,12 @@
 
                 $('#appVueFechaAbierta').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
+                    $(document).off('focusin.modal');
                     _this.$refs.refFAEmpresa.$el.querySelector('input').focus();
                 });
             },
             methods: {
                 show: function (asientoSel) {
-                    debugger;
                     this.limpiarFA();
                     this.asientoSel = asientoSel;
                     $('#appVueFechaAbierta').modal('show');
@@ -7451,10 +7454,27 @@
                     var resConfirmClaveAutorizacion = false;
                     var flagAuditoria = false;
 
+                    debugger;
+                    var validateNumDias = await _this.validateNumDias(item.FechaVenta);
+
+                    if (validateNumDias) {
+                        if (validateNumDias.Valor) {
+                            resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                `${_.padStart(ClaveFechaAbiertaABolPasados, 3, '0')} - Confirmar Fecha Abierta`
+                                , validateNumDias.Mensaje
+                                , ClaveFechaAbiertaABolPasados);
+
+                            if (!resConfirmClaveAutorizacion) {
+                                APP.msg.warning('El usuario no está autorizado para esta transacción');
+                                return;
+                            }
+                        }
+                    } else return;
+
                     if (item.StRemoto === '1') {
 
                         resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                            'Confirmar Boleto Postergado'
+                            `${_.padStart(ClaveConfirmacionDeBoletosRemotosSinManifiesto, 3, '0')} - Confirmar Boleto Postergado`
                             , 'Para confirmar el boleto postergado, ingrese la clave de autorización.'
                             , ClaveConfirmacionDeBoletosRemotosSinManifiesto);
 
@@ -7471,7 +7491,7 @@
                     if (validateAsiento) {
                         if (!validateAsiento.Valor) {
                             resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                                'Cambiar Nivel de Asiento'
+                                `${_.padStart(ClaveCambioDeNivelDeAsiento, 3, '0')} - Cambiar Nivel de Asiento`
                                 , validateAsiento.Mensaje + ', para cambiar de nivel ingrese la clave de autorización.'
                                 , ClaveCambioDeNivelDeAsiento);
 
@@ -7530,7 +7550,7 @@
                                                 objAuditoria.NomUsuario = Usuario.Nombre;
                                                 objAuditoria.Tabla = "FECHAABIERTA";
                                                 objAuditoria.TipoMovimiento = "CLAVE";
-                                                objAuditoria.Boleto = _this.$options.filters.concatZero(item.Serie, 3) + '-' + _this.$options.filters.concatZero(item.Numero, 8);
+                                                objAuditoria.Boleto = `${_.padStart(item.Serie, 3, '0')} - ${_.padStart(item.Numero, 8, '0')}`;
                                                 objAuditoria.NumeAsiento = _this.asientoSel.Tipo;
                                                 objAuditoria.NomOficina = Usuario.NomSucursal;
                                                 objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
@@ -7565,12 +7585,22 @@
                         APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
                 },
                 validateNivelAsiento: async function (idVenta, codiBus, asiento) {
-                    debugger;
                     var retorno = null;
                     await APP.rq.axios2.get(APP.base + '/itinerarios/validateNivelAsiento' + APP.util.getQueryParamByObject({
                         IdVenta: idVenta,
                         CodiBus: codiBus,
                         Asiento: asiento
+                    }))
+                        .then(res => {
+                            retorno = res.data;
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                    return retorno;
+                },
+                validateNumDias: async function (FechaVenta) {
+                    var retorno = null;
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/validateNumDias' + APP.util.getQueryParamByObject({
+                        FechaVenta: FechaVenta
                     }))
                         .then(res => {
                             retorno = res.data;

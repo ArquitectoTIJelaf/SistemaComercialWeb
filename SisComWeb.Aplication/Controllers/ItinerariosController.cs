@@ -2475,7 +2475,7 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
-        //validateNivelAsiento
+
         [HttpGet]
         [Route("validateNivelAsiento")]
         public async Task<ActionResult> ValidateNivelAsiento(int IdVenta, string CodiBus, string Asiento)
@@ -2510,6 +2510,41 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("validateNumDias")]
+        public async Task<ActionResult> ValidateNumDias(string FechaVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"FechaVenta\" : \"" + FechaVenta + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidateNumDias", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
     }

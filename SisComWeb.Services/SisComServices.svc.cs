@@ -933,6 +933,19 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
             }
         }
+        
+        public Response<int> ValidateNumDias(string FechaVenta)
+        {
+            try
+            {
+                return FechaAbiertaLogic.ValidateNumDias(FechaVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcValidateNumDias, false);
+            }
+        }
         #endregion
     }
 }
