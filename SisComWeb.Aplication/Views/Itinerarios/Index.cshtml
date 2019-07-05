@@ -1028,6 +1028,7 @@
                                 case ClaveProgramacion:
                                 case ClaveAnularFechaPasada:
                                 case ClaveMoverVentaFueraDeHora:
+                                case ClaveAnulacionTarjetaCredito:
                                 case ClavePostergacionesBoleto:
                                 case ClaveFlag9:
                                 case ClaveFechaAbiertaABolPasados:
@@ -4126,6 +4127,7 @@
                         IngresoManualPasajes: IngresoManualPasajes
                     }))
                         .then(async function (res) {
+                            debugger;
                             await appController.chargeTurnos();
 
                             if (res.data.Estado) {

@@ -213,7 +213,7 @@ namespace SisComWeb.Business
                     var consultaPosCNT = TurnoRepository.ConsultaPosCNT(CodTab, Pv.ToString()); // CodEmp -> Usuario.CodiPuntoVenta
                     var consultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(Pv, F);
 
-                    if (int.Parse(consultaPosCNT) < consultaAnulacionPorDia)
+                    if (int.Parse(consultaPosCNT) > consultaAnulacionPorDia)
                         valor = true;
                 }
                 else
