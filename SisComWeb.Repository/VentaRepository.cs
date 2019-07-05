@@ -556,11 +556,11 @@ namespace SisComWeb.Repository
                         entidad.Edad = Reader.GetByteValue(drlector, "EDAD");
                         entidad.Telefono = Reader.GetStringValue(drlector, "TELEFONO");
                         entidad.Nombre = Reader.GetStringValue(drlector, "NOMBRE");
-                        entidad.CodiEsca = Reader.GetIntValue(drlector, "CODI_ESCA");
+                        entidad.CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Punto_Venta");
                         entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
                         entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "cod_origen");
-                        entidad.PerAutoriza = Reader.GetIntValue(drlector, "per_autoriza");
+                        entidad.PerAutoriza = Reader.GetStringValue(drlector, "per_autoriza");
                         entidad.ClavUsuario1 = Reader.GetIntValue(drlector, "clav_usuario1");
                         entidad.EstadoAsiento = Reader.GetStringValue(drlector, "ESTADO_ASIENTO");
                         entidad.Sexo = Reader.GetStringValue(drlector, "SEXO");
