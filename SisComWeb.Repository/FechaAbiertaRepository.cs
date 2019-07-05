@@ -90,6 +90,25 @@ namespace SisComWeb.Repository
             }
             return Nivel;
         }
+
+        public static int TablasPnpConsulta(string Tabla)
+        {
+            int Codigo = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_TB_Tablas_Pnp_Consulta";
+                db.AddParameter("@tabla", DbType.String, ParameterDirection.Input, Tabla);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Codigo = Reader.GetIntValue(drlector, "cod_tip");
+                    }
+                }
+            }
+            return Codigo;
+        }
         #endregion
     }
 }

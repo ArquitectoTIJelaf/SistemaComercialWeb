@@ -328,7 +328,7 @@ APP.msg.ShowSaveAfterSale = async function (_title, _message) {
 APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _bool = false;
 
-    await swal({
+    await swal.fire({
         title: _title || "Mensaje del sistema",
         text: _message || "¿Desea Continuar con la operación?",
         type: "warning",

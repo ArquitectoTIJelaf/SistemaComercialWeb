@@ -332,6 +332,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidateNivelAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ValidateNivelAsiento(int IdVenta, string CodiBus, string Asiento);
+        
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidateNumDias", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> ValidateNumDias(string FechaVenta);
         #endregion
     }
 }

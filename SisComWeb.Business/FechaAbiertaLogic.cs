@@ -5,6 +5,7 @@ using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SisComWeb.Business
 {
@@ -49,6 +50,33 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgExcValidateNivelAsiento, false);
+            }
+        }
+
+        public static Response<int> ValidateNumDias(string FechaVenta)
+        {
+            try
+            {
+                var CantidadPerimita = FechaAbiertaRepository.TablasPnpConsulta(Constantes.CodLimitFecha);
+
+                var response = 0;
+                var mensaje = "";
+
+                var DayFechaVenta = Convert.ToDateTime(FechaVenta, CultureInfo.InvariantCulture);
+                int DiffDays = (DateTime.Now - DayFechaVenta).Days;
+
+                if (CantidadPerimita > 0 && DiffDays >= CantidadPerimita)
+                {
+                    response = CantidadPerimita;
+                    mensaje = string.Format("La diferencia de días es {0} y la cantidad de días permitidos es de {1}, ingrese clave de autorización", DiffDays, CantidadPerimita);
+                }
+
+                return new Response<int>(true, response, mensaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcValidateNumDias, false);
             }
         }
     }
