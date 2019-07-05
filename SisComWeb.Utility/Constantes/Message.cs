@@ -300,8 +300,17 @@
         // Fecha Abierta
         public const string MsgCorrectoVentaConsultaF6 = "Correcto: VentaConsultaF6.";
         public const string MsgExcVentaConsultaF6 = "Excepción: VentaConsultaF6.";
-        public const string MsgExcValidateNivelAsiento = "Excepción: ValidateNivelAsiento";
+        public const string MsgExcValidateNivelAsiento = "Excepción: ValidateNivelAsiento.";
 
-        public const string MsgExcValidateNumDias = "Excepción: ValidateNumDias";
+        public const string MsgExcValidateNumDias = "Excepción: ValidateNumDias.";
+
+        public const string MsgVerificaNotaCredito = "Boleto esta sujeto a nota de crédito.";
+        public const string MsgExcVerificaNotaCredito = "Excepción: VerificaNotaCredito.";
+
+        public const string MsgCorrectoVentaUpdatePostergacionEle = "Correcto: VentaUpdatePostergacionEle.";
+        public const string MsgExcVentaUpdatePostergacionEle = "Excepción: VentaUpdatePostergacionEle.";
+
+        public const string MsgCorrectoVentaUpdateImpManifiesto = "Correcto: VentaUpdateImpManifiesto.";
+        public const string MsgExcVentaUpdateImpManifiesto = "Excepción: VentaUpdateImpManifiesto.";
     }
 }

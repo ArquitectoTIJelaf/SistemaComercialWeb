@@ -42,7 +42,8 @@ namespace SisComWeb.Repository
                             IdVenta = Reader.GetStringValue(drlector, "id_venta"),
                             StRemoto = Reader.GetStringValue(drlector, "st_remoto"),
                             Dni = Reader.GetStringValue(drlector, "DNI"),
-                            TipoDoc = Reader.GetStringValue(drlector, "TIPO_DOC")
+                            TipoDoc = Reader.GetStringValue(drlector, "TIPO_DOC"),
+                            CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA")
                         });
                     }
                 }
@@ -108,6 +109,69 @@ namespace SisComWeb.Repository
                 }
             }
             return Codigo;
+        }
+
+        public static int VerificaNotaCredito(int IdVenta)
+        {
+            int Codigo = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_VeriNc";
+                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Codigo = Reader.GetIntValue(drlector, "codorden");
+                    }
+                }
+            }
+            return Codigo;
+        }
+
+        public static bool VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
+        {
+            bool Response = false;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Update_Postergacion_Ele";
+                db.AddParameter("@Numero_reint", DbType.String, ParameterDirection.Input, filtro.CodiEsca);
+                db.AddParameter("@programacion", DbType.String, ParameterDirection.Input, filtro.CodiProgramacion);
+                db.AddParameter("@origen", DbType.String, ParameterDirection.Input, filtro.CodiOrigen);
+                db.AddParameter("@id_Venta", DbType.Int32, ParameterDirection.Input, filtro.IdVenta);
+                db.AddParameter("@asiento", DbType.String, ParameterDirection.Input, filtro.NumeAsiento);
+                db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, filtro.CodiRuta);
+                db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, filtro.CodiServicio);
+                db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.Tipo);
+                db.Execute();
+                Response = true;
+            }
+            return Response;
+        }
+
+        public static void VentaUpdateImpManifiesto(int IdVenta)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_UpdateVentaImpManifiesto";
+                db.AddParameter("@Id_Venta", DbType.String, ParameterDirection.Input, IdVenta);
+                db.Execute();
+            }
+        }
+
+        public static void VentaUpdateCnt(int Prog, int NewProg, int Suc, int NewSuc)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Programacion_Venta_UPDATE_CNT";
+                db.AddParameter("@Prog", DbType.Int32, ParameterDirection.Input, Prog);
+                db.AddParameter("@NewProg", DbType.Int32, ParameterDirection.Input, NewProg);
+                db.AddParameter("@SUC", DbType.Int32, ParameterDirection.Input, Suc);
+                db.AddParameter("@NEWSUC", DbType.Int32, ParameterDirection.Input, NewSuc);
+                db.Execute();
+            }
         }
         #endregion
     }

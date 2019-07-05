@@ -946,6 +946,32 @@ namespace SisComWeb.Services
                 return new Response<int>(false, 0, Message.MsgExcValidateNumDias, false);
             }
         }
+        
+        public Response<int> VerificaNotaCredito(int IdVenta)
+        {
+            try
+            {
+                return FechaAbiertaLogic.VerificaNotaCredito(IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaNotaCredito, false);
+            }
+        }
+        
+        public Response<bool> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
+        {
+            try
+            {
+                return FechaAbiertaLogic.VentaUpdatePostergacionEle(filtro);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcVentaUpdatePostergacionEle, false);
+            }
+        }
         #endregion
     }
 }

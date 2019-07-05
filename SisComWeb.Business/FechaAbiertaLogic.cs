@@ -79,5 +79,36 @@ namespace SisComWeb.Business
                 return new Response<int>(false, 0, Message.MsgExcValidateNumDias, false);
             }
         }
+
+        public static Response<int> VerificaNotaCredito(int IdVenta)
+        {
+            try
+            {
+                var Response = FechaAbiertaRepository.VerificaNotaCredito(IdVenta);
+                var mensaje = (Response > 0) ? Message.MsgVerificaNotaCredito : string.Empty;
+                return new Response<int>(true, Response, mensaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVerificaNotaCredito, false);
+            }
+        }
+        
+        public static Response<bool> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
+        {
+            try
+            {
+                var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
+                FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
+                FechaAbiertaRepository.VentaUpdateCnt(0, Convert.ToInt32(filtro.CodiProgramacion), filtro.Oficina, filtro.Oficina);
+                return new Response<bool>(true, Response, Message.MsgCorrectoVentaUpdatePostergacionEle, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcVentaUpdatePostergacionEle, false);
+            }
+        }
     }
 }

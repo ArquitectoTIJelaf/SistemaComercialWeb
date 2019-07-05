@@ -2447,7 +2447,8 @@ namespace SisComWeb.Aplication.Controllers
                         IdVenta = (string)x["IdVenta"],
                         StRemoto = (string)x["StRemoto"],
                         Dni = (string)x["Dni"],
-                        TipoDoc = (string)x["TipoDoc"]
+                        TipoDoc = (string)x["TipoDoc"],
+                        CodiEsca = (string)x["CodiEsca"]
                     }).ToList()
                 };
 
@@ -2528,6 +2529,83 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("verificaNotaCredito")]
+        public async Task<ActionResult> VerificaNotaCredito(int IdVenta)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + IdVenta +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaNotaCredito", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("confirmar-fecha-abierta")]
+        public async Task<ActionResult> VentaUpdatePostergacionEle(FiltroFechaAbierta filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiEsca\" : \"" + (filtro.CodiEsca ?? "") + "\"" +
+                                    ",\"CodiProgramacion\" : \"" + (filtro.CodiProgramacion ?? "") + "\"" +
+                                    ",\"CodiOrigen\" : \"" + (filtro.CodiOrigen ?? "") + "\"" +
+                                    ",\"IdVenta\" : " + filtro.IdVenta +
+                                    ",\"NumeAsiento\" : \"" + (filtro.NumeAsiento ?? "") + "\"" +
+                                    ",\"CodiRuta\" : \"" + (filtro.CodiRuta ?? "") + "\"" +
+                                    ",\"CodiServicio\" : \"" + (filtro.CodiServicio ?? "") + "\"" +
+                                    ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
+                                    ",\"Oficina\" : " + filtro.Oficina + 
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VentaUpdatePostergacionEle", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
     }
