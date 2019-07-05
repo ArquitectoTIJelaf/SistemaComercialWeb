@@ -287,9 +287,9 @@ namespace SisComWeb.Business
                 entidad.ObjAcompaniante = null;
 
             // Consulta 'Reintegro'
-            if (!string.IsNullOrEmpty(entidad.Boleto))
+            if (!string.IsNullOrEmpty(entidad.CodiEsca))
             {
-                var consultaVentaReintegro = VentaRepository.ConsultaVentaReintegro(entidad.Boleto.Substring(0, 3), entidad.Boleto.Substring(4), request.CodiEmpresa.ToString(), entidad.TipoBoleto);
+                var consultaVentaReintegro = VentaRepository.ConsultaVentaReintegro(entidad.CodiEsca.Substring(1, 3), entidad.CodiEsca.Substring(5), request.CodiEmpresa.ToString(), entidad.CodiEsca.Substring(0, 1));
                 entidad.ClavUsuarioReintegro = consultaVentaReintegro.CodiUsuario;
                 entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;

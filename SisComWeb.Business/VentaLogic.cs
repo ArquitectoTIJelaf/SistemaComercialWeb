@@ -682,11 +682,11 @@ namespace SisComWeb.Business
                         HoraViaje = entidad.HoraViaje,
                         NomDestino = entidad.NomDestino,
                         Precio = entidad.PrecioVenta,
-                        Obs1 = string.Empty,
-                        Obs2 = string.Empty,
-                        Obs3 = string.Empty,
-                        Obs4 = string.Empty,
-                        Obs5 = string.Empty
+                        Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES NRO BOLETO:" + auxBoletoCompleto,
+                        Obs2 = "Empresa : " + entidad.CodiEmpresa.ToString("D2"),
+                        Obs3 = "TERMINAL : " + entidad.CodiTerminal+ " SER. " + entidad.CodiServicio.ToString("D2"),
+                        Obs4 = "PROGRAMACION" + entidad.CodiProgramacion + " ORG PAS " + entidad.CodiOrigen.ToString("D3"),
+                        Obs5 = "DET BUS " + entidad.CodiRuta.ToString("D3") + " DET PAS " + entidad.CodiDestino.ToString("D3")
                     };
 
                     var grabarAuditoria = VentaRepository.GrabarAuditoria(objAuditoriaEntity);

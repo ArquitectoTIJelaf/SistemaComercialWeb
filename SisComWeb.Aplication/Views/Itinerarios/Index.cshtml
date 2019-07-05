@@ -682,13 +682,13 @@
                         enter: function (e) {
                             if (e && !e[0].previousElementSibling.value)
                                 this.date(moment());
-
+                            
                             this.hide();
                         },
                         up: null,
                         down: null,
                         left: null,
-                        right: null
+                        right: null,
                     },
                     useCurrent: false,
                     locale: 'es',
@@ -2251,6 +2251,9 @@
                         _this.list.ventas[_this.indexVenta].FechaVen = asientoSel.FechaVenta;
                         _this.list.ventas[_this.indexVenta].Info = asientoSel.CodiUsuario + ' ' + asientoSel.NomUsuario + ' - ' + asientoSel.NomPuntoVenta + ' - ';
                         _this.list.ventas[_this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
+
+                        _this.list.ventas[_this.indexVenta].Reintegro = (asientoSel.PrecVentaReintegro === 0 ? '' : parseFloat(asientoSel.PrecVentaReintegro).toFixed(2));
+
                         switch (_this.list.ventas[_this.indexVenta].FlagVenta) {
                             case '7':
                                 _this.list.ventas[_this.indexVenta].Info += '(PS)' + ' - ';
@@ -2470,30 +2473,32 @@
                         appController.chargeTurnos();
                 },
                 recorridoSectionVentas: function () {
-                    if (!this.list.ventas[this.indexVenta].CodiTipoDoc)
-                        $('#cboTipoDoc input[type=search]').focus();
-                    else if (!this.list.ventas[this.indexVenta].Documento)
-                        document.getElementById('txtDocumento').focus();
-                    else if (!this.list.ventas[this.indexVenta].Nombres)
-                        document.getElementById('txtNombres').focus();
-                    else if (!this.list.ventas[this.indexVenta].ApellidoPaterno)
-                        document.getElementById('txtApellidoPaterno').focus();
-                    else if (!this.list.ventas[this.indexVenta].ApellidoMaterno)
-                        document.getElementById('txtApellidoMaterno').focus();
-                    else if (!this.list.ventas[this.indexVenta].FechaNac)
-                        document.getElementById('txtFechaNac').focus();
-                    else if (!this.list.ventas[this.indexVenta].Sexo)
-                        $('#cboSexo input[type=search]').focus();
-                    else if (!this.list.ventas[this.indexVenta].Nacionalidad)
-                        document.getElementById('txtNacionalidad').focus();
-                    else if (!this.list.ventas[this.indexVenta].NroAsiento)
-                        document.getElementById('txtNroAsientoVenta').focus();
-                    else if (this.list.ventas.length > 0 && this.indexVenta === (this.list.ventas.length - 1))
-                        document.getElementById('btnTipoPago').focus();
-                    else {
-                        this.rightSlider();
-                        this.recorridoSectionVentas();
-                    }
+                    this.$nextTick(() => {
+                        if (!this.list.ventas[this.indexVenta].CodiTipoDoc)
+                            $('#cboTipoDoc input[type=search]').focus();
+                        else if (!this.list.ventas[this.indexVenta].Documento)
+                            document.getElementById('txtDocumento').focus();
+                        else if (!this.list.ventas[this.indexVenta].Nombres)
+                            document.getElementById('txtNombres').focus();
+                        else if (!this.list.ventas[this.indexVenta].ApellidoPaterno)
+                            document.getElementById('txtApellidoPaterno').focus();
+                        else if (!this.list.ventas[this.indexVenta].ApellidoMaterno)
+                            document.getElementById('txtApellidoMaterno').focus();
+                        else if (!this.list.ventas[this.indexVenta].FechaNac)
+                            document.getElementById('txtFechaNac').focus();
+                        else if (!this.list.ventas[this.indexVenta].Sexo)
+                            $('#cboSexo input[type=search]').focus();
+                        else if (!this.list.ventas[this.indexVenta].Nacionalidad)
+                            document.getElementById('txtNacionalidad').focus();
+                        else if (!this.list.ventas[this.indexVenta].NroAsiento)
+                            document.getElementById('txtNroAsientoVenta').focus();
+                        else if (this.list.ventas.length > 0 && this.indexVenta === (this.list.ventas.length - 1))
+                            document.getElementById('btnTipoPago').focus();
+                        else {
+                            this.rightSlider();
+                            this.recorridoSectionVentas();
+                        }
+                    });
                 },
                 recorridoTxtRecoger: function () {
                     if (this.pickedBusVenta !== '1') // Crédito
@@ -2924,7 +2929,7 @@
                                             switch (this.CodiTerminalElectronico) {
                                                 case 'M':
                                                     {
-                                                        if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                        if (this.CorrelativoPaseBoleta === '0000-00000000')
                                                             this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                                         else
                                                             this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
@@ -2944,7 +2949,7 @@
                                 }
 
                                 if (!res.data.EsCorrecto)
-                                    APP.msg.error(res.data.Mensaje);
+                                    APP.msg.warning(res.data.Mensaje);
                             }
                             else {
                                 this.CorrelativoVentaBoleta = '';
@@ -2953,7 +2958,7 @@
                                 this.CorrelativoPaseFactura = '';
                                 this.CodiTerminalElectronico = '';
 
-                                APP.msg.error(res.data.Mensaje);
+                                APP.msg.warning(res.data.Mensaje);
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
@@ -3559,7 +3564,10 @@
 
                     this.auxFocus.precio = false;
 
+                    debugger;
+
                     this.eventTxtPrecio = '';
+
                     this.recorridoSectionVentas();
                 },
                 focusAsiento: function (event) {
@@ -3742,7 +3750,7 @@
                     });
                     return auxResponse;
                 },
-                cancelarReserva: async function (_asientoSel) { // Verificar, se acaba de actualizar.
+                cancelarReserva: async function (_asientoSel) {
                     var _this = this;
 
                     if (await APP.msg.confirm(
@@ -3856,7 +3864,7 @@
                                     switch (_this.CodiTerminalElectronico) {
                                         case 'M':
                                             {
-                                                if (_this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                if (_this.CorrelativoPaseBoleta === '0000-00000000')
                                                     _this.Correlativo = _.cloneDeep(_this.CorrelativoVentaBoleta);
                                                 else
                                                     _this.Correlativo = _.cloneDeep(_this.CorrelativoPaseBoleta);
@@ -4130,7 +4138,6 @@
                         IngresoManualPasajes: IngresoManualPasajes
                     }))
                         .then(async function (res) {
-                            debugger;
                             await appController.chargeTurnos();
 
                             if (res.data.Estado) {
@@ -5346,9 +5353,9 @@
                                     switch (this.CodiTerminalElectronico) {
                                         case 'M':
                                             {
-                                                if (this.CorrelativoPaseFactura === 'F000-00000000') {
+                                                if (this.CorrelativoPaseFactura === '0000-00000000') {
 
-                                                    if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                    if (this.CorrelativoPaseBoleta === '0000-00000000')
                                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                                     else
                                                         this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
@@ -5372,7 +5379,7 @@
                                         switch (this.CodiTerminalElectronico) {
                                             case 'M':
                                                 {
-                                                    if (this.CorrelativoPaseBoleta === 'B000-00000000')
+                                                    if (this.CorrelativoPaseBoleta === '0000-00000000')
                                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                                     else
                                                         this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
@@ -5397,7 +5404,7 @@
                                     switch (this.CodiTerminalElectronico) {
                                         case 'M':
                                             {
-                                                if (this.CorrelativoVentaFactura === 'F000-00000000')
+                                                if (this.CorrelativoVentaFactura === '0000-00000000')
                                                     this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                                 else
                                                     this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
@@ -5604,10 +5611,8 @@
                             if (canTotalCredito >= input.PrecioVenta) {
                                 canTotalCredito = canTotalCredito - input.PrecioVenta;
                                 input.Credito = input.PrecioVenta;
-                                input.PrecioVenta = 0;
                             }
                             else {
-                                input.PrecioVenta = input.PrecioVenta - canTotalCredito;
                                 input.Credito = canTotalCredito;
                                 canTotalCredito = 0;
                             }
@@ -6346,7 +6351,7 @@
                 validarPase: async function (codSocio) {
                     var auxResponse = false;
 
-                    await APP.rq.axios.post(APP.base + '/itinerarios/validarPase', {
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/validarPase', {
                         CodiSocio: codSocio,
                     })
                         .then(res => {
@@ -7453,8 +7458,7 @@
                     let _this = this;
                     var resConfirmClaveAutorizacion = false;
                     var flagAuditoria = false;
-
-                    debugger;
+                    
                     var validateNumDias = await _this.validateNumDias(item.FechaVenta);
 
                     if (validateNumDias) {

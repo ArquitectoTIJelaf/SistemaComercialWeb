@@ -77,7 +77,7 @@
                                               :select-on-tab="true"
                                               :get-option-label="getLabel"
                                               @@keydown.13.native.prevent="nextStep(1)"
-                                              @@keydown.9.native.prevent="nextStep(1)"
+                                              @*@@keydown.9.native.prevent="nextStep(1)"*@
                                               ref="refEmpresa">
                                         <template slot="option" slot-scope="option">
                                             <div @@click="nextStep(1)">{{ option.id }} - {{ option.label }}</div>
@@ -151,7 +151,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(2)"
-                                                          @@keydown.9.native.prevent="nextStep(2)"
+                                                          @*@@keydown.9.native.prevent="nextStep(2)"*@
                                                           ref="refSucursal">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(2)">{{ option.id }} - {{ option.label }}</div>
@@ -170,7 +170,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(3)"
-                                                          @@keydown.9.native.prevent="nextStep(3)"
+                                                          @*@@keydown.9.native.prevent="nextStep(3)"*@
                                                           ref="refOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(3)">{{ option.id }} - {{ option.label }}</div>
@@ -189,7 +189,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(4)"
-                                                          @@keydown.9.native.prevent="nextStep(4)"
+                                                          @*@@keydown.9.native.prevent="nextStep(4)"*@
                                                           ref="refPVOrigenBus">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(4)">{{ option.id }} - {{ option.label }}</div>
@@ -208,7 +208,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(5)"
-                                                          @@keydown.9.native.prevent="nextStep(5)"
+                                                          @*@@keydown.9.native.prevent="nextStep(5)"*@
                                                           ref="refDestinoBus_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(5)">{{ option.id }} - {{ option.label }}</div>
@@ -227,7 +227,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(6)"
-                                                          @@keydown.9.native.prevent="nextStep(6)"
+                                                          @*@@keydown.9.native.prevent="nextStep(6)"*@
                                                           ref="refServicio">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click="nextStep(6)">{{ option.id }} - {{ option.label }}</div>
@@ -246,7 +246,7 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@keydown.13.native.prevent="nextStep(7)"
-                                                          @@keydown.9.native.prevent="nextStep(7)"
+                                                          @*@@keydown.9.native.prevent="nextStep(7)"*@
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
                                                         <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
@@ -266,7 +266,7 @@
                                                        v-mask="'##:## AM'"
                                                        @@focus="focusTurno($event)"
                                                        @@keydown.13.prevent="nextStep(8)"
-                                                       @@keydown.9.prevent="nextStep(8)"
+                                                       @*@@keydown.9.prevent="nextStep(8)"*@
                                                        @@blur="blurTurno()"
                                                        autocomplete="off" />
                                             </div>
@@ -282,7 +282,7 @@
                                                        v-mask="'##/##/####'"
                                                        @@focus="focusFecha($event)"
                                                        @@keydown.13.prevent="nextStep(9)"
-                                                       @@keydown.9.prevent="nextStep(9)"
+                                                       @*@@keydown.9.prevent="nextStep(9)"*@
                                                        @@blur="blurFecha()"
                                                        autocomplete="off" />
                                             </div>
