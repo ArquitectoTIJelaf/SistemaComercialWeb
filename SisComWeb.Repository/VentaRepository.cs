@@ -258,7 +258,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarVentaxId_02";
+                db.ProcedureName = "scwsp_BuscarVentaxId";
                 db.AddParameter("@Id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -936,7 +936,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_GrabarCaja02";
+                db.ProcedureName = "scwsp_GrabarCaja";
                 db.AddParameter("@Nume_Caja", DbType.String, ParameterDirection.Input, entidad.NumeCaja);
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, entidad.CodiSucursal);
