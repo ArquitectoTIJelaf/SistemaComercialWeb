@@ -7437,11 +7437,20 @@
                 },
                 sendRow: async function (item) {
                     let _this = this;
+
                     var resConfirmClaveAutorizacion = false;
                     var flagAuditoria = false;
 
-                    var verificaNotaCredito = await _this.verificaNotaCredito(parseInt(item.IdVenta));
+                    //Validación: Origen y Destino del pasajero no debe ser distinto al del Bus
+                    var _origen = String(appVueVenta.filtro.CodiSucursal.id);
+                    var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
+                    if (!(_origen === String(item.CodiOrigen) && _destino === String(item.CodiSubruta))) {
+                        APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
+                        return;
+                    }
 
+                    //Validación: No debe tener nota de crédito
+                    var verificaNotaCredito = await _this.verificaNotaCredito(parseInt(item.IdVenta));
                     if (verificaNotaCredito) {
                         if (verificaNotaCredito.Valor > 0) {
                             APP.msg.warning(verificaNotaCredito.Mensaje);
@@ -7449,9 +7458,16 @@
                         }
                     } else return;
 
-                    
-                    var validateNumDias = await _this.validateNumDias(item.FechaVenta);
+                    //Validación: Si panel 107 esta activo, no debe permitir repetir el DNI en el plano
+                    if (appController.validatePanel('107') === '1') {
+                        if ((_.findIndex(appVueVenta.list.tempList, (o) => { return o.NumeroDocumento === item.Dni && o.TipoDocumento === item.TipoDoc; })) < 0) {
+                            APP.msg.warning('El DNI está usándose en otro asiento.');
+                            return;
+                        }
+                    }
 
+                    //Validación: El número de días no debe exceder a lo permitido, salvo clave 25
+                    var validateNumDias = await _this.validateNumDias(item.FechaVenta);
                     if (validateNumDias) {
                         if (validateNumDias.Valor) {
                             resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
@@ -7466,8 +7482,8 @@
                         }
                     } else return;
 
+                    //Validación: Si es Venta Remota solo puede acceder con clave 72
                     if (item.StRemoto === '1') {
-
                         resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
                             `${_.padStart(ClaveConfirmacionDeBoletosRemotosSinManifiesto, 3, '0')} - Confirmar Boleto Postergado`
                             , 'Para confirmar el boleto postergado, ingrese la clave de autorización.'
@@ -7481,8 +7497,8 @@
                         }
                     }
 
+                    //Validación: Los niveles de asiento (1, 2) deben ser iguales, salvo clave 44
                     var validateAsiento = await _this.validateNivelAsiento(parseInt(item.IdVenta), appVueVenta.objPlano.CodiBus, _this.asientoSel.Tipo);
-
                     if (validateAsiento) {
                         if (!validateAsiento.Valor) {
                             resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
@@ -7497,73 +7513,38 @@
                         }
                     } else return;
 
-                    if (appController.validatePanel('107') === '1') {
+                    var input = {};
+                    input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
+                    input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
+                    input.CodiOrigen = item.CodiOrigen;
+                    input.IdVenta = parseInt(item.IdVenta);                       
+                    input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
+                    input.CodiRuta = item.CodiSubruta;
+                    input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+                    input.Tipo = item.Tipo;
+                    input.Oficina = parseInt(appVueVenta.filtro.CodiSucursal.id);
 
-                        if ((_.findIndex(appVueVenta.list.tempList, (o) => { return o.NumeroDocumento === item.Dni && o.TipoDocumento === item.TipoDoc; })) < 0) {
-                            APP.msg.warning('El DNI está usándose en otro asiento.');
-                            return;
-                        }
+                    // Limpiar 'AsientosBloqueados'
+                    var auxResponse = await appVueVenta.cancelarBoletos();
+                    if (!auxResponse) {
+                        APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
+                        return;
                     }
 
-                    var _origen = String(appVueVenta.filtro.CodiSucursal.id);
-                    var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
+                    await APP.rq.axios.post(APP.base + '/itinerarios/confirmar-fecha-abierta', input)
+                        .then(async function (res) {
+                            await _this.close();
+                            await appController.chargeTurnos();
 
-                    if (_origen === String(item.CodiOrigen) && _destino === String(item.CodiSubruta)) {
-                        var input = {};
-                        input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
-                        input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
-                        input.CodiOrigen = item.CodiOrigen;
-                        input.IdVenta = parseInt(item.IdVenta);                       
-                        input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
-                        input.CodiRuta = item.CodiSubruta;
-                        input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
-                        input.Tipo = item.Tipo;
-                        input.Oficina = parseInt(appVueVenta.filtro.CodiSucursal.id);
+                            if (res.data.Estado) {
+                                _this.$nextTick(() => {
 
-                        // Limpiar 'AsientosBloqueados'
-                        var auxResponse = await appVueVenta.cancelarBoletos();
-                        if (!auxResponse) {
-                            APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
-                            return;
-                        }
-
-                        await APP.rq.axios.post(APP.base + '/itinerarios/confirmar-fecha-abierta', input)
-                            .then(async function (res) {
-                                await _this.close();
-                                await appController.chargeTurnos();
-
-                                if (res.data.Estado) {
-                                    _this.$nextTick(() => {
-
-                                        if (flagAuditoria) {
-                                            var objAuditoria = {};
-                                            objAuditoria.CodiUsuario = Usuario.CodiUsuario;
-                                            objAuditoria.NomUsuario = Usuario.Nombre;
-                                            objAuditoria.Tabla = "FECHAABIERTA";
-                                            objAuditoria.TipoMovimiento = "CLAVE";
-                                            objAuditoria.Boleto = `${_.padStart(item.Serie, 3, '0')} - ${_.padStart(item.Numero, 8, '0')}`;
-                                            objAuditoria.NumeAsiento = _this.asientoSel.Tipo;
-                                            objAuditoria.NomOficina = Usuario.NomSucursal;
-                                            objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
-                                            objAuditoria.Pasajero = item.Nombre;
-                                            objAuditoria.FechaViaje = item.FechaVenta;
-                                            objAuditoria.HoraViaje = "";
-                                            objAuditoria.NomDestino = _this.$options.filters.rutas(item.CodiSubruta);
-                                            objAuditoria.Precio = item.PrecioVenta;
-                                            objAuditoria.Obs1 = "TERMINAL " + String(Usuario.Terminal).padStart(3, '0');
-                                            objAuditoria.Obs2 = "INGRESO DE CLAVE DE BOLETOS DE PASADOS";
-                                            objAuditoria.Obs3 = "";
-                                            objAuditoria.Obs4 = "";
-                                            objAuditoria.Obs5 = "";
-
-                                            appVueVenta.grabarAuditoria(objAuditoria);
-                                        }
-
+                                    if (flagAuditoria) {
                                         var objAuditoria = {};
                                         objAuditoria.CodiUsuario = Usuario.CodiUsuario;
                                         objAuditoria.NomUsuario = Usuario.Nombre;
-                                        objAuditoria.Tabla = "VENTA";
-                                        objAuditoria.TipoMovimiento = "CONFIRMA FECHA ABIERTA";
+                                        objAuditoria.Tabla = "FECHAABIERTA";
+                                        objAuditoria.TipoMovimiento = "CLAVE";
                                         objAuditoria.Boleto = `${_.padStart(item.Serie, 3, '0')} - ${_.padStart(item.Numero, 8, '0')}`;
                                         objAuditoria.NumeAsiento = _this.asientoSel.Tipo;
                                         objAuditoria.NomOficina = Usuario.NomSucursal;
@@ -7573,27 +7554,47 @@
                                         objAuditoria.HoraViaje = "";
                                         objAuditoria.NomDestino = _this.$options.filters.rutas(item.CodiSubruta);
                                         objAuditoria.Precio = item.PrecioVenta;
-                                        objAuditoria.Obs1 = "CONFIRMACION FECHA ABIERTA";
-                                        objAuditoria.Obs2 = "";
+                                        objAuditoria.Obs1 = "TERMINAL " + String(Usuario.Terminal).padStart(3, '0');
+                                        objAuditoria.Obs2 = "INGRESO DE CLAVE DE BOLETOS DE PASADOS";
                                         objAuditoria.Obs3 = "";
                                         objAuditoria.Obs4 = "";
                                         objAuditoria.Obs5 = "";
 
                                         appVueVenta.grabarAuditoria(objAuditoria);
+                                    }
 
-                                        APP.msg.info('Se confirmó a Fecha Abierta correctamente');
-                                    });
-                                }
-                                else
-                                    APP.msg.error(res.data.Mensaje);
+                                    var objAuditoria = {};
+                                    objAuditoria.CodiUsuario = Usuario.CodiUsuario;
+                                    objAuditoria.NomUsuario = Usuario.Nombre;
+                                    objAuditoria.Tabla = "VENTA";
+                                    objAuditoria.TipoMovimiento = "CONFIRMA FECHA ABIERTA";
+                                    objAuditoria.Boleto = `${_.padStart(item.Serie, 3, '0')} - ${_.padStart(item.Numero, 8, '0')}`;
+                                    objAuditoria.NumeAsiento = _this.asientoSel.Tipo;
+                                    objAuditoria.NomOficina = Usuario.NomSucursal;
+                                    objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
+                                    objAuditoria.Pasajero = item.Nombre;
+                                    objAuditoria.FechaViaje = item.FechaVenta;
+                                    objAuditoria.HoraViaje = "";
+                                    objAuditoria.NomDestino = _this.$options.filters.rutas(item.CodiSubruta);
+                                    objAuditoria.Precio = item.PrecioVenta;
+                                    objAuditoria.Obs1 = "CONFIRMACION FECHA ABIERTA";
+                                    objAuditoria.Obs2 = "";
+                                    objAuditoria.Obs3 = "";
+                                    objAuditoria.Obs4 = "";
+                                    objAuditoria.Obs5 = "";
 
-                                // callSignalR_ActualizarTurnoPlano
-                                callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
-                            })
-                            .catch(APP.rq.axios_handler_error_alert);
-                    }
-                    else
-                        APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
+                                    appVueVenta.grabarAuditoria(objAuditoria);
+
+                                    APP.msg.info('Se confirmó a Fecha Abierta correctamente');
+                                });
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+
+                            // callSignalR_ActualizarTurnoPlano
+                            callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 validateNivelAsiento: async function (idVenta, codiBus, asiento) {
                     var retorno = null;
