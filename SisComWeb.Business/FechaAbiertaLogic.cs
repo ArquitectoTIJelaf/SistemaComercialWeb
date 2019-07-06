@@ -62,7 +62,8 @@ namespace SisComWeb.Business
                 var response = 0;
                 var mensaje = "";
 
-                var DayFechaVenta = Convert.ToDateTime(FechaVenta, CultureInfo.InvariantCulture);
+                //var DayFechaVenta = Convert.ToDateTime(FechaVenta);
+                var DayFechaVenta = DateTime.ParseExact(FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 int DiffDays = (DateTime.Now - DayFechaVenta).Days;
 
                 if (CantidadPerimita > 0 && DiffDays >= CantidadPerimita)

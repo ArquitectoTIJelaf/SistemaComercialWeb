@@ -142,7 +142,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@origen", DbType.String, ParameterDirection.Input, filtro.CodiOrigen);
                 db.AddParameter("@id_Venta", DbType.Int32, ParameterDirection.Input, filtro.IdVenta);
                 db.AddParameter("@asiento", DbType.String, ParameterDirection.Input, filtro.NumeAsiento);
-                db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, filtro.CodiRuta);
+                db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, "");
                 db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, filtro.CodiServicio);
                 db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.Tipo);
                 db.Execute();
