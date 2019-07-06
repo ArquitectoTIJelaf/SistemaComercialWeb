@@ -1,6 +1,4 @@
 ﻿using SisComWeb.Utility;
-using System;
-using System.Globalization;
 
 namespace SisComWeb.Entity
 {
@@ -207,6 +205,14 @@ namespace SisComWeb.Entity
         public string PolizaFechaReg { get; set; }
 
         public string PolizaFechaVen { get; set; }
+
+        // Reintegro
+        public string CodiEsca { get; set; }
+
+        public short SucVenta { get; set; }
+
+
+        public string PerAutoriza { get; set; }
     }
 
     public class VentaRealizadaEntity

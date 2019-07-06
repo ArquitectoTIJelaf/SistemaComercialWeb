@@ -33,5 +33,36 @@
         public string Tipo { get; set; }
 
         public int IdCaja { get; set; }
+
+
+        public string NomUsuario { get; set; }
+
+        public string TipoVale { get; set; }
+
+        public string CodiBus { get; set; }
+
+        public string CodiChofer { get; set; }
+
+        public string CodiGasto { get; set; }
+
+        public string IndiAnulado { get; set; }
+
+        public string TipoDescuento { get; set; }
+
+        public string TipoDoc { get; set; }
+
+        public string TipoGasto { get; set; }
+
+        public decimal Liqui { get; set; }
+
+        public decimal Diferencia { get; set; }
+
+        public string Voucher { get; set; }
+
+        public string Asiento { get; set; }
+
+        public string Ruc { get; set; }
+
+        public string ConcCaja { get; set; }
     }
 }

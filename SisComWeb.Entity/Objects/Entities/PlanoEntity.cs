@@ -121,5 +121,10 @@
         public decimal PrecVentaReintegro { get; set; }
 
         public string TipoPago { get; set; }
+
+        public string ValeRemoto { get; set; }
+
+
+        public string CodiEsca { get; set; }
     }
 }

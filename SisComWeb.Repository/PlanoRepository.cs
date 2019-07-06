@@ -58,8 +58,10 @@ namespace SisComWeb.Repository
                             EmbarqueDir = string.Empty,
                             EmbarqueHora = string.Empty,
                             ImpManifiesto = string.Empty,
+                            TipoPago = string.Empty,
+                            ValeRemoto = string.Empty,
 
-                            TipoPago = string.Empty
+                            CodiEsca = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -205,8 +207,10 @@ namespace SisComWeb.Repository
                             Edad = Reader.GetByteValue(drlector, "EDAD"),
                             Telefono = Reader.GetStringValue(drlector, "TELEFONO") ?? string.Empty,
                             Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty,
-
                             TipoPago = Reader.GetStringValue(drlector, "tipo_pago") ?? string.Empty,
+                            ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
+
+                            CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
 
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,
@@ -279,8 +283,10 @@ namespace SisComWeb.Repository
                             EmbarqueDir = string.Empty,
                             EmbarqueHora = string.Empty,
                             ImpManifiesto = string.Empty,
+                            TipoPago = string.Empty,
+                            ValeRemoto = string.Empty,
 
-                            TipoPago = string.Empty
+                            CodiEsca = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -333,32 +339,6 @@ namespace SisComWeb.Repository
             }
 
             return valor;
-        }
-
-        public static ReintegroEntity ConsultarReintegro(int serie, int nume, int emp, string tipo)
-        {
-            var entidad = new ReintegroEntity();
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_ele";
-                db.AddParameter("@serie", DbType.Int32, ParameterDirection.Input, serie);
-                db.AddParameter("@nume", DbType.Int32, ParameterDirection.Input, nume);
-                db.AddParameter("@emp", DbType.Int32, ParameterDirection.Input, emp);
-                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, tipo);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        entidad.ClavUsuario = Reader.GetSmallIntValue(drlector, "clav_usuario");
-                        entidad.SucVenta = Reader.GetSmallIntValue(drlector, "suc_venta");
-                        entidad.PrecVenta = Reader.GetDecimalValue(drlector, "prec_venta");
-                        break;
-                    }
-                }
-            }
-
-            return entidad;
         }
 
         #endregion

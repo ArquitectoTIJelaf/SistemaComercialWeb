@@ -216,6 +216,8 @@
         public const string MsgCorrectoInsertarUsuarioPorVenta = "Correcto: InsertarUsuarioPorVenta.";
         public const string MsgExcInsertarUsuarioPorVenta = "Excepción: InsertarUsuarioPorVenta.";
 
+        public const string MsgErrorGenerarCorrelativoAuxiliarReintegro = "Error: GenerarCorrelativoAuxiliarReintegro.";
+
         // Postergación
         public const string MsgCorrectoBuscarVentaxBoleto = "Correcto: BuscarVentaxBoleto.";
         public const string MsgValidaBuscarVentaxBoleto = "No se encontraron resultados.";

@@ -86,8 +86,10 @@ namespace SisComWeb.Aplication.Controllers
                 ClavUsuarioReintegro = (short)x["ClavUsuarioReintegro"],
                 SucVentaReintegro = (short)x["SucVentaReintegro"],
                 PrecVentaReintegro = (decimal)x["PrecVentaReintegro"],
+                TipoPago = (string)x["TipoPago"],
+                ValeRemoto = (string)x["ValeRemoto"],
 
-                TipoPago = (string)x["TipoPago"]
+                CodiEsca = (string)x["CodiEsca"]
             }).ToList();
 
             return lista;
@@ -757,8 +759,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Dni\" : \"" + Listado[i].Dni + "\"" +
                                     ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
                                     ",\"TipoDocumento\" : \"" + Listado[i].TipoDocumento + "\"" +
-                                    ",\"CodiDocumento\" : \"" + "" + "\"" +
-                                    ",\"Tipo\" : \"" + "" + "\"" +
+                                    ",\"CodiDocumento\" : \"" + string.Empty + "\"" +
+                                    ",\"Tipo\" : \"" + string.Empty + "\"" +
                                     ",\"Sexo\" : \"" + Listado[i].Sexo + "\"" +
                                     ",\"TipoPago\" : \"" + Listado[i].TipoPago + "\"" +
                                     ",\"FechaViaje\" : \"" + Listado[i].FechaViaje + "\"" +
@@ -1040,7 +1042,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("anular-venta")]
-        public async Task<ActionResult> AnularVenta(int IdVenta, string Tipo, string FlagVenta, bool StAnulacion, bool IngresoManualPasajes)
+        public async Task<ActionResult> AnularVenta(AnularVentaRequest request)
         {
             try
             {
@@ -1049,14 +1051,29 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"IdVenta\": " + IdVenta +
+                                    "\"IdVenta\": " + request.IdVenta +
                                     ",\"CodiUsuario\": " + usuario.CodiUsuario +
                                     ",\"CodiOficina\": " + usuario.CodiSucursal +
                                     ",\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta +
-                                    ",\"Tipo\": \"" + Tipo + "\"" +
-                                    ",\"FlagVenta\": \"" + FlagVenta + "\"" +
-                                    ",\"StAnulacion\": " + StAnulacion.ToString().ToLower() +
-                                    ",\"IngresoManualPasajes\": " + IngresoManualPasajes.ToString().ToLower() +
+                                    ",\"Tipo\": \"" + request.Tipo + "\"" +
+                                    ",\"FlagVenta\": \"" + request.FlagVenta + "\"" +
+                                    ",\"PrecioVenta\": \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(request.PrecioVenta) + "\"" +
+                                    ",\"FechaViaje\": \"" + request.FechaViaje + "\"" +
+                                    ",\"FechaVenta\": \"" + request.FechaVenta + "\"" +
+                                    ",\"TipoPago\": \"" + request.TipoPago + "\"" +
+                                    ",\"ValeRemoto\": \"" + request.ValeRemoto + "\"" +
+                                    ",\"CodiUsuarioBoleto\": " + request.CodiUsuarioBoleto +
+                                    ",\"NomUsuario\": \"" + usuario.Nombre + "\"" +
+                                    ",\"NumeAsiento\": " + request.NumeAsiento +
+                                    ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
+                                    ",\"NomPasajero\": \"" + request.NomPasajero + "\"" +
+                                    ",\"HoraViaje\": \"" + request.HoraViaje.Replace(" ", "") + "\"" +
+                                    ",\"NomDestinoPas\": \"" + request.NomDestinoPas + "\"" +
+                                    ",\"Terminal\": " + usuario.Terminal +
+                                    ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
+
+                                    ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
+                                    ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
                                 "}";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -2254,11 +2271,11 @@ namespace SisComWeb.Aplication.Controllers
                         Edad = (byte)data["Edad"],
                         Telefono = (string)data["Telefono"],
                         Nombre = (string)data["Nombre"],
-                        CodiEsca = (int)data["CodiEsca"],
+                        CodiEsca = (string)data["CodiEsca"],
                         CodiPuntoVenta = (short)data["CodiPuntoVenta"],
                         TipoDocumento = (string)data["TipoDocumento"],
                         CodiOrigen = (short)data["CodiOrigen"],
-                        PerAutoriza = (int)data["PerAutoriza"],
+                        PerAutoriza = (string)data["PerAutoriza"],
                         ClavUsuario1 = (int)data["ClavUsuario1"],
                         EstadoAsiento = (string)data["EstadoAsiento"],
                         Sexo = (string)data["Sexo"],

@@ -225,9 +225,11 @@ namespace SisComWeb.Business
             entidad.ApellidoMaterno = item.SplitNombres[2];
             entidad.Sexo = item.Sexo;
             entidad.TipoPago = item.TipoPago;
-
             entidad.Edad = item.Edad;
             entidad.Telefono = item.Telefono;
+            entidad.ValeRemoto = item.ValeRemoto;
+
+            entidad.CodiEsca = item.CodiEsca;
 
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {
@@ -285,12 +287,12 @@ namespace SisComWeb.Business
                 entidad.ObjAcompaniante = null;
 
             // Consulta 'Reintegro'
-            if (!string.IsNullOrEmpty(entidad.Boleto))
+            if (!string.IsNullOrEmpty(entidad.CodiEsca))
             {
-                var consultarReintegro = PlanoRepository.ConsultarReintegro(short.Parse(entidad.Boleto.Substring(0, 3)), int.Parse(entidad.Boleto.Substring(4)), request.CodiEmpresa, entidad.TipoBoleto);
-                entidad.ClavUsuarioReintegro = consultarReintegro.ClavUsuario;
-                entidad.SucVentaReintegro = consultarReintegro.SucVenta;
-                entidad.PrecVentaReintegro = consultarReintegro.PrecVenta;
+                var consultaVentaReintegro = VentaRepository.ConsultaVentaReintegro(entidad.CodiEsca.Substring(1, 3), entidad.CodiEsca.Substring(5), request.CodiEmpresa.ToString(), entidad.CodiEsca.Substring(0, 1));
+                entidad.ClavUsuarioReintegro = consultaVentaReintegro.CodiUsuario;
+                entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
+                entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
             }
             
         }
