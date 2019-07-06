@@ -22,7 +22,7 @@
                                           :options="list.tipoDoc"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -42,7 +42,7 @@
                                        :value="Documento.toUpperCase()"
                                        @@input="Documento = $event.target.value.toUpperCase()"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.prevent="recorridoSectionParentesco"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        v-mask="mask.documento"
                                        v-validate="'min: ' + validateMinNumero" />
                             </div>
@@ -62,7 +62,7 @@
                                        v-model="Nombres"
                                        :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.prevent="recorridoSectionParentesco"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        v-only-name>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                                        v-model="ApellidoPaterno"
                                        :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.prevent="recorridoSectionParentesco"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -95,7 +95,7 @@
                                        v-model="ApellidoMaterno"
                                        :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @@keydown.9.prevent="recorridoSectionParentesco"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        autocomplete="off"
                                        v-only-name>
                             </div>
@@ -113,7 +113,7 @@
                                        :disabled="disabledCamposTicket"
                                        @@focus="$event.target.select()"
                                        @@keydown.13.prevent="recorrerFechaNac()"
-                                       @@keydown.9.prevent="recorrerFechaNac()"
+                                       @*@@keydown.9.prevent="recorrerFechaNac()"*@
                                        @@blur="setDateAndCalcYears()"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">
@@ -141,7 +141,7 @@
                                           :options="list.sexos"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -158,7 +158,7 @@
                                           :options="list.parentesco"
                                           :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @@keydown.9.native.prevent="recorridoSectionParentesco">
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -175,7 +175,6 @@
                 </button>
                 <button id="btnIngresarConClave"
                         @@click="showClaveAutorizacion"
-                        :disabled="disabledBotones"
                         class="btn btn-info waves-effect text-left"
                         v-show="Edad > 5 && !enableSaveWithClaveAutorizacion">
                     <span class="fa fa-save fa-fw"></span>Ingresar con Clave

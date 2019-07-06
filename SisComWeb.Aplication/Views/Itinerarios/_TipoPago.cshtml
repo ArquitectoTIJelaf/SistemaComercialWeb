@@ -45,7 +45,7 @@
                                           v-model="computedTipoPago"
                                           :options="list.tiposPago"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                          @@keydown.9.native.prevent="recorridoSectionTipoPagos">
+                                          @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -61,7 +61,7 @@
                                                name="Imp. Pagado"
                                                @@input="calcMontos('IPC')"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                v-validate="'min_value:' + (sumaTotal)"
                                                data-vv-as="Imp. Pagado"
                                                v-money
@@ -93,7 +93,7 @@
                                               v-model="tarjeta"
                                               :options="list.tarjetas"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
+                                              @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -106,7 +106,7 @@
                                            name="Número"
                                            v-model="numeroTarjeta"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                            v-mask="'####-####-####-####'"
                                            v-validate="'formatoNumeroTarjeta: 16'"
                                            autocomplete="off" />
@@ -123,7 +123,7 @@
                                                v-model="tarjetaCant"
                                                @@input="calcMontos('T')"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'between:1, '+(sumaTotal-1)"
                                                v-money
@@ -141,7 +141,7 @@
                                                v-model="efectivo"
                                                @@input="calcMontos('E')"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'between:1, '+sumaTotal"
                                                v-money
@@ -159,7 +159,7 @@
                                                v-model="importePagado"
                                                @@input="calcMontos('IP')"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                               @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                               @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'min_value:' + (efectivo)"
                                                v-money
@@ -191,7 +191,7 @@
                                               v-model="tarjeta"
                                               :options="list.tarjetas"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
+                                              @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -204,7 +204,7 @@
                                            name="Número"
                                            v-model="numeroTarjeta"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                            v-mask="'####-####-####-####'"
                                            v-validate="'formatoNumeroTarjeta: 16'"
                                            autocomplete="off" />
@@ -222,7 +222,7 @@
                                               v-model="distrito"
                                               :options="list.distritos"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                              @@keydown.9.native.prevent="recorridoSectionTipoPagos">
+                                              @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -235,7 +235,7 @@
                                            maxlength="50"
                                            v-model="direccion"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                            autocomplete="off" />
                                 </div>
                             </div>
@@ -247,7 +247,7 @@
                                            maxlength="50"
                                            v-model="observacion"
                                            @@keypress.13.prevent="recorridoSectionTipoPagos"
-                                           @@keypress.9.prevent="recorridoSectionTipoPagos"
+                                           @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                            autocomplete="off" />
                                 </div>
                             </div>
@@ -262,7 +262,7 @@
                                           :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.embarques"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
-                                          @@keydown.9.native.prevent="recorridoSectionTipoPagos">
+                                          @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -277,7 +277,7 @@
                                           :get-option-label="getLabelEmbarqueArribo"
                                           :options="list.arribos"
                                           @@keydown.13.native.prevent="$refs.refBtnAceptarTP.focus"
-                                          @@keydown.9.native.prevent="$refs.refBtnAceptarTP.focus"
+                                          @*@@keydown.9.native.prevent="$refs.refBtnAceptarTP.focus"*@
                                           ref="refArriboTP">
                                     <div slot="no-options" class="text-danger" @@click="$refs.refArriboTP.open = false">No hay resultados</div>
                                 </v-select>

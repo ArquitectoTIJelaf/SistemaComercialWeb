@@ -493,6 +493,33 @@ namespace SisComWeb.Business
                             break;
                     };
 
+                    // Graba 'AuditoriaFechaAbierta'
+                    if (entidad.FechaAbierta)
+                    {
+                        var objAuditoriaFechaAbierta = new AuditoriaEntity
+                        {
+                            CodiUsuario = entidad.CodiUsuario,
+                            NomUsuario = entidad.NomUsuario,
+                            Tabla = "VENTA",
+                            TipoMovimiento = "POSTERGACION DE PASAJES",
+                            Boleto = auxBoletoCompleto.Substring(1),
+                            NumeAsiento = entidad.NumeAsiento.ToString("D2"),
+                            NomOficina = entidad.NomOficina,
+                            NomPuntoVenta = entidad.CodiPuntoVenta.ToString(),
+                            Pasajero = entidad.Nombre,
+                            FechaViaje = entidad.FechaViaje,
+                            HoraViaje = entidad.HoraViaje,
+                            NomDestino = entidad.NomDestino,
+                            Precio = entidad.PrecioVenta,
+                            Obs1 = string.Empty,
+                            Obs2 = string.Empty,
+                            Obs3 = string.Empty,
+                            Obs4 = "POSTEGADO A FECHA ABIERTA",
+                            Obs5 = "TERMINAL : " + entidad.CodiTerminal
+                        };
+                        VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
+                    }
+
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
@@ -606,20 +633,20 @@ namespace SisComWeb.Business
                                     CodiEmpresa = entidad.CodiEmpresa,
                                     CodiSucursal = entidad.CodiOficina,
                                     Boleto = auxBoletoCompleto.Substring(1),
-                                    Monto = entidad.TipoPago == "03" ? entidad.PrecioVenta : entidad.Credito,
+                                    Monto = entidad.Credito,
                                     CodiUsuario = entidad.CodiUsuario,
-                                    Recibe = entidad.TipoPago == "03" ? string.Empty : "MULTIPLE PAGO PARCIAL",
+                                    Recibe = "PAGO MULTIPLE-PARCIAL",
                                     CodiDestino = entidad.CodiDestino.ToString(),
-                                    FechaViaje = entidad.TipoPago == "03" ? entidad.FechaViaje : DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                                    HoraViaje = entidad.TipoPago == "03" ? entidad.HoraViaje : string.Empty,
+                                    FechaViaje = entidad.FechaViaje,
+                                    HoraViaje = entidad.HoraViaje,
                                     CodiPuntoVenta = entidad.CodiPuntoVenta,
                                     IdVenta = entidad.IdVenta,
-                                    Origen = entidad.TipoPago == "03" ? "VT" : "PA",
-                                    Modulo = entidad.TipoPago == "03" ? "PV" : "VT",
+                                    Origen = "PA",
+                                    Modulo = "VT",
                                     Tipo = entidad.Tipo,
 
                                     NomUsuario = entidad.NomUsuario,
-                                    ConcCaja = entidad.Tipo != "M" ? auxBoletoCompleto : string.Empty,
+                                    ConcCaja = auxBoletoCompleto,
                                     TipoVale = "S",
                                     CodiBus = "",
                                     CodiChofer = "",
@@ -1019,7 +1046,7 @@ namespace SisComWeb.Business
                     Monto = request.PrecioVenta,
                     CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                     Recibe = string.Empty,
-                    CodiDestino = request.CodiDestinoPas,
+                    CodiDestino = request.CodiDestinoPas.TrimStart('0'),
                     FechaViaje = request.FechaViaje,
                     HoraViaje = "VNA",
                     CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
@@ -1028,8 +1055,8 @@ namespace SisComWeb.Business
                     Modulo = "AP",
                     Tipo = request.Tipo,
 
-                    NomUsuario = request.NomUsuario,
-                    ConcCaja = request.Tipo != "M" ? (objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7")) : string.Empty,
+                    NomUsuario = request.CodiUsuario.ToString() + request.NomUsuario,
+                    ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
                     TipoVale = "S",
                     CodiBus = "",
                     CodiChofer = "",
@@ -1042,7 +1069,7 @@ namespace SisComWeb.Business
                     Diferencia = 0M,
                     Voucher = "PA",
                     Asiento = "",
-                    Ruc = "N",
+                    Ruc = "",
 
                     IdCaja = 0
                 };
@@ -1178,7 +1205,7 @@ namespace SisComWeb.Business
                         if (request.FlagVenta == "7")
                         {
                             // Actualiza 'BoletosPorSocio'
-                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("MM"), Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("yyyy"));
+                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("MM"), Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("yyyy"));
 
                             // Consulta 'CajaPase'
                             var consultaCajaPase = VentaRepository.ConsultaCajaPase(objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"));
