@@ -102,6 +102,7 @@ namespace SisComWeb.Business
             {
                 var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
+                FechaAbiertaRepository.VentaDerivadaUpdateViaje(filtro.IdVenta, filtro.FechaViaje, filtro.HoraViaje, filtro.CodiServicio);
                 FechaAbiertaRepository.VentaUpdateCnt(0, Convert.ToInt32(filtro.CodiProgramacion), filtro.Oficina, filtro.Oficina);
                 return new Response<bool>(true, Response, Message.MsgCorrectoVentaUpdatePostergacionEle, true);
             }
