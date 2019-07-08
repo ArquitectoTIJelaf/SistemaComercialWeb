@@ -128,11 +128,14 @@
                     input.Terminal = this.Terminal;
                     await APP.rq.axios2.post(APP.base + '/login/post-usuario', input)
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.EsCorrecto)
                                 $('#frmLogin').submit();
                             else {
                                 document.getElementById("txtContrasena").focus();
-                                APP.msg.error(res.data.Mensaje);
+                                if (res.data.Estado)
+                                    APP.msg.warning(res.data.Mensaje);
+                                else
+                                    APP.msg.error(res.data.Mensaje);
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);

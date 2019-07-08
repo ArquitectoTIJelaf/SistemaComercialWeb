@@ -812,13 +812,13 @@ namespace SisComWeb.Aplication.Controllers
 
                                     ",\"ObjAcompaniante\" : " +
                                     "{" +
-                                        "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.CodiTipoDoc) + "\"" +
-                                        ",\"NumeroDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Documento) + "\"" +
-                                        ",\"NombreCompleto\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.NombreCompleto) + "\"" +
-                                        ",\"FechaNacimiento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.FechaNac) + "\"" +
-                                        ",\"Edad\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Edad) + "\"" +
-                                        ",\"Sexo\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Sexo) + "\"" +
-                                        ",\"Parentesco\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Parentesco) + "\"" +
+                                        "\"TipoDocumento\" : \"" + Listado[i].ObjAcompaniante.CodiTipoDoc + "\"" +
+                                        ",\"NumeroDocumento\" : \"" + Listado[i].ObjAcompaniante.Documento + "\"" +
+                                        ",\"NombreCompleto\" : \"" + Listado[i].ObjAcompaniante.NombreCompleto + "\"" +
+                                        ",\"FechaNacimiento\" : \"" + Listado[i].ObjAcompaniante.FechaNac + "\"" +
+                                        ",\"Edad\" : \"" + Listado[i].ObjAcompaniante.Edad + "\"" +
+                                        ",\"Sexo\" : \"" + Listado[i].ObjAcompaniante.Sexo + "\"" +
+                                        ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
@@ -2635,7 +2635,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("acompanianteVentaCRUD")]
         public async Task<ActionResult> AcompanianteVentaCRUD(AcompanianteRequest request)
         {

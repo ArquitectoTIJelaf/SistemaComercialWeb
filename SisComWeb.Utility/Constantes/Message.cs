@@ -171,7 +171,7 @@
         public const string MsgExcEliminarReserva = "Excepción: EliminarReserva.";
 
         // Acompaniante
-        public const string MsgCorrectoAcompanianteVentaCRUD = "Correcto: AcompanianteVentaCRUD.";
+        public const string MsgCorrectoAcompanianteVentaCRUD = "Se guardó los datos del acompañante correctamente.";
         public const string MsgExAcompanianteVentaCRUD = "Excepción: AcompanianteVentaCRUD.";
 
         // Pase
