@@ -15,7 +15,6 @@ namespace SisComWeb.Entity.Peticiones.Request
         public string Serie { get; set; }
         public string Numero { get; set; }
         public string CodEmpresa { get; set; }
-
         public string CodiEsca { get; set; }
         public string CodiServicio { get; set; }
         public string CodiRuta { get; set; }
@@ -24,5 +23,8 @@ namespace SisComWeb.Entity.Peticiones.Request
         public string CodiOrigen { get; set; }
         public string CodiProgramacion { get; set; }
         public int Oficina { get; set; }
+
+        public string FechaViaje { get; set; }
+        public string HoraViaje { get; set; }
     }
 }

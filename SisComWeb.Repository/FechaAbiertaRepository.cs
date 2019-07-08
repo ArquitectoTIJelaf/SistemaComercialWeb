@@ -173,6 +173,19 @@ namespace SisComWeb.Repository
                 db.Execute();
             }
         }
+        
+        public static void VentaDerivadaUpdateViaje(int IdVenta, string FechaViaje, string HoraViaje, string CodServicio)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_TB_Venta_Derivada_Update_Viaje";
+                db.AddParameter("@id", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, FechaViaje);
+                db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, HoraViaje);
+                db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, CodServicio);
+                db.Execute();
+            }
+        }
         #endregion
     }
 }

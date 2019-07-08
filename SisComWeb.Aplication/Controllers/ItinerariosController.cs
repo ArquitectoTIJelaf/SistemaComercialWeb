@@ -2612,7 +2612,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiRuta\" : \"" + (filtro.CodiRuta ?? "") + "\"" +
                                     ",\"CodiServicio\" : \"" + (filtro.CodiServicio ?? "") + "\"" +
                                     ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
-                                    ",\"Oficina\" : " + filtro.Oficina + 
+                                    ",\"Oficina\" : " + filtro.Oficina +
+                                    ",\"FechaViaje\" : \"" + (filtro.FechaViaje ?? "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "") + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("VentaUpdatePostergacionEle", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

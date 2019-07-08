@@ -7598,7 +7598,7 @@
                             }
                         }
                     } else return;
-
+                                        
                     var input = {};
                     input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
                     input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
@@ -7609,6 +7609,8 @@
                     input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
                     input.Tipo = item.Tipo;
                     input.Oficina = parseInt(appVueVenta.filtro.CodiSucursal.id);
+                    input.FechaViaje = appVueVenta.filtro.Fecha;
+                    input.HoraViaje = appVueVenta.filtro.Turno;
 
                     // Limpiar 'AsientosBloqueados'
                     var auxResponse = await appVueVenta.cancelarBoletos();
