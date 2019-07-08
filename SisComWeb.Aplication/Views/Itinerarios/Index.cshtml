@@ -5642,13 +5642,13 @@
                     }
 
                     // Valida 'FechaViaje'
-                    if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
+                    if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
                         APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
                         return;
                     }
 
                     // Valida 'Programación cerrada'
-                    if (_this.objTurno.Xcierre === '1') {
+                    if (appVueVenta.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
                         return;
                     }
