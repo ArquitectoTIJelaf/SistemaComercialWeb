@@ -383,7 +383,7 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
         showLoaderOnConfirm: true,
         preConfirm: async function (value) {
             var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
-            if (resSendClaveAutorizacion && resSendClaveAutorizacion.Estado)
+            if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
                 _bool = true;
             else {
                 Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');

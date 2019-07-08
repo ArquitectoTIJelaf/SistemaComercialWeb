@@ -61,7 +61,7 @@
                                 <input v-model="item.serie"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBNumero.focus()"
-                                       @@keypress.9.prevent="$refs.refMBNumero.focus()"
+                                       @*@@keypress.9.prevent="$refs.refMBNumero.focus()"*@
                                        @@blur="item.serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
                                        v-mask="'#'.repeat(4)"
                                        ref="refMBSerie" />
@@ -70,7 +70,7 @@
                                 <input v-model="item.numero"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="searchData"
-                                       @@keypress.9.prevent="searchData"
+                                       @*@@keypress.9.prevent="searchData"*@
                                        @@blur="item.numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
                                        v-mask="'#'.repeat(8)"
                                        ref="refMBNumero" />
@@ -243,7 +243,7 @@
                                 <input v-model="filtro.recoger"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBNacionalidad.focus()"
-                                       @@keypress.9.prevent="$refs.refMBNacionalidad.focus()"
+                                       @*@@keypress.9.prevent="$refs.refMBNacionalidad.focus()"*@
                                        :disabled="!panel"
                                        maxlength="30"
                                        ref="refMBRecoger" />
@@ -271,7 +271,7 @@
                                 <input v-model="filtro.nacionidad"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refMBSave.focus()"
-                                       @@keypress.9.prevent="$refs.refMBSave.focus()"
+                                       @*@@keypress.9.prevent="$refs.refMBSave.focus()"*@
                                        :disabled="!panel"
                                        maxlength="30"
                                        ref="refMBNacionalidad" />

@@ -514,18 +514,19 @@
 
             $('#appVueRegistrarInfante').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueRegistrarInfante.esc);
-
+                debugger;
                 if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante) {
                     appVueRegistrarInfante.setMostrarInfante(appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante);
                     document.getElementById("chckRegistrarNino").checked = true;
                     document.getElementById("btnCancelarRA").focus();
                 }
-                else
-                    $("#cboTipoDocRA input[type=search]").focus();
+
+                $("#cboTipoDocRA input[type=search]").focus();
             });
 
             $('#appVueRegistrarInfante').on('hidden.bs.modal', function () {
                 appVueVenta.$refs.refRegistrarNino.focus();
+                debugger;
                 if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante)
                     appVueVenta.checkRegistrarNino = false;
                 else {
@@ -1153,6 +1154,9 @@
                 },
                 getEmpresas: function () {
                     return _.cloneDeep(appVueVenta.list.empresas);
+                },
+                acompanianteVentaCRUD: async function (_ObjAcompaniante) {
+                    appVueVenta.setAcompanianteVenta(_ObjAcompaniante);
                 }
             };
         })();
@@ -2668,7 +2672,7 @@
                             }
                         }
                     }
-                    debugger;
+                    
                     for (var objAsiento of this.list.ventas) {
 
                         if (objAsiento.NroAsiento !== _NroAsiento) {
@@ -3450,7 +3454,6 @@
                     this.list.ventas[this.indexVenta].ImporteDescuentoDC = '';
                     this.list.ventas[this.indexVenta].ImporteDescontadoDC = '';
                     this.list.ventas[this.indexVenta].AutorizadoDC = '';
-
                     this.list.ventas[this.indexVenta].ReadonlyPrecio = false;
 
                     this.errors.clear();
@@ -3487,6 +3490,7 @@
                     }
                     this.passNumDocToDocumento(true);
                     appVueRegistrarInfante.limpiarCampos();
+                    appVueRegistrarInfante.enableSaveWithClaveAutorizacion = false;
                 },
                 focusPrecio: function (event) {
                     this.$nextTick(() => {
@@ -3760,14 +3764,15 @@
                     if (await APP.msg.confirm(
                         'Cancelar Reserva',
                         'La reserva N° ' + this.$options.filters.formatNroVenta(_asientoSel.Boleto) + ' será cancelada, ¿Desea continuar?')) {
-                        APP.rq.axios2.post(APP.base + '/itinerarios/cancelar-reserva', { IdVenta: _asientoSel.IdVenta })
+
+                        await APP.rq.axios2.post(APP.base + '/itinerarios/cancelar-reserva', { IdVenta: _asientoSel.IdVenta })
                             .then(async function (res) {
                                 await appController.chargeTurnos();
 
                                 if (res.data.Estado) {
                                     _this.$nextTick(() => {
                                         if (res.data.EsCorrecto)
-                                            APP.msg.success(res.data.Mensaje);
+                                            APP.msg.info(res.data.Mensaje);
                                         else
                                             APP.msg.warning(res.data.Mensaje);
                                     });
@@ -3944,7 +3949,7 @@
                             if (!validateFechaAbierta)
                                 return;
 
-                            APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
+                            await APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
                                 CodiRuta: _this.filtro.CodiDestinoBus.id
@@ -4122,7 +4127,7 @@
                         return;
                     }
                  
-                    APP.rq.axios.post(await APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
+                    await APP.rq.axios.post(APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                         IdVenta: tmpAsientoSel.IdVenta,
                         Tipo: tmpAsientoSel.TipoBoleto,
                         FlagVenta: tmpAsientoSel.FlagVenta,
@@ -4894,9 +4899,9 @@
                     await this.searchUser();
                 },
                 sendClaveAutorizacion: function (_data, _observacion) {
-                    if (_data.Estado) {
+                    if (_data.EsCorrecto) {
                         $('#appClaveAutorizacion').modal('hide');
-                        this.list.ventas[this.indexVenta].ValidadorDescuento = _data.Estado;
+                        this.list.ventas[this.indexVenta].ValidadorDescuento = _data.EsCorrecto;
                         this.list.ventas[this.indexVenta].ObservacionDescuento = _observacion;
 
                         var auxPrecio = parseFloat(this.list.ventas[this.indexVenta].Precio || '0');
@@ -4904,15 +4909,18 @@
 
                         this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
 
-                        APP.msg.success(_data.Mensaje);
+                        APP.msg.info(_data.Mensaje);
                     }
                     else {
                         document.getElementById('txtContraseniaCA').focus();
-                        APP.msg.error(_data.Mensaje);
+                        if (_data.Estado)
+                            APP.msg.warning(_data.Mensaje);
+                        else
+                            APP.msg.error(_data.Mensaje);
                     }
                 },
                 sendClaveAutorizacionDC: function (_data, _objValues) {
-                    if (_data.Estado) {
+                    if (_data.EsCorrecto) {
                         this.list.ventas[this.indexVenta].ValidadorDescuentoControl = _data.Estado;
                         this.list.ventas[this.indexVenta].DescuentoTipoDC = _objValues.DescuentoTipoDC;
                         this.list.ventas[this.indexVenta].ImporteDescuentoDC = _objValues.ImporteDescuentoDC;
@@ -4923,11 +4931,14 @@
                         this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
 
                         $('#appVueDescuentoControl').modal('hide');
-                        APP.msg.success(_data.Mensaje);
+                        APP.msg.info(_data.Mensaje);
                     }
                     else {
                         document.getElementById('txtClaveAutorizacionDC').focus();
-                        APP.msg.error(_data.Mensaje);
+                        if (_data.Estado)
+                            APP.msg.warning(_data.Mensaje);
+                        else
+                            APP.msg.error(_data.Mensaje);
                     }
                 },
                 validaManifiesto: async function () {
@@ -5075,6 +5086,43 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                setAcompanianteVenta: async function (_ObjAcompaniante) {
+                    debugger;
+                    if (this.list.ventas[this.indexVenta].IdVenta) {
+                        var _ActionType = 0; // 1: Insert, 2: Update
+
+                        if (this.list.ventas[this.indexVenta].ObjAcompaniante)
+                            _ActionType = 2;
+                        else
+                            _ActionType = 1;
+
+                        await this.acompanianteVentaCRUD(this.list.ventas[this.indexVenta].IdVenta, _ObjAcompaniante, _ActionType);
+                    }
+                    else
+                        this.list.ventas[this.indexVenta].ObjAcompaniante = _ObjAcompaniante;
+                },
+                acompanianteVentaCRUD: async function (_IdVenta, _ObjAcompaniante, _ActionType) {
+                    debugger;
+                    var _this = this;
+                    return;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/acompanianteVentaCRUD', {
+                        IdVenta: _IdVenta,
+                        Acompaniante: _ObjAcompaniante,
+                        ActionType: _ActionType
+                    })
+                        .then(async function (res) {
+                            debugger;
+                            await appController.chargeTurnos();
+
+                            _this.$nextTick(() => {
+                                if (res.data.Estado)
+                                    APP.msg.info(res.data.Mensaje);
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            });
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 openMenu: function (e, _item) {
                     this.showContextMenu = true;
                     this.itemSelected = _item;
@@ -5196,13 +5244,13 @@
                         objAsiento.NumeAsiento = 0;
                         objAsiento.NumeSolicitud = "";
                         objAsiento.NumeroDocumento = "";
-                        objAsiento.ObjAcompaniante.CodiTipoDoc = null;
-                        objAsiento.ObjAcompaniante.Documento = null;
-                        objAsiento.ObjAcompaniante.Edad = null;
-                        objAsiento.ObjAcompaniante.FechaNac = null;
-                        objAsiento.ObjAcompaniante.NombreCompleto = null;
-                        objAsiento.ObjAcompaniante.Parentesco = null;
-                        objAsiento.ObjAcompaniante.Sexo = null;
+                        objAsiento.ObjAcompaniante.CodiTipoDoc = "";
+                        objAsiento.ObjAcompaniante.Documento = "";
+                        objAsiento.ObjAcompaniante.Edad = "";
+                        objAsiento.ObjAcompaniante.FechaNac = "";
+                        objAsiento.ObjAcompaniante.NombreCompleto = "";
+                        objAsiento.ObjAcompaniante.Parentesco = "";
+                        objAsiento.ObjAcompaniante.Sexo = "";
                         objAsiento.PrecioVenta = 0;
                         objAsiento.RecogeEn = "";
                         objAsiento.RazonSocial = "";
@@ -6038,8 +6086,6 @@
             },
             methods: {
                 show: function (_TipoDoc, _listSexos) {
-                    if (this.Edad < 5)
-                        this.enableSaveWithClaveAutorizacion = false;
                     if (!appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante)
                         this.limpiarCampos();
                     this.list.tipoDoc = _TipoDoc;
@@ -6065,8 +6111,8 @@
                     this.ApellidoMaterno = '';
                     this.FechaNac = '';
                     this.Edad = '';
-                    this.Sexo = ''; // null
-                    this.Parentesco = ''; // null
+                    this.Sexo = null;
+                    this.Parentesco = null;
                     this.disabledBotones = false;
                     this.validateMinNumero = '0';
                     this.disabledCamposTicket = false;
@@ -6133,6 +6179,10 @@
                     else {
                         if (auxEdad > 5 && !this.enableSaveWithClaveAutorizacion) {
                             if (auxValidate === true) APP.msg.warning('Edad mayor a 5 años, es necesario ingresar clave para continuar.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('btnIngresarConClave').focus();
+                            });
                         }
                         else
                             auxResponse = true;
@@ -6142,8 +6192,7 @@
 
                     return auxResponse;
                 },
-                saveAcompaniante: function () {
-
+                saveAcompaniante: async function () {
                     if (!this.recorridoSectionParentesco(true))
                         return;
 
@@ -6155,13 +6204,14 @@
                     ObjAcompaniante.Edad = this.Edad;
                     ObjAcompaniante.Sexo = !this.Sexo ? '' : this.Sexo.id;
                     ObjAcompaniante.Parentesco = !this.Parentesco ? '' : this.Parentesco.id;
-                    appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante = ObjAcompaniante;
+
+                    await appController.acompanianteVentaCRUD(ObjAcompaniante);
 
                     this.close();
                 },
                 eliminarAcompaniante: function () {
                     appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante = null;
-                    this.close();
+                    this.close()
                 },
                 setMostrarInfante: function (_ObjAcompaniante) {
                     this.CodiTipoDoc = _.find(appVueVenta.list.tiposDoc, { 'id': _ObjAcompaniante.CodiTipoDoc }) || null;
@@ -6188,15 +6238,18 @@
                     }
                 },
                 sendClaveAutorizacion: function (_data) {
-                    if (_data.Estado) {
+                    if (_data.EsCorrecto) {
                         this.enableSaveWithClaveAutorizacion = _data.Estado;
                         $('#appClaveAutorizacion').modal('hide');
 
-                        APP.msg.success(_data.Mensaje);
+                        APP.msg.info(_data.Mensaje);
                     }
                     else {
                         document.getElementById('txtContraseniaCA').focus();
-                        APP.msg.error(_data.Mensaje);
+                        if (_data.Estado)
+                            APP.msg.warning(_data.Mensaje);
+                        else
+                            APP.msg.error(_data.Mensaje);
                     }
                 },
                 showClaveAutorizacion: function () {
@@ -6209,7 +6262,15 @@
                     $('#appVueRegistrarInfante').modal('hide');
                 }
             },
-            computed: {},
+            computed: {
+                showBtnIngresarConClave: function () {
+                    var auxEdad = parseInt(this.Edad || '0');
+                    if (auxEdad > 5 && !this.enableSaveWithClaveAutorizacion)
+                        return true;
+                    else
+                        return false;
+                }
+            },
             watch: {
                 CodiTipoDoc: function (newValue) {
                     if (newValue) {

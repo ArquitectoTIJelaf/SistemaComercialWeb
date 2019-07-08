@@ -59,7 +59,7 @@
                                            maxlength="6"
                                            onkeyup="jsValidarNumeroConDosDecimales(event)"
                                            @@keydown.13.prevent="recorrerDescuentoControl(true)"
-                                           @@keydown.9.prevent="recorrerDescuentoControl(true)"
+                                           @*@@keydown.9.prevent="recorrerDescuentoControl(true)"*@
                                            type="text"
                                            placeholder="0.00"
                                            autocomplete="off"
@@ -94,7 +94,7 @@
                                        id="txtAutorizadoDC"
                                        type="text"
                                        @@keydown.13.prevent="recorrerDescuentoControl()"
-                                       @@keydown.9.prevent="recorrerDescuentoControl()"
+                                       @*@@keydown.9.prevent="recorrerDescuentoControl()"*@
                                        class="form-control input-sm"
                                        placeholder="NOMBRE" />
                             </div>
@@ -108,7 +108,7 @@
                                        id="txtClaveAutorizacionDC"
                                        type="password"
                                        @@keydown.13.prevent="recorrerDescuentoControl()"
-                                       @@keydown.9.prevent="recorrerDescuentoControl()"
+                                       @*@@keydown.9.prevent="recorrerDescuentoControl()"*@
                                        class="form-control input-sm"
                                        placeholder="CLAVE" />
                             </div>

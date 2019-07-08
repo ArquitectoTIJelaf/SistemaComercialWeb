@@ -16,4 +16,13 @@
 
         public string Parentesco { get; set; }
     }
+
+    public class AcompanianteRequest
+    {
+        public int IdVenta { get; set; }
+
+        public Acompaniante Acompaniante { get; set; }
+
+        public byte ActionType { get; set; }
+    }
 }

@@ -61,7 +61,7 @@
                                 <input v-model="item.Serie"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refFANumero.focus()"
-                                       @@keypress.9.prevent="$refs.refFANumero.focus()"
+                                       @*@@keypress.9.prevent="$refs.refFANumero.focus()"*@
                                        @@focus="$event.target.select()"
                                        @@blur="item.Serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
                                        v-mask="'#'.repeat(4)"                                       
@@ -71,7 +71,7 @@
                                 <input v-model="item.Numero"
                                        class="form-control input-sm"
                                        @@keypress.13.prevent="$refs.refFANombre.focus()"
-                                       @@keypress.9.prevent="$refs.refFANombre.focus()"
+                                       @*@@keypress.9.prevent="$refs.refFANombre.focus()"*@
                                        @@focus="$event.target.select()"
                                        @@blur="item.Numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
                                        v-mask="'#'.repeat(8)"
@@ -87,7 +87,7 @@
                                     <input v-model="item.Nombre" 
                                            class="form-control input-sm"
                                            @@keypress.13.prevent="$refs.refFADni.focus()"
-                                           @@keypress.9.prevent="$refs.refFADni.focus()"
+                                           @*@@keypress.9.prevent="$refs.refFADni.focus()"*@
                                            ref="refFANombre"/>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@
                                     <input v-model="item.Dni" 
                                            class="form-control input-sm" 
                                            @@keypress.13.prevent="$refs.refFAFecha.focus()"
-                                           @@keypress.9.prevent="$refs.refFAFecha.focus()"
+                                           @*@@keypress.9.prevent="$refs.refFAFecha.focus()"*@
                                            ref="refFADni"/>
                                 </div>
                             </div>

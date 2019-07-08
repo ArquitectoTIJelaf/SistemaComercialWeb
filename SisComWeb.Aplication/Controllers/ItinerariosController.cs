@@ -97,11 +97,19 @@ namespace SisComWeb.Aplication.Controllers
 
         private static Acompaniante _ObjetoAcompaniante(JToken obj)
         {
-            Acompaniante objeto = new Acompaniante();
+            Acompaniante objeto = new Acompaniante()
+            {
+                CodiTipoDoc = string.Empty,
+                Documento = string.Empty,
+                NombreCompleto = string.Empty,
+                FechaNac = string.Empty,
+                Edad = string.Empty,
+                Sexo = string.Empty,
+                Parentesco = string.Empty
+            };
 
             // Valida 'obj'
-            var auxValidator = obj.ToString();
-            if (string.IsNullOrEmpty(auxValidator))
+            if (string.IsNullOrEmpty(obj.ToString()))
                 return objeto;
             // ------------
 
@@ -1029,14 +1037,15 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = (bool)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -2618,6 +2627,52 @@ namespace SisComWeb.Aplication.Controllers
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = (bool)tmpResult["Valor"]
                 };
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("acompanianteVentaCRUD")]
+        public async Task<ActionResult> AcompanianteVentaCRUD(AcompanianteRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + request.IdVenta +
+                                    ",\"Acompaniante\" : { " +
+                                        "\"TipoDocumento\" : \"" + request.Acompaniante.CodiTipoDoc + "\"" +
+                                        ",\"NumeroDocumento\" : \"" + request.Acompaniante.Documento + "\"" +
+                                        ",\"NombreCompleto\" : \"" + request.Acompaniante.NombreCompleto + "\"" +
+                                        ",\"FechaNacimiento\" : \"" + request.Acompaniante.FechaNac + "\"" +
+                                        ",\"Edad\" : \"" + request.Acompaniante.Edad + "\"" +
+                                        ",\"Sexo\" : \"" + request.Acompaniante.Sexo + "\"" +
+                                        ",\"Parentesco\" : \"" + request.Acompaniante.Parentesco + "\"" +
+                                    " }" +
+                                    ",\"ActionType\" : " + request.ActionType +
+                                "}";
+
+                    HttpResponseMessage response = await client.PostAsync("AcompanianteVentaCRUD", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch

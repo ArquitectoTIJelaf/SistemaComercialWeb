@@ -18,7 +18,7 @@
                                        placeholder="NOMBRES"
                                        v-model="NombreBCP"
                                        @@keydown.13.prevent="$refs.refApePaternoBCP.focus()"
-                                       @@keydown.9.prevent="$refs.refApePaternoBCP.focus()"
+                                       @*@@keydown.9.prevent="$refs.refApePaternoBCP.focus()"*@
                                        v-only-name
                                        autocomplete="off" />
                             </div>
@@ -36,7 +36,7 @@
                                        v-model="ApePaternoBCP"
                                        ref="refApePaternoBCP"
                                        @@keydown.13.prevent="$refs.refApeMaternoBCP.focus()"
-                                       @@keydown.9.prevent="$refs.refApeMaternoBCP.focus()"
+                                       @*@@keydown.9.prevent="$refs.refApeMaternoBCP.focus()"*@
                                        v-only-name
                                        autocomplete="off" />
                             </div>
@@ -54,7 +54,7 @@
                                        v-model="ApeMaternoBCP"
                                        ref="refApeMaternoBCP"
                                        @@keydown.13.prevent="getClientesPasaje"
-                                       @@keydown.9.prevent="getClientesPasaje"
+                                       @*@@keydown.9.prevent="getClientesPasaje"*@
                                        v-only-name
                                        autocomplete="off" />
                             </div>

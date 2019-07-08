@@ -221,7 +221,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "sc_wsp_Consulta_Tb_BloqueAsiento_Cantidad_Max";
+                db.ProcedureName = "scwsp_Consulta_Tb_BloqueAsiento_Cantidad_Max";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
 
                 using (IDataReader drlector = db.GetDataReader())

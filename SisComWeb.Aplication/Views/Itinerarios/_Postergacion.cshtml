@@ -15,7 +15,7 @@
                                           id="cboEmpresaPos"
                                           placeholder="EMPRESA"
                                           @@keydown.13.native.prevent="$refs.refSeriePos.focus()"
-                                          @@keypress.9.native.prevent="$refs.refSeriePos.focus()"
+                                          @*@@keypress.9.native.prevent="$refs.refSeriePos.focus()"*@
                                           :options="list.empresas"
                                           :select-on-tab="true"
                                           ref="refEmpresaPos"
@@ -36,7 +36,7 @@
                                        placeholder="0000"
                                        ref="refSeriePos"
                                        @@keypress.13.prevent="recorrido"
-                                       @@keydown.9.prevent="recorrido"
+                                       @*@@keydown.9.prevent="recorrido"*@
                                        @@focus="$event.target.select()"
                                        @@blur="blurSerie"
                                        v-mask="'N'.repeat(4)"
@@ -50,7 +50,7 @@
                                        placeholder="0000000"
                                        ref="refNumeroPos"
                                        @@keypress.13.prevent="recorrido"
-                                       @@keydown.9.prevent="recorrido"
+                                       @*@@keydown.9.prevent="recorrido"*@
                                        @@focus="$event.target.select()"
                                        @@blur="blurNumero"
                                        v-mask="'#'.repeat(7)"

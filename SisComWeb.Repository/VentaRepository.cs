@@ -1,5 +1,6 @@
 ﻿using SisComWeb.Entity;
 using SisComWeb.Entity.Objects.Entities;
+using SisComWeb.Entity.Peticiones.Request;
 using System.Collections.Generic;
 using System.Data;
 
@@ -1022,22 +1023,23 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static bool GrabarAcompanianteVenta(int IdVenta, AcompanianteEntity entidad)
+        public static bool AcompanianteVentaCRUD(AcompanianteRequest request)
         {
             var valor = new bool();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_GrabarAcompañanteVenta";
-                db.AddParameter("@IDVENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
-                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, entidad.TipoDocumento);
-                db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, entidad.NumeroDocumento);
-                db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, entidad.NombreCompleto);
-                db.AddParameter("@FECHAN", DbType.String, ParameterDirection.Input, entidad.FechaNacimiento);
-                db.AddParameter("@EDAD", DbType.String, ParameterDirection.Input, entidad.Edad);
-                db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, entidad.Sexo);
-                db.AddParameter("@PARENTESCO", DbType.String, ParameterDirection.Input, entidad.Parentesco);
+                db.ProcedureName = "scwsp_CRUD_AcompañanteVenta";
+                db.AddParameter("@IDVENTA", DbType.Int32, ParameterDirection.Input, request.IdVenta);
+                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, request.Acompaniante.TipoDocumento);
+                db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, request.Acompaniante.NumeroDocumento);
+                db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, request.Acompaniante.NombreCompleto);
+                db.AddParameter("@FECHAN", DbType.String, ParameterDirection.Input, request.Acompaniante.FechaNacimiento);
+                db.AddParameter("@EDAD", DbType.String, ParameterDirection.Input, request.Acompaniante.Edad);
+                db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, request.Acompaniante.Sexo);
+                db.AddParameter("@PARENTESCO", DbType.String, ParameterDirection.Input, request.Acompaniante.Parentesco);
 
+                db.AddParameter("@ACTION_TYPE", DbType.Byte, ParameterDirection.Input, request.ActionType);
                 db.Execute();
 
                 valor = true;

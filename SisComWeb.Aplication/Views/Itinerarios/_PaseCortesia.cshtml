@@ -18,7 +18,7 @@
                                           :options="list.gerentes"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
-                                          @@keydown.9.native.prevent="recorridoPaseCortesia">
+                                          @*@@keydown.9.native.prevent="recorridoPaseCortesia"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -35,7 +35,7 @@
                                           :options="list.solicitantes"
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="fillBeneficiario(solicitante)"
-                                          @@keydown.9.native.prevent="fillBeneficiario(solicitante)"
+                                          @*@@keydown.9.native.prevent="fillBeneficiario(solicitante)"*@
                                           ref="refSolicitantePC">
                                     <template slot="option" slot-scope="option">
                                         <div @@click="fillBeneficiario(solicitante)">{{ option.label }}</div>
@@ -56,7 +56,7 @@
                                        name="Concepto"
                                        placeholder="CONCEPTO"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
-                                       @@keydown.9.native.prevent="recorridoPaseCortesia"
+                                       @*@@keydown.9.native.prevent="recorridoPaseCortesia"*@
                                        v-validate="'required'"
                                        autocomplete="off" />
                             </div>
@@ -73,7 +73,7 @@
                                        type="text"
                                        placeholder="BENEFICIARIO"
                                        @@keypress.13.prevent="recorridoPaseCortesia"
-                                       @@keydown.9.native.prevent="recorridoPaseCortesia"
+                                       @*@@keydown.9.native.prevent="recorridoPaseCortesia"*@
                                        autocomplete="off" />
                             </div>
                         </div>

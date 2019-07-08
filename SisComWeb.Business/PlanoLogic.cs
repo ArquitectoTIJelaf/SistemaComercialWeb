@@ -283,8 +283,6 @@ namespace SisComWeb.Business
             // Busca 'Acompaniante'
             if (!string.IsNullOrEmpty(entidad.IdVenta))
                 entidad.ObjAcompaniante = PlanoRepository.BuscaAcompaniante(entidad.IdVenta);
-            else
-                entidad.ObjAcompaniante = null;
 
             // Consulta 'Reintegro'
             if (!string.IsNullOrEmpty(entidad.CodiEsca))

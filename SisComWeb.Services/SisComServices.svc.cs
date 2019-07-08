@@ -582,6 +582,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<bool> AcompanianteVentaCRUD(AcompanianteRequest request)
+        {
+            try
+            {
+                return VentaLogic.AcompanianteVentaCRUD(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExAcompanianteVentaCRUD, false);
+            }
+        }
+
         #endregion
 
         #region ANULAR VENTA

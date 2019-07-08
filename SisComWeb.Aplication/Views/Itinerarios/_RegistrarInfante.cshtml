@@ -20,7 +20,6 @@
                                           label="label"
                                           v-model="CodiTipoDoc"
                                           :options="list.tipoDoc"
-                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -38,7 +37,6 @@
                                        type="text"
                                        placeholder="NÚMERO"
                                        autocomplete="off"
-                                       :disabled="disabledCamposTicket"
                                        :value="Documento.toUpperCase()"
                                        @@input="Documento = $event.target.value.toUpperCase()"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
@@ -60,7 +58,6 @@
                                        maxlength="50"
                                        autocomplete="off"
                                        v-model="Nombres"
-                                       :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        v-only-name>
@@ -77,7 +74,6 @@
                                        maxlength="25"
                                        placeholder="APELLIDO PATERNO"
                                        v-model="ApellidoPaterno"
-                                       :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        autocomplete="off"
@@ -93,7 +89,6 @@
                                        maxlength="25"
                                        placeholder="APELLIDO MATERNO"
                                        v-model="ApellidoMaterno"
-                                       :disabled="disabledCamposTicket"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        @*@@keydown.9.prevent="recorridoSectionParentesco"*@
                                        autocomplete="off"
@@ -110,7 +105,6 @@
                                        type="text"
                                        placeholder="FECHA NAC."
                                        v-model="FechaNac"
-                                       :disabled="disabledCamposTicket"
                                        @@focus="$event.target.select()"
                                        @@keydown.13.prevent="recorrerFechaNac()"
                                        @*@@keydown.9.prevent="recorrerFechaNac()"*@
@@ -139,7 +133,6 @@
                                           label="label"
                                           v-model="Sexo"
                                           :options="list.sexos"
-                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -156,7 +149,6 @@
                                           label="label"
                                           v-model="Parentesco"
                                           :options="list.parentesco"
-                                          :disabled="disabledCamposTicket"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -176,12 +168,11 @@
                 <button id="btnIngresarConClave"
                         @@click="showClaveAutorizacion"
                         class="btn btn-info waves-effect text-left"
-                        v-show="Edad > 5 && !enableSaveWithClaveAutorizacion">
+                        v-show="showBtnIngresarConClave">
                     <span class="fa fa-save fa-fw"></span>Ingresar con Clave
                 </button>
                 <button id="btnRegistrarAconpaniante"
                         @@click="saveAcompaniante"
-                        :disabled="disabledBotones"
                         class="btn btn-primary waves-effect text-left">
                     <span class="fa fa-save fa-fw"></span>Aceptar
                 </button>

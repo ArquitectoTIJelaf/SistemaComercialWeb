@@ -170,6 +170,10 @@
         public const string MsgErrorEliminarReserva = "Solicitud cancelada, la reserva ya ha sido cancelada o confirmada.";
         public const string MsgExcEliminarReserva = "Excepción: EliminarReserva.";
 
+        // Acompaniante
+        public const string MsgCorrectoAcompanianteVentaCRUD = "Correcto: AcompanianteVentaCRUD.";
+        public const string MsgExAcompanianteVentaCRUD = "Excepción: AcompanianteVentaCRUD.";
+
         // Pase
         public const string MsgCorrectoValidarSaldoPaseCortesia = "Correcto: ValidarSaldoPaseCortesia.";
         public const string MsgExcValidarSaldoPaseCortesia = "Excepción: ValidarSaldoPaseCortesia.";

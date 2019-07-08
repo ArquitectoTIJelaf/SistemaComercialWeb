@@ -206,6 +206,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<byte> EliminarReserva(int IdVenta);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AcompanianteVentaCRUD", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> AcompanianteVentaCRUD(AcompanianteRequest request);
+
         #endregion
 
         #region ANULAR VENTA

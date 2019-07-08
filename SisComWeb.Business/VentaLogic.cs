@@ -418,14 +418,6 @@ namespace SisComWeb.Business
 
                                     entidad.IdVenta = grabarVenta;
                                 }
-
-                                // Graba 'Acompañante'
-                                if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
-                                {
-                                    var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
-                                    if (!grabarAcompanianteVenta)
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
-                                }
                             };
                             break;
                         case "E":
@@ -463,14 +455,6 @@ namespace SisComWeb.Business
                                             entidad.IdVenta = grabarVenta;
                                         }
 
-                                        // Graba 'Acompañante'
-                                        if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
-                                        {
-                                            var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
-                                            if (!grabarAcompanianteVenta)
-                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
-                                        }
-
                                         if (entidad.IdVenta > 0)
                                         {
                                             //Registra 'DocumentoSUNAT'
@@ -492,6 +476,18 @@ namespace SisComWeb.Business
                             };
                             break;
                     };
+
+                    // Graba 'Acompañante'
+                    if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
+                    {
+                        var objAcompanianteRequest = new AcompanianteRequest()
+                        {
+                            IdVenta = entidad.IdVenta,
+                            Acompaniante = entidad.ObjAcompaniante,
+                            ActionType = 1
+                        };
+                        VentaRepository.AcompanianteVentaCRUD(objAcompanianteRequest);
+                    }
 
                     // Graba 'AuditoriaFechaAbierta'
                     if (entidad.FechaAbierta)
@@ -858,9 +854,13 @@ namespace SisComWeb.Business
                     // Graba 'Acompañante'
                     if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
                     {
-                        var grabarAcompanianteVenta = VentaRepository.GrabarAcompanianteVenta(entidad.IdVenta, entidad.ObjAcompaniante);
-                        if (!grabarAcompanianteVenta)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAcompanianteVenta, false);
+                        var objAcompanianteRequest = new AcompanianteRequest()
+                        {
+                            IdVenta = entidad.IdVenta,
+                            Acompaniante = entidad.ObjAcompaniante,
+                            ActionType = 1
+                        };
+                        VentaRepository.AcompanianteVentaCRUD(objAcompanianteRequest);
                     }
 
                     // Seteo 'auxBoletoCompleto'
@@ -911,6 +911,25 @@ namespace SisComWeb.Business
 
         #endregion
 
+        #region CRUD ACOMPANIANTE
+
+        public static Response<bool> AcompanianteVentaCRUD(AcompanianteRequest request)
+        {
+            try
+            {
+                var acompanianteVentaCRUD = VentaRepository.AcompanianteVentaCRUD(request);
+
+                return new Response<bool>(true, acompanianteVentaCRUD, Message.MsgCorrectoAcompanianteVentaCRUD, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExAcompanianteVentaCRUD, false);
+            }
+        }
+
+        #endregion
+
         #region LISTA BENEFICIARIO PASE 
 
         public static Response<PaseCortesiaResponse> ListaBeneficiarioPase(string CodiSocio, string Anno, string Mes)
@@ -948,7 +967,7 @@ namespace SisComWeb.Business
                 if (CodiOficina == clavesInternas.Oficina && Password.ToUpper() == clavesInternas.Pwd.ToUpper() && CodiTipo == clavesInternas.CodTipo)
                     return new Response<bool>(true, true, Message.MsgCorrectoClavesInternas, true);
                 else
-                    return new Response<bool>(false, false, Message.MsgValidaClavesInternas, false);
+                    return new Response<bool>(false, false, Message.MsgValidaClavesInternas, true);
             }
             catch (Exception ex)
             {
