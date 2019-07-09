@@ -1505,7 +1505,7 @@ namespace SisComWeb.Aplication.Controllers
                                     "\"Tipo\" : \"" + Tipo + "\"" +
                                     ",\"Serie\" : " + Serie +
                                     ",\"Numero\" : " + Numero +
-                                    ", \"CodiEmpresa\" : " + CodiEmpresa +
+                                    ",\"CodiEmpresa\" : " + CodiEmpresa +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscarVentaxBoleto", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1610,7 +1610,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"IdVenta\" : " + IdVenta +
                                     ",\"CodiServicio\" : " + CodiServicio +
-                                    ", \"CodiRuta\" : " + CodiRuta +
+                                    ",\"CodiRuta\" : " + CodiRuta +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1683,8 +1683,8 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"Tipo\": \"" + Tipo + "\"" +
-                                    "\"Numero\": \"" + Numero + "\"" +
-                                    "\"Emp\": \"" + Emp + "\"" +
+                                    ",\"Numero\": \"" + Numero + "\"" +
+                                    ",\"Emp\": \"" + Emp + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ConsultaSumaBoletosPostergados", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

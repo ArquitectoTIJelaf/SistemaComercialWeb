@@ -3515,7 +3515,7 @@
                 validateRangePrice: function (event) {
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
-
+                    debugger;
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || '0');
                     var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || '0');
                     var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || '0');
@@ -3544,7 +3544,7 @@
 
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
 
-                                if (!this.list.ventas[this.indexVenta].ValidadorDescuento && !this.list.ventas[this.indexVenta].ValidadorDescuentoControl) {
+                                if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
 
                                     if (actual < normal) {
                                         switch (this.pickedBusVenta) {
@@ -3956,7 +3956,7 @@
                             var validateFechaAbierta = await _this.validateFechaAbierta(tmpAsientoSel);
                             if (!validateFechaAbierta)
                                 return;
-
+                            
                             await APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
@@ -4059,6 +4059,19 @@
 
                                 if (!resConfirmClaveAutorizacion03)
                                     return auxValidate = false;
+                            }
+                        }
+
+                        if (appController.validatePanelClave('25') === '1') {
+
+                            var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                `${_.padStart(ClaveFechaAbiertaABolPasados, 3, '0')} - Confirmar Fecha Abierta`
+                                , 'Este boleto es de fecha pasada, ingrese la clave de autorización.'
+                                , ClaveFechaAbiertaABolPasados);
+
+                            if (!resConfirmClaveAutorizacion) {
+                                APP.msg.warning('No se puede procesar datos de fechas pasadas');
+                                return auxValidate = false;
                             }
                         }
                     }
@@ -5708,20 +5721,22 @@
                         input.Direccion = _this.direccion;
                         input.Observacion = _this.observacion;
                         // Calculamos 'input.Credito'
-                        if (canTotalCredito) {
-                            if (canTotalCredito >= input.PrecioVenta) {
-                                canTotalCredito = canTotalCredito - input.PrecioVenta;
-                                input.Credito = input.PrecioVenta;
+                        if (input.TipoPago === '02') {
+                            if (canTotalCredito) {
+                                if (canTotalCredito >= input.PrecioVenta) {
+                                    canTotalCredito = canTotalCredito - input.PrecioVenta;
+                                    input.Credito = input.PrecioVenta;
+                                }
+                                else {
+                                    input.Credito = canTotalCredito;
+                                    canTotalCredito = 0;
+                                }
                             }
                             else {
-                                input.Credito = canTotalCredito;
-                                canTotalCredito = 0;
+                                input.Credito = 0;
+                                input.TipoPago = '01';
                             }
                         }
-                        else {
-                            input.Credito = 0;
-                            input.TipoPago = "01";
-                        }  
                         // -------------------
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
