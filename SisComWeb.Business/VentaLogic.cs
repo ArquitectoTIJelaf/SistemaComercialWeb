@@ -987,8 +987,6 @@ namespace SisComWeb.Business
                 var anularVenta = new byte();
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
-                var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
-
                 var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
                 if (objVenta.SerieBoleto == 0)
                     return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
@@ -1103,6 +1101,7 @@ namespace SisComWeb.Business
                         // Elimina 'Poliza'
                         VentaRepository.EliminarPoliza(request.IdVenta);
 
+                        var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
                         if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
                         {
                             // Consulta 'AnulacionPorDia'
