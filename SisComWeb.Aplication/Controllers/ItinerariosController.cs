@@ -812,13 +812,13 @@ namespace SisComWeb.Aplication.Controllers
 
                                     ",\"ObjAcompaniante\" : " +
                                     "{" +
-                                        "\"TipoDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.CodiTipoDoc) + "\"" +
-                                        ",\"NumeroDocumento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Documento) + "\"" +
-                                        ",\"NombreCompleto\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.NombreCompleto) + "\"" +
-                                        ",\"FechaNacimiento\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.FechaNac) + "\"" +
-                                        ",\"Edad\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Edad) + "\"" +
-                                        ",\"Sexo\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Sexo) + "\"" +
-                                        ",\"Parentesco\" : \"" + (Listado[i].ObjAcompaniante == null ? "" : Listado[i].ObjAcompaniante.Parentesco) + "\"" +
+                                        "\"TipoDocumento\" : \"" + Listado[i].ObjAcompaniante.CodiTipoDoc + "\"" +
+                                        ",\"NumeroDocumento\" : \"" + Listado[i].ObjAcompaniante.Documento + "\"" +
+                                        ",\"NombreCompleto\" : \"" + Listado[i].ObjAcompaniante.NombreCompleto + "\"" +
+                                        ",\"FechaNacimiento\" : \"" + Listado[i].ObjAcompaniante.FechaNac + "\"" +
+                                        ",\"Edad\" : \"" + Listado[i].ObjAcompaniante.Edad + "\"" +
+                                        ",\"Sexo\" : \"" + Listado[i].ObjAcompaniante.Sexo + "\"" +
+                                        ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
@@ -1505,7 +1505,7 @@ namespace SisComWeb.Aplication.Controllers
                                     "\"Tipo\" : \"" + Tipo + "\"" +
                                     ",\"Serie\" : " + Serie +
                                     ",\"Numero\" : " + Numero +
-                                    ", \"CodiEmpresa\" : " + CodiEmpresa +
+                                    ",\"CodiEmpresa\" : " + CodiEmpresa +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BuscarVentaxBoleto", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1610,7 +1610,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"IdVenta\" : " + IdVenta +
                                     ",\"CodiServicio\" : " + CodiServicio +
-                                    ", \"CodiRuta\" : " + CodiRuta +
+                                    ",\"CodiRuta\" : " + CodiRuta +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1683,8 +1683,8 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"Tipo\": \"" + Tipo + "\"" +
-                                    "\"Numero\": \"" + Numero + "\"" +
-                                    "\"Emp\": \"" + Emp + "\"" +
+                                    ",\"Numero\": \"" + Numero + "\"" +
+                                    ",\"Emp\": \"" + Emp + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ConsultaSumaBoletosPostergados", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -2605,7 +2605,7 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"CodiEsca\" : \"" + (filtro.CodiEsca ?? "") + "\"" +
-                                    ",\"CodiProgramacion\" : \"" + (filtro.CodiProgramacion ?? "") + "\"" +
+                                    ",\"CodiProgramacion\" : " + filtro.CodiProgramacion +
                                     ",\"CodiOrigen\" : \"" + (filtro.CodiOrigen ?? "") + "\"" +
                                     ",\"IdVenta\" : " + filtro.IdVenta +
                                     ",\"NumeAsiento\" : \"" + (filtro.NumeAsiento ?? "") + "\"" +
@@ -2614,20 +2614,44 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
                                     ",\"Oficina\" : " + filtro.Oficina +
                                     ",\"FechaViaje\" : \"" + (filtro.FechaViaje ?? "") + "\"" +
-                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "") + "\"" +                                    
+                                    ",\"NroViaje\" : " + filtro.NroViaje +
+                                    ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"CodiSucursal\" : " + filtro.CodiSucursal +
+                                    ",\"CodiRutaBus\" : " + filtro.CodiRutaBus +
+                                    ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
+                                    ",\"HoraProgramacion\" : \"" + filtro.HoraProgramacion + "\"" +
+                                    ",\"CodiDestino\" : \"" + (filtro.CodiDestino ?? "") + "\"" +
+                                    ",\"NombDestino\" : \"" + (filtro.NombDestino ?? "") + "\"" +
+                                    ",\"Precio\" : \"" + (filtro.Precio ?? "0.00") + "\"" +
+                                    ",\"CodiUsuario\" : " + usuario.CodiUsuario +
+                                    ",\"NomUsuario\" : \"" + (usuario.Nombre ?? "") + "\"" +
+                                    ",\"NomSucursal\" : \"" + (usuario.NomSucursal ?? "") + "\"" +
+                                    ",\"CodiPuntoVenta\" : \"" + usuario.CodiPuntoVenta.ToString() + "\"" +
+                                    ",\"Terminal\" : \"" + usuario.Terminal.ToString() + "\"" +
+                                    ",\"Nombre\" : \"" + (filtro.Nombre ?? "") + "\"" +
+                                    ",\"Serie\" : \"" + (filtro.Serie ?? "") + "\"" +
+                                    ",\"Numero\" : \"" + (filtro.Numero ?? "") + "\"" +
                                 "}";
+                    var _test = usuario.CodiUsuario;
                     HttpResponseMessage response = await client.PostAsync("VentaUpdatePostergacionEle", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }
 
                 JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
 
-                Response<bool> res = new Response<bool>
+                Response<VentaResponse> res = new Response<VentaResponse>
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (bool)tmpResult["Valor"]
+                    Valor = new VentaResponse()
+                    {
+                        ListaVentasRealizadas = _listVentasRealizadas(data["ListaVentasRealizadas"]),
+                        CodiProgramacion = (int)data["CodiProgramacion"]
+                    }
                 };
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
@@ -2637,7 +2661,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("acompanianteVentaCRUD")]
         public async Task<ActionResult> AcompanianteVentaCRUD(AcompanianteRequest request)
         {

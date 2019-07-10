@@ -44,7 +44,7 @@
                                 <div class="col-md-9">
                                     <textarea v-model="observacion"
                                               id="txtObservacionCA"
-                                              @@keypress.13.prevent="recorrerClaveAutorizacion"
+                                              @@keypress.13.prevent="sendClaveAutorizacion()"
                                               @*@@keypress.9.prevent="recorrerClaveAutorizacion"*@
                                               class="form-control input-sm"
                                               placeholder="OBSERVACIÓN"

@@ -347,7 +347,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VentaUpdatePostergacionEle", ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
+        Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
         #endregion
     }
 }

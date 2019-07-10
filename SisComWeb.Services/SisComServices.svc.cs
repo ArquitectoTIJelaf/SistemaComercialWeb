@@ -973,7 +973,7 @@ namespace SisComWeb.Services
             }
         }
         
-        public Response<bool> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
+        public Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
         {
             try
             {
@@ -982,7 +982,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcVentaUpdatePostergacionEle, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
             }
         }
         #endregion

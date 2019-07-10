@@ -172,7 +172,7 @@ namespace SisComWeb.Repository
 
         public static string ConsultaPosCNT(string CodTab, string CodEmp)
         {
-            var valor = "0";
+            var valor = "-1";
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {

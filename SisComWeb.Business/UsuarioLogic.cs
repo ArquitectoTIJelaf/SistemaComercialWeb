@@ -20,7 +20,7 @@ namespace SisComWeb.Business
                 if (validaUsuario.CodiUsuario > 0 && (Password == desencriptaPassword || Password == validaUsuario.Password))
                     return new Response<UsuarioEntity>(true, validaUsuario, Message.MsgCorrectoValidaUsuario, true);
                 else
-                    return new Response<UsuarioEntity>(false, validaUsuario, Message.MsgErrorValidaUsuario, false);
+                    return new Response<UsuarioEntity>(false, validaUsuario, Message.MsgErrorValidaUsuario, true);
             }
             catch (Exception ex)
             {

@@ -70,7 +70,8 @@ namespace SisComWeb.Aplication.Controllers
                         NomPuntoVenta = (string)data["NomPuntoVenta"],
                         //Terminal = (int)data["Terminal"]
                         Terminal = int.Parse(Terminal)
-                    }
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 if (res.Estado)
@@ -91,7 +92,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<Usuario>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Usuario>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

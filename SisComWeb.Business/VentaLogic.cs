@@ -629,16 +629,16 @@ namespace SisComWeb.Business
                                     CodiEmpresa = entidad.CodiEmpresa,
                                     CodiSucursal = entidad.CodiOficina,
                                     Boleto = auxBoletoCompleto.Substring(1),
-                                    Monto = entidad.Credito,
+                                    Monto = entidad.TipoPago == "02" ? entidad.Credito : entidad.PrecioVenta,
                                     CodiUsuario = entidad.CodiUsuario,
-                                    Recibe = "PAGO MULTIPLE-PARCIAL",
+                                    Recibe = entidad.TipoPago == "02" ? "PAGO MULTIPLE-PARCIAL" : string.Empty,
                                     CodiDestino = entidad.CodiDestino.ToString(),
                                     FechaViaje = entidad.FechaViaje,
                                     HoraViaje = entidad.HoraViaje,
                                     CodiPuntoVenta = entidad.CodiPuntoVenta,
                                     IdVenta = entidad.IdVenta,
-                                    Origen = "PA",
-                                    Modulo = "VT",
+                                    Origen = entidad.TipoPago == "02" ? "PA" : "VT",
+                                    Modulo = entidad.TipoPago == "02" ? "VT" : "PV",
                                     Tipo = entidad.Tipo,
 
                                     NomUsuario = entidad.NomUsuario,
@@ -987,8 +987,6 @@ namespace SisComWeb.Business
                 var anularVenta = new byte();
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
 
-                var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
-
                 var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
                 if (objVenta.SerieBoleto == 0)
                     return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
@@ -1103,6 +1101,7 @@ namespace SisComWeb.Business
                         // Elimina 'Poliza'
                         VentaRepository.EliminarPoliza(request.IdVenta);
 
+                        var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
                         if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
                         {
                             // Consulta 'AnulacionPorDia'
