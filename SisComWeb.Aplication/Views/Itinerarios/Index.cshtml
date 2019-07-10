@@ -36,6 +36,7 @@
 @Html.Partial("_DescuentoControl")
 @Html.Partial("_ModificacionBoleto")
 @Html.Partial("_FechaAbierta")
+@Html.Partial("_Reintegro")
 
 @section styles{
     <style type="text/css">
@@ -683,7 +684,7 @@
                         enter: function (e) {
                             if (e && !e[0].previousElementSibling.value)
                                 this.date(moment());
-                            
+
                             this.hide();
                         },
                         up: null,
@@ -1157,6 +1158,11 @@
                 },
                 acompanianteVentaCRUD: async function (_ObjAcompaniante) {
                     appVueVenta.setAcompanianteVenta(_ObjAcompaniante);
+                },
+
+                showReintegro: function (_item) {
+                    debugger;
+                    appVueReintegro.show(_item);
                 }
             };
         })();
@@ -2672,7 +2678,7 @@
                             }
                         }
                     }
-                    
+
                     for (var objAsiento of this.list.ventas) {
 
                         if (objAsiento.NroAsiento !== _NroAsiento) {
@@ -3150,7 +3156,7 @@
                 },
                 errorsInTicketsVenta: function () {
                     var auxValidate = true;
-                    
+
                     for (i = 0; i < this.list.ventas.length; i++) {
 
                         if (!this.list.ventas[i].CodiTipoDoc) {
@@ -3319,11 +3325,11 @@
                                 break;
                         }
                     }
-                    
+
                     if (this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA' && appController.validatePanel('107') === '1') {
 
                         for (ii = this.list.ventas.length - 1; ii >= 0; ii--) {
-                            
+
                             var resValidaDocumentoRepetido = this.validaDocumentoRepetido(
                                 this.list.ventas[ii].CodiTipoDoc.id,
                                 this.list.ventas[ii].Documento,
@@ -4126,7 +4132,7 @@
                         _this.disabledAsiento = false;
                         return;
                     }
-                 
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/anular-venta' + APP.util.getQueryParamByObject({
                         IdVenta: tmpAsientoSel.IdVenta,
                         Tipo: tmpAsientoSel.TipoBoleto,
@@ -5208,6 +5214,20 @@
 
                     this.closeMenu();
                 },
+                contextMenuReintegro: function () {
+                    if (this.itemSelected) {
+                        if (this.itemSelected.IdVenta)
+                            //this.sendToAnularVenta(this.itemSelected);
+                            appController.showReintegro(this.itemSelected);
+                        else {
+                            APP.msg.warning('Debe seleccionar un asiento vendido.');
+                            // Animación 'ScrollTop'
+                            animateScrollTop(800);
+                        }
+                    }
+
+                    this.closeMenu();
+                },
                 signalR_BloquearAsiento: function (_NroAsiento) {
                     var objAsiento = this.findObjectAsiento(_NroAsiento);
                     if (objAsiento)
@@ -5672,7 +5692,7 @@
                         else {
                             input.Credito = 0;
                             input.TipoPago = "01";
-                        }  
+                        }
                         // -------------------
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
@@ -7399,10 +7419,13 @@
                             TipoDoc: _this.filtro.tipoDoc,
                             Nacionalidad: _this.filtro.nacionidad
                         }))
-                            .then(res => {
+                            .then(async function (res) {
                                 if (res.data.Valor) {
-                                    APP.msg.info(res.data.Mensaje);
                                     _this.close();
+                                    await appController.chargeTurnos();
+                                    _this.$nextTick(() => {
+                                        APP.msg.info(res.data.Mensaje);
+                                    });   
                                 } else APP.msg.error(res.data.Mensaje);
                             })
                             .catch(APP.rq.axios_handler_error_alert);
@@ -7598,12 +7621,12 @@
                             }
                         }
                     } else return;
-                                        
+
                     var input = {};
                     input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
                     input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
                     input.CodiOrigen = item.CodiOrigen;
-                    input.IdVenta = parseInt(item.IdVenta);                       
+                    input.IdVenta = parseInt(item.IdVenta);
                     input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
                     input.CodiRuta = item.CodiSubruta;
                     input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
@@ -7796,6 +7819,107 @@
                             }
                         } else {
                             this.item.CodEmpresa = '';
+                        }
+                    }
+                }
+            }
+        });
+
+        var appVueReintegro = new Vue({
+            el: '#appVueReintegro',
+            data: {
+                filtro: {
+                    empresa: '',
+                    codEmpresa: 0,
+                    tipo: 'M',
+                    serie: '',
+                    numero: '',
+                    codMotivo: 0
+                },
+                list: {
+                    empresas: [],
+                    motivos: []
+                },
+                showData: false,
+            },
+            mounted: function () {
+                let _this = this;
+
+                $('#appVueReintegro').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+                    $(document).off('focusin.modal');
+                    _this.$refs.refREEmpresa.$el.querySelector('input').focus();
+                });
+            },
+            methods: {
+                show: function (asientoSel) {
+                    debugger;
+                    //this.limpiarRE();
+                    //this.asientoSel = asientoSel;
+                    $('#appVueReintegro').modal('show');
+                    this.setData();
+                },
+                setData: function () {
+                    let _this = this;
+                    var correlativo = appController.getCurrentCorrelativo();
+                    _this.filtro.tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
+                    _this.filtro.serie = correlativo.substring(1, 4);
+                    _this.filtro.numero = correlativo.substring(5, 13);
+                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label;
+                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
+                    _this.$nextTick(() => {
+                        if (_this.list.empresas.length == 0)
+                            _this.list.empresas = appController.getEmpresas();
+                    });
+                },
+                searchData: function () {
+
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueReintegro').modal('hide');
+                },
+            },
+            computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.filtro.codEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.filtro.codEmpresa)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.filtro.codEmpresa = value.id;
+                                this.$refs.refRESerie.focus()
+                            }
+                        } else {
+                            this.filtro.codEmpresa = '';
+                        }
+                    }
+                },
+                filtroCodiMotivo: {
+                    get: function () {
+                        if (this.list.motivos.length > 0 && this.list.motivos.find(x => x.id === this.filtro.codMotivo)) {
+                            return this.list.motivos.find(x => x.id === this.filtro.codMotivo)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.motivos.find(x => x.id === value.id)) {
+                                this.filtro.codMotivo = value.id;
+                                this.$refs.refRESerie.focus()
+                            }
+                        } else {
+                            this.filtro.codMotivo = '';
                         }
                     }
                 }

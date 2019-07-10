@@ -87,10 +87,10 @@
                                 </div>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; color: var(--emp-color); ">
-                                <label class="control-label">Nº VIAJE: {{filtro.NroViaje}}</label>
+                                <label class="control-label">Nº VIAJE: {{filtro.NroViaje | concatZero(6)}}</label>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; color: var(--emp-color); ">
-                                <label class="control-label">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion}}</label>
+                                <label class="control-label">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion | concatZero(6)}}</label>
                             </div>
                             <div class="col-md-4" style="text-align: right; font-size: 15px;">
                                 <a @@click="nextStep(10)"
@@ -345,13 +345,13 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="col-md-6" style="text-align: center;top: 50%;transform: translateY(-50%);">
+                                <div class="col-md-5" style="text-align: center;top: 50%;transform: translateY(-50%);">
                                     <label id="lblNameDay_Fecha"
                                            class="control-label"
                                            style="color: var(--emp-color); font-size: 14px; font-weight: 500; ">
                                     </label>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <div class="form-group ">
                                         <input value="USUARIO: @usuario.CodiUsuario.ToString() - @usuario.Nombre.ToString().ToUpper()"
                                                type="text"
@@ -409,6 +409,10 @@
                                         <li @@click="contextMenuAnular()">
                                             <i class="fa fa-ban fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Anular
+                                        </li>
+                                        <li @@click="contextMenuReintegro()">
+                                            <i class="fa fa-ticket fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
+                                            Reintegro
                                         </li>
                                     </ul>
                                 </template>
@@ -1131,7 +1135,7 @@
                                                            :disabled="disabledCamposTicket || disabledPrecio"
                                                            :readonly="list.ventas[indexVenta].ReadonlyPrecio"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
+                                                           style="text-align: center; border-color: #FFF; font-size: 36px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
                                                            autocomplete="off" />
                                                 </div>
                                             </div>
