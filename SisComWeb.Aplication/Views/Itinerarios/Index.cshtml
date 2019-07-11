@@ -7905,8 +7905,10 @@
                 },
                 list: {
                     empresas: [],
-                    motivos: []
+                    motivos: [],
+                    itinerarios: []
                 },
+                paginate: ['items'],
                 showData: false,
             },
             mounted: function () {
@@ -7934,6 +7936,7 @@
                     _this.filtro.numero = correlativo.substring(5, 13);
                     _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label;
                     _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
+                    _this.list.itinerarios = appVueTable.list.itinerarios;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
                             _this.list.empresas = appController.getEmpresas();
