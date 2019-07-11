@@ -49,7 +49,7 @@
                                        class="form-control input-sm"
                                        placeholder="0000000"
                                        ref="refNumeroPos"
-                                       @@keypress.13.prevent="recorrido"
+                                       @@keypress.13.prevent="searchPasajero"
                                        @*@@keydown.9.prevent="recorrido"*@
                                        @@focus="$event.target.select()"
                                        @@blur="blurNumero"

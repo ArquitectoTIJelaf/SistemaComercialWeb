@@ -57,13 +57,12 @@
                                                id="txtImportePagadoC"
                                                class="form-control input-sm"
                                                name="Imp. Pagado"
-                                               @@input="calcMontos('IPC')"
+                                               onPaste="return false"
+                                               @@input="calcMontos('IPC', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                v-validate="'min_value:' + (sumaTotal)"
                                                data-vv-as="Imp. Pagado"
-                                               v-money
-                                               v-only-digit
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -115,17 +114,15 @@
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Monto Tarjeta:</label>
                                     <div class="col-md-12">
-                                        <input id="txtTtarjetaCantTP"
+                                        <input v-model="tarjetaCant"
+                                               id="txtTtarjetaCantTP"
                                                class="form-control input-sm"
                                                name="Monto Tarjeta"
-                                               v-model="tarjetaCant"
-                                               @@input="calcMontos('T')"
+                                               onPaste="return false"
+                                               @@input="calcMontos('T', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
-                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'between:1, '+(sumaTotal-1)"
-                                               v-money
-                                               v-only-digit
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -133,17 +130,15 @@
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Monto Efectivo:</label>
                                     <div class="col-md-12">
-                                        <input id="txtEfectivoTP"
+                                        <input v-model="efectivo"
+                                               id="txtEfectivoTP"
                                                class="form-control input-sm"
                                                name="Monto Efectivo"
-                                               v-model="efectivo"
-                                               @@input="calcMontos('E')"
+                                               onPaste="return false"
+                                               @@input="calcMontos('E', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
-                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'between:1, '+sumaTotal"
-                                               v-money
-                                               v-only-digit
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -151,17 +146,15 @@
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Imp. Pagado:</label>
                                     <div class="col-md-12">
-                                        <input id="txtImportePagadoTP"
+                                        <input v-model="importePagado"
+                                               id="txtImportePagadoTP"
                                                class="form-control input-sm"
                                                name="Imp. Pagado"
-                                               v-model="importePagado"
-                                               @@input="calcMontos('IP')"
+                                               onPaste="return false"
+                                               @@input="calcMontos('IP', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
-                                               onkeyup="jsValidarNumeroConDosDecimales(event)"
                                                v-validate="'min_value:' + (efectivo)"
-                                               v-money
-                                               v-only-digit
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -169,7 +162,7 @@
                                 <div class="col-md-3">
                                     <label class="col-md-12 control-label label-sm">Vuelto:</label>
                                     <div class="col-md-12">
-                                        <input v-model="vuelto"
+                                        <input :value="vuelto"
                                                class="form-control input-sm"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;"
                                                disabled="disabled" />

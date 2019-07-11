@@ -19,6 +19,7 @@ namespace SisComWeb.Repository
                 case 2:
                     item.id = DataUtility.ObjectToString(reader["Codi_puntoVenta"]);
                     item.label = DataUtility.ObjectToString(reader["Descripcion"]).ToUpper();
+                    item.CodiSucursal = DataUtility.ObjectToInt16(reader["Codi_Sucursal"]);
                     break;
                 case 3:
                     item.id = DataUtility.ObjectToString(reader["Codi_Usuario"]);
@@ -105,14 +106,13 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
-        public static List<BaseEntity> ListaPuntosVenta(short CodiSucursal)
+        public static List<BaseEntity> ListaPuntosVenta()
         {
             var Lista = new List<BaseEntity>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListarPuntosVenta";
-                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
+                db.ProcedureName = "scwsp_ListarPuntosVenta02";
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

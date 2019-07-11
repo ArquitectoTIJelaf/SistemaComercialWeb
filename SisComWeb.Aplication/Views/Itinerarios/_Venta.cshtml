@@ -1121,8 +1121,8 @@
                                                            ref="refPrecio"
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
-                                                           maxlength="6"
-                                                           onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                                           onPaste="return false"
+                                                           @@input="list.ventas[indexVenta].Precio = $formatNumberWithTwoDecimals(list.ventas[indexVenta].Precio, 3)"
                                                            @@keydown.13.prevent="keyTxtPrecio($event)"
                                                            @*@@keydown.9.prevent="keyTxtPrecio($event)"*@
                                                            @@keydown.112.prevent="keyTxtPrecio($event)"
@@ -1131,7 +1131,7 @@
                                                            :disabled="disabledCamposTicket || disabledPrecio"
                                                            :readonly="list.ventas[indexVenta].ReadonlyPrecio"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
-                                                           style="text-align: center; border-color: #FFF; font-size: 38px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
+                                                           style="text-align: center; border-color: #FFF; font-size: 36px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
                                                            autocomplete="off" />
                                                 </div>
                                             </div>

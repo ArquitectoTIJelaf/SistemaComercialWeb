@@ -469,10 +469,10 @@ namespace SisComWeb.Business
                                             return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
                                     }
                                     else
-                                        return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                        return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
                                 }
                                 else
-                                    return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                    return new Response<VentaResponse>(true, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
                             };
                             break;
                     };
@@ -1624,13 +1624,20 @@ namespace SisComWeb.Business
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M")
+                    {
                         paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
+                        if (string.IsNullOrEmpty(paginaWebEmisor))
+                            return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
+                    }
 
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)
                     {
+                        var resObtenerCodigoX = new ResponseDocument();
+                        if (entidad.BoletoTipo != "M")
+                            resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+
                         var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
-                        var resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
                         var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
                         
                         entidad.NumeAsiento = byte.Parse(entidad.NumeAsiento).ToString("D2");
@@ -1640,7 +1647,7 @@ namespace SisComWeb.Business
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
                         entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
                         entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
-                        entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
+                        entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue ?? string.Empty;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
                         entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
                         entidad.PolizaNum = consultaNroPoliza.NroPoliza;

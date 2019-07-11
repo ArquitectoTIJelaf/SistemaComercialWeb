@@ -1894,14 +1894,15 @@ namespace SisComWeb.Aplication.Controllers
                         Original = (string)x["Original"],
                         Copia1 = (string)x["Copia1"],
                         Copia2 = (string)x["Copia2"]
-                    }).ToList()
+                    }).ToList(),
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<Impresion>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Impresion>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
 

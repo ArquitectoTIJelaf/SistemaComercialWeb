@@ -2,40 +2,40 @@
     <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
-            <button type="button" class="close" @@click="cerrarCreditoClientes">&times;</button>
-            <h4 class="modal-title"><b>Clientes Crédito</b></h4>
-        </div>
-        <div class="modal-body">
-            <div class="form-horizontal">
-                <div class="form-group m-b-5">
-                    <div class="custom-scroll-container">
-                        <div class="table-responsive" style="background-color: #616e7e;">
-                            <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
-                                <thead>
-                                    <tr>
-                                        <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Ruc</th>
-                                        <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Razón Social</th>
-                                        <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Contrato</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <paginate ref="paginatorCC" name="items" :list="list.clientes" :per="10">
-                                    <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                        <td class="custom-td">{{item.RucCliente}}</td>
-                                        <td class="custom-td">{{item.RazonSocial}}</td>
-                                        <td class="custom-td">{{item.NumeContrato}}</td>
-                                    </tr>
-                                    </paginate>
-                                </tbody>
-                            </table>
+                <button type="button" class="close" @@click="cerrarCreditoClientes">&times;</button>
+                <h4 class="modal-title"><b>Clientes Crédito</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="custom-scroll-container">
+                            <div class="table-responsive" style="background-color: #616e7e;">
+                                <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                                    <thead>
+                                        <tr>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Ruc</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Razón Social</th>
+                                            <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Contrato</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <paginate ref="paginatorCC" name="items" :list="list.clientes" :per="10">
+                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td class="custom-td">{{item.RucCliente}}</td>
+                                                <td class="custom-td">{{item.RazonSocial}}</td>
+                                                <td class="custom-td">{{item.NumeContrato}}</td>
+                                            </tr>
+                                        </paginate>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                        <center>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                        </center>
                     </div>
-                    <center>
-                        <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
-                    </center>
                 </div>
             </div>
-        </div>
             <div class="modal-footer">
                 <button @@click="cerrarCreditoClientes" class="btn btn-inverse waves-effect waves-light text-left">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
