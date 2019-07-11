@@ -112,7 +112,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListarPuntosVenta02";
+                db.ProcedureName = "scwsp_ListarPuntosVenta";
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

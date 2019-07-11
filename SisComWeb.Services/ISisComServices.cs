@@ -263,8 +263,8 @@ namespace SisComWeb.Services
         #region FECHA ABIERTA
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
+        [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request);
 
         #endregion
 

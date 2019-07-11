@@ -56,4 +56,28 @@ namespace SisComWeb.Aplication.Models
         public string NombDestino { get; set; }
         public string Precio { get; set; }
     }
+
+    public class VentaToFechaAbiertaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public int CodiServicio { get; set; }
+
+        public int CodiRuta { get; set; }
+
+
+        public string BoletoCompleto { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string Pasajero { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string HoraViaje { get; set; }
+
+        public string NomDestino { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+    }
 }

@@ -1534,13 +1534,39 @@ namespace SisComWeb.Business
 
         #region MODIFICAR VENTA FECHA ABIERTA
 
-        public static Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public static Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
-                var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta);
-                if (modificarVentaAFechaAbierta > 0)
+                var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(request.IdVenta, request.CodiServicio, request.CodiRuta);
+                if (modificarVentaAFechaAbierta > 0) {
+
+                    // Graba 'AuditoriaFechaAbierta'
+                    var objAuditoriaFechaAbierta = new AuditoriaEntity
+                    {
+                        CodiUsuario = request.CodiUsuario,
+                        NomUsuario = request.NomUsuario,
+                        Tabla = "VENTA",
+                        TipoMovimiento = "POSTERGACION DE PASAJES",
+                        Boleto = request.BoletoCompleto, // Verificar
+                        NumeAsiento = request.NumeAsiento.ToString("D2"),
+                        NomOficina = request.NomOficina,
+                        NomPuntoVenta = request.CodiPuntoVenta.ToString(),
+                        Pasajero = request.Pasajero,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NomDestino,
+                        Precio = request.PrecioVenta,
+                        Obs1 = string.Empty,
+                        Obs2 = string.Empty,
+                        Obs3 = string.Empty,
+                        Obs4 = "POSTEGADO A FECHA ABIERTA",
+                        Obs5 = "TERMINAL : " + request.CodiTerminal
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
+
                     return new Response<byte>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
+                }
                 else
                     return new Response<byte>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
             }

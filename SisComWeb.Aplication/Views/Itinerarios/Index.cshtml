@@ -3954,7 +3954,15 @@
                             await APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
-                                CodiRuta: _this.filtro.CodiDestinoBus.id
+                                CodiRuta: _this.filtro.CodiDestinoBus.id,
+                                
+                                BoletoCompleto: tmpAsientoSel.Boleto,
+                                NumeAsiento: tmpAsientoSel.NumeAsiento,
+                                Pasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
+                                FechaViaje: _this.filtro.Fecha,
+                                HoraViaje: _this.filtro.Turno,
+                                NomDestino: tmpAsientoSel.NomDestino,
+                                PrecioVenta: tmpAsientoSel.PrecioVenta
                             }))
                                 .then(async function (res) {
                                     await appController.chargeTurnos();

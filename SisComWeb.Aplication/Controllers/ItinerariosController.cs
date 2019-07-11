@@ -1599,7 +1599,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("modificar-venta-a-fecha-abierta")]
-        public async Task<ActionResult> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public async Task<ActionResult> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
@@ -1608,9 +1608,22 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"IdVenta\" : " + IdVenta +
-                                    ",\"CodiServicio\" : " + CodiServicio +
-                                    ",\"CodiRuta\" : " + CodiRuta +
+                                    "\"IdVenta\" : " + request.IdVenta +
+                                    ",\"CodiServicio\" : " + request.CodiServicio +
+                                    ",\"CodiRuta\" : " + request.CodiRuta +
+                                    ",\"CodiUsuario\" : " + usuario.CodiUsuario +
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
+                                    ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" +
+                                    ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
+
+                                    ",\"BoletoCompleto\" : \"" + request.BoletoCompleto + "\"" +
+                                    ",\"NumeAsiento\" : " + request.NumeAsiento +
+                                    ",\"Pasajero\" : \"" + request.Pasajero + "\"" +
+                                    ",\"FechaViaje\" : \"" + request.FechaViaje + "\"" +
+                                    ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
+                                    ",\"NomDestino\" : \"" + request.NomDestino + "\"" +
+                                    ",\"PrecioVenta\" : " + request.PrecioVenta +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
