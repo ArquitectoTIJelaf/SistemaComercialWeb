@@ -39,10 +39,21 @@ namespace SisComWeb.Aplication.Models
         public string NumeAsiento { get; set; }
         public int IdVenta { get; set; }
         public string CodiOrigen { get; set; }
-        public string CodiProgramacion { get; set; }
+        public int CodiProgramacion { get; set; }
         public int Oficina { get; set; }
-
         public string FechaViaje { get; set; }
         public string HoraViaje { get; set; }
+
+        public int NroViaje { get; set; }
+        public string FechaProgramacion { get; set; }
+        public byte CodiEmpresa { get; set; }
+        public short CodiSucursal { get; set; }
+        public short CodiRutaBus { get; set; }
+        public string CodiBus { get; set; }
+        public string HoraProgramacion { get; set; }
+
+        public string CodiDestino { get; set; }
+        public string NombDestino { get; set; }
+        public string Precio { get; set; }
     }
 }

@@ -59,7 +59,7 @@
                                             </template>
                                             <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                         </td>
-                                        <td class="custom-td">{{item.NroViaje}}</td>
+                                        <td class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
                                         <td class="custom-td">{{item.RazonSocial}}</td>
                                         <td class="custom-td">{{item.NomSucursal}}</td>
                                         <td class="custom-td">{{item.NomOrigen}}</td>
@@ -70,12 +70,12 @@
                                         <td class="custom-td">{{item.PlacaBus}}</td>
                                         <td class="custom-td">{{item.AsientosVendidos}}</td>
                                         <td class="custom-td">{{item.CapacidadBus}}</td>
-                                        <td class="custom-td">{{item.CodiProgramacion}}</td>
+                                        <td class="custom-td">{{item.CodiProgramacion | concatZero(6)}}</td>
                                         <td class="custom-td">{{item.HoraProgramacion}}</td>
-                                        <td class="custom-td">{{item.CodiPuntoVenta}}</td>
-                                        <td class="custom-td">{{item.CodiEmpresa}}</td>
-                                        <td class="custom-td">{{item.CodiRuta}}</td>
-                                        <td class="custom-td">{{item.CodiServicio}}</td>
+                                        <td class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
+                                        <td class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
+                                        <td class="custom-td">{{item.CodiRuta | concatZero(3)}}</td>
+                                        <td class="custom-td">{{item.CodiServicio | concatZero(2)}}</td>
                                         <td class="custom-td">{{item.FechaProgramacion}}</td>
                                     </tr>
                                 </paginate>
