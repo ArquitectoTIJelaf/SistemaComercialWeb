@@ -22,11 +22,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<BaseEntity>> ListaPuntosVenta(short CodiSucursal)
+        public static Response<List<BaseEntity>> ListaPuntosVenta()
         {
             try
             {
-                var lista = BaseRepository.ListaPuntosVenta(CodiSucursal);
+                var lista = BaseRepository.ListaPuntosVenta();
                 return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaPuntosVenta, true);
             }
             catch (Exception ex)

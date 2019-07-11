@@ -12,7 +12,7 @@
                             <label class="col-md-8 control-label label-sm" style="text-align: left; ">Importe de boleto:</label>
                             <div class="col-md-4">
                                 <div class="col-md-2" style="margin-top: 7px; ">
-                                    S/ 
+                                    S/
                                 </div>
                                 <div class="col-md-10">
                                     <input :value="ImporteBoleto"
@@ -56,8 +56,8 @@
                                     <input v-model="ImporteDescuento"
                                            id="txtImporteDescDC"
                                            class="form-control input-sm"
-                                           maxlength="6"
-                                           onkeyup="jsValidarNumeroConDosDecimales(event)"
+                                           onPaste="return false"
+                                           @@input="ImporteDescuento = $formatNumberWithTwoDecimals(ImporteDescuento, 3)"
                                            @@keydown.13.prevent="recorrerDescuentoControl(true)"
                                            @*@@keydown.9.prevent="recorrerDescuentoControl(true)"*@
                                            type="text"
@@ -115,14 +115,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btnAceptarDC" @@click="saveDescuentoControl" class="btn btn-primary waves-effect text-left">
-                        <span class="fa fa-save fa-fw"></span>Aceptar
-                    </button>
-                    <button @@click="cancelarDescuentoControl" class="btn btn-inverse waves-effect waves-light text-left">
-                        <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAceptarDC" @@click="saveDescuentoControl" class="btn btn-primary waves-effect text-left">
+                    <span class="fa fa-save fa-fw"></span>Aceptar
+                </button>
+                <button @@click="cancelarDescuentoControl" class="btn btn-inverse waves-effect waves-light text-left">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
             </div>
         </div>
     </div>

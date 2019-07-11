@@ -1,0 +1,111 @@
+﻿<div id="appVueManifiestoPasajeros" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="top:50%; transform: translateY(-50%)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="cerrarManifiestoPasajeros">&times;</button>
+                <h4 class="modal-title"><b>Manifiesto de pasajeros</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-0">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <label class="control-label" style="text-align: left; ">Empresa:</label>
+                                <v-select id="cboEmpresaMP"
+                                          placeholder="EMPRESA"
+                                          v-model="filtro.empresa"
+                                          :options="list.empresas"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent="recorrido(1)"
+                                          @*@@keydown.9.native.prevent="recorrido(1)"*@
+                                          ref="refEmpresaMP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrido(1)">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-0">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="control-label">Origen bus:</label>
+                                <v-select id="cboOrigenBusMP"
+                                          placeholder="ORIGEN BUS"
+                                          v-model="filtro.origenBus"
+                                          :options="list.origenesBus"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent="recorrido(2)"
+                                          @*@@keydown.9.native.prevent="recorrido(2)"*@
+                                          ref="refOrigenBusMP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrido(2)">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="control-label">P.V. Origen bus:</label>
+                                <v-select id="cboPvOrigenBusMP"
+                                          placeholder="P.V. ORIGEN BUS"
+                                          v-model="filtro.pvOrigenBus"
+                                          :options="list.pvOrigenesBus"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent="recorrido(3)"
+                                          @*@@keydown.9.native.prevent="recorrido(3)"*@
+                                          ref="refPvOrigenBusMP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrido(3)">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div style="float: left; ">
+                    <button id="btnLiquidacionMP"
+                            @*@@click="xxx"*@
+                            class="btn btn-info waves-effect text-left">
+                        Liquidación
+                    </button>
+                    <button id="btnLiquidacionAvanzadaMP"
+                            @*@@click="xxx"*@
+                            class="btn btn-info waves-effect text-left"
+                            title="Liquidación avanzada">
+                        Liq. avanzada
+                    </button>
+                    <button id="btnCambioFechaHoraMP"
+                            @*@@click="xxx"*@
+                            class="btn btn-primary waves-effect text-left">
+                        Cambio fecha/hora
+                    </button>
+                </div>
+
+                <button id="btnManifiestoDeMenor"
+                        @*@@click="xxx"*@
+                        class="btn btn-success waves-effect text-left"
+                        title="Manifiesto de menor">
+                    <span class="fa fa-check fa-fw"></span>Man. de menor
+                </button>
+                <button id="btnAceptarManifiestoPasajeros"
+                        @*@@click="xxx"*@
+                        class="btn btn-success waves-effect text-left">
+                    <span class="fa fa-check fa-fw"></span>Aceptar
+                </button>
+                <button @@click="cerrarManifiestoPasajeros"
+                        class="btn btn-inverse waves-effect waves-light text-left">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

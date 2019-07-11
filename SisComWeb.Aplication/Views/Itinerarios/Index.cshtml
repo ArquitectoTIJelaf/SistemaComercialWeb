@@ -38,6 +38,8 @@
 @Html.Partial("_FechaAbierta")
 @Html.Partial("_Reintegro")
 
+@Html.Partial("_ManifiestoPasajeros")
+
 @section styles{
     <style type="text/css">
 
@@ -526,7 +528,7 @@
 
             $('#appVueRegistrarInfante').on('hidden.bs.modal', function () {
                 appVueVenta.$refs.refRegistrarNino.focus();
-                
+
                 if (appVueVenta.list.ventas[appVueVenta.indexVenta].ObjAcompaniante.Documento)
                     appVueVenta.list.ventas[appVueVenta.indexVenta].CheckRegistrarNino = true;
                 else
@@ -611,7 +613,7 @@
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ReadonlyPrecio = false;
                                     }
 
-                                    var auxPrecioNormal = parseFloat(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal || '0');
+                                    var auxPrecioNormal = parseFloat(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal || '0') || 0;
                                     appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecioNormal.toFixed(2);
                                 }
 
@@ -669,6 +671,18 @@
                 });
 
                 window.removeEventListener('keyup', appVueDescuentoControl.esc);
+            });
+
+            $('#appVueManifiestoPasajeros').on('shown.bs.modal', function () {
+                window.addEventListener('keyup', appVueManifiestoPasajeros.esc);
+
+
+            });
+
+            $('#appVueManifiestoPasajeros').on('hidden.bs.modal', function () {
+                //appVueManifiestoPasajeros.limpiarManifiestoPasajeros();
+
+                window.removeEventListener('keyup', appVueManifiestoPasajeros.esc);
             });
 
             if ($('.dpFiltro').length) {
@@ -803,6 +817,7 @@
 
         var rutas = [];
         var empresas = [];
+        var pvOrigenesBus = [];
 
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
@@ -857,49 +872,27 @@
             return _.filter(empresas, function (o) { return o.id == value; })[0].label;
         });
 
-        function jsValidarNumeroConDosDecimales(e) {
+        Vue.prototype.$formatNumberWithTwoDecimals = function formatoNumeroConDosDecimales(value, _parteEntera) {
             var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
             var re2 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
 
-            switch (e.target.id) {
-                case 'txtPrecio':
-                    {
-                        var val = appVueVenta.list.ventas[appVueVenta.indexVenta].Precio;
-                        if (!re1.test(val)) {
-                            val = re2.exec(val);
-                            val ? appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = val[0] : appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = '';
-                        }
-                    };
-                    break;
-                case 'txtImporteDescDC':
-                    {
-                        var val = appVueDescuentoControl.ImporteDescuento;
-                        if (!re1.test(val)) {
-                            val = re2.exec(val);
-                            val ? appVueDescuentoControl.ImporteDescuento = val[0] : appVueDescuentoControl.ImporteDescuento = '';
-                        }
-                    };
-                    break;
-                case 'txtTtarjetaCantTP':
-                    {
-                        var val = appVueTipoPago.tarjetaCant;
-                        if (!re1.test(val)) {
-                            val = re2.exec(val);
-                            val ? appVueTipoPago.tarjetaCant = val[0] : appVueTipoPago.tarjetaCant = '';
-                        }
-                    };
-                    break;
-                case 'txtEfectivoTP':
-                    {
-                        var val = appVueTipoPago.efectivo;
-                        if (!re1.test(val)) {
-                            val = re2.exec(val);
-                            val ? appVueTipoPago.efectivo = val[0] : appVueTipoPago.efectivo = '';
-                        }
-                    };
-                    break;
+            var auxIndexPunto = value.indexOf('.');
+            var validate = /^\d{1,}(\.\d{0,2})?$/.test(value);
+
+            if (validate) {
+                if (auxIndexPunto === -1 || auxIndexPunto > _parteEntera)
+                    value = value.substring(0, _parteEntera);
+            }
+            else {
+                value = value.substring(0, value.length - 1);
+
+                if (!re1.test(value)) {
+                    value = re2.exec(value);
+                    value = (value ? value[0] : '');
+                }
             }
 
+            return value;
         }
 
         function formatoBoletoCompleto(_TipoBoleto, _Boleto) {
@@ -940,7 +933,6 @@
                 },
                 showVentas: async function (_item, _turnos) {
                     appVueVenta.pickedBusVenta = 'V';
-                    appVueVenta.getSucursales();
                     await appVueVenta.chargeVentas(_item, _turnos);
                     if (appVueVenta.showPlano) {
                         appVueFilter.showVentas = true;
@@ -1149,8 +1141,13 @@
                 acompanianteVentaCRUD: async function (_ObjAcompaniante) {
                     await appVueVenta.setAcompanianteVenta(_ObjAcompaniante);
                 },
+                showManifiestoPasajeros: function () {
+                    appVueManifiestoPasajeros.show();
+                },
+                getListPvOrigenesBus: function (_CodiOrigenBus) {
+                    return _.filter(pvOrigenesBus, function (obj) { return obj.CodiSucursal == _CodiOrigenBus; });
+                },
                 showReintegro: function (_item) {
-                    debugger;
                     appVueReintegro.show(_item);
                 }
             };
@@ -1201,7 +1198,14 @@
                                 _this.list.destinosBus = _.cloneDeep(res.data.Valor);
                                 _this.list.destinosBus.unshift(selectAll);
 
+                                appVueVenta.list.sucursales = _.cloneDeep(res.data.Valor);
+                                appVueVenta.list.origenesBus = _.cloneDeep(res.data.Valor);
+                                appVueVenta.list.destinosBus = _.cloneDeep(res.data.Valor);
+                                appVueVenta.list.destinosPas = _.cloneDeep(res.data.Valor);
+
                                 rutas = _.cloneDeep(res.data.Valor);
+
+                                appVueManifiestoPasajeros.list.origenesBus = _.cloneDeep(res.data.Valor);
 
                                 _this.$nextTick(() => {
                                     _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === String(Usuario.CodiSucursal));
@@ -1558,6 +1562,7 @@
                 this.getServicios();
                 this.getTiposDoc();
                 this.listarPanelesControl();
+                this.getPVOrigenesBus();
 
                 // Nuevo 'Validate'
                 this.$validator.extend('formatoNumeroTarjeta', {
@@ -1571,6 +1576,8 @@
                             return true;
                     }
                 });
+
+                window.addEventListener('keydown', this.configEventKeyF3);
             },
             methods: {
                 chargeVentas: async function (item, turnos) {
@@ -1626,7 +1633,7 @@
                                 _this.filtro.CodiDestinoBus = _this.list.destinosBus.find(x => x.id === String(res.data.Valor.CodiRuta));
                                 _this.filtro.CodiServicio = _this.list.servicios.find(x => x.id === String(res.data.Valor.CodiServicio));
                                 _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(res.data.Valor.CodiDestino));
-                                await _this.getPVOrigenesBus(_this.filtro.CodiOrigenBus.id);
+                                _this.list.pvOrigenesBus = appController.getListPvOrigenesBus(_this.filtro.CodiOrigenBus.id);
                                 _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(res.data.Valor.CodiPuntoVenta));
                                 // Actualiza selector 'v-select'
                                 _this.$nextTick(() => {
@@ -1721,26 +1728,19 @@
                             if (res.data.Estado) {
                                 _this.list.empresas = _.cloneDeep(res.data.Valor);
                                 empresas = _.cloneDeep(res.data.Valor);
+
+                                appVueManifiestoPasajeros.list.empresas = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                getSucursales: function () {
-                    if (!(this.list.sucursales && this.list.sucursales.length > 0)) {
-                        this.list.sucursales = _.cloneDeep(rutas);
-                        this.list.origenesBus = _.cloneDeep(rutas);
-                        this.list.destinosBus = _.cloneDeep(rutas);
-                        this.list.destinosPas = _.cloneDeep(rutas);
-                    }
-                },
-                getPVOrigenesBus: async function (Codi_OrigenBus) {
-                    var _this = this;
-                    await APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_OrigenBus } })
+                getPVOrigenesBus: function () {
+                    APP.rq.axios2.get(APP.base + '/base/get-puntosventa')
                         .then(res => {
                             if (res.data.Estado)
-                                _this.list.pvOrigenesBus = _.cloneDeep(res.data.Valor);
+                                pvOrigenesBus = _.cloneDeep(res.data.Valor);
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -1764,11 +1764,14 @@
                             if (res.data.Estado) {
                                 _this.list.tiposDoc = _.cloneDeep(res.data.Valor);
                                 appVueRegistrarInfante.list.tipoDoc = _.cloneDeep(res.data.Valor);
-                            } 
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
                 },
                 listarPanelesControl: async function () {
                     var _this = this;
@@ -1803,24 +1806,6 @@
                 changeTurno: function (item) {
                     this.showPlano = false;
                     this.getTurno(item, item.FechaViaje);
-                },
-                clear: function () {
-                    var _this = this;
-                    _this.firstCharge = false; //TODO
-                    _this.filtro.CodiEmpresa = null;
-                    _this.filtro.CodiSucursal = null;
-                    _this.filtro.CodiOrigenBus = null;
-                    _this.filtro.CodiPVOrigenBus = null;
-                    _this.filtro.CodiDestinoBus = null;
-                    _this.filtro.CodiServicio = null;
-                    _this.filtro.CodiDestinoPas = null;
-                    $('#txtTurno').data("DateTimePicker").clear();
-                    $('#txtFecha_2').data("DateTimePicker").clear();
-                    _this.filtro.Turno = '';
-                    _this.filtro.Fecha = '';
-                },
-                getLabel: function (option) {
-                    return `${option.id} - ${option.label}`
                 },
                 labelOfDocumento: function (option) {
                     return option.label.substring(0, 8);
@@ -2269,7 +2254,7 @@
                         }
                         this.list.ventas[this.indexVenta].Info += asientoSel.NomOrigen + ' - ' + asientoSel.NomDestino;
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
-                        
+
                         // Checked opción 'RegistrarNino'
                         if (asientoSel.ObjAcompaniante.Documento)
                             this.list.ventas[this.indexVenta].CheckRegistrarNino = true;
@@ -2616,7 +2601,6 @@
                                                     }
                                                     _this.list.ventas[_this.indexVenta].IdCliente = 0;
                                                     _this.list.ventas[_this.indexVenta].FechaNac = '';
-                                                    $('#txtFechaNac').data("DateTimePicker").clear();
                                                     _this.list.ventas[_this.indexVenta].Edad = '';
                                                     _this.list.ventas[_this.indexVenta].Sexo = null;
                                                     _this.list.ventas[_this.indexVenta].Telefono = '';
@@ -3520,11 +3504,11 @@
                 validateRangePrice: function (event) {
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
-                    debugger;
-                    var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || '0');
-                    var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || '0');
-                    var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || '0');
-                    var min = parseFloat(this.list.ventas[this.indexVenta].PrecioMin || '0');
+
+                    var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || '0') || 0;
+                    var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || '0') || 0;
+                    var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || '0') || 0;
+                    var min = parseFloat(this.list.ventas[this.indexVenta].PrecioMin || '0') || 0;
 
                     if (!actual && !this.list.ventas[this.indexVenta].NroAsiento)
                         this.list.ventas[this.indexVenta].Precio = '';
@@ -3593,7 +3577,8 @@
 
                     this.eventTxtPrecio = '';
 
-                    this.recorridoSectionVentas();
+                    if (event.keyCode === 13)
+                        this.recorridoSectionVentas();
                 },
                 focusAsiento: function (event) {
                     event.target.select();
@@ -3749,22 +3734,24 @@
                     var auxResponse = true;
                     this.disabledAsiento = true;
 
-                    for (i = 0; i < this.list.ventas.length; i++) {
-                        if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
-                            var auxObj = this.findObjectAsiento(this.list.ventas[i].NroAsiento);
-                            var auxResponse2 = await this.liberarAsiento(auxObj, true);
-                            if (auxResponse2)
-                                i--;
-                            else {
-                                APP.msg.warning('No se pudo limpiar los asientos bloqueados.');
-                                this.$nextTick(() => {
-                                    this.disabledAsiento = false;
-                                });
-                                return auxResponse = false;
+                    if (this.list.ventas.length === 1 && (!this.list.ventas[0].NroAsiento || this.list.ventas[0].FlagVenta))
+                        this.limpiarVenta();
+                    else {
+                        for (i = 0; i < this.list.ventas.length; i++) {
+                            if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
+                                var auxObj = this.findObjectAsiento(this.list.ventas[i].NroAsiento);
+                                var auxResponse2 = await this.liberarAsiento(auxObj, true);
+                                if (auxResponse2)
+                                    i--;
+                                else {
+                                    APP.msg.warning('No se pudo limpiar los asientos bloqueados.');
+                                    this.$nextTick(() => {
+                                        this.disabledAsiento = false;
+                                    });
+                                    return auxResponse = false;
+                                }
                             }
                         }
-                        else
-                            this.limpiarVenta();
                     }
 
                     this.$nextTick(() => {
@@ -3956,16 +3943,26 @@
                             , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')
 
                         if (resConfirm) {
-
+                            _this.disabledAsiento = true;
                             // Valida 'FechaAbierta'
                             var validateFechaAbierta = await _this.validateFechaAbierta(tmpAsientoSel);
-                            if (!validateFechaAbierta)
+                            if (!validateFechaAbierta) {
+                                _this.disabledAsiento = false;
                                 return;
-                            
+                            }
+
                             await APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
-                                CodiRuta: _this.filtro.CodiDestinoBus.id
+                                CodiRuta: _this.filtro.CodiDestinoBus.id,
+                                
+                                BoletoCompleto: tmpAsientoSel.Boleto,
+                                NumeAsiento: tmpAsientoSel.NumeAsiento,
+                                Pasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
+                                FechaViaje: _this.filtro.Fecha,
+                                HoraViaje: _this.filtro.Turno,
+                                NomDestino: tmpAsientoSel.NomDestino,
+                                PrecioVenta: tmpAsientoSel.PrecioVenta
                             }))
                                 .then(async function (res) {
                                     await appController.chargeTurnos();
@@ -3986,6 +3983,8 @@
                                             APP.msg.error(res.data.Mensaje);
                                         });
                                     }
+
+                                    _this.disabledAsiento = false;
                                 })
                                 .catch(APP.rq.axios_handler_error_alert);
                         }
@@ -4928,7 +4927,7 @@
                         this.list.ventas[this.indexVenta].ValidadorDescuento = _data.EsCorrecto;
                         this.list.ventas[this.indexVenta].ObservacionDescuento = _observacion;
 
-                        var auxPrecio = parseFloat(this.list.ventas[this.indexVenta].Precio || '0');
+                        var auxPrecio = parseFloat(this.list.ventas[this.indexVenta].Precio || '0') || 0;
                         this.list.ventas[this.indexVenta].Precio = auxPrecio.toFixed(2);
 
                         this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
@@ -5262,6 +5261,14 @@
 
                     this.closeMenu();
                 },
+                configEventKeyF3: function (e) {
+                    if (e.keyCode === 114) {
+                        if (this.showVentas) {
+                            e.preventDefault();
+                            appController.showManifiestoPasajeros();
+                        }
+                    }
+                },
                 contextMenuReintegro: function () {
                     if (this.itemSelected) {
                         if (this.itemSelected.IdVenta)
@@ -5273,7 +5280,6 @@
                             animateScrollTop(800);
                         }
                     }
-
                     this.closeMenu();
                 },
                 signalR_BloquearAsiento: function (_NroAsiento) {
@@ -5339,7 +5345,7 @@
                         if (objAsiento)
                             objAsiento.NumeAsiento = parseInt(obj.NumeAsiento);
                     });
-                }
+                },
             },
             computed: {
                 setCadenaEmbarques: function () {
@@ -5362,10 +5368,10 @@
                         _this.list.ventas[_this.indexVenta].ApellidoPaterno &&
                         _this.list.ventas[_this.indexVenta].ApellidoMaterno &&
                         _this.list.ventas[_this.indexVenta].FechaNac.length === 10 &&
-                        parseInt(_this.list.ventas[_this.indexVenta].Edad || '0') > 0 &&
+                        parseInt(_this.list.ventas[_this.indexVenta].Edad || '0') || 0 > 0 &&
                         _this.list.ventas[_this.indexVenta].Sexo &&
                         _this.list.ventas[_this.indexVenta].NroAsiento &&
-                        parseFloat(_this.list.ventas[_this.indexVenta].Precio || '0') > 0
+                        parseFloat(_this.list.ventas[_this.indexVenta].Precio || '0') || 0 > 0
                     );
                 },
                 bloquearPagoPorFlagVenta: function () {
@@ -5424,7 +5430,7 @@
 
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0 && typeof oldVal !== 'string') {
-                            this.getPVOrigenesBus(newVal.id);
+                            this.list.pvOrigenesBus = appController.getListPvOrigenesBus(newVal.id);
                             this.filtro.CodiPVOrigenBus = null;
                         }
                     }
@@ -5695,7 +5701,7 @@
                     $("#appVueTipoPago").modal('hide');
 
                     // Para calcular 'input.Credito' -> (Multipago)
-                    var canTotalCredito = _.cloneDeep(parseFloat(_this.tarjetaCant || '0'));
+                    var canTotalCredito = _.cloneDeep(parseFloat(_this.tarjetaCant || '0') || 0);
 
                     var listado = [];
                     for (const objVenta of _this.list.ventas) {
@@ -5896,13 +5902,13 @@
                             return auxResponse;
                         }
                         else if (!this.tarjetaCant) {
-                            document.getElementById('txtTtarjetaCantTP').focus();
+                            document.getElementById('txtTarjetaCantTP').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese el monto de tarjeta.');
 
                             return auxResponse;
                         }
                         else if (parseFloat(this.tarjetaCant) >= parseFloat(this.sumaTotal)) {
-                            document.getElementById('txtTtarjetaCantTP').focus();
+                            document.getElementById('txtTarjetaCantTP').focus();
 
                             return auxResponse;
                         }
@@ -5984,10 +5990,21 @@
                 getLabelEmbarqueArribo: function (option) {
                     return `${option.Lugar} - ${option.Hora}`
                 },
-                calcMontos: function (tipo) {
-                    // Solución al error de digitar '12345' pero solo muestra '1234'
-                    if (this.importePagado.length > 6)
-                        this.importePagado = this.importePagado.substring(0, 6);
+                calcMontos: function (tipo, e, _parteEntera) {
+                    // Formato 'NumeroConDosDecimales'
+                    switch (e.target.id) {
+                        case 'txtImportePagadoC':
+                        case 'txtImportePagadoTP':
+                            this.importePagado = this.$formatNumberWithTwoDecimals(this.importePagado, _parteEntera);
+                            break;
+                        case 'txtTtarjetaCantTP':
+                            this.tarjetaCant = this.$formatNumberWithTwoDecimals(this.tarjetaCant, _parteEntera);
+                            break;
+                        case 'txtEfectivoTP':
+                            this.efectivo = this.$formatNumberWithTwoDecimals(this.efectivo, _parteEntera);
+                            break;
+                    }
+                    // -----------------
 
                     var sumaTotal = parseFloat(this.sumaTotal);
                     var efectivo = parseFloat(this.efectivo);
@@ -6038,7 +6055,7 @@
                                 })
                                     .then(function (res) {
                                         var _listaImpresiones = res.data.Valor;
-                                        if (res.data.Estado) {
+                                        if (res.data.EsCorrecto) {
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
@@ -6048,8 +6065,13 @@
                                                 })(i);
                                             }
                                         }
-                                        else
-                                            APP.msg.error(res.data.Mensaje);
+                                        else {
+                                            if (res.data.Estado)
+                                                APP.msg.warning(res.data.Mensaje);
+                                            else
+                                                APP.msg.error(res.data.Mensaje);
+                                        }
+
                                     })
                                     .catch(APP.rq.axios_handler_error_alert);
                             };
@@ -6062,7 +6084,7 @@
                                 })
                                     .then(function (res) {
                                         var _listaImpresiones = res.data.Valor;
-                                        if (res.data.Estado) {
+                                        if (res.data.EsCorrecto) {
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
@@ -6072,8 +6094,12 @@
                                                 })(i);
                                             }
                                         }
-                                        else
-                                            APP.msg.error(res.data.Mensaje);
+                                        else {
+                                            if (res.data.Estado)
+                                                APP.msg.warning(res.data.Mensaje);
+                                            else
+                                                APP.msg.error(res.data.Mensaje);
+                                        }
                                     })
                                     .catch(APP.rq.axios_handler_error_alert);
                             };
@@ -6229,7 +6255,7 @@
                 recorridoSectionParentesco: function (auxValidate) {
                     var auxResponse = false;
 
-                    var auxEdad = parseInt(this.Edad || '0');
+                    var auxEdad = parseInt(this.Edad || '0') || 0;
 
                     if (!this.CodiTipoDoc) {
                         $('#cboTipoDocRA input[type=search]').focus();
@@ -6356,7 +6382,7 @@
             },
             computed: {
                 showBtnIngresarConClave: function () {
-                    var auxEdad = parseInt(this.Edad || '0');
+                    var auxEdad = parseInt(this.Edad || '0') || 0;
 
                     if (auxEdad > 5 && !this.enableSaveWithClaveAutorizacion)
                         return true;
@@ -7892,6 +7918,60 @@
             }
         });
 
+        var appVueManifiestoPasajeros = new Vue({
+            el: "#appVueManifiestoPasajeros",
+            data: {
+                filtro: {
+                    empresa: null,
+                    origenBus: null,
+                    PvOrigenBus: null
+                },
+                list: {
+                    empresas: [],
+                    origenesBus: [],
+                    pvOrigenesBus: []
+                }
+            },
+            mounted: function () { },
+            methods: {
+                show: function () {
+                    //if (this.origenBus && this.origenBus.id)
+                        this.list.pvOrigenesBus = appController.getListPvOrigenesBus(6);
+
+                    $('#appVueManifiestoPasajeros').modal('show');
+                },
+                cerrarManifiestoPasajeros: function () {
+                    $('#appVueManifiestoPasajeros').modal('hide');
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarManifiestoPasajeros();
+                },
+                nextStep: function (code) {
+                    switch (code) {
+                        case 1:
+                            $('#cboOrigenBusMP input[type=search]').focus();
+                            break;
+                        case 2:
+                            {
+                                this.$nextTick(() => {
+                                    $('#cboPvOrigenBusMP input[type=search]').focus();
+                                });
+                            }
+                            break;
+                        case 3:
+                            //$('#cboSucursal input[type=search]').focus();
+                            break;
+                    }
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                }
+            },
+            computed: {},
+            watch: {}
+        });
+
         var appVueReintegro = new Vue({
             el: '#appVueReintegro',
             data: {
@@ -7922,7 +8002,6 @@
             },
             methods: {
                 show: function (asientoSel) {
-                    debugger;
                     //this.limpiarRE();
                     //this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');

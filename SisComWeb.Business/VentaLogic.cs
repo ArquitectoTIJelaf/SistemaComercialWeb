@@ -469,10 +469,10 @@ namespace SisComWeb.Business
                                             return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
                                     }
                                     else
-                                        return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                        return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
                                 }
                                 else
-                                    return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                    return new Response<VentaResponse>(true, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
                             };
                             break;
                     };
@@ -1534,13 +1534,39 @@ namespace SisComWeb.Business
 
         #region MODIFICAR VENTA FECHA ABIERTA
 
-        public static Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public static Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
-                var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta);
-                if (modificarVentaAFechaAbierta > 0)
+                var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(request.IdVenta, request.CodiServicio, request.CodiRuta);
+                if (modificarVentaAFechaAbierta > 0) {
+
+                    // Graba 'AuditoriaFechaAbierta'
+                    var objAuditoriaFechaAbierta = new AuditoriaEntity
+                    {
+                        CodiUsuario = request.CodiUsuario,
+                        NomUsuario = request.NomUsuario,
+                        Tabla = "VENTA",
+                        TipoMovimiento = "POSTERGACION DE PASAJES",
+                        Boleto = request.BoletoCompleto, // Verificar
+                        NumeAsiento = request.NumeAsiento.ToString("D2"),
+                        NomOficina = request.NomOficina,
+                        NomPuntoVenta = request.CodiPuntoVenta.ToString(),
+                        Pasajero = request.Pasajero,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NomDestino,
+                        Precio = request.PrecioVenta,
+                        Obs1 = string.Empty,
+                        Obs2 = string.Empty,
+                        Obs3 = string.Empty,
+                        Obs4 = "POSTEGADO A FECHA ABIERTA",
+                        Obs5 = "TERMINAL : " + request.CodiTerminal
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
+
                     return new Response<byte>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
+                }
                 else
                     return new Response<byte>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
             }
@@ -1624,13 +1650,20 @@ namespace SisComWeb.Business
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M")
+                    {
                         paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
+                        if (string.IsNullOrEmpty(paginaWebEmisor))
+                            return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
+                    }
 
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)
                     {
+                        var resObtenerCodigoX = new ResponseDocument();
+                        if (entidad.BoletoTipo != "M")
+                            resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+
                         var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
-                        var resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
                         var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
                         
                         entidad.NumeAsiento = byte.Parse(entidad.NumeAsiento).ToString("D2");
@@ -1640,7 +1673,7 @@ namespace SisComWeb.Business
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
                         entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
                         entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
-                        entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue;
+                        entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue ?? string.Empty;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
                         entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
                         entidad.PolizaNum = consultaNroPoliza.NroPoliza;

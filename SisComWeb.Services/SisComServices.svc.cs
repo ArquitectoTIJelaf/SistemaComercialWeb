@@ -28,11 +28,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal)
+        public Response<List<BaseEntity>> ListaPuntosVenta()
         {
             try
             {
-                return BaseLogic.ListaPuntosVenta(short.Parse(CodiSucursal));
+                return BaseLogic.ListaPuntosVenta();
             }
             catch (Exception ex)
             {
@@ -746,11 +746,11 @@ namespace SisComWeb.Services
 
         #region FECHA ABIERTA
 
-        public Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta)
+        public Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
-                return VentaLogic.ModificarVentaAFechaAbierta(IdVenta, CodiServicio, CodiRuta);
+                return VentaLogic.ModificarVentaAFechaAbierta(request);
             }
             catch (Exception ex)
             {

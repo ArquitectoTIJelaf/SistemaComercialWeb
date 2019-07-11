@@ -43,4 +43,38 @@ namespace SisComWeb.Entity.Peticiones.Request
         public string CodiPuntoVenta { get; set; }
         public string Terminal { get; set; }
     }
+
+    public class VentaToFechaAbiertaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public int CodiServicio { get; set; }
+
+        public int CodiRuta { get; set; }
+
+
+        public short CodiUsuario { get; set; }
+
+        public string NomUsuario { get; set; }
+
+        public string CodiTerminal { get; set; }
+
+        public string NomOficina { get; set; }
+
+        public int CodiPuntoVenta { get; set; }
+
+        public string BoletoCompleto { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string Pasajero { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string HoraViaje { get; set; }
+
+        public string NomDestino { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+    }
 }

@@ -19,8 +19,8 @@ namespace SisComWeb.Services
         Response<List<BaseEntity>> ListaOficinas();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaPuntosVenta/{CodiSucursal}", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaPuntosVenta(string CodiSucursal);
+        [WebInvoke(Method = "GET", UriTemplate = "ListaPuntosVenta", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaPuntosVenta();
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaUsuarios/{value}", ResponseFormat = WebMessageFormat.Json)]
@@ -263,8 +263,8 @@ namespace SisComWeb.Services
         #region FECHA ABIERTA
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<byte> ModificarVentaAFechaAbierta(int IdVenta, int CodiServicio, int CodiRuta);
+        [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request);
 
         #endregion
 

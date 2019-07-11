@@ -57,7 +57,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpGet]
         [Route("get-puntosventa")]
-        public async Task<JsonResult> GetPuntosVenta(string CodiSucursal)
+        public async Task<JsonResult> GetPuntosVenta()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace SisComWeb.Aplication.Controllers
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url + "ListaPuntosVenta");
-                    HttpResponseMessage response = await client.GetAsync(url + "ListaPuntosVenta/" + CodiSucursal);
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaPuntosVenta");
                     if (response.IsSuccessStatusCode)
                     {
                         result = await response.Content.ReadAsStringAsync();
@@ -81,7 +81,8 @@ namespace SisComWeb.Aplication.Controllers
                     Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
                     {
                         id = (string)x["id"],
-                        label = (string)x["label"]
+                        label = (string)x["label"],
+                        CodiSucursal = (short)x["CodiSucursal"]
                     }).ToList()
                 };
 
