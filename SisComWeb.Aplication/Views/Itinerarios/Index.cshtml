@@ -706,7 +706,6 @@
             $('#appVueManifiestoPasajeros').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueManifiestoPasajeros.esc);
 
-
             });
 
             $('#appVueManifiestoPasajeros').on('hidden.bs.modal', function () {
@@ -902,6 +901,17 @@
             return _.filter(empresas, function (o) { return o.id == value; })[0].label;
         });
 
+        Vue.filter('formatCodiProgramacion', function (value, length = 6) {
+            value = String(value || '') || '';
+
+            if (value.length <= length) {
+                value = '0'.repeat(length) + value;
+                return value.substr(value.length - length);
+            }
+            else
+                return value;
+        });
+
         Vue.prototype.$formatNumberWithTwoDecimals = function formatoNumeroConDosDecimales(value, _parteEntera) {
             var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
             var re2 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
@@ -923,6 +933,31 @@
             }
 
             return value;
+        }
+
+        Vue.prototype.$getValueDateTimePicker = function obtenerValorDateTimePicker(e) {
+            if (e && !e.target.value)
+                return moment().format('DD/MM/YYYY');
+            else
+                return e.target.value;
+        }
+
+        Vue.prototype.$getValueDateTimePicker_Hours = function obtenerValorDateTimePicker_Hours(e) {
+            if (e && !e.target.value)
+                return moment().format('hh:mm A');
+            else
+                return e.target.value;
+        }
+
+        Vue.prototype.$getSelectorVselect = function $obtenerSeleccionadorVselect(_list, _objFiltro) {
+            var selector = 0;
+
+            if (_objFiltro) {
+                var tmpIndex = _.findIndex(_list, { 'id': _objFiltro.id, 'label': _objFiltro.label });
+                selector = (tmpIndex >= 0 ? tmpIndex : 0);
+            }
+
+            return selector;
         }
 
         function formatoBoletoCompleto(_TipoBoleto, _Boleto) {
@@ -1177,8 +1212,8 @@
                 acompanianteVentaCRUD: async function (_ObjAcompaniante) {
                     await appVueVenta.setAcompanianteVenta(_ObjAcompaniante);
                 },
-                showManifiestoPasajeros: function () {
-                    appVueManifiestoPasajeros.show();
+                showManifiestoPasajeros: function (_objRequest) {
+                    appVueManifiestoPasajeros.show(_objRequest);
                 },
                 getListPvOrigenesBus: function (_CodiOrigenBus) {
                     return _.filter(pvOrigenesBus, function (obj) { return obj.CodiSucursal == _CodiOrigenBus; });
@@ -1188,6 +1223,10 @@
                 },
                 showMiniMapa: function (_item) {
                     appVueMiniMapa.show(_item);
+                },
+                getSelectorVselect: function (_list, _objFiltro) {
+                    var tmpIndex = _.findIndex(_list, { 'id': _objFiltro.id, 'label': _objFiltro.label });
+                    return (tmpIndex >= 0 ? tmpIndex : 0);
                 }
             };
         })();
@@ -1245,12 +1284,10 @@
                                 rutas = _.cloneDeep(res.data.Valor);
 
                                 appVueManifiestoPasajeros.list.origenesBus = _.cloneDeep(res.data.Valor);
+                                appVueManifiestoPasajeros.list.destinosBus = _.cloneDeep(res.data.Valor);
 
                                 _this.$nextTick(() => {
                                     _this.filtro.CodiOrigen = _this.list.origenesPas.find(x => x.id === String(Usuario.CodiSucursal));
-                                    // Actualiza selector 'v-select'
-                                    var auxIndex = _.findIndex(_this.list.origenesPas, { 'id': _this.filtro.CodiOrigen.id, 'label': _this.filtro.CodiOrigen.label });
-                                    _this.$refs.refOrigenPas.typeAheadPointer = (auxIndex >= 0 ? auxIndex : 0);
                                 });
                             }
                             else
@@ -1324,12 +1361,6 @@
                         }
                     });
                 },
-                blurFechaViaje: function () {
-                    if (!document.getElementById('txtFecha').value)
-                        document.getElementById('txtFecha').value = moment().format('DD/MM/YYYY');
-
-                    this.filtro.FechaViaje = document.getElementById('txtFecha').value;
-                },
                 blurHora: function () {
                     this.filtro.Hora = document.getElementById('txtHora').value;
                 }
@@ -1337,28 +1368,25 @@
             watch: {
                 'filtro.CodiOrigen': function (newVal, oldVal) {
                     if (this.filtro.CodiOrigen) {
-
                         var auxRutas = _.cloneDeep(rutas);
                         auxRutas.unshift(selectAll)
 
-
                         this.list.destinosPas = auxRutas;
                         _.pull(this.list.destinosPas, _.find(this.list.destinosPas, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label }));
-                        // Actualiza selector 'v-select'
-                        this.$nextTick(() => {
-                            var auxIndex = _.findIndex(this.list.destinosPas, { 'id': this.filtro.CodiDestino.id, 'label': this.filtro.CodiDestino.label });
-                            this.$refs.refDestinoPas.typeAheadPointer = (auxIndex >= 0 ? auxIndex : 0);
-                        });
-
 
                         this.list.destinosBus = auxRutas;
                         _.pull(this.list.destinosBus, _.find(this.list.destinosBus, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label }));
-                        // Actualiza selector 'v-select'
-                        this.$nextTick(() => {
-                            var auxIndex = _.findIndex(this.list.destinosBus, { 'id': this.filtro.CodiRuta.id, 'label': this.filtro.CodiRuta.label });
-                            this.$refs.refDestinoBus.typeAheadPointer = (auxIndex >= 0 ? auxIndex : 0);
-                        });
                     }
+                },
+                'list.destinosPas': function (newVal, oldVal) {
+                    this.$nextTick(() => {
+                        this.$refs.refDestinoPas.typeAheadPointer = this.$getSelectorVselect(this.list.destinosPas, this.filtro.CodiDestino);
+                    });
+                },
+                'list.destinosBus': function (newVal, oldVal) {
+                    this.$nextTick(() => {
+                        this.$refs.refDestinoBus.typeAheadPointer = this.$getSelectorVselect(this.list.destinosBus, this.filtro.CodiRuta);
+                    });
                 }
             }
         });
@@ -1674,30 +1702,6 @@
                                 _this.filtro.CodiDestinoPas = _this.list.destinosPas.find(x => x.id === String(res.data.Valor.CodiDestino));
                                 _this.list.pvOrigenesBus = appController.getListPvOrigenesBus(_this.filtro.CodiOrigenBus.id);
                                 _this.filtro.CodiPVOrigenBus = _this.list.pvOrigenesBus.find(x => x.id === String(res.data.Valor.CodiPuntoVenta));
-                                // Actualiza selector 'v-select'
-                                _this.$nextTick(() => {
-                                    var auxIndexCodiEmpresa = _.findIndex(_this.list.empresas, { 'id': _this.filtro.CodiEmpresa.id, 'label': _this.filtro.CodiEmpresa.label });
-                                    _this.$refs.refEmpresa.typeAheadPointer = (auxIndexCodiEmpresa >= 0 ? auxIndexCodiEmpresa : 0);
-
-                                    var auxIndexCodiSucursal = _.findIndex(_this.list.sucursales, { 'id': _this.filtro.CodiSucursal.id, 'label': _this.filtro.CodiSucursal.label });
-                                    _this.$refs.refSucursal.typeAheadPointer = (auxIndexCodiSucursal >= 0 ? auxIndexCodiSucursal : 0);
-
-                                    var auxIndexCodiOrigenBus = _.findIndex(_this.list.origenesBus, { 'id': _this.filtro.CodiOrigenBus.id, 'label': _this.filtro.CodiOrigenBus.label });
-                                    _this.$refs.refOrigenBus.typeAheadPointer = (auxIndexCodiOrigenBus >= 0 ? auxIndexCodiOrigenBus : 0);
-
-                                    var auxIndexCodiDestinoBus = _.findIndex(_this.list.destinosBus, { 'id': _this.filtro.CodiDestinoBus.id, 'label': _this.filtro.CodiDestinoBus.label });
-                                    _this.$refs.refDestinoBus_2.typeAheadPointer = (auxIndexCodiDestinoBus >= 0 ? auxIndexCodiDestinoBus : 0);
-
-                                    var auxIndexCodiServicio = _.findIndex(_this.list.servicios, { 'id': _this.filtro.CodiServicio.id, 'label': _this.filtro.CodiServicio.label });
-                                    _this.$refs.refServicio.typeAheadPointer = (auxIndexCodiServicio >= 0 ? auxIndexCodiServicio : 0);
-
-                                    var auxIndexCodiDestinoPas = _.findIndex(_this.list.destinosPas, { 'id': _this.filtro.CodiDestinoPas.id, 'label': _this.filtro.CodiDestinoPas.label });
-                                    _this.$refs.refDestinoPas_2.typeAheadPointer = (auxIndexCodiDestinoPas >= 0 ? auxIndexCodiDestinoPas : 0);
-
-                                    var auxIndexCodiPVOrigenBus = _.findIndex(_this.list.pvOrigenesBus, { 'id': _this.filtro.CodiPVOrigenBus.id, 'label': _this.filtro.CodiPVOrigenBus.label });
-                                    _this.$refs.refPVOrigenBus.typeAheadPointer = (auxIndexCodiPVOrigenBus >= 0 ? auxIndexCodiPVOrigenBus : 0);
-                                });
-                                // -----------------------------
                                 _this.filtro.Turno = res.data.Valor.HoraPartida;
                                 _this.filtro.Fecha = input.FechaViaje;
                                 _this.filtro.NroViaje = res.data.Valor.NroViaje;
@@ -1789,8 +1793,11 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-servicios')
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.Estado) {
                                 _this.list.servicios = _.cloneDeep(res.data.Valor);
+
+                                appVueManifiestoPasajeros.list.servicios = _.cloneDeep(res.data.Valor);
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -3623,24 +3630,6 @@
                     event.target.select();
                     this.auxFocus.asiento = true;
                 },
-                focusTurno: function (event) {
-                    event.target.select();
-                },
-                blurTurno: function () {
-                    if (!document.getElementById('txtTurno').value)
-                        document.getElementById('txtTurno').value = moment().format('hh:mm A');
-
-                    this.filtro.Turno = document.getElementById('txtTurno').value;
-                },
-                focusFecha: function (event) {
-                    event.target.select();
-                },
-                blurFecha: function () {
-                    if (!document.getElementById('txtFecha_2').value)
-                        document.getElementById('txtFecha_2').value = moment().format('DD/MM/YYYY');
-
-                    this.filtro.Fecha = document.getElementById('txtFecha_2').value;
-                },
                 enterTxtNroAsientoVenta: function (e) {
                     this.eventTxtNroAsientoVenta = e;
                     this.$refs.refNroAsientoVenta.blur();
@@ -5302,9 +5291,19 @@
                 },
                 configEventKeyF3: function (e) {
                     if (e.keyCode === 114) {
-                        if (this.showVentas) {
+                        if (this.showVentas && this.filtro.CodiProgramacion !== 0) {
                             e.preventDefault();
-                            appController.showManifiestoPasajeros();
+
+                            var objRequest = {};
+                            objRequest.CodiEmpresa = this.filtro.CodiEmpresa;
+                            objRequest.CodiOrigenBus = this.filtro.CodiOrigenBus;
+                            objRequest.CodiPVOrigenBus = this.filtro.CodiPVOrigenBus;
+                            objRequest.CodiDestinoBus = this.filtro.CodiDestinoBus;
+                            objRequest.CodiServicio = this.filtro.CodiServicio;
+                            objRequest.Fecha = this.filtro.Fecha;
+                            objRequest.Turno = this.filtro.Turno;
+
+                            appController.showManifiestoPasajeros(objRequest);
                         }
                     }
                 },
@@ -5599,6 +5598,11 @@
                                 }
                             };
                     }
+                },
+                'list.destinosPas': function (newVal, oldVal) {
+                    this.$nextTick(() => {
+                        this.$refs.refDestinoPas_2.typeAheadPointer = this.$getSelectorVselect(this.list.destinosPas, this.filtro.CodiDestinoPas);
+                    });
                 }
             }
         });
@@ -7105,12 +7109,6 @@
                 recorrerFechaCita: function () {
                     $('#cboHospital input[type=search]').focus();
                 },
-                blurFechaCita: function () {
-                    if (!document.getElementById('txtFechaCita').value)
-                        document.getElementById('txtFechaCita').value = moment().format('DD/MM/YYYY');
-
-                    this.fechaCita = document.getElementById('txtFechaCita').value;
-                },
                 saveCreditoOpciones: async function () {
                     if (!this.recorrerCreditoOpciones(true))
                         return;
@@ -7969,19 +7967,40 @@
                 filtro: {
                     empresa: null,
                     origenBus: null,
-                    PvOrigenBus: null
+                    pvOrigenBus: null,
+                    destinoBus: null,
+                    servicio: null,
+                    turno: '',
+                    fecha: '',
+                    turnoImpresion: ''
                 },
                 list: {
                     empresas: [],
                     origenesBus: [],
-                    pvOrigenesBus: []
+                    pvOrigenesBus: [],
+                    destinosBus: [],
+                    servicios: []
+                },
+                tripulacion: {
+                    bus: '',
+                    piloto: '',
+                    copiloto01: '',
+                    copiloto02: ''
                 }
             },
             mounted: function () { },
             methods: {
-                show: function () {
-                    //if (this.origenBus && this.origenBus.id)
-                        this.list.pvOrigenesBus = appController.getListPvOrigenesBus(6);
+                show: function (_objRequest) {
+                    this.filtro.empresa = _objRequest.CodiEmpresa;
+                    this.filtro.origenBus = _objRequest.CodiOrigenBus;
+                    this.filtro.destinoBus = _objRequest.CodiDestinoBus;
+                    this.filtro.servicio = _objRequest.CodiServicio;
+                    this.filtro.turno = _objRequest.Turno;
+                    this.filtro.fecha = _objRequest.Fecha;
+                    this.filtro.turnoImpresion = _.cloneDeep(this.filtro.turno);
+
+                    this.list.pvOrigenesBus = appController.getListPvOrigenesBus(this.filtro.origenBus.id);
+                    this.filtro.pvOrigenBus = _objRequest.CodiPVOrigenBus;
 
                     $('#appVueManifiestoPasajeros').modal('show');
                 },
@@ -7992,7 +8011,7 @@
                     if (event.keyCode === 27)
                         this.cerrarManifiestoPasajeros();
                 },
-                nextStep: function (code) {
+                recorrido: function (code) {
                     switch (code) {
                         case 1:
                             $('#cboOrigenBusMP input[type=search]').focus();
@@ -8005,9 +8024,24 @@
                             }
                             break;
                         case 3:
-                            //$('#cboSucursal input[type=search]').focus();
+                            $('#cboDestinoBusMP input[type=search]').focus();
+                            break;
+                        case 4:
+                            $('#cboServicioMP input[type=search]').focus();
+                            break;
+                        case 5:
+                            document.getElementById('txtTurnoMP').focus();
+                            break;
+                        case 6:
+                            document.getElementById('txtFechaMP').focus();
+                            break;
+                        case 7:
+                            document.getElementById('btnCargarTurnoMP').focus();
                             break;
                     }
+                },
+                cargaTurno: function () {
+                    alert('Carga turno');
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`

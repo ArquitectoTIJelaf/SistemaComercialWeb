@@ -1,5 +1,5 @@
 ﻿<div id="appVueManifiestoPasajeros" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" style="top:50%; transform: translateY(-50%)">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="cerrarManifiestoPasajeros">&times;</button>
@@ -9,35 +9,54 @@
                 <div class="form-horizontal">
                     <div class="form-group m-b-0">
                         <div class="col-md-12">
-                            <div class="col-md-6">
-                                <label class="control-label" style="text-align: left; ">Empresa:</label>
-                                <v-select id="cboEmpresaMP"
-                                          placeholder="EMPRESA"
-                                          v-model="filtro.empresa"
-                                          :options="list.empresas"
-                                          :select-on-tab="true"
-                                          :get-option-label="getLabel"
-                                          @@keydown.13.native.prevent="recorrido(1)"
-                                          @*@@keydown.9.native.prevent="recorrido(1)"*@
-                                          ref="refEmpresaMP">
-                                    <template slot="option" slot-scope="option">
-                                        <div @@click="recorrido(1)">{{ option.id }} - {{ option.label }}</div>
-                                    </template>
-                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                </v-select>
+                            <div class="col-md-8" style="padding-left: 0px; padding-right: 0px; ">
+                                <div class="col-md-3">
+                                    <label class="control-label">Empresa: </label>
+                                </div>
+                                <div class="col-md-9">
+                                    <v-select id="cboEmpresaMP"
+                                              placeholder="EMPRESA"
+                                              v-model="filtro.empresa"
+                                              :options="list.empresas"
+                                              :select-on-tab="true"
+                                              :get-option-label="getLabel"
+                                              @@input="$refs.refEmpresaMP.typeAheadPointer = $getSelectorVselect(list.empresas, filtro.empresa)"
+                                              @@keydown.13.native.prevent="recorrido(1)"
+                                              @*@@keydown.9.native.prevent="recorrido(1)"*@
+                                              ref="refEmpresaMP">
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="recorrido(1)">{{ option.id }} - {{ option.label }}</div>
+                                        </template>
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="padding-left: 0px; padding-right: 0px; ">
+                                <div class="col-md-4">
+                                    <label class="control-label">T. Impresión: </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input id="txtTurnoImpresionMP"
+                                           class="form-control input-sm"
+                                           type="text"
+                                           placeholder="TURNO IMPRESIÓN"
+                                           :value="filtro.turnoImpresion"
+                                           disabled="disabled" />
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group m-b-0">
                         <div class="col-md-12">
                             <div class="col-md-4">
-                                <label class="control-label">Origen bus:</label>
+                                <label class="control-label">Origen bus: </label>
                                 <v-select id="cboOrigenBusMP"
                                           placeholder="ORIGEN BUS"
                                           v-model="filtro.origenBus"
                                           :options="list.origenesBus"
                                           :select-on-tab="true"
                                           :get-option-label="getLabel"
+                                          @@input="$refs.refOrigenBusMP.typeAheadPointer = $getSelectorVselect(list.origenesBus, filtro.origenBus)"
                                           @@keydown.13.native.prevent="recorrido(2)"
                                           @*@@keydown.9.native.prevent="recorrido(2)"*@
                                           ref="refOrigenBusMP">
@@ -47,15 +66,15 @@
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
-
                             <div class="col-md-4">
-                                <label class="control-label">P.V. Origen bus:</label>
+                                <label class="control-label">P.V. Origen bus: </label>
                                 <v-select id="cboPvOrigenBusMP"
                                           placeholder="P.V. ORIGEN BUS"
                                           v-model="filtro.pvOrigenBus"
                                           :options="list.pvOrigenesBus"
                                           :select-on-tab="true"
                                           :get-option-label="getLabel"
+                                          @@input="$refs.refPvOrigenBusMP.typeAheadPointer = $getSelectorVselect(list.pvOrigenesBus, filtro.pvOrigenBus)"
                                           @@keydown.13.native.prevent="recorrido(3)"
                                           @*@@keydown.9.native.prevent="recorrido(3)"*@
                                           ref="refPvOrigenBusMP">
@@ -65,7 +84,153 @@
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Destino bus: </label>
+                                <v-select id="cboDestinoBusMP"
+                                          placeholder="DESTINO BUS"
+                                          v-model="filtro.destinoBus"
+                                          :options="list.destinosBus"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@input="$refs.refDestinoBusMP.typeAheadPointer = $getSelectorVselect(list.destinosBus, filtro.destinoBus)"
+                                          @@keydown.13.native.prevent="recorrido(4)"
+                                          @*@@keydown.9.native.prevent="recorrido(4)"*@
+                                          ref="refDestinoBusMP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrido(4)">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-10">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="control-label">Servicio: </label>
+                                <v-select id="cboServicioMP"
+                                          placeholder="SERVICIO"
+                                          v-model="filtro.servicio"
+                                          :options="list.servicios"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@input="$refs.refServicioMP.typeAheadPointer = $getSelectorVselect(list.servicios, filtro.servicio)"
+                                          @@keydown.13.native.prevent="recorrido(5)"
+                                          @*@@keydown.9.native.prevent="recorrido(5)"*@
+                                          ref="refServicioMP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrido(5)">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Turno: </label>
+                                <input id="txtTurnoMP"
+                                       class="form-control input-sm dph"
+                                       type="text"
+                                       placeholder="TURNO"
+                                       v-model="filtro.turno"
+                                       v-mask="'##:## AM'"
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="recorrido(6)"
+                                       @*@@keydown.9.prevent="recorrido(6)"*@
+                                       @@blur="filtro.turno = $getValueDateTimePicker_Hours($event)"
+                                       autocomplete="off" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Fecha: </label>
+                                <input id="txtFechaMP"
+                                       class="form-control input-sm dpFiltro"
+                                       type="text"
+                                       placeholder="FECHA"
+                                       v-model="filtro.fecha"
+                                       v-mask="'##/##/####'"
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="cargaTurno"
+                                       @*@@keydown.9.prevent="recorrido(7)"*@
+                                       @@blur="filtro.fecha = $getValueDateTimePicker($event)"
+                                       autocomplete="off" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-10">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
 
+                            </div>
+                            <div class="col-md-4">
+                               
+                            </div>
+                            <div class="col-md-4" style="text-align: right; ">
+                                <button id="btnCargarTurnoMP"
+                                        @@click="cargaTurno"
+                                        class="btn btn-primary waves-effect text-left">
+                                    <span class="fa fa-refresh fa-fw"></span>Cargar turno
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-0">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="control-label">Bus: </label>
+                                <input id="txtBusMP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="BUS"
+                                       :value="tripulacion.bus"
+                                       disabled="disabled" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Piloto: </label>
+                                <input id="txtPilotoMP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="PILOTO"
+                                       :value="tripulacion.piloto"
+                                       disabled="disabled" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Copiloto 01: </label>
+                                <input id="txtCopiloto01MP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="COPILOTO 01"
+                                       :value="tripulacion.copiloto01"
+                                       disabled="disabled" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <label class="control-label">Copiloto 02: </label>
+                                <input id="txtCopiloto02MP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="COPILOTO 02"
+                                       :value="tripulacion.copiloto02"
+                                       disabled="disabled" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Auxiliar: </label>
+                                <input id="txtAuxiliarMP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="AUXILIAR"
+                                       :value="tripulacion.auxiliar"
+                                       disabled="disabled" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label">Boletero: </label>
+                                <input id="txtBoleteroMP"
+                                       class="form-control input-sm"
+                                       type="text"
+                                       placeholder="BOLETERO"
+                                       :value="tripulacion.boletero"
+                                       disabled="disabled" />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +251,7 @@
                     <button id="btnCambioFechaHoraMP"
                             @*@@click="xxx"*@
                             class="btn btn-primary waves-effect text-left">
-                        Cambio fecha/hora
+                        <span class="glyphicon glyphicon-calendar fa-fw"></span>Cambio fecha/hora
                     </button>
                 </div>
 
@@ -94,12 +259,12 @@
                         @*@@click="xxx"*@
                         class="btn btn-success waves-effect text-left"
                         title="Manifiesto de menor">
-                    <span class="fa fa-check fa-fw"></span>Man. de menor
+                    <span class="glyphicon glyphicon-ok fa-fw"></span>Man. de menor
                 </button>
                 <button id="btnAceptarManifiestoPasajeros"
                         @*@@click="xxx"*@
                         class="btn btn-success waves-effect text-left">
-                    <span class="fa fa-check fa-fw"></span>Aceptar
+                    <span class="glyphicon glyphicon-ok fa-fw"></span>Aceptar
                 </button>
                 <button @@click="cerrarManifiestoPasajeros"
                         class="btn btn-inverse waves-effect waves-light text-left">

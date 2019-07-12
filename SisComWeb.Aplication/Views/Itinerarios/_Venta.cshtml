@@ -66,7 +66,7 @@
             <div>
                 <div class="row">
                     <div id="FiltersVentas" class="col-md-12 panel panel-default" style="margin-bottom: 15px;">
-                        <div class="col-md-12">
+                        <div class="col-md-12 m-b-5">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Empresa:</label>
@@ -76,6 +76,7 @@
                                               :options="list.empresas"
                                               :select-on-tab="true"
                                               :get-option-label="getLabel"
+                                              @@input="$refs.refEmpresa.typeAheadPointer = $getSelectorVselect(list.empresas, filtro.CodiEmpresa)"
                                               @@keydown.13.native.prevent="nextStep(1)"
                                               @*@@keydown.9.native.prevent="nextStep(1)"*@
                                               ref="refEmpresa">
@@ -90,7 +91,7 @@
                                 <label class="control-label">Nº VIAJE: {{filtro.NroViaje | concatZero(6)}}</label>
                             </div>
                             <div class="col-md-2" style="text-align: center; margin-top: 30px; color: var(--emp-color); ">
-                                <label class="control-label">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion | concatZero(6)}}</label>
+                                <label class="control-label">Nº PROGRAMACIÓN: {{filtro.CodiProgramacion | formatCodiProgramacion}}</label>
                             </div>
                             <div class="col-md-4" style="text-align: right; font-size: 15px;">
                                 <a @@click="nextStep(10)"
@@ -150,6 +151,7 @@
                                                           :options="list.sucursales"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refSucursal.typeAheadPointer = $getSelectorVselect(list.sucursales, filtro.CodiSucursal)"
                                                           @@keydown.13.native.prevent="nextStep(2)"
                                                           @*@@keydown.9.native.prevent="nextStep(2)"*@
                                                           ref="refSucursal">
@@ -169,6 +171,7 @@
                                                           :options="list.origenesBus"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refOrigenBus.typeAheadPointer = $getSelectorVselect(list.origenesBus, filtro.CodiOrigenBus)"
                                                           @@keydown.13.native.prevent="nextStep(3)"
                                                           @*@@keydown.9.native.prevent="nextStep(3)"*@
                                                           ref="refOrigenBus">
@@ -188,6 +191,7 @@
                                                           :options="list.pvOrigenesBus"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refPVOrigenBus.typeAheadPointer = $getSelectorVselect(list.pvOrigenesBus, filtro.CodiPVOrigenBus)"
                                                           @@keydown.13.native.prevent="nextStep(4)"
                                                           @*@@keydown.9.native.prevent="nextStep(4)"*@
                                                           ref="refPVOrigenBus">
@@ -207,6 +211,7 @@
                                                           :options="list.destinosBus"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refDestinoBus_2.typeAheadPointer = $getSelectorVselect(list.destinosBus, filtro.CodiDestinoBus)"
                                                           @@keydown.13.native.prevent="nextStep(5)"
                                                           @*@@keydown.9.native.prevent="nextStep(5)"*@
                                                           ref="refDestinoBus_2">
@@ -226,6 +231,7 @@
                                                           :options="list.servicios"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refServicio.typeAheadPointer = $getSelectorVselect(list.servicios, filtro.CodiServicio)"
                                                           @@keydown.13.native.prevent="nextStep(6)"
                                                           @*@@keydown.9.native.prevent="nextStep(6)"*@
                                                           ref="refServicio">
@@ -245,6 +251,7 @@
                                                           :options="list.destinosPas"
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
+                                                          @@input="$refs.refDestinoPas_2.typeAheadPointer = $getSelectorVselect(list.destinosPas, filtro.CodiDestinoPas)"
                                                           @@keydown.13.native.prevent="nextStep(7)"
                                                           @*@@keydown.9.native.prevent="nextStep(7)"*@
                                                           ref="refDestinoPas_2">
@@ -264,10 +271,10 @@
                                                        placeholder="TURNO"
                                                        v-model="filtro.Turno"
                                                        v-mask="'##:## AM'"
-                                                       @@focus="focusTurno($event)"
+                                                       @@focus="$event.target.select()"
                                                        @@keydown.13.prevent="nextStep(8)"
                                                        @*@@keydown.9.prevent="nextStep(8)"*@
-                                                       @@blur="blurTurno()"
+                                                       @@blur="filtro.Turno = $getValueDateTimePicker_Hours($event)"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
@@ -280,10 +287,10 @@
                                                        placeholder="FECHA"
                                                        v-model="filtro.Fecha"
                                                        v-mask="'##/##/####'"
-                                                       @@focus="focusFecha($event)"
+                                                       @@focus="$event.target.select()"
                                                        @@keydown.13.prevent="nextStep(9)"
                                                        @*@@keydown.9.prevent="nextStep(9)"*@
-                                                       @@blur="blurFecha()"
+                                                       @@blur="filtro.Fecha = $getValueDateTimePicker($event)"
                                                        autocomplete="off" />
                                             </div>
                                         </div>

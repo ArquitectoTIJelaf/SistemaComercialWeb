@@ -74,11 +74,11 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<List<Base>> res = new Response<List<Base>>()
+                Response<List<PuntoVentaBase>> res = new Response<List<PuntoVentaBase>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new PuntoVentaBase
                     {
                         id = (string)x["id"],
                         label = (string)x["label"],
@@ -90,7 +90,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<PuntoVentaBase>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 
