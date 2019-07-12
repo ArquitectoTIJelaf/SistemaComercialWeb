@@ -20,6 +20,7 @@
                                                   :options="list.origenesPas"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
+                                                  @@input="$refs.refOrigenPas.typeAheadPointer = $getSelectorVselect(list.origenesPas, filtro.CodiOrigen)"
                                                   @@keydown.13.native.prevent="nextStep(1)"
                                                   @*@@keydown.9.native.prevent="nextStep(1)"*@
                                                   ref="refOrigenPas">
@@ -83,7 +84,7 @@
                                                    @@focus="$event.target.select()"
                                                    @@keydown.13.prevent="nextStep(4)"
                                                    @*@@keydown.9.prevent="nextStep(4)"*@
-                                                   @@blur="blurFechaViaje()"
+                                                   @@blur="filtro.FechaViaje = $getValueDateTimePicker($event)"
                                                    autocomplete="off" />
                                         </div>
                                     </div>
