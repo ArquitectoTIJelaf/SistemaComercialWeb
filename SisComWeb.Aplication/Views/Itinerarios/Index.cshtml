@@ -39,6 +39,7 @@
 @Html.Partial("_Reintegro")
 
 @Html.Partial("_ManifiestoPasajeros")
+@Html.Partial("_MiniMapa")
 
 @section styles{
     <style type="text/css">
@@ -440,6 +441,10 @@
         .mfBoletosVendidos {
             text-align: center;
         }
+
+        .btn-bus:hover {
+            background-color: var(--emp-color);
+        }
     </style>
 
     <style type="text/css">
@@ -448,13 +453,24 @@
             display: block;
             height: 95%;
             min-width: 40px;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
         }
 
         .BA {
             background: @Url.Content("url(" + ImagePath + "/wwwroot/plugins/images/users/bano.png)") no-repeat center center;
             display: block;
             height: 95%;
-            min-width: 40px;
+            width: 95%;
+            min-width: 38px;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
         }
 
         .TV {
@@ -462,6 +478,11 @@
             display: block;
             height: 95%;
             min-width: 40px;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
         }
 
         .EE {
@@ -471,15 +492,24 @@
             display: block;
             height: 95%;
             /*min-width: 40px;*/
-            margin: 0 10px 0 10px;
+            margin: 0 5px;
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
         }
     </style>
 }
 
 @section scripts{
     <script type="text/javascript">
+               
+        $(document).ready(function () {    
 
-        $(document).ready(function () {
+            $(document).on('hidden.bs.modal', '.modal', function () {
+                $('.modal:visible').length && $(document.body).addClass('modal-open');
+            });
 
             //#region RECORRIDO ITINERARIOS
 
@@ -926,6 +956,12 @@
                 document.getElementById('btnHiddenActualizarTurnoPlano').click();
         }
 
+        function deferredModal(modal, state) {
+            var d = $.Deferred();
+            modal.one(state ? 'shown.bs.modal' : 'hidden.bs.modal', d.resolve);
+            return d.promise();
+        };
+
         var appController = (function () {
             return {
                 loadTable: function (_list) {
@@ -1149,6 +1185,9 @@
                 },
                 showReintegro: function (_item) {
                     appVueReintegro.show(_item);
+                },
+                showMiniMapa: function (_item) {
+                    appVueMiniMapa.show(_item);
                 }
             };
         })();
@@ -3955,7 +3994,7 @@
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
                                 CodiRuta: _this.filtro.CodiDestinoBus.id,
-                                
+
                                 BoletoCompleto: tmpAsientoSel.Boleto,
                                 NumeAsiento: tmpAsientoSel.NumeAsiento,
                                 Pasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
@@ -5346,6 +5385,12 @@
                             objAsiento.NumeAsiento = parseInt(obj.NumeAsiento);
                     });
                 },
+                onDrop: function (event, item) {
+                    debugger;
+                    event.stopPropagation();
+                    event.preventDefault();
+                    //TODO: funcionalidad del drop
+                }
             },
             computed: {
                 setCadenaEmbarques: function () {
@@ -7525,7 +7570,7 @@
                                     await appController.chargeTurnos();
                                     _this.$nextTick(() => {
                                         APP.msg.info(res.data.Mensaje);
-                                    });   
+                                    });
                                 } else APP.msg.error(res.data.Mensaje);
                             })
                             .catch(APP.rq.axios_handler_error_alert);
@@ -7997,7 +8042,7 @@
                 $('#appVueReintegro').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
                     $(document).off('focusin.modal');
-                    _this.$refs.refREEmpresa.$el.querySelector('input').focus();
+                    _this.$refs.refREEmpresa.$el.querySelector('input').focus();      
                 });
             },
             methods: {
@@ -8005,7 +8050,7 @@
                     //this.limpiarRE();
                     //this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');
-                    this.setData();
+                    this.setData();                    
                 },
                 setData: function () {
                     let _this = this;
@@ -8026,6 +8071,24 @@
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
+                },
+                showMiniMapa: function () {
+                    var item = {};
+                    item.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
+                    item.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
+                    item.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
+                    item.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
+                    item.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
+                    item.CodiPuntoVenta = appVueVenta.filtro.CodiPVOrigenBus.id;
+                    item.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+                    item.HoraViaje = appVueVenta.filtro.Turno;
+                    item.FechaViaje = appVueVenta.filtro.Fecha;
+
+                    appController.showMiniMapa(item);
+                    
+                    deferredModal($('#appVueMiniMapa'), false).done(function () {
+                        APP.msg.error('Se cerró el modal y continua en el mismo método')
+                    });
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -8072,6 +8135,80 @@
                         }
                     }
                 }
+            }
+        });
+
+        var appVueMiniMapa = new Vue({
+            el: '#appVueMiniMapa',
+            data: {
+                list: {
+                    tempList: [],
+                    plano5: [],
+                    plano4: [],
+                    plano3: [],
+                    plano2: [],
+                    plano1: []
+                }
+            },
+            mounted: function () {
+                let _this = this;
+
+                var modal = $('#appVueMiniMapa');
+
+                modal.modal({
+                    'backdrop': 'static',
+                    'keyboard': false,
+                    'show': false
+                });
+                
+                modal.on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+                });
+            },
+            methods: {
+                show: async function (_item) {
+                    let _this = this;
+                    await _this.searchData(_item);
+                    $('#appVueMiniMapa').modal('show');
+                },
+                setData: function () {
+
+                },
+                searchData: async function (_item) {
+                    let _this = this;
+                    var item = {};
+                    item.CodiEmpresa = _item.CodiEmpresa;
+                    item.CodiOrigen = _item.CodiOrigen;
+                    item.CodiDestino = _item.CodiDestino;
+                    item.CodiSucursal = _item.CodiSucursal;
+                    item.CodiRuta = _item.CodiRuta;
+                    item.CodiPuntoVenta = _item.CodiPuntoVenta;
+                    item.CodiServicio = _item.CodiServicio;
+                    item.HoraViaje = _item.HoraViaje;
+                    item.FechaViaje = _item.FechaViaje;
+
+                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', item)
+                        .then(function (res) {
+                            _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                            _this.list.plano5 = _this.list.tempList.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                            _this.list.plano4 = _this.list.tempList.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                            _this.list.plano3 = _this.list.tempList.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                            _this.list.plano2 = _this.list.tempList.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                            _this.list.plano1 = _this.list.tempList.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueMiniMapa').modal('hide');
+                },
+            },
+            computed: {
             }
         });
 

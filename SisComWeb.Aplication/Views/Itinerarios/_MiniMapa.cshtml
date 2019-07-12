@@ -1,0 +1,127 @@
+﻿
+<div id="appVueMiniMapa" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Buscar Asiento</b></h4>
+            </div>
+            <div class="modal-body p-0">
+                <div class="form-horizontal">
+                    <div class="container-bus bgc-emp">
+                        <div class="img-bus">
+                            <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
+                        </div>
+                        <div class="table-responsive form-bus">
+
+                            <table id="tblLista" class="table table-bus">
+                                <tbody>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano1"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button :id="'btnAsientoMini_' + item.Tipo"
+                                                        class="btn btn-bus"
+                                                        @*@@click="bloquearAsiento(item, true)"*@
+                                                        :style="[item.FlagVenta ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                        :disabled="item.FlagVenta != ''">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano2"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button :id="'btnAsientoMini_' + item.Tipo"
+                                                        class="btn btn-bus"
+                                                        @*@@click="bloquearAsiento(item, true)"*@
+                                                        :style="[item.FlagVenta ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                        :disabled="item.FlagVenta != ''">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano3"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button :id="'btnAsientoMini_' + item.Tipo"
+                                                        class="btn btn-bus"
+                                                        @*@@click="bloquearAsiento(item, true)"*@
+                                                        :style="[item.FlagVenta ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                        :disabled="item.FlagVenta != ''">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano4"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button :id="'btnAsientoMini_' + item.Tipo"
+                                                        class="btn btn-bus"
+                                                        @*@@click="bloquearAsiento(item, true)"*@
+                                                        :style="[item.FlagVenta ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                        :disabled="item.FlagVenta != ''">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano5"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button :id="'btnAsientoMini_' + item.Tipo"
+                                                        class="btn btn-bus"
+                                                        @*@@click="bloquearAsiento(item, true)"*@
+                                                        :style="[item.FlagVenta ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                        :disabled="item.FlagVenta != ''">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,8 +17,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse in">
-                            <div class="panel-body" style="min-height: 320px;">
+                        <div id="collapse-zone" class="panel-wrapper collapse in" aria-expanded="true">
+                            <div class="panel-body">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
                                         <div class="col-md-11 p-0">
@@ -381,8 +381,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse">
-                            <div class="panel-body" style="min-height: 320px;">
+                        <div id="collapse-zone" class="panel-wrapper collapse" aria-expanded="false">
+                            <div class="panel-body p-b-0">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
                                         <div class="col-md-11 p-0">
@@ -494,7 +494,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <paginate ref="paginator" name="items" :list="list.itinerarios" :per="10">
-                                                            <tr v-for="item in paginated('items')">
+                                                            <tr v-for="(item, key) in paginated('items')">
                                                                 <td class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -547,15 +547,83 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse">
-                            <div class="panel-body" style="min-height: 320px;">
+                        <div id="collapse-zone" class="panel-wrapper collapse" aria-expanded="false">
+                            <div class="panel-body">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5" v-show="!showData">
-                                        <div class="col-md-1 p-0">
-                                            <div class="col-md-12 col-xs-4 separate-in-form">
-                                                <label style="width: 100%">&nbsp;</label>
-                                                <input id="hourPicker" type="text" value="11">
+                                        <div class="col-md-12 p-0">
+                                            <div class="col-md-2 separate-in-form p-r-10">
+                                                <div class="input-group input-sm p-0">
+                                                    <input @*:value="item.turno"*@
+                                                           class="form-control input-sm"
+                                                           style="min-height:80px;
+                                                                    font-size: 36px !important;
+                                                                    font-weight: 500;
+                                                                    color: var(--emp-color);
+                                                                    background-color: #fff !important;
+                                                                    text-align: center;" />
+                                                    <span @@click="showMiniMapa"
+                                                          class="input-group-addon"
+                                                          style="font-size: 18px !important;
+                                                                white-space:pre-wrap;
+                                                                cursor:pointer;">BUSCAR ASIENTO</span>
+                                                </div>
                                             </div>
+                                            <div class="col-md-3 separate-in-form">
+                                                <label class="control-label label-sm">Nuevo Destino Pasajero:</label>
+                                                <div class="">
+                                                    <v-select v-model="filtroCodiMotivo"
+                                                              :options="list.motivos"
+                                                              :placeholder="'MOTIVO'"
+                                                              :select-on-tab="true"
+                                                              :get-option-label="getLabel"
+                                                              @@keydown.13.native.prevent=""
+                                                              ref="">
+                                                        <template slot="option" slot-scope="option">
+                                                            <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                        </template>
+                                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                    </v-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 separate-in-form">
+                                                <label class="control-label label-sm">Nueva Fecha:</label>
+                                                <div class="">
+                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                           class="form-control input-sm"
+                                                           style="background-color:rgb(253, 249, 205);"
+                                                           disabled />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 separate-in-form">
+                                                <label class="control-label label-sm">Nueva Hora:</label>
+                                                <div class="">
+                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                           class="form-control input-sm"
+                                                           style="background-color:rgb(253, 249, 205);"
+                                                           disabled />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 p-0">
+                                                <div class="col-md-6 separate-in-form">
+                                                    <label class="control-label label-sm">Monto Real:</label>
+                                                    <div class="">
+                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 separate-in-form">
+                                                    <label class="control-label label-sm">Diferencia de Precio:</label>
+                                                    <div class="">
+                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                            </div>                                            
                                         </div>
                                     </div>
                                     <template v-if="showData">

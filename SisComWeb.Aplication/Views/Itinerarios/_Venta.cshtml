@@ -98,24 +98,24 @@
                                    href="javascript:void(0);"
                                    id="btnActualizar"
                                    style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
-                                    <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " />
+                                    <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " draggable="false"/>
                                     <label style="cursor: pointer;">Actualizar</label>
                                 </a>
                                 <div @@click="hideVentas"
                                      style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
-                                    <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " />
+                                    <img src="~/wwwroot/plugins/images/ATRAS.png" style="margin: 0px 0px 3px 10px; " draggable="false"/>
                                     <label style="cursor: pointer; ">Atrás</label>
                                 </div>
                                 <a @@click="cerrarVentas">
                                     <div style="display: inline-block; cursor: pointer;">
-                                        <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px; " />
+                                        <img src="~/wwwroot/plugins/images/CERRAR.png" style="margin: 0px 0px 3px 10px;" draggable="false"/>
                                     </div>
                                 </a>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div class="panel-heading" style="padding: 5px 0px 5px 5px; ">
-                                <img src="~/wwwroot/plugins/images/BUS3.png" />
+                                <img src="~/wwwroot/plugins/images/BUS3.png" draggable="false"/>
                                 <label class="control-label" style="margin-left: 5px; font-size: 12px; display: inline; color: var(--emp-color); ">
                                     CON EMBARQUE EN: {{setCadenaEmbarques}}
                                 </label>
@@ -367,20 +367,20 @@
                         <div v-show="showPlano" class="container-bus bgc-emp">
                             <div class="col-md-12" style="background-color: white; min-height: 30px;margin-bottom: 15px;border-radius: 4px; display: flex; align-items: center; ">
                                 <div class="col-md-1">
-                                    <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin: 0px 10px 2px; " />
+                                    <img src="~/wwwroot/plugins/images/users/BUS2.png" style="margin: 0px 10px 2px;" draggable="false"/>
                                     <label style="margin-bottom: 0px; ">{{objPlano.CodiBus}}</label>
                                 </div>
                                 <div class="col-md-1">
-                                    <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin: 0px 10px 2px; " />
+                                    <img src="~/wwwroot/plugins/images/users/PLACA.png" style="margin: 0px 10px 2px;" draggable="false"/>
                                     <label style="margin-bottom: 0px; ">{{objPlano.PlacaBus}}</label>
                                 </div>
                                 <div class="col-md-2">
-                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px;" draggable="false"/>
                                     <label style="margin-bottom: 0px; ">{{objPlano.NombreChofer}}</label>
 
                                 </div>
                                 <div class="col-md-2">
-                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px; " />
+                                    <img src="~/wwwroot/plugins/images/users/CHOFER.png" style="margin: 0px 10px 2px;" draggable="false"/>
                                     <label style="margin-bottom: 0px; ">{{objPlano.NombreCopiloto}}</label>
                                 </div>
                                 <div class="col-md-6 text-right">
@@ -391,7 +391,7 @@
                                 </div>
                             </div>
                             <div class="img-bus">
-                                <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
+                                <img src="~/wwwroot/plugins/images/users/cabecera-bus.png" draggable="false"/>
                             </div>
                             <div class="table-responsive form-bus">
 
@@ -419,12 +419,15 @@
 
                                 <table id="tblLista" class="table table-bus">
                                     <tbody>
-                                        <tr>
+                                        <tr draggable="false">
                                             <td v-for="(item, key) in list.plano1"
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
+                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
@@ -434,21 +437,21 @@
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else-if="item.FlagVenta == 'VI'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/v.png" />
+                                                                        <img src="~/wwwroot/plugins/images/v.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-left">
-                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" draggable="false"/>
                                                                     </span>
                                                                     <span class="ios-right">{{item.Sigla}}</span>
                                                                 </div>
@@ -458,7 +461,7 @@
                                                             <template v-if="item.FlagVenta == 'AB'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/close.png" />
+                                                                        <img src="~/wwwroot/plugins/images/close.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
@@ -473,12 +476,15 @@
                                                 </template>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr draggable="false">
                                             <td v-for="(item, key) in list.plano2"
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
+                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
@@ -488,21 +494,21 @@
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else-if="item.FlagVenta == 'VI'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/v.png" />
+                                                                        <img src="~/wwwroot/plugins/images/v.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-left">
-                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" draggable="false"/>
                                                                     </span>
                                                                     <span class="ios-right">{{item.Sigla}}</span>
                                                                 </div>
@@ -512,7 +518,7 @@
                                                             <template v-if="item.FlagVenta == 'AB'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/close.png" />
+                                                                        <img src="~/wwwroot/plugins/images/close.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
@@ -527,12 +533,15 @@
                                                 </template>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr draggable="false">
                                             <td v-for="(item, key) in list.plano3"
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
+                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
@@ -542,21 +551,21 @@
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else-if="item.FlagVenta == 'VI'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/v.png" />
+                                                                        <img src="~/wwwroot/plugins/images/v.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-left">
-                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" draggable="false"/>
                                                                     </span>
                                                                     <span class="ios-right">{{item.Sigla}}</span>
                                                                 </div>
@@ -566,7 +575,7 @@
                                                             <template v-if="item.FlagVenta == 'AB'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/close.png" />
+                                                                        <img src="~/wwwroot/plugins/images/close.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
@@ -581,12 +590,15 @@
                                                 </template>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr draggable="false">
                                             <td v-for="(item, key) in list.plano4"
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
+                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
@@ -596,21 +608,21 @@
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else-if="item.FlagVenta == 'VI'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/v.png" />
+                                                                        <img src="~/wwwroot/plugins/images/v.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-left">
-                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" draggable="false"/>
                                                                     </span>
                                                                     <span class="ios-right">{{item.Sigla}}</span>
                                                                 </div>
@@ -620,7 +632,7 @@
                                                             <template v-if="item.FlagVenta == 'AB'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/close.png" />
+                                                                        <img src="~/wwwroot/plugins/images/close.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
@@ -635,12 +647,15 @@
                                                 </template>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr draggable="false">
                                             <td v-for="(item, key) in list.plano5"
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
+                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
@@ -650,21 +665,21 @@
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/r1.png" />
+                                                                        <img src="~/wwwroot/plugins/images/r1.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else-if="item.FlagVenta == 'VI'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/v.png" />
+                                                                        <img src="~/wwwroot/plugins/images/v.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
                                                             <template v-else>
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-left">
-                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" />
+                                                                        <img :src="iconVentaBus(item.Sexo, item.Edad)" draggable="false"/>
                                                                     </span>
                                                                     <span class="ios-right">{{item.Sigla}}</span>
                                                                 </div>
@@ -674,7 +689,7 @@
                                                             <template v-if="item.FlagVenta == 'AB'">
                                                                 <div class="icons-of-seat">
                                                                     <span class="ios-center">
-                                                                        <img src="~/wwwroot/plugins/images/close.png" />
+                                                                        <img src="~/wwwroot/plugins/images/close.png" draggable="false"/>
                                                                     </span>
                                                                 </div>
                                                             </template>
@@ -701,7 +716,7 @@
                                      @@click="leftSlider('click')"
                                      class="bgc-emp"
                                      style="border-radius: 0px 10px 10px 0px; ">
-                                    <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" />
+                                    <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" draggable="false"/>
                                 </div>
                             </div>
                             <div id="bannerVentas" class="col-md-10" style="border: 1px solid var(--emp-color); width: calc(100% - 70px); border-radius: 10px; padding: 15px 15px 10px 15px; background-color: white; z-index: 1">
@@ -1179,7 +1194,7 @@
                                      @@click="rightSlider('click')"
                                      class="bgc-emp"
                                      style="border-radius: 10px 0px 0px 10px; ">
-                                    <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%" />
+                                    <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%" draggable="false"/>
                                 </div>
                             </div>
                         </div>
