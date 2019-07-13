@@ -669,6 +669,44 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-opciones-modificacion")]
+        public async Task<JsonResult> GetOpcionesModificacion()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaOpcionesModificacion");
+                    HttpResponseMessage response = await client.GetAsync(url + "ListaOpcionesModificacion");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
     }
 }

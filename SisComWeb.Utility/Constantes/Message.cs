@@ -320,5 +320,9 @@
 
         public const string MsgCorrectoVentaUpdateImpManifiesto = "Correcto: VentaUpdateImpManifiesto.";
         public const string MsgExcVentaUpdateImpManifiesto = "Excepción: VentaUpdateImpManifiesto.";
+
+        //Reintegro
+        public const string MsgCorrectoListaOpcionesModificacion = "Correcto: ListaOpcionesModificacion.";
+        public const string MsgExcListaOpcionesModificacion = "Excepción: ListaOpcionesModificacion.";
     }
 }

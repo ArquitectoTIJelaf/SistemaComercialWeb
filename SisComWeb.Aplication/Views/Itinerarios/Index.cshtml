@@ -444,6 +444,7 @@
 
         .btn-bus:hover {
             background-color: var(--emp-color);
+            transition: background-color .3s;
         }
     </style>
 
@@ -506,7 +507,7 @@
     <script type="text/javascript">
                
         $(document).ready(function () {    
-
+            
             $(document).on('hidden.bs.modal', '.modal', function () {
                 $('.modal:visible').length && $(document.body).addClass('modal-open');
             });
@@ -5307,11 +5308,35 @@
                         }
                     }
                 },
-                contextMenuReintegro: function () {
+                contextMenuReintegro: async function () {
+                    let _this = this;
                     if (this.itemSelected) {
-                        if (this.itemSelected.IdVenta)
-                            //this.sendToAnularVenta(this.itemSelected);
+                        if (this.itemSelected.IdVenta) {
+                            // Valida 'TurnoDisponible'
+                            if (!IngresoManualPasajes) {
+                                if (appController.validatePanel('54') === '1') {
+
+                                    var verificaTurnoDisponible = _this.verificaTurnoDisponible();
+                                    if (!verificaTurnoDisponible) {
+                                        APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                        return;
+                                    }
+                                }
+                            }
+
+                            // Valida 'FechaViaje'
+                            if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
+                                APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                                return;
+                            }
+
+                            // Valida 'Manifiesto'
+                            var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
+                            if (!resValidaManifiestoProgramacion)
+                                return;
+
                             appController.showReintegro(this.itemSelected);
+                        }
                         else {
                             APP.msg.warning('Debe seleccionar un asiento vendido.');
                             // Animación 'ScrollTop'
@@ -8065,7 +8090,8 @@
                 list: {
                     empresas: [],
                     motivos: [],
-                    itinerarios: []
+                    itinerarios: [],
+                    opcionesModificacion: []
                 },
                 paginate: ['items'],
                 showData: false,
@@ -8076,7 +8102,7 @@
                 $('#appVueReintegro').on('shown.bs.modal', function () {
                     window.addEventListener('keyup', _this.esc);
                     $(document).off('focusin.modal');
-                    _this.$refs.refREEmpresa.$el.querySelector('input').focus();      
+                    _this.$refs.refREMotivo.$el.querySelector('input').focus();      
                 });
             },
             methods: {
@@ -8084,7 +8110,8 @@
                     //this.limpiarRE();
                     //this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');
-                    this.setData();                    
+                    this.setData();        
+                    this.listaOpcionesModificacion();
                 },
                 setData: function () {
                     let _this = this;
@@ -8102,6 +8129,21 @@
                 },
                 searchData: function () {
 
+                },
+                listaOpcionesModificacion: async function () {
+                    var _this = this;
+
+                    if (_this.list.motivos && _this.list.motivos.length > 0)
+                        return;
+
+                    await APP.rq.axios2.get(APP.base + '/base/get-opciones-modificacion')
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.motivos = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`

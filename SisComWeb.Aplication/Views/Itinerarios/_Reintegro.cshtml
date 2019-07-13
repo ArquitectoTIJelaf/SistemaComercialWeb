@@ -109,7 +109,7 @@
                                             <button @@click="searchData"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
                                                     ref="refREBuscar">
-                                                <span class="fa fa-search fa-fw"></span>Buscar
+                                                <span class="fa fa-search fa-fw"></span>Verificar
                                             </button>
                                         </div>
                                     </div>
@@ -173,7 +173,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-11 p-0">
+                                        <div class="col-md-12 p-0">
                                             <div class="col-md-12 p-0">
                                                 <div class="col-md-2 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Documento:</label>
@@ -336,7 +336,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-1 p-0">
+                                        @*<div class="col-md-1 p-0">
                                             <div class="col-md-12 col-xs-4 separate-in-form">
                                                 <label style="width: 100%">&nbsp;</label>
                                                 <button @@click="searchData"
@@ -361,7 +361,7 @@
                                                     Anular
                                                 </button>
                                             </div>
-                                        </div>
+                                        </div>*@
 
                                     </div>
                                     <template v-if="showData">
@@ -396,7 +396,7 @@
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
                                                                   @@keydown.13.native.prevent=""
-                                                                  ref="refREMotivo">
+                                                                  ref="refREOrigen">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -413,7 +413,7 @@
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
                                                                   @@keydown.13.native.prevent=""
-                                                                  ref="refREMotivo">
+                                                                  ref="refREDestino">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -430,7 +430,7 @@
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
                                                                   @@keydown.13.native.prevent=""
-                                                                  ref="refREMotivo">
+                                                                  ref="refREServicio">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -566,7 +566,8 @@
                                                           class="input-group-addon"
                                                           style="font-size: 18px !important;
                                                                 white-space:pre-wrap;
-                                                                cursor:pointer;">BUSCAR ASIENTO</span>
+                                                                cursor:pointer;
+                                                                background-color: #E4E7EA;">BUSCAR ASIENTO</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-3 separate-in-form">
@@ -586,40 +587,36 @@
                                                     </v-select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 separate-in-form">
+                                            <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Nueva Fecha:</label>
                                                 <div class="">
                                                     <input @*:value="item.destinoBus | rutas"*@
                                                            class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
                                                            disabled />
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 separate-in-form">
+                                            <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Nueva Hora:</label>
                                                 <div class="">
                                                     <input @*:value="item.destinoBus | rutas"*@
                                                            class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
                                                            disabled />
                                                 </div>
                                             </div>
                                             <div class="col-md-3 p-0">
-                                                <div class="col-md-6 separate-in-form">
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Monto Real:</label>
                                                     <div class="">
                                                         <input @*:value="item.destinoBus | rutas"*@
                                                                class="form-control input-sm"
-                                                               style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 separate-in-form">
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Diferencia de Precio:</label>
                                                     <div class="">
                                                         <input @*:value="item.destinoBus | rutas"*@
                                                                class="form-control input-sm"
-                                                               style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
@@ -635,8 +632,14 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button @@click="close" class="btn btn-primary waves-effect waves-light">
+                    <span class="fa fa-floppy-o fa-fw"></span>Aceptar
+                </button>
+                <button @@click="close" class="btn btn-danger waves-effect waves-light">
+                    <span class="glyphicon glyphicon-remove fa-fw"></span>Anular
+                </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">
-                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
                 </button>
             </div>
         </div>

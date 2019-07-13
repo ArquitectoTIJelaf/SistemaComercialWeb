@@ -248,5 +248,19 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListaOpcionesModificacion()
+        {
+            try
+            {
+                var lista = BaseRepository.ListaOpcionesModificacion();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaOpcionesModificacion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
+            }
+        }
     }
 }

@@ -81,6 +81,10 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["USUARIO"]);
                     item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
                     break;
+                case 18:
+                    item.id = DataUtility.ObjectToString(reader["CODIGO"]);
+                    item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -429,6 +433,25 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 17));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaOpcionesModificacion()
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificacionConsultar";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 18));
                     }
                 }
             }
