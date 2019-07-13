@@ -1840,6 +1840,7 @@ APP.ventas.colorDegrade = '#FFFFFF';
 //    });
 //});
 
+
 Vue.directive('numb-or-lett', function (el, binding, vnode) {
     el.addEventListener('keypress', (e) => {
         var inp = String.fromCharCode(e.keyCode);
@@ -1850,18 +1851,18 @@ Vue.directive('numb-or-lett', function (el, binding, vnode) {
     });
 });
 
-Vue.directive('only-name', function (el, binding, vnode) {
-    el.addEventListener('keypress', (e) => {
-        var inp = String.fromCharCode(e.keyCode);
-        if (/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ´,'. ]/.test(inp))
-            return true;
-        else
-            e.preventDefault();
-    });
+//Vue.directive('only-name', function (el, binding, vnode) {
+//    el.addEventListener('keypress', (e) => {
+//        var inp = String.fromCharCode(e.keyCode);
+//        if (/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ´,'. ]/.test(inp))
+//            return true;
+//        else
+//            e.preventDefault();
+//    });
 
-    if (el.value)
-        el.value = el.value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi).join("");
-});
+//    if (el.value)
+//        el.value = el.value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi).join("");
+//});
 
 //Vue.directive('only-digit', function (el, binding, vnode) {
 //    el.addEventListener('keypress', (e) => {

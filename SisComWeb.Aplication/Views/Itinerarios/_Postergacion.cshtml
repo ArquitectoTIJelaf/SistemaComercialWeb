@@ -115,7 +115,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="asignBeneficiario" id="btnAsignarPos" :disabled="!filledCampos" class="btn btn-info waves-effect waves-light">
+                <button @@click="asignBeneficiario" id="btnAsignarPos" :disabled="!filledCampos || postClick" class="btn btn-info waves-effect waves-light">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">

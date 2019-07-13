@@ -433,7 +433,8 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :draggable="(pickedBusVenta == 'PO') ? true : false"
-                                                            @@dragover.prevent 
+                                                            @@dragstart="onDragstart(item)"
+                                                            @@dragover.prevent
                                                             @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
@@ -490,6 +491,7 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
@@ -547,6 +549,7 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
@@ -604,6 +607,7 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
@@ -661,6 +665,7 @@
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
                                                             :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
@@ -805,8 +810,8 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Nombres</label>
-                                                <input :value="list.ventas[indexVenta].Nombres.toUpperCase()"
-                                                       @@input="list.ventas[indexVenta].Nombres = $event.target.value.toUpperCase()"
+                                                <input v-model="list.ventas[indexVenta].Nombres"
+                                                       @@input="list.ventas[indexVenta].Nombres = $filterLettersToName(list.ventas[indexVenta].Nombres)"
                                                        @@keydown.13.prevent="recorridoSectionVentas"
                                                        @*@@keydown.9.prevent="recorridoSectionVentas"*@
                                                        id="txtNombres"
@@ -816,15 +821,14 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="NOMBRES"
                                                        maxlength="200"
-                                                       v-only-name
                                                        autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">Apellido paterno</label>
-                                                <input :value="list.ventas[indexVenta].ApellidoPaterno.toUpperCase()"
-                                                       @@input="list.ventas[indexVenta].ApellidoPaterno = $event.target.value.toUpperCase()"
+                                                <input v-model="list.ventas[indexVenta].ApellidoPaterno"
+                                                       @@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"
                                                        @@keydown.13.prevent="recorridoSectionVentas"
                                                        @*@@keydown.9.prevent="recorridoSectionVentas"*@
                                                        id="txtApellidoPaterno"
@@ -834,15 +838,14 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="PATERNO"
                                                        maxlength="50"
-                                                       v-only-name
                                                        autocomplete="off">
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">Apellido materno</label>
-                                                <input :value="list.ventas[indexVenta].ApellidoMaterno.toUpperCase()"
-                                                       @@input="list.ventas[indexVenta].ApellidoMaterno = $event.target.value.toUpperCase()"
+                                                <input v-model="list.ventas[indexVenta].ApellidoMaterno"
+                                                       @@input="list.ventas[indexVenta].ApellidoMaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoMaterno)"
                                                        @@keydown.13.prevent="recorridoSectionVentas"
                                                        @*@@keydown.9.prevent="recorridoSectionVentas"*@
                                                        id="txtApellidoMaterno"
@@ -852,7 +855,6 @@
                                                        style="font-size: 16px !important; font-weight: 500;"
                                                        placeholder="MATERNO"
                                                        maxlength="50"
-                                                       v-only-name
                                                        autocomplete="off">
                                             </div>
                                         </div>

@@ -58,9 +58,9 @@
                                        maxlength="50"
                                        autocomplete="off"
                                        v-model="Nombres"
+                                       @@input="Nombres = $filterLettersToName(Nombres)"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
-                                       v-only-name>
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@>
                             </div>
                         </div>
                     </div>
@@ -74,10 +74,10 @@
                                        maxlength="25"
                                        placeholder="APELLIDO PATERNO"
                                        v-model="ApellidoPaterno"
+                                       @@input="ApellidoPaterno = $filterLettersToName(ApellidoPaterno)"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        @*@@keydown.9.prevent="recorridoSectionParentesco"*@
-                                       autocomplete="off"
-                                       v-only-name>
+                                       autocomplete="off">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -89,10 +89,10 @@
                                        maxlength="25"
                                        placeholder="APELLIDO MATERNO"
                                        v-model="ApellidoMaterno"
+                                       @@input="ApellidoMaterno = $filterLettersToName(ApellidoMaterno)"
                                        @@keypress.13.prevent="recorridoSectionParentesco"
                                        @*@@keydown.9.prevent="recorridoSectionParentesco"*@
-                                       autocomplete="off"
-                                       v-only-name>
+                                       autocomplete="off">
                             </div>
                         </div>
                     </div>
