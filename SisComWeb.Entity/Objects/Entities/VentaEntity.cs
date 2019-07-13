@@ -144,8 +144,14 @@ namespace SisComWeb.Entity
 
         public AcompanianteEntity ObjAcompaniante { get; set; }
 
+
+        public bool IngresoManualPasajes { get; set; }
+
+
         // ANULACIÓN
         public string FechaVenta { get; set; }
+
+        public string FechaAnulacion { get; set; }
 
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; }

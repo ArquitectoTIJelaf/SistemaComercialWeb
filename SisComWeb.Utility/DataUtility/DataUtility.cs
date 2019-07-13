@@ -12,6 +12,31 @@ namespace SisComWeb.Utility
 {
     public class DataUtility
     {
+        public static string ObtenerFechaDelSistema()
+        {
+            return DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+        }
+
+        public static string Obtener12HorasDelSistema()
+        {
+            return DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture);
+        }
+
+        public static string Obtener24HorasConSegDelSistema()
+        {
+            return DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        public static string ObtenerMesDelSistema()
+        {
+            return DateTime.Now.ToString("MM", CultureInfo.InvariantCulture);
+        }
+
+        public static string ObtenerAñoDelSistema()
+        {
+            return DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture);
+        }
+
         public static string MontoSolesALetras(string numero)
         {
             string Valor = string.Empty;

@@ -4161,11 +4161,12 @@
                         NumeAsiento: tmpAsientoSel.NumeAsiento,
                         NomPasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
                         HoraViaje: _this.filtro.Turno,
-                        NomDestinoPas: _this.filtro.CodiDestinoPas.label,
+                        NomDestinoPas: tmpAsientoSel.NomDestino,
                         CodiEsca: tmpAsientoSel.CodiEsca,
+                        CodiDestinoPas: tmpAsientoSel.CodiDestino,
+                        IngresoManualPasajes: IngresoManualPasajes,
 
-                        CodiDestinoPas: _this.filtro.CodiDestinoPas.id,
-                        IngresoManualPasajes: IngresoManualPasajes
+                        NomOrigenPas: tmpAsientoSel.NomOrigen
                     }))
                         .then(async function (res) {
                             await appController.chargeTurnos();
@@ -5775,12 +5776,13 @@
                         input.PrecioNormal = objVenta.PrecioNormal;
                         input.ValidadorDescuento = objVenta.ValidadorDescuento;
                         input.ObservacionDescuento = objVenta.ObservacionDescuento;
-
                         input.ValidadorDescuentoControl = objVenta.ValidadorDescuentoControl;
                         input.DescuentoTipoDC = objVenta.DescuentoTipoDC;
                         input.ImporteDescuentoDC = objVenta.ImporteDescuentoDC;
                         input.ImporteDescontadoDC = objVenta.ImporteDescontadoDC;
                         input.AutorizadoDC = objVenta.AutorizadoDC;
+
+                        input.IngresoManualPasajes = IngresoManualPasajes;
 
                         // TIPOS DE VENTA
                         switch (_this.pickedBusVenta) {

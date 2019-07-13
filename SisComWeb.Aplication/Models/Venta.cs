@@ -168,14 +168,14 @@ namespace SisComWeb.Aplication.Models
         public decimal PrecioNormal { get; set; }
         public bool ValidadorDescuento { get; set; }
         public string ObservacionDescuento { get; set; }
-
         public bool ValidadorDescuentoControl { get; set; }
         public string DescuentoTipoDC { get; set; }
         public decimal ImporteDescuentoDC { get; set; }
         public decimal ImporteDescontadoDC { get; set; }
         public string AutorizadoDC { get; set; }
-
         public Acompaniante ObjAcompaniante { get; set; }
+
+        public bool IngresoManualPasajes { get; set; }
 
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; } // Código de gerente que autoriza el pase
@@ -318,9 +318,11 @@ namespace SisComWeb.Aplication.Models
 
         public string CodiEsca { get; set; }
 
-
         public string CodiDestinoPas { get; set; }
 
         public bool IngresoManualPasajes { get; set; }
+
+
+        public string NomOrigenPas { get; set; }
     }
 }

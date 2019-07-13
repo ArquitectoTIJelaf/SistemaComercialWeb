@@ -13,7 +13,6 @@ namespace SisComWeb.Entity.Objects.Entities
         public string RecoVenta { get; set; }
         public int ClavUsuario { get; set; }
         public string IndiAnulado { get; set; }
-        public string FechaAnulacion { get; set; }
         public int ClavUsuario1 { get; set; }
         public string EstadoAsiento { get; set; }
         public int CodiSucursalVenta { get; set; }

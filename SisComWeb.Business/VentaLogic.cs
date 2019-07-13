@@ -22,7 +22,6 @@ namespace SisComWeb.Business
         private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"].ToString();
         private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
         private static readonly short CodiSerieReserva = short.Parse(ConfigurationManager.AppSettings["codiSerieReserva"]);
-
         private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"].ToString();
         private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"].ToString();
 
@@ -116,7 +115,7 @@ namespace SisComWeb.Business
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
                 var consultaNroPoliza = new PolizaEntity()
                 {
-                    NroPoliza = "",
+                    NroPoliza = string.Empty,
                     FechaReg = "01/01/1900",
                     FechaVen = "01/01/1900"
                 };
@@ -130,7 +129,6 @@ namespace SisComWeb.Business
                 foreach (var entidad in Listado)
                 {
                     string auxBoletoCompleto = string.Empty;
-                    string auxNumeCaja = string.Empty;
                     entidad.UserWebSUNAT = UserWebSUNAT;
 
                     // Busca 'ProgramacionViaje'
@@ -492,7 +490,7 @@ namespace SisComWeb.Business
                     // Graba 'AuditoriaFechaAbierta'
                     if (entidad.FechaAbierta)
                     {
-                        var objAuditoriaFechaAbierta = new AuditoriaEntity
+                        var objAuditoriaFechaAbierta = new AuditoriaEntity // startIndex no puede ser mayor que la longitud de la cadena.
                         {
                             CodiUsuario = entidad.CodiUsuario,
                             NomUsuario = entidad.NomUsuario,
@@ -562,7 +560,7 @@ namespace SisComWeb.Business
                             ImpTeorico = entidad.PrecioNormal,
                             ImpReal = entidad.PrecioVenta,
                             Servicio = entidad.CodiServicio,
-                            Origen= entidad.CodiSucursal,
+                            Origen = entidad.CodiSucursal,
                             Destino = entidad.CodiDestino
                         };
                         var insertarDescuentoBoleto = VentaRepository.InsertarDescuentoBoleto(descuentoBoleto);
@@ -579,12 +577,12 @@ namespace SisComWeb.Business
                     }
 
                     // Valida 'LiquidacionVentas'
-                    var validarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+                    var validarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DataUtility.ObtenerFechaDelSistema());
 
                     // Actualiza 'LiquidacionVentas'
                     if (validarLiquidacionVentas > 0)
                     {
-                        var actualizarLiquidacionVentas = VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture));
+                        var actualizarLiquidacionVentas = VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DataUtility.Obtener12HorasDelSistema());
                         if (!actualizarLiquidacionVentas)
                             return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
                     }
@@ -619,43 +617,40 @@ namespace SisComWeb.Business
                                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                                     return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                                // Seteo 'NumeCaja'
-                                auxNumeCaja = entidad.CodiOficina.ToString() + entidad.CodiPuntoVenta.ToString() + generarCorrelativoAuxiliar;
-
                                 // Graba 'Caja'
                                 var objCajaEntity = new CajaEntity
                                 {
-                                    NumeCaja = int.Parse(generarCorrelativoAuxiliar).ToString("D7"),
+                                    NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
                                     CodiEmpresa = entidad.CodiEmpresa,
                                     CodiSucursal = entidad.CodiOficina,
-                                    Boleto = auxBoletoCompleto.Substring(1),
-                                    Monto = entidad.TipoPago == "02" ? entidad.Credito : entidad.PrecioVenta,
-                                    CodiUsuario = entidad.CodiUsuario,
-                                    Recibe = entidad.TipoPago == "02" ? "PAGO MULTIPLE-PARCIAL" : string.Empty,
-                                    CodiDestino = entidad.CodiDestino.ToString(),
-                                    FechaViaje = entidad.FechaViaje,
-                                    HoraViaje = entidad.HoraViaje,
-                                    CodiPuntoVenta = entidad.CodiPuntoVenta,
-                                    IdVenta = entidad.IdVenta,
-                                    Origen = entidad.TipoPago == "02" ? "PA" : "VT",
-                                    Modulo = entidad.TipoPago == "02" ? "VT" : "PV",
-                                    Tipo = entidad.Tipo,
-
-                                    NomUsuario = entidad.NomUsuario,
-                                    ConcCaja = auxBoletoCompleto,
+                                    FechaCaja = DataUtility.ObtenerFechaDelSistema(),
                                     TipoVale = "S",
-                                    CodiBus = "",
-                                    CodiChofer = "",
-                                    CodiGasto = "",
+                                    Boleto = auxBoletoCompleto.Substring(1),
+                                    NomUsuario = entidad.NomUsuario,
+                                    CodiBus = string.Empty,
+                                    CodiChofer = string.Empty,
+                                    CodiGasto = string.Empty,
+                                    ConcCaja = auxBoletoCompleto,
+                                    Monto = entidad.TipoPago == "03" ? entidad.PrecioVenta : entidad.Credito,
+                                    CodiUsuario = entidad.CodiUsuario,
                                     IndiAnulado = "F",
-                                    TipoDescuento = "",
+                                    TipoDescuento = string.Empty,
                                     TipoDoc = "XX",
                                     TipoGasto = "P",
                                     Liqui = 0M,
                                     Diferencia = 0M,
+                                    Recibe = entidad.TipoPago == "03" ? (entidad.FlagVenta == "Y" || entidad.FlagVenta == "I" ? "REMOTO" : string.Empty) : "PAGO MULTIPLE-PARCIAL",
+                                    CodiDestino = entidad.CodiDestino.ToString(),
+                                    FechaViaje = entidad.FechaViaje,
+                                    HoraViaje = entidad.HoraViaje,
+                                    CodiPuntoVenta = entidad.CodiPuntoVenta,
                                     Voucher = "PA",
-                                    Asiento = "",
-                                    Ruc = "N",
+                                    Asiento = string.Empty,
+                                    Ruc = entidad.IngresoManualPasajes ? "M" : "N",
+                                    IdVenta = entidad.IdVenta,
+                                    Origen = "VT",
+                                    Modulo = entidad.TipoPago == "03" ? "PV" : "PA",
+                                    Tipo = entidad.Tipo,
 
                                     IdCaja = 0
                                 };
@@ -663,6 +658,9 @@ namespace SisComWeb.Business
                                 var grabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
                                 if (grabarCaja > 0)
                                 {
+                                    // Seteo 'NumeCaja'
+                                    var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
+
                                     // Graba 'PagoTarjetaCredito'
                                     var objTarjetaCreditoEntity = new TarjetaCreditoEntity
                                     {
@@ -707,7 +705,7 @@ namespace SisComWeb.Business
                         Precio = entidad.PrecioVenta,
                         Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES NRO BOLETO:" + auxBoletoCompleto,
                         Obs2 = "Empresa : " + entidad.CodiEmpresa.ToString("D2"),
-                        Obs3 = "TERMINAL : " + entidad.CodiTerminal+ " SER. " + entidad.CodiServicio.ToString("D2"),
+                        Obs3 = "TERMINAL : " + entidad.CodiTerminal + " SER. " + entidad.CodiServicio.ToString("D2"),
                         Obs4 = "PROGRAMACION" + entidad.CodiProgramacion + " ORG PAS " + entidad.CodiOrigen.ToString("D3"),
                         Obs5 = "DET BUS " + entidad.CodiRuta.ToString("D3") + " DET PAS " + entidad.CodiDestino.ToString("D3")
                     };
@@ -728,8 +726,8 @@ namespace SisComWeb.Business
                         BoletoSerie = entidad.SerieBoleto.ToString("D3"),
                         BoletoNum = entidad.NumeBoleto.ToString("D8"),
                         CodDocumento = entidad.CodiDocumento,
-                        EmisionFecha = DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture),
-                        EmisionHora = DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture),
+                        EmisionFecha = DataUtility.ObtenerFechaDelSistema(),
+                        EmisionHora = DataUtility.Obtener12HorasDelSistema(),
                         CajeroCod = entidad.CodiUsuario,
                         CajeroNom = entidad.NomUsuario,
                         PasNombreCom = entidad.SplitNombre[0] + " " + entidad.SplitNombre[1] + " " + entidad.SplitNombre[2],
@@ -1002,7 +1000,7 @@ namespace SisComWeb.Business
                     if (!resAnularDocumentoSUNAT.Estado)
                         return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
                 }
-                
+
                 if (request.FlagVenta == "8" || request.FlagVenta == "7")
                     // Actualiza 'VentaPromokmt'
                     VentaRepository.ActualizarVentaPromokmt(request.IdVenta);
@@ -1014,7 +1012,7 @@ namespace SisComWeb.Business
 
                 if (request.TipoPago == "03")
                 {
-                    if (request.FechaVenta == DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture))
+                    if (request.FechaVenta == DataUtility.ObtenerFechaDelSistema())
                     {
                         // Consulta 'PagoTarjetaVenta'
                         var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(request.IdVenta);
@@ -1026,9 +1024,7 @@ namespace SisComWeb.Business
                 if (request.FlagVenta == "1")
                 {
                     if (request.CodiUsuarioBoleto == request.CodiUsuario)
-                    {
-                        VentaRepository.ActualizarCajaAnulacion(int.Parse(request.ValeRemoto ?? "0"));
-                    }
+                        VentaRepository.ActualizarCajaAnulacion(int.Parse(request.ValeRemoto ?? "0")); // La cadena de entrada no tiene el formato correcto.
 
                     // Consulta 'BoletoPorContrato'
                     var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(request.IdVenta);
@@ -1056,40 +1052,122 @@ namespace SisComWeb.Business
                 // Graba 'Caja'
                 var objCaja = new CajaEntity
                 {
-                    NumeCaja = int.Parse(generarCorrelativoAuxiliar).ToString("D7"),
+                    NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
                     CodiEmpresa = objVenta.CodiEmpresa,
                     CodiSucursal = short.Parse(request.CodiOficina),
+                    FechaCaja = objVenta.FechaAnulacion,
+                    TipoVale = "S",
                     Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
+                    NomUsuario = request.CodiUsuario.ToString() + " " + request.NomUsuario,
+                    CodiBus = string.Empty,
+                    CodiChofer = string.Empty,
+                    CodiGasto = string.Empty,
+                    ConcCaja = string.Empty, /*Va cambiar*/
                     Monto = request.PrecioVenta,
                     CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
-                    Recibe = string.Empty,
-                    CodiDestino = request.CodiDestinoPas.TrimStart('0'),
-                    FechaViaje = request.FechaViaje,
-                    HoraViaje = "VNA",
-                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
-                    IdVenta = request.IdVenta,
-                    Origen = "AB",
-                    Modulo = "AP",
-                    Tipo = request.Tipo,
-
-                    NomUsuario = request.CodiUsuario.ToString() + request.NomUsuario,
-                    ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
-                    TipoVale = "S",
-                    CodiBus = "",
-                    CodiChofer = "",
-                    CodiGasto = "",
                     IndiAnulado = "F",
-                    TipoDescuento = "",
-                    TipoDoc = "XX",
+                    TipoDescuento = string.Empty, /*Va cambiar*/
+                    TipoDoc = "16",
                     TipoGasto = "P",
                     Liqui = 0M,
                     Diferencia = 0M,
-                    Voucher = "PA",
-                    Asiento = "",
-                    Ruc = "",
+                    Recibe = string.Empty, /*Va cambiar*/
+                    CodiDestino = request.TipoPago,
+                    FechaViaje = request.FechaVenta,
+                    HoraViaje = string.Empty, /*Va cambiar*/
+                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                    Voucher = string.Empty, /*Va cambiar*/
+                    Asiento = string.Empty, /*Va cambiar*/
+                    Ruc = request.IngresoManualPasajes ? "MA": string.Empty,
+                    IdVenta = request.IdVenta,
+                    Origen = string.Empty, /*Va cambiar*/
+                    Modulo = "AP",
+                    Tipo = request.Tipo,
 
                     IdCaja = 0
                 };
+
+                if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                {
+                    objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
+                    objCaja.TipoDescuento = "0";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VRA";
+                    objCaja.Voucher = request.ValeRemoto;
+                    objCaja.Asiento = "PA";
+                    objCaja.Origen = "YO";
+                }
+                else if (request.FlagVenta == "Y")
+                {
+                    objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
+                    objCaja.TipoDescuento = "0";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VRA";
+                    objCaja.Voucher = request.ValeRemoto;
+                    objCaja.Asiento = "PA";
+                    objCaja.Origen = "AY";
+                }
+                else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = "VC";
+                    objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
+                    objCaja.HoraViaje = "VCA";
+                    objCaja.Voucher = request.ValeRemoto;
+                    objCaja.Asiento = "PA";
+                    objCaja.Origen = "CR";
+                }
+                else if (request.FlagVenta == "1")
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = "VC";
+                    objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
+                    objCaja.HoraViaje = "VCA";
+                    objCaja.Voucher = request.ValeRemoto;
+                    objCaja.Asiento = "PA";
+                    objCaja.Origen = "AC";
+                }
+                else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = " ";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VNA";
+                    objCaja.Voucher = "PA";
+                    objCaja.Asiento = string.Empty;
+                    objCaja.Origen = "RC";
+                }
+                else if (request.FlagVenta == "I")
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = " ";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VNA";
+                    objCaja.Voucher = "PA";
+                    objCaja.Asiento = string.Empty;
+                    objCaja.Origen = "RR";
+                }
+                else if (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta)
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = " ";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VNA";
+                    objCaja.Voucher = "PA";
+                    objCaja.Asiento = string.Empty;
+                    objCaja.Origen = "BO";
+                }
+                else
+                {
+                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                    objCaja.TipoDescuento = " ";
+                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                    objCaja.HoraViaje = "VNA";
+                    objCaja.Voucher = "PA";
+                    objCaja.Asiento = string.Empty;
+                    objCaja.Origen = "AB";
+                }
+
                 var grabarCaja = VentaRepository.GrabarCaja(objCaja);
 
                 if (grabarCaja > 0)
@@ -1105,13 +1183,13 @@ namespace SisComWeb.Business
                         if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
                         {
                             // Consulta 'AnulacionPorDia'
-                            var ConsultaAnulacionPorDia =  TurnoRepository.ConsultaAnulacionPorDia(int.Parse(request.CodiPuntoVenta), DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
+                            var ConsultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(int.Parse(request.CodiPuntoVenta), DataUtility.ObtenerFechaDelSistema());
                             if (ConsultaAnulacionPorDia <= 0)
                                 // Inserta 'AnulacionPorDia'
-                                VentaRepository.InsertarAnulacionPorDia(DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture), int.Parse(request.CodiPuntoVenta), 1); // 1 -> Porque se anula uno por uno.
+                                VentaRepository.InsertarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta), 1); // 1 -> Porque se anula uno por uno.
                             else
                                 // Actualiza 'AnulacionPorDia'
-                                VentaRepository.ActualizarAnulacionPorDia(DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture), int.Parse(request.CodiPuntoVenta));
+                                VentaRepository.ActualizarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta));
                         }
 
                         // Graba 'Auditoria'
@@ -1142,7 +1220,7 @@ namespace SisComWeb.Business
                         if (!string.IsNullOrEmpty(request.CodiEsca))
                         {
                             // Consulta 'VentaReintegro'
-                            var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1,3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0,1));
+                            var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
 
                             if (objReintegro.IdVenta > 0)
                             {
@@ -1181,37 +1259,37 @@ namespace SisComWeb.Business
                                 // Graba 'CajaReintegro'
                                 var objCajaReintegro = new CajaEntity
                                 {
-                                    NumeCaja = int.Parse(generarCorrelativoAuxiliarReintegro).ToString("D7"),
+                                    NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
                                     CodiEmpresa = objReintegro.CodiEmpresa,
                                     CodiSucursal = short.Parse(request.CodiOficina),
+                                    FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                    TipoVale = "S",
                                     Boleto = request.CodiEsca.Substring(1),
+                                    NomUsuario = request.NomUsuario,
+                                    CodiBus = string.Empty,
+                                    CodiChofer = string.Empty,
+                                    CodiGasto = string.Empty,
+                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
                                     Monto = objReintegro.PrecioVenta,
                                     CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                                    IndiAnulado = "F",
+                                    TipoDescuento = "RE",
+                                    TipoDoc = string.Empty,
+                                    TipoGasto = "P",
+                                    Liqui = 0M,
+                                    Diferencia = 0M,
                                     Recibe = "RE",
                                     CodiDestino = request.CodiDestinoPas,
                                     FechaViaje = "01/01/1900",
                                     HoraViaje = "VNA",
                                     CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                                    Voucher = "RE",
+                                    Asiento = string.Empty,
+                                    Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
                                     IdVenta = objReintegro.IdVenta,
                                     Origen = "AR",
                                     Modulo = "PV",
                                     Tipo = request.CodiEsca.Substring(0, 1),
-
-                                    NomUsuario = request.NomUsuario,
-                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
-                                    TipoVale = "S",
-                                    CodiBus = "",
-                                    CodiChofer = "",
-                                    CodiGasto = "",
-                                    IndiAnulado = "F",
-                                    TipoDescuento = "RE",
-                                    TipoDoc = "",
-                                    TipoGasto = "P",
-                                    Liqui = 0M,
-                                    Diferencia = 0M,
-                                    Voucher = "RE",
-                                    Asiento = "",
-                                    Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
 
                                     IdCaja = 0
                                 };
@@ -1219,7 +1297,7 @@ namespace SisComWeb.Business
                             }
                         }
 
-                        // Anulaciòn para 'Pase'
+                        // Anulación para 'Pase'
                         if (request.FlagVenta == "7")
                         {
                             // Actualiza 'BoletosPorSocio'
@@ -1231,7 +1309,7 @@ namespace SisComWeb.Business
                             if (consultaCajaPase.IdCaja > 0)
                             {
                                 // Actualiza 'BoletoPorSocioV'
-                                VentaRepository.ActualizarBoletosPorSocioV(objVenta.PerAutoriza, DateTime.Now.ToString("MM", CultureInfo.InvariantCulture), DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture));
+                                VentaRepository.ActualizarBoletosPorSocioV(objVenta.PerAutoriza, DataUtility.ObtenerMesDelSistema(), DataUtility.ObtenerAñoDelSistema());
                             }
                         }
 
@@ -1539,7 +1617,8 @@ namespace SisComWeb.Business
             try
             {
                 var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(request.IdVenta, request.CodiServicio, request.CodiRuta);
-                if (modificarVentaAFechaAbierta > 0) {
+                if (modificarVentaAFechaAbierta > 0)
+                {
 
                     // Graba 'AuditoriaFechaAbierta'
                     var objAuditoriaFechaAbierta = new AuditoriaEntity
@@ -1640,7 +1719,7 @@ namespace SisComWeb.Business
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
                     var consultaNroPoliza = new PolizaEntity()
                     {
-                        NroPoliza = "",
+                        NroPoliza = string.Empty,
                         FechaReg = "01/01/1900",
                         FechaVen = "01/01/1900"
                     };
@@ -1665,10 +1744,10 @@ namespace SisComWeb.Business
 
                         var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
                         var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
-                        
-                        entidad.NumeAsiento = byte.Parse(entidad.NumeAsiento).ToString("D2");
-                        entidad.BoletoSerie = short.Parse(entidad.BoletoSerie).ToString("D3");
-                        entidad.BoletoNum = int.Parse(entidad.BoletoNum).ToString("D8");
+
+                        entidad.NumeAsiento = entidad.NumeAsiento.PadLeft(2, '0');
+                        entidad.BoletoSerie = entidad.BoletoSerie.PadLeft(3, '0');
+                        entidad.BoletoNum = entidad.BoletoNum.PadLeft(8, '0');
                         entidad.EmisionFecha = entidad.EmisionFecha;
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
                         entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
@@ -1732,7 +1811,7 @@ namespace SisComWeb.Business
             {
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 var entidadFE = new SetInvoiceRequestBody();
-                
+
                 // Busca 'RucEmpresa'
                 var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
 
@@ -1773,7 +1852,7 @@ namespace SisComWeb.Business
             try
             {
                 var serviceFE = new Ws_SeeFacteSoapClient();
-                
+
                 ResponseW ServFactElectResponse = serviceFE.SetInvoice(bodyDocumentoSunat.Security, bodyDocumentoSunat.Persona, bodyDocumentoSunat.CInvoice, bodyDocumentoSunat.DetInvoice, bodyDocumentoSunat.DocInvoice, bodyDocumentoSunat.Aditional, false);
                 return ServFactElectResponse;
             }
@@ -1816,7 +1895,7 @@ namespace SisComWeb.Business
                                 "|" + entidad.NumeBoleto.ToString("D8") +
                                 "|" + MotivoAnulacionFE +
                                 "|" + entidad.FechaVenta +
-                                "|" + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                                "|" + DataUtility.ObtenerFechaDelSistema();
 
                 ResponseW ServFactElectResponse = serviceFE.SetVoidedDocument(seguridadFE, documento);
                 return ServFactElectResponse;
@@ -1884,8 +1963,8 @@ namespace SisComWeb.Business
                 sb = sb.Replace("[TDocumento]", entidad.CodiDocumento);
                 sb = sb.Replace("[Serie]", entidad.Tipo + entidad.SerieBoleto.ToString("D3"));
                 sb = sb.Replace("[Numero]", entidad.NumeBoleto.ToString("D7"));
-                sb = sb.Replace("[FecEmision]", DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture));
-                sb = sb.Replace("[HoraEmision]", DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture));
+                sb = sb.Replace("[FecEmision]", DataUtility.ObtenerFechaDelSistema());
+                sb = sb.Replace("[HoraEmision]", DataUtility.Obtener24HorasConSegDelSistema());
                 sb = sb.Replace("[TMoneda]", "PEN");
                 sb = sb.Replace("[ImporteTotalVenta]", DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta));
                 sb = sb.Replace("[EnviarEmail]", string.Empty);
@@ -2084,7 +2163,7 @@ namespace SisComWeb.Business
         {
             var valor = new byte();
 
-            TipoDocumento = byte.Parse(TipoDocumento).ToString("D2");
+            TipoDocumento = TipoDocumento.PadLeft(2, '0');
 
             if (TipoDocumento == "01")
                 valor = 1;
@@ -2094,6 +2173,18 @@ namespace SisComWeb.Business
                 valor = 4;
 
             return valor;
+        }
+
+        public static string CondicionAnul(string ValeRemoto, string NomOrigenPas, string NomDestinoPas)
+        {
+            var value = string.Empty;
+
+            if (!string.IsNullOrEmpty(ValeRemoto))
+                value = "Val. : " + ValeRemoto + " : " + NomOrigenPas.Substring(0,3) + "-" + NomDestinoPas.Substring(0, 3);
+            else
+                value = NomOrigenPas.Substring(0, 3) + "-" + NomDestinoPas.Substring(0, 3);
+
+            return value;
         }
 
         #endregion

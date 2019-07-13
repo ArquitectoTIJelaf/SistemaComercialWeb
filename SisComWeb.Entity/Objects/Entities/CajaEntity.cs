@@ -8,6 +8,8 @@
 
         public short CodiSucursal { get; set; }
 
+        public string FechaCaja { get; set; }
+
         public string Boleto { get; set; }
 
         public decimal Monto { get; set; }

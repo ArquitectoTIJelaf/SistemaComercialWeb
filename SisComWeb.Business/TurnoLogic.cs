@@ -103,7 +103,7 @@ namespace SisComWeb.Business
                 if (resConsultaManifiestoProgramacion.Estado)
                     buscarTurno.X_Estado = resConsultaManifiestoProgramacion.Valor;
                 else
-                    buscarTurno.X_Estado = "";
+                    buscarTurno.X_Estado = string.Empty;
 
                 // Valida 'ProgramacionCerrada'
                 var resValidarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
