@@ -270,6 +270,7 @@ namespace SisComWeb.Repository
                         entidad.NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO");
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
                         entidad.PerAutoriza = Reader.GetStringValue(drlector, "per_autoriza");
+                        entidad.FechaAnulacion = Reader.GetDateStringValue(drlector, "FECH_ANULACION");
                         break;
                     }
                 }
@@ -327,7 +328,7 @@ namespace SisComWeb.Repository
         {
             var entidad = new PolizaEntity()
             {
-                NroPoliza = "",
+                NroPoliza = string.Empty,
                 FechaReg = "01/01/1900",
                 FechaVen = "01/01/1900"
             };
@@ -941,6 +942,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nume_Caja", DbType.String, ParameterDirection.Input, entidad.NumeCaja);
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
                 db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, entidad.CodiSucursal);
+                db.AddParameter("@FECH_CAJA", DbType.String, ParameterDirection.Input, entidad.FechaCaja);
                 db.AddParameter("@Boleto", DbType.String, ParameterDirection.Input, entidad.Boleto);
                 db.AddParameter("@Monto", DbType.Decimal, ParameterDirection.Input, entidad.Monto);
                 db.AddParameter("@Codi_Usuario", DbType.Int16, ParameterDirection.Input, entidad.CodiUsuario);

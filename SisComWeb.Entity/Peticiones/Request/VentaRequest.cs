@@ -59,9 +59,11 @@ namespace SisComWeb.Entity
 
         public string CodiEsca { get; set; }
 
-
         public string CodiDestinoPas { get; set; }
 
         public bool IngresoManualPasajes { get; set; }
+
+
+        public string NomOrigenPas { get; set; }
     }
 }

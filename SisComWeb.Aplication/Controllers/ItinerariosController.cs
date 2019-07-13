@@ -803,13 +803,11 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"PrecioNormal\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].PrecioNormal) + "\"" +
                                     ",\"ValidadorDescuento\" : " + Listado[i].ValidadorDescuento.ToString().ToLower() +
                                     ",\"ObservacionDescuento\" : \"" + Listado[i].ObservacionDescuento + "\"" +
-
                                     ",\"ValidadorDescuentoControl\" : " + Listado[i].ValidadorDescuentoControl.ToString().ToLower() +
                                     ",\"DescuentoTipoDC\" : \"" + Listado[i].DescuentoTipoDC + "\"" +
                                     ",\"ImporteDescuentoDC\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].ImporteDescuentoDC) + "\"" +
                                     ",\"ImporteDescontadoDC\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(Listado[i].ImporteDescontadoDC) + "\"" +
                                     ",\"AutorizadoDC\" : \"" + Listado[i].AutorizadoDC + "\"" +
-
                                     ",\"ObjAcompaniante\" : " +
                                     "{" +
                                         "\"TipoDocumento\" : \"" + Listado[i].ObjAcompaniante.CodiTipoDoc + "\"" +
@@ -820,11 +818,14 @@ namespace SisComWeb.Aplication.Controllers
                                         ",\"Sexo\" : \"" + Listado[i].ObjAcompaniante.Sexo + "\"" +
                                         ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
+
+                                    ",\"IngresoManualPasajes\" : " + Listado[i].IngresoManualPasajes.ToString().ToLower() +
+
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
                                     ",\"CodiSocio\" : \"" + Listado[i].CodiSocio + "\"" +
-                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
-                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Mes\" : \"" + DataUtility.ObtenerMesDelSistema() + "\"" +
+                                    ",\"Anno\" : \"" + DataUtility.ObtenerAñoDelSistema() + "\"" +
                                     ",\"Concepto\" : \"" + Listado[i].Concepto + "\"" +
                                     ",\"FechaAbierta\" : " + Listado[i].FechaAbierta.ToString().ToLower() +
                                     // RESERVA
@@ -940,8 +941,8 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"CodiSocio\" : \"" + CodiSocio + "\"" +
-                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
-                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Anno\" : \"" + DataUtility.ObtenerAñoDelSistema() + "\"" +
+                                    ",\"Mes\" : \"" + DataUtility.ObtenerMesDelSistema() + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ListaBeneficiarioPase", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -984,8 +985,8 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"CodiSocio\" : \"" + CodiSocio + "\"" +
-                                    ",\"Mes\" : \"" + DateTime.Now.ToString("MM", CultureInfo.InvariantCulture) + "\"" +
-                                    ",\"Anno\" : \"" + DateTime.Now.ToString("yyyy", CultureInfo.InvariantCulture) + "\"" +
+                                    ",\"Mes\" : \"" + DataUtility.ObtenerMesDelSistema() + "\"" +
+                                    ",\"Anno\" : \"" + DataUtility.ObtenerAñoDelSistema() + "\"" +
 
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ValidarPase", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -1024,7 +1025,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"CodiOficina\": " + usuario.CodiPuntoVenta +
                                     ",\"Password\": \"" + password + "\"" +
-                                    ",\"CodiTipo\": \"" + int.Parse(CodiTipo).ToString("D3") + "\"" +
+                                    ",\"CodiTipo\": \"" + CodiTipo.PadLeft(3, '0') + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ClavesInternas", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1080,9 +1081,10 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NomDestinoPas\": \"" + request.NomDestinoPas + "\"" +
                                     ",\"Terminal\": " + usuario.Terminal +
                                     ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
-
                                     ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
+
+                                    ",\"NomOrigenPas\": \"" + request.NomOrigenPas + "\"" +
                                 "}";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));

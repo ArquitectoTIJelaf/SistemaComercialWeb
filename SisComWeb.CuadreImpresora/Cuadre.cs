@@ -73,7 +73,7 @@ namespace SisComWeb.CuadreImpresora
                 if (TipoImpresion == TipoReimprimir)
                 {
                     texto.AppendLine("");
-                    texto.AppendLine("^FEC. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("^FEC. REIMP.: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                 }
             }
             // Impresora Matricial
@@ -126,7 +126,7 @@ namespace SisComWeb.CuadreImpresora
                 if (TipoImpresion == TipoReimprimir)
                 {
                     texto.AppendLine("");
-                    texto.AppendLine("FECHA DE REIMPRESION: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("FECHA DE REIMPRESION: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                 }
             }
             // Impresora Matricial (Formato reducido)
@@ -173,7 +173,7 @@ namespace SisComWeb.CuadreImpresora
                 if (TipoImpresion == TipoReimprimir)
                 {
                     texto.AppendLine("");
-                    texto.AppendLine("FECHA DE REIMPRESION: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("FECHA DE REIMPRESION: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                 }
             }
 
@@ -226,7 +226,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
-                    texto.AppendLine("^FEC. REIMP.: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("^FEC. REIMP.: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                     texto.AppendLine("");
                 }
                 texto.AppendLine(new string('-', 42));
@@ -292,7 +292,7 @@ namespace SisComWeb.CuadreImpresora
                 if (TipoImpresion == TipoReimprimir)
                 {
                     texto.AppendLine("");
-                    texto.AppendLine("FECHA DE REIMPRESION: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("FECHA DE REIMPRESION: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                 }
             }
             // Impresora Matricial (Formato reducido)
@@ -339,7 +339,7 @@ namespace SisComWeb.CuadreImpresora
                 if (TipoImpresion == TipoReimprimir)
                 {
                     texto.AppendLine("");
-                    texto.AppendLine("FECHA DE REIMPRESION: " + DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture) + " - " + DateTime.Now.ToString("hh:mmtt", CultureInfo.InvariantCulture) + " - " + venta.CajeroCod);
+                    texto.AppendLine("FECHA DE REIMPRESION: " + DataUtility.ObtenerFechaDelSistema() + " - " + DataUtility.Obtener12HorasDelSistema() + " - " + venta.CajeroCod);
                 }
             }
 
