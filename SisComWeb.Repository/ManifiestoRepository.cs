@@ -86,7 +86,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_Tb_Manifiesto_Programacion_Update";
+                db.ProcedureName = "scwsp_Tb_VENTA_Update_Manifiesto";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
 
                 db.Execute();

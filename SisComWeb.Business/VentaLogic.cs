@@ -487,33 +487,6 @@ namespace SisComWeb.Business
                         VentaRepository.AcompanianteVentaCRUD(objAcompanianteRequest);
                     }
 
-                    // Graba 'AuditoriaFechaAbierta'
-                    if (entidad.FechaAbierta)
-                    {
-                        var objAuditoriaFechaAbierta = new AuditoriaEntity // startIndex no puede ser mayor que la longitud de la cadena.
-                        {
-                            CodiUsuario = entidad.CodiUsuario,
-                            NomUsuario = entidad.NomUsuario,
-                            Tabla = "VENTA",
-                            TipoMovimiento = "POSTERGACION DE PASAJES",
-                            Boleto = auxBoletoCompleto.Substring(1),
-                            NumeAsiento = entidad.NumeAsiento.ToString("D2"),
-                            NomOficina = entidad.NomOficina,
-                            NomPuntoVenta = entidad.CodiPuntoVenta.ToString(),
-                            Pasajero = entidad.Nombre,
-                            FechaViaje = entidad.FechaViaje,
-                            HoraViaje = entidad.HoraViaje,
-                            NomDestino = entidad.NomDestino,
-                            Precio = entidad.PrecioVenta,
-                            Obs1 = string.Empty,
-                            Obs2 = string.Empty,
-                            Obs3 = string.Empty,
-                            Obs4 = "POSTEGADO A FECHA ABIERTA",
-                            Obs5 = "TERMINAL : " + entidad.CodiTerminal
-                        };
-                        VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
-                    }
-
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
@@ -687,6 +660,33 @@ namespace SisComWeb.Business
                             break;
                     };
 
+                    // Graba 'AuditoriaFechaAbierta'
+                    if (entidad.FechaAbierta)
+                    {
+                        var objAuditoriaFechaAbierta = new AuditoriaEntity
+                        {
+                            CodiUsuario = entidad.CodiUsuario,
+                            NomUsuario = entidad.NomUsuario,
+                            Tabla = "VENTA",
+                            TipoMovimiento = "POSTERGACION DE PASAJES",
+                            Boleto = auxBoletoCompleto.Substring(1),
+                            NumeAsiento = entidad.NumeAsiento.ToString("D2"),
+                            NomOficina = entidad.NomOficina,
+                            NomPuntoVenta = entidad.CodiPuntoVenta.ToString(),
+                            Pasajero = entidad.Nombre,
+                            FechaViaje = entidad.FechaViaje,
+                            HoraViaje = entidad.HoraViaje,
+                            NomDestino = entidad.NomDestino,
+                            Precio = entidad.PrecioVenta,
+                            Obs1 = string.Empty,
+                            Obs2 = string.Empty,
+                            Obs3 = string.Empty,
+                            Obs4 = "POSTEGADO A FECHA ABIERTA",
+                            Obs5 = "TERMINAL : " + entidad.CodiTerminal
+                        };
+                        VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
+                    }
+
                     // Graba 'Auditoria'
                     var objAuditoriaEntity = new AuditoriaEntity
                     {
@@ -709,10 +709,7 @@ namespace SisComWeb.Business
                         Obs4 = "PROGRAMACION" + entidad.CodiProgramacion + " ORG PAS " + entidad.CodiOrigen.ToString("D3"),
                         Obs5 = "DET BUS " + entidad.CodiRuta.ToString("D3") + " DET PAS " + entidad.CodiDestino.ToString("D3")
                     };
-
-                    var grabarAuditoria = VentaRepository.GrabarAuditoria(objAuditoriaEntity);
-                    if (!grabarAuditoria)
-                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarAuditoria, false);
+                    VentaRepository.GrabarAuditoria(objAuditoriaEntity);
 
                     // Añado 'ventaRealizada'
                     var ventaRealizada = new VentaRealizadaEntity
@@ -1024,7 +1021,7 @@ namespace SisComWeb.Business
                 if (request.FlagVenta == "1")
                 {
                     if (request.CodiUsuarioBoleto == request.CodiUsuario)
-                        VentaRepository.ActualizarCajaAnulacion(int.Parse(request.ValeRemoto ?? "0")); // La cadena de entrada no tiene el formato correcto.
+                        VentaRepository.ActualizarCajaAnulacion(int.Parse(string.IsNullOrEmpty(request.ValeRemoto) ? "0" : request.ValeRemoto));
 
                     // Consulta 'BoletoPorContrato'
                     var consultaBoletoPorContrato = CreditoRepository.ConsultaBoletoPorContrato(request.IdVenta);
@@ -1301,7 +1298,7 @@ namespace SisComWeb.Business
                         if (request.FlagVenta == "7")
                         {
                             // Actualiza 'BoletosPorSocio'
-                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("MM"), Convert.ToDateTime(request.FechaVenta, CultureInfo.InvariantCulture).ToString("yyyy"));
+                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("MM"), DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy"));
 
                             // Consulta 'CajaPase'
                             var consultaCajaPase = VentaRepository.ConsultaCajaPase(objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"));

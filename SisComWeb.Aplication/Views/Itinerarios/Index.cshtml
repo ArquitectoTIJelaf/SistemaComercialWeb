@@ -589,13 +589,15 @@
             });
 
             $('#appBoletosVendidos').on('hidden.bs.modal', async function () {
+                var tmpPickedBusVenta = appVueVenta.pickedBusVenta;
+
                 await appController.chargeTurnos();
                 appVueTipoPago.processing = false;
-
-                // Convierte las ventas realizadas en documentos 'base64'
-                // para mandarlos a 'imprimirBoleto'
-                if (appBoletosVendidos.boletos && appBoletosVendidos.boletos.length > 0)
-                    appVueTipoPago.convertirVentaToBase64(appBoletosVendidos.boletos, TipoImprimir)
+                
+                if (appBoletosVendidos.boletos && appBoletosVendidos.boletos.length > 0) {
+                    if (tmpPickedBusVenta !== 'R')
+                        appVueTipoPago.convertirVentaToBase64(appBoletosVendidos.boletos, TipoImprimir)
+                }
 
                 window.removeEventListener('keyup', appBoletosVendidos.esc);
             });
@@ -645,6 +647,7 @@
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescuentoDC = '';
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ImporteDescontadoDC = '';
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].AutorizadoDC = '';
+                                        appVueVenta.list.ventas[appVueVenta.indexVenta].ClaveDC = '';
 
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ReadonlyPrecio = false;
                                     }
@@ -1090,6 +1093,7 @@
                                     objValues.ImporteDescuentoDC = appVueDescuentoControl.ImporteDescuento;
                                     objValues.ImporteDescontadoDC = appVueDescuentoControl.ImporteDescontado;
                                     objValues.AutorizadoDC = appVueDescuentoControl.Autorizado;
+                                    objValues.ClaveDC = appVueDescuentoControl.Clave;
 
                                     appVueVenta.sendClaveAutorizacionDC(res.data, objValues);
                                     break;
@@ -1255,6 +1259,17 @@
                     }
                     else
                         this.showPostergacion();
+                },
+                existValidadorDescuento: function () {
+                    return _.findIndex(appVueVenta.list.ventas, function (obj) { return obj.ValidadorDescuento === true; });
+                },
+                existValidadorDescuentoControl: function () {
+                    var indexObj = _.findIndex(appVueVenta.list.ventas, function (obj) { return obj.ValidadorDescuentoControl === true; });
+
+                    if (indexObj !== -1) {
+                        appVueDescuentoControl.Autorizado = appVueVenta.list.ventas[indexObj].AutorizadoDC;
+                        appVueDescuentoControl.Clave = appVueVenta.list.ventas[indexObj].ClaveDC;
+                    }
                 }
             };
         })();
@@ -1570,6 +1585,7 @@
                         ImporteDescuentoDC: '',
                         ImporteDescontadoDC: '',
                         AutorizadoDC: '',
+                        ClaveDC: '',
                         ReadonlyPrecio: false,
 
                         CheckRegistrarNino: false
@@ -2346,8 +2362,10 @@
 
                         this.$nextTick(() => {
                             this.disabledCampoNroAsiento = true;
-                            this.disabledCamposTicket = true;
-                            this.disabledCamposTicket_Pase = true;
+                            if (this.list.ventas[this.indexVenta].FlagVenta !== 'R') {
+                                this.disabledCamposTicket = true;
+                                this.disabledCamposTicket_Pase = true;
+                            }
                         });
                     }
                 },
@@ -2409,6 +2427,7 @@
                         ImporteDescuentoDC: '',
                         ImporteDescontadoDC: '',
                         AutorizadoDC: '',
+                        ClaveDC: '',
                         ReadonlyPrecio: false,
 
                         CheckRegistrarNino: false
@@ -2598,10 +2617,8 @@
                     }
                 },
                 recorridoTxtTelefono: function () {
-                    if (appController.validatePanel('217') === '1' && this.pickedBusVenta !== 'R') {
-                        if (this.list.ventas[this.indexVenta].Telefono)
-                            this.$refs.refRecoger.focus();
-                    }
+                    if (this.pickedBusVenta !== 'R' && appController.validatePanel('217') === '1' && this.list.ventas[this.indexVenta].Telefono.length < 7)
+                        APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
                     else
                         this.$refs.refRecoger.focus();
                 },
@@ -3537,6 +3554,7 @@
                     this.list.ventas[this.indexVenta].ImporteDescuentoDC = '';
                     this.list.ventas[this.indexVenta].ImporteDescontadoDC = '';
                     this.list.ventas[this.indexVenta].AutorizadoDC = '';
+                    this.list.ventas[this.indexVenta].ClaveDC = '';
                     this.list.ventas[this.indexVenta].ReadonlyPrecio = false;
 
                     this.list.ventas[this.indexVenta].CheckRegistrarNino = false;
@@ -3615,7 +3633,7 @@
                                     this.eventTxtPrecio = '';
                                     return;
                             }
-
+                            
                             if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'R' && this.pickedBusVenta !== 'FA') {
 
                                 if (!this.list.ventas[this.indexVenta].ValidadorDescuento) {
@@ -3625,7 +3643,24 @@
                                             case '99': // Retorno
                                                 break;
                                             default:
-                                                appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
+                                                {
+                                                    var indexValidadorDescuento = appController.existValidadorDescuento();
+                                                    if (indexValidadorDescuento !== -1) {
+                                                        this.list.ventas[this.indexVenta].ValidadorDescuento = this.list.ventas[indexValidadorDescuento].ValidadorDescuento;
+                                                        this.list.ventas[this.indexVenta].ObservacionDescuento = this.list.ventas[indexValidadorDescuento].ObservacionDescuento;
+
+                                                        var auxPrecio = parseFloat(this.list.ventas[this.indexVenta].Precio || '0') || 0;
+                                                        this.list.ventas[this.indexVenta].Precio = auxPrecio.toFixed(2);
+
+                                                        this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
+
+                                                        this.$nextTick(() => {
+                                                            this.recorridoSectionVentas();
+                                                        });
+                                                    }
+                                                    else
+                                                        appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
+                                                };
 
                                                 this.eventTxtPrecio = '';
                                                 return;
@@ -3792,8 +3827,12 @@
                         this.recorridoSectionVentas();
                 },
                 passSinceRegistrarNino: function () {
-                    if (this.list.ventas[this.indexVenta].NroAsiento)
-                        this.$refs.refPrecio.focus();
+                    if (this.list.ventas[this.indexVenta].NroAsiento) {
+                        if (this.disabledPrecio)
+                            this.recorridoSectionVentas();
+                        else
+                            this.$refs.refPrecio.focus();
+                    }  
                     else
                         this.$refs.refNroAsientoVenta.focus();
                 },
@@ -5017,6 +5056,7 @@
                         this.list.ventas[this.indexVenta].ImporteDescuentoDC = _objValues.ImporteDescuentoDC;
                         this.list.ventas[this.indexVenta].ImporteDescontadoDC = _objValues.ImporteDescontadoDC;
                         this.list.ventas[this.indexVenta].AutorizadoDC = _objValues.AutorizadoDC;
+                        this.list.ventas[this.indexVenta].ClaveDC = _objValues.ClaveDC;
 
                         this.list.ventas[this.indexVenta].Precio = _.cloneDeep(_objValues.ImporteDescontadoDC);
                         this.list.ventas[this.indexVenta].ReadonlyPrecio = true;
@@ -5727,12 +5767,15 @@
                         case 'R': // Reserva
                             {
                                 if (!appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
+                                    appController.disabledAsientos(true);
                                     _this.saveVenta();
                                     return;
                                 }
                             };
                             break;
                         case '7': // Pase de cortesía
+                        case '1': // Crédito
+                            appController.disabledAsientos(true);
                             _this.saveVenta();
                             return;
                     }
@@ -5776,18 +5819,6 @@
                 saveVenta: async function () {
                     var _this = this;
 
-                    switch (_this.pickedBusVenta) {
-                        case 'R': // Reserva
-                        case '7': // Pase de cortesía
-                            break;
-                        default:
-                            {
-                                if (!_this.recorridoSectionTipoPagos(true))
-                                    return;
-                            };
-                            break;
-                    }
-
                     // Valida 'TurnoDisponible'
                     if (!IngresoManualPasajes) {
                         if (appController.validatePanel('54') === '1') {
@@ -5795,6 +5826,7 @@
                             var resVerificaTurnoDisponible = appController.verificaTurnoDisponible();
                             if (!resVerificaTurnoDisponible) {
                                 APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                appController.disabledAsientos(false);
                                 return;
                             }
                         }
@@ -5803,19 +5835,37 @@
                     // Valida 'FechaViaje'
                     if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
                         APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                        appController.disabledAsientos(false);
                         return;
                     }
 
                     // Valida 'Programación cerrada'
                     if (appVueVenta.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
+                        appController.disabledAsientos(false);
                         return;
                     }
 
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await appController.validaManifiestoProgramacion();
-                    if (!resValidaManifiestoProgramacion)
+                    if (!resValidaManifiestoProgramacion) {
+                        appController.disabledAsientos(false);
                         return;
+                    }
+
+                    switch (_this.pickedBusVenta) {
+                        case 'R': // Reserva
+                        case '7': // Pase de cortesía
+                        case '1': // Crédito
+                            appController.disabledAsientos(false);
+                            break;
+                        default:
+                            {
+                                if (!_this.recorridoSectionTipoPagos(true))
+                                    return;
+                            };
+                            break;
+                    }
 
                     _this.processing = true;
 
@@ -7344,6 +7394,10 @@
             mounted: function () { },
             methods: {
                 show: function (_PrecioVenta) {
+                    // Validar si en un ticket anterior ya se validó la 'clave de autorización'.
+                    appController.existValidadorDescuentoControl();
+                    // -------------------------------------------------------------------------
+                    
                     appController.setDataTempDescuentoControl();
 
                     this.ImporteBoleto = _PrecioVenta;

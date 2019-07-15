@@ -143,7 +143,9 @@ namespace SisComWeb.Repository
 
                 db.Execute();
 
-                valor = int.Parse(db.GetParameter("@Id_Clientes").ToString());
+                var auxIdClientes = db.GetParameter("@Id_Clientes").ToString();
+
+                valor = int.Parse(string.IsNullOrEmpty(auxIdClientes) ? "0" : auxIdClientes);
             }
 
             return valor;
