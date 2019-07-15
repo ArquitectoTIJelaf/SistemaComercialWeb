@@ -5336,6 +5336,11 @@
                             if (!resValidaManifiestoProgramacion)
                                 return;
 
+                            // Valida 'NivelUsuario'
+                            if (Usuario.Nivel === 14 || Usuario.Nivel === 15) {
+                                return;
+                            }
+
                             appController.showReintegro(this.itemSelected);
                         }
                         else {
@@ -8203,10 +8208,19 @@
                         }
                     },
                     set: function (value) {
+                        let _this = this;
                         if (value !== '' && value !== null) {
-                            if (this.list.motivos.find(x => x.id === value.id)) {
-                                this.filtro.codMotivo = value.id;
-                                this.$refs.refRESerie.focus()
+                            if (_this.list.motivos.find(x => x.id === value.id)) {
+                                _this.filtro.codMotivo = value.id;
+                                switch (_this.filtro.codMotivo) {
+                                    case '00001':
+                                    case '00002':
+                                    case '00005': _this.showData = false; break;
+                                    case '00003':
+                                    case '00004': _this.showData = true; break;
+                                    default: _this.showData = false;
+                                }
+                                this.$refs.refREBuscar.focus();
                             }
                         } else {
                             this.filtro.codMotivo = '';
