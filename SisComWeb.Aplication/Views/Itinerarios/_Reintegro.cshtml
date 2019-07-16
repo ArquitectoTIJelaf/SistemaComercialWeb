@@ -108,17 +108,19 @@
                                             <label style="width: 100%">&nbsp;</label>
                                             <button @@click="searchData"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
+                                                    :disabled="!filtrosFilled"
                                                     ref="refREBuscar">
                                                 <span class="fa fa-search fa-fw"></span>Verificar
                                             </button>
                                         </div>
                                     </div>
+
                                     <div class="form-group m-b-5 bordergray">
-                                        <div class="col-md-9 p-0">
+                                        <div class="col-md-7 p-0">
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Origen Pasajero:</label>
                                                 <div class="">
-                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                    <input :value="item.origenPasj | rutas"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -127,7 +129,7 @@
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Destino Pasajero:</label>
                                                 <div class="">
-                                                    <input @*:value="item.ruta | rutas"*@
+                                                    <input :value="item.destinoPasj | rutas"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -136,7 +138,7 @@
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Destino Bus:</label>
                                                 <div class="">
-                                                    <input @*:value="item.turno"*@
+                                                    <input @*:value="item.destinoBus | rutas"*@
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -145,18 +147,18 @@
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Servicio:</label>
                                                 <div class="">
-                                                    <input @*:value="item.dia | diaSemana"*@
+                                                    <input @*:value="item.CodiServicio | servicios"*@
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 p-0">
+                                        <div class="col-md-2 p-0">
                                             <div class="col-md-6 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Fecha Venta:</label>
                                                 <div class="">
-                                                    <input @*:value="item.fechaViaje"*@
+                                                    <input :value="item.fechaVenta"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -165,7 +167,27 @@
                                             <div class="col-md-6 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Hora Venta:</label>
                                                 <div class="">
-                                                    <input @*:value="item.fechaVenta"*@
+                                                    <input :value="item.horaVenta"
+                                                           class="form-control input-sm"
+                                                           style="background-color:rgb(253, 249, 205);"
+                                                           disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 p-0">
+                                            <div class="col-md-6 col-xs-6 separate-in-form">
+                                                <label class="control-label label-sm">Documento:</label>
+                                                <div class="">
+                                                    <input :value="item.documento | tiposDoc"
+                                                           class="form-control input-sm"
+                                                           style="background-color:rgb(253, 249, 205);"
+                                                           disabled />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 col-xs-6 separate-in-form">
+                                                <label class="control-label label-sm">Número:</label>
+                                                <div class="">
+                                                    <input :value="item.numero"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -174,61 +196,41 @@
                                         </div>
 
                                         <div class="col-md-12 p-0">
-                                            <div class="col-md-12 p-0">
-                                                <div class="col-md-2 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Documento:</label>
+                                            <div class="col-md-5 p-0">
+                                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Apellido Paterno:</label>
                                                     <div class="">
-                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                        <input :value="item.apellidoPaterno"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Número:</label>
+                                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Apellido Materno:</label>
                                                     <div class="">
-                                                        <input @*:value="item.ruta | rutas"*@
+                                                        <input :value="item.apellidoMaterno"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-8 p-0">
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Apellido Paterno:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Apellido Materno:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.dia | diaSemana"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Nombre:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.dia | diaSemana"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
+                                                <div class="col-md-4 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Nombre:</label>
+                                                    <div class="">
+                                                        <input :value="item.nombre"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 p-0">
+                                            <div class="col-md-7 p-0">
                                                 <div class="col-md-5 p-0">
                                                     <div class="col-md-2 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Edad:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.edad"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -237,7 +239,7 @@
                                                     <div class="col-md-5 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Teléfono:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.telefono"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -246,7 +248,7 @@
                                                     <div class="col-md-5 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Nacionalidad:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.nacionalidad"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -257,7 +259,7 @@
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Boleto:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.boleto"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -266,7 +268,7 @@
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Venta:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.venta"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -275,7 +277,7 @@
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">R.U.C.:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input :value="item.ruc"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -288,7 +290,7 @@
                                                     <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Razón Social:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input @*:value="item.razonSocial"*@
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -297,7 +299,7 @@
                                                     <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Dirección:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input @*:value="item.direccion"*@
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -307,7 +309,7 @@
                                                 <div class="col-md-1 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Asiento:</label>
                                                     <div class="">
-                                                        <input @*:value="item.turno"*@
+                                                        <input :value="item.asiento | concatZero(2)"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
@@ -316,7 +318,7 @@
                                                 <div class="col-md-1 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Precio:</label>
                                                     <div class="">
-                                                        <input @*:value="item.turno"*@
+                                                        <input :value="item.precio | fixed2"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
@@ -326,11 +328,19 @@
                                                     <div class="col-md-9 col-xs-7 separate-in-form">
                                                         <label class="control-label label-sm">Reintegro:</label>
                                                         <div class="input-group input-sm p-0">
-                                                            <input @*:value="item.turno"*@
+                                                            <input v-model="item.reintegro"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(213, 255, 213);"
-                                                                   disabled />
-                                                            <span class="input-group-addon" title="Cambiar Importe de Reintegro"><i class="fa fa-lock"></i></span>
+                                                                   @@blur="item.reintegro = parseFloat(item.reintegro).toFixed(2)"
+                                                                   :disabled="lockReintegro" />
+                                                            <span @@click="lockReintegro = !lockReintegro" class="input-group-addon" title="Cambiar Importe de Reintegro">
+                                                                <template v-if="lockReintegro">
+                                                                    <i class="fa fa-unlock"></i>
+                                                                </template>
+                                                                <template v-else>
+                                                                    <i class="fa fa-lock"></i>
+                                                                </template>                                                                
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -486,7 +496,7 @@
                                                                 <td class="custom-td">{{item.PlacaBus}}</td>
                                                                 <td class="custom-td">{{item.AsientosVendidos}}</td>
                                                                 <td class="custom-td">{{item.CapacidadBus}}</td>
-                                                                <td class="custom-td">{{item.CodiProgramacion | concatZero(6)}}</td>
+                                                                <td class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
                                                                 <td class="custom-td">{{item.HoraProgramacion}}</td>
                                                                 <td class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
                                                                 <td class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
@@ -591,7 +601,7 @@
                                                                disabled />
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

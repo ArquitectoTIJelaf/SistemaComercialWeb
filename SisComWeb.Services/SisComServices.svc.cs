@@ -234,20 +234,7 @@ namespace SisComWeb.Services
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
-        }
-        
-        public Response<List<BaseEntity>> ListaOpcionesModificacion()
-        {
-            try
-            {
-                return BaseLogic.ListaOpcionesModificacion();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
-            }
-        }
+        }   
 
         #endregion
 
@@ -996,6 +983,35 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
+            }
+        }
+        #endregion
+
+        #region REINTEGRO
+
+        public Response<VentaEntity> VentaConsultaF12(ReintegroRequest request)
+        {
+            try
+            {
+                return ReintegroLogic.VentaConsultaF12(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<VentaEntity>(false, null, Message.MsgExcVentaConsultaF12, false);
+            }
+        }
+
+        public Response<List<SelectReintegroEntity>> ListaOpcionesModificacion()
+        {
+            try
+            {
+                return ReintegroLogic.ListaOpcionesModificacion();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<SelectReintegroEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
             }
         }
         #endregion

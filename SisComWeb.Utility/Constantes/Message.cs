@@ -324,5 +324,7 @@
         //Reintegro
         public const string MsgCorrectoListaOpcionesModificacion = "Correcto: ListaOpcionesModificacion.";
         public const string MsgExcListaOpcionesModificacion = "Excepción: ListaOpcionesModificacion.";
+        public const string MsgCorrectoVentaConsultaF12 = "Correcto: VentaConsultaF12.";
+        public const string MsgExcVentaConsultaF12 = "Excepción: VentaConsultaF12.";
     }
 }

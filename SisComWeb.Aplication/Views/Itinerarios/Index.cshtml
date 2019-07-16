@@ -852,6 +852,8 @@
 
         var rutas = [];
         var empresas = [];
+        var servicios = [];
+        var tiposDoc = [];
         var pvOrigenesBus = [];
 
         Vue.filter('formatNombre', function (value) {
@@ -905,6 +907,21 @@
             if (!value) return '';
             value = value.toString();
             return _.filter(empresas, function (o) { return o.id == value; })[0].label;
+        });
+
+        Vue.filter('servicios', function (value) {
+            if (!value) return '';
+            value = value.toString();
+            return _.filter(servicios, function (o) { return o.id == value; })[0].label;
+        });
+
+        Vue.filter('tiposDoc', function (value) {
+            if (!value) return '';
+            value = value.toString();
+            if (value == APP.cte.Documento.Dni.CodTip) value = APP.cte.Documento.Dni.SabCon;
+            if (value == APP.cte.Documento.Pasap.CodTip) value = APP.cte.Documento.Pasap.SabCon;
+            if (value == APP.cte.Documento.CExtranj.CodTip) value = APP.cte.Documento.CExtranj.SabCon;
+            return _.filter(tiposDoc, function (o) { return o.id == value; })[0].label;
         });
 
         Vue.filter('formatCodiProgramacion', function (value, length = 6) {
@@ -1826,6 +1843,8 @@
                                 _this.list.servicios = _.cloneDeep(res.data.Valor);
 
                                 appVueManifiestoPasajeros.list.servicios = _.cloneDeep(res.data.Valor);
+
+                                servicios = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -1839,6 +1858,7 @@
                             if (res.data.Estado) {
                                 _this.list.tiposDoc = _.cloneDeep(res.data.Valor);
                                 appVueRegistrarInfante.list.tipoDoc = _.cloneDeep(res.data.Valor);
+                                tiposDoc = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -8145,6 +8165,30 @@
                     numero: '',
                     codMotivo: 0
                 },
+                item: {
+                    origenPasj: '',
+                    destinoPasj: '',
+                    destinoBus: '',
+                    servicio: '',
+                    fechaVenta: '',
+                    horaVenta: '',
+                    documento: '',
+                    numero: '',
+                    apellidoPaterno: '',
+                    apellidoMaterno: '',
+                    nombre: '',
+                    edad: '',
+                    telefono: '',
+                    nacionalidad: '',
+                    boleto: '',
+                    venta: '',
+                    ruc: '',
+                    razonSocial: '',
+                    direccion: '',
+                    asiento: '',
+                    precio: 0,
+                    reintegro: ''
+                },
                 list: {
                     empresas: [],
                     motivos: [],
@@ -8153,6 +8197,7 @@
                 },
                 paginate: ['items'],
                 showData: false,
+                lockReintegro: true,
             },
             mounted: function () {
                 let _this = this;
@@ -8168,25 +8213,59 @@
                     //this.limpiarRE();
                     //this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');
-                    this.setData();        
+                    this.setData(asientoSel);        
                     this.listaOpcionesModificacion();
                 },
-                setData: function () {
+                setData: function (asientoSel) {
                     let _this = this;
                     var correlativo = appController.getCurrentCorrelativo();
-                    _this.filtro.tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
-                    _this.filtro.serie = correlativo.substring(1, 4);
-                    _this.filtro.numero = correlativo.substring(5, 13);
+                    _this.filtro.tipo = asientoSel.TipoBoleto;
+                    _this.filtro.serie = asientoSel.Boleto.substring(0, 3);
+                    _this.filtro.numero = asientoSel.Boleto.substring(11, 4);
                     _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label;
-                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
-                    _this.list.itinerarios = appVueTable.list.itinerarios;
+                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: Definir
+                    _this.list.itinerarios = appVueTable.list.itinerarios; //TODO: Definir
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
                             _this.list.empresas = appController.getEmpresas();
                     });
                 },
-                searchData: function () {
-
+                searchData: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF12' + APP.util.getQueryParamByObject({
+                        Serie: parseInt(_this.filtro.serie),
+                        Numero: parseInt(_this.filtro.numero),
+                        CodiEmpresa: parseInt(_this.filtro.codEmpresa),
+                        Tipo: _this.filtro.tipo
+                    }))
+                        .then(res => {
+                            debugger;
+                            var data = _.cloneDeep(res.data.Valor);
+                            if (data) {
+                                _this.item.origenPasj = data.CodiOrigen;
+                                _this.item.destinoPasj = data.CodiDestino;
+                                //_this.item.destinoBus = data.CodiDestino;
+                                //_this.item.servicio = data.CodiServicio;
+                                _this.item.fechaVenta = data.FechaViaje;
+                                _this.item.horaVenta = data.HoraViaje;
+                                _this.item.documento = data.TipoDocumento;
+                                _this.item.numero = data.Dni;
+                                _this.item.apellidoPaterno = data.SplitNombre[1];
+                                _this.item.apellidoMaterno = data.SplitNombre[2];
+                                _this.item.nombre = data.SplitNombre[0];
+                                _this.item.edad = data.Edad;
+                                _this.item.telefono = data.Telefono;
+                                _this.item.nacionalidad = data.Nacionalidad;
+                                _this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
+                                _this.item.venta = data.IdVenta;
+                                _this.item.ruc = data.RucCliente;
+                                //_this.item.razonSocial = data.RucCliente;
+                                //_this.item.direccion = data.RucCliente;
+                                _this.item.asiento = data.NumeAsiento;
+                                _this.item.precio = data.PrecioVenta;
+                            } else APP.msg.warning('No se encontró resultados');
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 listaOpcionesModificacion: async function () {
                     var _this = this;
@@ -8263,6 +8342,7 @@
                         if (value !== '' && value !== null) {
                             if (_this.list.motivos.find(x => x.id === value.id)) {
                                 _this.filtro.codMotivo = value.id;
+                                _this.item.reintegro = parseFloat(value.monto).toFixed(2);
                                 switch (_this.filtro.codMotivo) {
                                     case '00001':
                                     case '00002':
@@ -8274,9 +8354,14 @@
                                 this.$refs.refREBuscar.focus();
                             }
                         } else {
-                            this.filtro.codMotivo = '';
+                            _this.filtro.codMotivo = '';
+                            _this.item.reintegro = '';
                         }
                     }
+                },
+                filtrosFilled: function () {
+                    let _this = this;
+                    return _this.filtro.codEmpresa && _this.filtro.tipo && _this.filtro.serie && _this.filtro.numero && _this.filtro.codMotivo
                 }
             }
         });

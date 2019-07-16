@@ -2722,5 +2722,70 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("ventaConsultaF12")]
+        public async Task<ActionResult> VentaConsultaF12(FiltroReintegro filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Serie\" : " + filtro.Serie +
+                                    ",\"Numero\" : " + filtro.Numero +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VentaConsultaF12", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Venta> res = new Response<Venta>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Venta()
+                    {
+                        SerieBoleto = (short)data["SerieBoleto"],
+                        NumeBoleto = (int)data["NumeBoleto"],
+                        CodiEmpresa = (byte)data["CodiEmpresa"],
+                        TipoDocumento = (string)data["TipoDocumento"],
+                        CodiEsca = (string)data["CodiEsca"],
+                        FlagVenta = (string)data["FlagVenta"],
+                        IndiAnulado = (string)data["IndiAnulado"],
+                        IdVenta = (int)data["IdVenta"],
+                        Dni = (string)data["Dni"],
+                        Nombre = (string)data["Nombre"],
+                        RucCliente = (string)data["RucCliente"],
+                        NumeAsiento = (byte)data["NumeAsiento"],
+                        PrecioVenta = (decimal)data["PrecioVenta"],
+                        CodiDestino = (short)data["CodiDestino"],
+                        FechaViaje = (string)data["FechaViaje"],
+                        HoraViaje = (string)data["HoraViaje"],
+                        CodiProgramacion = (int)data["CodiProgramacion"],
+                        CodiOrigen = (short)data["CodiOrigen"],
+                        CodiEmbarque = (short)data["CodiEmbarque"],
+                        CodiArribo = (short)data["CodiArribo"],
+                        Edad = (byte)data["Edad"],
+                        Telefono = (string)data["Telefono"],
+                        Nacionalidad = (string)data["Nacionalidad"],
+                        Tipo = (string)data["Tipo"]
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Venta>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
