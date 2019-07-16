@@ -102,7 +102,6 @@
             },
             mounted: function () {
                 this.getUsuarios('', null);
-                this.getTerminal();
                 this.$nextTick(() => {
                     $('#txtUsuario input[type=search]').focus();
                 });
@@ -110,6 +109,8 @@
             methods: {
                 confirmUsuario: async function (filtro) {
                     this.disabledValidator = true;
+
+                    await this.getTerminal();
 
                     // Valida 'Terminal'
                     if (!this.Terminal) {
@@ -142,10 +143,10 @@
 
                     this.disabledValidator = false;
                 },
-                getTerminal: function () {
+                getTerminal: async function () {
                     var _this = this;
 
-                    axios({ method: "GET", "url": "http://localhost:9100/" })
+                    await axios({ method: "GET", "url": "http://localhost:9100/" })
                         .then(res => {
                             _this.Terminal = res.data[1].terminal;
                         }, error => {

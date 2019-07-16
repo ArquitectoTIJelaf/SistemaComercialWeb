@@ -795,7 +795,6 @@
                                                            @@input="setDocumento($event)"
                                                            @@keydown.13.prevent="searchUser"
                                                            @*@@keydown.9.prevent="searchUser"*@
-                                                           @@keyup.backspace="clearUser"
                                                            @@keydown.112.prevent="showBuscaClientePasaje($event)"
                                                            id="txtDocumento"
                                                            ref="refDocumento"
@@ -1004,7 +1003,6 @@
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keydown.13.prevent="searchEmpresa"
                                                                @*@@keydown.9.prevent="searchEmpresa"*@
-                                                               @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"
                                                                id="txtRuc"
                                                                ref="refRuc"

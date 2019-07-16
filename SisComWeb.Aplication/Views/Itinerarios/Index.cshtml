@@ -525,13 +525,11 @@
 
             $('#appVueTipoPago').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueTipoPago.esc);
-
-                appVueTipoPago.tipoPago = '01';
+                
                 appVueTipoPago.$nextTick(function () {
                     switch (appVueTipoPago.pickedBusVenta) {
-                        case '1':
-                            appVueTipoPago.importePagado = appVueTipoPago.sumaTotal;
-                            appVueTipoPago.vuelto = '0.00';
+                        case '7': // Pase de cortesía
+                        case '1': // Crédito
                             $('#cboEmbarqueTP input[type=search]').focus();
                             break;
                         default:
@@ -3436,25 +3434,23 @@
                     return auxValidate;
                 },
                 clearUser: function () {
-                    var _this = this;
-                    _this.list.ventas[_this.indexVenta].IdCliente = 0;
-                    _this.list.ventas[_this.indexVenta].Nombres = '';
-                    _this.list.ventas[_this.indexVenta].ApellidoPaterno = '';
-                    _this.list.ventas[_this.indexVenta].ApellidoMaterno = '';
-                    _this.list.ventas[_this.indexVenta].FechaNac = '';
-                    _this.list.ventas[_this.indexVenta].Edad = '';
-                    _this.list.ventas[_this.indexVenta].Sexo = '';
-                    _this.list.ventas[_this.indexVenta].Telefono = '';
-                    if (_this.pickedBusVenta !== '1') {
-                        _this.list.ventas[_this.indexVenta].Ruc = '';
-                        _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                        _this.list.ventas[_this.indexVenta].Direccion = '';
+                    this.list.ventas[this.indexVenta].IdCliente = 0;
+                    this.list.ventas[this.indexVenta].Nombres = '';
+                    this.list.ventas[this.indexVenta].ApellidoPaterno = '';
+                    this.list.ventas[this.indexVenta].ApellidoMaterno = '';
+                    this.list.ventas[this.indexVenta].FechaNac = '';
+                    this.list.ventas[this.indexVenta].Edad = '';
+                    this.list.ventas[this.indexVenta].Sexo = '';
+                    this.list.ventas[this.indexVenta].Telefono = '';
+                    if (this.pickedBusVenta !== '1') {
+                        this.list.ventas[this.indexVenta].Ruc = '';
+                        this.list.ventas[this.indexVenta].RazonSocial = '';
+                        this.list.ventas[this.indexVenta].Direccion = '';
                     }
                 },
                 clearRazSoc: function () {
-                    var _this = this;
-                    _this.list.ventas[_this.indexVenta].RazonSocial = '';
-                    _this.list.ventas[_this.indexVenta].Direccion = '';
+                    this.list.ventas[this.indexVenta].RazonSocial = '';
+                    this.list.ventas[this.indexVenta].Direccion = '';
                 },
                 showRegistrarAcompaniante: function () {
                     appController.showRegistrarInfante(this.list.ventas[this.indexVenta].ObjAcompaniante);
@@ -3962,6 +3958,9 @@
                     // Muestra 'Modal'
                     switch (value) {
                         case '1': // Crédito
+                            // Animación 'ScrollTop'
+                            animateScrollTop(800);
+
                             var dataVenta = {};
                             dataVenta.FechaViaje = _this.filtro.Fecha;
                             dataVenta.CodiOficina = _this.filtro.CodiSucursal;
@@ -5570,7 +5569,10 @@
                                 this.list.ventas[this.indexVenta].CheckRegistrarNino = value;
                         }
                     }
-                }
+                },
+                listVentasCampoDocumento: function () {
+                    return this.list.ventas[this.indexVenta].Documento;
+                },
             },
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
@@ -5630,6 +5632,9 @@
                     deep: true
                 },
                 listVentasCampoRuc: function (newVal, oldVal) {
+                    if (oldVal && oldVal.length >= 11 && !this.list.ventas[this.indexVenta].IdVenta)
+                        this.clearRazSoc();
+
                     switch (this.pickedBusVenta) {
                         case '7':
                             {
@@ -5715,6 +5720,10 @@
                     this.$nextTick(() => {
                         this.$refs.refDestinoPas_2.typeAheadPointer = this.$getSelectorVselect(this.list.destinosPas, this.filtro.CodiDestinoPas);
                     });
+                },
+                listVentasCampoDocumento: function (newVal, oldVal) {
+                    if (oldVal && oldVal.length >= 8 && !this.list.ventas[this.indexVenta].IdVenta)
+                        this.clearUser();
                 }
             }
         });
@@ -5747,7 +5756,7 @@
                 vuelto: '',
                 processing: false,
                 pickedBusVenta: '',
-                validImpPagar: ''
+                disabledTipoPago: false
             },
             mounted: function () {
                 this.getTipoPago();
@@ -5756,31 +5765,34 @@
             },
             methods: {
                 show: function (embarques, arribos, ticketVenta, listaVentas, pickedBusVenta) {
-                    var _this = this;
-                    _this.limpiarCampos();
-                    _this.pickedBusVenta = pickedBusVenta;
-                    _this.list.embarques = embarques;
-                    _this.list.arribos = arribos;
-                    _this.ticketVenta = ticketVenta;
-                    _this.list.ventas = listaVentas;
-                    switch (_this.pickedBusVenta) {
+                    this.limpiarCampos();
+                    this.pickedBusVenta = pickedBusVenta;
+                    this.list.embarques = embarques;
+                    this.list.arribos = arribos;
+                    this.ticketVenta = ticketVenta;
+                    this.list.ventas = listaVentas;
+                    this.sumaTotal = _.sumBy(this.list.ventas, o => { return parseFloat(o.Precio); });
+                    this.cantAsientos = this.list.ventas.length;
+                    this.tipoPago = '01';
+                    
+                    switch (this.pickedBusVenta) {
                         case 'R': // Reserva
                             {
                                 if (!appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
                                     appController.disabledAsientos(true);
-                                    _this.saveVenta();
+                                    this.saveVenta();
                                     return;
                                 }
                             };
                             break;
                         case '7': // Pase de cortesía
                         case '1': // Crédito
-                            appController.disabledAsientos(true);
-                            _this.saveVenta();
-                            return;
-                    }
-                    _this.sumaTotal = _.sumBy(_this.list.ventas, o => { return parseFloat(o.Precio); });
-                    _this.cantAsientos = _this.list.ventas.length;
+                            this.importePagado = parseFloat(this.sumaTotal).toFixed(2);
+                            this.vuelto = '0.00';
+                            this.disabledTipoPago = true;
+                            break;
+                    };
+
                     $('#appVueTipoPago').modal('show');
                 },
                 getTipoPago: function () {
@@ -5819,6 +5831,18 @@
                 saveVenta: async function () {
                     var _this = this;
 
+                    // Valida recorrido del modal 'Tipo pago'
+                    switch (_this.pickedBusVenta) {
+                        case 'R': // Reserva
+                            break;
+                        default:
+                            {
+                                if (!_this.recorridoSectionTipoPagos(true))
+                                    return;
+                            };
+                            break;
+                    };
+
                     // Valida 'TurnoDisponible'
                     if (!IngresoManualPasajes) {
                         if (appController.validatePanel('54') === '1') {
@@ -5851,20 +5875,6 @@
                     if (!resValidaManifiestoProgramacion) {
                         appController.disabledAsientos(false);
                         return;
-                    }
-
-                    switch (_this.pickedBusVenta) {
-                        case 'R': // Reserva
-                        case '7': // Pase de cortesía
-                        case '1': // Crédito
-                            appController.disabledAsientos(false);
-                            break;
-                        default:
-                            {
-                                if (!_this.recorridoSectionTipoPagos(true))
-                                    return;
-                            };
-                            break;
                     }
 
                     _this.processing = true;
@@ -6032,6 +6042,7 @@
                     this.importePagado = '';
                     this.vuelto = '';
                     this.processing = false;
+                    this.disabledTipoPago = false;
                 },
                 recorridoSectionTipoPagos: function (auxValidate) {
                     var auxResponse = false;
@@ -6311,7 +6322,7 @@
                 computedTipoPago: {
                     get: function () {
                         var auxTipoPago = this.list.tiposPago.find(x => x.id === this.tipoPago);
-                        if (this.list.tiposPago.length > 0 && auxTipoPago)
+                        if (auxTipoPago)
                             return auxTipoPago;
                     },
                     set: function (value) {
@@ -6319,10 +6330,12 @@
                             if (this.list.tiposPago.find(x => x.id === value.id))
                                 this.tipoPago = value.id;
 
-                            this.efectivo = '';
-                            this.tarjetaCant = '';
-                            this.importePagado = '';
-                            this.vuelto = '';
+                            if (this.pickedBusVenta !== '7' && this.pickedBusVenta !== '1') {
+                                this.efectivo = '';
+                                this.tarjetaCant = '';
+                                this.importePagado = '';
+                                this.vuelto = '';
+                            }
                         }
                         else
                             this.tipoPago = '';

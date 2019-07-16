@@ -42,6 +42,7 @@
                                           label="label"
                                           v-model="computedTipoPago"
                                           :options="list.tiposPago"
+                                          :disabled="disabledTipoPago"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
@@ -57,6 +58,7 @@
                                                id="txtImportePagadoC"
                                                class="form-control input-sm"
                                                name="Imp. Pagado"
+                                               :disabled="disabledTipoPago"
                                                onPaste="return false"
                                                @@input="calcMontos('IPC', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
