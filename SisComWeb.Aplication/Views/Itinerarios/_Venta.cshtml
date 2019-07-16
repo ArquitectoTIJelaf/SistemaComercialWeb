@@ -786,6 +786,7 @@
                                                     </label>
                                                     <button class="btn-info btn-xs"
                                                             title="Consultar a RENIEC"
+                                                            tabindex="-1"
                                                             :disabled="disabledCamposTicket_Pase"
                                                             v-on:click="consultaReniec">
                                                         <i class="fa fa-refresh" aria-hidden="true"></i>
@@ -1018,6 +1019,7 @@
                                                                style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
+                                                                tabindex="-1"
                                                                 :disabled="disabledCamposTicket_Pase || disabledCredito"
                                                                 v-on:click="consultaSunat">
                                                             <i class="fa fa-refresh" aria-hidden="true"></i>
