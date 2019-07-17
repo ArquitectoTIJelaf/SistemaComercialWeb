@@ -343,7 +343,7 @@ namespace SisComWeb.Services
         
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidateNumDias", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<int> ValidateNumDias(string FechaVenta);
+        Response<int> ValidateNumDias(string FechaVenta, string CodTab);
         
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VerificaNotaCredito", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
