@@ -1,12 +1,11 @@
-﻿using SisComWeb.Entity;
+﻿using Newtonsoft.Json.Linq;
+using SisComWeb.Entity;
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
-using System.Text;
-using System.Xml;
 
 namespace SisComWeb.Business
 {
@@ -145,7 +144,7 @@ namespace SisComWeb.Business
                         return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, true);
                 }
                 else
-                    return new Response<ReniecEntity>(false, entidad, Message.MsgErrorConsultaRENIEC, true);
+                    return new Response<ReniecEntity>(false, entidad, Message.MsgErrorServicioConsultaRENIEC, true);
             }
             catch (Exception ex)
             {
@@ -163,46 +162,23 @@ namespace SisComWeb.Business
                     RazonSocial = string.Empty,
                     Direccion = string.Empty
                 };
-                var auxEstado = new bool();
-
-                var soapXml = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:int=\"integradores.jelaf.pe\">" +
-                                    "<soapenv:Header/>" +
-                                        "<soapenv:Body>" +
-                                            "<int:CONSULTAR_RUC><int:RUC>" + RucContacto + "</int:RUC></int:CONSULTAR_RUC>" +
-                                        "</soapenv:Body>" +
-                                "</soapenv:Envelope>";
 
                 var client = new HttpClient
                 {
-                    BaseAddress = new Uri(ServiceSUNAT),
+                    BaseAddress = new Uri(ServiceSUNAT)
                 };
 
-                var res = client.PostAsync(client.BaseAddress, new StringContent(soapXml, Encoding.UTF8, "text/xml")).Result;
+                var response = client.GetAsync(RucContacto).Result;
 
-                if (res.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
-                    var result = res.Content.ReadAsStringAsync().Result;
+                    var result = response.Content.ReadAsStringAsync().Result;
 
-                    var document = new XmlDocument();
-                    document.LoadXml(result);
-                    var manager = new XmlNamespaceManager(document.NameTable);
-                    manager.AddNamespace("bhr", "integradores.jelaf.pe");
-                    XmlNodeList xnList = document.SelectNodes("//bhr:CONSULTAR_RUCResponse", manager);
-                    foreach (XmlNode xn in xnList)
-                    {
-                        auxEstado = bool.Parse(xn["CONSULTAR_RUCResult"].ChildNodes[0].InnerText);
-                        entidad.RazonSocial = xn["CONSULTAR_RUCResult"].ChildNodes[3].InnerText ?? string.Empty;
-                        entidad.Direccion = xn["CONSULTAR_RUCResult"].ChildNodes[4].InnerText ?? string.Empty;
-                    };
+                    if (result != "[]") {
+                        JToken tmpResult = JObject.Parse(result);
 
-                    if (auxEstado)
-                    {
-                        // Para limpiar: "-</td>\r\n </tr>\r\n\r\n <tr>\r\n "
-                        if (!string.IsNullOrEmpty(entidad.Direccion))
-                        {
-                            var auxLenght = entidad.Direccion.Length;
-                            entidad.Direccion = entidad.Direccion.Substring(0, auxLenght - 25);
-                        }
+                        entidad.RazonSocial = (string)tmpResult["razon_social"];
+                        entidad.Direccion = (string)tmpResult["domicilio_fiscal"];
 
                         return new Response<RucEntity>(true, entidad, Message.MsgCorrectoConsultaSUNAT, true);
                     }

@@ -507,7 +507,7 @@
     <script type="text/javascript">
                
         $(document).ready(function () {    
-            
+
             $(document).on('hidden.bs.modal', '.modal', function () {
                 $('.modal:visible').length && $(document.body).addClass('modal-open');
             });
@@ -752,6 +752,25 @@
                         close: 'Cerrar selector'
                     }
                 });
+
+                $(".dpFiltro").on("dp.change", function (e) {
+                    if (e && e.target) {
+                        switch (e.target.id) {
+                            case 'txtFecha':
+                                appVueFilter.nextStep(4);
+                                break;
+                            case 'txtFecha_2':
+                                appVueVenta.nextStep(9);
+                                break;
+                            case 'txtFechaCita':
+                                appVueCreditoOpciones.recorrerFechaCita(9);
+                                break;
+                            case 'txtFechaMP':
+                                appVueManifiestoPasajeros.cargaTurno();
+                                break;
+                        }
+                    }
+                });
             }
 
             if ($('.dpyear').length) {
@@ -785,6 +804,16 @@
                         close: 'Cerrar selector'
                     }
                 });
+
+                $(".dpyear").on("dp.change", function (e) {
+                    if (e && e.target) {
+                        switch (e.target.id) {
+                            case 'txtFechaNac':
+                                appVueVenta.recorrerFechaNac();
+                                break;
+                        }
+                    }
+                });
             }
 
             if ($('.dpyearnino').length) {
@@ -816,6 +845,16 @@
                         today: 'Ir a la fecha actual',
                         clear: 'Borrar fecha',
                         close: 'Cerrar selector'
+                    }
+                });
+
+                $(".dpyearnino").on("dp.change", function (e) {
+                    if (e && e.target) {
+                        switch (e.target.id) {
+                            case 'txtFechaNacRA':
+                                appVueRegistrarInfante.recorrerFechaNac();
+                                break;
+                        }
                     }
                 });
             }
@@ -1910,7 +1949,6 @@
                     // Validar 'liberarAsiento'
                     if (asientoSel.IDS > 0) {
                         _this.liberarAsiento(asientoSel, true);
-
                         _this.disabledAsiento = false;
                         return;
                     }
@@ -1918,7 +1956,6 @@
                     // Validar 'AsientoSel' vendido
                     if (asientoSel.FlagVenta) {
                         _this.fillDataAsientoVendido(asientoSel);
-
                         _this.disabledAsiento = false;
                         return;
                     }
@@ -1930,7 +1967,6 @@
                     // Valida 'Correlativo'
                     if (_this.Correlativo === 'B000-00000000' || _this.Correlativo === 'F000-00000000') {
                         APP.msg.error('No se encontró serie para el boleto.');
-
                         _this.disabledAsiento = false;
                         return;
                     }
@@ -1938,7 +1974,6 @@
                     // Valida 'Precio'
                     if (asientoSel.PrecioNormal === 0) {
                         APP.msg.warning('No se encontró precio del asiento.');
-
                         _this.disabledAsiento = false;
                         return;
                     }
@@ -1996,8 +2031,10 @@
 
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
-                    if (!resValidaManifiestoProgramacion)
+                    if (!resValidaManifiestoProgramacion) {
+                        _this.disabledAsiento = false;
                         return;
+                    }
 
                     // Validar 'AsientoSel' no vendido
                     if (!asientoSel.FlagVenta) {
@@ -2006,7 +2043,6 @@
                                 {
                                     if (!_this.objCreditoCliente.idContrato) {
                                         APP.msg.warning('No ha seleccionado un Cliente, haga click en la opción Crédito.');
-
                                         _this.disabledAsiento = false;
                                         return;
                                     }
@@ -2038,7 +2074,6 @@
                                                 if (auxLength === 1) {
                                                     if (resObjPrecioNormal.Saldo <= 0) {
                                                         APP.msg.warning("Contrato sin boletos disponibles.");
-
                                                         _this.disabledAsiento = true;
                                                         return;
                                                     }
@@ -2046,7 +2081,6 @@
                                                 else {
                                                     if (resObjPrecioNormal.Saldo < auxLength) {
                                                         APP.msg.warning("Contrato sin boletos disponibles.");
-
                                                         _this.disabledAsiento = false;
                                                         return;
                                                     }
@@ -2063,7 +2097,6 @@
                                                 }
                                                 else {
                                                     APP.msg.warning("Contrato sin boletos disponibles.");
-
                                                     _this.disabledAsiento = false;
                                                     return;
                                                 }
@@ -2082,7 +2115,6 @@
                                 {
                                     if (Usuario.Nivel === 8 || Usuario.Nivel === 14 || Usuario.Nivel === 15) {
                                         APP.msg.warning("Para vender Fecha Abierta, debe tener un plano activo");
-
                                         _this.disabledAsiento = false;
                                         return;
                                     }
@@ -2094,7 +2126,6 @@
                     // Valida la cantidad de asientos bloqueados a la vez
                     if (_this.list.ventas.length >= _this.objTurno.CantidadMaxBloqAsi) {
                         APP.msg.warning('Solo puede bloquear hasta ' + _this.objTurno.CantidadMaxBloqAsi + ' asiento(s) a la vez.');
-
                         _this.disabledAsiento = false;
                         return;
                     }
@@ -2189,7 +2220,6 @@
 
                             // Seteo el valor original de 'X_Estado'
                             this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-                            this.disabledAsiento = false;
                             return auxResponse = false;
                         }
                         if (this.objTurno.X_Estado) {
@@ -2197,7 +2227,6 @@
 
                             // Seteo el valor original de 'X_Estado'
                             this.objTurno.X_Estado = _.cloneDeep(auxX_Estado);
-                            this.disabledAsiento = false;
                             return auxResponse = false;
                         }
                     }
@@ -3160,8 +3189,13 @@
                             document.getElementById('txtFecha_2').focus();
                             break;
                         case 9:
-                            this.filtro.Fecha = (this.filtro.Fecha ? this.filtro.Fecha : moment().format('DD/MM/YYYY'));
-                            this.recorridoSectionFilter();
+                            {
+                                document.getElementById('txtFecha_2').blur();
+
+                                this.$nextTick(() => {
+                                    this.recorridoSectionFilter();
+                                });
+                            };
                             break;
                         default:
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
@@ -4040,15 +4074,22 @@
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
 
                     if (parseInt(tmpAsientoSel.IdVenta)) {
+                        _this.disabledAsiento = true;
 
                         var auxBoletoCompleto = formatoBoletoCompleto(tmpAsientoSel.TipoBoleto, tmpAsientoSel.Boleto);
+
+                        // Valida 'Manifiesto'
+                        var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
+                        if (!resValidaManifiestoProgramacion) {
+                            _this.disabledAsiento = false;
+                            return;
+                        }
 
                         var resConfirm = await APP.msg.confirm(
                             'Enviar a Fecha Abierta'
                             , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')
 
                         if (resConfirm) {
-                            _this.disabledAsiento = true;
                             // Valida 'FechaAbierta'
                             var validateFechaAbierta = await _this.validateFechaAbierta(tmpAsientoSel);
                             if (!validateFechaAbierta) {
@@ -4088,13 +4129,14 @@
                                             APP.msg.error(res.data.Mensaje);
                                         });
                                     }
-
-                                    _this.disabledAsiento = false;
                                 })
                                 .catch(APP.rq.axios_handler_error_alert);
                         }
-                        else
+                        else {
                             _this.limpiarVenta();
+                            _this.disabledAsiento = false;
+                        }
+
                     }
                     else
                         appController.showFechaAbierta(asientoSel);
@@ -4251,8 +4293,10 @@
 
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
-                    if (!resValidaManifiestoProgramacion)
+                    if (!resValidaManifiestoProgramacion) {
+                        _this.disabledAsiento = false;
                         return;
+                    }
 
                     // Obtenemos '_StAnulacion'
                     var _StAnulacion = await _this.obtenerStAnulacion("09", Usuario.CodiPuntoVenta, moment().format('DD/MM/YYYY'));
@@ -5219,6 +5263,8 @@
                 setAcompanianteVenta: async function (_ObjAcompaniante) {
                     if (this.list.ventas[this.indexVenta].IdVenta) {
 
+                        this.disabledAsiento = true;
+
                         // Valida 'TurnoDisponible'
                         if (!IngresoManualPasajes) {
                             if (appController.validatePanel('54') === '1') {
@@ -5226,6 +5272,7 @@
                                 var verificaTurnoDisponible = this.verificaTurnoDisponible();
                                 if (!verificaTurnoDisponible) {
                                     APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                    this.disabledAsiento = false;
                                     return;
                                 }
                             }
@@ -5234,19 +5281,23 @@
                         // Valida 'FechaViaje'
                         if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
                             APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                            this.disabledAsiento = false;
                             return;
                         }
 
                         // Valida 'Programación cerrada'
                         if (this.objTurno.Xcierre === '1') {
                             APP.msg.warning('La programación se encuentra cerrada.');
+                            this.disabledAsiento = false;
                             return;
                         }
 
                         // Valida 'Manifiesto'
                         var resValidaManifiestoProgramacion = await this.validaManifiestoProgramacion();
-                        if (!resValidaManifiestoProgramacion)
+                        if (!resValidaManifiestoProgramacion) {
+                            this.disabledAsiento = false;
                             return;
+                        }
 
                         var _ActionType = 0; // 1: Insert, 2: Update
 
@@ -5256,6 +5307,8 @@
                             _ActionType = 1;
 
                         await this.acompanianteVentaCRUD(this.list.ventas[this.indexVenta].IdVenta, _ObjAcompaniante, _ActionType);
+
+                        this.disabledAsiento = false;
                     }
                     else
                         this.list.ventas[this.indexVenta].ObjAcompaniante = _ObjAcompaniante;
@@ -5716,6 +5769,11 @@
                             };
                     }
                 },
+                'list.pvOrigenesBus': function (newVal, oldVal) {
+                    this.$nextTick(() => {
+                        this.$refs.refPVOrigenBus.typeAheadPointer = this.$getSelectorVselect(this.list.pvOrigenesBus, this.filtro.CodiPVOrigenBus);
+                    });
+                },
                 'list.destinosPas': function (newVal, oldVal) {
                     this.$nextTick(() => {
                         this.$refs.refDestinoPas_2.typeAheadPointer = this.$getSelectorVselect(this.list.destinosPas, this.filtro.CodiDestinoPas);
@@ -5779,7 +5837,6 @@
                         case 'R': // Reserva
                             {
                                 if (!appVueVenta.list.ventas[appVueVenta.indexVenta].FlagVenta) {
-                                    appController.disabledAsientos(true);
                                     this.saveVenta();
                                     return;
                                 }
@@ -5830,6 +5887,8 @@
                 },
                 saveVenta: async function () {
                     var _this = this;
+
+                    appController.disabledAsientos(true);
 
                     // Valida recorrido del modal 'Tipo pago'
                     switch (_this.pickedBusVenta) {
@@ -5997,10 +6056,9 @@
                     var auxResponse = await appVueVenta.cancelarBoletos();
                     if (!auxResponse) {
                         APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
+                        appController.disabledAsientos(false);
                         return;
                     }
-
-                    appController.disabledAsientos(true);
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
                         Listado: listado,
