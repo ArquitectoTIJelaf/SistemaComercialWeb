@@ -45,6 +45,9 @@
                                           :disabled="disabledTipoPago"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoSectionTipoPagos">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -93,6 +96,9 @@
                                               :options="list.tarjetas"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="recorridoSectionTipoPagos">{{ option.label }}</div>
+                                        </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -117,7 +123,7 @@
                                     <label class="col-md-12 control-label label-sm">Monto Tarjeta:</label>
                                     <div class="col-md-12">
                                         <input v-model="tarjetaCant"
-                                               id="txtTtarjetaCantTP"
+                                               id="txtTarjetaCantTP"
                                                class="form-control input-sm"
                                                name="Monto Tarjeta"
                                                onPaste="return false"
@@ -185,6 +191,9 @@
                                               :options="list.tarjetas"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="recorridoSectionTipoPagos">{{ option.label }}</div>
+                                        </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -216,6 +225,9 @@
                                               :options="list.distritos"
                                               @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                               @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="recorridoSectionTipoPagos">{{ option.label }}</div>
+                                        </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
@@ -256,6 +268,9 @@
                                           :options="list.embarques"
                                           @@keydown.13.native.prevent="recorridoSectionTipoPagos"
                                           @*@@keydown.9.native.prevent="recorridoSectionTipoPagos"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoSectionTipoPagos">{{ option.Lugar }} - {{ option.Hora }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -272,6 +287,9 @@
                                           @@keydown.13.native.prevent="$refs.refBtnAceptarTP.focus"
                                           @*@@keydown.9.native.prevent="$refs.refBtnAceptarTP.focus"*@
                                           ref="refArriboTP">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="$refs.refBtnAceptarTP.focus">{{ option.Lugar }} - {{ option.Hora }}</div>
+                                    </template>
                                     <div slot="no-options" class="text-danger" @@click="$refs.refArriboTP.open = false">No hay resultados</div>
                                 </v-select>
                             </div>

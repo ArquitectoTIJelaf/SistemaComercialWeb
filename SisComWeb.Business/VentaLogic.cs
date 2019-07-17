@@ -1566,7 +1566,7 @@ namespace SisComWeb.Business
                     return new Response<VentaResponse>(true, valor, Message.MsgCorrectoPostergarVenta, true);
                 }
                 else
-                    return new Response<VentaResponse>(false, valor, Message.MsgErrorPostergarVenta, false);
+                    return new Response<VentaResponse>(false, valor, Message.MsgErrorPostergarVenta, true);
             }
             catch (Exception ex)
             {

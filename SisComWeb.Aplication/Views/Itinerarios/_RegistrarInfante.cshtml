@@ -22,6 +22,9 @@
                                           :options="list.tipoDoc"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -135,6 +138,9 @@
                                           :options="list.sexos"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -151,6 +157,9 @@
                                           :options="list.parentesco"
                                           @@keydown.13.native.prevent="recorridoSectionParentesco"
                                           @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>

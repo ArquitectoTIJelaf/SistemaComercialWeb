@@ -4,7 +4,6 @@ using SisComWeb.Aplication.Models;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -2541,7 +2540,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpGet]
         [Route("validateNumDias")]
-        public async Task<ActionResult> ValidateNumDias(string FechaVenta)
+        public async Task<ActionResult> ValidateNumDias(string FechaVenta, string CodTab)
         {
             try
             {
@@ -2551,6 +2550,7 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"FechaVenta\" : \"" + FechaVenta + "\"" +
+                                    ",\"CodTab\" : \"" + CodTab + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ValidateNumDias", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

@@ -56,11 +56,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<int> ValidateNumDias(string FechaVenta)
+        public static Response<int> ValidateNumDias(string FechaVenta, string CodTab)
         {
             try
             {
-                var CantidadPerimita = FechaAbiertaRepository.TablasPnpConsulta(Constantes.CodLimitFecha);
+                var CantidadPerimita = FechaAbiertaRepository.TablasPnpConsulta(CodTab);
 
                 var response = 0;
                 var mensaje = "";

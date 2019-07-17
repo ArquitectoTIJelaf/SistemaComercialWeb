@@ -1307,6 +1307,9 @@
                         appVueDescuentoControl.Autorizado = appVueVenta.list.ventas[indexObj].AutorizadoDC;
                         appVueDescuentoControl.Clave = appVueVenta.list.ventas[indexObj].ClaveDC;
                     }
+                },
+                validateNumDias: async function (_FechaVenta, _CodTab) {
+                    return await appVueFechaAbierta.validateNumDias(_FechaVenta, _CodTab);
                 }
             };
         })();
@@ -4380,7 +4383,6 @@
 
                     if (!_StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
                         APP.msg.warning('Se ha superado la cantidad máxima de boletos para anular.');
-
                         return auxResponse;
                     }
 
@@ -4406,13 +4408,11 @@
                                     }
                                     else {
                                         APP.msg.warning('Usuario no autorizado.');
-
                                         return auxResponse;
                                     }
                                 }
 
                                 APP.msg.warning('No se puede anular boletos de fechas pasadas.');
-
                                 return auxResponse;
                             }
                         }
@@ -4465,7 +4465,6 @@
                                             , ClaveMoverVentaFueraDeHora);
                                         if (!resConfirmClaveAutorizacion) {
                                             APP.msg.warning('Usuario no autorizado.');
-
                                             return auxValidate = false;
                                         }
                                     }
@@ -4479,14 +4478,12 @@
 
                     if (this.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
-
                         return auxValidate = false;
                     }
 
                     if (!(Usuario.Nivel === 11 || Usuario.Nivel === 1 || Usuario.Nivel === 2 || Usuario.Nivel === 4 || Usuario.Nivel === 3 || Usuario.Nivel === 50)) {
                         if (_tmpAsientoSel.ImpManifiesto === 'X') {
                             APP.msg.warning('No se puede anular boleto porque tienen manifiesto impreso.');
-
                             return auxValidate = false;
                         }
                     }
@@ -4494,14 +4491,19 @@
                     var verificaLiquidacionComiDet = await this.verificaLiquidacionComiDet(_tmpAsientoSel.IdVenta);
                     if (verificaLiquidacionComiDet !== 0) {
                         APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
-
                         return auxValidate = false;
                     }
 
                     var verificaLiquidacionComi = await this.verificaLiquidacionComi(this.filtro.CodiProgramacion, _tmpAsientoSel.CodiPuntoVenta);
                     if (verificaLiquidacionComi === "1") {
                         APP.msg.warning('El boleto se encuentra liquidado.');
-
+                        return auxValidate = false;
+                    }
+                    
+                    var resValidateNumDias = await appController.validateNumDias(_tmpAsientoSel.FechaVenta, '81');
+                    if (resValidateNumDias && resValidateNumDias.Valor) {
+                        var auxParseString = (resValidateNumDias.Valor === 1 ? 'el día disponible' : 'los ' + resValidateNumDias.Valor + ' días disponibles');
+                        APP.msg.warning('Se superó ' + auxParseString + ' para la anulación de la venta.');
                         return auxValidate = false;
                     }
 
@@ -4516,7 +4518,6 @@
                                 && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
 
                                 APP.msg.warning('No se puede anular, el boleto fue emitido el ' + _tmpAsientoSel.FechaVenta + '.');
-
                                 return auxValidate = false;
                             }
 
@@ -4524,7 +4525,6 @@
                         }
                         else {
                             APP.msg.warning('Solo los administradores pueden anular comprobantes.');
-
                             return auxValidate = false;
                         }
                     }
@@ -4538,12 +4538,10 @@
                     }
                     else if (Usuario.CodiSucursal !== _tmpAsientoSel.CodiSucursal && _valPanelAnular125 === '0') {
                         APP.msg.warning('Solo puede anular este boleto la sucursal ' + this.$options.filters.rutas(_tmpAsientoSel.CodiSucursal) + '.');
-
                         return auxValidate = false;
                     }
                     else if (Usuario.CodiPuntoVenta !== _tmpAsientoSel.CodiPuntoVenta && _valPanelAnularOtroPVenta === '0') {
                         APP.msg.warning('Solo puede anular este boleto el punto de venta ' + _tmpAsientoSel.NomPuntoVenta + '.');
-
                         return auxValidate = false;
                     }
                     else if (_tmpAsientoSel.CodiUsuario !== Usuario.CodiUsuario) {
@@ -4573,7 +4571,6 @@
                     }
                     else if (_tmpAsientoSel.FlagVenta === 'R') {
                         await this.cancelarReserva(_tmpAsientoSel);
-
                         return auxValidate = false;
                     }
                     else {
@@ -4596,7 +4593,6 @@
 
                         if (_tmpAsientoSel.FlagVenta === '5') {
                             APP.msg.warning('El boleto está emitido como delegación, no se puede anular.');
-
                             return auxValidate = false;
                         }
 
@@ -4615,7 +4611,6 @@
                     if (_tmpAsientoSel.FlagVenta === '7') {
                         if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
                             APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
-
                             return auxValidate = false;
                         }
                     }
@@ -4623,7 +4618,6 @@
                     if (_tmpAsientoSel.FlagVenta === 'Y') {
                         if (appController.validatePanel('32') !== '1') {
                             APP.msg.warning('No se puede anular un Vale remoto.');
-
                             return auxValidate = false;
                         }
                     }
@@ -4670,7 +4664,6 @@
 
                         if (_tmpAsientoSel.Boleto.substring(0, 3) === '000' && _tmpAsientoSel.FlagVenta === 'T') {
                             APP.msg.warning('No se puede anular, primero confirme el asiento.');
-
                             return auxValidate = false;
                         }
 
@@ -5137,8 +5130,8 @@
                                     return auxResponse;
                                 }
                             }
-                            var auxHours = parseInt( resValidaHoraProgramada.substring(0, 2) ) || 0;
-                            var auxMinutes = parseInt( resValidaHoraProgramada.substring(3, 5) ) || 0;
+                            var auxHours = parseInt(resValidaHoraProgramada.substring(0, 2)) || 0;
+                            var auxMinutes = parseInt(resValidaHoraProgramada.substring(3, 5)) || 0;
                             var auxHoraResult = moment(this.filtro.Turno, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
                             var auxValidate = auxHoraResult.isSameOrAfter(moment(), 'minute');
                             if (auxValidate) {
@@ -6104,7 +6097,7 @@
                 },
                 recorridoSectionTipoPagos: function (auxValidate) {
                     var auxResponse = false;
-
+                    debugger;
                     if (!this.computedTipoPago) {
                         $('#cboTipoPagoTP input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione un tipo de pago.');
@@ -6238,7 +6231,7 @@
                         case 'txtImportePagadoTP':
                             this.importePagado = this.$formatNumberWithTwoDecimals(this.importePagado, _parteEntera);
                             break;
-                        case 'txtTtarjetaCantTP':
+                        case 'txtTarjetaCantTP':
                             this.tarjetaCant = this.$formatNumberWithTwoDecimals(this.tarjetaCant, _parteEntera);
                             break;
                         case 'txtEfectivoTP':
@@ -6997,21 +6990,22 @@
                         input.CodiBus = appVueVenta.objPlano.CodiBus;
                         input.HoraProgramacion = appVueVenta.objTurno.HoraProgramacion;
 
-                        // Limpiar 'AsientosBloqueados'
-                        var auxResponse = await appVueVenta.cancelarBoletos();
-                        if (!auxResponse) {
-                            APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
-                            return;
-                        }
-
                         await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
                             .then(async function (res) {
+
+                                // Limpiar 'AsientosBloqueados'
+                                var auxResponse = await appVueVenta.cancelarBoletos();
+                                if (!auxResponse) {
+                                    APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
+                                    return;
+                                }
+
                                 await _this.close();
                                 await appController.chargeTurnos();
 
-                                if (res.data.Estado) {
+                                if (res.data.EsCorrecto) {
                                     _this.$nextTick(() => {
-                                        if (res.data.EsCorrecto)
+                                        if (res.data.Estado)
                                             APP.msg.info(res.data.Mensaje);
                                         else
                                             APP.msg.warning(res.data.Mensaje);
@@ -7922,7 +7916,7 @@
                     }
 
                     //Validación: El número de días no debe exceder a lo permitido, salvo clave 25
-                    var validateNumDias = await _this.validateNumDias(item.FechaVenta);
+                    var validateNumDias = await _this.validateNumDias(item.FechaVenta, '11');
                     if (validateNumDias) {
                         if (validateNumDias.Valor) {
                             resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
@@ -8070,10 +8064,11 @@
                         .catch(APP.rq.axios_handler_error_alert);
                     return retorno;
                 },
-                validateNumDias: async function (FechaVenta) {
+                validateNumDias: async function (FechaVenta, _CodTab) {
                     var retorno = null;
                     await APP.rq.axios2.get(APP.base + '/itinerarios/validateNumDias' + APP.util.getQueryParamByObject({
-                        FechaVenta: FechaVenta
+                        FechaVenta: FechaVenta,
+                        CodTab: _CodTab
                     }))
                         .then(res => {
                             retorno = res.data;

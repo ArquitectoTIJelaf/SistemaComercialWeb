@@ -230,7 +230,7 @@
         public const string MsgExcBuscarVentaxBoleto = "Excepción: BuscarVentaxBoleto.";
 
         public const string MsgCorrectoPostergarVenta = "Se postergó venta correctamente.";
-        public const string MsgErrorPostergarVenta = "Error: PostergarVenta.";
+        public const string MsgErrorPostergarVenta = "Solicitud cancelada, la venta ya ha sido postergada.";
         public const string MsgExcPostergarVenta = "Excepción: PostergarVenta.";
 
         public const string MsgCorrectoConsultaSumaBoletosPostergados = "Correcto: ConsultaSumaBoletosPostergados.";

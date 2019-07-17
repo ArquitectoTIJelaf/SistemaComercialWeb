@@ -19,6 +19,9 @@
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorridoPaseCortesia"
                                           @*@@keydown.9.native.prevent="recorridoPaseCortesia"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorridoPaseCortesia">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
