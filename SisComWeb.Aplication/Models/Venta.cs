@@ -88,7 +88,6 @@ namespace SisComWeb.Aplication.Models
         public string ObservacionDescuento { get; set; }
         public Acompaniante ObjAcompaniante { get; set; }
         // ANULACIÓN
-        public string IndiAnulado { get; set; }
         public string FechaVenta { get; set; }
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; }
@@ -121,8 +120,6 @@ namespace SisComWeb.Aplication.Models
         public string PolizaNum { get; set; }
         public string PolizaFechaReg { get; set; }
         public string PolizaFechaVen { get; set; }
-        // Reintegro
-        public string CodiEsca { get; set; }
     }
 
     public class FiltroVenta

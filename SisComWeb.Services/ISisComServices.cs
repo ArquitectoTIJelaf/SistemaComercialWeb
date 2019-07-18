@@ -353,7 +353,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VentaConsultaF12", ResponseFormat = WebMessageFormat.Json)]
-        Response<VentaEntity> VentaConsultaF12(ReintegroRequest filtro);
+        Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest filtro);
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaOpcionesModificacion", ResponseFormat = WebMessageFormat.Json)]

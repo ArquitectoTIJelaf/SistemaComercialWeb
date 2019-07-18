@@ -111,25 +111,6 @@ namespace SisComWeb.Repository
             return Codigo;
         }
 
-        public static int VerificaNotaCredito(int IdVenta)
-        {
-            int Codigo = 0;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_Venta_VeriNc";
-                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        Codigo = Reader.GetIntValue(drlector, "codorden");
-                    }
-                }
-            }
-            return Codigo;
-        }
-
         public static bool VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
         {
             bool Response = false;

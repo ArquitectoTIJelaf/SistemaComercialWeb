@@ -31,6 +31,7 @@
                                                               :select-on-tab="true"
                                                               :get-option-label="getLabel"
                                                               @@keydown.13.native.prevent=""
+                                                              :disabled="lockFilters"
                                                               ref="refREEmpresa">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -42,24 +43,39 @@
                                             <div class="col-md-3 separate-in-form p-b-10" style="display:flex;">
                                                 <div class="m-t-20">
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoManual" class="rbDescTipo" value="M" v-model="filtro.tipo">
-                                                        <label for="rdoManual"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio" 
+                                                               id="rdoManualRE" 
+                                                               class="rbDescTipo" 
+                                                               value="M" 
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoManualRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Manual
                                                         </label>
                                                     </div>
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoBoleta" class="rbDescTipo" value="B" v-model="filtro.tipo">
-                                                        <label for="rdoBoleta"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio" 
+                                                               id="rdoBoletaRE" 
+                                                               class="rbDescTipo" 
+                                                               value="B" 
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoBoletaRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Boleta
                                                         </label>
                                                     </div>
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoFactura" class="rbDescTipo" value="F" v-model="filtro.tipo">
-                                                        <label for="rdoFactura"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio" 
+                                                               id="rdoFacturaRE" 
+                                                               class="rbDescTipo" 
+                                                               value="F"
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoFacturaRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Factura
@@ -75,14 +91,16 @@
                                                            @@keypress.13.prevent="$refs.refRENumero.focus()"
                                                            @@blur="filtro.serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
                                                            v-mask="'#'.repeat(4)"
+                                                           :disabled="lockFilters"
                                                            ref="refRESerie" />
                                                 </div>
                                                 <div class="col-xs-8">
                                                     <input v-model="filtro.numero"
                                                            class="form-control input-sm"
-                                                           @@keypress.13.prevent="searchData"
+                                                           @@keypress.13.prevent="$refs.refREMotivo.$el.querySelector('input').focus()"
                                                            @@blur="filtro.numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
                                                            v-mask="'#'.repeat(8)"
+                                                           :disabled="lockFilters"
                                                            ref="refRENumero" />
                                                 </div>
                                             </div>
@@ -95,6 +113,7 @@
                                                               :select-on-tab="true"
                                                               :get-option-label="getLabel"
                                                               @@keydown.13.native.prevent=""
+                                                              :disabled="lockFilters"
                                                               ref="refREMotivo">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -108,14 +127,14 @@
                                             <label style="width: 100%">&nbsp;</label>
                                             <button @@click="searchData"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
-                                                    :disabled="!filtrosFilled"
-                                                    ref="refREBuscar">
+                                                    :disabled="!filtrosFilled || lockFilters"
+                                                    ref="refREVerificar">
                                                 <span class="fa fa-search fa-fw"></span>Verificar
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div class="form-group m-b-5 bordergray">
+                                    <div class="form-group m-b-5 bordergray" v-show="dataFilled">
                                         <div class="col-md-7 p-0">
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Origen Pasajero:</label>
@@ -138,7 +157,7 @@
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Destino Bus:</label>
                                                 <div class="">
-                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                    <input :value="item.destinoBus | rutas"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -147,7 +166,7 @@
                                             <div class="col-md-3 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Servicio:</label>
                                                 <div class="">
-                                                    <input @*:value="item.CodiServicio | servicios"*@
+                                                    <input :value="item.servicio | servicios"
                                                            class="form-control input-sm"
                                                            style="background-color:rgb(253, 249, 205);"
                                                            disabled />
@@ -290,7 +309,7 @@
                                                     <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Razón Social:</label>
                                                         <div class="">
-                                                            <input @*:value="item.razonSocial"*@
+                                                            <input :value="item.razonSocial"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -299,7 +318,7 @@
                                                     <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Dirección:</label>
                                                         <div class="">
-                                                            <input @*:value="item.direccion"*@
+                                                            <input :value="item.direccion"
                                                                    class="form-control input-sm"
                                                                    style="background-color:rgb(253, 249, 205);"
                                                                    disabled />
@@ -611,10 +630,13 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="close" class="btn btn-primary waves-effect waves-light">
+                <button @@click="cancelarRE" class="btn btn-info waves-effect waves-light" :disabled="!dataFilled">
+                    <span class="fa fa-refresh fa-fw"></span>Cancelar
+                </button>
+                <button @@click="close" class="btn btn-primary waves-effect waves-light" :disabled="!dataFilled">
                     <span class="fa fa-floppy-o fa-fw"></span>Aceptar
                 </button>
-                <button @@click="close" class="btn btn-danger waves-effect waves-light">
+                <button @@click="close" class="btn btn-danger waves-effect waves-light" :disabled="!dataFilled">
                     <span class="glyphicon glyphicon-remove fa-fw"></span>Anular
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">

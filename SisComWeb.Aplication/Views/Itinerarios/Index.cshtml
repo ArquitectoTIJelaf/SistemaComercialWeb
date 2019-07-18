@@ -5414,6 +5414,7 @@
                     let _this = this;
                     if (this.itemSelected) {
                         if (this.itemSelected.IdVenta) {
+                            _this.disabledAsiento = true;
                             // Valida 'TurnoDisponible'
                             if (!IngresoManualPasajes) {
                                 if (appController.validatePanel('54') === '1') {
@@ -5421,6 +5422,7 @@
                                     var verificaTurnoDisponible = _this.verificaTurnoDisponible();
                                     if (!verificaTurnoDisponible) {
                                         APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                        _this.disabledAsiento = false;
                                         return;
                                     }
                                 }
@@ -5429,19 +5431,24 @@
                             // Valida 'FechaViaje'
                             if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
                                 APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                                _this.disabledAsiento = false;
                                 return;
                             }
 
                             // Valida 'Manifiesto'
                             var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
-                            if (!resValidaManifiestoProgramacion)
-                                return;
-
-                            // Valida 'NivelUsuario'
-                            if (Usuario.Nivel === 14 || Usuario.Nivel === 15) {
+                            if (!resValidaManifiestoProgramacion) {
+                                _this.disabledAsiento = false;
                                 return;
                             }
 
+                            // Valida 'NivelUsuario'
+                            if (Usuario.Nivel === 14 || Usuario.Nivel === 15) {
+                                _this.disabledAsiento = false;
+                                return;
+                            }
+
+                            _this.disabledAsiento = false;
                             appController.showReintegro(this.itemSelected);
                         }
                         else {
@@ -8250,8 +8257,10 @@
                     opcionesModificacion: []
                 },
                 paginate: ['items'],
+                asientoSel: {},
                 showData: false,
                 lockReintegro: true,
+                lockFilters: false
             },
             mounted: function () {
                 let _this = this;
@@ -8264,21 +8273,23 @@
             },
             methods: {
                 show: function (asientoSel) {
-                    //this.limpiarRE();
-                    //this.asientoSel = asientoSel;
+                    debugger;
+                    this.limpiarFiltrosRE();
+                    this.limpiarRE();
+                    this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');
-                    this.setData(asientoSel);        
+                    this.setData();        
                     this.listaOpcionesModificacion();
                 },
-                setData: function (asientoSel) {
+                setData: function () {
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();
-                    _this.filtro.tipo = asientoSel.TipoBoleto;
-                    _this.filtro.serie = asientoSel.Boleto.substring(0, 3);
-                    _this.filtro.numero = asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label;
-                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: Definir
-                    _this.list.itinerarios = appVueTable.list.itinerarios; //TODO: Definir
+                    //var correlativo = appController.getCurrentCorrelativo();
+                    _this.filtro.tipo = _this.asientoSel.TipoBoleto;
+                    _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
+                    _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
+                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.list.itinerarios = appVueTable.list.itinerarios;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
                             _this.list.empresas = appController.getEmpresas();
@@ -8293,31 +8304,36 @@
                         Tipo: _this.filtro.tipo
                     }))
                         .then(res => {
-                            debugger;
-                            var data = _.cloneDeep(res.data.Valor);
-                            if (data) {
-                                _this.item.origenPasj = data.CodiOrigen;
-                                _this.item.destinoPasj = data.CodiDestino;
-                                //_this.item.destinoBus = data.CodiDestino;
-                                //_this.item.servicio = data.CodiServicio;
-                                _this.item.fechaVenta = data.FechaViaje;
-                                _this.item.horaVenta = data.HoraViaje;
-                                _this.item.documento = data.TipoDocumento;
-                                _this.item.numero = data.Dni;
-                                _this.item.apellidoPaterno = data.SplitNombre[1];
-                                _this.item.apellidoMaterno = data.SplitNombre[2];
-                                _this.item.nombre = data.SplitNombre[0];
-                                _this.item.edad = data.Edad;
-                                _this.item.telefono = data.Telefono;
-                                _this.item.nacionalidad = data.Nacionalidad;
-                                _this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
-                                _this.item.venta = data.IdVenta;
-                                _this.item.ruc = data.RucCliente;
-                                //_this.item.razonSocial = data.RucCliente;
-                                //_this.item.direccion = data.RucCliente;
-                                _this.item.asiento = data.NumeAsiento;
-                                _this.item.precio = data.PrecioVenta;
-                            } else APP.msg.warning('No se encontró resultados');
+                            if (res.data.EsCorrecto) {
+                                var data = _.cloneDeep(res.data.Valor);
+                                if (data) {
+                                    _this.item.origenPasj = data.CodiOrigen;
+                                    _this.item.destinoPasj = data.CodiDestino;
+                                    _this.item.destinoBus = data.CodiRuta;
+                                    _this.item.servicio = data.CodiServicio;
+                                    _this.item.fechaVenta = data.FechaViaje;
+                                    _this.item.horaVenta = data.HoraViaje;
+                                    _this.item.documento = data.TipoDocumento;
+                                    _this.item.numero = data.Dni;
+                                    _this.item.apellidoPaterno = data.SplitNombre[1];
+                                    _this.item.apellidoMaterno = data.SplitNombre[2];
+                                    _this.item.nombre = data.SplitNombre[0];
+                                    _this.item.edad = data.Edad;
+                                    _this.item.telefono = data.Telefono;
+                                    _this.item.nacionalidad = data.Nacionalidad;
+                                    _this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
+                                    _this.item.venta = data.IdVenta;
+                                    _this.item.ruc = data.RucCliente;
+                                    _this.item.razonSocial = data.RazonSocial;
+                                    _this.item.direccion = data.Direccion;
+                                    _this.item.asiento = data.NumeAsiento;
+                                    _this.item.precio = data.PrecioVenta;
+                                    _this.lockFilters = true;
+                                } else APP.msg.warning('No se encontró resultados');
+                            } else {
+                                APP.msg.warning(res.data.Mensaje);
+                                _this.limpiarRE();
+                            }                            
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
@@ -8356,6 +8372,59 @@
                     deferredModal($('#appVueMiniMapa'), false).done(function () {
                         APP.msg.error('Se cerró el modal y continua en el mismo método')
                     });
+                },
+                limpiarFiltrosRE: function () {
+                    let _this = this;
+                    _this.filtro.serie = '';
+                    _this.filtro.numero = '';
+                    _this.filtro.codEmpresa = '';
+                    _this.filtro.tipo = 'M';
+                    _this.filtro.codMotivo = '';
+                    _this.asientoSel = {};
+                    _this.showData = false;
+                    _this.lockFilters = false;
+
+                    if (_this.list.motivos.find(x => x.id === _this.filtro.codMotivo))
+                        _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
+                },
+                limpiarRE: function () {
+                    let _this = this;
+                    _this.item.origenPasj = '';
+                    _this.item.destinoPasj = '';
+                    _this.item.destinoBus = '';
+                    _this.item.servicio = '';
+                    _this.item.fechaVenta = '';
+                    _this.item.horaVenta = '';
+                    _this.item.documento = '';
+                    _this.item.numero = '';
+                    _this.item.apellidoPaterno = '';
+                    _this.item.apellidoMaterno = '';
+                    _this.item.nombre = '';
+                    _this.item.edad = '';
+                    _this.item.telefono = '';
+                    _this.item.nacionalidad = '';
+                    _this.item.boleto = '';
+                    _this.item.venta = '';
+                    _this.item.ruc = '';
+                    _this.item.razonSocial = '';
+                    _this.item.direccion = '';
+                    _this.item.asiento = '';
+                    _this.item.precio = '';                    
+                    _this.lockReintegro = true;
+                },
+                cancelarRE: function () {
+                    let _this = this;
+                    _this.filtro.tipo = _this.asientoSel.TipoBoleto;
+                    _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
+                    _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
+                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.showData = false;
+                    _this.lockFilters = false;
+                    _this.limpiarRE();
+
+                    if (_this.list.motivos.find(x => x.id === _this.filtro.codMotivo))
+                        _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -8405,7 +8474,9 @@
                                     case '00004': _this.showData = true; break;
                                     default: _this.showData = false;
                                 }
-                                this.$refs.refREBuscar.focus();
+                                _this.$nextTick(() => {
+                                    _this.$refs.refREVerificar.focus();
+                                });                                
                             }
                         } else {
                             _this.filtro.codMotivo = '';
@@ -8416,6 +8487,15 @@
                 filtrosFilled: function () {
                     let _this = this;
                     return _this.filtro.codEmpresa && _this.filtro.tipo && _this.filtro.serie && _this.filtro.numero && _this.filtro.codMotivo
+                },
+                dataFilled: function () {
+                    let _this = this;
+                    return (_this.item.origenPasj && _this.item.destinoPasj && _this.item.destinoBus &&
+                        _this.item.servicio && _this.item.fechaVenta && _this.item.horaVenta &&
+                        _this.item.documento && _this.item.numero && _this.item.apellidoPaterno &&
+                        _this.item.apellidoMaterno && _this.item.nombre && _this.item.edad &&
+                        _this.item.telefono && _this.item.nacionalidad && _this.item.boleto &&
+                        _this.item.venta && _this.item.asiento && _this.item.precio && _this.item.reintegro);
                 }
             }
         });

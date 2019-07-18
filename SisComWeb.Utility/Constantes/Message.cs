@@ -326,5 +326,11 @@
         public const string MsgExcListaOpcionesModificacion = "Excepción: ListaOpcionesModificacion.";
         public const string MsgCorrectoVentaConsultaF12 = "Correcto: VentaConsultaF12.";
         public const string MsgExcVentaConsultaF12 = "Excepción: VentaConsultaF12.";
+        public const string MsgExcF12NotaCredito = "Boleto esta sujeto a Nota de Crédito";
+        public const string MsgExcF12EsReintegro = "Boleto esta como Reintegro";
+        public const string MsgExcF12TieneReintegro = "Boleto ya tiene adjunto un Reintegro";
+        public const string MsgExcF12EsFechaAbierta = "Boleto esta en Fecha Abierta";
+        public const string MsgExcF12SinProgramacion = "La programación no fue encontrada";
+        public const string MsgExcF12NoExiste = "Boleto no existe";
     }
 }

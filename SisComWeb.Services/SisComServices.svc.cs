@@ -989,7 +989,7 @@ namespace SisComWeb.Services
 
         #region REINTEGRO
 
-        public Response<VentaEntity> VentaConsultaF12(ReintegroRequest request)
+        public Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest request)
         {
             try
             {
@@ -998,7 +998,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<VentaEntity>(false, null, Message.MsgExcVentaConsultaF12, false);
+                return new Response<ReintegroEntity>(false, null, Message.MsgExcVentaConsultaF12, false);
             }
         }
 

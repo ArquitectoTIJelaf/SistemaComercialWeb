@@ -2244,6 +2244,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        //Buscar para Modificación
         [HttpPost]
         [Route("buscaBoletoF9")]
         public async Task<ActionResult> BuscaBoletoF9(int Serie, int Numero, string Tipo, int CodEmpresa)
@@ -2329,6 +2330,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        //Enviar Modificación
         [HttpPost]
         [Route("actualizaBoletoF9")]
         public async Task<ActionResult> ActualizaBoletoF9(FiltroBoleto request)
@@ -2445,6 +2447,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        //Buscar Fecha Abierta
         [HttpPost]
         [Route("ventaConsultaF6")]
         public async Task<ActionResult> VentaConsultaF6(FiltroFechaAbierta filtro)
@@ -2609,6 +2612,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        //Confrimar Fecha Abierta
         [HttpPost]
         [Route("confirmar-fecha-abierta")]
         public async Task<ActionResult> VentaUpdatePostergacionEle(FiltroFechaAbierta filtro)
@@ -2723,6 +2727,7 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        //Busca Reintegro
         [HttpPost]
         [Route("ventaConsultaF12")]
         public async Task<ActionResult> VentaConsultaF12(FiltroReintegro filtro)
@@ -2747,11 +2752,11 @@ namespace SisComWeb.Aplication.Controllers
                 JToken tmpResult = JObject.Parse(result);
                 JObject data = (JObject)tmpResult["Valor"];
 
-                Response<Venta> res = new Response<Venta>()
+                Response<Reintegro> res = new Response<Reintegro>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = new Venta()
+                    Valor = new Reintegro()
                     {
                         SerieBoleto = (short)data["SerieBoleto"],
                         NumeBoleto = (int)data["NumeBoleto"],
@@ -2776,8 +2781,13 @@ namespace SisComWeb.Aplication.Controllers
                         Edad = (byte)data["Edad"],
                         Telefono = (string)data["Telefono"],
                         Nacionalidad = (string)data["Nacionalidad"],
-                        Tipo = (string)data["Tipo"]
-                    }
+                        Tipo = (string)data["Tipo"],
+                        RazonSocial = (string)data["RazonSocial"],
+                        Direccion = (string)data["Direccion"],
+                        CodiRuta = (byte)data["CodiRuta"],
+                        CodiServicio = (byte)data["CodiServicio"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);

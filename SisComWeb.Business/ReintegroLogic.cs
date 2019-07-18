@@ -10,18 +10,48 @@ namespace SisComWeb.Business
 {
     public class ReintegroLogic
     {
-        public static Response<VentaEntity> VentaConsultaF12(ReintegroRequest request)
+        public static Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest request)
         {
             try
             {
                 var valor = ReintegroRepository.VentaConsultaF12(request);
-
-                return new Response<VentaEntity>(true, valor, Message.MsgCorrectoVentaConsultaF12, true);
+                if(valor.IdVenta == 0)
+                {
+                    return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NoExiste, true);
+                }
+                //Setea Razón Social y Dirección con el RUC
+                var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(valor.RucCliente);
+                valor.RazonSocial = buscarEmpresa.RazonSocial;
+                valor.Direccion = buscarEmpresa.Direccion;
+                //Verifica si el boleto está en Fecha Abierta
+                if (valor.CodiProgramacion != 0)
+                {
+                    var programacion = ReintegroRepository.DatosProgramacion(valor.CodiProgramacion);
+                    //Verifica si no tiene Programación, caso contrario setea Ruta y Servicio
+                    if(programacion.CodiRuta != 0 && programacion.CodiServicio != 00)
+                    {
+                        valor.CodiRuta = programacion.CodiRuta;
+                        valor.CodiServicio = programacion.CodiServicio;
+                    } else
+                    {
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12SinProgramacion, true);
+                    }
+                    //Verfica si tiene Nota de Crédito
+                    if(VentaRepository.VerificaNC(valor.IdVenta) != 0)
+                    {
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito, true);
+                    }
+                }
+                else
+                {
+                    return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12EsFechaAbierta, true);
+                }
+                return new Response<ReintegroEntity>(true, valor, Message.MsgCorrectoVentaConsultaF12, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<VentaEntity>(false, null, Message.MsgExcVentaConsultaF12, false);
+                return new Response<ReintegroEntity>(false, null, Message.MsgExcVentaConsultaF12, false);
             }
         }
 

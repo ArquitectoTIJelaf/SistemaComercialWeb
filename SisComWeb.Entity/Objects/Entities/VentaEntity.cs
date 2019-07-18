@@ -149,7 +149,6 @@ namespace SisComWeb.Entity
 
 
         // ANULACIÓN
-        public string IndiAnulado { get; set; }
 
         public string FechaVenta { get; set; }
 

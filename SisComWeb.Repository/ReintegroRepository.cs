@@ -8,9 +8,9 @@ namespace SisComWeb.Repository
 {
     public class ReintegroRepository
     {
-        public static VentaEntity VentaConsultaF12(ReintegroRequest filtro)
+        public static ReintegroEntity VentaConsultaF12(ReintegroRequest filtro)
         {
-            var objeto = new VentaEntity();
+            var objeto = new ReintegroEntity();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -23,7 +23,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        objeto = new VentaEntity
+                        objeto = new ReintegroEntity
                         {
                             SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO"),
                             NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO"),
@@ -79,6 +79,34 @@ namespace SisComWeb.Repository
             }
 
             return Lista;
+        }
+
+        public static ProgramacionEntity DatosProgramacion(int codiProgramacion)
+        {
+            var objeto = new ProgramacionEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_programacion_Datos";
+                db.AddParameter("@codi_programacion", DbType.Int32, ParameterDirection.Input, codiProgramacion);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        objeto = new ProgramacionEntity()
+                        {
+                            CodiEmpresa = Reader.GetByteValue(drlector, "Codi_Empresa"),
+                            CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal"),
+                            CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta"),
+                            CodiBus = Reader.GetStringValue(drlector, "Codi_Bus"),
+                            FechaProgramacion = Reader.GetDateStringValue(drlector, "Fech_programacion"),
+                            HoraProgramacion = Reader.GetStringValue(drlector, "Hora_programacion"),
+                            CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio")
+                        };
+                    }
+                }
+            }
+            return objeto;
         }
     }
 }
