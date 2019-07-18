@@ -106,6 +106,8 @@ namespace SisComWeb.Business
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
 
+
+
                 // Verifica 'CodiProgramacion'
                 var objProgramacion = new ProgramacionEntity()
                 {
@@ -143,6 +145,12 @@ namespace SisComWeb.Business
                 listaVentasRealizadas.Add(ventaRealizada);
 
                 valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                var venta = VentaRepository.BuscarVentaById(filtro.IdVenta);
+                if(venta.CodiProgramacion != 0)
+                {
+                    return new Response<VentaResponse>(false, valor, "La asignación a Fecha Abierta falló", false);
+                }
 
                 var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);

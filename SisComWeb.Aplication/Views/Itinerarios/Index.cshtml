@@ -908,7 +908,6 @@
         });
 
         Vue.filter('formatNroVenta', function (value) {
-            debugger;
             if (value) {
                 // Para el caso de 'Reserva'
                 var auxCeroPorSigno = value.substring(1, 2);
@@ -7798,6 +7797,9 @@
                             this.item.codEmpresa = '';
                         }
                     }
+                },
+                filledData: function () {
+                    return this.filtro.nacionidad
                 }
             },
             watch: {}
@@ -7828,7 +7830,8 @@
                     Tipo: '',
                     Serie: '',
                     Numero: '',
-                    CodEmpresa: ''
+                    CodEmpresa: '',
+                    CodiDestino: ''
                 },
                 table: {
                     Nombre: '',
@@ -7843,6 +7846,7 @@
                 },
                 list: {
                     pasajeros: [],
+                    destinos: [],
                     empresas: []
                 },
                 paginate: ['items'],
@@ -7877,8 +7881,13 @@
                     _this.item.CodEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
-                            _this.list.empresas = appController.getEmpresas();
+                            _this.list.empresas = empresas;
                             _this.list.empresas.unshift(selectAll);
+                        }
+
+                        if (_this.list.destinos.length == 0) {
+                            _this.list.destinos = rutas;
+                            _this.list.destinos.unshift(selectAll);
                         }
                     });
                 },
@@ -8162,6 +8171,22 @@
                             }
                         } else {
                             this.item.CodEmpresa = '';
+                        }
+                    }
+                },
+                filtroCodiDestino: {
+                    get: function () {
+                        if (this.list.destinos.length > 0 && this.list.destinos.find(x => x.id === this.item.CodiDestino)) {
+                            return this.list.destinos.find(x => x.id === this.item.CodiDestino)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.destinos.find(x => x.id === value.id)) {
+                                this.item.CodiDestino = value.id;
+                            }
+                        } else {
+                            this.item.CodiDestino = '';
                         }
                     }
                 }

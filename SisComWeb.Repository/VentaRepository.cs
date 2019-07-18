@@ -271,6 +271,7 @@ namespace SisComWeb.Repository
                         entidad.IdPrecio = Reader.GetIntValue(drlector, "idtabla");
                         entidad.PerAutoriza = Reader.GetStringValue(drlector, "per_autoriza");
                         entidad.FechaAnulacion = Reader.GetDateStringValue(drlector, "FECH_ANULACION");
+                        entidad.CodiProgramacion = Reader.GetIntValue(drlector, "CODI_PROGRAMACION");
                         break;
                     }
                 }

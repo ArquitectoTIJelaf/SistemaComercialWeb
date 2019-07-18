@@ -2473,6 +2473,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Serie\" : \"" + (filtro.Serie ?? "0") + "\"" +
                                     ",\"Numero\" : \"" + (filtro.Numero ?? "0") + "\"" +
                                     ",\"CodEmpresa\" : \"" + (filtro.CodEmpresa ?? "0") + "\"" +
+                                    ",\"CodiDestino\" : \"" + (filtro.CodiDestino ?? "0") + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("VentaConsultaF6", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
