@@ -1569,6 +1569,14 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiRuta\" : " + filtro.CodiRuta +
                                     ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
                                     ",\"HoraProgramacion\" : \"" + filtro.HoraProgramacion + "\"" +
+
+                                    ",\"CodiUsuario\" : " + usuario.CodiUsuario +
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
+                                    ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
+                                    ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("PostergarVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

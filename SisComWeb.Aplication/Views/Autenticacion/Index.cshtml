@@ -28,13 +28,18 @@
             <div class="separate-in-form">
                 <v-select v-model="codigoUsuario"
                           id="txtUsuario"
-                          placeholder="--- Seleccione usuario ---"
+                          placeholder="-- Seleccione usuario --"
                           :options="list.usuarios"
                           :select-on-tab="true"
                           :get-option-label="getLabel"
                           :filterable="false"
                           @@search="getUsuarios"
-                          ref="usuario">
+                          @@keydown.13.native.prevent="recorrido"
+                          @*@@keydown.9.native.prevent="recorrido"*@
+                          ref="refUsuario">
+                    <template slot="option" slot-scope="option">
+                        <div @@click="recorrido">{{ option.id }} - {{ option.label }}</div>
+                    </template>
                     <span slot="no-options" class="text-danger">No hay resultados</span>
                 </v-select>
             </div>
@@ -45,7 +50,13 @@
                               placeholder="Sucursal"
                               :get-option-label="getLabel"
                               :options="list.sucursales"
-                              :select-on-tab="true">
+                              :select-on-tab="true"
+                              @@keydown.13.native.prevent="recorridoSucursal"
+                              @*@@keydown.9.native.prevent="recorridoSucursal"*@
+                              ref="refSucursal">
+                        <template slot="option" slot-scope="option">
+                            <div @@click="recorridoSucursal">{{ option.id }} - {{ option.label }}</div>
+                        </template>
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
@@ -55,7 +66,13 @@
                               placeholder="Punto de Venta"
                               :get-option-label="getLabel"
                               :options="list.puntosventa"
-                              :select-on-tab="true">
+                              :select-on-tab="true"
+                              @@keydown.13.native.prevent="recorrido"
+                              @*@@keydown.9.native.prevent="recorrido"*@
+                              ref="refPuntoVenta">
+                        <template slot="option" slot-scope="option">
+                            <div @@click="recorrido">{{ option.id }} - {{ option.label }}</div>
+                        </template>
                         <span slot="no-options" class="text-danger">No hay resultados</span>
                     </v-select>
                 </div>
@@ -67,8 +84,9 @@
                        class="form-control input-sm"
                        placeholder="Password"
                        v-model="filtro.Clave"
+                       @@focus="$event.target.select()"
                        @@keydown.13.prevent="confirmUsuario(filtro)"
-                       @@keydown.9.prevent="confirmUsuario(filtro)"
+                       @*@@keydown.9.prevent="confirmUsuario(filtro)"*@
                        autocomplete="off" />
             </div>
             <div style="padding-top: 30px !important; ">
@@ -82,6 +100,7 @@
     <script>
 
         var UsuarioJML = '@JLMrootCode';
+        var pvOrigenesBus = [];
 
         var appVueLogin = new Vue({
             el: '#appVueLogin',
@@ -102,12 +121,20 @@
             },
             mounted: function () {
                 this.getUsuarios('', null);
+                this.getPuntosVenta();
                 this.$nextTick(() => {
                     $('#txtUsuario input[type=search]').focus();
                 });
             },
             methods: {
+                getListPvOrigenesBus: function (_CodiOrigenBus) {
+                    return _.filter(pvOrigenesBus, function (obj) { return obj.CodiSucursal == _CodiOrigenBus; });
+                },
                 confirmUsuario: async function (filtro) {
+
+                    if (!this.recorrido(true))
+                        return;
+
                     this.disabledValidator = true;
 
                     await this.getTerminal();
@@ -164,12 +191,15 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                getPuntosVenta(Codi_Sucursal) {
+                getPuntosVenta() {
                     var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-puntosventa', { params: { CodiSucursal: Codi_Sucursal } })
+                    APP.rq.axios2.get(APP.base + '/base/get-puntosventa')
                         .then(res => {
-                            if (res.data.Estado)
-                                _this.list.puntosventa = res.data.Valor;
+                            if (res.data.Estado) {
+                                _this.list.puntosventa = _.cloneDeep(res.data.Valor);
+
+                                pvOrigenesBus = _.cloneDeep(res.data.Valor);
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -184,6 +214,7 @@
                             if (res.data.Estado) {
                                 if (loading)
                                     loading(false);
+
                                 _this.list.usuarios = res.data.Valor;
                             }
                             else
@@ -194,17 +225,38 @@
                 getLabel(option) {
                     return `${option.id} - ${option.label}`
                 },
-                recorrido() {
-                    if (this.filtro.Codigo === UsuarioJML && !this.filtro.Sucursal)
-                        $('#cboSucursal input[type=search]').focus();
-                    else if (this.filtro.Codigo === UsuarioJML && !this.filtro.PuntoVenta)
-                        $('#cboPuntoVenta input[type=search]').focus();
-                    else if (this.filtro.Codigo === '0')
+                recorrido(_validate) {
+                    var response = false;
+
+                    if (this.filtro.Codigo === '0') {
                         $('#cboUsuario input[type=search]').focus();
-                    else if (!this.filtro.Clave)
+                        if (_validate === true) APP.msg.warning('Seleccione un usuario.');
+                    }
+                    else if (this.filtro.Codigo === UsuarioJML && !this.filtro.Sucursal) {
+                        $('#cboSucursal input[type=search]').focus();
+                        if (_validate === true) APP.msg.warning('Seleccione una sucursal.');
+                    }
+                    else if (this.filtro.Codigo === UsuarioJML && !this.filtro.PuntoVenta) {
+                        $('#cboPuntoVenta input[type=search]').focus();
+                        if (_validate === true) APP.msg.warning('Seleccione un punto de venta.');
+                    }
+                    else if (!this.filtro.Clave) {
                         document.getElementById("txtContrasena").focus();
-                    else
-                        document.getElementById("btnLogIn").focus();
+                        if (_validate === true) APP.msg.warning('Ingrese contraseña.');
+                    }
+                    else {
+                        document.getElementById("txtContrasena").focus();
+                        response = true;
+                    }   
+
+                    return response;
+                },
+                recorridoSucursal() {
+                    $('#cboPuntoVenta input[type=search]').focus();
+                },
+                limpiarCampos() {
+                    this.filtro.Sucursal = null;
+                    this.filtro.PuntoVenta = null;
                 }
             },
             computed: {
@@ -212,9 +264,9 @@
                     if (this.filtro.Codigo) {
                         if (this.filtro.Codigo === UsuarioJML) {
                             return (
+                                parseInt(this.filtro.Codigo) > 0 &&
                                 this.filtro.Sucursal &&
                                 this.filtro.PuntoVenta &&
-                                parseInt(this.filtro.Codigo) > 0 &&
                                 this.filtro.Clave) ? true : false;
                         }
                         else {
@@ -231,13 +283,19 @@
                     },
                     set: function (value) {
                         if (value) {
-                            if (this.list.usuarios.find(x => x.id === value.id)) {
+                            if (this.list.usuarios.find(x => x.id === value.id))
                                 this.filtro.Codigo = value.id;
 
-                                this.$nextTick(function () {
-                                    this.recorrido();
-                                });
+                            if (this.filtro.Codigo === UsuarioJML) {
+                                if (this.list.sucursales.length === 0)
+                                    this.getSucursales();
                             }
+                            else
+                                this.limpiarCampos();
+
+                            this.$nextTick(function () {
+                                this.recorrido();
+                            });
                         }
                         else
                             this.filtro.Codigo = '0';
@@ -248,28 +306,12 @@
                 'filtro.Sucursal': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0)
-                            this.getPuntosVenta(newVal.id);
+                            this.list.puntosventa = this.getListPvOrigenesBus(newVal.id);
                     }
                     else {
                         this.list.puntosventa = [];
                         this.filtro.PuntoVenta = null;
                     }
-                    this.$nextTick(function () {
-                        this.recorrido();
-                    });
-                },
-                'filtro.PuntoVenta': function (newVal, oldVal) {
-                    this.$nextTick(function () {
-                        this.recorrido();
-                    });
-                },
-                'filtro.Codigo': function (newVal, oldVal) {
-                    if (this.filtro.Codigo === UsuarioJML && this.list.sucursales.length === 0)
-                        this.getSucursales();
-
-                    this.$nextTick(function () {
-                        this.recorrido();
-                    });
                 }
             }
         });

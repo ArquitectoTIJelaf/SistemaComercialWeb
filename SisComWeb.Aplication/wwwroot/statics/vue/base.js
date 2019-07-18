@@ -74,10 +74,18 @@ Vue.prototype.calculatePagination = function (page) {
     _this.pagination.view = _this.pagination.pagetotal == page ? (page * _this.pagination.per > _this.pagination.total ? _this.pagination.total : _this.pagination.per) : _this.pagination.per;
     _this.pagination.show = _this.pagination.per > _this.results.length ? _this.results.length : _this.pagination.per;
 };
+
 /*!********************* Prototype Vue */
+Vue.prototype.$getSelectorVselect = function $obtenerSeleccionadorVselect(_list, _objFiltro) {
+    var selector = 0;
 
+    if (_objFiltro) {
+        var tmpIndex = _.findIndex(_list, { 'id': _objFiltro.id, 'label': _objFiltro.label });
+        selector = (tmpIndex >= 0 ? tmpIndex : 0);
+    }
 
-
+    return selector;
+};
 
 /*!********************* Filter Vue */
 Vue.filter('concatZero', function (value, length = 8) {

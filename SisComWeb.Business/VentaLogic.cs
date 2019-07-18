@@ -131,41 +131,32 @@ namespace SisComWeb.Business
                     string auxBoletoCompleto = string.Empty;
                     entidad.UserWebSUNAT = UserWebSUNAT;
 
-                    // Busca 'ProgramacionViaje'
-                    var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
-                    if (buscarProgramacionViaje == 0)
+                    // Verifica 'CodiProgramacion'
+                    var objProgramacion = new ProgramacionEntity()
                     {
-                        // Genera 'CorrelativoAuxiliar'
-                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
-                        if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                        NroViaje = entidad.NroViaje,
+                        FechaProgramacion = entidad.FechaProgramacion,
+                        CodiProgramacion = entidad.CodiProgramacion,
+                        CodiEmpresa = entidad.CodiEmpresa,
+                        CodiSucursal = entidad.CodiSucursal,
+                        CodiRuta = entidad.CodiRuta,
+                        CodiBus = entidad.CodiBus,
+                        HoraProgramacion = entidad.HoraProgramacion,
+                        CodiServicio = entidad.CodiServicio,
 
-                        entidad.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
-
-                        var objProgramacion = new ProgramacionEntity
-                        {
-                            CodiProgramacion = entidad.CodiProgramacion,
-                            CodiEmpresa = entidad.CodiEmpresa,
-                            CodiSucursal = entidad.CodiSucursal,
-                            CodiRuta = entidad.CodiRuta,
-                            CodiBus = entidad.CodiBus,
-                            FechaProgramacion = entidad.FechaProgramacion,
-                            HoraProgramacion = entidad.HoraProgramacion,
-                            CodiServicio = entidad.CodiServicio
-                        };
-
-                        // Graba 'Programacion'
-                        var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
-                        if (!grabarProgramacion)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
-
-                        // Graba 'ViajeProgramacion'
-                        var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
-                        if (!grabarViajeProgramacion)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
-                    }
+                        CodiUsuario = entidad.CodiUsuario.ToString(),
+                        NomUsuario = entidad.NomUsuario,
+                        CodiPuntoVenta = entidad.CodiPuntoVenta.ToString(),
+                        Terminal = entidad.CodiTerminal,
+                        CodiOrigen = entidad.CodiOrigen.ToString(),
+                        CodiDestino = entidad.CodiDestino.ToString(),
+                        NomOrigen = entidad.NomOrigen
+                    };
+                    var verificaCodiProgramacion = VerificaCodiProgramacion(objProgramacion);
+                    if (verificaCodiProgramacion == 0)
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaCodiProgramacion, false);
                     else
-                        entidad.CodiProgramacion = buscarProgramacionViaje;
+                        entidad.CodiProgramacion = verificaCodiProgramacion;
 
                     // Seteo 'valor.CodiProgramacion'
                     valor.CodiProgramacion = entidad.CodiProgramacion;
@@ -788,42 +779,32 @@ namespace SisComWeb.Business
                 {
                     string auxBoletoCompleto = string.Empty;
 
-                    // Busca 'ProgramacionViaje'
-                    var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
-
-                    if (buscarProgramacionViaje == 0)
+                    // Verifica 'CodiProgramacion'
+                    var objProgramacion = new ProgramacionEntity()
                     {
-                        // Genera 'CorrelativoAuxiliar'
-                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
-                        if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                        NroViaje = entidad.NroViaje,
+                        FechaProgramacion = entidad.FechaProgramacion,
+                        CodiProgramacion = entidad.CodiProgramacion,
+                        CodiEmpresa = entidad.CodiEmpresa,
+                        CodiSucursal = entidad.CodiSucursal,
+                        CodiRuta = entidad.CodiRuta,
+                        CodiBus = entidad.CodiBus,
+                        HoraProgramacion = entidad.HoraProgramacion,
+                        CodiServicio = entidad.CodiServicio,
 
-                        entidad.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
-
-                        var objProgramacion = new ProgramacionEntity
-                        {
-                            CodiProgramacion = entidad.CodiProgramacion,
-                            CodiEmpresa = entidad.CodiEmpresa,
-                            CodiSucursal = entidad.CodiSucursal,
-                            CodiRuta = entidad.CodiRuta,
-                            CodiBus = entidad.CodiBus,
-                            FechaProgramacion = entidad.FechaProgramacion,
-                            HoraProgramacion = entidad.HoraProgramacion,
-                            CodiServicio = entidad.CodiServicio
-                        };
-
-                        // Graba 'Programacion'
-                        var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
-                        if (!grabarProgramacion)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
-
-                        // Graba 'ViajeProgramacion'
-                        var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, entidad.CodiProgramacion, entidad.FechaProgramacion, entidad.CodiBus);
-                        if (!grabarViajeProgramacion)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
-                    }
+                        CodiUsuario = entidad.CodiUsuario.ToString(),
+                        NomUsuario = entidad.NomUsuario,
+                        CodiPuntoVenta = entidad.CodiPuntoVenta.ToString(),
+                        Terminal = entidad.CodiTerminal,
+                        CodiOrigen = entidad.CodiOrigen.ToString(),
+                        CodiDestino = entidad.CodiDestino.ToString(),
+                        NomOrigen = entidad.NomOrigen
+                    };
+                    var verificaCodiProgramacion = VerificaCodiProgramacion(objProgramacion);
+                    if (verificaCodiProgramacion == 0)
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaCodiProgramacion, false);
                     else
-                        entidad.CodiProgramacion = buscarProgramacionViaje;
+                        entidad.CodiProgramacion = verificaCodiProgramacion;
 
                     // Seteo 'valor.CodiProgramacion'
                     valor.CodiProgramacion = entidad.CodiProgramacion;
@@ -1510,41 +1491,32 @@ namespace SisComWeb.Business
 
                 var postergarVenta = new bool();
 
-                // Busca 'ProgramacionViaje'
-                var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(filtro.NroViaje, filtro.FechaProgramacion);
-                if (buscarProgramacionViaje == 0)
+                // Verifica 'CodiProgramacion'
+                var objProgramacion = new ProgramacionEntity()
                 {
-                    // Genera 'CorrelativoAuxiliar'
-                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
-                    if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+                    NroViaje = filtro.NroViaje,
+                    FechaProgramacion = filtro.FechaProgramacion,
+                    CodiProgramacion = filtro.CodiProgramacion,
+                    CodiEmpresa = filtro.CodiEmpresa,
+                    CodiSucursal = filtro.CodiSucursal,
+                    CodiRuta = filtro.CodiRuta,
+                    CodiBus = filtro.CodiBus,
+                    HoraProgramacion = filtro.HoraProgramacion,
+                    CodiServicio = byte.Parse(filtro.CodiServicio.ToString()),
 
-                    filtro.CodiProgramacion = int.Parse(generarCorrelativoAuxiliar) + 1;
-
-                    var objProgramacion = new ProgramacionEntity
-                    {
-                        CodiProgramacion = filtro.CodiProgramacion,
-                        CodiEmpresa = filtro.CodiEmpresa,
-                        CodiSucursal = filtro.CodiSucursal,
-                        CodiRuta = filtro.CodiRuta,
-                        CodiBus = filtro.CodiBus,
-                        FechaProgramacion = filtro.FechaProgramacion,
-                        HoraProgramacion = filtro.HoraProgramacion,
-                        CodiServicio = byte.Parse(filtro.CodiServicio.ToString())
-                    };
-
-                    // Graba 'Programacion'
-                    var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
-                    if (!grabarProgramacion)
-                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarProgramacion, false);
-
-                    // Graba 'ViajeProgramacion'
-                    var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(filtro.NroViaje, filtro.CodiProgramacion, filtro.FechaProgramacion, filtro.CodiBus);
-                    if (!grabarViajeProgramacion)
-                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarViajeProgramacion, false);
-                }
+                    CodiUsuario = filtro.CodiUsuario.ToString(),
+                    NomUsuario = filtro.NomUsuario,
+                    CodiPuntoVenta = filtro.CodiPuntoVenta.ToString(),
+                    Terminal = filtro.CodiTerminal,
+                    CodiOrigen = filtro.CodiOrigen.ToString(),
+                    CodiDestino = filtro.CodiDestino.ToString(),
+                    NomOrigen = filtro.NomOrigen
+                };
+                var verificaCodiProgramacion = VerificaCodiProgramacion(objProgramacion);
+                if (verificaCodiProgramacion == 0)
+                    return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaCodiProgramacion, false);
                 else
-                    filtro.CodiProgramacion = buscarProgramacionViaje;
+                    filtro.CodiProgramacion = verificaCodiProgramacion;
 
                 // Seteo 'valor.CodiProgramacion'
                 valor.CodiProgramacion = filtro.CodiProgramacion;
@@ -2180,6 +2152,69 @@ namespace SisComWeb.Business
                 value = "Val. : " + ValeRemoto + " : " + NomOrigenPas.Substring(0,3) + "-" + NomDestinoPas.Substring(0, 3);
             else
                 value = NomOrigenPas.Substring(0, 3) + "-" + NomDestinoPas.Substring(0, 3);
+
+            return value;
+        }
+
+        public static int VerificaCodiProgramacion(ProgramacionEntity entidad)
+        {
+            var value = new int();
+
+            // Busca 'ProgramacionViaje'
+            var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(entidad.NroViaje, entidad.FechaProgramacion);
+            if (buscarProgramacionViaje == 0)
+            {
+                // Genera 'CorrelativoAuxiliar'
+                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("TB_PROGRAMACION", "999", string.Empty, string.Empty);
+                if (!string.IsNullOrEmpty(generarCorrelativoAuxiliar))
+                {
+                    value = int.Parse(generarCorrelativoAuxiliar) + 1;
+
+                    var objProgramacion = new ProgramacionEntity
+                    {
+                        CodiProgramacion = value,
+                        CodiEmpresa = entidad.CodiEmpresa,
+                        CodiSucursal = entidad.CodiSucursal,
+                        CodiRuta = entidad.CodiRuta,
+                        CodiBus = entidad.CodiBus,
+                        FechaProgramacion = entidad.FechaProgramacion,
+                        HoraProgramacion = entidad.HoraProgramacion,
+                        CodiServicio = entidad.CodiServicio
+                    };
+
+                    // Graba 'Programacion'
+                    var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
+
+                    // Graba 'ViajeProgramacion'
+                    var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, value, entidad.FechaProgramacion, entidad.CodiBus);
+
+                    // Graba 'AuditoriaProg'
+                    var objAuditoriaProg = new AuditoriaEntity
+                    {
+                        CodiUsuario = short.Parse(entidad.CodiUsuario),
+                        NomUsuario = entidad.NomUsuario,
+                        Tabla = "PROGRAMACION",
+                        TipoMovimiento = "ADICION",
+                        Boleto = value.ToString(),
+                        NumeAsiento = "0",
+                        NomOficina = entidad.NomOrigen,
+                        NomPuntoVenta = entidad.CodiPuntoVenta.PadLeft(3, '0'),
+                        Pasajero = string.Empty,
+                        FechaViaje = entidad.FechaProgramacion,
+                        HoraViaje = entidad.HoraProgramacion,
+                        NomDestino = entidad.CodiDestino.PadLeft(3, '0'),
+                        Precio = 0,
+                        Obs1 = "CREACION DE PROGRAMACION",
+                        Obs2 = "TERMINAL : " + entidad.Terminal.PadLeft(3, '0'),
+                        Obs3 = string.Join("-", new string[] { entidad.CodiOrigen.PadLeft(3, '0'), entidad.CodiDestino.PadLeft(3, '0'), entidad.CodiServicio.ToString().PadLeft(2, '0') }),
+                        Obs4 = "FECHA PROG " + entidad.FechaProgramacion + " " + entidad.HoraProgramacion,
+                        Obs5 = " NRO VIAJE " + entidad.NroViaje
+                    };
+                    ManifiestoRepository.GrabarAuditoriaProg(objAuditoriaProg);
+                }
+            }
+            else
+                value = buscarProgramacionViaje;
 
             return value;
         }

@@ -411,7 +411,8 @@
                                         v-if="showContextMenu"
                                         @@blur="closeMenu"
                                         :style="{top: top, left: left}">
-                                        <li @@click="contextMenuReimprimir()">
+                                        <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
+                                            @@click="contextMenuReimprimir()">
                                             <i class="fa fa-print fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reimprimir
                                         </li>
@@ -419,7 +420,8 @@
                                             <i class="fa fa-ban fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Anular
                                         </li>
-                                        <li @@click="contextMenuReintegro()">
+                                        <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
+                                            @@click="contextMenuReintegro()">
                                             <i class="fa fa-ticket fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reintegro
                                         </li>

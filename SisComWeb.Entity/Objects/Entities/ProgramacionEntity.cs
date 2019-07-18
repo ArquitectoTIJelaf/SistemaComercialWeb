@@ -17,5 +17,24 @@
         public string HoraProgramacion { get; set; }
 
         public byte CodiServicio { get; set; }
+
+
+        public int NroViaje { get; set; }
+
+
+        // Para 'AuditoriaProg'
+        public string CodiUsuario { get; set; }
+
+        public string NomUsuario { get; set; }
+
+        public string CodiPuntoVenta { get; set; }
+
+        public string Terminal { get; set; }
+
+        public string CodiOrigen { get; set; }
+
+        public string CodiDestino { get; set; }
+
+        public string NomOrigen { get; set; }
     }
 }

@@ -137,6 +137,7 @@
 
         public const string MsgValidaSaldoPaseCortesia = "Socio sin saldo disponible.";
 
+        public const string MsgErrorVerificaCodiProgramacion = "Error: VerificaCodiProgramacion.";
         public const string MsgErrorGenerarCorrelativoAuxiliar = "Error: GenerarCorrelativoAuxiliar.";
         public const string MsgErrorGrabarProgramacion = "Error: GrabarProgramacion.";
         public const string MsgErrorGrabarViajeProgramacion = "Error: GrabarViajeProgramacion.";
