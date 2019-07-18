@@ -19,6 +19,9 @@
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorrerCreditoOpciones"
                                           @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -36,6 +39,9 @@
                                           :select-on-tab="true"
                                           @@keydown.13.native.prevent="recorrerCreditoOpciones"
                                           @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                    </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
                             </div>
@@ -73,6 +79,9 @@
                                               ref="refHospital"
                                               @@keydown.13.native.prevent="recorrerCreditoOpciones"
                                               @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                        </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>

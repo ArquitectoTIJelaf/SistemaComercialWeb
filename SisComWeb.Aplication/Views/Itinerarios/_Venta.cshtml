@@ -98,6 +98,7 @@
                                    :disabled="processing"
                                    href="javascript:void(0);"
                                    id="btnActualizar"
+                                   tabindex="-1"
                                    style="display: inline-block; cursor: pointer; margin-right: 10px; color: black;">
                                     <img src="~/wwwroot/plugins/images/RELOAD.png" style="margin: 0px 0px 3px 10px; " draggable="false"/>
                                     <label style="cursor: pointer;">Actualizar</label>
@@ -127,6 +128,7 @@
                                             style="color: #fff; font-weight: 400;padding: 0px 10px 1px 10px;"
                                             href="#"
                                             data-perform="panel-collapse"
+                                            tabindex="-1"
                                             @@click="showTextTurnos = !showTextTurnos">
                                         <template v-if="showTextTurnos">
                                             <span class="mdi mdi-arrow-down-bold-circle fa-fw"></span>DESPLEGAR TURNOS
@@ -280,7 +282,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group ">
-                                                <label class="control-label">Fecha Viaje:</label>
+                                                <label class="control-label">Fecha viaje:</label>
                                                 <input id="txtFecha_2"
                                                        class="form-control input-sm dpFiltro"
                                                        type="text"
@@ -409,7 +411,8 @@
                                         v-if="showContextMenu"
                                         @@blur="closeMenu"
                                         :style="{top: top, left: left}">
-                                        <li @@click="contextMenuReimprimir()">
+                                        <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
+                                            @@click="contextMenuReimprimir()">
                                             <i class="fa fa-print fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reimprimir
                                         </li>
@@ -417,7 +420,8 @@
                                             <i class="fa fa-ban fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Anular
                                         </li>
-                                        <li @@click="contextMenuReintegro()">
+                                        <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
+                                            @@click="contextMenuReintegro()">
                                             <i class="fa fa-ticket fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reintegro
                                         </li>
@@ -795,7 +799,6 @@
                                                            @@input="setDocumento($event)"
                                                            @@keydown.13.prevent="searchUser"
                                                            @*@@keydown.9.prevent="searchUser"*@
-                                                           @@keyup.backspace="clearUser"
                                                            @@keydown.112.prevent="showBuscaClientePasaje($event)"
                                                            id="txtDocumento"
                                                            ref="refDocumento"
@@ -1004,7 +1007,6 @@
                                                         <input v-model="list.ventas[indexVenta].Ruc"
                                                                @@keydown.13.prevent="searchEmpresa"
                                                                @*@@keydown.9.prevent="searchEmpresa"*@
-                                                               @@keyup.backspace="clearRazSoc"
                                                                @@focus="$event.target.select()"
                                                                id="txtRuc"
                                                                ref="refRuc"

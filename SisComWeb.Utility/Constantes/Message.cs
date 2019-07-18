@@ -137,6 +137,7 @@
 
         public const string MsgValidaSaldoPaseCortesia = "Socio sin saldo disponible.";
 
+        public const string MsgErrorVerificaCodiProgramacion = "Error: VerificaCodiProgramacion.";
         public const string MsgErrorGenerarCorrelativoAuxiliar = "Error: GenerarCorrelativoAuxiliar.";
         public const string MsgErrorGrabarProgramacion = "Error: GrabarProgramacion.";
         public const string MsgErrorGrabarViajeProgramacion = "Error: GrabarViajeProgramacion.";
@@ -230,7 +231,7 @@
         public const string MsgExcBuscarVentaxBoleto = "Excepción: BuscarVentaxBoleto.";
 
         public const string MsgCorrectoPostergarVenta = "Se postergó venta correctamente.";
-        public const string MsgErrorPostergarVenta = "Error: PostergarVenta.";
+        public const string MsgErrorPostergarVenta = "Solicitud cancelada, la venta ya ha sido postergada.";
         public const string MsgExcPostergarVenta = "Excepción: PostergarVenta.";
 
         public const string MsgCorrectoConsultaSumaBoletosPostergados = "Correcto: ConsultaSumaBoletosPostergados.";

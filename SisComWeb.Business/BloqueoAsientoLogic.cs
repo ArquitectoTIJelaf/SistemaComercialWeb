@@ -27,8 +27,8 @@ namespace SisComWeb.Business
                     else
                         // Bloquear 'AsientoViaje'
                         bloquearAsiento = BloqueoAsientoRepository.BloquearAsientoViaje(request.NroViaje, request.NumeAsiento.ToString(), request.Precio, request.FechaProgramacion, request.CodiTerminal.ToString());
-
                 }
+
                 if (bloquearAsiento == 0)
                     return new Response<int>(false, int.Parse(bloquearAsiento.ToString()), Message.MsgValidaCeroBloqueoAsiento, true);
                 else

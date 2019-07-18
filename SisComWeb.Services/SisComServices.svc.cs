@@ -947,11 +947,11 @@ namespace SisComWeb.Services
             }
         }
         
-        public Response<int> ValidateNumDias(string FechaVenta)
+        public Response<int> ValidateNumDias(string FechaVenta, string CodTab)
         {
             try
             {
-                return FechaAbiertaLogic.ValidateNumDias(FechaVenta);
+                return FechaAbiertaLogic.ValidateNumDias(FechaVenta, CodTab);
             }
             catch (Exception ex)
             {

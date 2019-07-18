@@ -17,5 +17,13 @@ namespace SisComWeb.Entity.Peticiones.Request
         public short CodiRuta { get; set; }
         public string CodiBus { get; set; }
         public string HoraProgramacion { get; set; }
+
+        public short CodiUsuario { get; set; }
+        public string NomUsuario { get; set; }
+        public short CodiPuntoVenta { get; set; }
+        public string CodiTerminal { get; set; }
+        public short CodiOrigen { get; set; }
+        public short CodiDestino { get; set; }
+        public string NomOrigen { get; set; }
     }
 }
