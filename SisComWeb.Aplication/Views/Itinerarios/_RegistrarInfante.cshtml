@@ -42,8 +42,8 @@
                                        autocomplete="off"
                                        :value="Documento.toUpperCase()"
                                        @@input="Documento = $event.target.value.toUpperCase()"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
+                                       @@keypress.13.prevent="recorridoSectionParentesco()"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco()"*@
                                        v-mask="mask.documento"
                                        v-validate="'min: ' + validateMinNumero" />
                             </div>

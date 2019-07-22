@@ -130,7 +130,7 @@
                                                @@input="calcMontos('T', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
-                                               v-validate="'between:1, '+(sumaTotal-1)"
+                                               v-validate="'between: 0, ' + sumaTotal"
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -146,7 +146,7 @@
                                                @@input="calcMontos('E', $event, 3)"
                                                @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
-                                               v-validate="'between:1, '+sumaTotal"
+                                               v-validate="'between: 0, ' + sumaTotal"
                                                autocomplete="off"
                                                style="background-color: #fdf9cd; font-weight: 500; text-align:right;" />
                                     </div>
@@ -177,6 +177,7 @@
                                     </div>
                                 </div>
                                 <span v-show="errors.has('Monto Tarjeta')" class="text-danger m-l-10">{{errors.first('Monto Tarjeta')}}</span>
+                                <span v-show="!errors.has('Monto Tarjeta') && errors.has('Monto Efectivo')" class="text-danger m-l-10">{{errors.first('Monto Efectivo')}}</span>
                                 <span v-show="errors.has('Imp. Pagado')" class="text-danger m-l-10">{{errors.first('Imp. Pagado')}}</span>
                             </div>
                         </template>

@@ -238,7 +238,7 @@ namespace SisComWeb.Business
                             return new Response<VentaResponse>(true, valor, Message.MsgErrorEliminarReserva, false);
                         // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
                         entidad.IdVenta = 0;
-                        // Cuando 'confirmasReserva', por ahora se venderá como una 'Venta'.
+                        // Cuando 'confirmasReserva' se venderá como una 'Venta'.
                         entidad.FlagVenta = "V";
                     }
 
