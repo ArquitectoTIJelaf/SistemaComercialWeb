@@ -8,17 +8,18 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static List<ItinerarioEntity> BuscarItinerarios(short CodiOrigen, short CodiDestino, short CodiRuta, string Hora)
+        public static List<ItinerarioEntity> BuscarItinerarios(short CodiOrigen, short CodiDestino, short CodiRuta, string Hora, short Servicio)
         {
             var Lista = new List<ItinerarioEntity>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarItinerarios";
+                db.ProcedureName = "scwsp_BuscarItinerarios_2";
                 db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
                 db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
                 db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, CodiRuta);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
+                db.AddParameter("@Codi_Servicio", DbType.Int16, ParameterDirection.Input, Servicio);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

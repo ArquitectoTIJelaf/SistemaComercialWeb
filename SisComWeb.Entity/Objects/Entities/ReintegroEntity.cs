@@ -30,6 +30,8 @@
         public string Direccion { get; set; }
         public short CodiRuta { get; set; }
         public byte CodiServicio { get; set; }
+        public int CodiError { get; set; }
+        public string FechaNac { get; set; }
     }
 
     public class SelectReintegroEntity

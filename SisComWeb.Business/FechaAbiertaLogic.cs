@@ -147,9 +147,9 @@ namespace SisComWeb.Business
                 valor.ListaVentasRealizadas = listaVentasRealizadas;
 
                 var venta = VentaRepository.BuscarVentaById(filtro.IdVenta);
-                if(venta.CodiProgramacion != 0)
+                if (venta.CodiProgramacion != 0)
                 {
-                    return new Response<VentaResponse>(false, valor, "La asignación a Fecha Abierta falló", false);
+                    return new Response<VentaResponse>(false, valor, Message.MsgExcSeEncontrabaEnFechaAbierta, false);
                 }
 
                 var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);

@@ -14,7 +14,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_Conulta_F12_Elec";
+                db.ProcedureName = "scwsp_VentaConsultaF12Elect";
                 db.AddParameter("@serie", DbType.Int32, ParameterDirection.Input, filtro.Serie);
                 db.AddParameter("@numero", DbType.Int32, ParameterDirection.Input, filtro.Numero);
                 db.AddParameter("@Empresa", DbType.Int32, ParameterDirection.Input, filtro.CodiEmpresa);

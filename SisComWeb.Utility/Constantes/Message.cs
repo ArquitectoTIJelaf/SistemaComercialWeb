@@ -322,6 +322,8 @@
         public const string MsgCorrectoVentaUpdateImpManifiesto = "Correcto: VentaUpdateImpManifiesto.";
         public const string MsgExcVentaUpdateImpManifiesto = "Excepción: VentaUpdateImpManifiesto.";
 
+        public const string MsgExcSeEncontrabaEnFechaAbierta = "La asignación a Fecha Abierta falló";
+
         //Reintegro
         public const string MsgCorrectoListaOpcionesModificacion = "Correcto: ListaOpcionesModificacion.";
         public const string MsgExcListaOpcionesModificacion = "Excepción: ListaOpcionesModificacion.";

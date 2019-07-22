@@ -101,7 +101,7 @@
                                                @@focus="$event.target.select()"
                                                @@keydown.13.prevent="nextStep(5)"
                                                @*@@keydown.9.prevent="nextStep(5)"*@
-                                               @@blur="blurHora()"
+                                               @@blur="filtro.Hora = $event.target.value"
                                                autocomplete="off" />
                                     </div>
                                 </div>

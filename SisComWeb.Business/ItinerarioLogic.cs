@@ -19,7 +19,7 @@ namespace SisComWeb.Business
                 if (request.TodosTurnos == true) request.Hora = string.Empty;
 
                 // Lista Itinerarios
-                var buscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora);
+                var buscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora, request.CodiServicio);
 
                 // Recorre cada registro
                 for (int i = 0; i < buscarItinerarios.Count; i++)

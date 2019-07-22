@@ -267,6 +267,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"TodosTurnos\" : " + filtro.TodosTurnos.ToLower() +
                                     ",\"SoloProgramados\" : " + filtro.SoloProgramados.ToLower() +
                                     ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" +
+                                    ",\"CodiServicio\" : \"" + filtro.CodiServicio + "\"" +
                                 " }";
                     HttpResponseMessage response = await client.PostAsync("BuscaItinerarios", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -2794,7 +2795,9 @@ namespace SisComWeb.Aplication.Controllers
                         RazonSocial = (string)data["RazonSocial"],
                         Direccion = (string)data["Direccion"],
                         CodiRuta = (byte)data["CodiRuta"],
-                        CodiServicio = (byte)data["CodiServicio"]
+                        CodiServicio = (byte)data["CodiServicio"],
+                        CodiError = (int)data["CodiError"],
+                        FechaNac = (string)data["FechaNac"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

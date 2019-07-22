@@ -15,7 +15,11 @@ namespace SisComWeb.Business
             try
             {
                 var valor = ReintegroRepository.VentaConsultaF12(request);
-                if(valor.IdVenta == 0)
+                //Datos adicionales: 'FechaNacimiento'
+                var clientePasaje = ClientePasajeRepository.BuscaPasajero(valor.TipoDocumento, valor.Dni);
+                valor.FechaNac = clientePasaje.FechaNacimiento;
+
+                if (valor.IdVenta == 0)
                 {
                     return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NoExiste, true);
                 }
@@ -34,16 +38,31 @@ namespace SisComWeb.Business
                         valor.CodiServicio = programacion.CodiServicio;
                     } else
                     {
+                        valor.CodiError = 2;
                         return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12SinProgramacion, true);
                     }
                     //Verfica si tiene Nota de Crédito
                     if(VentaRepository.VerificaNC(valor.IdVenta) != 0)
                     {
+                        valor.CodiError = 3;
                         return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito, true);
+                    }
+                    //Verfica si esta como Reintegro
+                    if (valor.FlagVenta == "O")
+                    {
+                        valor.CodiError = 4;
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12EsReintegro, true);
+                    }
+                    //Verfica si ya tiene adjunto un Reintegro
+                    if (valor.CodiEsca != "")
+                    {
+                        valor.CodiError = 5;
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12TieneReintegro, true);
                     }
                 }
                 else
                 {
+                    valor.CodiError = 1;
                     return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12EsFechaAbierta, true);
                 }
                 return new Response<ReintegroEntity>(true, valor, Message.MsgCorrectoVentaConsultaF12, true);
