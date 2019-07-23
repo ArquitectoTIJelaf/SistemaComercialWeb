@@ -1899,3 +1899,17 @@ Vue.directive('numb-or-lett', function (el, binding, vnode) {
 //});
 
 /**************************************/
+
+/*********************** Utils cte */
+APP.cte = [];
+APP.cte.Documento = {};
+APP.cte.Documento.Dni = {};
+APP.cte.Documento.Dni.CodTip = '01';
+APP.cte.Documento.Dni.SabCon = '1';
+APP.cte.Documento.Pasap = {};
+APP.cte.Documento.Pasap.CodTip = '07';
+APP.cte.Documento.Pasap.SabCon = '4';
+APP.cte.Documento.CExtranj = {};
+APP.cte.Documento.CExtranj.CodTip = '03';
+APP.cte.Documento.CExtranj.SabCon = '7';
+/*!********************* Utils cte */

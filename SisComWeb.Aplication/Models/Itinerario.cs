@@ -64,5 +64,6 @@ namespace SisComWeb.Aplication.Models
         public string SoloProgramados { get; set; }
 
         public string NomDestino { get; set; }
+        public int CodiServicio { get; set; }
     }
 }

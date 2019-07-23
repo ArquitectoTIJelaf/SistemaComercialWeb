@@ -24,6 +24,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@nume", DbType.Int32, ParameterDirection.Input, Convert.ToInt32(filtro.Numero));
                 db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, filtro.Tipo);
                 db.AddParameter("@empresa", DbType.Int32, ParameterDirection.Input, Convert.ToInt32(filtro.CodEmpresa));
+                db.AddParameter("@subruta", DbType.Int32, ParameterDirection.Input, Convert.ToInt32(filtro.CodiDestino));
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -105,25 +106,6 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Codigo = Reader.GetIntValue(drlector, "cod_tip");
-                    }
-                }
-            }
-            return Codigo;
-        }
-
-        public static int VerificaNotaCredito(int IdVenta)
-        {
-            int Codigo = 0;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_Venta_VeriNc";
-                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        Codigo = Reader.GetIntValue(drlector, "codorden");
                     }
                 }
             }

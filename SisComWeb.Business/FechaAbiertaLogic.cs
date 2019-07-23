@@ -88,7 +88,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                var Response = FechaAbiertaRepository.VerificaNotaCredito(IdVenta);
+                var Response = VentaRepository.VerificaNC(IdVenta);
                 var mensaje = (Response > 0) ? Message.MsgVerificaNotaCredito : string.Empty;
                 return new Response<int>(true, Response, mensaje, true);
             }
@@ -105,6 +105,8 @@ namespace SisComWeb.Business
             {
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
+
+
 
                 // Verifica 'CodiProgramacion'
                 var objProgramacion = new ProgramacionEntity()
@@ -143,6 +145,12 @@ namespace SisComWeb.Business
                 listaVentasRealizadas.Add(ventaRealizada);
 
                 valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                var venta = VentaRepository.BuscarVentaById(filtro.IdVenta);
+                if (venta.CodiProgramacion != 0)
+                {
+                    return new Response<VentaResponse>(false, valor, Message.MsgExcSeEncontrabaEnFechaAbierta, false);
+                }
 
                 var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);

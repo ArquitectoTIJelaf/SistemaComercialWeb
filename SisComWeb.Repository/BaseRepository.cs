@@ -424,7 +424,7 @@ namespace SisComWeb.Repository
 
             return Lista;
         }
-
+        
         public static List<BaseEntity> ListaOpcionesModificacion()
         {
             var Lista = new List<BaseEntity>();

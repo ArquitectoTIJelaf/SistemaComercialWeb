@@ -1,6 +1,11 @@
-﻿namespace SisComWeb.Entity
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace SisComWeb.Aplication.Models
 {
-    public class ReintegroEntity
+    public class Reintegro
     {
         public short SerieBoleto { get; set; }
         public int NumeBoleto { get; set; }
@@ -32,14 +37,31 @@
         public byte CodiServicio { get; set; }
         public int CodiError { get; set; }
         public string FechaNac { get; set; }
+        public string[] SplitNombre
+        {
+            get
+            {
+                var tmpNombre = Nombre ?? string.Empty;
+                var tmpSplitNombre = tmpNombre.Split(',');
+
+                if (tmpSplitNombre.Length != 3)
+                    tmpSplitNombre = new string[3];
+                return tmpSplitNombre;
+            }
+        }
+
     }
 
-    public class SelectReintegroEntity
+    public class SelectReintegro : Base
     {
-        public string id { get; set; }
-
-        public string label { get; set; }
-
         public decimal monto { get; set; }
+    }
+
+    public class FiltroReintegro
+    {
+        public string Tipo { get; set; }
+        public int Serie { get; set; }
+        public int Numero { get; set; }
+        public int CodiEmpresa { get; set; }
     }
 }

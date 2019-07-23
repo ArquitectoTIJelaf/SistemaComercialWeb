@@ -13,11 +13,11 @@
                             <div class="font-12" style="padding-top:7px;padding-bottom:7px;">
                                 VERIFICACIÓN DEL BOLETO
                                 <div class="panel-action">
-                                    <a class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                    <a @@click="anchorVerifBoleto" ref="refREVerifBoleto" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse in" aria-expanded="true">
+                        <div id="VerifBoletoRE" class="panel-wrapper collapse in a-transition" aria-expanded="true">
                             <div class="panel-body">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
@@ -31,6 +31,7 @@
                                                               :select-on-tab="true"
                                                               :get-option-label="getLabel"
                                                               @@keydown.13.native.prevent=""
+                                                              :disabled="lockFilters"
                                                               ref="refREEmpresa">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -42,24 +43,39 @@
                                             <div class="col-md-3 separate-in-form p-b-10" style="display:flex;">
                                                 <div class="m-t-20">
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoManual" class="rbDescTipo" value="M" v-model="filtro.tipo">
-                                                        <label for="rdoManual"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio"
+                                                               id="rdoManualRE"
+                                                               class="rbDescTipo"
+                                                               value="M"
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoManualRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Manual
                                                         </label>
                                                     </div>
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoBoleta" class="rbDescTipo" value="B" v-model="filtro.tipo">
-                                                        <label for="rdoBoleta"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio"
+                                                               id="rdoBoletaRE"
+                                                               class="rbDescTipo"
+                                                               value="B"
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoBoletaRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Boleta
                                                         </label>
                                                     </div>
                                                     <div class="col-xs-4">
-                                                        <input type="radio" id="rdoFactura" class="rbDescTipo" value="F" v-model="filtro.tipo">
-                                                        <label for="rdoFactura"
+                                                        <input v-model="filtro.tipo"
+                                                               type="radio"
+                                                               id="rdoFacturaRE"
+                                                               class="rbDescTipo"
+                                                               value="F"
+                                                               :disabled="lockFilters">
+                                                        <label for="rdoFacturaRE"
                                                                class="lblDescTipo"
                                                                style="line-height: inherit; ">
                                                             Factura
@@ -75,14 +91,16 @@
                                                            @@keypress.13.prevent="$refs.refRENumero.focus()"
                                                            @@blur="filtro.serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
                                                            v-mask="'#'.repeat(4)"
+                                                           :disabled="lockFilters"
                                                            ref="refRESerie" />
                                                 </div>
                                                 <div class="col-xs-8">
                                                     <input v-model="filtro.numero"
                                                            class="form-control input-sm"
-                                                           @@keypress.13.prevent="searchData"
+                                                           @@keypress.13.prevent="$refs.refREMotivo.$el.querySelector('input').focus()"
                                                            @@blur="filtro.numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
                                                            v-mask="'#'.repeat(8)"
+                                                           :disabled="lockFilters"
                                                            ref="refRENumero" />
                                                 </div>
                                             </div>
@@ -94,7 +112,8 @@
                                                               :placeholder="'MOTIVO'"
                                                               :select-on-tab="true"
                                                               :get-option-label="getLabel"
-                                                              @@keydown.13.native.prevent=""
+                                                              @@keydown.13.native.prevent="$refs.refREVerificar.focus()"
+                                                              :disabled="lockFilters"
                                                               ref="refREMotivo">
                                                         <template slot="option" slot-scope="option">
                                                             <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -108,280 +127,316 @@
                                             <label style="width: 100%">&nbsp;</label>
                                             <button @@click="searchData"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
-                                                    ref="refREBuscar">
+                                                    :disabled="!filtrosFilled || lockFilters"
+                                                    ref="refREVerificar">
                                                 <span class="fa fa-search fa-fw"></span>Verificar
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="form-group m-b-5 bordergray" v-show="!showData">
-                                        <div class="col-md-9 p-0">
-                                            <div class="col-md-3 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Origen Pasajero:</label>
-                                                <div class="">
-                                                    <input @*:value="item.destinoBus | rutas"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Destino Pasajero:</label>
-                                                <div class="">
-                                                    <input @*:value="item.ruta | rutas"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Destino Bus:</label>
-                                                <div class="">
-                                                    <input @*:value="item.turno"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Servicio:</label>
-                                                <div class="">
-                                                    <input @*:value="item.dia | diaSemana"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3 p-0">
-                                            <div class="col-md-6 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Fecha Venta:</label>
-                                                <div class="">
-                                                    <input @*:value="item.fechaViaje"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Hora Venta:</label>
-                                                <div class="">
-                                                    <input @*:value="item.fechaVenta"*@
-                                                           class="form-control input-sm"
-                                                           style="background-color:rgb(253, 249, 205);"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                        </div>
+
+                                    <div class="form-group m-b-5 bordergray" v-show="dataFilled">
 
                                         <div class="col-md-12 p-0">
-                                            <div class="col-md-12 p-0">
-                                                <div class="col-md-2 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Documento:</label>
+                                            <div class="col-md-7 p-0">
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Origen Pasajero:</label>
                                                     <div class="">
-                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                        <input :value="item.origenPasj | rutas"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Número:</label>
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Destino Pasajero:</label>
                                                     <div class="">
-                                                        <input @*:value="item.ruta | rutas"*@
+                                                        <input :value="item.destinoPasj | rutas"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Destino Bus:</label>
+                                                    <div class="">
+                                                        <input :value="item.destinoBus | rutas"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Servicio:</label>
+                                                    <div class="">
+                                                        <input :value="item.servicio | servicios"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 p-0">
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Fecha Venta:</label>
+                                                    <div class="">
+                                                        <input :value="item.fechaVenta"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Hora Venta:</label>
+                                                    <div class="">
+                                                        <input :value="item.horaVenta"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 p-0">
+
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Boleto:</label>
+                                                    <div class="">
+                                                        <input :value="item.boleto"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Venta:</label>
+                                                    <div class="">
+                                                        <input :value="item.venta"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(253, 249, 205);"
+                                                               disabled />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 p-0">
+                                            <div class="col-md-8 p-0">
+                                                <div class="col-md-4 p-0">
+                                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                                        <label class="control-label">Tipo doc.</label>
+                                                        <v-select v-model="filtroTipoDoc"
+                                                                  placeholder="TIPO DOC."   
+                                                                  @@keydown.13.native.prevent="$refs.refRENumeroDoc.focus()"
+                                                                  :options="list.tiposDoc"
+                                                                  :select-on-tab="true"
+                                                                  :get-option-label="labelOfDocumento"
+                                                                  name="Tipo"
+                                                                  v-validate="'required'"
+                                                                  ref="refRETipoDoc">
+                                                            <template slot="option" slot-scope="option">
+                                                                <div @@click="$refs.refRENumeroDoc.focus()">{{ option.label }}</div>
+                                                            </template>
+                                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                        </v-select>
+                                                    </div>
+
+                                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                                        <label class="control-label label-sm">Número:</label>
+                                                        <div class="">
+                                                            <input v-model="item.numero"
+                                                                   class="form-control input-sm"
+                                                                   :class="{'p-r-20': item.documento == '1'}"
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refREApePat.focus()"
+                                                                   ref="refRENumeroDoc"/>
+                                                            <span v-if="item.documento == '1'"
+                                                                  @@click=""
+                                                                  class="fa fa-cloud field-icon fa-fw"
+                                                                  title="Consultar a RENIEC"></span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8 p-0">
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Apellido Paterno:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input v-model="item.apellidoPaterno"
                                                                    class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refREApeMat.focus()"
+                                                                   ref="refREApePat"/>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Apellido Materno:</label>
                                                         <div class="">
-                                                            <input @*:value="item.dia | diaSemana"*@
+                                                            <input v-model="item.apellidoMaterno"
                                                                    class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refRENombre.focus()"
+                                                                   ref="refREApeMat"/>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Nombre:</label>
                                                         <div class="">
-                                                            <input @*:value="item.dia | diaSemana"*@
+                                                            <input v-model="item.nombre"
                                                                    class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refRETelefono.focus()"
+                                                                   ref="refRENombre"/>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 p-0">
-                                                <div class="col-md-5 p-0">
-                                                    <div class="col-md-2 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Edad:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5 col-xs-6 separate-in-form">
+                                            <div class="col-md-4 p-0">
+                                                <div class="col-md-7 p-0">
+                                                    <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Teléfono:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input v-model="item.telefono"
                                                                    class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refRENacionalidad.focus()"
+                                                                   ref="refRETelefono"/>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-5 col-xs-6 separate-in-form">
+                                                    <div class="col-md-6 col-xs-6 separate-in-form">
                                                         <label class="control-label label-sm">Nacionalidad:</label>
                                                         <div class="">
-                                                            <input @*:value="item.turno"*@
+                                                            <input v-model="item.nacionalidad"
                                                                    class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
+                                                                   style="background-color: white;"
+                                                                   @@keydown.13.prevent="$refs.refREFechaNac.focus()"
+                                                                   ref="refRENacionalidad"/>
+                                                        </div>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-5 p-0">
+                                                    <div class="col-md-8 col-xs-6 separate-in-form">
+                                                        <label class="control-label label-sm">Nacimiento:</label>
+                                                        <div class="">
+                                                            <input v-model="item.fechaNac"
+                                                                   id="txtFechaNacRE"
+                                                                   class="form-control input-sm dpyear"
+                                                                   style="background-color: white;"
+                                                                   autocomplete="off"
+                                                                   placeholder="FECHA NAC." 
+                                                                   @@focus="$event.target.select()"
+                                                                   @@keydown.13.prevent="$refs.refRERuc.focus()"
+                                                                   @@blur="item.fechaNac = $event.target.value; calculaEdad();"
+                                                                   v-mask="'##/##/####'"                                                                   
+                                                                   ref="refREFechaNac">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                                        <label class="control-label label-sm">Edad:</label>
+                                                        <div class="">
+                                                            <input :value="item.edad"
+                                                                   class="form-control input-sm"
+                                                                   style="background-color: white;"
                                                                    disabled />
                                                         </div>
+                                                    </div>
+                                                </div>                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12 p-0">
+                                            <div class="col-md-9 p-0">
+                                                <div class="col-md-2 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">R.U.C.:</label>
+                                                    <div class="">
+                                                        <input v-model="item.ruc"
+                                                               class="form-control input-sm p-r-20"
+                                                               style="background-color: white;"
+                                                               @@keydown.13.prevent="$refs.refRERazSoc.focus()"
+                                                               ref="refRERuc"/>
+                                                        <span @@click=""
+                                                              class="fa fa-cloud field-icon fa-fw"
+                                                              title="Consultar a SUNAT"></span>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-7 p-0">
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Boleto:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
+                                                <div class="col-md-5 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Razón Social:</label>
+                                                    <div class="">
+                                                        <input v-model="item.razonSocial"
+                                                               class="form-control input-sm"
+                                                               style="background-color: white;"
+                                                               @@keydown.13.prevent="$refs.refREDireccion.focus()"
+                                                               ref="refRERazSoc"/>
                                                     </div>
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Venta:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">R.U.C.:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
+                                                </div>
+                                                <div class="col-md-5 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Dirección:</label>
+                                                    <div class="">
+                                                        <input v-model="item.direccion"
+                                                               class="form-control input-sm"
+                                                               style="background-color: white;"
+                                                               @@keydown.13.prevent="$refs.refREReintegro.focus()"
+                                                               ref="refREDireccion"/>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 p-0">
-                                                <div class="col-md-8 p-0">
-                                                    <div class="col-md-6 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Razón Social:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6 col-xs-6 separate-in-form">
-                                                        <label class="control-label label-sm">Dirección:</label>
-                                                        <div class="">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(253, 249, 205);"
-                                                                   disabled />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 col-xs-6 separate-in-form">
+                                            <div class="col-md-3 p-0">
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Asiento:</label>
                                                     <div class="">
-                                                        <input @*:value="item.turno"*@
+                                                        <input :value="item.asiento | concatZero(2)"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-1 col-xs-6 separate-in-form">
+                                                <div class="col-md-3 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Precio:</label>
                                                     <div class="">
-                                                        <input @*:value="item.turno"*@
+                                                        <input :value="item.precio | fixed2"
                                                                class="form-control input-sm"
                                                                style="background-color:rgb(253, 249, 205);"
                                                                disabled />
                                                     </div>
                                                 </div>
-                                                <div class="col-md-2 col-xs-12 p-0">
-                                                    <div class="col-md-9 col-xs-7 separate-in-form">
-                                                        <label class="control-label label-sm">Reintegro:</label>
-                                                        <div class="input-group input-sm p-0">
-                                                            <input @*:value="item.turno"*@
-                                                                   class="form-control input-sm"
-                                                                   style="background-color:rgb(213, 255, 213);"
-                                                                   disabled />
-                                                            <span class="input-group-addon" title="Cambiar Importe de Reintegro"><i class="fa fa-lock"></i></span>
-                                                        </div>
+                                                <div class="col-md-6 col-xs-6 separate-in-form">
+                                                    <label class="control-label label-sm">Reintegro:</label>
+                                                    <div class="input-group input-sm p-0">
+                                                        <input v-model="item.reintegro"
+                                                               class="form-control input-sm"
+                                                               style="background-color:rgb(213, 255, 213);"
+                                                               @@keydown.13.prevent="enterReintegro"
+                                                               @@focus="$event.target.select()"
+                                                               @@blur="item.reintegro = (item.reintegro) ? parseFloat(item.reintegro).toFixed(2) : ''"
+                                                               :readonly="lockReintegro"
+                                                               ref="refREReintegro"/>
+                                                        <span @@click="lockReintegro = !lockReintegro" class="input-group-addon" title="Cambiar Importe de Reintegro">
+                                                            <template v-if="lockReintegro">
+                                                                <i class="fa fa-unlock"></i>
+                                                            </template>
+                                                            <template v-else>
+                                                                <i class="fa fa-lock"></i>
+                                                            </template>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        @*<div class="col-md-1 p-0">
-                                            <div class="col-md-12 col-xs-4 separate-in-form">
-                                                <label style="width: 100%">&nbsp;</label>
-                                                <button @@click="searchData"
-                                                        class="btn btn-ticket btn-venta btn-block waves-effect waves-light"
-                                                        ref="refREBuscar">
-                                                    Aceptar
-                                                </button>
-                                            </div>
-                                            <div class="col-md-12 col-xs-4 separate-in-form">
-                                                <label style="width: 100%">&nbsp;</label>
-                                                <button @@click="searchData"
-                                                        class="btn btn-ticket btn-venta btn-block waves-effect waves-light"
-                                                        ref="refREBuscar">
-                                                    Salir
-                                                </button>
-                                            </div>
-                                            <div class="col-md-12 col-xs-4 separate-in-form">
-                                                <label style="width: 100%">&nbsp;</label>
-                                                <button @@click="searchData"
-                                                        class="btn btn-ticket btn-venta btn-block waves-effect waves-light"
-                                                        ref="refREBuscar">
-                                                    Anular
-                                                </button>
-                                            </div>
-                                        </div>*@
 
                                     </div>
-                                    <template v-if="showData">
-                                    </template>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" v-show="showData">
                     <div class="panel panel-default m-b-0" v-show="true">
                         <div class="panel-heading">
                             <div class="font-12" style="padding-top:7px;padding-bottom:7px;">
                                 BUSCAR SALIDA DEL BUS
                                 <div class="panel-action">
-                                    <a class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                    <a @@click="anchorBuscarProg" ref="refREBuscarProg" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse" aria-expanded="false">
+                        <div id="BuscarProgRE" class="panel-wrapper collapse in a-transition" aria-expanded="false">
                             <div class="panel-body p-b-0">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
@@ -390,12 +445,12 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Origen:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiMotivo"
-                                                                  :options="list.motivos"
-                                                                  :placeholder="'MOTIVO'"
+                                                        <v-select v-model="filtroCodiOrigen"
+                                                                  :options="list.rutas"
+                                                                  :placeholder="'ORIGEN'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent=""
+                                                                  @@keydown.13.native.prevent="$refs.refREDestino.$el.querySelector('input').focus()"
                                                                   ref="refREOrigen">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -407,12 +462,12 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Destino:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiMotivo"
-                                                                  :options="list.motivos"
-                                                                  :placeholder="'MOTIVO'"
+                                                        <v-select v-model="filtroCodiDestino"
+                                                                  :options="list.rutasAll"
+                                                                  :placeholder="'DESTINO'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent=""
+                                                                  @@keydown.13.native.prevent="$refs.refREServicio.$el.querySelector('input').focus()"
                                                                   ref="refREDestino">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -424,12 +479,12 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Servicio:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiMotivo"
-                                                                  :options="list.motivos"
-                                                                  :placeholder="'MOTIVO'"
+                                                        <v-select v-model="filtroCodiServicio"
+                                                                  :options="list.servicios"
+                                                                  :placeholder="'SERVICIO'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent=""
+                                                                  @@keydown.13.native.prevent="$refs.refREFechaIt.focus()"
                                                                   ref="refREServicio">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
@@ -440,25 +495,38 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-2 separate-in-form">
-                                                <label class="control-label label-sm" style="text-align:left;">Hora:</label>
+                                                <label class="control-label label-sm" style="text-align:left;">Fecha:</label>
                                                 <div class="">
-                                                    <input @*v-model="filtro.serie"*@
-                                                           class="form-control input-sm"
-                                                           @*ref="refRESerie"*@ />
+                                                    <input v-model="filtroProgramacion.FechaViaje"
+                                                           id="txtFechaRE"
+                                                           class="form-control input-sm dpFiltro"
+                                                           placeholder="DD/MM/YYYY"
+                                                           v-mask="'##/##/####'"
+                                                           @@focus="$event.target.select()"
+                                                           @@keydown.13.prevent="$refs.refREHoraIt.focus()"
+                                                           @@blur="filtroProgramacion.FechaViaje = $getValueDateTimePicker($event)"
+                                                           autocomplete="off"
+                                                           ref="refREFechaIt" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2 separate-in-form">
-                                                <label class="control-label label-sm" style="text-align:left;">Fecha:</label>
+                                                <label class="control-label label-sm" style="text-align:left;">Hora:</label>
                                                 <div class="">
-                                                    <input @*v-model="filtro.serie"*@
-                                                           class="form-control input-sm"
-                                                           @*ref="refRESerie"*@ />
+                                                    <input v-model="filtroProgramacion.Hora"
+                                                           class="form-control input-sm dph"
+                                                           placeholder="HH:MM AM"
+                                                           v-mask="'##:## AM'"
+                                                           @@focus="$event.target.select()"
+                                                           @@keydown.13.prevent="$refs.refREBuscar.focus()"
+                                                           @@blur="filtroProgramacion.Hora = $event.target.value"
+                                                           autocomplete="off"
+                                                           ref="refREHoraIt" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-1 separate-in-form text-center">
                                             <label style="width: 100%">&nbsp;</label>
-                                            <button @@click="searchData"
+                                            <button @@click="searchProgramacion"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
                                                     ref="refREBuscar">
                                                 <span class="fa fa-search fa-fw"></span>Buscar
@@ -494,7 +562,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <paginate ref="paginator" name="items" :list="list.itinerarios" :per="10">
-                                                            <tr v-for="(item, key) in paginated('items')">
+                                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion(item)">
                                                                 <td class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -515,7 +583,7 @@
                                                                 <td class="custom-td">{{item.PlacaBus}}</td>
                                                                 <td class="custom-td">{{item.AsientosVendidos}}</td>
                                                                 <td class="custom-td">{{item.CapacidadBus}}</td>
-                                                                <td class="custom-td">{{item.CodiProgramacion | concatZero(6)}}</td>
+                                                                <td class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
                                                                 <td class="custom-td">{{item.HoraProgramacion}}</td>
                                                                 <td class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
                                                                 <td class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
@@ -537,31 +605,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" v-show="showData">
                     <div class="panel panel-default m-b-0" v-show="true">
                         <div class="panel-heading">
                             <div class="font-12" style="padding-top:7px;padding-bottom:7px;">
                                 CAMBIO DE RUTA DEL BOLETO
                                 <div class="panel-action">
-                                    <a class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                    <a @@click="anchorCambioBoleto" ref="refRECambioBoleto" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div id="collapse-zone" class="panel-wrapper collapse" aria-expanded="false">
+                        <div id="CambioBoletoRE" class="panel-wrapper collapse in a-transition" aria-expanded="false">
                             <div class="panel-body">
                                 <div class="form-horizontal">
-                                    <div class="form-group m-b-5" v-show="!showData">
+                                    <div class="form-group m-b-5">
                                         <div class="col-md-12 p-0">
                                             <div class="col-md-2 separate-in-form p-r-10">
                                                 <div class="input-group input-sm p-0">
-                                                    <input @*:value="item.turno"*@
+                                                    <input v-model="filtroCambio.NumAsiento"
                                                            class="form-control input-sm"
                                                            style="min-height:80px;
                                                                     font-size: 36px !important;
                                                                     font-weight: 500;
                                                                     color: var(--emp-color);
                                                                     background-color: #fff !important;
-                                                                    text-align: center;" />
+                                                                    text-align: center;"
+                                                           ref="refREAsientoNew" />
                                                     <span @@click="showMiniMapa"
                                                           class="input-group-addon"
                                                           style="font-size: 18px !important;
@@ -573,15 +642,15 @@
                                             <div class="col-md-3 separate-in-form">
                                                 <label class="control-label label-sm">Nuevo Destino Pasajero:</label>
                                                 <div class="">
-                                                    <v-select v-model="filtroCodiMotivo"
-                                                              :options="list.motivos"
-                                                              :placeholder="'MOTIVO'"
+                                                    <v-select v-model="filtroCodiNuevoDestino"
+                                                              :options="list.destinosPas"
+                                                              :placeholder="'DESTINO'"
                                                               :select-on-tab="true"
                                                               :get-option-label="getLabel"
-                                                              @@keydown.13.native.prevent=""
-                                                              ref="">
+                                                              @@keydown.13.native.prevent="$refs.refREDifPrecio.focus()"
+                                                              ref="refREDestinoNew">
                                                         <template slot="option" slot-scope="option">
-                                                            <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                            <div @@click="$refs.refREDifPrecio.focus()">{{ option.id }} - {{ option.label }}</div>
                                                         </template>
                                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                                     </v-select>
@@ -590,16 +659,18 @@
                                             <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Nueva Fecha:</label>
                                                 <div class="">
-                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                    <input :value="filtroCambio.Fecha"
                                                            class="form-control input-sm"
+                                                           placeholder="DD/MM/YYYY"
                                                            disabled />
                                                 </div>
                                             </div>
                                             <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm">Nueva Hora:</label>
                                                 <div class="">
-                                                    <input @*:value="item.destinoBus | rutas"*@
+                                                    <input :value="filtroCambio.Hora"
                                                            class="form-control input-sm"
+                                                           placeholder="HH:MM AM"
                                                            disabled />
                                                 </div>
                                             </div>
@@ -607,24 +678,25 @@
                                                 <div class="col-md-6 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Monto Real:</label>
                                                     <div class="">
-                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                        <input :value="filtroCambio.MontoReal"
                                                                class="form-control input-sm"
-                                                               disabled />
+                                                               disabled/>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6 col-xs-6 separate-in-form">
                                                     <label class="control-label label-sm">Diferencia de Precio:</label>
                                                     <div class="">
-                                                        <input @*:value="item.destinoBus | rutas"*@
+                                                        <input v-model="filtroCambio.DiferenciaPrecio"
                                                                class="form-control input-sm"
-                                                               disabled />
+                                                               @@keydown.13.prevent=""
+                                                               @@focus="$event.target.select()"
+                                                               @@blur="filtroCambio.DiferenciaPrecio = (filtroCambio.DiferenciaPrecio) ? parseFloat(filtroCambio.DiferenciaPrecio).toFixed(2) : ''"
+                                                               ref="refREDifPrecio"/>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
                                         </div>
                                     </div>
-                                    <template v-if="showData">
-                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -632,13 +704,24 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="close" class="btn btn-primary waves-effect waves-light">
+                <button @@click="cancelarRE" 
+                        class="btn btn-info waves-effect waves-light" 
+                        :disabled="!(dataFilled)">
+                    <span class="fa fa-refresh fa-fw"></span>Limpiar
+                </button>
+                <button @@click="close" 
+                        class="btn btn-primary waves-effect waves-light" 
+                        :disabled="!(dataFilled && dataToSave)"
+                        ref="refREAceptar">
                     <span class="fa fa-floppy-o fa-fw"></span>Aceptar
                 </button>
-                <button @@click="close" class="btn btn-danger waves-effect waves-light">
+                <button @@click="close" 
+                        class="btn btn-danger waves-effect waves-light" 
+                        :disabled="!(dataFilled && dataToSave)">
                     <span class="glyphicon glyphicon-remove fa-fw"></span>Anular
                 </button>
-                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
+                <button @@click="close" 
+                        class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
                 </button>
             </div>

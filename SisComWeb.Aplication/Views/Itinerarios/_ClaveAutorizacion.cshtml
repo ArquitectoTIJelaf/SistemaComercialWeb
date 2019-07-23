@@ -20,7 +20,7 @@
                         </div>
                         <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
                             <template v-if="Tipo == '@claveHoraConfirmacion'">
-                                La hora de confirmación es mayor a la hora permitida, ingrese la clave de autorización.
+                                La hora de confirmación es mayor a la hora permitida por administración ({{horaReal}}), ingrese la clave de autorización.
                             </template>
                             <template v-else>
                                 Necesita permiso para realizar esta acción, ingrese la clave de autorización.

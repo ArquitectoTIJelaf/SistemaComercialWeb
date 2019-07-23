@@ -17,5 +17,7 @@
         public bool SoloProgramados { get; set; }
 
         public string NomDestino { get; set; }
+
+        public short CodiServicio { get; set; }
     }
 }

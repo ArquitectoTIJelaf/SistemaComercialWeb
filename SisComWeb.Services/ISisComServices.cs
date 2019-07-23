@@ -83,10 +83,6 @@ namespace SisComWeb.Services
         Response<List<BaseEntity>> ListaUsuariosClaveControl();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaOpcionesModificacion", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaOpcionesModificacion();
-
-        [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaUsuariosHC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaUsuariosHC(string Descripcion, short Suc, short Pv);
 
@@ -364,6 +360,17 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VentaUpdatePostergacionEle", ResponseFormat = WebMessageFormat.Json)]
         Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
+        #endregion
+
+        #region REINTEGRO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VentaConsultaF12", ResponseFormat = WebMessageFormat.Json)]
+        Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest filtro);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ListaOpcionesModificacion", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<SelectReintegroEntity>> ListaOpcionesModificacion();
         #endregion
     }
 }

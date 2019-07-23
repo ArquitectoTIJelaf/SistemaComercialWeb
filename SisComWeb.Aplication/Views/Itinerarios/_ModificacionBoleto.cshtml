@@ -284,7 +284,7 @@
                 <button @@click="saveModBoleto"
                         v-show="panel"
                         ref="refMBSave"
-                        :disabled="errors.any()"
+                        :disabled="errors.any() || !filledData"
                         class="btn btn-primary waves-effect waves-light">
                     <span class="glyphicon glyphicon-saved fa-fw"></span>Guardar
                 </button>
