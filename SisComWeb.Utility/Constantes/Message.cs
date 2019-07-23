@@ -327,6 +327,8 @@
         //Reintegro
         public const string MsgCorrectoListaOpcionesModificacion = "Correcto: ListaOpcionesModificacion.";
         public const string MsgExcListaOpcionesModificacion = "Excepción: ListaOpcionesModificacion.";
+        public const string MsgExcValidaExDni = "Excepción: ValidaExDni.";
+        public const string MsgValidaExDni = "No se puede Vender, Cliente excluido de Ventas";
         public const string MsgCorrectoVentaConsultaF12 = "Correcto: VentaConsultaF12.";
         public const string MsgExcVentaConsultaF12 = "Excepción: VentaConsultaF12.";
         public const string MsgExcF12NotaCredito = "Boleto esta sujeto a Nota de Crédito";

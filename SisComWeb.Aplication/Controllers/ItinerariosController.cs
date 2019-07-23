@@ -2806,7 +2806,42 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<Venta>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<Reintegro>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("validaExDni")]
+        public async Task<ActionResult> ValidaExDni(string documento)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"documento\" : \"" + documento + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidaExDni", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -4775,7 +4775,7 @@
                                             , '36'); // Utilizamos 'código panel' para diferenciar el consumo de servicios del 'sweet alert' reutilizable.
                                         if (objResponse && objResponse.Estado) {
 
-                                            var resInsertarUsuarioPorVenta = await this.insertarUsuarioPorVenta(Usuario.CodiUsuario, "03", _tmpAsientoSel.IdVenta, objResponse.Motivo);
+                                            var resInsertarUsuarioPorVenta = await this.insertarUsuarioPorVenta(Usuario.CodiUsuario, APP.cte.Accion.Anulacion, _tmpAsientoSel.IdVenta, objResponse.Motivo);
                                             if (!resInsertarUsuarioPorVenta)
                                                 return auxValidate = false;
                                         }
@@ -8377,6 +8377,7 @@
                     CambioBoleto: false
                 },
                 paginate: ['items'],
+                dataOriginal: {},
                 asientoSel: {},
                 showData: false,
                 lockReintegro: false,
@@ -8411,7 +8412,7 @@
                 },
                 setData: function () {
                     let _this = this;
-                    //var correlativo = appController.getCurrentCorrelativo();
+                    var correlativo = appController.getCurrentCorrelativo();
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
@@ -8461,6 +8462,7 @@
                                 var data = _.cloneDeep(res.data.Valor);
                                 if (data) {
                                     //debugger;
+                                    _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
                                     _this.item.destinoBus = data.CodiRuta;
@@ -8504,11 +8506,17 @@
                                         default: _this.showData = false;
                                     };
                                     _this.$nextTick(() => {
-                                        _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
+                                        switch (_this.filtro.codMotivo) {
+                                            case '00001': _this.$refs.refREReintegro.focus(); break;
+                                            case '00002': _this.$refs.refRETipoDoc.$el.querySelector('input').focus(); break;
+                                            case '00005': _this.$refs.refREReintegro.focus(); break;
+                                            case '00003': _this.$refs.refREReintegro.focus(); break;
+                                            case '00004': _this.$refs.refRETipoDoc.$el.querySelector('input').focus(); break;
+                                        };                                        
                                     });
                                 } else APP.msg.warning('No se encontró resultados');
                             } else {
-                                if (res.data.Valor.CodiError === 5) {
+                                if (res.data.Valor.CodiError === 5) { //ya tiene adjunto un Reintegro
                                     if (await APP.msg.confirm(res.data.Mensaje, '¿Desea anular el reintegro actual y continuar?')) {
                                         _this.anularReintegro();
                                         _this.searchData();
@@ -8634,10 +8642,7 @@
 
                     if (_this.list.motivos.find(x => x.id === _this.filtro.codMotivo))
                         _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
-                },
-                anularReintegro: function () {
-
-                },
+                },                
                 limpiarRE: function () {
                     let _this = this;
                     _this.item.origenPasj = '';
@@ -8719,6 +8724,41 @@
                     }
 
                 },
+                saveReintegro: async function () {
+                    let _this = this;
+                    switch (_this.filtro.codMotivo) {
+                        case '00001':
+                        case '00002':
+                        case '00005': {
+                            //Valida 'Precio Reintegro'
+                            if (appController.validatePanel('181') === '1') {
+                                if (_this.item.reintegro > _this.item.precio) {
+                                    APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
+                                    return
+                                }
+                            }
+                            await _this.validateExDni();
+                        }; break;
+                        case '00003':
+                        case '00004': {}; break;
+                        default:
+                    }
+                    _this.close(); //TODO
+                },
+                anularReintegro: function () {
+
+                },
+                validateExDni: async function () {
+                    let _this = this;
+                    await APP.rq.axios.post(APP.base + '/itinerarios/validaExDni' + APP.util.getQueryParamByObject({documento: _this.item.numero}))
+                        .then(res => {
+                            if (res.data.Valor) {
+                                APP.msg.error(res.data.Mensaje);
+                                return;
+                            }                                
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 esc: function (event) {
                     if (event.keyCode === 27) {
                         this.close();
@@ -8730,6 +8770,17 @@
                 },
             },
             computed: {
+                readOnlyCodiMotivo: function () {
+                    let _this = this;
+                    switch (_this.filtro.codMotivo) {
+                        case '00001': return true;
+                        case '00002': return false;
+                        case '00005': return true; 
+                        case '00003': return true;
+                        case '00004': return false; 
+                        default: return true;
+                    }
+                },
                 filtroCodiEmpresa: {
                     get: function () {
                         if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.filtro.codEmpresa)) {

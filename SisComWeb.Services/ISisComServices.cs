@@ -358,6 +358,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaOpcionesModificacion", ResponseFormat = WebMessageFormat.Json)]
         Response<List<SelectReintegroEntity>> ListaOpcionesModificacion();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidaExDni", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ValidaExDni(string documento);
         #endregion
     }
 }

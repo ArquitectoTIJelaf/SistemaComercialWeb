@@ -108,5 +108,25 @@ namespace SisComWeb.Repository
             }
             return objeto;
         }
+
+        //Valida si existe el DNI en consulta
+        public static bool ValidaExDni(string documento)
+        {
+            bool response = false;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_DniExConsulta";
+                db.AddParameter("@dni", DbType.String, ParameterDirection.Input, documento);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        response = Reader.GetBooleanValue(drlector, "Response");
+                    }
+                }
+            }
+            return response;
+        }
     }
 }

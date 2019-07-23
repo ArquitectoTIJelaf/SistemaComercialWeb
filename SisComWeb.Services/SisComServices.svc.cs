@@ -1014,6 +1014,19 @@ namespace SisComWeb.Services
                 return new Response<List<SelectReintegroEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
             }
         }
+        
+        public Response<bool> ValidaExDni(string documento)
+        {
+            try
+            {
+                return ReintegroLogic.ValidaExDni(documento);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcValidaExDni, false);
+            }
+        }
         #endregion
     }
 }

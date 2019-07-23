@@ -1912,4 +1912,8 @@ APP.cte.Documento.Pasap.SabCon = '4';
 APP.cte.Documento.CExtranj = {};
 APP.cte.Documento.CExtranj.CodTip = '03';
 APP.cte.Documento.CExtranj.SabCon = '7';
+
+APP.cte.Accion = {};
+APP.cte.Accion.Anulacion = '03';
+APP.cte.Accion.Reintegro = '10';
 /*!********************* Utils cte */

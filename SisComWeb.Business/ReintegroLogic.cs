@@ -42,10 +42,11 @@ namespace SisComWeb.Business
                         return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12SinProgramacion, true);
                     }
                     //Verfica si tiene Nota de Crédito
-                    if(VentaRepository.VerificaNC(valor.IdVenta) != 0)
+                    var notaCredito = VentaRepository.VerificaNC(valor.IdVenta);
+                    if (notaCredito != 0)
                     {
                         valor.CodiError = 3;
-                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito, true);
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito + " " + notaCredito, true);
                     }
                     //Verfica si esta como Reintegro
                     if (valor.FlagVenta == "O")
@@ -85,6 +86,21 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<SelectReintegroEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
+            }
+        }
+        
+        public static Response<bool> ValidaExDni(string documento)
+        {
+            try
+            {
+                var res = ReintegroRepository.ValidaExDni(documento);
+                var mensaje = (res) ? Message.MsgValidaExDni : string.Empty;
+                return new Response<bool>(true, res, mensaje, false);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcValidaExDni, false);
             }
         }
     }

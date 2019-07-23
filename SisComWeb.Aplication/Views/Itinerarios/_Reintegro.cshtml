@@ -231,6 +231,7 @@
                                                                   :get-option-label="labelOfDocumento"
                                                                   name="Tipo"
                                                                   v-validate="'required'"
+                                                                  :disabled="readOnlyCodiMotivo"
                                                                   ref="refRETipoDoc">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="$refs.refRENumeroDoc.focus()">{{ option.label }}</div>
@@ -247,11 +248,13 @@
                                                                    :class="{'p-r-20': item.documento == '1'}"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refREApePat.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refRENumeroDoc"/>
                                                             <span v-if="item.documento == '1'"
                                                                   @@click=""
                                                                   class="fa fa-cloud field-icon fa-fw"
-                                                                  title="Consultar a RENIEC"></span>
+                                                                  title="Consultar a RENIEC"
+                                                                  :disabled="readOnlyCodiMotivo"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -263,6 +266,7 @@
                                                                    class="form-control input-sm"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refREApeMat.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refREApePat"/>
                                                         </div>
                                                     </div>
@@ -273,6 +277,7 @@
                                                                    class="form-control input-sm"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRENombre.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refREApeMat"/>
                                                         </div>
                                                     </div>
@@ -283,6 +288,7 @@
                                                                    class="form-control input-sm"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRETelefono.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refRENombre"/>
                                                         </div>
                                                     </div>
@@ -297,6 +303,7 @@
                                                                    class="form-control input-sm"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRENacionalidad.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refRETelefono"/>
                                                         </div>
                                                     </div>
@@ -307,6 +314,7 @@
                                                                    class="form-control input-sm"
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refREFechaNac.focus()"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refRENacionalidad"/>
                                                         </div>
                                                     </div>                                                    
@@ -324,7 +332,8 @@
                                                                    @@focus="$event.target.select()"
                                                                    @@keydown.13.prevent="$refs.refRERuc.focus()"
                                                                    @@blur="item.fechaNac = $event.target.value; calculaEdad();"
-                                                                   v-mask="'##/##/####'"                                                                   
+                                                                   v-mask="'##/##/####'"
+                                                                   :disabled="readOnlyCodiMotivo"
                                                                    ref="refREFechaNac">
                                                         </div>
                                                     </div>
@@ -350,10 +359,12 @@
                                                                class="form-control input-sm p-r-20"
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refRERazSoc.focus()"
+                                                               :disabled="readOnlyCodiMotivo"
                                                                ref="refRERuc"/>
                                                         <span @@click=""
                                                               class="fa fa-cloud field-icon fa-fw"
-                                                              title="Consultar a SUNAT"></span>
+                                                              title="Consultar a SUNAT"
+                                                              :disabled="readOnlyCodiMotivo"></span>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-5 col-xs-6 separate-in-form">
@@ -363,6 +374,7 @@
                                                                class="form-control input-sm"
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refREDireccion.focus()"
+                                                               :disabled="readOnlyCodiMotivo"
                                                                ref="refRERazSoc"/>
                                                     </div>
                                                 </div>
@@ -373,6 +385,7 @@
                                                                class="form-control input-sm"
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refREReintegro.focus()"
+                                                               :disabled="readOnlyCodiMotivo"
                                                                ref="refREDireccion"/>
                                                     </div>
                                                 </div>
@@ -709,7 +722,7 @@
                         :disabled="!(dataFilled)">
                     <span class="fa fa-refresh fa-fw"></span>Limpiar
                 </button>
-                <button @@click="close" 
+                <button @@click="saveReintegro" 
                         class="btn btn-primary waves-effect waves-light" 
                         :disabled="!(dataFilled && dataToSave)"
                         ref="refREAceptar">
