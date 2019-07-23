@@ -1122,9 +1122,9 @@
                                                                    ref="refFechaReservacion"
                                                                    v-model="list.ventas[indexVenta].FechaReservacion"
                                                                    @@focus="$event.target.select()"
-                                                                   @@keydown.13.prevent="recorridoTxtRuc()"
-                                                                   @*@@keydown.9.prevent="recorridoTxtRuc()"*@
-                                                                   @@blur="list.ventas[indexVenta].FechaReservacion = $getValueDateTimePicker($event)"
+                                                                   @@keydown.13.prevent="blurFechaReservacion($event)"
+                                                                   @*@@keydown.9.prevent="blurFechaReservacion($event)"*@
+                                                                   @@blur="blurFechaReservacion($event)"
                                                                    v-mask="'##/##/####'"
                                                                    autocomplete="off" />
                                                         </div>
@@ -1138,9 +1138,9 @@
                                                                    ref="refHoraReservacion"
                                                                    v-model="list.ventas[indexVenta].HoraReservacion"
                                                                    @@focus="$event.target.select()"
-                                                                   @@keydown.13.prevent="recorridoTxtRuc()"
-                                                                   @*@@keydown.9.prevent="recorridoTxtRuc()"*@
-                                                                   @@blur="list.ventas[indexVenta].HoraReservacion = $getValueDateTimePicker_Hours($event)"
+                                                                   @@keydown.13.prevent="blurHoraReservacion($event)"
+                                                                   @*@@keydown.9.prevent="blurHoraReservacion($event)"*@
+                                                                   @@blur="blurHoraReservacion($event)"
                                                                    v-mask="'##:## AM'"
                                                                    autocomplete="off" />
                                                         </div>

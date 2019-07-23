@@ -174,7 +174,6 @@ namespace SisComWeb.Aplication.Models
         public decimal ImporteDescontadoDC { get; set; }
         public string AutorizadoDC { get; set; }
         public Acompaniante ObjAcompaniante { get; set; }
-
         public bool IngresoManualPasajes { get; set; }
 
         // PASE DE CORTESÍA
@@ -182,9 +181,6 @@ namespace SisComWeb.Aplication.Models
         public string CodiSocio { get; set; } // Código de socio solictante
         public string Concepto { get; set; }
         public bool FechaAbierta { get; set; }
-
-        // RESERVA
-        public int IdVenta { get; set; }
 
         // CRÉDITO
         public int IdContrato { get; set; }
@@ -196,6 +192,12 @@ namespace SisComWeb.Aplication.Models
         public int IdHospital { get; set; }
         public bool FlagPrecioNormal { get; set; }
         public int IdRuc { get; set; }
+
+        // RESERVA
+        public int IdVenta { get; set; }
+
+        public string FechaReservacion { get; set; }
+        public string HoraReservacion { get; set; }
     }
 
     public class VentaResponse

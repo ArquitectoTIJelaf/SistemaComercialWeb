@@ -249,6 +249,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaUsuariosHC(string Descripcion, short Suc, short Pv)
+        {
+            try
+            {
+                return BaseLogic.ListaUsuariosHC(Descripcion, Suc, Pv);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN
@@ -604,7 +617,33 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExAcompanianteVentaCRUD, false);
+                return new Response<bool>(false, false, Message.MsgExcAcompanianteVentaCRUD, false);
+            }
+        }
+
+        public Response<string> VerificaClaveReserva(int CodiUsr, string Password)
+        {
+            try
+            {
+                return VentaLogic.VerificaClaveReserva(CodiUsr, Password);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaClaveReserva, false);
+            }
+        }
+
+        public Response<string> VerificaHoraConfirmacion(int Origen, int Destino)
+        {
+            try
+            {
+                return VentaLogic.VerificaHoraConfirmacion(Origen, Destino);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaHoraConfirmacion, false);
             }
         }
 

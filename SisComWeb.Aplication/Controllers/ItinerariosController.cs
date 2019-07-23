@@ -817,7 +817,6 @@ namespace SisComWeb.Aplication.Controllers
                                         ",\"Sexo\" : \"" + Listado[i].ObjAcompaniante.Sexo + "\"" +
                                         ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
-
                                     ",\"IngresoManualPasajes\" : " + Listado[i].IngresoManualPasajes.ToString().ToLower() +
 
                                     // PASE DE CORTESÍA
@@ -827,8 +826,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Anno\" : \"" + DataUtility.ObtenerAñoDelSistema() + "\"" +
                                     ",\"Concepto\" : \"" + Listado[i].Concepto + "\"" +
                                     ",\"FechaAbierta\" : " + Listado[i].FechaAbierta.ToString().ToLower() +
-                                    // RESERVA
-                                    ",\"IdVenta\" : " + Listado[i].IdVenta +
                                     // CRÉDITO
                                     ",\"IdContrato\" : " + Listado[i].IdContrato +
                                     ",\"IdPrecio\" : " + Listado[i].IdPrecio +
@@ -839,6 +836,11 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"IdHospital\" : " + Listado[i].IdHospital +
                                      ",\"FlagPrecioNormal\" : " + Listado[i].FlagPrecioNormal.ToString().ToLower() +
                                      ",\"IdRuc\" : " + Listado[i].IdRuc +
+                                    // RESERVA
+                                    ",\"IdVenta\" : " + Listado[i].IdVenta +
+
+                                    ",\"FechaReservacion\" : \"" + Listado[i].FechaReservacion + "\"" +
+                                    ",\"HoraReservacion\" : \"" + Listado[i].HoraReservacion.Replace(" ", "") + "\"" +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -2728,6 +2730,79 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaClaveReserva")]
+        public async Task<ActionResult> VerificaClaveReserva(int CodiUsr, string Password)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiUsr\" : " + CodiUsr +
+                                    ",\"Password\" : \"" + Password + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaClaveReserva", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaHoraConfirmacion")]
+        public async Task<ActionResult> VerificaHoraConfirmacion(int Origen, int Destino)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Origen\" : " + Origen +
+                                    ",\"Destino\" : " + Destino +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaHoraConfirmacion", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
     }
