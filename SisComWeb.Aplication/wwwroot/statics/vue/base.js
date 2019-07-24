@@ -1617,12 +1617,6 @@ $(function () {
     if ($('.dp').length) {
         $('.dp').datetimepicker({
             keyBinds: {
-                enter: function (e) {
-                    if (e && !e[0].previousElementSibling.value)
-                        this.date(moment());
-
-                    this.hide();
-                },
                 up: null,
                 down: null,
                 left: null,
@@ -1643,37 +1637,6 @@ $(function () {
             }
         });
     }
-
-    if ($('.dph').length) {
-        $('.dph').datetimepicker({
-            keyBinds: {
-                enter: function (e) {
-                    if (e && !e[0].previousElementSibling.value)
-                        this.date(moment());
-
-                    this.hide();
-                },
-                up: null,
-                down: null,
-                left: null,
-                right: null
-            },
-            useCurrent: false,
-            locale: 'es',
-            showTodayButton: false,
-            showClose: false,
-            showClear: false,
-            keepOpen: false,
-            toolbarPlacement: 'top',
-            format: 'hh:mm A',
-            tooltips: {
-                today: 'Ir a la hora actual',
-                clear: 'Borrar hora',
-                close: 'Cerrar selector'
-            }
-        });
-    }
-
 });
 /*!********************* Document ready */
 

@@ -745,9 +745,16 @@
                 $('.dpFiltro').datetimepicker({
                     keyBinds: {
                         enter: function (e) {
-                            if (e && !e[0].previousElementSibling.value)
-                                this.date(moment());
-
+                            if (e) {
+                                switch (e[0].previousElementSibling.id) {
+                                    case 'txtFechaReservacion':
+                                        {
+                                            if (appVueVenta.validateFechaReservacion(13) === false)
+                                                return;
+                                        };
+                                        break;
+                                }
+                            }
                             this.hide();
                         },
                         up: null,
@@ -789,7 +796,7 @@
                                 appVueManifiestoPasajeros.cargaTurno();
                                 break;
                             case 'txtFechaReservacion':
-                                appVueVenta.recorridoTxtRuc();
+                                appVueVenta.blurFechaReservacion(13);
                                 break;
                             case 'txtFechaRE':
                                 appVueReintegro.$refs.refREHoraIt.focus();
@@ -802,12 +809,6 @@
             if ($('.dpyear').length) {
                 $('.dpyear').datetimepicker({
                     keyBinds: {
-                        enter: function (e) {
-                            if (e && !e[0].previousElementSibling.value)
-                                this.date(moment().subtract(1, 'year'));
-
-                            this.hide();
-                        },
                         up: null,
                         down: null,
                         left: null,
@@ -845,12 +846,6 @@
             if ($('.dpyearnino').length) {
                 $('.dpyearnino').datetimepicker({
                     keyBinds: {
-                        enter: function (e) {
-                            if (e && !e[0].previousElementSibling.value)
-                                this.date(moment().subtract(1, 'day'));
-
-                            this.hide();
-                        },
                         up: null,
                         down: null,
                         left: null,
@@ -881,6 +876,43 @@
                                 appVueRegistrarInfante.recorrerFechaNac();
                                 break;
                         }
+                    }
+                });
+            }
+
+            if ($('.dph').length) {
+                $('.dph').datetimepicker({
+                    keyBinds: {
+                        enter: async function (e) {
+                            if (e) {
+                                switch (e[0].previousElementSibling.id) {
+                                    case 'txtHoraReservacion':
+                                        {
+                                            if (await appVueVenta.validateHoraReservacion(13) === false)
+                                                return;
+                                        };
+                                        break;
+                                }
+                            }
+                            this.hide();
+                        },
+                        up: null,
+                        down: null,
+                        left: null,
+                        right: null
+                    },
+                    useCurrent: false,
+                    locale: 'es',
+                    showTodayButton: false,
+                    showClose: false,
+                    showClear: false,
+                    keepOpen: false,
+                    toolbarPlacement: 'top',
+                    format: 'hh:mm A',
+                    tooltips: {
+                        today: 'Ir a la hora actual',
+                        clear: 'Borrar hora',
+                        close: 'Cerrar selector'
                     }
                 });
             }
@@ -1745,7 +1777,6 @@
                 },
                 // Reserva
                 validatorReservaHC: false,
-                //eventTxtFechaHoraReservacion: '',
                 // Correlativos
                 CorrelativoVentaBoleta: '',
                 CorrelativoVentaFactura: '',
@@ -5531,82 +5562,60 @@
 
                     return auxResponse;
                 },
-                keyTxtFechaHoraReservacion: function (e) {
-                    this.eventTxtFechaHoraReservacion = e;
+                validateFechaReservacion: function (_keyCode) {
+                    this.list.ventas[this.indexVenta].FechaReservacion = this.$getValueDateTimePicker(event);
 
-                    switch (e.target.id) {
-                        case 'txtFechaReservacion':
-                            document.getElementById('txtFechaReservacion').blur();
-                            break;
-                        case 'txtHoraReservacion':
-                            document.getElementById('txtHoraReservacion').focus();
-                            break;
+                    if (_keyCode === 13) {
+                        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isAfter(moment(this.filtro.Fecha, 'DD/MM/YYYY'))) {
+                            APP.msg.warning('La fecha de confirmación debe ser menor o igual a la fecha de viaje.');
+                            return false;
+                        }
+
+                        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                            APP.msg.warning('La fecha de confirmación debe ser mayor o igual a la fecha actual.');
+                            return false;
+                        }
+
+                        this.recorridoTxtRuc();
                     }
                 },
-                blurFechaReservacion: function (event) {
-                    this.list.ventas[this.indexVenta].FechaReservacion = this.$getValueDateTimePicker(e);
+                validateHoraReservacion: async function (_keyCode) {
+                    this.list.ventas[this.indexVenta].HoraReservacion = this.$getValueDateTimePicker_Hours(event);
 
-                    //if (this.eventTxtFechaHoraReservacion)
-                    //    event = this.eventTxtFechaHoraReservacion;
+                    if (_keyCode === 13) {
 
-                    //if (event.keyCode === 13) {
-                    //    this.$nextTick(() => {
-                    //        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isAfter(moment(this.filtro.Fecha, 'DD/MM/YYYY'))) {
-                    //            document.getElementById('txtFechaReservacion').focus();
-                    //            APP.msg.warning('La fecha de confirmación debe ser menor o igual a la fecha de viaje.');
-                    //            return;
-                    //        }
+                        if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
+                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
+                                APP.msg.warning('La hora de confirmación debe ser menor a la hora del turno.');
+                                return false;
+                            }
+                        }
 
-                    //        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                    //            document.getElementById('txtFechaReservacion').focus();
-                    //            APP.msg.warning('La fecha de confirmación debe ser mayor o igual a la fecha actual.');
-                    //            return;
-                    //        }
+                        if (VerificaHoraConfirmacion !== '0') {
+                            var HoraReal = moment(this.filtro.Turno, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
-                    //        this.recorridoTxtRuc();
-                    //    });  
-                    //}
+                                if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isSameOrAfter(moment(this.filtro.Fecha, 'DD/MM/YYYY'))) {
 
-                    //this.eventTxtFechaHoraReservacion = '';
-                },
-                blurHoraReservacion: async function (e) {
-                    this.list.ventas[this.indexVenta].HoraReservacion = this.$getValueDateTimePicker_Hours(e);
+                                    if (!this.list.ventas[this.indexVenta].ValidadorClienteEspecial && !this.validatorReservaHC) {
 
-                    //if (e && e.keyCode === 13) {
+                                        appController.showClaveAutorizacion(ClaveHoraConfirmacion, HoraReal.format('hh:mmA'));
 
-                    //    if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
-                    //        if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
-                    //            document.getElementById('txtHoraReservacion').focus();
-                    //            APP.msg.warning('La hora de confirmación debe ser menor a la hora del turno.');
-                    //            return;
-                    //        }
-                    //    }
+                                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                            this.validatorReservaHC = appClaveAutorizacion.response;
+                                        });
 
-                    //    if (VerificaHoraConfirmacion !== '0') {
-                    //        var HoraReal = moment(this.filtro.Turno, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
-                    //        if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
+                                        if (!this.validatorReservaHC) {
+                                            document.getElementById('txtHoraReservacion').focus();
+                                            return false;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                    //            if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isSameOrAfter(moment(this.filtro.Fecha, 'DD/MM/YYYY'))) {
-
-                    //                if (!this.list.ventas[this.indexVenta].ValidadorClienteEspecial && !this.validatorReservaHC) {
-
-                    //                    appController.showClaveAutorizacion(ClaveHoraConfirmacion, HoraReal.format('hh:mmA'));
-
-                    //                    await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                    //                        this.validatorReservaHC = appClaveAutorizacion.response;
-                    //                    });
-
-                    //                    if (!this.validatorReservaHC) {
-                    //                        document.getElementById('txtHoraReservacion').focus();
-                    //                        return;
-                    //                    }
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-
-                    //    this.recorridoTxtRuc();
-                    //}
+                        this.recorridoTxtRuc();
+                    }
                 },
                 sendClaveAutorizacionReserva: async function (_CodiUsuario, _password) {
                     var auxResponse = false;
@@ -8799,7 +8808,6 @@
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
                                 if (data) {
-                                    //debugger;
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
                                     _this.item.destinoBus = data.CodiRuta;
@@ -9296,7 +9304,6 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 setData: function (item) {
-                    debugger;
                     this.asientoSel = item;
                     this.close();
                 },
