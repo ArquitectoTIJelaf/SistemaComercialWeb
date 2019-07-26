@@ -218,8 +218,12 @@ namespace SisComWeb.Entity
 
         public short SucVenta { get; set; }
 
-
         public string PerAutoriza { get; set; }
+
+        // Reserva
+        public string FechaReservacion { get; set; }
+
+        public string HoraReservacion { get; set; }
     }
 
     public class VentaRealizadaEntity

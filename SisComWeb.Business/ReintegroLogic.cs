@@ -103,5 +103,19 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcValidaExDni, false);
             }
         }
+                
+        public static Response<int> SaveReintegro(ReintegroVentaRequest filtro)
+        {
+            try
+            {
+                var res = ReintegroRepository.SaveReintegro(filtro); 
+                return (res == 0) ? new Response<int>(true, 0, Message.MsgNoVentaReintegro, true) : new Response<int>(true, res, string.Empty, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcVentaReintegro, false);
+            }
+        }
     }
 }

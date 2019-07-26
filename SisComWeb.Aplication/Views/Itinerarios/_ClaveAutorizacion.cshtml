@@ -1,10 +1,12 @@
 ﻿@using SisComWeb.Aplication.Helpers;
 @{
     var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
+    var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
+    var clavereintegroconfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
 }
 
-<div id="appClaveAutorizacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-sm" style="top:10%;">
+<div id="appClaveAutorizacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 2000;">
+    <div class="modal-dialog modal-sm" style="top:10%; width: 325px;">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="form-horizontal">
@@ -18,16 +20,72 @@
                             <img src="~/wwwroot/plugins/images/users/user-shield-solid.svg" width="100" height="100" />
                         </div>
                         <h5 style="font-family:Rubik, sans-serif; margin-top: 0px; margin-bottom: 15px; ">
-                            Necesita permiso para realizar esta acción, ingrese la clave de autorización.
+                            <template v-if="Tipo == '@claveHoraConfirmacion'">
+                                La hora de confirmación es mayor a la hora permitida por administración ({{horaReal}}), ingrese la clave de autorización.
+                            </template>
+                            <template v-else>
+                                Necesita permiso para realizar esta acción, ingrese la clave de autorización.
+                            </template>
                         </h5>
                     </div>
+                    <template v-if="Tipo == '@claveHoraConfirmacion'">
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
+                                <label class="col-md-3 control-label label-sm">Usuario: </label>
+                                <div class="col-md-9">
+                                    <v-select id="cboUsuarioCA"
+                                              placeholder="USUARIO"
+                                              v-model="usuario"
+                                              :options="list.usuarios"
+                                              :select-on-tab="true"
+                                              :get-option-label="getLabel"
+                                              :filterable="false"
+                                              @@search="getUsuariosHC"
+                                              @@keydown.13.native.prevent="$refs.refContraseniaCA.focus()"
+                                              @*@@keydown.9.native.prevent="$refs.refContraseniaCA.focus()"*@
+                                              ref="refUsuarioCA">
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="$refs.refContraseniaCA.focus()">{{ option.id }} - {{ option.label }}</div>
+                                        </template>
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template v-else-if="Tipo == '@clavereintegroconfirmacion'">
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
+                                <label class="col-md-3 control-label label-sm">Usuario: </label>
+                                <div class="col-md-9">
+                                    <v-select id="cboUsuarioRE"
+                                              placeholder="USUARIO"
+                                              v-model="usuario"
+                                              :options="list.usuarios"
+                                              :select-on-tab="true"
+                                              :get-option-label="getLabel"
+                                              :filterable="false"
+                                              @@search="getUsuarioControlPwd"
+                                              @@keydown.13.native.prevent="$refs.refContraseniaCA.focus()"
+                                              ref="refUsuarioRE">
+                                        <template slot="option" slot-scope="option">
+                                            <div @@click="$refs.refContraseniaCA.focus()">{{ option.id }} - {{ option.label }}</div>
+                                        </template>
+                                        <span slot="no-options" class="text-danger">No hay resultados</span>
+                                    </v-select>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                     <div class="form-group m-b-5">
                         <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
                             <label class="col-md-3 control-label label-sm">Clave: </label>
                             <div class="col-md-9">
                                 <input v-model="password"
                                        id="txtContraseniaCA"
-                                       @@keypress.13.prevent="Tipo != '@claveDescuentoDePasajes' ? sendClaveAutorizacion() : recorrerClaveAutorizacion()"
+                                       ref="refContraseniaCA"
+                                       @@focus="$event.target.select()"
+                                       @@keypress.13.prevent="recorrerClaveAutorizacion()"
                                        @*@@keypress.9.prevent="recorrerClaveAutorizacion"*@
                                        type="password"
                                        class="form-control input-sm"
@@ -37,8 +95,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group m-b-5">
-                        <template v-if="Tipo == '@claveDescuentoDePasajes'">
+                    <template v-if="Tipo == '@claveDescuentoDePasajes' || '@clavereintegroconfirmacion'">
+                        <div class="form-group m-b-5">
+
                             <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">
                                 <label class="col-md-3 control-label label-sm">Obs.: </label>
                                 <div class="col-md-9">
@@ -54,8 +113,8 @@
                                     </textarea>
                                 </div>
                             </div>
-                        </template>
-                    </div>
+                        </div>
+                    </template>
                 </div>
             </div>
             <div class="modal-footer">

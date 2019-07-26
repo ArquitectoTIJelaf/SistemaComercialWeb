@@ -173,9 +173,16 @@
         public const string MsgErrorEliminarReserva = "Solicitud cancelada, la reserva ya ha sido cancelada o confirmada.";
         public const string MsgExcEliminarReserva = "Excepción: EliminarReserva.";
 
+        public const string MsgCorrectoVerificaClaveReserva = "Usuario autorizado.";
+        public const string MsgErrorVerificaClaveReserva = "Usuario no autorizado o clave incorrecta.";
+        public const string MsgExcVerificaClaveReserva = "Excepción: VerificaClaveReserva.";
+
+        public const string MsgCorrectoVerificaHoraConfirmacion = "Correcto: VerificaHoraConfirmacion.";
+        public const string MsgExcVerificaHoraConfirmacion = "Excepción: VerificaHoraConfirmacion.";
+
         // Acompaniante
         public const string MsgCorrectoAcompanianteVentaCRUD = "Se guardó los datos del acompañante correctamente.";
-        public const string MsgExAcompanianteVentaCRUD = "Excepción: AcompanianteVentaCRUD.";
+        public const string MsgExcAcompanianteVentaCRUD = "Excepción: AcompanianteVentaCRUD.";
 
         // Pase
         public const string MsgCorrectoValidarSaldoPaseCortesia = "Correcto: ValidarSaldoPaseCortesia.";
@@ -337,5 +344,7 @@
         public const string MsgExcF12EsFechaAbierta = "Boleto esta en Fecha Abierta";
         public const string MsgExcF12SinProgramacion = "La programación no fue encontrada";
         public const string MsgExcF12NoExiste = "Boleto no existe";
+        public const string MsgNoVentaReintegro = "No se pudo realizar la venta";
+        public const string MsgExcVentaReintegro = "Excepción: VentaReintegro.";
     }
 }

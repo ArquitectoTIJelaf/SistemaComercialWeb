@@ -281,7 +281,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <div class="form-group ">
+                                            <div class="form-group">
                                                 <label class="control-label">Fecha viaje:</label>
                                                 <input id="txtFecha_2"
                                                        class="form-control input-sm dpFiltro"
@@ -729,7 +729,7 @@
                         <div v-show="showPlano" class="col-md-12" style="margin-top: 15px; padding: 0px; ">
                             <div class="col-md-1" style="height: 235px; width: 35px; padding-left: 0px; display: flex; align-items: center; ">
                                 <div v-if="indexVenta > 0"
-                                     @@click="leftSlider('click')"
+                                     @@click="leftSlider()"
                                      class="bgc-emp"
                                      style="border-radius: 0px 10px 10px 0px; ">
                                     <img src="~/wwwroot/plugins/images/chevron-left.png" style="width: 100%; height: 100%" draggable="false"/>
@@ -767,16 +767,15 @@
                                                               placeholder="TIPO"
                                                               ref="refTipoDoc"
                                                               v-model="list.ventas[indexVenta].CodiTipoDoc"
-                                                              @@keydown.13.native.prevent="passNumDocToDocumento"
-                                                              @*@@keydown.9.native.prevent="passNumDocToDocumento"*@
+                                                              @@keydown.13.native.prevent="$refs.refDocumento.focus();"
+                                                              @*@@keydown.9.native.prevent="$refs.refDocumento.focus();"*@
                                                               :options="list.tiposDoc"
                                                               :select-on-tab="true"
                                                               :get-option-label="labelOfDocumento"
                                                               :disabled="disabledCamposTicket_Pase"
-                                                              name="Tipo"
-                                                              v-validate="'required'">
+                                                              name="Tipo">
                                                         <template slot="option" slot-scope="option">
-                                                            <div @@click="passNumDocToDocumento">{{ option.label }}</div>
+                                                            <div @@click="$refs.refDocumento.focus();">{{ option.label }}</div>
                                                         </template>
                                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                                     </v-select>
@@ -795,11 +794,12 @@
                                                             v-on:click="consultaReniec">
                                                         <i class="fa fa-refresh" aria-hidden="true"></i>
                                                     </button>
-                                                    <input :value="list.ventas[indexVenta].Documento.toUpperCase()"
-                                                           @@input="setDocumento($event)"
+                                                    <input :value="list.ventas[indexVenta].Documento"
+                                                           @@input="list.ventas[indexVenta].Documento = $event.target.value.toUpperCase()"
                                                            @@keydown.13.prevent="searchUser"
                                                            @*@@keydown.9.prevent="searchUser"*@
                                                            @@keydown.112.prevent="showBuscaClientePasaje($event)"
+                                                           @@focus="$event.target.select()"
                                                            id="txtDocumento"
                                                            ref="refDocumento"
                                                            class="form-control input-sm"
@@ -809,7 +809,6 @@
                                                            autocomplete="off">
                                                 </div>
                                             </div>
-                                            <span v-if="list.ventas[indexVenta].CodiTipoDoc == null && list.ventas[indexVenta].Documento.length > 0" class="text-danger">{{ errors.first('Tipo') }}</span>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -893,6 +892,7 @@
                                                         <label class="control-label">Fecha nac.</label>
                                                         <input id="txtFechaNac"
                                                                class="form-control input-sm dpyear"
+                                                               type="text"
                                                                placeholder="FECHA NAC."
                                                                ref="refFechaNac"
                                                                :disabled="disabledCamposTicket"
@@ -913,13 +913,11 @@
                                                                name="Edad"
                                                                class="form-control input-sm text-center"
                                                                placeholder="E"
-                                                               v-validate="'required|min_value: 1'"
                                                                style="cursor: not-allowed;"
                                                                disabled="disabled"
                                                                autocomplete="off">
                                                     </div>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Edad === 0 && errors.has('Edad')" class="text-danger m-l-5" style="display: inline-block;">{{ errors.first('Edad') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
@@ -928,8 +926,8 @@
                                                               placeholder="SEXO"
                                                               label="label"
                                                               v-model="list.ventas[indexVenta].Sexo"
-                                                              @@keydown.13.native.prevent="$refs.refTelefono.focus()"
-                                                              @*@@keydown.9.native.prevent="$refs.refTelefono.focus()"*@
+                                                              @@keydown.13.native.prevent="recorridoSectionVentas"
+                                                              @*@@keydown.9.native.prevent="recorridoSectionVentas"*@
                                                               :options="list.sexos"
                                                               :select-on-tab="true"
                                                               :disabled="disabledCamposTicket_Pase"
@@ -946,8 +944,9 @@
                                             <div class="form-group">
                                                 <label class="control-label">Teléfono</label>
                                                 <input v-model="list.ventas[indexVenta].Telefono"
-                                                       @@keydown.13.prevent="recorridoTxtTelefono"
-                                                       @*@@keydown.9.prevent="recorridoTxtTelefono"*@
+                                                       @@keydown.13.prevent="recorridoSectionVentas($event.target.id)"
+                                                       @*@@keydown.9.prevent="recorridoSectionVentas($event.target.id)"*@
+                                                       @@focus="$event.target.select()"
                                                        id="txtTelefono"
                                                        ref="refTelefono"
                                                        class="form-control input-sm"
@@ -957,6 +956,9 @@
                                                        autocomplete="off">
                                             </div>
                                         </div>
+
+
+
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">Recoger</label>
@@ -986,8 +988,8 @@
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keydown.13.prevent="recorridoTxtNroSolicitud"
-                                                       @*@@keydown.9.prevent="recorridoTxtNroSolicitud"*@
+                                                       @@keydown.13.prevent="recorridoTxtRecoger"
+                                                       @*@@keydown.9.prevent="recorridoTxtRecoger"*@
                                                        id="txtNroSolicitud"
                                                        ref="refNroSolicitud"
                                                        class="form-control input-sm"
@@ -1013,8 +1015,6 @@
                                                                name="ruc"
                                                                class="form-control input-sm"
                                                                placeholder="RUC"
-                                                               v-validate="'min: 11'"
-                                                               data-vv-as="RUC"
                                                                v-mask="'#'.repeat(11)"
                                                                :disabled="disabledCamposTicket || disabledCredito"
                                                                autocomplete="off"
@@ -1022,7 +1022,7 @@
                                                         <button class="btn-info btn-xs"
                                                                 title="Consultar a SUNAT"
                                                                 tabindex="-1"
-                                                                :disabled="disabledCamposTicket_Pase || disabledCredito"
+                                                                :disabled="disabledCamposTicket_Pase"
                                                                 v-on:click="consultaSunat">
                                                             <i class="fa fa-refresh" aria-hidden="true"></i>
                                                         </button>
@@ -1033,30 +1033,26 @@
                                                         <label class="control-label">Razón social</label>
                                                         <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
                                                                @@input="list.ventas[indexVenta].RazonSocial = $event.target.value.toUpperCase()"
-                                                               @@keydown.13.prevent="$refs.refDireccion.focus()"
-                                                               @*@@keydown.9.prevent="$refs.refDireccion.focus()"*@
+                                                               @@keydown.13.prevent="recorridoTxtRuc"
+                                                               @*@@keydown.9.prevent="recorridoTxtRuc"*@
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
                                                                name="razon_social"
                                                                max="100"
                                                                class="form-control input-sm"
                                                                placeholder="RAZÓN SOCIAL"
-                                                               :disabled="disabledCamposTicket || disabledCredito || disabledRazonSocial"
-                                                               v-validate="'required|min: 3'"
-                                                               data-vv-as="Razón social"
+                                                               :disabled="disabledCamposTicket || disabledCredito || list.ventas[indexVenta].DisabledRazonSocial"
                                                                autocomplete="off">
                                                     </div>
-                                                    <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].RazonSocial.length < 4 && errors.has('razon_social')" class="text-danger m-l-5">{{ errors.first('razon_social') }}</span>
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length < 11 && errors.has('ruc')" class="text-danger m-l-5">{{ errors.first('ruc') }}</span>
                                             </div>
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Dirección fiscal</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keydown.13.prevent="recorridoSectionVentas"
-                                                           @*@@keydown.9.prevent="recorridoSectionVentas"*@
+                                                           @@keydown.13.prevent="recorridoTxtRuc"
+                                                           @*@@keydown.9.prevent="recorridoTxtRuc"*@
                                                            id="txtDireccion"
                                                            ref="refDireccion"
                                                            name="direccion"
@@ -1064,11 +1060,8 @@
                                                            class="form-control input-sm"
                                                            placeholder="DIRECCIÓN"
                                                            :disabled="disabledCamposTicket"
-                                                           v-validate="'required'"
-                                                           data-vv-as="Dirección fiscal"
                                                            autocomplete="off">
                                                 </div>
-                                                <span v-show="list.ventas[indexVenta].Ruc.length == 11 && list.ventas[indexVenta].Direccion.length < 1 && errors.has('direccion')" class="text-danger m-l-5">{{ errors.first('direccion') }}</span>
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -1085,10 +1078,10 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">Nacionalidad</label>
-                                                <input :value="list.ventas[indexVenta].Nacionalidad.toUpperCase()"
+                                                <input :value="list.ventas[indexVenta].Nacionalidad"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keydown.13.prevent="$refs.refRegistrarNino.focus()"
-                                                       @*@@keydown.9.prevent="$refs.refRegistrarNino.focus()"*@
+                                                       @@keydown.13.prevent="recorridoTxtRuc"
+                                                       @*@@keydown.9.prevent="recorridoTxtRuc"*@
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
@@ -1096,24 +1089,63 @@
                                                        class="form-control input-sm"
                                                        placeholder="NACIONALIDAD"
                                                        :disabled="disabledCamposTicket"
-                                                       v-validate="'required'"
                                                        v-mask="'A'.repeat(30)"
                                                        autocomplete="off" />
                                             </div>
-                                            <span v-show="errors.has('nacionalidad')" class="text-danger m-l-5">{{ errors.first('nacionalidad') }}</span>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <div class="form-group">
-                                                <label class="control-label">Observación</label>
-                                                <textarea :value="list.ventas[indexVenta].Observacion"
-                                                          id="txtObservacion"
-                                                          class="form-control input-sm"
-                                                          placeholder="OBSERVACIÓN"
-                                                          style="height: 50px; resize: none; "
-                                                          disabled="disabled">
-                                                </textarea>
+                                            <div v-show="pickedBusVenta != 'R'">
+                                                <div class="form-group">
+                                                    <label class="control-label">Observación</label>
+                                                    <textarea :value="list.ventas[indexVenta].Observacion"
+                                                              id="txtObservacion"
+                                                              class="form-control input-sm"
+                                                              placeholder="OBSERVACIÓN"
+                                                              style="height: 50px; resize: none; "
+                                                              disabled="disabled">
+                                                    </textarea>
+                                                </div>
+                                            </div>
+                                            <div v-show="pickedBusVenta == 'R'">
+                                                <div class="col-md-12">
+                                                    <label class="control-label">Confirmación de reserva</label>
+                                                </div>
+                                                <div class="col-md-12" style="text-align: center; padding-left: 0px; padding-right: 0px; ">
+                                                    <div class="col-md-6" style="padding-left: 0px; ">
+                                                        <div class="form-group">
+                                                            <input id="txtFechaReservacion"
+                                                                   class="form-control input-sm dpFiltro"
+                                                                   type="text"
+                                                                   placeholder="FECHA"
+                                                                   ref="refFechaReservacion"
+                                                                   v-model="list.ventas[indexVenta].FechaReservacion"
+                                                                   @@focus="$event.target.select()"
+                                                                   @*@@keydown.13.prevent="keyTxtFechaHoraReservacion($event)"*@
+                                                                   @*@@keydown.9.prevent="keyTxtFechaHoraReservacion($event)"*@
+                                                                   @*@@blur="blurFechaReservacion($event)"*@
+                                                                   v-mask="'##/##/####'"
+                                                                   autocomplete="off" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6" style="padding-right: 0px; ">
+                                                        <div class="form-group">
+                                                            <input id="txtHoraReservacion"
+                                                                   class="form-control input-sm dph"
+                                                                   type="text"
+                                                                   placeholder="HORA"
+                                                                   ref="refHoraReservacion"
+                                                                   v-model="list.ventas[indexVenta].HoraReservacion"
+                                                                   @@focus="$event.target.select()"
+                                                                   @*@@keydown.13.prevent="blurHoraReservacion($event)"*@
+                                                                   @*@@keydown.9.prevent="blurHoraReservacion($event)"*@
+                                                                   @*@@blur="blurHoraReservacion($event)"*@
+                                                                   v-mask="'##:## AM'"
+                                                                   autocomplete="off" />
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
@@ -1133,8 +1165,8 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="setCheckRegistrarNino"
-                                                               @@keydown.13.prevent="passSinceRegistrarNino"
-                                                               @*@@keydown.9.prevent="passSinceRegistrarNino"*@
+                                                               @@keydown.13.prevent="recorridoChckRegistrarNino"
+                                                               @*@@keydown.9.prevent="recorridoChckRegistrarNino"*@
                                                                id="chckRegistrarNino"
                                                                ref="refRegistrarNino"
                                                                class="check-with-label"
@@ -1160,8 +1192,8 @@
                                                            @@keydown.112.prevent="keyTxtPrecio($event)"
                                                            @@focus="focusPrecio($event)"
                                                            @@blur="validateRangePrice($event)"
-                                                           :disabled="disabledCamposTicket || disabledPrecio"
-                                                           :readonly="list.ventas[indexVenta].ReadonlyPrecio"
+                                                           :disabled="disabledCamposTicket"
+                                                           :readonly="list.ventas[indexVenta].ReadonlyPrecio || readonlyPrecio_Credito"
                                                            :class="{'placeh-ticket-venta': auxFocus.precio}"
                                                            style="text-align: center; border-color: #FFF; font-size: 36px !important; font-weight: 500; color: var(--emp-color); background-color: #fff !important; "
                                                            autocomplete="off" />
@@ -1177,8 +1209,8 @@
                                                             ref="refTipoPago"
                                                             class="btn btn-secondary btn-ticket btn-venta"
                                                             style="width: 100%;"
-                                                            :disabled="!bloquearPagoPorCampos || bloquearPagoPorFlagVenta">
-                                                        <template v-if="this.list.ventas[this.indexVenta].FlagVenta == 'R'">
+                                                            :disabled="!this.list.ventas[this.indexVenta].NroAsiento || bloquearPagoPorFlagVenta">
+                                                        <template v-if="pickedBusVenta == 'V' && list.ventas[indexVenta].FlagVenta == 'R'">
                                                             Confirmar Reserva
                                                         </template>
                                                         <template v-else>
@@ -1204,7 +1236,7 @@
                             </div>
                             <div class="col-md-1" style="height: 235px; width: 35px; padding: 0px 0px 0px 2px; display: flex; align-items: center; ">
                                 <div v-if="indexVenta < list.ventas.length - 1"
-                                     @@click="rightSlider('click')"
+                                     @@click="rightSlider()"
                                      class="bgc-emp"
                                      style="border-radius: 10px 0px 0px 10px; ">
                                     <img src="~/wwwroot/plugins/images/chevron-right.png" style="width: 100%; height: 100%" draggable="false"/>
@@ -1212,7 +1244,7 @@
                             </div>
                         </div>
                         <div v-show="showPlano" class="col-md-12" style="margin-top: 5px; text-align: center;">
-                            <div @@click="indexVenta = index"
+                            <div @@click="navButtonsBottomTicketsVenta(index)"
                                  v-for="(item, index) in list.ventas"
                                  style="display: inline-block; vertical-align: middle; margin-right: 5px;">
                                 <span class="label label-rouded btn-emp" style="cursor: pointer;">{{item.NroAsiento}}</span>

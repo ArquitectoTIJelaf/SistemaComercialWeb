@@ -494,11 +494,11 @@ APP.msg.confirmClaveFechaActualCodiUsuario = async function (_title, _message, _
         preConfirm: async function (value) {
             if (value === moment().format('DD') + moment().format('MM') + String(_codiUsuario))
                 _bool = true;
-            else {
+            else
                 Swal.showValidationMessage('Clave incorrecta.');
-            }
         }
     }).then(res => {
+
     }).catch(error => {
         APP.msg.error(error);
     });

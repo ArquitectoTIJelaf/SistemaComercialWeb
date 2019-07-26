@@ -432,6 +432,7 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ItinerariosController.cs" />
     <Compile Include="Controllers\PrincipalController.cs" />
+    <Compile Include="Controllers\ReintegroController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -507,6 +508,7 @@
     <Content Include="Views\Itinerarios\_Reintegro.cshtml" />
     <Content Include="Views\Itinerarios\_MiniMapa.cshtml" />
     <Content Include="Views\Itinerarios\_Test.cshtml" />
+    <Content Include="Views\Itinerarios\_TipoPago2.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -792,6 +794,7 @@
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\Reintegro\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

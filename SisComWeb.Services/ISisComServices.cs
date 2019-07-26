@@ -81,6 +81,14 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveControl", ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaUsuariosClaveControl();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaUsuariosHC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuariosHC(string Descripcion, short Suc, short Pv);
+        
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaUsuarioControlPwd", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuarioControlPwd(string Value);
         #endregion
 
         #region LOGIN
@@ -208,6 +216,14 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AcompanianteVentaCRUD", ResponseFormat = WebMessageFormat.Json)]
         Response<bool> AcompanianteVentaCRUD(AcompanianteRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaClaveReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> VerificaClaveReserva(int CodiUsr, string Password);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaHoraConfirmacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> VerificaHoraConfirmacion(int Origen, int Destino);
 
         #endregion
 
@@ -362,6 +378,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidaExDni", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ValidaExDni(string documento);
+        
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "SaveReintegro", ResponseFormat = WebMessageFormat.Json)]
+        Response<int> SaveReintegro(ReintegroVentaRequest filtro);
         #endregion
     }
 }

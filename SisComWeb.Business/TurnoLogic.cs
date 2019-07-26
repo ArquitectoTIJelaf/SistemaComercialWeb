@@ -138,6 +138,13 @@ namespace SisComWeb.Business
                 // Lista 'PuntosArribo'
                 buscarTurno.ListaArribos = TurnoRepository.ListarPuntosArribo(buscarTurno.CodiOrigen, buscarTurno.CodiDestino, buscarTurno.CodiServicio, buscarTurno.CodiEmpresa, buscarTurno.CodiPuntoVenta, buscarTurno.HoraPartida);
 
+                // Elimina 'Reservas'
+                if (buscarTurno.CodiProgramacion > 0)
+                {
+                    TurnoRepository.EliminarReservas02(buscarTurno.CodiOrigen.ToString(), buscarTurno.CodiProgramacion, buscarTurno.HoraPartida, buscarTurno.FechaViaje);
+                    TurnoRepository.EliminarReservas01(buscarTurno.CodiProgramacion, buscarTurno.HoraPartida);
+                }
+
                 // Lista 'PlanoBus'
                 PlanoRequest requestPlano = new PlanoRequest
                 {

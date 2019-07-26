@@ -238,5 +238,47 @@ namespace SisComWeb.Repository
         }
 
         #endregion
+
+        #region Métodos Transaccionales
+
+        public static bool EliminarReservas02(string Sucursal, int Programacion, string horaS, string fecha)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Venta_Delete_Reservas";
+                db.AddParameter("@sucursal", DbType.String, ParameterDirection.Input, Sucursal);
+                db.AddParameter("@programacion", DbType.Int32, ParameterDirection.Input, Programacion);
+                db.AddParameter("@hora_S", DbType.String, ParameterDirection.Input, horaS);
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, fecha);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool EliminarReservas01(int CodiProgramacion, string HoraProgramacion)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_DeleteReservas";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@hora_programacion", DbType.String, ParameterDirection.Input, HoraProgramacion);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        #endregion
     }
 }

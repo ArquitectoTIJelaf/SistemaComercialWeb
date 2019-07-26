@@ -238,7 +238,7 @@ namespace SisComWeb.Business
                             return new Response<VentaResponse>(true, valor, Message.MsgErrorEliminarReserva, false);
                         // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
                         entidad.IdVenta = 0;
-                        // Cuando 'confirmasReserva', por ahora se venderá como una 'Venta'.
+                        // Cuando 'confirmasReserva' se venderá como una 'Venta'.
                         entidad.FlagVenta = "V";
                     }
 
@@ -820,6 +820,30 @@ namespace SisComWeb.Business
                     // Seteo 'Tipo' (Reserva siempre es 'M')
                     entidad.Tipo = "M";
 
+                    // Graba 'Auditoria'
+                    var objAuditoriaEntity = new AuditoriaEntity
+                    {
+                        CodiUsuario = entidad.CodiUsuario,
+                        NomUsuario = entidad.NomUsuario,
+                        Tabla = "RESERVACION",
+                        TipoMovimiento = "RESERVA DE PASAJES",
+                        Boleto = entidad.SerieBoleto.ToString() + "-" + entidad.NumeBoleto.ToString("D7"),
+                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
+                        NomOficina = entidad.NomOficina,
+                        NomPuntoVenta = entidad.NomPuntoVenta,
+                        Pasajero = entidad.Nombre,
+                        FechaViaje = entidad.FechaViaje,
+                        HoraViaje = entidad.HoraViaje,
+                        NomDestino = entidad.NomDestino,
+                        Precio = entidad.PrecioVenta,
+                        Obs1 = "RESERVACION DE PASAJES",
+                        Obs2 = "RESERVACION AUTOMATICA",
+                        Obs3 = "hora_c=" + entidad.HoraReservacion,
+                        Obs4 = "Fecha_c=" + entidad.HoraReservacion,
+                        Obs5 = "TERMINAL : " + entidad.CodiTerminal
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaEntity);
+
                     // Graba 'Venta'
                     var grabarVenta = VentaRepository.GrabarVenta(entidad);
                     if (grabarVenta > 0)
@@ -838,6 +862,8 @@ namespace SisComWeb.Business
                         };
                         VentaRepository.AcompanianteVentaCRUD(objAcompanianteRequest);
                     }
+
+                    VentaRepository.InsertarReservacionHoraFecha(entidad.IdVenta, entidad.SerieBoleto.ToString() + "-" + entidad.NumeBoleto.ToString("D7"), entidad.FechaReservacion, entidad.HoraReservacion, entidad.Nombre, entidad.CodiUsuario, entidad.CodiPuntoVenta);
 
                     // Seteo 'auxBoletoCompleto'
                     auxBoletoCompleto = BoletoFormatoCompleto("M", string.Empty, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8");
@@ -860,6 +886,39 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<VentaResponse>(false, null, Message.MsgExcGrabaReserva, false);
+            }
+        }
+
+        public static Response<string> VerificaClaveReserva(int CodiUsr, string Password)
+        {
+            try
+            {
+                var verificaClaveReserva = VentaRepository.VerificaClaveReserva(CodiUsr);
+
+                if (verificaClaveReserva == Password)
+                    return new Response<string>(true, verificaClaveReserva, Message.MsgCorrectoVerificaClaveReserva, true);
+                else
+                    return new Response<string>(false, verificaClaveReserva, Message.MsgErrorVerificaClaveReserva, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaClaveReserva, false);
+            }
+        }
+
+        public static Response<string> VerificaHoraConfirmacion(int Origen, int Destino)
+        {
+            try
+            {
+                var verificaHoraConfirmacion = VentaRepository.VerificaHoraConfirmacion(Origen, Destino);
+
+                return new Response<string>(true, verificaHoraConfirmacion, Message.MsgCorrectoVerificaHoraConfirmacion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaHoraConfirmacion, false);
             }
         }
 
@@ -900,7 +959,7 @@ namespace SisComWeb.Business
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExAcompanianteVentaCRUD, false);
+                return new Response<bool>(false, false, Message.MsgExcAcompanianteVentaCRUD, false);
             }
         }
 
@@ -1431,8 +1490,8 @@ namespace SisComWeb.Business
             try
             {
                 var consultaClaveControl = VentaRepository.ConsultaClaveControl(Usuario, Pwd);
-
-                return new Response<bool>(true, consultaClaveControl, Message.MsgCorrectoConsultaClaveControl, true);
+                var mensaje = (consultaClaveControl) ? Message.MsgCorrectoConsultaClaveControl : Message.MsgValidaClavesInternas;
+                return new Response<bool>(true, consultaClaveControl, mensaje, true);
             }
             catch (Exception ex)
             {

@@ -730,6 +730,49 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static string VerificaClaveReserva(int Usr)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_tb_clave_Res";
+                db.AddParameter("@usr", DbType.Int32, ParameterDirection.Input, Usr);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "clave") ?? string.Empty;
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
+        public static string VerificaHoraConfirmacion(int Origen, int Destino)
+        {
+            var valor = "0";
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Hora_Confirmacion_Valida";
+                db.AddParameter("@o", DbType.Int32, ParameterDirection.Input, Origen);
+                db.AddParameter("@d", DbType.Int32, ParameterDirection.Input, Destino);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "MINUTOS") ?? "0";
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -1357,6 +1400,29 @@ namespace SisComWeb.Repository
                 db.AddParameter("@socio", DbType.String, ParameterDirection.Input, Socio);
                 db.AddParameter("@mes", DbType.String, ParameterDirection.Input, Mes);
                 db.AddParameter("@ann", DbType.String, ParameterDirection.Input, Ann);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarReservacionHoraFecha(int IdVenta, string Numero, string Fecha, string Hora, string Cliente, int Usuario, int Oficina)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "TB_RESERVACION_HORA_FECHA_INSERT";
+                db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@NUMERO", DbType.String, ParameterDirection.Input, Numero);
+                db.AddParameter("@FECHA", DbType.String, ParameterDirection.Input, Fecha);
+                db.AddParameter("@HORA", DbType.String, ParameterDirection.Input, Hora);
+                db.AddParameter("@CLIENTE", DbType.String, ParameterDirection.Input, Cliente);
+                db.AddParameter("@USUARIO", DbType.Int32, ParameterDirection.Input, Usuario);
+                db.AddParameter("@Oficina", DbType.Int32, ParameterDirection.Input, Oficina);
 
                 db.Execute();
 

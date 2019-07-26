@@ -81,6 +81,18 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["USUARIO"]);
                     item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
                     break;
+                case 18:
+                    item.id = DataUtility.ObjectToString(reader["CODIGO"]);
+                    item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
+                    break;
+                case 19:
+                    item.id = DataUtility.ObjectToString(reader["Codigo"]);
+                    item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
+                    break;
+                case 20:
+                    item.id = DataUtility.ObjectToString(reader["USUARIO"]);
+                    item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -118,25 +130,6 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 2));
-                    }
-                }
-            }
-
-            return Lista;
-        }
-
-        public static List<BaseEntity> ListaUsuarios()
-        {
-            var Lista = new List<BaseEntity>();
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_ListarUsuarios";
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        Lista.Add(GetItem(drlector, 3));
                     }
                 }
             }
@@ -429,6 +422,67 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Lista.Add(GetItem(drlector, 17));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+        
+        public static List<BaseEntity> ListaOpcionesModificacion()
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ModificacionConsultar";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 18));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaUsuariosHC(string Descripcion, short Suc, short Pv)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_tb_usuario_HC_Autocomplete";
+                db.AddParameter("@descripcion", DbType.String, ParameterDirection.Input, Descripcion);
+                db.AddParameter("@suc", DbType.Int16, ParameterDirection.Input, Suc);
+                db.AddParameter("@Pv", DbType.Int16, ParameterDirection.Input, Pv);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 19));
+                    }
+                }
+            }
+
+            return Lista;
+        }
+
+        public static List<BaseEntity> ListaUsuarioControlPwd(string Value)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_UsuarioControlPwdAutocomplete";
+                db.AddParameter("@value", DbType.String, ParameterDirection.Input, Value);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 20));
                     }
                 }
             }

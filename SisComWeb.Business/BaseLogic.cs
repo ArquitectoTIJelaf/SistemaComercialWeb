@@ -249,5 +249,52 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<List<BaseEntity>> ListaOpcionesModificacion()
+        {
+            try
+            {
+                var lista = BaseRepository.ListaOpcionesModificacion();
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaOpcionesModificacion, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaUsuariosHC(string Descripcion, short Suc, short Pv)
+        {
+            try
+            {
+                if (Descripcion == "null")
+                    Descripcion = string.Empty;
+
+                var lista = BaseRepository.ListaUsuariosHC(Descripcion, Suc, Pv);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuarios, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
+            }
+        }
+
+        public static Response<List<BaseEntity>> ListaUsuarioControlPwd(string Value)
+        {
+            try
+            {
+                if (Value == "null")
+                    Value = string.Empty;
+
+                var lista = BaseRepository.ListaUsuarioControlPwd(Value);
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuarios, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
+            }
+        }
     }
 }

@@ -105,9 +105,7 @@ namespace SisComWeb.Business
             {
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
-
-
-
+                               
                 // Verifica 'CodiProgramacion'
                 var objProgramacion = new ProgramacionEntity()
                 {

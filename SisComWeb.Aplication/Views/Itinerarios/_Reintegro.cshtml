@@ -724,7 +724,7 @@
                 </button>
                 <button @@click="saveReintegro" 
                         class="btn btn-primary waves-effect waves-light" 
-                        :disabled="!(dataFilled && dataToSave)"
+                        :disabled="(!(dataFilled && dataToSave) || disabledAceptar)"
                         ref="refREAceptar">
                     <span class="fa fa-floppy-o fa-fw"></span>Aceptar
                 </button>
