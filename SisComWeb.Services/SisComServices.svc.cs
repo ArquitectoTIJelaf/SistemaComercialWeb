@@ -594,11 +594,11 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<byte> EliminarReserva(int IdVenta)
+        public Response<byte> EliminarReserva(CancelarReservaRequest request)
         {
             try
             {
-                return VentaLogic.EliminarReserva(IdVenta);
+                return VentaLogic.EliminarReserva(request);
             }
             catch (Exception ex)
             {
@@ -625,6 +625,19 @@ namespace SisComWeb.Services
             try
             {
                 return VentaLogic.VerificaClaveReserva(CodiUsr, Password);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaClaveReserva, false);
+            }
+        }
+
+        public Response<string> VerificaClaveTbClaveRe(int CodiUsr)
+        {
+            try
+            {
+                return VentaLogic.VerificaClaveTbClaveRe(CodiUsr);
             }
             catch (Exception ex)
             {

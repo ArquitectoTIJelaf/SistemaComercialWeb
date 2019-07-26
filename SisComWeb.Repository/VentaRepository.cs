@@ -751,6 +751,27 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static string VerificaClaveTbClaveRe(int Usr)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_tb_clave_Res_Trae";
+                db.AddParameter("@usr", DbType.Int32, ParameterDirection.Input, Usr);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "clave") ?? string.Empty;
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         public static string VerificaHoraConfirmacion(int Origen, int Destino)
         {
             var valor = "0";

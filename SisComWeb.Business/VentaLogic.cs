@@ -907,6 +907,21 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> VerificaClaveTbClaveRe(int CodiUsr)
+        {
+            try
+            {
+                var verificaClaveTbClaveRe = VentaRepository.VerificaClaveTbClaveRe(CodiUsr);
+
+                return new Response<string>(true, verificaClaveTbClaveRe, Message.MsgCorrectoVerificaClaveReserva, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaClaveReserva, false);
+            }
+        }
+
         public static Response<string> VerificaHoraConfirmacion(int Origen, int Destino)
         {
             try
@@ -926,14 +941,40 @@ namespace SisComWeb.Business
 
         #region ELIMINAR RESERVA
 
-        public static Response<byte> EliminarReserva(int IdVenta)
+        public static Response<byte> EliminarReserva(CancelarReservaRequest request)
         {
             try
             {
                 // Elimina 'Reserva'
-                var eliminarReserva = VentaRepository.EliminarReserva(IdVenta);
+                var eliminarReserva = VentaRepository.EliminarReserva(request.IdVenta);
                 if (eliminarReserva > 0)
+                {
+                    // Graba 'Auditoria'
+                    var objAuditoriaEntity = new AuditoriaEntity
+                    {
+                        CodiUsuario = request.CodiUsuario,
+                        NomUsuario = request.NomUsuario,
+                        Tabla = "RESERVACION",
+                        TipoMovimiento = "ANULACION DE RESERVA",
+                        Boleto = request.Boleto.Substring(4),
+                        NumeAsiento = request.NumeAsiento.ToString("D2"),
+                        NomOficina = request.NomOficina,
+                        NomPuntoVenta = request.NomPuntoVenta,
+                        Pasajero = request.NomPasajero,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NomDestinoPas,
+                        Precio = request.PrecioVenta,
+                        Obs1 = "ANULACION DE RESERVACION",
+                        Obs2 = string.Empty,
+                        Obs3 = string.Empty,
+                        Obs4 = string.Empty,
+                        Obs5 = "TER. : " + request.Terminal.ToString("D3")
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaEntity);
+
                     return new Response<byte>(true, eliminarReserva, Message.MsgCorrectoEliminarReserva, true);
+                }                    
                 else
                     return new Response<byte>(false, eliminarReserva, Message.MsgErrorEliminarReserva, true);
             }
@@ -1086,277 +1127,272 @@ namespace SisComWeb.Business
                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                     return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                // Graba 'Caja'
-                var objCaja = new CajaEntity
+                // Anula 'Venta'
+                anularVenta = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
+                if (anularVenta > 0)
                 {
-                    NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
-                    CodiEmpresa = objVenta.CodiEmpresa,
-                    CodiSucursal = short.Parse(request.CodiOficina),
-                    FechaCaja = objVenta.FechaAnulacion,
-                    TipoVale = "S",
-                    Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
-                    NomUsuario = request.CodiUsuario.ToString() + " " + request.NomUsuario,
-                    CodiBus = string.Empty,
-                    CodiChofer = string.Empty,
-                    CodiGasto = string.Empty,
-                    ConcCaja = string.Empty, /*Va cambiar*/
-                    Monto = request.PrecioVenta,
-                    CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
-                    IndiAnulado = "F",
-                    TipoDescuento = string.Empty, /*Va cambiar*/
-                    TipoDoc = "16",
-                    TipoGasto = "P",
-                    Liqui = 0M,
-                    Diferencia = 0M,
-                    Recibe = string.Empty, /*Va cambiar*/
-                    CodiDestino = request.TipoPago,
-                    FechaViaje = request.FechaVenta,
-                    HoraViaje = string.Empty, /*Va cambiar*/
-                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
-                    Voucher = string.Empty, /*Va cambiar*/
-                    Asiento = string.Empty, /*Va cambiar*/
-                    Ruc = request.IngresoManualPasajes ? "MA": string.Empty,
-                    IdVenta = request.IdVenta,
-                    Origen = string.Empty, /*Va cambiar*/
-                    Modulo = "AP",
-                    Tipo = request.Tipo,
-
-                    IdCaja = 0
-                };
-
-                if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
-                {
-                    objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
-                    objCaja.TipoDescuento = "0";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VRA";
-                    objCaja.Voucher = request.ValeRemoto;
-                    objCaja.Asiento = "PA";
-                    objCaja.Origen = "YO";
-                }
-                else if (request.FlagVenta == "Y")
-                {
-                    objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
-                    objCaja.TipoDescuento = "0";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VRA";
-                    objCaja.Voucher = request.ValeRemoto;
-                    objCaja.Asiento = "PA";
-                    objCaja.Origen = "AY";
-                }
-                else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = "VC";
-                    objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
-                    objCaja.HoraViaje = "VCA";
-                    objCaja.Voucher = request.ValeRemoto;
-                    objCaja.Asiento = "PA";
-                    objCaja.Origen = "CR";
-                }
-                else if (request.FlagVenta == "1")
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = "VC";
-                    objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
-                    objCaja.HoraViaje = "VCA";
-                    objCaja.Voucher = request.ValeRemoto;
-                    objCaja.Asiento = "PA";
-                    objCaja.Origen = "AC";
-                }
-                else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = " ";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VNA";
-                    objCaja.Voucher = "PA";
-                    objCaja.Asiento = string.Empty;
-                    objCaja.Origen = "RC";
-                }
-                else if (request.FlagVenta == "I")
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = " ";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VNA";
-                    objCaja.Voucher = "PA";
-                    objCaja.Asiento = string.Empty;
-                    objCaja.Origen = "RR";
-                }
-                else if (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta)
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = " ";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VNA";
-                    objCaja.Voucher = "PA";
-                    objCaja.Asiento = string.Empty;
-                    objCaja.Origen = "BO";
-                }
-                else
-                {
-                    objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
-                    objCaja.TipoDescuento = " ";
-                    objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
-                    objCaja.HoraViaje = "VNA";
-                    objCaja.Voucher = "PA";
-                    objCaja.Asiento = string.Empty;
-                    objCaja.Origen = "AB";
-                }
-
-                var grabarCaja = VentaRepository.GrabarCaja(objCaja);
-
-                if (grabarCaja > 0)
-                {
-                    // Anula 'Venta'
-                    anularVenta = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
-                    if (anularVenta > 0)
+                    // Graba 'Caja'
+                    var objCaja = new CajaEntity
                     {
-                        // Elimina 'Poliza'
-                        VentaRepository.EliminarPoliza(request.IdVenta);
+                        NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
+                        CodiEmpresa = objVenta.CodiEmpresa,
+                        CodiSucursal = short.Parse(request.CodiOficina),
+                        FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                        TipoVale = "S",
+                        Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
+                        NomUsuario = request.CodiUsuario.ToString() + " " + request.NomUsuario,
+                        CodiBus = string.Empty,
+                        CodiChofer = string.Empty,
+                        CodiGasto = string.Empty,
+                        ConcCaja = string.Empty, /*Va cambiar*/
+                        Monto = request.PrecioVenta,
+                        CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                        IndiAnulado = "F",
+                        TipoDescuento = string.Empty, /*Va cambiar*/
+                        TipoDoc = "16",
+                        TipoGasto = "P",
+                        Liqui = 0M,
+                        Diferencia = 0M,
+                        Recibe = string.Empty, /*Va cambiar*/
+                        CodiDestino = request.TipoPago,
+                        FechaViaje = request.FechaVenta,
+                        HoraViaje = string.Empty, /*Va cambiar*/
+                        CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                        Voucher = string.Empty, /*Va cambiar*/
+                        Asiento = string.Empty, /*Va cambiar*/
+                        Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
+                        IdVenta = request.IdVenta,
+                        Origen = string.Empty, /*Va cambiar*/
+                        Modulo = "AP",
+                        Tipo = request.Tipo,
 
-                        var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
-                        if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
-                        {
-                            // Consulta 'AnulacionPorDia'
-                            var ConsultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(int.Parse(request.CodiPuntoVenta), DataUtility.ObtenerFechaDelSistema());
-                            if (ConsultaAnulacionPorDia <= 0)
-                                // Inserta 'AnulacionPorDia'
-                                VentaRepository.InsertarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta), 1); // 1 -> Porque se anula uno por uno.
-                            else
-                                // Actualiza 'AnulacionPorDia'
-                                VentaRepository.ActualizarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta));
-                        }
+                        IdCaja = 0
+                    };
 
-                        // Graba 'Auditoria'
-                        var objAuditoriaEntity = new AuditoriaEntity
-                        {
-                            CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
-                            NomUsuario = request.NomUsuario,
-                            Tabla = "VENTA",
-                            TipoMovimiento = "ANULACION",
-                            Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
-                            NumeAsiento = request.NumeAsiento.ToString("D2"),
-                            NomOficina = request.NomOficina,
-                            NomPuntoVenta = request.CodiPuntoVenta.ToString(),
-                            Pasajero = request.NomPasajero,
-                            FechaViaje = request.FechaViaje,
-                            HoraViaje = request.HoraViaje,
-                            NomDestino = request.NomDestinoPas,
-                            Precio = request.PrecioVenta,
-                            Obs1 = "ANULACION DE BOLETO",
-                            Obs2 = "TERMINAL" + request.Terminal.ToString("D3"),
-                            Obs3 = string.Empty,
-                            Obs4 = string.Empty,
-                            Obs5 = string.Empty
-                        };
-                        VentaRepository.GrabarAuditoria(objAuditoriaEntity);
-
-                        // Anulación de su respectivo 'Reintegro'
-                        if (!string.IsNullOrEmpty(request.CodiEsca))
-                        {
-                            // Consulta 'VentaReintegro'
-                            var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
-
-                            if (objReintegro.IdVenta > 0)
-                            {
-                                if (objReintegro.TipoPago == "03")
-                                {
-                                    // Consulta 'PagoTarjetaVenta'
-                                    var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(objReintegro.IdVenta);
-
-                                    // Actualiza 'CajaAnulacion'
-                                    VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
-                                }
-
-                                // Valida 'AnularDocumentoSUNAT'
-                                if (request.CodiEsca.Substring(0, 1) != "M")
-                                {
-                                    // Anula 'DocumentoSUNAT'
-                                    var objVentaReintegro = new VentaEntity
-                                    {
-                                        CodiEmpresa = objReintegro.CodiEmpresa,
-                                        SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
-                                        NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
-                                        Tipo = objReintegro.Tipo,
-                                        FechaVenta = objReintegro.FechaVenta
-                                    };
-
-                                    var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVentaReintegro);
-                                    if (!resAnularDocumentoSUNAT.Estado)
-                                        return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
-                                }
-
-                                // Genera 'CorrelativoAuxiliar'
-                                var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
-                                if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
-                                    return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
-
-                                // Graba 'CajaReintegro'
-                                var objCajaReintegro = new CajaEntity
-                                {
-                                    NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
-                                    CodiEmpresa = objReintegro.CodiEmpresa,
-                                    CodiSucursal = short.Parse(request.CodiOficina),
-                                    FechaCaja = DataUtility.ObtenerFechaDelSistema(),
-                                    TipoVale = "S",
-                                    Boleto = request.CodiEsca.Substring(1),
-                                    NomUsuario = request.NomUsuario,
-                                    CodiBus = string.Empty,
-                                    CodiChofer = string.Empty,
-                                    CodiGasto = string.Empty,
-                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
-                                    Monto = objReintegro.PrecioVenta,
-                                    CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
-                                    IndiAnulado = "F",
-                                    TipoDescuento = "RE",
-                                    TipoDoc = string.Empty,
-                                    TipoGasto = "P",
-                                    Liqui = 0M,
-                                    Diferencia = 0M,
-                                    Recibe = "RE",
-                                    CodiDestino = request.CodiDestinoPas,
-                                    FechaViaje = "01/01/1900",
-                                    HoraViaje = "VNA",
-                                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
-                                    Voucher = "RE",
-                                    Asiento = string.Empty,
-                                    Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
-                                    IdVenta = objReintegro.IdVenta,
-                                    Origen = "AR",
-                                    Modulo = "PV",
-                                    Tipo = request.CodiEsca.Substring(0, 1),
-
-                                    IdCaja = 0
-                                };
-                                var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
-                            }
-                        }
-
-                        // Anulación para 'Pase'
-                        if (request.FlagVenta == "7")
-                        {
-                            // Actualiza 'BoletosPorSocio'
-                            VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("MM"), DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy"));
-
-                            // Consulta 'CajaPase'
-                            var consultaCajaPase = VentaRepository.ConsultaCajaPase(objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"));
-
-                            if (consultaCajaPase.IdCaja > 0)
-                            {
-                                // Actualiza 'BoletoPorSocioV'
-                                VentaRepository.ActualizarBoletosPorSocioV(objVenta.PerAutoriza, DataUtility.ObtenerMesDelSistema(), DataUtility.ObtenerAñoDelSistema());
-                            }
-                        }
-
-                        return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+                    if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
+                    {
+                        objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
+                        objCaja.TipoDescuento = "0";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VRA";
+                        objCaja.Voucher = request.ValeRemoto;
+                        objCaja.Asiento = "PA";
+                        objCaja.Origen = "YO";
+                    }
+                    else if (request.FlagVenta == "Y")
+                    {
+                        objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
+                        objCaja.TipoDescuento = "0";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VRA";
+                        objCaja.Voucher = request.ValeRemoto;
+                        objCaja.Asiento = "PA";
+                        objCaja.Origen = "AY";
+                    }
+                    else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = "VC";
+                        objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
+                        objCaja.HoraViaje = "VCA";
+                        objCaja.Voucher = request.ValeRemoto;
+                        objCaja.Asiento = "PA";
+                        objCaja.Origen = "CR";
+                    }
+                    else if (request.FlagVenta == "1")
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = "VC";
+                        objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
+                        objCaja.HoraViaje = "VCA";
+                        objCaja.Voucher = request.ValeRemoto;
+                        objCaja.Asiento = "PA";
+                        objCaja.Origen = "AC";
+                    }
+                    else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = " ";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VNA";
+                        objCaja.Voucher = "PA";
+                        objCaja.Asiento = string.Empty;
+                        objCaja.Origen = "RC";
+                    }
+                    else if (request.FlagVenta == "I")
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = " ";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VNA";
+                        objCaja.Voucher = "PA";
+                        objCaja.Asiento = string.Empty;
+                        objCaja.Origen = "RR";
+                    }
+                    else if (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta)
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = " ";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VNA";
+                        objCaja.Voucher = "PA";
+                        objCaja.Asiento = string.Empty;
+                        objCaja.Origen = "BO";
                     }
                     else
-                        return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
+                    {
+                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.TipoDescuento = " ";
+                        objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
+                        objCaja.HoraViaje = "VNA";
+                        objCaja.Voucher = "PA";
+                        objCaja.Asiento = string.Empty;
+                        objCaja.Origen = "AB";
+                    }
+
+                    VentaRepository.GrabarCaja(objCaja);
+
+                    // Elimina 'Poliza'
+                    VentaRepository.EliminarPoliza(request.IdVenta);
+
+                    var objPanelCanAnuPorDia = ListarPanelControl.Find(x => x.CodiPanel == "65");
+                    if (objPanelCanAnuPorDia != null && objPanelCanAnuPorDia.Valor == "1")
+                    {
+                        // Consulta 'AnulacionPorDia'
+                        var ConsultaAnulacionPorDia = TurnoRepository.ConsultaAnulacionPorDia(int.Parse(request.CodiPuntoVenta), DataUtility.ObtenerFechaDelSistema());
+                        if (ConsultaAnulacionPorDia <= 0)
+                            // Inserta 'AnulacionPorDia'
+                            VentaRepository.InsertarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta), 1); // 1 -> Porque se anula uno por uno.
+                        else
+                            // Actualiza 'AnulacionPorDia'
+                            VentaRepository.ActualizarAnulacionPorDia(DataUtility.ObtenerFechaDelSistema(), int.Parse(request.CodiPuntoVenta));
+                    }
+
+                    // Graba 'Auditoria'
+                    var objAuditoriaEntity = new AuditoriaEntity
+                    {
+                        CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                        NomUsuario = request.NomUsuario,
+                        Tabla = "VENTA",
+                        TipoMovimiento = "ANULACION",
+                        Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
+                        NumeAsiento = request.NumeAsiento.ToString("D2"),
+                        NomOficina = request.NomOficina,
+                        NomPuntoVenta = request.CodiPuntoVenta.ToString(),
+                        Pasajero = request.NomPasajero,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NomDestinoPas,
+                        Precio = request.PrecioVenta,
+                        Obs1 = "ANULACION DE BOLETO",
+                        Obs2 = "TERMINAL" + request.Terminal.ToString("D3"),
+                        Obs3 = string.Empty,
+                        Obs4 = string.Empty,
+                        Obs5 = string.Empty
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaEntity);
+
+                    // Anulación de su respectivo 'Reintegro'
+                    if (!string.IsNullOrEmpty(request.CodiEsca))
+                    {
+                        // Consulta 'VentaReintegro'
+                        var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
+
+                        if (objReintegro.IdVenta > 0)
+                        {
+                            if (objReintegro.TipoPago == "03")
+                            {
+                                // Consulta 'PagoTarjetaVenta'
+                                var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(objReintegro.IdVenta);
+
+                                // Actualiza 'CajaAnulacion'
+                                VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
+                            }
+
+                            // Valida 'AnularDocumentoSUNAT'
+                            if (request.CodiEsca.Substring(0, 1) != "M")
+                            {
+                                // Anula 'DocumentoSUNAT'
+                                var objVentaReintegro = new VentaEntity
+                                {
+                                    CodiEmpresa = objReintegro.CodiEmpresa,
+                                    SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
+                                    NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
+                                    Tipo = objReintegro.Tipo,
+                                    FechaVenta = objReintegro.FechaVenta
+                                };
+
+                                var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVentaReintegro);
+                                if (!resAnularDocumentoSUNAT.Estado)
+                                    return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
+                            }
+
+                            // Genera 'CorrelativoAuxiliar'
+                            var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
+                            if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
+                                return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
+
+                            // Graba 'CajaReintegro'
+                            var objCajaReintegro = new CajaEntity
+                            {
+                                NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
+                                CodiEmpresa = objReintegro.CodiEmpresa,
+                                CodiSucursal = short.Parse(request.CodiOficina),
+                                FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                TipoVale = "S",
+                                Boleto = request.CodiEsca.Substring(1),
+                                NomUsuario = request.NomUsuario,
+                                CodiBus = string.Empty,
+                                CodiChofer = string.Empty,
+                                CodiGasto = string.Empty,
+                                ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
+                                Monto = objReintegro.PrecioVenta,
+                                CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                                IndiAnulado = "F",
+                                TipoDescuento = "RE",
+                                TipoDoc = string.Empty,
+                                TipoGasto = "P",
+                                Liqui = 0M,
+                                Diferencia = 0M,
+                                Recibe = "RE",
+                                CodiDestino = request.CodiDestinoPas,
+                                FechaViaje = "01/01/1900",
+                                HoraViaje = "VNA",
+                                CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                                Voucher = "RE",
+                                Asiento = string.Empty,
+                                Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
+                                IdVenta = objReintegro.IdVenta,
+                                Origen = "AR",
+                                Modulo = "PV",
+                                Tipo = request.CodiEsca.Substring(0, 1),
+
+                                IdCaja = 0
+                            };
+                            var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                        }
+                    }
+
+                    // Anulación para 'Pase'
+                    if (request.FlagVenta == "7")
+                    {
+                        // Actualiza 'BoletosPorSocio'
+                        VentaRepository.ActualizarBoletosPorSocio(objVenta.PerAutoriza, DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("MM"), DateTime.ParseExact(request.FechaVenta, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("yyyy"));
+
+                        // Consulta 'CajaPase'
+                        var consultaCajaPase = VentaRepository.ConsultaCajaPase(objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"));
+
+                        if (consultaCajaPase.IdCaja > 0)
+                        {
+                            // Actualiza 'BoletoPorSocioV'
+                            VentaRepository.ActualizarBoletosPorSocioV(objVenta.PerAutoriza, DataUtility.ObtenerMesDelSistema(), DataUtility.ObtenerAñoDelSistema());
+                        }
+                    }
+
+                    return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
                 }
                 else
-                    return new Response<byte>(false, 0, Message.MsgErrorGrabarCaja, false);
+                    return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
             }
             catch (Exception ex)
             {

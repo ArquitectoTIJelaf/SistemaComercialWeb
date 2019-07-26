@@ -87,8 +87,9 @@ namespace SisComWeb.Aplication.Controllers
                 PrecVentaReintegro = (decimal)x["PrecVentaReintegro"],
                 TipoPago = (string)x["TipoPago"],
                 ValeRemoto = (string)x["ValeRemoto"],
+                CodiEsca = (string)x["CodiEsca"],
 
-                CodiEsca = (string)x["CodiEsca"]
+                CodiEmpresa = (byte)x["CodiEmpresa"]
             }).ToList();
 
             return lista;
@@ -1536,7 +1537,7 @@ namespace SisComWeb.Aplication.Controllers
                         HoraViaje = (string)data["HoraViaje"],
                         NumeAsiento = (int)data["NumeAsiento"]
                     },
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
@@ -1735,7 +1736,7 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("cancelar-reserva")]
-        public async Task<ActionResult> EliminarReserva(int IdVenta)
+        public async Task<ActionResult> EliminarReserva(CancelarReservaRequest request)
         {
             try
             {
@@ -1744,7 +1745,19 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"IdVenta\": " + IdVenta +
+                                    "\"IdVenta\": " + request.IdVenta +
+                                    ",\"Boleto\" : \"" + request.Boleto + "\"" +
+                                    ",\"NumeAsiento\": " + request.NumeAsiento +
+                                    ",\"NomPasajero\": \"" + request.NomPasajero + "\"" +
+                                    ",\"FechaViaje\": \"" + request.FechaViaje + "\"" +
+                                    ",\"HoraViaje\": \"" + request.HoraViaje.Replace(" ", "") + "\"" +
+                                    ",\"NomDestinoPas\": \"" + request.NomDestinoPas + "\"" +
+                                    ",\"PrecioVenta\": \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(request.PrecioVenta) + "\"" +
+                                    ",\"CodiUsuario\" : " + usuario.CodiUsuario +
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
+                                    ",\"NomPuntoVenta\": \"" + usuario.NomPuntoVenta + "\"" +
+                                    ",\"Terminal\": " + usuario.Terminal +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("EliminarReserva", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -2881,6 +2894,42 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<string>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("verificaClaveTbClaveRe")]
+        public async Task<ActionResult> VerificaClaveTbClaveRe(int CodiUsr)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiUsr\" : " + CodiUsr +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaClaveTbClaveRe", new StringContent(_body, Encoding.UTF8, "application/json"));
+
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<string> res = new Response<string>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (string)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

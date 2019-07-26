@@ -228,8 +228,9 @@ namespace SisComWeb.Business
             entidad.Edad = item.Edad;
             entidad.Telefono = item.Telefono;
             entidad.ValeRemoto = item.ValeRemoto;
-
             entidad.CodiEsca = item.CodiEsca;
+
+            entidad.CodiEmpresa = item.CodiEmpresa;
 
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {

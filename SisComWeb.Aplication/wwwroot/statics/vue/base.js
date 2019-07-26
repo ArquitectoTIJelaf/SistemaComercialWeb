@@ -390,12 +390,16 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
         allowOutsideClick: false,
         showLoaderOnConfirm: true,
         preConfirm: async function (value) {
-            var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
-            if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
+            if (ClaveCancelarReserva && value === ClaveCancelarReserva)
                 _bool = true;
             else {
-                Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
+                var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
+                if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
+                    _bool = true;
             }
+
+            if (!_bool)
+                Swal.showValidationMessage('Usuario no autorizado o clave incorrecta.');
         }
     }).then(res => {
 
@@ -1617,12 +1621,6 @@ $(function () {
     if ($('.dp').length) {
         $('.dp').datetimepicker({
             keyBinds: {
-                enter: function (e) {
-                    if (e && !e[0].previousElementSibling.value)
-                        this.date(moment());
-
-                    this.hide();
-                },
                 up: null,
                 down: null,
                 left: null,
@@ -1643,37 +1641,6 @@ $(function () {
             }
         });
     }
-
-    if ($('.dph').length) {
-        $('.dph').datetimepicker({
-            keyBinds: {
-                enter: function (e) {
-                    if (e && !e[0].previousElementSibling.value)
-                        this.date(moment());
-
-                    this.hide();
-                },
-                up: null,
-                down: null,
-                left: null,
-                right: null
-            },
-            useCurrent: false,
-            locale: 'es',
-            showTodayButton: false,
-            showClose: false,
-            showClear: false,
-            keepOpen: false,
-            toolbarPlacement: 'top',
-            format: 'hh:mm A',
-            tooltips: {
-                today: 'Ir a la hora actual',
-                clear: 'Borrar hora',
-                close: 'Cerrar selector'
-            }
-        });
-    }
-
 });
 /*!********************* Document ready */
 

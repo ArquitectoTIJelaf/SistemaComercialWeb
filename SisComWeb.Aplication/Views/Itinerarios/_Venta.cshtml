@@ -436,7 +436,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent
                                                             @@drop="onDrop($event, item)"
@@ -494,7 +494,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -552,7 +552,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -610,7 +610,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -668,7 +668,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -1122,9 +1122,7 @@
                                                                    ref="refFechaReservacion"
                                                                    v-model="list.ventas[indexVenta].FechaReservacion"
                                                                    @@focus="$event.target.select()"
-                                                                   @*@@keydown.13.prevent="keyTxtFechaHoraReservacion($event)"*@
-                                                                   @*@@keydown.9.prevent="keyTxtFechaHoraReservacion($event)"*@
-                                                                   @*@@blur="blurFechaReservacion($event)"*@
+                                                                   @@blur="list.ventas[indexVenta].FechaReservacion = $getValueDateTimePicker($event)"
                                                                    v-mask="'##/##/####'"
                                                                    autocomplete="off" />
                                                         </div>
@@ -1138,9 +1136,7 @@
                                                                    ref="refHoraReservacion"
                                                                    v-model="list.ventas[indexVenta].HoraReservacion"
                                                                    @@focus="$event.target.select()"
-                                                                   @*@@keydown.13.prevent="blurHoraReservacion($event)"*@
-                                                                   @*@@keydown.9.prevent="blurHoraReservacion($event)"*@
-                                                                   @*@@blur="blurHoraReservacion($event)"*@
+                                                                   @@blur="list.ventas[indexVenta].HoraReservacion = $getValueDateTimePicker_Hours($event)"
                                                                    v-mask="'##:## AM'"
                                                                    autocomplete="off" />
                                                         </div>

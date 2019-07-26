@@ -210,8 +210,8 @@ namespace SisComWeb.Services
         Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<byte> EliminarReserva(int IdVenta);
+        [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> EliminarReserva(CancelarReservaRequest request);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "AcompanianteVentaCRUD", ResponseFormat = WebMessageFormat.Json)]
@@ -220,6 +220,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VerificaClaveReserva", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<string> VerificaClaveReserva(int CodiUsr, string Password);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaClaveTbClaveRe", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> VerificaClaveTbClaveRe(int CodiUsr);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VerificaHoraConfirmacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
