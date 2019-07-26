@@ -436,7 +436,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent
                                                             @@drop="onDrop($event, item)"
@@ -494,7 +494,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -552,7 +552,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -610,7 +610,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"
@@ -668,7 +668,7 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button :id="'btnAsiento_' + item.Tipo"
                                                             class="btn btn-bus"
-                                                            :draggable="(pickedBusVenta == 'PO') ? true : false"
+                                                            :draggable="(pickedBusVenta == 'PO' && item.IdVenta != '') ? true : false"
                                                             @@dragstart="onDragstart(item)"
                                                             @@dragover.prevent 
                                                             @@drop="onDrop($event, item)"

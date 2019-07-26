@@ -327,4 +327,23 @@ namespace SisComWeb.Aplication.Models
 
         public string NomOrigenPas { get; set; }
     }
+
+    public class CancelarReservaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public string Boleto { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string NomPasajero { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string HoraViaje { get; set; }
+
+        public string NomDestinoPas { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+    }
 }

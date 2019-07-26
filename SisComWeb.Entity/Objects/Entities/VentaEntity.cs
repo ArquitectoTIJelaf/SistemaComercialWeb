@@ -346,4 +346,33 @@ namespace SisComWeb.Entity
 
         public short Destino { get; set; }
     }
+
+    public class CancelarReservaRequest
+    {
+        public int IdVenta { get; set; }
+
+        public string Boleto { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public string NomPasajero { get; set; }
+
+        public string FechaViaje { get; set; }
+
+        public string HoraViaje { get; set; }
+
+        public string NomDestinoPas { get; set; }
+
+        public decimal PrecioVenta { get; set; }
+
+        public short CodiUsuario { get; set; }
+
+        public string NomUsuario { get; set; }
+
+        public string NomOficina { get; set; }
+
+        public string NomPuntoVenta { get; set; }
+
+        public int Terminal { get; set; }
+    }
 }

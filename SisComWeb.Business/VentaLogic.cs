@@ -907,6 +907,21 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<string> VerificaClaveTbClaveRe(int CodiUsr)
+        {
+            try
+            {
+                var verificaClaveTbClaveRe = VentaRepository.VerificaClaveTbClaveRe(CodiUsr);
+
+                return new Response<string>(true, verificaClaveTbClaveRe, Message.MsgCorrectoVerificaClaveReserva, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcVerificaClaveReserva, false);
+            }
+        }
+
         public static Response<string> VerificaHoraConfirmacion(int Origen, int Destino)
         {
             try
@@ -926,14 +941,40 @@ namespace SisComWeb.Business
 
         #region ELIMINAR RESERVA
 
-        public static Response<byte> EliminarReserva(int IdVenta)
+        public static Response<byte> EliminarReserva(CancelarReservaRequest request)
         {
             try
             {
                 // Elimina 'Reserva'
-                var eliminarReserva = VentaRepository.EliminarReserva(IdVenta);
+                var eliminarReserva = VentaRepository.EliminarReserva(request.IdVenta);
                 if (eliminarReserva > 0)
+                {
+                    // Graba 'Auditoria'
+                    var objAuditoriaEntity = new AuditoriaEntity
+                    {
+                        CodiUsuario = request.CodiUsuario,
+                        NomUsuario = request.NomUsuario,
+                        Tabla = "RESERVACION",
+                        TipoMovimiento = "ANULACION DE RESERVA",
+                        Boleto = request.Boleto.Substring(4),
+                        NumeAsiento = request.NumeAsiento.ToString("D2"),
+                        NomOficina = request.NomOficina,
+                        NomPuntoVenta = request.NomPuntoVenta,
+                        Pasajero = request.NomPasajero,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NomDestinoPas,
+                        Precio = request.PrecioVenta,
+                        Obs1 = "ANULACION DE RESERVACION",
+                        Obs2 = string.Empty,
+                        Obs3 = string.Empty,
+                        Obs4 = string.Empty,
+                        Obs5 = "TER. : " + request.Terminal.ToString("D3")
+                    };
+                    VentaRepository.GrabarAuditoria(objAuditoriaEntity);
+
                     return new Response<byte>(true, eliminarReserva, Message.MsgCorrectoEliminarReserva, true);
+                }                    
                 else
                     return new Response<byte>(false, eliminarReserva, Message.MsgErrorEliminarReserva, true);
             }
