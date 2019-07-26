@@ -209,8 +209,9 @@ namespace SisComWeb.Repository
                             Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty,
                             TipoPago = Reader.GetStringValue(drlector, "tipo_pago") ?? string.Empty,
                             ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
-
                             CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
+
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA") ,
 
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,

@@ -124,7 +124,9 @@
 
         public string ValeRemoto { get; set; }
 
-
         public string CodiEsca { get; set; }
+
+
+        public byte CodiEmpresa { get; set; }
     }
 }

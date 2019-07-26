@@ -87,8 +87,9 @@ namespace SisComWeb.Aplication.Controllers
                 PrecVentaReintegro = (decimal)x["PrecVentaReintegro"],
                 TipoPago = (string)x["TipoPago"],
                 ValeRemoto = (string)x["ValeRemoto"],
+                CodiEsca = (string)x["CodiEsca"],
 
-                CodiEsca = (string)x["CodiEsca"]
+                CodiEmpresa = (byte)x["CodiEmpresa"]
             }).ToList();
 
             return lista;
@@ -1536,7 +1537,7 @@ namespace SisComWeb.Aplication.Controllers
                         HoraViaje = (string)data["HoraViaje"],
                         NumeAsiento = (int)data["NumeAsiento"]
                     },
-                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
