@@ -2330,7 +2330,7 @@
                                         case 'R': // Reserva
                                             setTimeout(function () {
                                                 _this.recorridoSectionVentas();
-                                            }, 200);
+                                            }, 400);
                                             break;
                                     }
                                 });
@@ -2777,64 +2777,64 @@
                         document.getElementById('txtDocumento').focus();
                         return;
                     }
-                    //if (this.list.ventas[this.indexVenta].Documento.length < 8) {
-                    //    document.getElementById('txtDocumento').focus();
-                    //    switch (this.list.ventas[this.indexVenta].CodiTipoDoc.id) {
-                    //        case '1':
-                    //            APP.msg.warning('Ingrese DNI de 8 dígitos.');
-                    //            break;
-                    //        case '4':
-                    //            APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
-                    //            break;
-                    //        case '7':
-                    //            APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
-                    //            break;
-                    //    }
-                    //    return;
-                    //}
-                    //if (anulaValidacion === 'searchUser')
-                    //    return true;
-                    //if (!this.list.ventas[this.indexVenta].Nombres) {
-                    //    document.getElementById('txtNombres').focus();
-                    //    return;
-                    //}
-                    //if (!this.list.ventas[this.indexVenta].ApellidoPaterno) {
-                    //    document.getElementById('txtApellidoPaterno').focus();
-                    //    return;
-                    //}
-                    //if (!this.list.ventas[this.indexVenta].ApellidoMaterno) {
-                    //    document.getElementById('txtApellidoMaterno').focus();
-                    //    return;
-                    //}
-                    //if (!this.list.ventas[this.indexVenta].FechaNac) {
-                    //    document.getElementById('txtFechaNac').focus();
-                    //    if (this.list.ventas[this.indexVenta].Edad == '0')
-                    //        APP.msg.warning('Seleccione una fecha válida, la edad debe ser mayor a 0.');
-                    //    return;
-                    //}
-                    //if (!this.list.ventas[this.indexVenta].Sexo) {
-                    //    $('#cboSexo input[type=search]').focus();
-                    //    return;
-                    //}
+                    if (this.list.ventas[this.indexVenta].Documento.length < 8) {
+                        document.getElementById('txtDocumento').focus();
+                        switch (this.list.ventas[this.indexVenta].CodiTipoDoc.id) {
+                            case '1':
+                                APP.msg.warning('Ingrese DNI de 8 dígitos.');
+                                break;
+                            case '4':
+                                APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
+                                break;
+                            case '7':
+                                APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
+                                break;
+                        }
+                        return;
+                    }
+                    if (anulaValidacion === 'searchUser')
+                        return true;
+                    if (!this.list.ventas[this.indexVenta].Nombres) {
+                        document.getElementById('txtNombres').focus();
+                        return;
+                    }
+                    if (!this.list.ventas[this.indexVenta].ApellidoPaterno) {
+                        document.getElementById('txtApellidoPaterno').focus();
+                        return;
+                    }
+                    if (!this.list.ventas[this.indexVenta].ApellidoMaterno) {
+                        document.getElementById('txtApellidoMaterno').focus();
+                        return;
+                    }
+                    if (!this.list.ventas[this.indexVenta].FechaNac) {
+                        document.getElementById('txtFechaNac').focus();
+                        if (this.list.ventas[this.indexVenta].Edad == '0')
+                            APP.msg.warning('Seleccione una fecha válida, la edad debe ser mayor a 0.');
+                        return;
+                    }
+                    if (!this.list.ventas[this.indexVenta].Sexo) {
+                        $('#cboSexo input[type=search]').focus();
+                        return;
+                    }
 
-                    //// Aquí termina el primer flujo, ahora comienza el segundo flujo.
+                    // Aquí termina el primer flujo, ahora comienza el segundo flujo.
 
-                    //if (!this.list.ventas[this.indexVenta].Telefono && anulaValidacion !== 'txtTelefono') {
-                    //    document.getElementById('txtTelefono').focus();
-                    //    return;
-                    //}
-                    //if (this.pickedBusVenta !== 'R' && appController.validatePanel('217') === '1'
-                    //    && this.list.ventas[this.indexVenta].Telefono.length < 7) {
-                    //    document.getElementById('txtTelefono').focus();
-                    //    APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
-                    //    return;
-                    //}
-                    //if (!this.list.ventas[this.indexVenta].Recoger) {
-                    //    document.getElementById('txtRecoger').focus();
-                    //    return;
-                    //}
+                    if (!this.list.ventas[this.indexVenta].Telefono && anulaValidacion !== 'txtTelefono') {
+                        document.getElementById('txtTelefono').focus();
+                        return;
+                    }
+                    if (this.pickedBusVenta !== 'R' && appController.validatePanel('217') === '1'
+                        && this.list.ventas[this.indexVenta].Telefono.length < 7) {
+                        document.getElementById('txtTelefono').focus();
+                        APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
+                        return;
+                    }
+                    if (!this.list.ventas[this.indexVenta].Recoger) {
+                        document.getElementById('txtRecoger').focus();
+                        return;
+                    }
 
-                    //this.recorridoTxtRecoger();
+                    this.recorridoTxtRecoger();
                 },
                 recorridoTxtRecoger: function () {
                     if (this.pickedBusVenta === '1' && !this.list.ventas[this.indexVenta].NroSolicitud) {
