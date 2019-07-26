@@ -9354,23 +9354,87 @@
                             //appController.showTipoPago();
                             appVueTipoPago2.show([], [], 10, 1, false, false, 1);
 
+                            var checkTipoPago = false;
+
                             await deferredModal($('#appVueTipoPago2'), true).done(function () {
+                                checkTipoPago = false;
                                 window.removeEventListener('keyup', _this.esc);
                             });
 
+                            var input = {};
+
                             await deferredModal($('#appVueTipoPago2'), false).done(function () {
-                                appClaveAutorizacion.$nextTick(() => {
-                                    _this.disabledAceptar = false;
+                                appVueTipoPago2.$nextTick(() => {
+                                    checkTipoPago = appVueTipoPago2.trustedSave;
+                                    if (checkTipoPago) {                                        
+                                        input.Serie = '';
+                                        input.nume_boleto = '';
+                                        input.Codi_Empresa = '';
+                                        input.CODI_SUCURSAL = '';
+                                        input.CODI_PROGRAMACION = '';
+                                        input.CODI_SUBRUTA = '';
+                                        input.CODI_Cliente = '';
+                                        input.NIT_CLIENTE = '';
+                                        input.PRECIO_VENTA = '';
+                                        input.FLAG_VENTA = '';
+                                        input.FECH_VENTA = '';
+                                        input.Recoger = '';
+                                        input.Clav_Usuario = '';
+                                        input.Dni = '';
+                                        input.EDAD = '';
+                                        input.TELEF = '';
+                                        input.NOMB = '';
+                                        input.porcentaje = '';
+                                        input.Codi_Esca = '';
+                                        input.tota_ruta1 = '';
+                                        input.tota_ruta2 = '';
+                                        input.Punto_Venta = '';
+                                        input.tipo_doc = '';
+                                        input.codi_ori_psj = '';
+                                        input.Tipo = '';
+                                        input.Tipo_Pago = '';
+                                        input.Fecha_viaje = '';
+                                        input.HORA_V = '';
+                                        input.nacionalidad = '';
+                                        input.servicio = '';
+                                        input.Sube_en = '';
+                                        input.Baja_en = '';
+                                        input.Hora_Emb = '';
+                                        input.Codi_Empresa__ = '';
+                                        input.CODI_SUCURSAL__ = '';
+                                        input.CODI_TERMINAL__ = '';
+                                        input.Codi_Documento__ = '';
+                                        input.NUME_CORRELATIVO__ = '';
+                                        input.fecha_venta__ = '';
+                                        input.Pventa__ = '';
+                                        input.SERIE_BOLETO__ = '';
+
+                                        _this.disabledAceptar = false;                                        
+                                    }                                    
                                     window.addEventListener('keyup', _this.esc);
                                 });
                             });
 
-
+                            if (checkTipoPago) {
+                                await APP.rq.axios2.post(APP.base + '/reintegro/save-reintegro', input)
+                                    .then(async (res) => {
+                                        _this.lockCancelar = false;
+                                        if (res.data.EsCorrecto) {
+                                            var data = _.cloneDeep(res.data.Valor);
+                                        }
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            } else {
+                                _this.disabledAceptar = false;
+                                return;
+                            }
+                            
                         }; break;
                         case '00003':
                         case '00004': {}; break;
                         default:
                     }
+                    _this.disabledAceptar = false;
                     //_this.close(); //TODO
                 },
                 anularReintegro: function () {
@@ -9682,7 +9746,8 @@
                 processing2: false,
                 disabledTipoPago2: false,
                 showEmbarqueArribo: true,
-                origin: 0
+                origin: 0,
+                trustedSave: false
             },
             mounted: function () {
                 this.getTipoPago2();
@@ -9698,7 +9763,7 @@
                     this.cantAsientos2 = (cantidad !== null) ? cantidad : 0;
                     this.disabledTipoPago2 = (disabledTipoPago !== null) ? disabledTipoPago : false;
                     this.showEmbarqueArribo = (showEmbarqueArribo !== null) ? disabledTipoPago : true;
-                    this.origin = (codeOrigin !== null) ? codeOrigin: 0;
+                    this.origin = (codeOrigin !== null) ? codeOrigin : 0;                    
                     this.$nextTick(() => {
                         $('#appVueTipoPago2').modal('show');
                     });
@@ -9731,6 +9796,8 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta2: async function () {
+                    this.trustedSave = true;
+                    this.close();
                     //var _this = this;
 
                     //// Valida recorrido del modal 'Tipo pago'
@@ -9950,6 +10017,7 @@
                     _this.processing2 = false;
                     _this.disabledTipoPago2 = false;
                     _this.origin = 0;
+                    _this.trustedSave = false;
                 },
                 recorridoSectionTipoPagos2: function (auxValidate) {
                     let _this = this;

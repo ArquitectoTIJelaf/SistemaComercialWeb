@@ -134,76 +134,76 @@ namespace SisComWeb.Repository
         {
             int response = 0;
 
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr";
-                db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, filtro.Serie);
-                db.AddParameter("@NUME_BOLETO", DbType.Int32, ParameterDirection.Input, filtro.nume_boleto);
-                db.AddParameter("@CODI_EMPRESA", DbType.Int32, ParameterDirection.Input, filtro.Codi_Empresa);
-                db.AddParameter("@CODI_SUCURSAL", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUCURSAL);
-                db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, filtro.CODI_PROGRAMACION);
-                db.AddParameter("@CODI_SUBRUTA", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUBRUTA);
-                db.AddParameter("@CODI_Cliente", DbType.String, ParameterDirection.Input, filtro.CODI_Cliente);
-                db.AddParameter("@NIT_CLIENTE", DbType.String, ParameterDirection.Input, filtro.NIT_CLIENTE);
-                db.AddParameter("@PREC_VENTA", DbType.Decimal, ParameterDirection.Input, filtro.PRECIO_VENTA);
-                db.AddParameter("@NUME_ASIENTO", DbType.Int16, ParameterDirection.Input, filtro.NUMERO_ASIENTO);
-                db.AddParameter("@FLAG_VENTA", DbType.String, ParameterDirection.Input, filtro.FLAG_VENTA);
-                db.AddParameter("@FECH_VENTA", DbType.String, ParameterDirection.Input, filtro.FECH_VENTA);
-                db.AddParameter("@RECO_VENTA", DbType.String, ParameterDirection.Input, filtro.Recoger);
-                db.AddParameter("@CLAV_USUARIO", DbType.String, ParameterDirection.Input, filtro.Clav_Usuario);
-                db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, filtro.Dni);
-                db.AddParameter("@EDAD", DbType.Int16, ParameterDirection.Input, filtro.EDAD);
-                db.AddParameter("@TELEFONO", DbType.String, ParameterDirection.Input, filtro.TELEF);
-                db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, filtro.NOMB);
-                db.AddParameter("@CODI_ESCA", DbType.String, ParameterDirection.Input, filtro.Codi_Esca);
-                db.AddParameter("@Punto_Venta", DbType.String, ParameterDirection.Input, filtro.Punto_Venta);
-                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, filtro.tipo_doc);
-                db.AddParameter("@cod_origen", DbType.String, ParameterDirection.Input, filtro.codi_ori_psj);
-                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, filtro.Tipo);
-                db.AddParameter("@PER_AUTORIZA", DbType.String, ParameterDirection.Input, filtro.per_autoriza);
-                db.AddParameter("@ESTADO_ASIENTO", DbType.String, ParameterDirection.Input, filtro.estado_asiento);
-                db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, filtro.SEXO);
-                db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, filtro.Tipo_Pago);
-                db.AddParameter("@SUC_VENTA", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUCURSAL);
-                db.AddParameter("@Vale_Remoto", DbType.String, ParameterDirection.Input, filtro.Vale_Remoto);
-                db.AddParameter("@TIPO_V", DbType.String, ParameterDirection.Input, filtro.Tipo_Venta);
-                db.AddParameter("@FECHA_VIAJE", DbType.String, ParameterDirection.Input, filtro.Fecha_viaje);
-                db.AddParameter("@HORA_V", DbType.String, ParameterDirection.Input, filtro.HORA_V);
-                db.AddParameter("@na", DbType.String, ParameterDirection.Input, filtro.nacionalidad);
-                db.AddParameter("@servicio", DbType.Int16, ParameterDirection.Input, filtro.servicio);
-                db.AddParameter("@porcentaje", DbType.Decimal, ParameterDirection.Input, filtro.porcentaje);//str
-                db.AddParameter("@tota_ruta1", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta1);//str
-                db.AddParameter("@tota_ruta2", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta2);//str
-                db.AddParameter("@sube_en", DbType.Int16, ParameterDirection.Input, filtro.Sube_en);
-                db.AddParameter("@baja_en", DbType.Int16, ParameterDirection.Input, filtro.Baja_en);
-                db.AddParameter("@hora_em", DbType.String, ParameterDirection.Input, filtro.Hora_Emb);
-                db.AddParameter("@nivel", DbType.Int16, ParameterDirection.Input, filtro.nivel);
-                db.AddParameter("@numero_C", DbType.String, ParameterDirection.Input, filtro.NUME_CORRELATIVO__);
-                db.AddParameter("@pventa_C", DbType.String, ParameterDirection.Input, (filtro.Pventa__).PadLeft(3,'0'));
-                db.AddParameter("@codi_Empresa_C", DbType.String, ParameterDirection.Input, filtro.Codi_Empresa__);
-                db.AddParameter("@terminal_C", DbType.String, ParameterDirection.Input, filtro.CODI_TERMINAL__);
-                db.AddParameter("@doc_C", DbType.String, ParameterDirection.Input, filtro.Codi_Documento__);
-                db.AddParameter("@SERIE_C", DbType.String, ParameterDirection.Input, filtro.SERIE_BOLETO__);
-                db.AddParameter("@TIPO_TRANS", DbType.String, ParameterDirection.Input, filtro.Sw_IngManual);
-                db.AddParameter("@idContrato_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@solicitud_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@idarea_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@fechaViaje_cr", DbType.String, ParameterDirection.Input, "01/01/1900");
-                db.AddParameter("@precio_cr", DbType.Decimal, ParameterDirection.Input, "0");
-                db.AddParameter("@Condicion_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@idtabla_cr", DbType.Int32, ParameterDirection.Input, "0");
-                db.AddParameter("@HoraViaje_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@Flg_Ida_cr", DbType.String, ParameterDirection.Input, "0");
-                db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, "01/01/1900");
-                db.AddParameter("@Id_hospital", DbType.String, ParameterDirection.Input, "0");
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        response = Reader.GetIntValue(drlector, "ID_VENTA");
-                    }
-                }
-            }
+            //using (IDatabase db = DatabaseHelper.GetDatabase())
+            //{
+            //    db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr";
+            //    db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, filtro.Serie);
+            //    db.AddParameter("@NUME_BOLETO", DbType.Int32, ParameterDirection.Input, filtro.nume_boleto);
+            //    db.AddParameter("@CODI_EMPRESA", DbType.Int32, ParameterDirection.Input, filtro.Codi_Empresa);
+            //    db.AddParameter("@CODI_SUCURSAL", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUCURSAL);
+            //    db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, filtro.CODI_PROGRAMACION);
+            //    db.AddParameter("@CODI_SUBRUTA", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUBRUTA);
+            //    db.AddParameter("@CODI_Cliente", DbType.String, ParameterDirection.Input, filtro.CODI_Cliente);
+            //    db.AddParameter("@NIT_CLIENTE", DbType.String, ParameterDirection.Input, filtro.NIT_CLIENTE);
+            //    db.AddParameter("@PREC_VENTA", DbType.Decimal, ParameterDirection.Input, filtro.PRECIO_VENTA);
+            //    db.AddParameter("@NUME_ASIENTO", DbType.Int16, ParameterDirection.Input, filtro.NUMERO_ASIENTO);
+            //    db.AddParameter("@FLAG_VENTA", DbType.String, ParameterDirection.Input, filtro.FLAG_VENTA);
+            //    db.AddParameter("@FECH_VENTA", DbType.String, ParameterDirection.Input, filtro.FECH_VENTA);
+            //    db.AddParameter("@RECO_VENTA", DbType.String, ParameterDirection.Input, filtro.Recoger);
+            //    db.AddParameter("@CLAV_USUARIO", DbType.String, ParameterDirection.Input, filtro.Clav_Usuario);
+            //    db.AddParameter("@DNI", DbType.String, ParameterDirection.Input, filtro.Dni);
+            //    db.AddParameter("@EDAD", DbType.Int16, ParameterDirection.Input, filtro.EDAD);
+            //    db.AddParameter("@TELEFONO", DbType.String, ParameterDirection.Input, filtro.TELEF);
+            //    db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, filtro.NOMB);
+            //    db.AddParameter("@CODI_ESCA", DbType.String, ParameterDirection.Input, filtro.Codi_Esca);
+            //    db.AddParameter("@Punto_Venta", DbType.String, ParameterDirection.Input, filtro.Punto_Venta);
+            //    db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, filtro.tipo_doc);
+            //    db.AddParameter("@cod_origen", DbType.String, ParameterDirection.Input, filtro.codi_ori_psj);
+            //    db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, filtro.Tipo);
+            //    db.AddParameter("@PER_AUTORIZA", DbType.String, ParameterDirection.Input, filtro.per_autoriza);
+            //    db.AddParameter("@ESTADO_ASIENTO", DbType.String, ParameterDirection.Input, filtro.estado_asiento);
+            //    db.AddParameter("@SEXO", DbType.String, ParameterDirection.Input, filtro.SEXO);
+            //    db.AddParameter("@Tipo_Pago", DbType.String, ParameterDirection.Input, filtro.Tipo_Pago);
+            //    db.AddParameter("@SUC_VENTA", DbType.Int16, ParameterDirection.Input, filtro.CODI_SUCURSAL);
+            //    db.AddParameter("@Vale_Remoto", DbType.String, ParameterDirection.Input, filtro.Vale_Remoto);
+            //    db.AddParameter("@TIPO_V", DbType.String, ParameterDirection.Input, filtro.Tipo_Venta);
+            //    db.AddParameter("@FECHA_VIAJE", DbType.String, ParameterDirection.Input, filtro.Fecha_viaje);
+            //    db.AddParameter("@HORA_V", DbType.String, ParameterDirection.Input, filtro.HORA_V);
+            //    db.AddParameter("@na", DbType.String, ParameterDirection.Input, filtro.nacionalidad);
+            //    db.AddParameter("@servicio", DbType.Int16, ParameterDirection.Input, filtro.servicio);
+            //    db.AddParameter("@porcentaje", DbType.Decimal, ParameterDirection.Input, filtro.porcentaje);//str
+            //    db.AddParameter("@tota_ruta1", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta1);//str
+            //    db.AddParameter("@tota_ruta2", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta2);//str
+            //    db.AddParameter("@sube_en", DbType.Int16, ParameterDirection.Input, filtro.Sube_en);
+            //    db.AddParameter("@baja_en", DbType.Int16, ParameterDirection.Input, filtro.Baja_en);
+            //    db.AddParameter("@hora_em", DbType.String, ParameterDirection.Input, filtro.Hora_Emb);
+            //    db.AddParameter("@nivel", DbType.Int16, ParameterDirection.Input, filtro.nivel);
+            //    db.AddParameter("@numero_C", DbType.String, ParameterDirection.Input, filtro.NUME_CORRELATIVO__);
+            //    db.AddParameter("@pventa_C", DbType.String, ParameterDirection.Input, (filtro.Pventa__).PadLeft(3,'0'));
+            //    db.AddParameter("@codi_Empresa_C", DbType.String, ParameterDirection.Input, filtro.Codi_Empresa__);
+            //    db.AddParameter("@terminal_C", DbType.String, ParameterDirection.Input, filtro.CODI_TERMINAL__);
+            //    db.AddParameter("@doc_C", DbType.String, ParameterDirection.Input, filtro.Codi_Documento__);
+            //    db.AddParameter("@SERIE_C", DbType.String, ParameterDirection.Input, filtro.SERIE_BOLETO__);
+            //    db.AddParameter("@TIPO_TRANS", DbType.String, ParameterDirection.Input, filtro.Sw_IngManual);
+            //    db.AddParameter("@idContrato_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@solicitud_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@idarea_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@fechaViaje_cr", DbType.String, ParameterDirection.Input, "01/01/1900");
+            //    db.AddParameter("@precio_cr", DbType.Decimal, ParameterDirection.Input, "0");
+            //    db.AddParameter("@Condicion_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@idtabla_cr", DbType.Int32, ParameterDirection.Input, "0");
+            //    db.AddParameter("@HoraViaje_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@Flg_Ida_cr", DbType.String, ParameterDirection.Input, "0");
+            //    db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, "01/01/1900");
+            //    db.AddParameter("@Id_hospital", DbType.String, ParameterDirection.Input, "0");
+            //    using (IDataReader drlector = db.GetDataReader())
+            //    {
+            //        while (drlector.Read())
+            //        {
+            //            response = Reader.GetIntValue(drlector, "ID_VENTA");
+            //        }
+            //    }
+            //}
             return response;
         }
     }
