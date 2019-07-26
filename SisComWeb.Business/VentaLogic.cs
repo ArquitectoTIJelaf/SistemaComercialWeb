@@ -1096,7 +1096,7 @@ namespace SisComWeb.Business
                         NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
                         CodiEmpresa = objVenta.CodiEmpresa,
                         CodiSucursal = short.Parse(request.CodiOficina),
-                        FechaCaja = objVenta.FechaAnulacion,
+                        FechaCaja = DataUtility.ObtenerFechaDelSistema(),
                         TipoVale = "S",
                         Boleto = objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7"),
                         NomUsuario = request.CodiUsuario.ToString() + " " + request.NomUsuario,
@@ -1128,7 +1128,7 @@ namespace SisComWeb.Business
                         IdCaja = 0
                     };
 
-                    if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                    if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
                         objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
                         objCaja.TipoDescuento = "0";
@@ -1148,7 +1148,7 @@ namespace SisComWeb.Business
                         objCaja.Asiento = "PA";
                         objCaja.Origen = "AY";
                     }
-                    else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                    else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
                         objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = "VC";
@@ -1168,7 +1168,7 @@ namespace SisComWeb.Business
                         objCaja.Asiento = "PA";
                         objCaja.Origen = "AC";
                     }
-                    else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta))
+                    else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
                         objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
@@ -1188,7 +1188,7 @@ namespace SisComWeb.Business
                         objCaja.Asiento = string.Empty;
                         objCaja.Origen = "RR";
                     }
-                    else if (request.CodiUsuarioBoleto != request.CodiUsuario || objVenta.FechaAnulacion != request.FechaVenta)
+                    else if (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta)
                     {
                         objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
