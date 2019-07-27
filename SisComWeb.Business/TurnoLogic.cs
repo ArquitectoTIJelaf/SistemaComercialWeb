@@ -168,7 +168,7 @@ namespace SisComWeb.Business
                     if (resMuestraPlano.EsCorrecto)
                         buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
                     else
-                        return new Response<ItinerarioEntity>(true, buscarTurno, resMuestraPlano.Mensaje, false);
+                        return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, true);
                 } 
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);

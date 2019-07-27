@@ -32,10 +32,6 @@ namespace SisComWeb.Business
                 // Obtiene 'OrdenDestinoPasajero'
                 var ordenDestinoPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiDestino, request.CodiDestino);
 
-                // Valida 'OrdenOrigenPasajero' y 'OrdenDestinoPasajero'
-                if (string.IsNullOrEmpty(ordenOrigenPasajero) || string.IsNullOrEmpty(ordenDestinoPasajero))
-                    return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgErrorMuestraPlano, false);
-
                 // Recorre cada registro
                 foreach (var entidad in buscarPlanoBus)
                 {
@@ -100,7 +96,8 @@ namespace SisComWeb.Business
                                             }
                                             else
                                             {
-                                                if (short.Parse(entidad.OrdenOrigen) > short.Parse(item.OrdenOrigen)) {
+                                                if (short.Parse(entidad.OrdenOrigen) > short.Parse(item.OrdenOrigen))
+                                                {
                                                     item.FlagVenta = "VI";
                                                     MatchPlano(entidad, item, request);
                                                 }
@@ -187,7 +184,8 @@ namespace SisComWeb.Business
             entidad.RecogeEn = item.RecogeEn;
             entidad.FlagVenta = item.FlagVenta;
 
-            switch (entidad.FlagVenta) {
+            switch (entidad.FlagVenta)
+            {
                 case "7": // Pase de cortesía
                     entidad.Sigla = "PS";
                     break;
@@ -293,7 +291,7 @@ namespace SisComWeb.Business
                 entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
             }
-            
+
         }
     }
 }
