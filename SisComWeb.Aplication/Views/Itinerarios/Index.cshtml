@@ -1572,6 +1572,10 @@
                         this.list.destinosBus = auxRutas;
                         _.pull(this.list.destinosBus, _.find(this.list.destinosBus, { 'id': this.filtro.CodiOrigen.id, 'label': this.filtro.CodiOrigen.label }));
                     }
+
+                    this.$nextTick(() => {
+                        this.$refs.refOrigenPas.typeAheadPointer = this.$getSelectorVselect(this.list.origenesPas, this.filtro.CodiOrigen);
+                    });
                 },
                 'list.destinosPas': function (newVal, oldVal) {
                     this.$nextTick(() => {
@@ -3719,7 +3723,17 @@
                                 }
 
                                 if (VerificaHoraConfirmacion !== '0') {
-                                    var HoraReal = moment(this.filtro.Turno, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                                    var auxHoraBase = '';
+
+                                    // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
+                                    var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
+                                    if (auxObjEmbarque)
+                                        auxHoraBase = auxObjEmbarque.Hora;
+                                    else
+                                        auxHoraBase = this.filtro.Turno;
+                                    // -------------------------------------------------------------------------
+
+                                    var HoraReal = moment(auxHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
 
                                     if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
@@ -3955,7 +3969,7 @@
                                     return;
                             }
 
-                            if (this.pickedBusVenta !== 'R') {
+                            if (this.pickedBusVenta !== 'R' && !this.readonlyPrecio_Credito) {
 
                                 if (appController.getDescServicio() === '1' && this.pickedBusVenta !== 'FA') {
 
@@ -3984,14 +3998,13 @@
                                                         else
                                                             appController.showClaveAutorizacion(ClaveDescuentoDePasajes);
                                                     };
-
                                                     this.eventTxtPrecio = '';
                                                     return;
                                             }
                                         }
                                     }
                                 }
-                                else if (!this.list.ventas[this.indexVenta].ValidadorDescuentoControl && !this.readonlyPrecio_Credito) {
+                                else if (!this.list.ventas[this.indexVenta].ValidadorDescuentoControl) {
                                     if (actual > max) {
                                         APP.msg.warning('El precio no puede ser mayor a ' + max.toFixed(2) + '.');
                                         this.list.ventas[this.indexVenta].Precio = normal.toFixed(2);
@@ -5766,7 +5779,17 @@
                             }
 
                             if (VerificaHoraConfirmacion !== '0') {
-                                var HoraReal = moment(this.filtro.Turno, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                                var auxHoraBase = '';
+
+                                // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
+                                var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
+                                if (auxObjEmbarque)
+                                    auxHoraBase = auxObjEmbarque.Hora;
+                                else
+                                    auxHoraBase = this.filtro.Turno;
+                               // -------------------------------------------------------------------------
+
+                                var HoraReal = moment(auxHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
 
                                 if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
@@ -6331,7 +6354,6 @@
 
                     $('#appVueTipoPago').modal('show');
                 },
-
                 getTipoPago: function () {
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-tipoPago')

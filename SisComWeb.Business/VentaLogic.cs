@@ -208,7 +208,7 @@ namespace SisComWeb.Business
                                     }
                                     else
                                     {
-                                        var verificarContratoPasajes = CreditoRepository.VerificarContratoPasajes(entidad.RucCliente, entidad.FechaViaje, entidad.FechaViaje, entidad.CodiOficina.ToString(), entidad.CodiRuta.ToString(), entidad.CodiServicio.ToString(), entidad.IdRuc);
+                                        var verificarContratoPasajes = CreditoRepository.VerificarContratoPasajes(entidad.RucCliente, entidad.FechaViaje, entidad.FechaViaje, entidad.CodiOrigen.ToString(), entidad.CodiDestino.ToString(), entidad.CodiServicio.ToString(), entidad.IdRuc);
 
                                         if (verificarContratoPasajes.SaldoBoletos <= 0)
                                             return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
