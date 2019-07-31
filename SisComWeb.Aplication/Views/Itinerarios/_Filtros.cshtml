@@ -20,7 +20,6 @@
                                                   :options="list.origenesPas"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
-                                                  @@input="$refs.refOrigenPas.typeAheadPointer = $getSelectorVselect(list.origenesPas, filtro.CodiOrigen)"
                                                   @@keydown.13.native.prevent="nextStep(1)"
                                                   @*@@keydown.9.native.prevent="nextStep(1)"*@
                                                   ref="refOrigenPas">

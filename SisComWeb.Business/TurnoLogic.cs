@@ -31,6 +31,7 @@ namespace SisComWeb.Business
                     buscarTurno.CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
                     buscarTurno.NomServicio = verificaCambiosTurnoViaje.NomServicio;
                     buscarTurno.CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
+                    buscarTurno.RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
                 }
 
                 // Busca 'ProgramacionViaje'
@@ -168,7 +169,7 @@ namespace SisComWeb.Business
                     if (resMuestraPlano.EsCorrecto)
                         buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
                     else
-                        return new Response<ItinerarioEntity>(true, buscarTurno, resMuestraPlano.Mensaje, false);
+                        return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, true);
                 } 
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);

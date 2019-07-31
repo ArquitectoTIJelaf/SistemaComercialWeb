@@ -20,7 +20,7 @@ namespace SisComWeb.Business
 
                 // Lista Itinerarios
                 var buscarItinerarios = ItinerarioRepository.BuscarItinerarios(request.CodiOrigen, request.CodiDestino, request.CodiRuta, request.Hora, request.CodiServicio);
-
+                
                 // Recorre cada registro
                 for (int i = 0; i < buscarItinerarios.Count; i++)
                 {
@@ -53,6 +53,7 @@ namespace SisComWeb.Business
                         buscarItinerarios[i].CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
                         buscarItinerarios[i].NomServicio = verificaCambiosTurnoViaje.NomServicio;
                         buscarItinerarios[i].CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
+                        buscarItinerarios[i].RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
                     }
 
                     // Busca 'ProgramacionViaje'
