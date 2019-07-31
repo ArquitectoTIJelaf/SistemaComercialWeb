@@ -1911,7 +1911,7 @@ namespace SisComWeb.Business
             }
         }
 
-        private static ResponseW RegistrarDocumentoSUNAT(SetInvoiceRequestBody bodyDocumentoSunat)
+        public static ResponseW RegistrarDocumentoSUNAT(SetInvoiceRequestBody bodyDocumentoSunat)
         {
             try
             {

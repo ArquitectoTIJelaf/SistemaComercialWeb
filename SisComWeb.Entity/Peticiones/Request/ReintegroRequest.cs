@@ -61,5 +61,23 @@
         public string Pventa__ { get; set; }
         public string SERIE_BOLETO__ { get; set; }
         public string Sw_IngManual { get; set; }
+        public string stReintegro { get; set; }
+        public string NomSucursal { get; set; }
+        public string NomUsuario { get; set; }
+        public string NomMotivo { get; set; }
+        public string NombDestino { get; set; }
+        public string CodiBus { get; set; }
+        public string DirEmbarque { get; set; }
+        public string NomServicio { get; set; }
+        public string NomEmpresaRuc { get; set; }
+        public string DirEmpresaRuc { get; set; }
+        public string NomOrigen { get; set; }
+        public int id_original { get; set; }
+        public string CodMotivo { get; set; }
+        public string boleto_original { get; set; }
+        public string D_DOCUMENTO2 { get; set; }
+        public string T_DNI2 { get; set; }
+        public string NOMB2 { get; set; }
+        public string TipoOri { get; set; }
     }
 }

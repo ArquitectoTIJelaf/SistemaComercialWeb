@@ -1092,7 +1092,7 @@ namespace SisComWeb.Services
             }
         }
        
-        public Response<int> SaveReintegro(ReintegroVentaRequest filtro)
+        public Response<VentaResponse> SaveReintegro(ReintegroVentaRequest filtro)
         {
             try
             {
@@ -1101,7 +1101,20 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcVentaReintegro, false);
+                return new Response<VentaResponse>(false, null, Message.MsgExcVentaReintegro, false);
+            }
+        }
+        
+        public Response<decimal> ConsultarIgv(string TipoDoc)
+        {
+            try
+            {
+                return ReintegroLogic.ConsultarIgv(TipoDoc);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
             }
         }
         #endregion

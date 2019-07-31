@@ -2812,7 +2812,9 @@ namespace SisComWeb.Aplication.Controllers
                         CodiRuta = (byte)data["CodiRuta"],
                         CodiServicio = (byte)data["CodiServicio"],
                         CodiError = (int)data["CodiError"],
-                        FechaNac = (string)data["FechaNac"]
+                        FechaNac = (string)data["FechaNac"],
+                        CodiBus = (string)data["CodiBus"],
+                        DirEmbarque = (string)data["DirEmbarque"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
