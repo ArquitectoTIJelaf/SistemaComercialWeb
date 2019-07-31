@@ -9052,6 +9052,8 @@
 
                         _this.filtroProgramacion.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
 
+                        _this.filtroProgramacion.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+
                         //_this.list.itinerarios = appVueTable.list.itinerarios;
                     });
                 },
@@ -9286,6 +9288,14 @@
                         _this.$refs.refREMotivo.$el.querySelector('input').focus();
                     });
                 },
+                limpiarRERuta: function () {
+                    let _this = this;
+                    _this.list.itinerarios = [];
+                    _this.filtroProgramacion.CodiOrigen = String(Usuario.CodiSucursal);
+                    _this.filtroProgramacion.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;;
+                    _this.filtroProgramacion.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+
+                },
                 cancelarRE: function () {
                     let _this = this;
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
@@ -9405,7 +9415,7 @@
 
                             //Consulta del IGV
                             var igv = 0;
-                            await APP.rq.axios.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento}))
+                            await APP.rq.axios2.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento}))
                                 .then((res) => {
                                     igv = _.cloneDeep(res.data.Valor);
                                 })
@@ -9525,7 +9535,7 @@
                 haveExDni: async function () {
                     let _this = this;
                     var response = true;
-                    await APP.rq.axios.get(APP.base + '/itinerarios/validaExDni' + APP.util.getQueryParamByObject({documento: _this.item.numero}))
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/validaExDni' + APP.util.getQueryParamByObject({documento: _this.item.numero}))
                         .then(res => {
                             response = _.cloneDeep(res.data.Valor);
                             if (response) {
@@ -9906,207 +9916,10 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta2: async function () {
-                    this.trustedSave = true;
-                    this.close();
-                    //var _this = this;
-
-                    //// Valida recorrido del modal 'Tipo pago'
-                    //switch (this.$getValuePickedBusVenta()) {
-                    //    case 'R': // Reserva
-                    //        break;
-                    //    default:
-                    //        {
-                    //            if (!_this.recorridoSectionTipoPagos(true))
-                    //                return;
-                    //        };
-                    //        break;
-                    //};
-
-                    //appController.disabledAsientos(true);
-
-                    //// Valida 'TurnoDisponible'
-                    //if (!IngresoManualPasajes) {
-                    //    if (appController.validatePanel('54') === '1') {
-
-                    //        var resVerificaTurnoDisponible = appController.verificaTurnoDisponible();
-                    //        if (!resVerificaTurnoDisponible) {
-                    //            APP.msg.warning('La hora de viaje ya pasó, verificar.');
-                    //            appController.disabledAsientos(false);
-                    //            return;
-                    //        }
-                    //    }
-                    //}
-
-                    //// Valida 'FechaViaje'
-                    //if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
-                    //    APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //// Valida 'Programación cerrada'
-                    //if (appVueVenta.objTurno.Xcierre === '1') {
-                    //    APP.msg.warning('La programación se encuentra cerrada.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //// Valida 'Manifiesto'
-                    //var resValidaManifiestoProgramacion = await appController.validaManifiestoProgramacion();
-                    //if (!resValidaManifiestoProgramacion) {
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //_this.processing = true;
-
-                    //$("#appVueTipoPago").modal('hide');
-
-                    //// Para calcular 'input.Credito' -> (Multipago)
-                    //var canTotalCredito = _.cloneDeep(parseFloat(_this.tarjetaCant || '0') || 0);
-
-                    //var listado = [];
-                    //for (const objVenta of _this.list.ventas) {
-                    //    var input = {};
-                    //    input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
-                    //    input.CodiOrigen = _this.ticketVenta.CodiOrigen;
-                    //    input.CodiDestino = _this.ticketVenta.CodiDestino;
-                    //    input.CodiProgramacion = _this.ticketVenta.CodiProgramacion;
-                    //    input.RucCliente = objVenta.Ruc;
-                    //    input.NomEmpresaRuc = objVenta.RazonSocial;
-                    //    input.DirEmpresaRuc = objVenta.Direccion;
-                    //    input.NumeAsiento = objVenta.NroAsiento;
-                    //    input.FlagVenta = _this.ticketVenta.FlagVenta;
-                    //    input.PrecioVenta = parseFloat(objVenta.Precio);
-                    //    input.Nombre = (objVenta.Nombres + ',' + objVenta.ApellidoPaterno + ',' + objVenta.ApellidoMaterno);
-                    //    input.Edad = objVenta.Edad;
-                    //    input.Telefono = objVenta.Telefono;
-                    //    input.Dni = objVenta.Documento;
-                    //    input.TipoDocumento = formatToChar2(objVenta.CodiTipoDoc.id);
-                    //    input.Sexo = objVenta.Sexo.id;
-                    //    input.TipoPago = _this.tipoPago;
-                    //    input.FechaViaje = _this.ticketVenta.FechaViaje;
-                    //    input.HoraViaje = _this.ticketVenta.HoraViaje;
-                    //    input.CodiServicio = _this.ticketVenta.CodiServicio;
-                    //    input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : 0);
-                    //    input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : 0);
-                    //    input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : '');
-                    //    input.NivelAsiento = objVenta.NivelAsiento;
-                    //    input.NomDestino = _this.ticketVenta.NomDestino;
-                    //    input.NomServicio = _this.ticketVenta.NomServicio;
-                    //    input.NomOrigen = _this.ticketVenta.NomOrigen;
-                    //    input.Nacionalidad = objVenta.Nacionalidad;
-                    //    input.NroViaje = _this.ticketVenta.NroViaje;
-                    //    input.FechaProgramacion = _this.ticketVenta.FechaProgramacion;
-                    //    input.HoraProgramacion = _this.ticketVenta.HoraProgramacion;
-                    //    input.CodiBus = _this.ticketVenta.CodiBus;
-                    //    input.CodiSucursal = _this.ticketVenta.CodiSucursal;
-                    //    input.CodiRuta = _this.ticketVenta.CodiRuta;
-                    //    input.CodiTarjetaCredito = (_this.tarjeta ? _this.tarjeta.id : '');
-                    //    input.NumeTarjetaCredito = _this.numeroTarjeta;
-                    //    input.CodiZona = (_this.distrito ? _this.distrito.id : '');
-                    //    input.Direccion = _this.direccion;
-                    //    input.Observacion = _this.observacion;
-                    //    // Calculamos 'input.Credito'
-                    //    if (input.TipoPago === '02') {
-                    //        if (canTotalCredito) {
-                    //            if (canTotalCredito >= input.PrecioVenta) {
-                    //                canTotalCredito = canTotalCredito - input.PrecioVenta;
-                    //                input.Credito = input.PrecioVenta;
-                    //            }
-                    //            else {
-                    //                input.Credito = canTotalCredito;
-                    //                canTotalCredito = 0;
-                    //            }
-                    //        }
-                    //        else {
-                    //            input.Credito = 0;
-                    //            input.TipoPago = '01';
-                    //        }
-                    //    }
-                    //    // -------------------
-                    //    input.ObjAcompaniante = objVenta.ObjAcompaniante;
-                    //    input.Concepto = objVenta.Recoger;
-                    //    input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
-                    //    input.FechaAbierta = objVenta.FechaAbierta;
-                    //    input.PrecioNormal = objVenta.PrecioNormal;
-                    //    input.ValidadorDescuento = objVenta.ValidadorDescuento;
-                    //    input.ObservacionDescuento = objVenta.ObservacionDescuento;
-                    //    input.ValidadorDescuentoControl = objVenta.ValidadorDescuentoControl;
-                    //    input.DescuentoTipoDC = objVenta.DescuentoTipoDC;
-                    //    input.ImporteDescuentoDC = objVenta.ImporteDescuentoDC;
-                    //    input.ImporteDescontadoDC = objVenta.ImporteDescontadoDC;
-                    //    input.AutorizadoDC = objVenta.AutorizadoDC;
-                    //    input.IngresoManualPasajes = IngresoManualPasajes;
-
-                    //    // TIPOS DE VENTA
-                    //    switch (this.$getValuePickedBusVenta()) {
-                    //        case '7': // PASE DE CORTESÍA
-                    //            input.CodiGerente = objVenta.CodiGerente;
-                    //            input.CodiSocio = objVenta.CodiSocio;
-                    //            input.Concepto = objVenta.Concepto;
-                    //            break;
-                    //        case '1': // CRÉDITO
-                    //            input.IdContrato = _this.ticketVenta.IdContrato;
-                    //            input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
-                    //            input.IdRuc = _this.ticketVenta.IdRuc;
-                    //            input.NroSolicitud = objVenta.NroSolicitud;
-                    //            input.IdArea = (objVenta.Area ? objVenta.Area.id : 0);
-                    //            input.FlgIda = objVenta.BoletoTipoDir;
-                    //            input.FechaCita = objVenta.FechaCita;
-                    //            input.IdHospital = (objVenta.Hospital ? objVenta.Hospital.id : 0);
-                    //            input.FlagPrecioNormal = objVenta.FlagPrecioNormal;
-                    //            break;;
-                    //        case 'V': // VENTA
-                    //            {
-                    //                if (objVenta.FlagVenta === 'R') {
-                    //                    input.IdVenta = objVenta.IdVenta;
-                    //                    input.FlagVenta = objVenta.FlagVenta;
-                    //                }
-                    //            };
-                    //            break;
-                    //        case 'R': // Reserva
-                    //            input.FechaReservacion = objVenta.FechaReservacion;
-                    //            input.HoraReservacion = objVenta.HoraReservacion;
-                    //            break;
-                    //    }
-                    //    // --------------
-                    //    listado.push(input);
-                    //};
-
-                    //// Seteo 'CantidadVendida'
-                    //var tmpCantidadVendida = _.cloneDeep(listado.length);
-
-                    //// Limpiar 'AsientosBloqueados'
-                    //var auxResponse = await appVueVenta.cancelarBoletos();
-                    //if (!auxResponse) {
-                    //    APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
-                    //    Listado: listado,
-                    //    FlagVenta: _this.$getValuePickedBusVenta()
-                    //})
-                    //    .then(async function (res) {
-                    //        if (res.data.Estado) {
-                    //            appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, tmpCantidadVendida);
-
-                    //            // callSignalR_ActualizarTurnoPlano
-                    //            callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
-                    //        }
-                    //        else {
-                    //            await appController.chargeTurnos();
-                    //            _this.$nextTick(() => {
-                    //                if (res.data.EsCorrecto)
-                    //                    APP.msg.warning(res.data.Mensaje);
-                    //                else
-                    //                    APP.msg.error(res.data.Mensaje);
-                    //            });
-                    //        }
-                    //    })
-                    //    .catch(APP.rq.axios_handler_error_alert);
+                    if (this.errors.any()) {
+                        this.trustedSave = true;
+                        this.close();
+                    }                    
                 },
                 limpiarCampos2: function () {
                     let _this = this;
