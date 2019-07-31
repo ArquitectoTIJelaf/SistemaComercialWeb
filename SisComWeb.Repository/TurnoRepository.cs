@@ -9,21 +9,23 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static ItinerarioEntity BuscarTurno(byte CodiEmpresa, short CodiPuntoVenta, short CodiOrigen, short CodiDestino, short CodiSucursal, short CodiRuta, short CodiServicio, string Hora)
+        public static ItinerarioEntity BuscarTurno(TurnoRequest request)
         {
             var entidad = new ItinerarioEntity();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarTurno";
-                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
-                db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, CodiPuntoVenta);
-                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
-                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
-                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
-                db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, CodiRuta);
-                db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, CodiServicio);
-                db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, Hora);
+                db.ProcedureName = "scwsp_BuscarTurno02";
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, request.CodiEmpresa);
+                db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, request.CodiPuntoVenta);
+                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, request.CodiOrigen);
+                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, request.CodiDestino);
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, request.CodiSucursal);
+                db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, request.CodiRuta);
+                db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, request.CodiServicio);
+                db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, request.HoraViaje);
+
+                db.AddParameter("@FechaViaje", DbType.String, ParameterDirection.Input, request.FechaViaje);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

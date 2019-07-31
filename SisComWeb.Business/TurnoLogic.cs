@@ -15,7 +15,7 @@ namespace SisComWeb.Business
                 var obtenerBus = new BusEntity();
 
                 // Busca Turno
-                var buscarTurno = TurnoRepository.BuscarTurno(request.CodiEmpresa, request.CodiPuntoVenta, request.CodiOrigen, request.CodiDestino, request.CodiSucursal, request.CodiRuta, request.CodiServicio, request.HoraViaje);
+                var buscarTurno = TurnoRepository.BuscarTurno(request);
 
                 // Calcula 'FechaProgramacion'
                 var doubleDias = double.Parse(buscarTurno.Dias.ToString());
@@ -24,15 +24,15 @@ namespace SisComWeb.Business
                 else
                     buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                // Verifica cambios 'TurnoViaje'
-                var verificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
-                if (verificaCambiosTurnoViaje.CodiEmpresa > 0)
-                {
-                    buscarTurno.CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
-                    buscarTurno.NomServicio = verificaCambiosTurnoViaje.NomServicio;
-                    buscarTurno.CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
-                    buscarTurno.RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
-                }
+                //// Verifica cambios 'TurnoViaje'
+                //var verificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
+                //if (verificaCambiosTurnoViaje.CodiEmpresa > 0)
+                //{
+                //    buscarTurno.CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
+                //    buscarTurno.NomServicio = verificaCambiosTurnoViaje.NomServicio;
+                //    buscarTurno.CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
+                //    buscarTurno.RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
+                //}
 
                 // Busca 'ProgramacionViaje'
                 var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
@@ -170,7 +170,7 @@ namespace SisComWeb.Business
                         buscarTurno.ListaPlanoBus = resMuestraPlano.Valor;
                     else
                         return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, true);
-                } 
+                }
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
 
