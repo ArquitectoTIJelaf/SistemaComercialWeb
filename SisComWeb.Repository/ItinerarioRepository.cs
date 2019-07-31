@@ -72,6 +72,7 @@ namespace SisComWeb.Repository
                         entidad.CodiServicio = Reader.GetTinyIntValue(drlector, "Codi_Servicio");
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Servicio");
                         entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
+                        entidad.NomEmpresa = Reader.GetStringValue(drlector, "Empresa");
                         break;
                     }
                 }

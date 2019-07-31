@@ -416,7 +416,7 @@ namespace SisComWeb.Business
                                 // Valida 'DocumentoSUNAT'
                                 var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
 
-                                if (resValidarDocumentoSUNAT != null && resValidarDocumentoSUNAT.Estado)
+                                if (resValidarDocumentoSUNAT != null)
                                 {
                                     if (resValidarDocumentoSUNAT.Estado)
                                     {

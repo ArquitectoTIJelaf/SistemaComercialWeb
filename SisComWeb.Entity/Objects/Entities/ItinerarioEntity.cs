@@ -88,7 +88,6 @@ namespace SisComWeb.Entity
 
         public string X_Estado { get; set; }
 
-
         public string Activo { get; set; }
 
         public short CantidadMaxBloqAsi { get; set; }

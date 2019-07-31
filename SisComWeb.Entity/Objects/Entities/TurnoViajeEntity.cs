@@ -7,5 +7,7 @@
         public string NomServicio { get; set; }
 
         public byte CodiEmpresa { get; set; }
+
+        public string NomEmpresa { get; set; }
     }
 }
