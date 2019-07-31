@@ -1175,6 +1175,7 @@
                     item.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
                     item.HoraPartida = appVueVenta.filtro.Turno;
                     item.FechaViaje = appVueVenta.filtro.Fecha;
+
                     await appVueVenta.getTurno(item, item.FechaViaje);
                 },
                 showTipoPago: function (_embarque, _arribos, _ticketVenta, _listaVenta) {
@@ -1881,6 +1882,7 @@
                     input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = item.FechaViaje;
+
                     var auxValidator = await _this.getCorrelativo(item.CodiEmpresa, _this.pickedBusVenta);
                     // ---------------------------------
                     if (!auxValidator) {
