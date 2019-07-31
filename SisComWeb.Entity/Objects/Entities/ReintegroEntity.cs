@@ -32,6 +32,9 @@
         public byte CodiServicio { get; set; }
         public int CodiError { get; set; }
         public string FechaNac { get; set; }
+        public string CodiBus { get; set; }
+        public int CodiPuntoVenta { get; set; }
+        public string DirEmbarque { get; set; }
     }
 
     public class SelectReintegroEntity

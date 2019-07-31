@@ -202,7 +202,7 @@
                                                     <div class="">
                                                         <input :value="item.boleto"
                                                                class="form-control input-sm"
-                                                               style="background-color:rgb(253, 249, 205);"
+                                                               style="background-color:rgb(213, 255, 213);"
                                                                disabled />
                                                     </div>
                                                 </div>
@@ -360,6 +360,7 @@
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refRERazSoc.focus()"
                                                                :disabled="readOnlyCodiMotivo"
+                                                               v-mask="'#'.repeat(11)"
                                                                ref="refRERuc"/>
                                                         <span @@click=""
                                                               class="fa fa-cloud field-icon fa-fw"

@@ -346,5 +346,6 @@
         public const string MsgExcF12NoExiste = "Boleto no existe";
         public const string MsgNoVentaReintegro = "No se pudo realizar la venta";
         public const string MsgExcVentaReintegro = "Excepción: VentaReintegro.";
+        public const string MsgExcConsultaIgv = "Excepción: ConsultaIgv.";
     }
 }

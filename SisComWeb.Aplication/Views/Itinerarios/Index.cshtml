@@ -20,6 +20,7 @@
     var claveCambioDeNivelDeAsiento = Constant.CLAVE_CAMBIO_DE_NIVEL_DE_ASIENTO;
     var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
     var clavereintegroconfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
+
 }
 
 @Html.Partial("_Filtros")
@@ -5919,7 +5920,7 @@
                             default:
                                 this.sendToAnularVenta(this.itemSelected);
                         }
-                    }  
+                    }
 
                     this.closeMenu();
                 },
@@ -7525,7 +7526,7 @@
 
                         input.NroViaje = appVueVenta.filtro.NroViaje;
                         input.FechaProgramacion = appVueVenta.objTurno.FechaProgramacion;
-                        
+
                         input.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
                         input.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
                         input.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
@@ -8964,7 +8965,8 @@
                     asiento: '',
                     precio: 0,
                     reintegro: '',
-                    fechaNac: ''
+                    fechaNac: '',
+                    stReintegro: ''
                 },
                 list: {
                     rutas: [],
@@ -9052,7 +9054,7 @@
 
                         _this.filtroProgramacion.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
 
-                        _this.list.itinerarios = appVueTable.list.itinerarios;
+                        //_this.list.itinerarios = appVueTable.list.itinerarios;
                     });
                 },
                 searchData: async function () {
@@ -9084,7 +9086,8 @@
                                     _this.item.edad = data.Edad;
                                     _this.item.telefono = data.Telefono;
                                     _this.item.nacionalidad = data.Nacionalidad;
-                                    _this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
+                                    //_this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
+                                    _this.item.boleto = (_this.filtro.tipo === 'F') ? appVueVenta.CorrelativoVentaFactura : appVueVenta.CorrelativoVentaBoleta;
                                     _this.item.venta = data.IdVenta;
                                     _this.item.ruc = data.RucCliente;
                                     _this.item.razonSocial = data.RazonSocial;
@@ -9092,6 +9095,7 @@
                                     _this.item.asiento = data.NumeAsiento;
                                     _this.item.precio = data.PrecioVenta;
                                     _this.item.fechaNac = data.FechaNac;
+                                    //_this.item.stReintegro = (data.FlagVenta === '1') ? 'X' : '';
                                     _this.lockFilters = true;
                                     _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
                                     switch (_this.filtro.codMotivo) {
@@ -9273,6 +9277,7 @@
                     _this.item.direccion = '';
                     _this.item.asiento = '';
                     _this.item.precio = '';
+                    _this.item.stReintegro = '';
                     _this.lockReintegro = false;
                     if (!document.getElementById('VerifBoletoRE').classList.contains("in")) {
                         _this.$nextTick(() => {
@@ -9329,7 +9334,6 @@
                                 document.getElementById('BuscarProgRE').classList.remove("in");
                         });
                     }
-
                 },
                 saveReintegro: async function () {
                     let _this = this;
@@ -9377,26 +9381,144 @@
                                 }
                             }
 
+                            //Confirmar conservar crédito
+                            if (_this.dataOriginal.FlagVenta === '1') {
+                                if (await APP.msg.confirm('El boleto de viaje esta emitido como reintegro', '¿desea emitir el boleto reintegro bajo las misma modalidad?')) {
+                                    _this.item.stReintegro = 'X';
+                                } else {
+                                    _this.item.stReintegro = '';
+                                }
+                            }
+
                             //appController.showTipoPago();
-                            appVueTipoPago2.show([], [], 10, 1, false, false, 1);
+                            appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
+
+                            var checkTipoPago = false;
 
                             await deferredModal($('#appVueTipoPago2'), true).done(function () {
+                                checkTipoPago = false;
                                 window.removeEventListener('keyup', _this.esc);
                             });
 
+                            var input = {};
+
+                            //Código interno de documento
+                            var CodiInternoDocumento = (appVueVenta.CodiTerminalElectronico === 'M') ? '20' : ((appVueVenta.CodiTerminalElectronico === 'F') ? '17' : '16');
+
+                            //Consulta del IGV
+                            var igv = 0;
+                            await APP.rq.axios.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento}))
+                                .then((res) => {
+                                    igv = _.cloneDeep(res.data.Valor);
+                                })
+                                .catch(APP.rq.axios_handler_error_alert);
+
                             await deferredModal($('#appVueTipoPago2'), false).done(function () {
-                                appClaveAutorizacion.$nextTick(() => {
-                                    _this.disabledAceptar = false;
+                                appVueTipoPago2.$nextTick(() => {
+                                    checkTipoPago = appVueTipoPago2.trustedSave;
+                                    if (checkTipoPago) {
+                                        input.Serie = _this.item.boleto.substring(1, 4);
+                                        input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                        input.Codi_Empresa = _this.filtro.codEmpresa;
+                                        input.CODI_SUCURSAL = Usuario.CodiSucursal;
+                                        input.CODI_PROGRAMACION = _this.dataOriginal.CodiProgramacion;
+                                        input.CODI_SUBRUTA = _this.item.destinoPasj;
+                                        input.CODI_Cliente = _this.item.reintegro;
+                                        input.NIT_CLIENTE = _this.item.ruc;
+                                        input.PRECIO_VENTA = _this.item.reintegro;
+                                        input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
+                                        input.FECH_VENTA = moment().format('DD/MM/YYYY');
+                                        input.Recoger = ''; //TODO: Falta implementar
+                                        input.Clav_Usuario = Usuario.CodiUsuario;
+                                        input.Dni = _this.item.numero;
+                                        input.EDAD = _this.item.edad;
+                                        input.TELEF = _this.item.telefono;
+                                        input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
+                                        input.porcentaje = igv;
+                                        input.Codi_Esca = _this.item.boleto;
+                                        input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
+                                        input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
+                                        input.Punto_Venta = Usuario.CodiPuntoVenta;
+                                        input.tipo_doc = _this.item.documento;
+                                        input.codi_ori_psj = _this.item.origenPasj;
+                                        input.Tipo = appVueVenta.CodiTerminalElectronico;
+                                        input.Tipo_Pago = appVueTipoPago2.tipoPago2;
+                                        input.Fecha_viaje = _this.dataOriginal.FechaViaje;
+                                        input.HORA_V = _this.dataOriginal.HoraViaje;
+                                        input.nacionalidad = (_this.item.stReintegro === 'X') ? "R1" : _this.item.nacionalidad;
+                                        input.servicio = _this.dataOriginal.CodiServicio;
+                                        input.Sube_en = _this.dataOriginal.CodiEmbarque;
+                                        input.Baja_en = _this.dataOriginal.CodiArribo;
+                                        input.Hora_Emb = _this.dataOriginal.HoraViaje;
+                                        input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
+                                        input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
+                                        input.CODI_TERMINAL__ = Usuario.Terminal;
+                                        input.Codi_Documento__ = CodiInternoDocumento;
+                                        input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                        input.fecha_venta__ = moment().format('DD/MM/YYYY');
+                                        input.Pventa__ = Usuario.CodiPuntoVenta;
+                                        input.SERIE_BOLETO__ = _this.item.boleto.substring(1, 4);
+                                        input.stReintegro = _this.item.stReintegro;
+                                        input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
+                                        input.NombDestino = _this.$options.filters.rutas(_this.item.destinoPasj);
+                                        input.CodiBus = _this.dataOriginal.CodiBus;
+                                        input.DirEmbarque = _this.dataOriginal.DirEmbarque || rutas.find(x => x.id === _this.dataOriginal.CodiEmbarque).label;
+                                        input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
+                                        input.NomEmpresaRuc = _this.item.razonSocial;
+                                        input.DirEmpresaRuc = _this.item.direccion;
+                                        input.NomUsuario = Usuario.Nombre;
+                                        input.NomOrigen = _this.$options.filters.rutas(_this.item.origenPasj);
+                                        input.id_original = _this.dataOriginal.IdVenta;
+                                        input.CodMotivo = _this.filtro.codMotivo;
+                                        input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto,8,'0')}`;
+                                        input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
+                                        input.T_DNI2 = _this.dataOriginal.Dni;
+                                        input.NOMB2 = _this.dataOriginal.Nombre;
+                                        input.TipoOri = _this.dataOriginal.Tipo;
+
+                                        _this.disabledAceptar = false;
+                                    }
                                     window.addEventListener('keyup', _this.esc);
                                 });
                             });
 
+                            if (checkTipoPago) {
+                                await APP.rq.axios2.post(APP.base + '/reintegro/save-reintegro', input)
+                                    .then(async function (res) {
+                                        debugger;
+                                        if (res.data.Estado) {
+
+                                            _this.close();
+
+                                            appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
+
+                                            _this.disabledAceptar = false;
+
+                                            // callSignalR_ActualizarTurnoPlano
+                                            //callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
+                                        }
+                                        else {
+                                            await appController.chargeTurnos();
+                                            _this.$nextTick(() => {
+                                                if (res.data.EsCorrecto)
+                                                    APP.msg.warning(res.data.Mensaje);
+                                                else
+                                                    APP.msg.error(res.data.Mensaje);
+                                            });
+                                        }
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            } else {
+                                _this.disabledAceptar = false;
+                                return;
+                            }
 
                         }; break;
                         case '00003':
                         case '00004': {}; break;
                         default:
                     }
+                    _this.disabledAceptar = false;
                     //_this.close(); //TODO
                 },
                 anularReintegro: function () {
@@ -9600,6 +9722,34 @@
                         _this.item.servicio && _this.item.fechaVenta && _this.item.horaVenta &&
                         _this.item.boleto && _this.item.venta && _this.item.asiento && _this.item.precio);
                 }
+            },
+            watch: {
+                'item.ruc': function (newVal) {
+                    if (newVal.length === 11) {
+                        switch (appVueVenta.CodiTerminalElectronico) {
+                            case 'M':
+                                {
+                                    if (appVueVenta.CorrelativoVentaFactura === '0000-00000000')
+                                        this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
+                                    else
+                                        this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaFactura);
+                                };
+                                break;
+                            case 'E':
+                                {
+                                    this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaFactura);
+
+                                    if (this.item.boleto === 'F000-00000000')
+                                        APP.msg.error('No se encontró serie para el boleto.');
+                                };
+                                break;
+                        }
+                    }
+                    else {
+                        if (newVal.length === 0)
+                            this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
+                    }
+                }
             }
         });
 
@@ -9708,7 +9858,8 @@
                 processing2: false,
                 disabledTipoPago2: false,
                 showEmbarqueArribo: true,
-                origin: 0
+                origin: 0,
+                trustedSave: false
             },
             mounted: function () {
                 this.getTipoPago2();
@@ -9724,7 +9875,7 @@
                     this.cantAsientos2 = (cantidad !== null) ? cantidad : 0;
                     this.disabledTipoPago2 = (disabledTipoPago !== null) ? disabledTipoPago : false;
                     this.showEmbarqueArribo = (showEmbarqueArribo !== null) ? disabledTipoPago : true;
-                    this.origin = (codeOrigin !== null) ? codeOrigin: 0;
+                    this.origin = (codeOrigin !== null) ? codeOrigin : 0;
                     this.$nextTick(() => {
                         $('#appVueTipoPago2').modal('show');
                     });
@@ -9757,6 +9908,8 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta2: async function () {
+                    this.trustedSave = true;
+                    this.close();
                     //var _this = this;
 
                     //// Valida recorrido del modal 'Tipo pago'
@@ -9976,6 +10129,7 @@
                     _this.processing2 = false;
                     _this.disabledTipoPago2 = false;
                     _this.origin = 0;
+                    _this.trustedSave = false;
                 },
                 recorridoSectionTipoPagos2: function (auxValidate) {
                     let _this = this;
@@ -10113,7 +10267,7 @@
                             return auxResponse;
                         }; break;
                         default: return true;
-                    }                    
+                    }
                 },
                 getLabelEmbarqueArribo2: function (option) {
                     return `${option.Lugar} - ${option.Hora}`

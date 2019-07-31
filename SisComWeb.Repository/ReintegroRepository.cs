@@ -48,7 +48,8 @@ namespace SisComWeb.Repository
                             Edad = Reader.GetByteValue(drlector, "EDAD"),
                             Telefono = Reader.GetStringValue(drlector, "TELEFONO"),
                             Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad"),
-                            Tipo = Reader.GetStringValue(drlector, "TIPO")
+                            Tipo = Reader.GetStringValue(drlector, "TIPO"),
+                            CodiPuntoVenta = Reader.GetIntValue(drlector, "Punto_Venta")
                         };
                     }
                 }
@@ -136,7 +137,8 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr";
+                //db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr";
+                db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr_Rei";
                 db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, filtro.Serie);
                 db.AddParameter("@NUME_BOLETO", DbType.Int32, ParameterDirection.Input, filtro.nume_boleto);
                 db.AddParameter("@CODI_EMPRESA", DbType.Int32, ParameterDirection.Input, filtro.Codi_Empresa);
@@ -157,7 +159,7 @@ namespace SisComWeb.Repository
                 db.AddParameter("@NOMBRE", DbType.String, ParameterDirection.Input, filtro.NOMB);
                 db.AddParameter("@CODI_ESCA", DbType.String, ParameterDirection.Input, filtro.Codi_Esca);
                 db.AddParameter("@Punto_Venta", DbType.String, ParameterDirection.Input, filtro.Punto_Venta);
-                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, filtro.tipo_doc);
+                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, (filtro.tipo_doc).PadLeft(2, '0'));
                 db.AddParameter("@cod_origen", DbType.String, ParameterDirection.Input, filtro.codi_ori_psj);
                 db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, filtro.Tipo);
                 db.AddParameter("@PER_AUTORIZA", DbType.String, ParameterDirection.Input, filtro.per_autoriza);
@@ -179,9 +181,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@hora_em", DbType.String, ParameterDirection.Input, filtro.Hora_Emb);
                 db.AddParameter("@nivel", DbType.Int16, ParameterDirection.Input, filtro.nivel);
                 db.AddParameter("@numero_C", DbType.String, ParameterDirection.Input, filtro.NUME_CORRELATIVO__);
-                db.AddParameter("@pventa_C", DbType.String, ParameterDirection.Input, (filtro.Pventa__).PadLeft(3,'0'));
-                db.AddParameter("@codi_Empresa_C", DbType.String, ParameterDirection.Input, filtro.Codi_Empresa__);
-                db.AddParameter("@terminal_C", DbType.String, ParameterDirection.Input, filtro.CODI_TERMINAL__);
+                db.AddParameter("@pventa_C", DbType.String, ParameterDirection.Input, (filtro.Pventa__).PadLeft(3, '0'));
+                db.AddParameter("@codi_Empresa_C", DbType.String, ParameterDirection.Input, (filtro.Codi_Empresa__).PadLeft(2, '0'));
+                db.AddParameter("@terminal_C", DbType.String, ParameterDirection.Input, (filtro.CODI_TERMINAL__).PadLeft(3, '0'));
                 db.AddParameter("@doc_C", DbType.String, ParameterDirection.Input, filtro.Codi_Documento__);
                 db.AddParameter("@SERIE_C", DbType.String, ParameterDirection.Input, filtro.SERIE_BOLETO__);
                 db.AddParameter("@TIPO_TRANS", DbType.String, ParameterDirection.Input, filtro.Sw_IngManual);
@@ -196,11 +198,39 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Flg_Ida_cr", DbType.String, ParameterDirection.Input, "0");
                 db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, "01/01/1900");
                 db.AddParameter("@Id_hospital", DbType.String, ParameterDirection.Input, "0");
+                db.AddParameter("@id_original", DbType.Int32, ParameterDirection.Input, filtro.id_original);
+                db.AddParameter("@motivo_nombre", DbType.String, ParameterDirection.Input, filtro.NomMotivo);
+                db.AddParameter("@Motivo_id", DbType.String, ParameterDirection.Input, filtro.CodMotivo);
+                db.AddParameter("@boleto_original", DbType.String, ParameterDirection.Input, filtro.boleto_original);
+                db.AddParameter("@Tipo_Doc_id2", DbType.Int32, ParameterDirection.Input, filtro.D_DOCUMENTO2);
+                db.AddParameter("@Numero_Doc2", DbType.String, ParameterDirection.Input, filtro.T_DNI2);
+                db.AddParameter("@NOMBRE2", DbType.String, ParameterDirection.Input, filtro.NOMB2);
+                db.AddParameter("@TipoOri", DbType.String, ParameterDirection.Input, filtro.TipoOri);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
                     {
                         response = Reader.GetIntValue(drlector, "ID_VENTA");
+                    }
+                }
+            }
+            return response;
+        }
+        
+        //Consulta IGV con el tipo de documento ('16','17')
+        public static decimal ConsultarIgv(string TipoDoc)
+        {
+            decimal response = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Igv_Trae";
+                db.AddParameter("@TDOC", DbType.Int16, ParameterDirection.Input, TipoDoc);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        response = Reader.GetDecimalValue(drlector, "COD_EMP");
                     }
                 }
             }
