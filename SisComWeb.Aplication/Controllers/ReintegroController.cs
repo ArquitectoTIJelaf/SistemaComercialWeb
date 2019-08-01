@@ -152,6 +152,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"T_DNI2\" : \"" + filtro.T_DNI2 + "\"" +
                                     ",\"NOMB2\" : \"" + filtro.NOMB2 + "\"" +
                                     ",\"TipoOri\" : \"" + (filtro.TipoOri ?? "0") + "\"" +
+                                    ",\"CodiTarjetaCredito\" : \"" + (filtro.CodiTarjetaCredito ?? "") + "\"" +
+                                    ",\"NumeTarjetaCredito\" : \"" + (filtro.NumeTarjetaCredito ?? "") + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("SaveReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

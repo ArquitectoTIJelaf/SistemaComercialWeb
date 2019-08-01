@@ -347,5 +347,6 @@
         public const string MsgNoVentaReintegro = "No se pudo realizar la venta";
         public const string MsgExcVentaReintegro = "Excepción: VentaReintegro.";
         public const string MsgExcConsultaIgv = "Excepción: ConsultaIgv.";
+        public const string MsgExcConsultaPrecioRuta = "Excepción: ConsultaPrecioRuta.";
     }
 }

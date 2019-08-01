@@ -156,7 +156,8 @@ namespace SisComWeb.Business
                     CodiTerminal = filtro.CODI_TERMINAL__,
                     CodiBus = filtro.CodiBus,
                     CodiEmbarque = short.Parse(filtro.Sube_en),
-                    Nombre = filtro.NOMB
+                    Nombre = filtro.NOMB,
+                    TipoPago = filtro.Tipo_Pago
                 };
 
                 // Seteo 'CodiDocumento'
@@ -257,6 +258,87 @@ namespace SisComWeb.Business
                         };
                         //Graba Auditoria
                         VentaRepository.GrabarAuditoria(objAuditoria);
+
+                        // Valida 'TipoPago'
+                        switch (entidad.TipoPago)
+                        {
+                            case "02": // Múltiple pago
+                            case "03": // Tarjeta de crédito    
+                                {
+                                    //  Genera 'CorrelativoAuxiliar'
+                                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
+                                    if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+
+                                    var auxBoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+
+                                    var auxCodiDestino = (filtro.CodMotivo.Equals("00003") || filtro.CodMotivo.Equals("00004")) ? filtro.CODI_SUBRUTA : "";
+
+                                    // Graba 'Caja'
+                                    var objCajaEntity = new CajaEntity
+                                    {
+                                        NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
+                                        CodiEmpresa = entidad.CodiEmpresa,
+                                        CodiSucursal = entidad.CodiOficina,
+                                        FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                        TipoVale = "S",
+                                        Boleto = auxBoletoCompleto.Substring(1),
+                                        NomUsuario = filtro.NomUsuario,
+                                        CodiBus = string.Empty,
+                                        CodiChofer = string.Empty,
+                                        CodiGasto = string.Empty,
+                                        ConcCaja = auxBoletoCompleto.Substring(1),
+                                        Monto = entidad.PrecioVenta,
+                                        CodiUsuario = entidad.CodiUsuario,
+                                        IndiAnulado = "F",
+                                        TipoDescuento = string.Empty,
+                                        TipoDoc = "XX",
+                                        TipoGasto = "P",
+                                        Liqui = 0M,
+                                        Diferencia = 0M,
+                                        Recibe = string.Empty,
+                                        CodiDestino = auxCodiDestino,
+                                        FechaViaje = entidad.FechaViaje,
+                                        HoraViaje = entidad.HoraViaje,
+                                        CodiPuntoVenta = entidad.CodiPuntoVenta,
+                                        Voucher = "PA",
+                                        Asiento = string.Empty,
+                                        Ruc = "N",
+                                        IdVenta = entidad.IdVenta,
+                                        Origen = "MT",
+                                        Modulo = "PM",
+                                        Tipo = entidad.Tipo,
+
+                                        IdCaja = 0
+                                    };
+
+                                    var grabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
+                                    if (grabarCaja > 0)
+                                    {
+                                        // Seteo 'NumeCaja'
+                                        var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
+
+                                        // Graba 'PagoTarjetaCredito'
+                                        var objTarjetaCreditoEntity = new TarjetaCreditoEntity
+                                        {
+                                            IdVenta = entidad.IdVenta,
+                                            Boleto = auxBoletoCompleto.Substring(1),
+                                            CodiTarjetaCredito = filtro.CodiTarjetaCredito,
+                                            NumeTarjetaCredito = filtro.NumeTarjetaCredito,
+                                            Vale = auxNumeCaja,
+                                            IdCaja = grabarCaja,
+                                            Tipo = entidad.Tipo
+                                        };
+                                        var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
+                                        if (!grabarPagoTarjetaCredito)
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
+                                    }
+                                    else
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarCaja, false);
+                                };
+                                break;
+                        };
+
 
                         if (filtro.stReintegro.Equals("X"))
                         {
@@ -375,6 +457,28 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
+            }
+        }
+
+        public static Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
+        {
+            try
+            {
+                // Obtiene 'PrecioAsiento'
+                var obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, request.Nivel);
+
+                // En caso de no encontrar resultado
+                if (obtenerPrecioAsiento.PrecioNormal == 0 && obtenerPrecioAsiento.PrecioMinimo == 0 && obtenerPrecioAsiento.PrecioMaximo == 0)
+                {
+                    obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, string.Empty, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, request.Nivel);
+                }
+
+                return new Response<PlanoEntity>(true, obtenerPrecioAsiento, string.Empty, true); ;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<PlanoEntity>(false, null, Message.MsgExcConsultaPrecioRuta, false);
             }
         }
     }

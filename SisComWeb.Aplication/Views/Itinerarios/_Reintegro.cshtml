@@ -181,7 +181,7 @@
                                                     <div class="">
                                                         <input :value="item.fechaVenta"
                                                                class="form-control input-sm"
-                                                               style="background-color:rgb(253, 249, 205);"
+                                                               style="background-color:rgb(253, 249, 205); padding: 5px;"
                                                                disabled />
                                                     </div>
                                                 </div>
@@ -653,62 +653,92 @@
                                                                 background-color: #E4E7EA;">BUSCAR ASIENTO</span>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3 separate-in-form">
-                                                <label class="control-label label-sm">Nuevo Destino Pasajero:</label>
-                                                <div class="">
-                                                    <v-select v-model="filtroCodiNuevoDestino"
-                                                              :options="list.destinosPas"
-                                                              :placeholder="'DESTINO'"
-                                                              :select-on-tab="true"
-                                                              :get-option-label="getLabel"
-                                                              @@keydown.13.native.prevent="$refs.refREDifPrecio.focus()"
-                                                              ref="refREDestinoNew">
-                                                        <template slot="option" slot-scope="option">
-                                                            <div @@click="$refs.refREDifPrecio.focus()">{{ option.id }} - {{ option.label }}</div>
-                                                        </template>
-                                                        <span slot="no-options" class="text-danger">No hay resultados</span>
-                                                    </v-select>
+                                            <div class="col-md-10 p-0">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-3 separate-in-form">
+                                                        <label class="control-label label-sm">Nuevo Destino Pasajero:</label>
+                                                        <div class="">
+                                                            <v-select v-model="filtroCodiNuevoDestino"
+                                                                      :options="list.destinosPas"
+                                                                      :placeholder="'DESTINO'"
+                                                                      :select-on-tab="true"
+                                                                      :get-option-label="getLabel"
+                                                                      @@keydown.13.native.prevent="$refs.refREDifPrecio.focus()"
+                                                                      ref="refREDestinoNew">
+                                                                <template slot="option" slot-scope="option">
+                                                                    <div @@click="$refs.refREDifPrecio.focus()">{{ option.id }} - {{ option.label }}</div>
+                                                                </template>
+                                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                            </v-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-xs-6 separate-in-form">
+                                                        <label class="control-label label-sm">Nueva Fecha:</label>
+                                                        <div class="">
+                                                            <input :value="filtroCambio.Fecha"
+                                                                   class="form-control input-sm"
+                                                                   placeholder="DD/MM/YYYY"
+                                                                   disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2 col-xs-6 separate-in-form">
+                                                        <label class="control-label label-sm">Nueva Hora:</label>
+                                                        <div class="">
+                                                            <input :value="filtroCambio.Hora"
+                                                                   class="form-control input-sm"
+                                                                   placeholder="HH:MM AM"
+                                                                   disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3 p-0"></div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-2 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Nueva Fecha:</label>
-                                                <div class="">
-                                                    <input :value="filtroCambio.Fecha"
-                                                           class="form-control input-sm"
-                                                           placeholder="DD/MM/YYYY"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-2 col-xs-6 separate-in-form">
-                                                <label class="control-label label-sm">Nueva Hora:</label>
-                                                <div class="">
-                                                    <input :value="filtroCambio.Hora"
-                                                           class="form-control input-sm"
-                                                           placeholder="HH:MM AM"
-                                                           disabled />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3 p-0">
-                                                <div class="col-md-6 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Monto Real:</label>
-                                                    <div class="">
-                                                        <input :value="filtroCambio.MontoReal"
-                                                               class="form-control input-sm"
-                                                               disabled/>
+                                                <div class="col-md-12">
+                                                    <div class="col-md-4 p-0">
+                                                        <div class="col-md-6 col-xs-6 separate-in-form">
+                                                            <label class="control-label label-sm">Monto Real:</label>
+                                                            <div class="">
+                                                                <input :value="filtroCambio.MontoReal"
+                                                                       class="form-control input-sm"
+                                                                       disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-xs-6 separate-in-form">
+                                                            <label class="control-label label-sm">Diferencia de Precio:</label>
+                                                            <div class="">
+                                                                <input :value="filtroCambio.DiferenciaPrecio"
+                                                                       class="form-control input-sm"
+                                                                       @@keydown.13.prevent=""
+                                                                       @@focus="$event.target.select()"
+                                                                       @@blur="filtroCambio.DiferenciaPrecio = (filtroCambio.DiferenciaPrecio) ? parseFloat(filtroCambio.DiferenciaPrecio).toFixed(2) : ''"
+                                                                       readonly
+                                                                       ref="refREDifPrecio" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 p-0">
+                                                        <div class="col-md-6 col-xs-6 separate-in-form">
+                                                            <label class="control-label label-sm">Monto Real:</label>
+                                                            <div class="">
+                                                                <input :value="filtroCambio.MontoReal"
+                                                                       class="form-control input-sm"
+                                                                       disabled />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-xs-6 separate-in-form">
+                                                            <label class="control-label label-sm">Diferencia de Precio:</label>
+                                                            <div class="">
+                                                                <input :value="filtroCambio.DiferenciaPrecio"
+                                                                       class="form-control input-sm"
+                                                                       @@keydown.13.prevent=""
+                                                                       @@focus="$event.target.select()"
+                                                                       @@blur="filtroCambio.DiferenciaPrecio = (filtroCambio.DiferenciaPrecio) ? parseFloat(filtroCambio.DiferenciaPrecio).toFixed(2) : ''"
+                                                                       readonly
+                                                                       ref="refREDifPrecio" />
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-xs-6 separate-in-form">
-                                                    <label class="control-label label-sm">Diferencia de Precio:</label>
-                                                    <div class="">
-                                                        <input v-model="filtroCambio.DiferenciaPrecio"
-                                                               class="form-control input-sm"
-                                                               @@keydown.13.prevent=""
-                                                               @@focus="$event.target.select()"
-                                                               @@blur="filtroCambio.DiferenciaPrecio = (filtroCambio.DiferenciaPrecio) ? parseFloat(filtroCambio.DiferenciaPrecio).toFixed(2) : ''"
-                                                               ref="refREDifPrecio"/>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </div>                                            
                                         </div>
                                     </div>
                                 </div>

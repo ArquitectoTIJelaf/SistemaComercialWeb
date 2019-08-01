@@ -127,5 +127,7 @@ namespace SisComWeb.Aplication.Models
         public string T_DNI2 { get; set; }
         public string NOMB2 { get; set; }
         public string TipoOri { get; set; }
+        public string CodiTarjetaCredito { get; set; }
+        public string NumeTarjetaCredito { get; set; }
     }
 }
