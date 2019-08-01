@@ -10,6 +10,8 @@
 
         public string CorrelativoPaseFactura { get; set; }
 
+        public string CorrelativoCredito { get; set; }
+
         public string CodiTerminalElectronico { get; set; }
     }
 }

@@ -346,6 +346,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+
+                                    ",\"CodiPvUsuario\" : " + usuario.CodiPuntoVenta +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -843,6 +845,8 @@ namespace SisComWeb.Aplication.Controllers
 
                                     ",\"FechaReservacion\" : \"" + (Listado[i].FechaReservacion ?? string.Empty) + "\"" +
                                     ",\"HoraReservacion\" : \"" + (Listado[i].HoraReservacion ?? string.Empty).Replace(" ", "") + "\"" +
+
+                                    ",\"HoraEscala\" : \"" + (Listado[i].HoraEscala ?? string.Empty).Replace(" ", "") + "\"" +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -919,7 +923,8 @@ namespace SisComWeb.Aplication.Controllers
                         CorrelativoVentaBoleta = (string)data["CorrelativoVentaBoleta"],
                         CorrelativoVentaFactura = (string)data["CorrelativoVentaFactura"],
                         CorrelativoPaseBoleta = (string)data["CorrelativoPaseBoleta"],
-                        CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"]
+                        CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"],
+                        CorrelativoCredito = (string)data["CorrelativoCredito"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
