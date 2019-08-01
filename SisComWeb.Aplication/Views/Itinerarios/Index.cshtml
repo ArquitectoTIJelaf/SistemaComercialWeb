@@ -9421,6 +9421,25 @@
                         });
                     }
                 },
+                consultaPrecioRuta: function () {
+                    //consulta-precio-ruta
+                    let _this = this;
+                    var input = {};
+                    input.CodiOrigen = 0;
+                    input.CodiDestino = 0;
+                    input.HoraViaje = '';
+                    input.FechaViaje = '';
+                    input.CodiServicio = 0;
+                    input.CodiEmpresa = 0;
+                    input.Nivel = '';
+                    await APP.rq.axios2.post(APP.base + '/reintegro/consulta-precio-ruta', innput)
+                        .then((res) => {
+                            if (res.data.EsCorrecto) {
+                                var data = _.cloneDeep(res.data.Valor);
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 saveReintegro: async function () {
                     let _this = this;
                     _this.disabledAceptar = true;

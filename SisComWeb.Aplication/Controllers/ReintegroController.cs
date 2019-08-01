@@ -217,5 +217,53 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("consulta-precio-ruta")]
+        public async Task<ActionResult> ConsultarPrecioRuta(PrecioRuta filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                    ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                    ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"Nivel\" : \"" + filtro.Nivel + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultarPrecioRuta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Plano> res = new Response<Plano>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Plano
+                    {
+                        PrecioNormal = (decimal)data["PrecioNormal"],
+                        PrecioMinimo = (decimal)data["PrecioMinimo"],
+                        PrecioMaximo = (decimal)data["PrecioMaximo"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
