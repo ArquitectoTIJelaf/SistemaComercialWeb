@@ -195,9 +195,10 @@ namespace SisComWeb.Aplication.Models
 
         // RESERVA
         public int IdVenta { get; set; }
-
         public string FechaReservacion { get; set; }
         public string HoraReservacion { get; set; }
+
+        public string HoraEscala { get; set; } // Para eliminar las reservas de manera escalonada
     }
 
     public class VentaResponse

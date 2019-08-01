@@ -139,11 +139,19 @@ namespace SisComWeb.Business
                 // Lista 'PuntosArribo'
                 buscarTurno.ListaArribos = TurnoRepository.ListarPuntosArribo(buscarTurno.CodiOrigen, buscarTurno.CodiDestino, buscarTurno.CodiServicio, buscarTurno.CodiEmpresa, buscarTurno.CodiPuntoVenta, buscarTurno.HoraPartida);
 
-                // Elimina 'Reservas'
+                // Elimina 'Reservas' por escala
                 if (buscarTurno.CodiProgramacion > 0)
                 {
-                    TurnoRepository.EliminarReservas02(buscarTurno.CodiOrigen.ToString(), buscarTurno.CodiProgramacion, buscarTurno.HoraPartida, buscarTurno.FechaViaje);
-                    TurnoRepository.EliminarReservas01(buscarTurno.CodiProgramacion, buscarTurno.HoraPartida);
+                    var auxHora = string.Empty;
+
+                    var objPuntoEmbarque = buscarTurno.ListaEmbarques.Find(x => x.CodiPuntoVenta == request.CodiPvUsuario);
+                    if (objPuntoEmbarque != null)
+                        auxHora = objPuntoEmbarque.Hora;
+                    else
+                        auxHora = buscarTurno.HoraPartida;
+
+                    TurnoRepository.EliminarReservas02(buscarTurno.CodiOrigen.ToString(), buscarTurno.CodiProgramacion, auxHora, buscarTurno.FechaViaje);
+                    TurnoRepository.EliminarReservas01(buscarTurno.CodiProgramacion, auxHora);
                 }
 
                 // Lista 'PlanoBus'

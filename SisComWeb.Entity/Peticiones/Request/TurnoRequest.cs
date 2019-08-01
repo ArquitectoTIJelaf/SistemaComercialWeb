@@ -19,5 +19,8 @@
         public string HoraViaje { get; set; }
 
         public string FechaViaje { get; set; }
+
+
+        public short CodiPvUsuario { get; set; }
     }
 }

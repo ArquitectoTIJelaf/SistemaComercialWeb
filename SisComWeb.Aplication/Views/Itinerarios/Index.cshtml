@@ -47,6 +47,23 @@
 @section styles{
     <style type="text/css">
 
+        /*.btn-mini-ticket {
+            background-color: #1e4672;
+            border-color: #1e4672;
+        }*/
+
+        .btn-mini-ticket:focus {
+            opacity: 0.3;
+        }
+
+        .btn-mini-ticket:hover {
+            opacity: 0.6;
+        }
+
+        .btn:focus {
+            opacity: 0.6;
+        }
+
         #right-click-menu {
             background: #FAFAFA;
             border: 1px solid #BDBDBD;
@@ -1825,6 +1842,7 @@
                 CorrelativoVentaFactura: '',
                 CorrelativoPaseBoleta: '',
                 CorrelativoPaseFactura: '',
+                CorrelativoCredito: '',
                 CodiTerminalElectronico: '',
                 // ContextMenu
                 showContextMenu: false,
@@ -3267,12 +3285,13 @@
                                                 case 'E':
                                                     this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
                                                     break;
-                                            }
+                                            };
                                         };
                                         break;
                                     default:
                                         this.CorrelativoVentaBoleta = res.data.Valor.CorrelativoVentaBoleta;
                                         this.CorrelativoVentaFactura = res.data.Valor.CorrelativoVentaFactura;
+                                        this.CorrelativoCredito = res.data.Valor.CorrelativoCredito;
 
                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                 }
@@ -3285,6 +3304,7 @@
                                 this.CorrelativoVentaFactura = '';
                                 this.CorrelativoPaseBoleta = '';
                                 this.CorrelativoPaseFactura = '';
+                                this.CorrelativoCredito = '';
                                 this.CodiTerminalElectronico = '';
 
                                 APP.msg.warning(res.data.Mensaje);
@@ -4266,22 +4286,24 @@
                         return auxValidate = false;
                     }
 
-                    if (_asientoSel.CodiPuntoVenta !== Usuario.CodiPuntoVenta || _asientoSel.CodiSucursal !== Usuario.CodiSucursal) {
+                    if (appController.validatePanel('148') === '1') {
+                        if (_asientoSel.CodiPuntoVenta !== Usuario.CodiPuntoVenta || _asientoSel.CodiSucursal !== Usuario.CodiSucursal) {
 
-                        ClaveCancelarReserva = await this.verificaClaveTbClaveRe(Usuario.CodiUsuario);
+                            ClaveCancelarReserva = await this.verificaClaveTbClaveRe(Usuario.CodiUsuario);
 
-                        if (ClaveCancelarReserva) {
-                            var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                                `Cancelar reserva`
-                                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                                , ClaveCancelarReserva);
+                            if (ClaveCancelarReserva) {
+                                var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                    `Cancelar reserva`
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClaveCancelarReserva);
 
-                            ClaveCancelarReserva = '';
+                                ClaveCancelarReserva = '';
 
-                            if (resConfirmClaveAutorizacion)
-                                return auxValidate;
-                            else
-                                return auxValidate = false;
+                                if (resConfirmClaveAutorizacion)
+                                    return auxValidate;
+                                else
+                                    return auxValidate = false;
+                            }
                         }
                     }
 
@@ -5841,6 +5863,20 @@
 
                     return auxResponse;
                 },
+                bgcMiniTicket: function (_NroAsiento) {
+                    if (this.list.ventas[this.indexVenta].NroAsiento === _NroAsiento)
+                        return { 'background-color': 'var(--emp-color)', 'border-color': 'var(--emp-color)' };
+                    else
+                        return { 'background-color': '#1e4672', 'border-color': '#1e4672' };
+                },
+                bgcEnlaceTurnos: function (_HoraPartida, _NomServicio) {
+                    if (this.filtro.CodiServicio) {
+                        if (this.filtro.Turno === _HoraPartida && this.filtro.CodiServicio.label === _NomServicio)
+                            return { 'color': 'var(--emp-color)' };
+                        else
+                            return { 'color': '#1e4672' };
+                    }
+                },
                 openMenu: function (e, _item) {
                     if (_item.IdVenta) {
                         // Animación 'ScrollTop'
@@ -6254,10 +6290,23 @@
                                     switch (this.CodiTerminalElectronico) {
                                         case 'M':
                                             {
-                                                if (this.CorrelativoVentaFactura === '0000-00000000')
-                                                    this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                var auxCorrelativoCredito = '0000-00000000';
+
+                                                if (appController.validatePanel('105') === '1') {
+                                                    if (this.pickedBusVenta !== '1') {
+                                                        if (appController.validatePanel('145') === '1')
+                                                            auxCorrelativoCredito = _.cloneDeep(this.CorrelativoCredito);
+                                                    }
+                                                }
+
+                                                if (auxCorrelativoCredito === '0000-00000000') {
+                                                    if (this.CorrelativoVentaFactura === '0000-00000000')
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
+                                                    else
+                                                        this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+                                                }
                                                 else
-                                                    this.Correlativo = _.cloneDeep(this.CorrelativoVentaFactura);
+                                                    this.Correlativo = _.cloneDeep(auxCorrelativoCredito);
                                             };
                                             break;
                                         case 'E':
@@ -6268,7 +6317,7 @@
                                                     APP.msg.error('No se encontró serie para el boleto.');
                                             };
                                             break;
-                                    }
+                                    };
                                 }
                                 else {
                                     if (newVal.length === 0)
@@ -6552,6 +6601,13 @@
                                     if (objVenta.FlagVenta === 'R') {
                                         input.IdVenta = objVenta.IdVenta;
                                         input.FlagVenta = objVenta.FlagVenta;
+
+                                        // Calcula 'HoraEscala' para eliminar reservas por escala
+                                        var objPuntoEmbarque = _.find(_this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
+                                        if (objPuntoEmbarque)
+                                            input.HoraEscala = objPuntoEmbarque.Hora;
+                                        else
+                                            input.HoraEscala = _this.ticketVenta.HoraViaje;
                                     }
                                 };
                                 break;

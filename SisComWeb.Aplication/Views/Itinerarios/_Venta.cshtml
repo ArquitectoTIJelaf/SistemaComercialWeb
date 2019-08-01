@@ -124,7 +124,7 @@
                                 <div class="panel-action">
                                     <button type="button"
                                             id="btnDesplegar"
-                                            class="btn btn-default btn-sm waves-effect waves-light btn-emp"
+                                            class="btn btn-sm waves-effect waves-light btn-emp"
                                             style="color: #fff; font-weight: 400;padding: 0px 10px 1px 10px;"
                                             href="#"
                                             data-perform="panel-collapse"
@@ -304,8 +304,9 @@
                                                 <ul style="list-style-type: none; padding-left: 0;">
                                                     <li v-for="item in list.turnos">
                                                         <a @@click="changeTurno(item)"
-                                                           style="cursor:pointer;font-weight: 500; color: var(--emp-color); "
-                                                           :title="item.HoraPartida + ' - ' + item.NomServicio">
+                                                           :title="item.HoraPartida + ' - ' + item.NomServicio"
+                                                           style="cursor:pointer; font-weight: 500; color: var(--emp-color); "
+                                                           :style="bgcEnlaceTurnos(item.HoraPartida, item.NomServicio)">
                                                             {{item.HoraPartida}}  -  {{item.NomServicio}}
                                                         </a>
                                                     </li>
@@ -1243,7 +1244,11 @@
                             <div @@click="navButtonsBottomTicketsVenta(index)"
                                  v-for="(item, index) in list.ventas"
                                  style="display: inline-block; vertical-align: middle; margin-right: 5px;">
-                                <span class="label label-rouded btn-emp" style="cursor: pointer;">{{item.NroAsiento}}</span>
+                                <span class="label label-rouded btn-mini-ticket"
+                                      style="cursor: pointer;"
+                                      :style="bgcMiniTicket(item.NroAsiento)">
+                                    {{item.NroAsiento}}
+                                </span>
                             </div>
                         </div>
                     </div>
