@@ -1130,6 +1130,19 @@ namespace SisComWeb.Services
                 return new Response<PlanoEntity>(false, null, Message.MsgExcConsultaPrecioRuta, false);
             }
         }
+        
+        public Response<bool> UpdateReintegro(UpdateReintegroRequest filtro)
+        {
+            try
+            {
+                return ReintegroLogic.UpdateReintegro(filtro);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, "", false);
+            }
+        }
         #endregion
     }
 }

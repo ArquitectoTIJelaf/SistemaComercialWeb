@@ -394,6 +394,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultarPrecioRuta", ResponseFormat = WebMessageFormat.Json)]
         Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdateReintegro", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> UpdateReintegro(UpdateReintegroRequest filtro);
         #endregion
     }
 }

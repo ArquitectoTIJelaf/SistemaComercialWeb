@@ -130,10 +130,18 @@ namespace SisComWeb.Business
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
 
                 SetInvoiceRequestBody bodyDocumentoSUNAT = null;
-                       
+
+                // Modifica Empresa por Panel 223
+                var objModificaEmpresa = ListarPanelControl.Find(x => x.CodiPanel == "223");
+                if (objModificaEmpresa != null && objModificaEmpresa.Valor == "1")
+                {
+                    var NuevoCodiEmpresa = ReintegroRepository.ConsultaEmpresaPVentaYServicio(Convert.ToInt32(filtro.Punto_Venta), Convert.ToInt32(filtro.servicio));
+                    filtro.Codi_Empresa__ = (NuevoCodiEmpresa == 0) ? filtro.Codi_Empresa : Convert.ToString(NuevoCodiEmpresa);
+                }
+
                 var entidad = new VentaEntity()
                 {
-                    CodiEmpresa = byte.Parse(filtro.Codi_Empresa__),
+                    CodiEmpresa = byte.Parse(filtro.Codi_Empresa__), //verificar
                     UserWebSUNAT = UserWebSUNAT,
                     TipoDocumento = filtro.tipo_doc,
                     RucCliente = filtro.NIT_CLIENTE,
@@ -177,12 +185,12 @@ namespace SisComWeb.Business
                 switch (validarTerminalElectronico.Tipo)
                 {
                     case "M":
-                        entidad.Tipo = "M";                        
+                        entidad.Tipo = "M";
                         var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "145");
                         if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
                         {
                             entidad.AuxCodigoBF_Interno = "20";
-                        }                            
+                        }
                         break;
                     case "E":
                         {
@@ -225,6 +233,8 @@ namespace SisComWeb.Business
                 if (!filtro.Tipo.Equals("M"))
                     resValidarDocumentoSUNAT = VentaLogic.ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
 
+
+
                 if (resValidarDocumentoSUNAT != null || filtro.Tipo.Equals("M"))
                 {
                     //Graba Reintegro
@@ -241,8 +251,8 @@ namespace SisComWeb.Business
                             NomUsuario = filtro.NomUsuario,
                             Tabla = "VENTA",
                             TipoMovimiento = "BOL-REINTEGRO",
-                            Boleto = filtro.nume_boleto,
-                            NumeAsiento = filtro.NUMERO_ASIENTO.PadLeft(2, '0'),
+                            Boleto = filtro.BoletoAuditoria,
+                            NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
                             NomOficina = filtro.NomSucursal,
                             NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),
                             Pasajero = filtro.NOMB,
@@ -252,7 +262,7 @@ namespace SisComWeb.Business
                             Precio = (decimal)filtro.PRECIO_VENTA,
                             Obs1 = "REINTEGRO DE PASAJES",
                             Obs2 = filtro.CODI_PROGRAMACION,
-                            Obs3 = "BOL-" + filtro.nume_boleto,
+                            Obs3 = "BOL-" + filtro.Serie + "-" + filtro.nume_boleto,
                             Obs4 = filtro.NomMotivo,
                             Obs5 = string.Empty
                         };
@@ -348,8 +358,8 @@ namespace SisComWeb.Business
                                 NomUsuario = filtro.NomUsuario,
                                 Tabla = "VENTA",
                                 TipoMovimiento = "BOL-REI-CRE",
-                                Boleto = filtro.nume_boleto,
-                                NumeAsiento = filtro.NUMERO_ASIENTO.PadLeft(2, '0'),
+                                Boleto = filtro.BoletoAuditoria,
+                                NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
                                 NomOficina = filtro.NomSucursal,
                                 NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),//
                                 Pasajero = filtro.NOMB,
@@ -379,7 +389,7 @@ namespace SisComWeb.Business
                             return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
                         }
                     }
-                    
+
                     //Se crea esta entidad para la parte de impresión
                     var auxVentaRealizada = new VentaRealizadaEntity
                     {
@@ -479,6 +489,20 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<PlanoEntity>(false, null, Message.MsgExcConsultaPrecioRuta, false);
+            }
+        }
+
+        public static Response<bool> UpdateReintegro(UpdateReintegroRequest filtro)
+        {
+            try
+            {
+                var res = ReintegroRepository.UpdateReintegro(filtro);
+                return new Response<bool>(true, res, "", false);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcConsultaIgv, false);
             }
         }
     }

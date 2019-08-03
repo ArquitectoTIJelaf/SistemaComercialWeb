@@ -154,6 +154,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"TipoOri\" : \"" + (filtro.TipoOri ?? "0") + "\"" +
                                     ",\"CodiTarjetaCredito\" : \"" + (filtro.CodiTarjetaCredito ?? "") + "\"" +
                                     ",\"NumeTarjetaCredito\" : \"" + (filtro.NumeTarjetaCredito ?? "") + "\"" +
+                                    ",\"NumAsientoAuditoria\" : \"" + filtro.NumAsientoAuditoria + "\"" +
+                                    ",\"BoletoAuditoria\" : \"" + filtro.BoletoAuditoria + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("SaveReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -259,6 +261,35 @@ namespace SisComWeb.Aplication.Controllers
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("update-reintegro")]
+        public async Task<ActionResult> UpdateReintegro(int IdVenta, string Programacion, string Destino, string Asiento, string Origen)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + IdVenta + 
+                                    ",\"Programacion\" : \"" + Programacion + "\"" +
+                                    ",\"Destino\" : \"" + Destino + "\"" +
+                                    ",\"Asiento\" : \"" + Asiento + "\"" +
+                                    ",\"Origen\" : \"" + Origen + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("UpdateReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+                return Json("", JsonRequestBehavior.AllowGet);
             }
             catch
             {
