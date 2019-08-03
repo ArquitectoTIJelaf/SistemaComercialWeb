@@ -12,10 +12,18 @@
                         <div class="col-md-12 separate-in-form">
                             <label class="control-label label-sm">Empresa:</label>
                             <div class="">
-                                <input @*:value="item.precio | fixed2"*@
-                                       class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
-                                       disabled />
+                                <v-select v-model="filtroCodiEmpresa"
+                                          :options="list.empresas"
+                                          :placeholder="'EMPRESA'"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent=""
+                                          ref="refANUREEmpresa">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
                             </div>
                         </div>
                         <div class="col-md-4 separate-in-form">
@@ -23,7 +31,6 @@
                             <div class="">
                                 <input @*:value="item.precio | fixed2"*@
                                        class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
                                        disabled />
                             </div>
                         </div>
@@ -32,7 +39,6 @@
                             <div class="">
                                 <input @*:value="item.precio | fixed2"*@
                                        class="form-control input-sm"
-                                       style="background-color:rgb(253, 249, 205);"
                                        disabled />
                             </div>
                         </div>
