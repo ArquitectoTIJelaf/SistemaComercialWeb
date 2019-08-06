@@ -1156,7 +1156,7 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, "", false);
             }
         }
-        //ValidaReintegroParaAnualar
+        
         public Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request)
         {
             try
@@ -1166,7 +1166,20 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<ReintegroEntity>(false, null, "", false);
+                return new Response<ReintegroEntity>(false, null, Message.MsgExcAnulaReintegro, false);
+            }
+        }
+        
+        public Response<byte> AnularReintegro(AnularVentaRequest request)
+        {
+            try
+            {
+                return ReintegroLogic.AnularReintegro(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<byte>(false, 0, Message.MsgExcAnulaReintegro, false);
             }
         }
         #endregion

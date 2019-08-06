@@ -406,6 +406,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidaReintegroParaAnualar", ResponseFormat = WebMessageFormat.Json)]
         Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "AnularReintegro", ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> AnularReintegro(AnularVentaRequest request);
         #endregion
     }
 }

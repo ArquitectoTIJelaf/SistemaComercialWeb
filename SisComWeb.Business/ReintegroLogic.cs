@@ -614,12 +614,12 @@ namespace SisComWeb.Business
                         var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
                     }
                 }
-                return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+                return new Response<byte>(true, anularVenta, "Se anuló el reintegro correctamente", true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
+                return new Response<byte>(false, 0, Message.MsgExcAnulaReintegro, false);
             }
         }
     }

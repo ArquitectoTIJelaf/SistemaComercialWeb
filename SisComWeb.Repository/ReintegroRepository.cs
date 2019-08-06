@@ -280,7 +280,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.ProcedureName = "scwsp_VentaReintegroConsultaAnulEle";
                 db.AddParameter("@ser", DbType.String, ParameterDirection.Input, request.Serie);
                 db.AddParameter("@bol", DbType.String, ParameterDirection.Input, request.Numero);
                 db.AddParameter("@emp", DbType.String, ParameterDirection.Input, request.CodiEmpresa);
@@ -298,7 +298,10 @@ namespace SisComWeb.Repository
                             TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
                             ClavUsuario = Reader.GetStringValue(drlector, "clav_usuario"),
                             Tipo = Reader.GetStringValue(drlector, "tipo"),
-                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE")
+                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE"),
+                            CodiDestino = Reader.GetSmallIntValue(drlector, "CODI_SUBRUTA"),
+                            SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO"),
+                            NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO")
                         };
                     }
                 }
