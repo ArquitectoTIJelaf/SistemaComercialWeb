@@ -60,8 +60,10 @@ namespace SisComWeb.Repository
                             ImpManifiesto = string.Empty,
                             TipoPago = string.Empty,
                             ValeRemoto = string.Empty,
+                            CodiEsca = string.Empty,
 
-                            CodiEsca = string.Empty
+                            FechaReservacion = string.Empty,
+                            HoraReservacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -211,7 +213,6 @@ namespace SisComWeb.Repository
                             TipoPago = Reader.GetStringValue(drlector, "tipo_pago") ?? string.Empty,
                             ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
                             CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
-
                             CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
 
                             // Para evitar Null's
@@ -222,7 +223,9 @@ namespace SisComWeb.Repository
                             Direccion = string.Empty,
                             Codigo = string.Empty,
                             OrdenOrigen = string.Empty,
-                            Tipo = string.Empty
+                            Tipo = string.Empty,
+                            FechaReservacion = string.Empty,
+                            HoraReservacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -287,8 +290,10 @@ namespace SisComWeb.Repository
                             ImpManifiesto = string.Empty,
                             TipoPago = string.Empty,
                             ValeRemoto = string.Empty,
+                            CodiEsca = string.Empty,
 
-                            CodiEsca = string.Empty
+                            FechaReservacion = string.Empty,
+                            HoraReservacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }

@@ -24,12 +24,14 @@ namespace SisComWeb.Repository
                 Telefono = string.Empty,
                 RucContacto = string.Empty,
                 Sexo = string.Empty,
-                RazonSocial = string.Empty
+                RazonSocial = string.Empty,
+
+                Especial = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarPasajero";
+                db.ProcedureName = "scwsp_BuscarPasajero02";
                 db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, TipoDoc.TrimStart('0'));
                 db.AddParameter("@Numero_Doc", DbType.String, ParameterDirection.Input, NumeroDoc);
                 using (IDataReader drlector = db.GetDataReader())
@@ -48,6 +50,8 @@ namespace SisComWeb.Repository
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;
                         entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? string.Empty;
+
+                        entidad.Especial = Reader.GetStringValue(drlector, "ESPECIAL") ?? string.Empty;
                         break;
                     }
                 }

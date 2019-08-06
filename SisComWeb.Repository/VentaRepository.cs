@@ -794,6 +794,28 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static ReservacionEntity ConsultarFechaHoraReservacion(int IdVenta)
+        {
+            var entidad = new ReservacionEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_TB_RESERVACION_HORA_FECHA_Consulta";
+                db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.FechaReservacion = Reader.GetStringValue(drlector, "FECHA_C");
+                        entidad.HoraReservacion = Reader.GetStringValue(drlector, "HORA_C");
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -804,7 +826,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_GrabarVenta";
+                db.ProcedureName = "scwsp_GrabarVenta02";
                 db.AddParameter("@Serie_Boleto", DbType.Int16, ParameterDirection.Input, entidad.SerieBoleto);
                 db.AddParameter("@Nume_Boleto", DbType.Int32, ParameterDirection.Input, entidad.NumeBoleto);
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, entidad.CodiEmpresa);
@@ -848,6 +870,10 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Id_hospital", DbType.Int32, ParameterDirection.Input, entidad.IdHospital);
                 db.AddParameter("@IdTabla", DbType.Int32, ParameterDirection.Input, entidad.IdPrecio);
                 db.AddParameter("@Precio_Normal", DbType.Decimal, ParameterDirection.Input, entidad.PrecioNormal);
+                db.AddParameter("@ESTADO_ASIENTO", DbType.String, ParameterDirection.Input, entidad.EstadoAsiento);
+
+                db.AddParameter("@Codi_Ruta", DbType.String, ParameterDirection.Input, entidad.CodiRuta);
+                db.AddParameter("@ValidateFechaAbierta", DbType.Boolean, ParameterDirection.Input, entidad.FechaAbierta);
 
                 db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Output, entidad.IdVenta);
 

@@ -415,7 +415,7 @@ namespace SisComWeb.Business
                                     entidad.CodiProgramacion = 0;
 
                                     // Graba 'VentaFechaAbierta'
-                                    var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
+                                    var grabarVentaFechaAbierta = VentaRepository.GrabarVenta(entidad);
                                     if (grabarVentaFechaAbierta <= 0)
                                         return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
@@ -451,7 +451,7 @@ namespace SisComWeb.Business
                                             entidad.CodiProgramacion = 0;
 
                                             // Graba 'VentaFechaAbierta'
-                                            var grabarVentaFechaAbierta = PaseRepository.GrabarVentaFechaAbierta(entidad);
+                                            var grabarVentaFechaAbierta = VentaRepository.GrabarVenta(entidad);
                                             if (grabarVentaFechaAbierta <= 0)
                                                 return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 

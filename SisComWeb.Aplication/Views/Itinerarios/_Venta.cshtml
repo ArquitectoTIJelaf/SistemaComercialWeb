@@ -965,9 +965,6 @@
                                                        autocomplete="off">
                                             </div>
                                         </div>
-
-
-
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="control-label">Recoger</label>
@@ -1105,7 +1102,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <div v-show="pickedBusVenta != 'R'">
+                                            <div v-show="pickedBusVenta != 'R' && list.ventas[indexVenta].FlagVenta != 'R'">
                                                 <div class="form-group">
                                                     <label class="control-label">Observación</label>
                                                     <textarea :value="list.ventas[indexVenta].Observacion"
@@ -1117,8 +1114,8 @@
                                                     </textarea>
                                                 </div>
                                             </div>
-                                            <div v-show="pickedBusVenta == 'R'">
-                                                <div class="col-md-12">
+                                            <div v-show="pickedBusVenta == 'R' || list.ventas[indexVenta].FlagVenta == 'R'">
+                                                <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
                                                     <label class="control-label">Confirmación de reserva</label>
                                                 </div>
                                                 <div class="col-md-12" style="text-align: center; padding-left: 0px; padding-right: 0px; ">
@@ -1130,6 +1127,7 @@
                                                                    placeholder="FECHA"
                                                                    ref="refFechaReservacion"
                                                                    v-model="list.ventas[indexVenta].FechaReservacion"
+                                                                   :disabled="disabledCamposTicket || list.ventas[indexVenta].FlagVenta == 'R'"
                                                                    @@focus="$event.target.select()"
                                                                    @@blur="list.ventas[indexVenta].FechaReservacion = $getValueDateTimePicker($event)"
                                                                    v-mask="'##/##/####'"
@@ -1144,6 +1142,7 @@
                                                                    placeholder="HORA"
                                                                    ref="refHoraReservacion"
                                                                    v-model="list.ventas[indexVenta].HoraReservacion"
+                                                                   :disabled="disabledCamposTicket || list.ventas[indexVenta].FlagVenta == 'R'"
                                                                    @@focus="$event.target.select()"
                                                                    @@blur="list.ventas[indexVenta].HoraReservacion = $getValueDateTimePicker_Hours($event)"
                                                                    v-mask="'##:## AM'"

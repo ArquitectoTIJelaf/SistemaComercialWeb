@@ -88,8 +88,10 @@ namespace SisComWeb.Aplication.Controllers
                 TipoPago = (string)x["TipoPago"],
                 ValeRemoto = (string)x["ValeRemoto"],
                 CodiEsca = (string)x["CodiEsca"],
+                CodiEmpresa = (byte)x["CodiEmpresa"],
 
-                CodiEmpresa = (byte)x["CodiEmpresa"]
+                FechaReservacion = (string)x["FechaReservacion"],
+                HoraReservacion = (string)x["HoraReservacion"]
             }).ToList();
 
             return lista;
@@ -478,7 +480,9 @@ namespace SisComWeb.Aplication.Controllers
                         TipoDoc = (string)data["TipoDoc"],
                         Sexo = (string)data["Sexo"],
                         RazonSocial = (string)data["RazonSocial"],
-                        Direccion = (string)data["Direccion"]
+                        Direccion = (string)data["Direccion"],
+
+                        Especial = (string)data["Especial"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -842,6 +846,8 @@ namespace SisComWeb.Aplication.Controllers
                                         ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
                                     ",\"IngresoManualPasajes\" : " + Listado[i].IngresoManualPasajes.ToString().ToLower() +
+
+                                    ",\"EstadoAsiento\" : \"" + Listado[i].EstadoAsiento + "\"" +
 
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
