@@ -178,6 +178,7 @@ namespace SisComWeb.Business
                     {
                         if (buscarTurno.CodiProgramacion <= 0)
                         {
+                            // Inserta tabla 'BloqueoAsientos'
                             var requestTBA = new TablaBloqueoAsientosRequest()
                             {
                                 CodiProgramacion = auxCodiProgramacion,
@@ -188,16 +189,14 @@ namespace SisComWeb.Business
                                 Tipo = auxTipo,
                                 Fecha = buscarTurno.FechaProgramacion
                             };
-                            // Inserta tabla 'BloqueoAsientos'
                             BloqueoAsientoRepository.InsertarTablaBloqueoAsientos(requestTBA);
                         }
                         else
-                        {
                             // Actualiza tabla 'BloqueoAsientos'
                             BloqueoAsientoRepository.ActualizarTablaBloqueoAsientos(buscarTurno.CodiProgramacion.ToString(), buscarTurno.NroViaje.ToString(), buscarTurno.FechaProgramacion);
 
-                            consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, buscarTurno.FechaProgramacion);
-                        } 
+                        // Como fue 'null', vuelve a consultar tabla 'BloqueoAsientos'
+                        consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, buscarTurno.FechaProgramacion);
                     }
 
                     // Seteo 'buscarTurno.TablaAsientosBloqueados'
