@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
 using SisComWeb.Aplication.Models;
+using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -334,7 +335,76 @@ namespace SisComWeb.Aplication.Controllers
                         TipoPago = (string)data["TipoPago"],
                         ClavUsuario = (string)data["ClavUsuario"],
                         Tipo = (string)data["Tipo"],
-                        RucCliente = (string)data["RucCliente"]
+                        RucCliente = (string)data["RucCliente"],
+                        CodiDestino = (short)data["CodiDestino"],
+                        SerieBoleto = (short)data["SerieBoleto"],
+                        NumeBoleto = (int)data["NumeBoleto"],
+                        CodiEmpresa = (byte)data["CodiEmpresa"],
+                        FechaVenta = (string)data["FechaVenta"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("reintegro-anular")]
+        public async Task<ActionResult> ReintegroAnualar(AnularVentaRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\": " + request.IdVenta +
+                                    ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
+                                    ",\"CodiEmpresa\": " + request.CodiEmpresa +
+                                    ",\"SerieBoleto\": " + request.SerieBoleto +
+                                    ",\"NumeBoleto\": " + request.NumeBoleto +
+                                    ",\"Tipo\": \"" + request.Tipo + "\"" +
+                                    ",\"FechaVenta\": \"" + request.FechaVenta + "\"" +
+                                    ",\"CodiUsuario\": " + usuario.CodiUsuario +
+                                    ",\"TipoPago\": \"" + request.TipoPago + "\"" +
+                                    ",\"CodiOficina\": " + usuario.CodiSucursal +
+                                    ",\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta +
+                                    ",\"NomUsuario\": \"" + usuario.Nombre + "\"" +
+                                    ",\"PrecioVenta\": \"" + request.PrecioVenta + "\"" +
+                                    ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
+                                    ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
+                                    ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
+                                    ",\"Terminal\": " + usuario.Terminal +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("AnularReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Reintegro> res = new Response<Reintegro>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Reintegro()
+                    {
+                        IdVenta = (int)data["IdVenta"],
+                        CodiEsca = (string)data["CodiEsca"],
+                        Sucursal = (int)data["Sucursal"],
+                        PrecioVenta = (decimal)data["PrecioVenta"],
+                        TipoPago = (string)data["TipoPago"],
+                        ClavUsuario = (string)data["ClavUsuario"],
+                        Tipo = (string)data["Tipo"],
+                        RucCliente = (string)data["RucCliente"],
+                        CodiDestino = (short)data["CodiDestino"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

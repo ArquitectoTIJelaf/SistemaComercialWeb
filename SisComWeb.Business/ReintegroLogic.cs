@@ -518,7 +518,7 @@ namespace SisComWeb.Business
                 else
                 {
                     return new Response<ReintegroEntity>(false, res, Message.MsgNoConsultaReintegroParaAnular, true);
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -533,41 +533,44 @@ namespace SisComWeb.Business
             {
                 var anularVenta = new byte();
 
-                var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
-                // Anulación de su respectivo 'Reintegro'
-                if (!string.IsNullOrEmpty(request.CodiEsca))
+                if (request.IdVenta > 0)
                 {
-                    // Consulta 'VentaReintegro'
-                    var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
-
-                    if (objReintegro.IdVenta > 0)
+                    // Valida 'AnularDocumentoSUNAT'
+                    if (request.CodiEsca.Substring(0, 1) != "M")
                     {
-                        if (objReintegro.TipoPago == "03")
+                        // Anula 'DocumentoSUNAT'
+                        var objVentaReintegro = new VentaEntity
+                        {
+                            CodiEmpresa = request.CodiEmpresa,
+                            SerieBoleto = request.SerieBoleto,
+                            NumeBoleto = request.NumeBoleto,
+                            Tipo = request.Tipo,
+                            FechaVenta = request.FechaVenta
+                        };
+
+                        var resAnularDocumentoSUNAT = VentaLogic.AnularDocumentoSUNAT(objVentaReintegro);
+                        if (!resAnularDocumentoSUNAT.Estado)
+                            return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
+                    }
+
+                    // Anula 'Reintegro'
+                    var anularVentaReintegro = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
+                    if (anularVentaReintegro > 0)
+                    {
+                        if (request.TipoPago == "03")
                         {
                             // Consulta 'PagoTarjetaVenta'
-                            var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(objReintegro.IdVenta);
+                            var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(request.IdVenta);
 
                             // Actualiza 'CajaAnulacion'
                             VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
                         }
 
-                        // Valida 'AnularDocumentoSUNAT'
-                        if (request.CodiEsca.Substring(0, 1) != "M")
-                        {
-                            // Anula 'DocumentoSUNAT'
-                            var objVentaReintegro = new VentaEntity
-                            {
-                                CodiEmpresa = objReintegro.CodiEmpresa,
-                                SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
-                                NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
-                                Tipo = objReintegro.Tipo,
-                                FechaVenta = objReintegro.FechaVenta
-                            };
+                        //Elimina Boleto x Contrato si es que tiene
+                        ReintegroRepository.EliminarBoletoxContrato(request.IdVenta);
 
-                            var resAnularDocumentoSUNAT = VentaLogic.AnularDocumentoSUNAT(objVentaReintegro);
-                            if (!resAnularDocumentoSUNAT.Estado)
-                                return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
-                        }
+                        //Libera Venta del Reintegro
+                        ReintegroRepository.LiberaReintegroEle(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), request.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
 
                         // Genera 'CorrelativoAuxiliar'
                         var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
@@ -578,17 +581,17 @@ namespace SisComWeb.Business
                         var objCajaReintegro = new CajaEntity
                         {
                             NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
-                            CodiEmpresa = objReintegro.CodiEmpresa,
+                            CodiEmpresa = request.CodiEmpresa,
                             CodiSucursal = short.Parse(request.CodiOficina),
                             FechaCaja = DataUtility.ObtenerFechaDelSistema(),
                             TipoVale = "S",
-                            Boleto = request.CodiEsca.Substring(1),
+                            Boleto = request.CodiEsca.Substring(1),//Tipo SerieBoleto NumeBoleto
                             NomUsuario = request.NomUsuario,
                             CodiBus = string.Empty,
                             CodiChofer = string.Empty,
                             CodiGasto = string.Empty,
-                            ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
-                            Monto = objReintegro.PrecioVenta,
+                            ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,//Tipo SerieBoleto NumeBoleto
+                            Monto = request.PrecioVenta,
                             CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                             IndiAnulado = "F",
                             TipoDescuento = "RE",
@@ -604,7 +607,7 @@ namespace SisComWeb.Business
                             Voucher = "RE",
                             Asiento = string.Empty,
                             Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
-                            IdVenta = objReintegro.IdVenta,
+                            IdVenta = request.IdVenta,
                             Origen = "AR",
                             Modulo = "PV",
                             Tipo = request.CodiEsca.Substring(0, 1),
@@ -612,14 +615,40 @@ namespace SisComWeb.Business
                             IdCaja = 0
                         };
                         var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+
+                        //Graba Auditoria luego de Liberar Asiento
+                        var objAuditoria = new AuditoriaEntity
+                        {
+                            CodiUsuario = Convert.ToInt16(request.CodiUsuario),
+                            NomUsuario = request.NomUsuario,
+                            Tabla = "VENTA",
+                            TipoMovimiento = "ANUL.REINTEGRO",
+                            Boleto = String.Format("{0}{1}-{2}", request.Tipo, request.SerieBoleto.ToString().PadLeft(3, '0'), request.NumeBoleto.ToString().PadLeft(7, '0')),
+                            NumeAsiento = "0",
+                            NomOficina = request.NomOficina,
+                            NomPuntoVenta = request.CodiPuntoVenta.PadLeft(3, '0'),
+                            Pasajero = "",
+                            FechaViaje = "01/01/1900",
+                            HoraViaje = "",
+                            NomDestino = "",
+                            Precio = 0M,
+                            Obs1 = "LIBERACION AL BOLETO : " + request.CodiEsca,
+                            Obs2 = "TERMINAL : " + request.Terminal,
+                            Obs3 = "",
+                            Obs4 = "CAJERO AFECTA " + request.NomUsuario,
+                            Obs5 = "NRO VALE SALIDA : " + generarCorrelativoAuxiliarReintegro
+                        };
+                        VentaRepository.GrabarAuditoria(objAuditoria);
+
+                        //TODO: Falta implementar Usp_Tb_venta_AnulaReintegro_ele
                     }
                 }
-                return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+                return new Response<byte>(true, anularVenta, "Se anuló el reintegro correctamente", true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
+                return new Response<byte>(false, 0, Message.MsgExcAnulaReintegro, false);
             }
         }
     }

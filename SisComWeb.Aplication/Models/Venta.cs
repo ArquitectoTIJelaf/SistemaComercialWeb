@@ -329,6 +329,11 @@ namespace SisComWeb.Aplication.Models
 
 
         public string NomOrigenPas { get; set; }
+
+        //06/08/2019
+        public byte CodiEmpresa { get; set; }
+        public short SerieBoleto { get; set; }
+        public int NumeBoleto { get; set; }
     }
 
     public class CancelarReservaRequest

@@ -280,7 +280,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.ProcedureName = "scwsp_VentaReintegroConsultaAnulEle";
                 db.AddParameter("@ser", DbType.String, ParameterDirection.Input, request.Serie);
                 db.AddParameter("@bol", DbType.String, ParameterDirection.Input, request.Numero);
                 db.AddParameter("@emp", DbType.String, ParameterDirection.Input, request.CodiEmpresa);
@@ -298,13 +298,52 @@ namespace SisComWeb.Repository
                             TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
                             ClavUsuario = Reader.GetStringValue(drlector, "clav_usuario"),
                             Tipo = Reader.GetStringValue(drlector, "tipo"),
-                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE")
+                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE"),
+                            CodiDestino = Reader.GetSmallIntValue(drlector, "CODI_SUBRUTA"),
+                            SerieBoleto = Reader.GetSmallIntValue(drlector, "SERIE_BOLETO"),
+                            NumeBoleto = Reader.GetIntValue(drlector, "NUME_BOLETO"),
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
+                            FechaVenta = Reader.GetDateStringValue(drlector, "FECH_VENTA")
                         };
                     }
                 }
             }
 
             return objeto;
+        }
+
+        public static void EliminarBoletoxContrato(int IdVenta)
+        {
+            var valor = new byte();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_EliminarBoletoxContrato";
+                db.AddParameter("@Id_Venta", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetByteValue(drlector, "Validator");
+                        break;
+                    }
+                }
+            }
+
+            //return valor;
+        }
+        
+        public static void LiberaReintegroEle(string Serie, string Numero, string CodiEmpresa, string Tipo)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Libera_ele";
+                db.AddParameter("@ser", DbType.String, ParameterDirection.Input, Serie);
+                db.AddParameter("@bol", DbType.String, ParameterDirection.Input, Numero);
+                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@Tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.Execute();
+            }
         }
     }
 }
