@@ -1146,15 +1146,15 @@ namespace SisComWeb.Business
                         return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
                 }
 
-                // Genera 'CorrelativoAuxiliar'
-                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
-                if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                    return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
-
                 // Anula 'Venta'
                 anularVenta = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
                 if (anularVenta > 0)
                 {
+                    // Genera 'CorrelativoAuxiliar'
+                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
+                    if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
+                        return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+
                     // Graba 'Caja'
                     var objCaja = new CajaEntity
                     {
@@ -1192,7 +1192,6 @@ namespace SisComWeb.Business
 
                         IdCaja = 0
                     };
-
                     if (request.FlagVenta == "Y" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
                         objCaja.ConcCaja = "ANUL.VALE x VTA REMOTA" + CondicionAnul(request.ValeRemoto, request.NomOrigenPas, request.NomDestinoPas);
@@ -1273,7 +1272,6 @@ namespace SisComWeb.Business
                         objCaja.Asiento = string.Empty;
                         objCaja.Origen = "AB";
                     }
-
                     VentaRepository.GrabarCaja(objCaja);
 
                     // Elimina 'Poliza'
@@ -1351,49 +1349,54 @@ namespace SisComWeb.Business
                                     return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
                             }
 
-                            // Genera 'CorrelativoAuxiliar'
-                            var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
-                            if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
-                                return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
+                            // Anula 'VentaReintegro'
+                            var anularVentaReintegro =  VentaRepository.AnularVenta(objReintegro.IdVenta, request.CodiUsuario);
 
-                            // Graba 'CajaReintegro'
-                            var objCajaReintegro = new CajaEntity
-                            {
-                                NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
-                                CodiEmpresa = objReintegro.CodiEmpresa,
-                                CodiSucursal = short.Parse(request.CodiOficina),
-                                FechaCaja = DataUtility.ObtenerFechaDelSistema(),
-                                TipoVale = "S",
-                                Boleto = request.CodiEsca.Substring(1),
-                                NomUsuario = request.NomUsuario,
-                                CodiBus = string.Empty,
-                                CodiChofer = string.Empty,
-                                CodiGasto = string.Empty,
-                                ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
-                                Monto = objReintegro.PrecioVenta,
-                                CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
-                                IndiAnulado = "F",
-                                TipoDescuento = "RE",
-                                TipoDoc = string.Empty,
-                                TipoGasto = "P",
-                                Liqui = 0M,
-                                Diferencia = 0M,
-                                Recibe = "RE",
-                                CodiDestino = request.CodiDestinoPas,
-                                FechaViaje = "01/01/1900",
-                                HoraViaje = "VNA",
-                                CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
-                                Voucher = "RE",
-                                Asiento = string.Empty,
-                                Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
-                                IdVenta = objReintegro.IdVenta,
-                                Origen = "AR",
-                                Modulo = "PV",
-                                Tipo = request.CodiEsca.Substring(0, 1),
+                            if (anularVentaReintegro > 0) {
+                                // Genera 'CorrelativoAuxiliar'
+                                var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
+                                if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
+                                    return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
 
-                                IdCaja = 0
-                            };
-                            var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                                // Graba 'CajaReintegro'
+                                var objCajaReintegro = new CajaEntity
+                                {
+                                    NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
+                                    CodiEmpresa = objReintegro.CodiEmpresa,
+                                    CodiSucursal = short.Parse(request.CodiOficina),
+                                    FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                    TipoVale = "S",
+                                    Boleto = request.CodiEsca.Substring(1),
+                                    NomUsuario = request.NomUsuario,
+                                    CodiBus = string.Empty,
+                                    CodiChofer = string.Empty,
+                                    CodiGasto = string.Empty,
+                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
+                                    Monto = objReintegro.PrecioVenta,
+                                    CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                                    IndiAnulado = "F",
+                                    TipoDescuento = "RE",
+                                    TipoDoc = string.Empty,
+                                    TipoGasto = "P",
+                                    Liqui = 0M,
+                                    Diferencia = 0M,
+                                    Recibe = "RE",
+                                    CodiDestino = request.CodiDestinoPas,
+                                    FechaViaje = "01/01/1900",
+                                    HoraViaje = "VNA",
+                                    CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                                    Voucher = "RE",
+                                    Asiento = string.Empty,
+                                    Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
+                                    IdVenta = objReintegro.IdVenta,
+                                    Origen = "AR",
+                                    Modulo = "PV",
+                                    Tipo = request.CodiEsca.Substring(0, 1),
+
+                                    IdCaja = 0
+                                };
+                                var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                            }
                         }
                     }
 

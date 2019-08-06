@@ -5032,9 +5032,9 @@
                 },
                 validaPorFlagVenta: async function (_tmpAsientoSel, _valPanelAnularFechaPasada) {
                     var auxValidate = true;
-
+                    
                     if (_tmpAsientoSel.FlagVenta === '7') {
-                        if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
+                        if (!(Usuario.Nivel === 2 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
                             APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
                             return auxValidate = false;
                         }
@@ -5054,7 +5054,8 @@
                     if (_tmpAsientoSel.PrecVentaReintegro > 0) {
                         if (await APP.msg.confirm(
                             ''
-                            , 'El asiento cuenta con reintegro, para anular el reintegro debe presionar XX, caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar?')) {
+                            , 'El asiento cuenta con reintegro, para anular el reintegro dar click derecho en el asiento y elegir la opción Reintegro, ' +
+                              'caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar? ')) {
                             if (appController.validatePanel('231') === '1') {
 
                                 var resConfirmClaveFechaActualCodiUsuario = await APP.msg.confirmClaveFechaActualCodiUsuario(
