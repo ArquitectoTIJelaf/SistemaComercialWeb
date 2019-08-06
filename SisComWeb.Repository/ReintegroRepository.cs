@@ -110,7 +110,7 @@ namespace SisComWeb.Repository
             return objeto;
         }
 
-        //Valida si existe el DNI en consulta
+        //Valida si existe el DNI permitido en consulta
         public static bool ValidaExDni(string documento)
         {
             bool response = false;
@@ -137,7 +137,6 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                //db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr";
                 db.ProcedureName = "Usp_Tb_Venta_Insert_Derv_Act_Corr_Rei";
                 db.AddParameter("@serie", DbType.Int16, ParameterDirection.Input, filtro.Serie);
                 db.AddParameter("@NUME_BOLETO", DbType.Int32, ParameterDirection.Input, filtro.nume_boleto);
@@ -173,9 +172,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@HORA_V", DbType.String, ParameterDirection.Input, filtro.HORA_V);
                 db.AddParameter("@na", DbType.String, ParameterDirection.Input, filtro.nacionalidad);
                 db.AddParameter("@servicio", DbType.Int16, ParameterDirection.Input, filtro.servicio);
-                db.AddParameter("@porcentaje", DbType.Decimal, ParameterDirection.Input, filtro.porcentaje);//str
-                db.AddParameter("@tota_ruta1", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta1);//str
-                db.AddParameter("@tota_ruta2", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta2);//str
+                db.AddParameter("@porcentaje", DbType.Decimal, ParameterDirection.Input, filtro.porcentaje);
+                db.AddParameter("@tota_ruta1", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta1);
+                db.AddParameter("@tota_ruta2", DbType.Decimal, ParameterDirection.Input, filtro.tota_ruta2);
                 db.AddParameter("@sube_en", DbType.Int16, ParameterDirection.Input, filtro.Sube_en);
                 db.AddParameter("@baja_en", DbType.Int16, ParameterDirection.Input, filtro.Baja_en);
                 db.AddParameter("@hora_em", DbType.String, ParameterDirection.Input, filtro.Hora_Emb);
@@ -235,6 +234,77 @@ namespace SisComWeb.Repository
                 }
             }
             return response;
+        }
+
+        //Actualiza boleto original con Reintegro
+        public static bool UpdateReintegro(UpdateReintegroRequest filtro)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Update_Reint_2";
+                db.AddParameter("@id", DbType.Int32, ParameterDirection.Input, filtro.IdVenta);
+                db.AddParameter("@pro", DbType.String, ParameterDirection.Input, filtro.Programacion);
+                db.AddParameter("@des", DbType.String, ParameterDirection.Input, filtro.Destino);
+                db.AddParameter("@asi", DbType.String, ParameterDirection.Input, filtro.Asiento);
+                db.AddParameter("@ori", DbType.String, ParameterDirection.Input, filtro.Origen);
+                db.Execute();
+                
+            }
+            return true;
+        }
+
+        public static int ConsultaEmpresaPVentaYServicio(int CodiPuntVenta, int CodiServicio)
+        {
+            var CodiEmpresa = 0;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ConsultaEmpresa_PVentaYServicio";
+                db.AddParameter("@PuntoVenta", DbType.Int32, ParameterDirection.Input, CodiPuntVenta);
+                db.AddParameter("@CodiServicio", DbType.Int32, ParameterDirection.Input, CodiServicio);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        CodiEmpresa = Reader.GetIntValue(drlector, "CodiEmpresa");                       
+                    }
+                }
+            }
+
+            return CodiEmpresa;
+        }
+        
+        public static ReintegroEntity ValidaReintegroParaAnualar(ReintegroRequest request)
+        {
+            var objeto = new ReintegroEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.AddParameter("@ser", DbType.String, ParameterDirection.Input, request.Serie);
+                db.AddParameter("@bol", DbType.String, ParameterDirection.Input, request.Numero);
+                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, request.CodiEmpresa);
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, request.Tipo);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        objeto = new ReintegroEntity
+                        {
+                            IdVenta = Reader.GetIntValue(drlector, "id_venta"),
+                            CodiEsca = Reader.GetStringValue(drlector, "codi_esca"),
+                            Sucursal = Reader.GetIntValue(drlector, "Codi_Sucursal"),
+                            PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA"),
+                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
+                            ClavUsuario = Reader.GetStringValue(drlector, "clav_usuario"),
+                            Tipo = Reader.GetStringValue(drlector, "tipo"),
+                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE")
+                        };
+                    }
+                }
+            }
+
+            return objeto;
         }
     }
 }

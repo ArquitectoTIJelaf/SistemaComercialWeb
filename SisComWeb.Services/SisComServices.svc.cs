@@ -234,7 +234,7 @@ namespace SisComWeb.Services
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
-        }   
+        }
 
         public Response<List<BaseEntity>> ListaUsuariosHC(string Descripcion, short Suc, short Pv)
         {
@@ -1023,7 +1023,7 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
             }
         }
-        
+
         public Response<int> ValidateNumDias(string FechaVenta, string CodTab)
         {
             try
@@ -1036,7 +1036,7 @@ namespace SisComWeb.Services
                 return new Response<int>(false, 0, Message.MsgExcValidateNumDias, false);
             }
         }
-        
+
         public Response<int> VerificaNotaCredito(int IdVenta)
         {
             try
@@ -1049,7 +1049,7 @@ namespace SisComWeb.Services
                 return new Response<int>(false, 0, Message.MsgExcVerificaNotaCredito, false);
             }
         }
-        
+
         public Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
         {
             try
@@ -1091,7 +1091,7 @@ namespace SisComWeb.Services
                 return new Response<List<SelectReintegroEntity>>(false, null, Message.MsgExcListaOpcionesModificacion, false);
             }
         }
-        
+
         public Response<bool> ValidaExDni(string documento)
         {
             try
@@ -1104,7 +1104,7 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, Message.MsgExcValidaExDni, false);
             }
         }
-       
+
         public Response<VentaResponse> SaveReintegro(ReintegroVentaRequest filtro)
         {
             try
@@ -1117,7 +1117,7 @@ namespace SisComWeb.Services
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaReintegro, false);
             }
         }
-        
+
         public Response<decimal> ConsultarIgv(string TipoDoc)
         {
             try
@@ -1128,6 +1128,45 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
+            }
+        }
+
+        public Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
+        {
+            try
+            {
+                return ReintegroLogic.ConsultarPrecioRuta(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<PlanoEntity>(false, null, Message.MsgExcConsultaPrecioRuta, false);
+            }
+        }
+        
+        public Response<bool> UpdateReintegro(UpdateReintegroRequest filtro)
+        {
+            try
+            {
+                return ReintegroLogic.UpdateReintegro(filtro);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, "", false);
+            }
+        }
+        //ValidaReintegroParaAnualar
+        public Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request)
+        {
+            try
+            {
+                return ReintegroLogic.ValidaReintegroParaAnualar(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReintegroEntity>(false, null, "", false);
             }
         }
         #endregion

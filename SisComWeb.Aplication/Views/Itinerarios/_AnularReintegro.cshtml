@@ -1,0 +1,67 @@
+﻿
+<div id="appVueAnulaReintegro" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" style="width: 300px; top:10%;" role="document">
+        <div class="modal-content modal-drag">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Anular reintegro</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12 separate-in-form">
+                            <label class="control-label label-sm">Empresa:</label>
+                            <div class="">
+                                <v-select v-model="filtroCodiEmpresa"
+                                          :options="list.empresas"
+                                          :placeholder="'EMPRESA'"
+                                          :select-on-tab="true"
+                                          :get-option-label="getLabel"
+                                          @@keydown.13.native.prevent="$refs.refANURESerie.focus()"
+                                          ref="refANUREEmpresa">
+                                    <template slot="option" slot-scope="option">
+                                        <div @@click="$refs.refANURESerie.focus()">{{ option.id }} - {{ option.label }}</div>
+                                    </template>
+                                    <span slot="no-options" class="text-danger">No hay resultados</span>
+                                </v-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 separate-in-form">
+                            <label class="control-label label-sm">Serie:</label>
+                            <div class="">
+                                <input v-model="filtro.serie"
+                                       class="form-control input-sm"
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="$refs.refANURENumero.focus()"
+                                       @@blur=""
+                                       ref="refANURESerie"/>
+                            </div>
+                        </div>
+                        <div class="col-md-8 separate-in-form">
+                            <label class="control-label label-sm">Número:</label>
+                            <div class="">
+                                <input :value="filtro.numero | concatZero"
+                                       class="form-control input-sm"
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="$refs.refANUREAceptar.focus()"
+                                       @@blur="filtro.numero = $event.target.value.padStart(7,'0')"
+                                       ref="refANURENumero"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="confirm"
+                        class="btn btn-primary waves-effect waves-light"
+                        ref="refANUREAceptar">
+                    <span class="fa fa-floppy-o fa-fw"></span>Aceptar
+                </button>
+                <button @@click="close"
+                        class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

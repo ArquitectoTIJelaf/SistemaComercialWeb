@@ -152,6 +152,10 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"T_DNI2\" : \"" + filtro.T_DNI2 + "\"" +
                                     ",\"NOMB2\" : \"" + filtro.NOMB2 + "\"" +
                                     ",\"TipoOri\" : \"" + (filtro.TipoOri ?? "0") + "\"" +
+                                    ",\"CodiTarjetaCredito\" : \"" + (filtro.CodiTarjetaCredito ?? "") + "\"" +
+                                    ",\"NumeTarjetaCredito\" : \"" + (filtro.NumeTarjetaCredito ?? "") + "\"" +
+                                    ",\"NumAsientoAuditoria\" : \"" + filtro.NumAsientoAuditoria + "\"" +
+                                    ",\"BoletoAuditoria\" : \"" + filtro.BoletoAuditoria + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("SaveReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -206,6 +210,133 @@ namespace SisComWeb.Aplication.Controllers
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = (decimal)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("consulta-precio-ruta")]
+        public async Task<ActionResult> ConsultarPrecioRuta(PrecioRuta filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                    ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
+                                    ",\"CodiServicio\" : " + filtro.CodiServicio +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"Nivel\" : \"" + filtro.Nivel + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ConsultarPrecioRuta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Plano> res = new Response<Plano>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Plano
+                    {
+                        PrecioNormal = (decimal)data["PrecioNormal"],
+                        PrecioMinimo = (decimal)data["PrecioMinimo"],
+                        PrecioMaximo = (decimal)data["PrecioMaximo"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("update-reintegro")]
+        public async Task<ActionResult> UpdateReintegro(int IdVenta, string Programacion, string Destino, string Asiento, string Origen)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdVenta\" : " + IdVenta + 
+                                    ",\"Programacion\" : \"" + Programacion + "\"" +
+                                    ",\"Destino\" : \"" + Destino + "\"" +
+                                    ",\"Asiento\" : \"" + Asiento + "\"" +
+                                    ",\"Origen\" : \"" + Origen + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("UpdateReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+                return Json("", JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [Route("verifica-reintegro-anular")]
+        public async Task<ActionResult> ValidaReintegroParaAnualar(FiltroReintegro filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Serie\" : " + filtro.Serie +
+                                    ",\"Numero\" : " + filtro.Numero +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidaReintegroParaAnualar", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Reintegro> res = new Response<Reintegro>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Reintegro()
+                    {
+                        IdVenta = (int)data["IdVenta"],
+                        CodiEsca = (string)data["CodiEsca"],
+                        Sucursal = (int)data["Sucursal"],
+                        PrecioVenta = (decimal)data["PrecioVenta"],
+                        TipoPago = (string)data["TipoPago"],
+                        ClavUsuario = (string)data["ClavUsuario"],
+                        Tipo = (string)data["Tipo"],
+                        RucCliente = (string)data["RucCliente"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);

@@ -39,6 +39,9 @@ namespace SisComWeb.Aplication.Models
         public string FechaNac { get; set; }
         public string CodiBus { get; set; }
         public string DirEmbarque { get; set; }
+        public int Sucursal { get; set; }
+        public string TipoPago { get; set; }
+        public string ClavUsuario { get; set; }
         public string[] SplitNombre
         {
             get
@@ -127,5 +130,9 @@ namespace SisComWeb.Aplication.Models
         public string T_DNI2 { get; set; }
         public string NOMB2 { get; set; }
         public string TipoOri { get; set; }
+        public string CodiTarjetaCredito { get; set; }
+        public string NumeTarjetaCredito { get; set; }
+        public string NumAsientoAuditoria { get; set; }
+        public string BoletoAuditoria { get; set; }
     }
 }

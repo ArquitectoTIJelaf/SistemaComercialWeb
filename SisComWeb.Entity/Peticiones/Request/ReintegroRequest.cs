@@ -79,5 +79,29 @@
         public string T_DNI2 { get; set; }
         public string NOMB2 { get; set; }
         public string TipoOri { get; set; }
+        public string CodiTarjetaCredito { get; set; }
+        public string NumeTarjetaCredito { get; set; }
+        public string NumAsientoAuditoria { get; set; }
+        public string BoletoAuditoria { get; set; }
+    }
+
+    public class PrecioRutaRequest
+    {
+        public short CodiOrigen { get; set; }
+        public short CodiDestino { get; set; }
+        public string HoraViaje { get; set; }
+        public string FechaViaje { get; set; }
+        public short CodiServicio { get; set; }
+        public byte CodiEmpresa { get; set; }
+        public string Nivel { get; set; }
+    }
+
+    public class UpdateReintegroRequest
+    {
+        public int IdVenta { get; set; }
+        public string Programacion { get; set; }
+        public string Destino { get; set; }
+        public string Asiento { get; set; }
+        public string Origen { get; set; }
     }
 }

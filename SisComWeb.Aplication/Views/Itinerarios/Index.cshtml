@@ -42,6 +42,7 @@
 @Html.Partial("_ManifiestoPasajeros")
 @Html.Partial("_MiniMapa")
 @Html.Partial("_TipoPago2")
+@Html.Partial("_AnularReintegro")
 
 @section styles{
     <style type="text/css">
@@ -534,8 +535,11 @@
             });
 
             $("#appVueMiniMapa").draggable({
-                handle: ".modal-header",
-                //containment: [-300, -70, 300, 100]
+                handle: ".modal-header"
+            });
+
+            $("#appVueAnulaReintegro").draggable({
+                handle: ".modal-header"
             });
 
             //#region RECORRIDO ITINERARIOS
@@ -9077,7 +9081,8 @@
                     CodiPuntoVenta: '',
                     CodiServicio: '',
                     HoraViaje: '',
-                    FechaViaje: ''
+                    FechaViaje: '',
+                    CodiProgramacion: ''
                 },
                 filtroCambio: {
                     NumAsiento: '',
@@ -9085,7 +9090,8 @@
                     Fecha: '',
                     Hora: '',
                     MontoReal: '',
-                    DiferenciaPrecio: ''
+                    DiferenciaPrecio: '',
+                    Nivel: ''
                 },
                 item: {
                     origenPasj: '',
@@ -9129,6 +9135,10 @@
                     BuscarProg: false,
                     CambioBoleto: false
                 },
+                dataSignalR: {
+                    NroViaje: 0,
+                    FechaProgramacion: ''
+                },
                 paginate: ['items'],
                 dataOriginal: {},
                 asientoSel: {},
@@ -9159,6 +9169,7 @@
                     let _this = this;
                     _this.limpiarFiltrosRE();
                     _this.limpiarRE();
+                    _this.limpiarRERuta();
                     _this.asientoSel = asientoSel;
                     $('#appVueReintegro').modal('show');
                     _this.setData();
@@ -9199,7 +9210,7 @@
 
                         _this.filtroProgramacion.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
 
-                        //_this.list.itinerarios = appVueTable.list.itinerarios;
+                        _this.filtroProgramacion.CodiServicio = '';//appVueVenta.filtro.CodiServicio.id;
                     });
                 },
                 searchData: async function () {
@@ -9215,7 +9226,6 @@
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
                                 if (data) {
-                                    //debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -9231,7 +9241,6 @@
                                     _this.item.edad = data.Edad;
                                     _this.item.telefono = data.Telefono;
                                     _this.item.nacionalidad = data.Nacionalidad;
-                                    //_this.item.boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
                                     _this.item.boleto = (_this.filtro.tipo === 'F') ? appVueVenta.CorrelativoVentaFactura : appVueVenta.CorrelativoVentaBoleta;
                                     _this.item.venta = data.IdVenta;
                                     _this.item.ruc = data.RucCliente;
@@ -9240,7 +9249,6 @@
                                     _this.item.asiento = data.NumeAsiento;
                                     _this.item.precio = data.PrecioVenta;
                                     _this.item.fechaNac = data.FechaNac;
-                                    //_this.item.stReintegro = (data.FlagVenta === '1') ? 'X' : '';
                                     _this.lockFilters = true;
                                     _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
                                     switch (_this.filtro.codMotivo) {
@@ -9281,6 +9289,7 @@
                                 } else {
                                     APP.msg.warning(res.data.Mensaje);
                                     _this.limpiarRE();
+                                    _this.limpiarRERuta();
                                 }
                             }
                         })
@@ -9290,8 +9299,10 @@
                     let _this = this;
                     APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', _this.filtroProgramacion)
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.Estado) {
+                                _this.limpiarRERuta();
                                 _this.list.itinerarios = res.data.Valor;
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
 
@@ -9340,6 +9351,18 @@
                         default: _this.showData = false;
                     }
                 },
+                enterReintegroRuta: async function () {
+                    let _this = this;
+                    if (parseFloat(_this.filtroCambio.DiferenciaPrecio) > parseFloat(_this.item.reintegro)) {
+                        if (await APP.msg.confirm('Diferencia de precios', 'El monto del reintegro es menor a la diferencia entre precios, ¿Desea Continuar?')) {
+                           _this.$refs.refREAceptar.click();
+                        } else {
+                            _this.$refs.refREDifPrecio.focus();
+                        }
+                    } else {
+                        _this.$refs.refREAceptar.focus();
+                    }
+                },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
@@ -9355,10 +9378,16 @@
                     _this.filtroMiniMapa.CodiRuta = item.CodiRuta;
                     _this.filtroMiniMapa.CodiPuntoVenta = item.CodiPuntoVenta;
                     _this.filtroMiniMapa.CodiServicio = item.CodiServicio;
-                    _this.filtroMiniMapa.HoraViaje = item.HoraProgramacion; //Confirmar
+                    _this.filtroMiniMapa.HoraViaje = item.HoraPartida;
                     _this.filtroMiniMapa.FechaViaje = item.FechaViaje;
+                    _this.filtroMiniMapa.CodiProgramacion = item.CodiProgramacion;
+
+                    _this.dataSignalR.NroViaje = item.NroViaje;
+                    _this.dataSignalR.FechaProgramacion = item.FechaProgramacion;
 
                     _this.$refs.refRECambioBoleto.click();
+
+                    _this.limpiarRERuta();
 
                     _this.$nextTick(() => {
                         _this.$refs.refREAsientoNew.focus();
@@ -9372,15 +9401,17 @@
 
                     deferredModal($('#appVueMiniMapa'), false).done(function () {
                         appVueMiniMapa.$nextTick(() => {
-                            _this.filtroCambio.NumAsiento = appVueMiniMapa.asientoSel.Tipo;
-                            _this.list.destinosPas = appVueMiniMapa.list.destinosPas;
-                            _this.filtroCambio.Fecha = _this.filtroMiniMapa.FechaViaje;
-                            _this.filtroCambio.Hora = _this.filtroMiniMapa.HoraViaje;
-                            _this.filtroCambio.MontoReal = parseFloat(appVueMiniMapa.asientoSel.PrecioNormal).toFixed(2);
-                            _this.filtroCambio.DiferenciaPrecio = (parseFloat(appVueMiniMapa.asientoSel.PrecioNormal) - parseFloat(_this.item.reintegro)).toFixed(2);
-                            _this.$nextTick(() => {
-                                _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
-                            });
+                            if (appVueMiniMapa.asientoSel.Tipo) {
+                                _this.filtroCambio.NumAsiento = appVueMiniMapa.asientoSel.Tipo;
+                                _this.list.destinosPas = appVueMiniMapa.list.destinosPas;
+                                _this.filtroCambio.Fecha = _this.filtroMiniMapa.FechaViaje;
+                                _this.filtroCambio.Hora = _this.filtroMiniMapa.HoraViaje;
+                                _this.filtroCambio.Nivel = appVueMiniMapa.asientoSel.Nivel;
+                                _this.$nextTick(() => {
+                                    _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
+                                });
+                            } else
+                                _this.$refs.refREAsientoNew.focus();
                         });
                     });
                 },
@@ -9424,6 +9455,12 @@
                     _this.item.precio = '';
                     _this.item.stReintegro = '';
                     _this.lockReintegro = false;
+                    _this.list.itinerarios = [];
+                    _this.filtroProgramacion.CodiOrigen = String(Usuario.CodiSucursal);
+                    _this.filtroProgramacion.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;;
+                    _this.filtroProgramacion.CodiServicio = '';//appVueVenta.filtro.CodiServicio.id;
+                    _this.filtroProgramacion.FechaViaje = moment().format('DD/MM/YYYY');
+                    _this.filtroProgramacion.Hora = moment().format('hh:mm A');
                     if (!document.getElementById('VerifBoletoRE').classList.contains("in")) {
                         _this.$nextTick(() => {
                             _this.$refs.refREVerifBoleto.click();
@@ -9432,6 +9469,16 @@
                     _this.$nextTick(() => {
                         _this.$refs.refREMotivo.$el.querySelector('input').focus();
                     });
+                },
+                limpiarRERuta: function () {
+                    let _this = this;
+                    _this.filtroCambio.NumAsiento = '';
+                    _this.filtroCambio.CodiNuevoDestino = '';
+                    _this.filtroCambio.Fecha = '';
+                    _this.filtroCambio.Hora = '';
+                    _this.filtroCambio.MontoReal = '';
+                    _this.filtroCambio.DiferenciaPrecio = '';
+                    _this.filtroCambio.Nivel = '';
                 },
                 cancelarRE: function () {
                     let _this = this;
@@ -9443,6 +9490,7 @@
                     _this.showData = false;
                     _this.lockFilters = false;
                     _this.limpiarRE();
+                    _this.limpiarRERuta();
 
                     if (_this.list.motivos.find(x => x.id === _this.filtro.codMotivo))
                         _this.item.reintegro = parseFloat(_this.list.motivos.find(x => x.id === _this.filtro.codMotivo).monto).toFixed(2);
@@ -9469,210 +9517,316 @@
                         });
                     }
                 },
-                anchorCambioBoleto: function () {
+                anchorCambioBoleto: function (event) {
                     let _this = this;
-                    if (!document.getElementById('CambioBoletoRE').classList.contains("in")) {
+                    if (_this.list.itinerarios.length > 0) {
+                        if (!document.getElementById('CambioBoletoRE').classList.contains("in")) {
+                            _this.$nextTick(() => {
+                                if (document.getElementById('VerifBoletoRE').classList.contains("in"))
+                                    document.getElementById('VerifBoletoRE').classList.remove("in");
+                                if (document.getElementById('BuscarProgRE').classList.contains("in"))
+                                    document.getElementById('BuscarProgRE').classList.remove("in");
+                            });
+                        }
+                    } else {
+                        APP.msg.info('Debe Seleccionar una programación');
+                        event.stopPropagation();
                         _this.$nextTick(() => {
-                            if (document.getElementById('VerifBoletoRE').classList.contains("in"))
-                                document.getElementById('VerifBoletoRE').classList.remove("in");
-                            if (document.getElementById('BuscarProgRE').classList.contains("in"))
-                                document.getElementById('BuscarProgRE').classList.remove("in");
+                            if (!document.getElementById('BuscarProgRE').classList.contains("in")) {
+                                _this.$refs.refREBuscarProg.click();
+                            }
                         });
                     }
                 },
+                consultaPrecioRuta: function (codiDestino) {
+                    let _this = this;
+                    var input = {};
+                    input.CodiOrigen = _this.filtroMiniMapa.CodiOrigen;
+                    input.CodiDestino = codiDestino;
+                    input.HoraViaje = _this.filtroMiniMapa.HoraViaje;
+                    input.FechaViaje = _this.filtroMiniMapa.FechaViaje;
+                    input.CodiServicio = _this.filtroMiniMapa.CodiServicio;
+                    input.CodiEmpresa = _this.filtroMiniMapa.CodiEmpresa;
+                    input.Nivel = _this.filtroCambio.Nivel;
+
+                    APP.rq.axios2.post(APP.base + '/reintegro/consulta-precio-ruta', input)
+                        .then((res) => {
+                            if (res.data.EsCorrecto) {
+                                var data = _.cloneDeep(res.data.Valor);
+                                _this.filtroCambio.MontoReal = parseFloat(data.PrecioNormal).toFixed(2);
+                                _this.filtroCambio.DiferenciaPrecio = (parseFloat(data.PrecioNormal) - parseFloat(_this.item.precio)).toFixed(2);
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 saveReintegro: async function () {
                     let _this = this;
+
                     _this.disabledAceptar = true;
+
+                    var updateReintegro = false;
+
+                    var auxEmpresa = '';
+                    var auxOrigenPas = '';
+                    var auxDestinoPas = '';
+                    var auxServicio = '';
+                    var auxFechaViaje = '';
+                    var auxHoraViaje = '';
+                    var auxAsiento = '';
+                    var auxAsientoAuditoria = '';
+                    var auxCodiProgramacion = '';
+
+                    //Diferencias por Código de Motivo
                     switch (_this.filtro.codMotivo) {
                         case '00001':
                         case '00002':
                         case '00005': {
-                            //Valida 'Precio Reintegro'
-                            if (appController.validatePanel('181') === '1') {
-                                if (_this.item.reintegro > _this.item.precio) {
-                                    APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
-                                    _this.disabledAceptar = false;
-                                    return
-                                }
-                            }
-
-                            //Valida 'Ex Dni'
-                            if (await _this.haveExDni()) {
-                                _this.disabledAceptar = false;
-                                return;
-                            }
-
-                            //Panel Clave 99
-                            if (appController.validatePanelClave('99') === '1') {
-
-                                var checkClaveAutorizacion = false;
-
-                                appController.showClaveAutorizacion(Clavereintegroconfirmacion);
-
-                                await deferredModal($('#appClaveAutorizacion'), true).done(function () {
-                                    window.removeEventListener('keyup', _this.esc);
-                                });
-
-                                await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                                    appClaveAutorizacion.$nextTick(() => {
-                                        checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                                        window.addEventListener('keyup', _this.esc);
-                                    });
-                                });
-
-                                if (!checkClaveAutorizacion) {
-                                    _this.disabledAceptar = false;
-                                    return;
-                                }
-                            }
-
-                            //Confirmar conservar crédito
-                            if (_this.dataOriginal.FlagVenta === '1') {
-                                if (await APP.msg.confirm('El boleto de viaje esta emitido como reintegro', '¿desea emitir el boleto reintegro bajo las misma modalidad?')) {
-                                    _this.item.stReintegro = 'X';
-                                } else {
-                                    _this.item.stReintegro = '';
-                                }
-                            }
-
-                            //appController.showTipoPago();
-                            appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
-
-                            var checkTipoPago = false;
-
-                            await deferredModal($('#appVueTipoPago2'), true).done(function () {
-                                checkTipoPago = false;
-                                window.removeEventListener('keyup', _this.esc);
-                            });
-
-                            var input = {};
-
-                            //Código interno de documento
-                            var CodiInternoDocumento = (appVueVenta.CodiTerminalElectronico === 'M') ? '20' : ((appVueVenta.CodiTerminalElectronico === 'F') ? '17' : '16');
-
-                            //Consulta del IGV
-                            var igv = 0;
-                            await APP.rq.axios.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento}))
-                                .then((res) => {
-                                    igv = _.cloneDeep(res.data.Valor);
-                                })
-                                .catch(APP.rq.axios_handler_error_alert);
-
-                            await deferredModal($('#appVueTipoPago2'), false).done(function () {
-                                appVueTipoPago2.$nextTick(() => {
-                                    checkTipoPago = appVueTipoPago2.trustedSave;
-                                    if (checkTipoPago) {
-                                        input.Serie = _this.item.boleto.substring(1, 4);
-                                        input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
-                                        input.Codi_Empresa = _this.filtro.codEmpresa;
-                                        input.CODI_SUCURSAL = Usuario.CodiSucursal;
-                                        input.CODI_PROGRAMACION = _this.dataOriginal.CodiProgramacion;
-                                        input.CODI_SUBRUTA = _this.item.destinoPasj;
-                                        input.CODI_Cliente = _this.item.reintegro;
-                                        input.NIT_CLIENTE = _this.item.ruc;
-                                        input.PRECIO_VENTA = _this.item.reintegro;
-                                        input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
-                                        input.FECH_VENTA = moment().format('DD/MM/YYYY');
-                                        input.Recoger = ''; //TODO: Falta implementar
-                                        input.Clav_Usuario = Usuario.CodiUsuario;
-                                        input.Dni = _this.item.numero;
-                                        input.EDAD = _this.item.edad;
-                                        input.TELEF = _this.item.telefono;
-                                        input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
-                                        input.porcentaje = igv;
-                                        input.Codi_Esca = _this.item.boleto;
-                                        input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
-                                        input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
-                                        input.Punto_Venta = Usuario.CodiPuntoVenta;
-                                        input.tipo_doc = _this.item.documento;
-                                        input.codi_ori_psj = _this.item.origenPasj;
-                                        input.Tipo = appVueVenta.CodiTerminalElectronico;
-                                        input.Tipo_Pago = appVueTipoPago2.tipoPago2;
-                                        input.Fecha_viaje = _this.dataOriginal.FechaViaje;
-                                        input.HORA_V = _this.dataOriginal.HoraViaje;
-                                        input.nacionalidad = (_this.item.stReintegro === 'X') ? "R1" : _this.item.nacionalidad;
-                                        input.servicio = _this.dataOriginal.CodiServicio;
-                                        input.Sube_en = _this.dataOriginal.CodiEmbarque;
-                                        input.Baja_en = _this.dataOriginal.CodiArribo;
-                                        input.Hora_Emb = _this.dataOriginal.HoraViaje;
-                                        input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
-                                        input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
-                                        input.CODI_TERMINAL__ = Usuario.Terminal;
-                                        input.Codi_Documento__ = CodiInternoDocumento;
-                                        input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
-                                        input.fecha_venta__ = moment().format('DD/MM/YYYY');
-                                        input.Pventa__ = Usuario.CodiPuntoVenta;
-                                        input.SERIE_BOLETO__ = _this.item.boleto.substring(1, 4);
-                                        input.stReintegro = _this.item.stReintegro;
-                                        input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
-                                        input.NombDestino = _this.$options.filters.rutas(_this.item.destinoPasj);
-                                        input.CodiBus = _this.dataOriginal.CodiBus;
-                                        input.DirEmbarque = _this.dataOriginal.DirEmbarque || rutas.find(x => x.id === _this.dataOriginal.CodiEmbarque).label;
-                                        input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
-                                        input.NomEmpresaRuc = _this.item.razonSocial;
-                                        input.DirEmpresaRuc = _this.item.direccion;
-                                        input.NomUsuario = Usuario.Nombre;
-                                        input.NomOrigen = _this.$options.filters.rutas(_this.item.origenPasj);
-                                        input.id_original = _this.dataOriginal.IdVenta;
-                                        input.CodMotivo = _this.filtro.codMotivo;
-                                        input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto,8,'0')}`;
-                                        input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
-                                        input.T_DNI2 = _this.dataOriginal.Dni;
-                                        input.NOMB2 = _this.dataOriginal.Nombre;
-                                        input.TipoOri = _this.dataOriginal.Tipo;
-
-                                        _this.disabledAceptar = false;
-                                    }
-                                    window.addEventListener('keyup', _this.esc);
-                                });
-                            });
-
-                            if (checkTipoPago) {
-                                await APP.rq.axios2.post(APP.base + '/reintegro/save-reintegro', input)
-                                    .then(async function (res) {
-                                        debugger;
-                                        if (res.data.Estado) {
-
-                                            _this.close();
-
-                                            appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
-
-                                            _this.disabledAceptar = false;
-
-                                            // callSignalR_ActualizarTurnoPlano
-                                            //callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
-                                        }
-                                        else {
-                                            await appController.chargeTurnos();
-                                            _this.$nextTick(() => {
-                                                if (res.data.EsCorrecto)
-                                                    APP.msg.warning(res.data.Mensaje);
-                                                else
-                                                    APP.msg.error(res.data.Mensaje);
-                                            });
-                                        }
-                                    })
-                                    .catch(APP.rq.axios_handler_error_alert);
-                            } else {
-                                _this.disabledAceptar = false;
-                                return;
-                            }
-
+                            auxEmpresa = _this.dataOriginal.CodiEmpresa;
+                            auxOrigenPas = _this.item.origenPasj;
+                            auxDestinoPas = _this.item.destinoPasj;
+                            auxServicio = _this.dataOriginal.CodiServicio;
+                            auxFechaViaje = _this.dataOriginal.FechaViaje;
+                            auxHoraViaje = _this.dataOriginal.HoraViaje;
+                            auxAsientoAuditoria = '00';
                         }; break;
                         case '00003':
-                        case '00004': {}; break;
+                        case '00004': {
+                            auxEmpresa = _this.filtroMiniMapa.CodiEmpresa;
+                            auxOrigenPas = _this.filtroMiniMapa.CodiOrigen;
+                            auxDestinoPas = _this.filtroMiniMapa.CodiDestino;
+                            auxServicio = _this.filtroMiniMapa.CodiServicio;
+                            auxFechaViaje = _this.filtroMiniMapa.FechaViaje;
+                            auxHoraViaje = _this.filtroMiniMapa.HoraViaje;
+                            auxAsiento = _this.filtroCambio.NumAsiento;
+                            auxAsientoAuditoria = _this.dataOriginal.NumAsiento;
+                            auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
+
+                            updateReintegro = true;
+                        }; break;
                         default:
                     }
-                    _this.disabledAceptar = false;
-                    //_this.close(); //TODO
-                },
-                anularReintegro: function () {
 
+                    //Valida 'Precio Reintegro'
+                    if (appController.validatePanel('181') === '1') {
+                        if (_this.item.reintegro > _this.item.precio) {
+                            APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
+                            _this.disabledAceptar = false;
+                            return
+                        }
+                    }
+
+                    //Valida 'Ex Dni'
+                    if (await _this.haveExDni()) {
+                        _this.disabledAceptar = false;
+                        return;
+                    }
+
+                    //Panel Clave 99
+                    if (appController.validatePanelClave('99') === '1') {
+
+                        var checkClaveAutorizacion = false;
+
+                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
+
+                        await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                            window.removeEventListener('keyup', _this.esc);
+                        });
+
+                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                window.addEventListener('keyup', _this.esc);
+                            });
+                        });
+
+                        if (!checkClaveAutorizacion) {
+                            _this.disabledAceptar = false;
+                            return;
+                        }
+                    }
+
+                    //Confirmar conservar crédito
+                    if (_this.dataOriginal.FlagVenta === '1') {
+                        if (await APP.msg.confirm('El boleto de viaje esta emitido como reintegro', '¿desea emitir el boleto reintegro bajo las misma modalidad?')) {
+                            _this.item.stReintegro = 'X';
+                        } else {
+                            _this.item.stReintegro = '';
+                        }
+                    }
+
+                    //appController.showTipoPago();
+                    appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
+
+                    var checkTipoPago = false;
+
+                    await deferredModal($('#appVueTipoPago2'), true).done(function () {
+                        checkTipoPago = false;
+                        window.removeEventListener('keyup', _this.esc);
+                    });
+
+                    var input = {};
+
+                    //Código interno de documento
+                    var CodiInternoDocumento = (appVueVenta.CodiTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
+                        : ((appVueVenta.CodiTerminalElectronico === 'F') ? '17' : '16');
+
+                    //Consulta del IGV
+                    var igv = await _this.verificaIgv(CodiInternoDocumento);
+
+                    await deferredModal($('#appVueTipoPago2'), false).done(function () {
+                        appVueTipoPago2.$nextTick(() => {
+                            checkTipoPago = appVueTipoPago2.trustedSave;
+                            if (checkTipoPago) {
+                                //Data para Grabar Reintegro
+                                input.Serie = _this.item.boleto.substring(1, 4);
+                                input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                input.Codi_Empresa = auxEmpresa;
+                                input.CODI_SUCURSAL = Usuario.CodiSucursal;
+                                input.CODI_PROGRAMACION = _this.dataOriginal.CodiProgramacion;
+                                input.CODI_SUBRUTA = auxDestinoPas;
+                                input.CODI_Cliente = _this.item.reintegro;
+                                input.NIT_CLIENTE = _this.item.ruc;
+                                input.PRECIO_VENTA = _this.item.reintegro;
+                                input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
+                                input.FECH_VENTA = moment().format('DD/MM/YYYY');
+                                input.Recoger = ''; //TODO: Falta implementar
+                                input.Clav_Usuario = Usuario.CodiUsuario;
+                                input.Dni = _this.item.numero;
+                                input.EDAD = _this.item.edad;
+                                input.TELEF = _this.item.telefono;
+                                input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
+                                input.porcentaje = igv;
+                                input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
+                                input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
+                                input.Punto_Venta = Usuario.CodiPuntoVenta;
+                                input.tipo_doc = _this.item.documento;
+                                input.codi_ori_psj = auxOrigenPas;
+                                input.Tipo = appVueVenta.CodiTerminalElectronico;
+                                input.Tipo_Pago = appVueTipoPago2.tipoPago2;
+                                input.Fecha_viaje = auxFechaViaje;
+                                input.HORA_V = auxHoraViaje;
+                                input.nacionalidad = (_this.item.stReintegro === 'X') ? "R1" : _this.item.nacionalidad;
+                                input.servicio = auxServicio;
+                                input.Sube_en = _this.dataOriginal.CodiEmbarque;
+                                input.Baja_en = _this.dataOriginal.CodiArribo;
+                                input.Hora_Emb = auxHoraViaje;
+                                input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
+                                input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
+                                input.CODI_TERMINAL__ = Usuario.Terminal;
+                                input.Codi_Documento__ = CodiInternoDocumento;
+                                input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                input.fecha_venta__ = moment().format('DD/MM/YYYY');
+                                input.Pventa__ = Usuario.CodiPuntoVenta;
+                                input.SERIE_BOLETO__ = _this.item.boleto.substring(1, 4);
+                                input.stReintegro = _this.item.stReintegro;
+                                input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
+                                input.NombDestino = _this.$options.filters.rutas(auxDestinoPas);
+                                input.CodiBus = _this.dataOriginal.CodiBus;
+                                input.DirEmbarque = rutas.find(x => x.id === String(_this.dataOriginal.CodiEmbarque)).label;
+                                input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
+                                input.NomEmpresaRuc = _this.item.razonSocial;
+                                input.DirEmpresaRuc = _this.item.direccion;
+                                input.NomUsuario = Usuario.Nombre;
+                                input.NomOrigen = _this.$options.filters.rutas(auxOrigenPas);
+                                input.id_original = _this.dataOriginal.IdVenta;
+                                input.CodMotivo = _this.filtro.codMotivo;
+                                input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
+                                input.T_DNI2 = _this.dataOriginal.Dni;
+                                input.NOMB2 = _this.dataOriginal.Nombre;
+                                input.TipoOri = _this.dataOriginal.Tipo;
+                                input.CodiTarjetaCredito = (appVueTipoPago2.tarjeta2) ? appVueTipoPago2.tarjeta2.id : '';
+                                input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
+                                input.NumAsientoAuditoria = auxAsientoAuditoria;
+                                input.BoletoAuditoria = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+
+                                _this.disabledAceptar = false;
+                            }
+                            window.addEventListener('keyup', _this.esc);
+                        });
+                    });
+
+                    //Graba reintegro
+                    if (checkTipoPago) {
+                        await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
+                            .then(async function (res) {
+                                if (res.data.Estado) {
+
+                                    _this.close();
+
+                                    appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
+
+                                    _this.disabledAceptar = false;
+
+                                    if (updateReintegro) {
+                                        _this.updateReintegro(_this.dataOriginal.IdVenta, auxCodiProgramacion, auxDestinoPas, auxAsiento, auxOrigenPas, _this.dataSignalR.NroViaje, _this.dataSignalR.FechaProgramacion, res.data.Valor);
+                                    }
+                                }
+                                else {
+                                    await appController.chargeTurnos();
+                                    _this.$nextTick(() => {
+                                        if (res.data.EsCorrecto)
+                                            APP.msg.warning(res.data.Mensaje);
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    });
+                                }
+                            })
+                            .catch(APP.rq.axios_handler_error_alert);
+                    } else {
+                        _this.disabledAceptar = false;
+                        return;
+                    }
+
+                    _this.disabledAceptar = false;
+                },
+                verificaIgv: async function (CodiInternoDocumento) {
+                    var igv = 0;
+                    await APP.rq.axios2.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento }))
+                        .then(res => {
+                            igv = _.cloneDeep(res.data.Valor);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                    return igv;
+                },
+                verificaPanel35: function () {
+
+                },
+                updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
+                    APP.rq.axios2.get(APP.base + '/reintegro/update-reintegro' + APP.util.getQueryParamByObject({
+                        IdVenta: IdVenta,
+                        Programacion: Programacion,
+                        Destino: Destino,
+                        Asiento: Asiento,
+                        Origen: Origen
+                    }))
+                        .then(res => {
+                            // callSignalR_ActualizarTurnoPlano
+                            callSignalR_ActualizarTurnoPlano(NroViaje, FechaProg, VentaRealizada);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                anularReintegro: async function () {
+                    let _this = this;
+                    var item = {};
+                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa);
+                    item.serie = (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0');
+                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0');
+                    appVueAnulaReintegro.show(item);
+
+                    await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
+                        window.removeEventListener('keyup', _this.esc);
+                    });
+
+                    await deferredModal($('#appVueAnulaReintegro'), false).done(function () {
+                        window.addEventListener('keyup', _this.esc);
+                    });
                 },
                 haveExDni: async function () {
                     let _this = this;
                     var response = true;
-                    await APP.rq.axios.get(APP.base + '/itinerarios/validaExDni' + APP.util.getQueryParamByObject({documento: _this.item.numero}))
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/validaExDni' + APP.util.getQueryParamByObject({documento: _this.item.numero}))
                         .then(res => {
                             response = _.cloneDeep(res.data.Valor);
                             if (response) {
@@ -9840,10 +9994,13 @@
                         if (value !== '' && value !== null) {
                             if (this.list.rutas.find(x => x.id === value.id)) {
                                 this.filtroCambio.CodiNuevoDestino = value.id;
+                                this.consultaPrecioRuta(value.id);
                                 //this.$refs.refRESerie.focus()
                             }
                         } else {
                             this.filtroCambio.CodiNuevoDestino = '';
+                            this.filtroCambio.MontoReal = '';
+                            this.filtroCambio.DiferenciaPrecio = '';
                         }
 
                         this.$nextTick(() => {
@@ -9910,6 +10067,7 @@
                     plano1: [],
                     destinosPas: []
                 },
+                itemMemoria: {},
                 asientoSel: {}
             },
             mounted: function () {
@@ -9930,8 +10088,11 @@
             methods: {
                 show: async function (_item) {
                     let _this = this;
-                    await _this.searchData(_item);
-                    $('#appVueMiniMapa').modal('show');
+                    _this.limpiarCampos();
+                    _this.$nextTick(async () => {
+                        await _this.searchData(_item);
+                        $('#appVueMiniMapa').modal('show');
+                    });
                 },
                 searchData: async function (_item) {
                     let _this = this;
@@ -9961,6 +10122,17 @@
                 setData: function (item) {
                     this.asientoSel = item;
                     this.close();
+                },
+                limpiarCampos: function () {
+                    let _this = this;
+                    _this.list.tempList = [];
+                    _this.list.plano5 = [];
+                    _this.list.plano4 = [];
+                    _this.list.plano3 = [];
+                    _this.list.plano2 = [];
+                    _this.list.plano1 = [];
+                    _this.list.destinosPas = [];
+                    _this.asientoSel = {};
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -10053,207 +10225,10 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 saveVenta2: async function () {
-                    this.trustedSave = true;
-                    this.close();
-                    //var _this = this;
-
-                    //// Valida recorrido del modal 'Tipo pago'
-                    //switch (this.$getValuePickedBusVenta()) {
-                    //    case 'R': // Reserva
-                    //        break;
-                    //    default:
-                    //        {
-                    //            if (!_this.recorridoSectionTipoPagos(true))
-                    //                return;
-                    //        };
-                    //        break;
-                    //};
-
-                    //appController.disabledAsientos(true);
-
-                    //// Valida 'TurnoDisponible'
-                    //if (!IngresoManualPasajes) {
-                    //    if (appController.validatePanel('54') === '1') {
-
-                    //        var resVerificaTurnoDisponible = appController.verificaTurnoDisponible();
-                    //        if (!resVerificaTurnoDisponible) {
-                    //            APP.msg.warning('La hora de viaje ya pasó, verificar.');
-                    //            appController.disabledAsientos(false);
-                    //            return;
-                    //        }
-                    //    }
-                    //}
-
-                    //// Valida 'FechaViaje'
-                    //if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'day')) {
-                    //    APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //// Valida 'Programación cerrada'
-                    //if (appVueVenta.objTurno.Xcierre === '1') {
-                    //    APP.msg.warning('La programación se encuentra cerrada.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //// Valida 'Manifiesto'
-                    //var resValidaManifiestoProgramacion = await appController.validaManifiestoProgramacion();
-                    //if (!resValidaManifiestoProgramacion) {
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //_this.processing = true;
-
-                    //$("#appVueTipoPago").modal('hide');
-
-                    //// Para calcular 'input.Credito' -> (Multipago)
-                    //var canTotalCredito = _.cloneDeep(parseFloat(_this.tarjetaCant || '0') || 0);
-
-                    //var listado = [];
-                    //for (const objVenta of _this.list.ventas) {
-                    //    var input = {};
-                    //    input.CodiEmpresa = _this.ticketVenta.CodiEmpresa;
-                    //    input.CodiOrigen = _this.ticketVenta.CodiOrigen;
-                    //    input.CodiDestino = _this.ticketVenta.CodiDestino;
-                    //    input.CodiProgramacion = _this.ticketVenta.CodiProgramacion;
-                    //    input.RucCliente = objVenta.Ruc;
-                    //    input.NomEmpresaRuc = objVenta.RazonSocial;
-                    //    input.DirEmpresaRuc = objVenta.Direccion;
-                    //    input.NumeAsiento = objVenta.NroAsiento;
-                    //    input.FlagVenta = _this.ticketVenta.FlagVenta;
-                    //    input.PrecioVenta = parseFloat(objVenta.Precio);
-                    //    input.Nombre = (objVenta.Nombres + ',' + objVenta.ApellidoPaterno + ',' + objVenta.ApellidoMaterno);
-                    //    input.Edad = objVenta.Edad;
-                    //    input.Telefono = objVenta.Telefono;
-                    //    input.Dni = objVenta.Documento;
-                    //    input.TipoDocumento = formatToChar2(objVenta.CodiTipoDoc.id);
-                    //    input.Sexo = objVenta.Sexo.id;
-                    //    input.TipoPago = _this.tipoPago;
-                    //    input.FechaViaje = _this.ticketVenta.FechaViaje;
-                    //    input.HoraViaje = _this.ticketVenta.HoraViaje;
-                    //    input.CodiServicio = _this.ticketVenta.CodiServicio;
-                    //    input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : 0);
-                    //    input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : 0);
-                    //    input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : '');
-                    //    input.NivelAsiento = objVenta.NivelAsiento;
-                    //    input.NomDestino = _this.ticketVenta.NomDestino;
-                    //    input.NomServicio = _this.ticketVenta.NomServicio;
-                    //    input.NomOrigen = _this.ticketVenta.NomOrigen;
-                    //    input.Nacionalidad = objVenta.Nacionalidad;
-                    //    input.NroViaje = _this.ticketVenta.NroViaje;
-                    //    input.FechaProgramacion = _this.ticketVenta.FechaProgramacion;
-                    //    input.HoraProgramacion = _this.ticketVenta.HoraProgramacion;
-                    //    input.CodiBus = _this.ticketVenta.CodiBus;
-                    //    input.CodiSucursal = _this.ticketVenta.CodiSucursal;
-                    //    input.CodiRuta = _this.ticketVenta.CodiRuta;
-                    //    input.CodiTarjetaCredito = (_this.tarjeta ? _this.tarjeta.id : '');
-                    //    input.NumeTarjetaCredito = _this.numeroTarjeta;
-                    //    input.CodiZona = (_this.distrito ? _this.distrito.id : '');
-                    //    input.Direccion = _this.direccion;
-                    //    input.Observacion = _this.observacion;
-                    //    // Calculamos 'input.Credito'
-                    //    if (input.TipoPago === '02') {
-                    //        if (canTotalCredito) {
-                    //            if (canTotalCredito >= input.PrecioVenta) {
-                    //                canTotalCredito = canTotalCredito - input.PrecioVenta;
-                    //                input.Credito = input.PrecioVenta;
-                    //            }
-                    //            else {
-                    //                input.Credito = canTotalCredito;
-                    //                canTotalCredito = 0;
-                    //            }
-                    //        }
-                    //        else {
-                    //            input.Credito = 0;
-                    //            input.TipoPago = '01';
-                    //        }
-                    //    }
-                    //    // -------------------
-                    //    input.ObjAcompaniante = objVenta.ObjAcompaniante;
-                    //    input.Concepto = objVenta.Recoger;
-                    //    input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
-                    //    input.FechaAbierta = objVenta.FechaAbierta;
-                    //    input.PrecioNormal = objVenta.PrecioNormal;
-                    //    input.ValidadorDescuento = objVenta.ValidadorDescuento;
-                    //    input.ObservacionDescuento = objVenta.ObservacionDescuento;
-                    //    input.ValidadorDescuentoControl = objVenta.ValidadorDescuentoControl;
-                    //    input.DescuentoTipoDC = objVenta.DescuentoTipoDC;
-                    //    input.ImporteDescuentoDC = objVenta.ImporteDescuentoDC;
-                    //    input.ImporteDescontadoDC = objVenta.ImporteDescontadoDC;
-                    //    input.AutorizadoDC = objVenta.AutorizadoDC;
-                    //    input.IngresoManualPasajes = IngresoManualPasajes;
-
-                    //    // TIPOS DE VENTA
-                    //    switch (this.$getValuePickedBusVenta()) {
-                    //        case '7': // PASE DE CORTESÍA
-                    //            input.CodiGerente = objVenta.CodiGerente;
-                    //            input.CodiSocio = objVenta.CodiSocio;
-                    //            input.Concepto = objVenta.Concepto;
-                    //            break;
-                    //        case '1': // CRÉDITO
-                    //            input.IdContrato = _this.ticketVenta.IdContrato;
-                    //            input.IdPrecio = _this.ticketVenta.IdPrecio; // IdTabla
-                    //            input.IdRuc = _this.ticketVenta.IdRuc;
-                    //            input.NroSolicitud = objVenta.NroSolicitud;
-                    //            input.IdArea = (objVenta.Area ? objVenta.Area.id : 0);
-                    //            input.FlgIda = objVenta.BoletoTipoDir;
-                    //            input.FechaCita = objVenta.FechaCita;
-                    //            input.IdHospital = (objVenta.Hospital ? objVenta.Hospital.id : 0);
-                    //            input.FlagPrecioNormal = objVenta.FlagPrecioNormal;
-                    //            break;;
-                    //        case 'V': // VENTA
-                    //            {
-                    //                if (objVenta.FlagVenta === 'R') {
-                    //                    input.IdVenta = objVenta.IdVenta;
-                    //                    input.FlagVenta = objVenta.FlagVenta;
-                    //                }
-                    //            };
-                    //            break;
-                    //        case 'R': // Reserva
-                    //            input.FechaReservacion = objVenta.FechaReservacion;
-                    //            input.HoraReservacion = objVenta.HoraReservacion;
-                    //            break;
-                    //    }
-                    //    // --------------
-                    //    listado.push(input);
-                    //};
-
-                    //// Seteo 'CantidadVendida'
-                    //var tmpCantidadVendida = _.cloneDeep(listado.length);
-
-                    //// Limpiar 'AsientosBloqueados'
-                    //var auxResponse = await appVueVenta.cancelarBoletos();
-                    //if (!auxResponse) {
-                    //    APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
-                    //    appController.disabledAsientos(false);
-                    //    return;
-                    //}
-
-                    //await APP.rq.axios.post(APP.base + '/itinerarios/grabar-venta', {
-                    //    Listado: listado,
-                    //    FlagVenta: _this.$getValuePickedBusVenta()
-                    //})
-                    //    .then(async function (res) {
-                    //        if (res.data.Estado) {
-                    //            appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, tmpCantidadVendida);
-
-                    //            // callSignalR_ActualizarTurnoPlano
-                    //            callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
-                    //        }
-                    //        else {
-                    //            await appController.chargeTurnos();
-                    //            _this.$nextTick(() => {
-                    //                if (res.data.EsCorrecto)
-                    //                    APP.msg.warning(res.data.Mensaje);
-                    //                else
-                    //                    APP.msg.error(res.data.Mensaje);
-                    //            });
-                    //        }
-                    //    })
-                    //    .catch(APP.rq.axios_handler_error_alert);
+                    if (!this.errors.any()) {
+                        this.trustedSave = true;
+                        this.close();
+                    }
                 },
                 limpiarCampos2: function () {
                     let _this = this;
@@ -10505,6 +10480,125 @@
                         });
                     }
                 }
+            },
+            watch: {}
+        });
+
+        var appVueAnulaReintegro = new Vue({
+            el: '#appVueAnulaReintegro',
+            data: {
+                list: {
+                    empresas: []
+                },
+                filtro: {
+                    codEmpresa: '',
+                    serie: '',
+                    numero: ''
+                }
+            },
+            mounted: function () {
+                let _this = this;
+
+                var modal = $('#appVueAnulaReintegro');
+
+                modal.modal({
+                    'backdrop': 'static',
+                    'keyboard': false,
+                    'show': false
+                });
+
+                $('#appVueAnulaReintegro').on('shown.bs.modal', function () {
+                    $(document).off('focusin.modal');
+
+                    if (_this.filtro.codEmpresa && _this.filtro.serie && _this.filtro.numero)
+                        _this.$refs.refANUREAceptar.focus();
+                    else
+                        _this.$refs.refANUREEmpresa.$el.querySelector('input').focus();
+                });
+            },
+            methods: {
+                show: function (item) {
+                    this.limpiarCampos();
+                    this.setData(item);
+                    if (!this.list.empresas.length > 0)
+                        this.list.empresas = empresas
+                    this.$nextTick(() => {
+                        $('#appVueAnulaReintegro').modal('show');
+                    });
+                },
+                setData: function (_item) {
+                    let _this = this;
+                    _this.filtro.codEmpresa = (_item) ? _item.codEmpresa || '' : '';
+                    _this.filtro.serie = (_item) ? _item.serie || '' : '';
+                    _this.filtro.numero = (_item) ? _item.numero || '' : '';
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                confirm: async function () {
+                    let _this = this;
+
+                    var data = null;
+
+                    var auxTipo = (_this.filtro.serie.substring(0, 1) === '0') ? 'M' : _this.filtro.serie.substring(0, 1);
+                    
+                    await APP.rq.axios2.get(APP.base + '/reintegro/verifica-reintegro-anular' + APP.util.getQueryParamByObject({
+                        Serie: parseInt(_this.filtro.serie.substring(1, 4)),
+                        Numero: parseInt(_this.filtro.numero),
+                        CodiEmpresa: parseInt(_this.filtro.codEmpresa),
+                        Tipo: auxTipo
+                    }))
+                        .then(async (res) => {                            
+                            if (res.data.EsCorrecto)
+                                data = res.data.Valor;
+                            else APP.msg.error(res.data.Mensaje);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                    
+                    if (data &&  data.IdVenta) {
+                        if (await APP.msg.confirm('Mensaje de confirmación', `¿Desea anular el reintegro ${_this.filtro.serie}-${_this.filtro.numero} con monto ${_this.$options.filters.money(data.PrecioVenta)}?`)) {
+                            await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular', data)
+                                .then(async (res) => {
+                                    if (res.data.EsCorrecto) {
+                                        _this.close();
+                                        APP.msg.info('Se anuló correctamente');
+                                    }
+                                }).catch(APP.rq.axios_handler_error_alert);
+                            
+                        } else return;
+                    }                   
+                },
+                limpiarCampos: function () {
+                    let _this = this;
+                    _this.filtro.codEmpresa = '';
+                    _this.filtro.serie = '';
+                    _this.filtro.numero = '';
+                },
+                close: function () {
+                    $('#appVueAnulaReintegro').modal('hide');
+                }
+            },
+            computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.filtro.codEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.filtro.codEmpresa)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.filtro.codEmpresa = value.id;
+                                //this.$refs.refRESerie.focus()
+                            }
+                        } else {
+                            this.filtro.codEmpresa = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refANUREEmpresa.typeAheadPointer = this.$getSelectorVselect(this.list.empresas, value);
+                        });
+                    }
+                },
             },
             watch: {}
         });

@@ -35,6 +35,9 @@
         public string CodiBus { get; set; }
         public int CodiPuntoVenta { get; set; }
         public string DirEmbarque { get; set; }
+        public int Sucursal { get; set; }
+        public string TipoPago { get; set; }
+        public string ClavUsuario { get; set; }
     }
 
     public class SelectReintegroEntity
