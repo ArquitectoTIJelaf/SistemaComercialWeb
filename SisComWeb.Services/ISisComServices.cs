@@ -169,6 +169,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "LiberaAsiento", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> LiberaAsiento(int IDS);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ActualizarAsiOcuTbBloqueoAsientos", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ActualizarAsiOcuTbBloqueoAsientos(TablaBloqueoAsientosRequest request);
+
         #endregion
 
         #region GRABA VENTA

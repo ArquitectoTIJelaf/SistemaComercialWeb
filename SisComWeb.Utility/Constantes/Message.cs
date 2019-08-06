@@ -119,6 +119,11 @@
         public const string MsgErrorLiberaArregloAsientos = "Error: LiberaArregloAsientos.";
         public const string MsgExcLiberaArregloAsientos = "Excepción: LiberaArregloAsientos.";
 
+        // Tabla bloqueo_asientos
+        public const string MsgCorrectoActualizarAsiOcuTbBloqueoAsientos = "Se actualizó los asientos bloqueados correctamente.";
+        public const string MsgErrorActualizarAsiOcuTbBloqueoAsientos = "Error: ActualizarAsiOcuTbBloqueoAsientos.";
+        public const string MsgExcActualizarAsiOcuTbBloqueoAsientos = "Excepción: ActualizarAsiOcuTbBloqueoAsientos.";
+
         // RENIEC
         public const string MsgCorrectoConsultaRENIEC = "Correcto: ConsultaRENIEC.";
         public const string MsgErrorConsultaRENIEC = "RENIEC: No se encontraron datos.";

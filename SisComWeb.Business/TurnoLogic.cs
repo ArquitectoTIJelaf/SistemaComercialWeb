@@ -111,13 +111,6 @@ namespace SisComWeb.Business
                 if (resValidarProgramacionCerrada == 1)
                     buscarTurno.ProgramacionCerrada = true;
 
-                // Consulta 'BloqueoAsientoCantidad_Max'
-                var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
-                if (consultaBloqueoAsientoCantidad_Max == 0)
-                    buscarTurno.CantidadMaxBloqAsi = 10;
-                else
-                    buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
-
                 // Obtiene 'TotalVentas'
                 if (buscarTurno.CodiProgramacion > 0)
                     buscarTurno.AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarTurno.CodiProgramacion, buscarTurno.CodiOrigen, buscarTurno.CodiDestino);
@@ -139,6 +132,16 @@ namespace SisComWeb.Business
                 // Lista 'PuntosArribo'
                 buscarTurno.ListaArribos = TurnoRepository.ListarPuntosArribo(buscarTurno.CodiOrigen, buscarTurno.CodiDestino, buscarTurno.CodiServicio, buscarTurno.CodiEmpresa, buscarTurno.CodiPuntoVenta, buscarTurno.HoraPartida);
 
+                // Lista 'DestinosRuta'
+                buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
+
+                // Consulta 'BloqueoAsientoCantidad_Max'
+                var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
+                if (consultaBloqueoAsientoCantidad_Max == 0)
+                    buscarTurno.CantidadMaxBloqAsi = 10;
+                else
+                    buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
+
                 // Elimina 'Reservas' por escala
                 if (buscarTurno.CodiProgramacion > 0)
                 {
@@ -152,6 +155,56 @@ namespace SisComWeb.Business
 
                     TurnoRepository.EliminarReservas02(buscarTurno.CodiOrigen.ToString(), buscarTurno.CodiProgramacion, auxHora, buscarTurno.FechaViaje);
                     TurnoRepository.EliminarReservas01(buscarTurno.CodiProgramacion, auxHora);
+                }
+
+                // Consulta tabla 'AsientosBloqueados'
+                var consultarTablaAsientosBloqueados = BloqueoAsientoRepository.ConsultarTablaAsientosBloqueados(buscarTurno.NroViaje);
+
+                buscarTurno.TablaBloqueoAsientos = new TablaBloqueoAsientosEntity()
+                {
+                    AsientosOcupados = string.Empty,
+                    AsientosLiberados = string.Empty
+                };
+
+                // Consulta tabla 'BloqueoAsientos'
+                if (!string.IsNullOrEmpty(consultarTablaAsientosBloqueados.Asientos))
+                {
+                    var auxCodiProgramacion = buscarTurno.CodiProgramacion > 0 ? buscarTurno.CodiProgramacion : buscarTurno.NroViaje;
+                    var auxTipo = buscarTurno.CodiProgramacion > 0 ? "P" : "V";
+
+                    var consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, buscarTurno.FechaProgramacion);
+
+                    if (consultarTablaBloqueoAsientos == null)
+                    {
+                        if (buscarTurno.CodiProgramacion <= 0)
+                        {
+                            var requestTBA = new TablaBloqueoAsientosRequest()
+                            {
+                                CodiProgramacion = auxCodiProgramacion,
+                                CodiOrigen = request.CodiOrigen,
+                                CodiDestino = request.CodiDestino,
+                                AsientosOcupados = consultarTablaAsientosBloqueados.Asientos,
+                                AsientosLiberados = string.Empty,
+                                Tipo = auxTipo,
+                                Fecha = buscarTurno.FechaProgramacion
+                            };
+                            // Inserta tabla 'BloqueoAsientos'
+                            BloqueoAsientoRepository.InsertarTablaBloqueoAsientos(requestTBA);
+                        }
+                        else
+                        {
+                            // Actualiza tabla 'BloqueoAsientos'
+                            BloqueoAsientoRepository.ActualizarTablaBloqueoAsientos(buscarTurno.CodiProgramacion.ToString(), buscarTurno.NroViaje.ToString(), buscarTurno.FechaProgramacion);
+
+                            consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, buscarTurno.FechaProgramacion);
+                        } 
+                    }
+
+                    // Seteo 'buscarTurno.TablaAsientosBloqueados'
+                    buscarTurno.TablaBloqueoAsientos.AsientosOcupados = consultarTablaBloqueoAsientos.AsientosOcupados;
+                    buscarTurno.TablaBloqueoAsientos.AsientosLiberados = consultarTablaBloqueoAsientos.AsientosLiberados;
+                    buscarTurno.TablaBloqueoAsientos.CodiOrigen = consultarTablaBloqueoAsientos.CodiOrigen;
+                    buscarTurno.TablaBloqueoAsientos.CodiDestino = consultarTablaBloqueoAsientos.CodiDestino;
                 }
 
                 // Lista 'PlanoBus'
@@ -181,9 +234,6 @@ namespace SisComWeb.Business
                 }
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
-
-                // Lista 'DestinosRuta'
-                buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
 
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);
             }

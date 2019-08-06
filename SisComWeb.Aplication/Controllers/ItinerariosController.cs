@@ -97,7 +97,7 @@ namespace SisComWeb.Aplication.Controllers
 
         private static Acompaniante _ObjetoAcompaniante(JToken obj)
         {
-            Acompaniante objeto = new Acompaniante()
+            var objeto = new Acompaniante()
             {
                 CodiTipoDoc = string.Empty,
                 Documento = string.Empty,
@@ -241,6 +241,24 @@ namespace SisComWeb.Aplication.Controllers
             }).ToList();
 
             return lista;
+        }
+
+        private static TablaBloqueoAsientos _ObjetoTablaBloqueoAsientos(JToken obj)
+        {
+            var objeto = new TablaBloqueoAsientos()
+            {
+                AsientosOcupados = string.Empty,
+                AsientosLiberados = string.Empty,
+            };
+
+            JObject data = (JObject)obj;
+            
+            objeto.AsientosOcupados = (string)data["AsientosOcupados"];
+            objeto.AsientosLiberados = (string)data["AsientosLiberados"];
+            objeto.CodiOrigen = (short)data["CodiOrigen"];
+            objeto.CodiDestino = (short)data["CodiDestino"];
+
+            return objeto;
         }
 
         [Route("")]
@@ -404,7 +422,9 @@ namespace SisComWeb.Aplication.Controllers
                         DescServicio = (string)data["DescServicio"],
                         X_Estado = (string)data["X_Estado"],
                         Activo = (string)data["Activo"],
-                        CantidadMaxBloqAsi = (short)data["CantidadMaxBloqAsi"]
+                        CantidadMaxBloqAsi = (short)data["CantidadMaxBloqAsi"],
+
+                        TablaBloqueoAsientos = _ObjetoTablaBloqueoAsientos(data["TablaBloqueoAsientos"])
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -2976,5 +2996,46 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("actualizarAsiOcuTbBloqueoAsientos")]
+        public async Task<ActionResult> ActualizarAsiOcuTbBloqueoAsientos(TablaBloqueoAsientosRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + request.CodiProgramacion +
+                                    ",\"CodiOrigen\" : " + request.CodiOrigen +
+                                    ",\"CodiDestino\" : " + request.CodiDestino +
+                                    ",\"AsientosOcupados\" : \"" + (request.AsientosOcupados ?? string.Empty) + "\"" +
+                                    ",\"AsientosLiberados\" : \"" + request.AsientosLiberados + "\"" +
+                                    ",\"Fecha\" : \"" + request.Fecha + "\"" +
+
+                                    ",\"NroViaje\" : " + request.NroViaje +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ActualizarAsiOcuTbBloqueoAsientos", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

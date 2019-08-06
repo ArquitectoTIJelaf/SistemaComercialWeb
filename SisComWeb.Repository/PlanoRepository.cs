@@ -158,15 +158,16 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static List<PlanoEntity> ListarAsientosVendidos(int CodiProgramacion, int NroViaje)
+        public static List<PlanoEntity> ListarAsientosVendidos(int NroViaje, int CodiProgramacion, string FechaProgramacion)
         {
             var Lista = new List<PlanoEntity>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListarAsientosVendidos";
-                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.ProcedureName = "scwsp_ListarAsientosVendidos02";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Fecha_Programacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -211,7 +212,7 @@ namespace SisComWeb.Repository
                             ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
                             CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
 
-                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA") ,
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
 
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,

@@ -467,6 +467,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<bool> ActualizarAsiOcuTbBloqueoAsientos(TablaBloqueoAsientosRequest request)
+        {
+            try
+            {
+                return BloqueoAsientoLogic.ActualizarAsiOcuTbBloqueoAsientos(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcActualizarAsiOcuTbBloqueoAsientos, false);
+            }
+        }
+
         #endregion
 
         #region GRABA VENTA

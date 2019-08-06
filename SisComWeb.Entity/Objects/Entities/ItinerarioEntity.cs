@@ -91,5 +91,8 @@ namespace SisComWeb.Entity
         public string Activo { get; set; }
 
         public short CantidadMaxBloqAsi { get; set; }
+
+
+        public TablaBloqueoAsientosEntity TablaBloqueoAsientos { get; set; }
     }
 }

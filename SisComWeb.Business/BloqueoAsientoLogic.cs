@@ -59,5 +59,37 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcLiberaAsiento, false);
             }
         }
+
+        public static Response<bool> ActualizarAsiOcuTbBloqueoAsientos(TablaBloqueoAsientosRequest request)
+        {
+            try
+            {
+                // Volver a consultar 'TablaBloqueoAsientos' (SignalR)
+                var auxCodiProgramacion = request.CodiProgramacion > 0 ? request.CodiProgramacion : request.NroViaje;
+                var auxTipo = request.CodiProgramacion > 0 ? "P" : "V";
+
+                var consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, request.Fecha);
+
+                if (consultarTablaBloqueoAsientos == null)
+                    BloqueoAsientoRepository.ActualizarTablaBloqueoAsientos(request.CodiProgramacion.ToString(), request.NroViaje.ToString(), request.Fecha);
+                // ---------------------------------------------------
+
+                request.CodiProgramacion = auxCodiProgramacion;
+                request.Tipo = auxTipo;
+
+                // Actualizar 'AsiOcuTbBloqueoAsientos'
+                var actualizarAsiOcuTbBloqueoAsientos = BloqueoAsientoRepository.ActualizarAsiOcuTbBloqueoAsientos(request);
+
+                if (actualizarAsiOcuTbBloqueoAsientos)
+                    return new Response<bool>(true, actualizarAsiOcuTbBloqueoAsientos, Message.MsgCorrectoActualizarAsiOcuTbBloqueoAsientos, true);
+                else
+                    return new Response<bool>(false, actualizarAsiOcuTbBloqueoAsientos, Message.MsgErrorActualizarAsiOcuTbBloqueoAsientos, false);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcActualizarAsiOcuTbBloqueoAsientos, false);
+            }
+        }
     }
 }

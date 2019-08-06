@@ -22,7 +22,7 @@ namespace SisComWeb.Business
                     return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgValidaMuestraPlano, true);
 
                 // Lista 'AsientosVendidos'
-                var listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.CodiProgramacion, request.NroViaje);
+                var listarAsientosVendidos = PlanoRepository.ListarAsientosVendidos(request.NroViaje, request.CodiProgramacion, request.FechaProgramacion);
 
                 // Lista 'AsientosBloqueados'
                 var listarAsientosBloqueados = PlanoRepository.ListarAsientosBloqueados(request.NroViaje, request.CodiProgramacion, request.FechaProgramacion);
