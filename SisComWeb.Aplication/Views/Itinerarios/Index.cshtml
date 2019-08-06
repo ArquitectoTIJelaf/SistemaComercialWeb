@@ -5034,7 +5034,7 @@
                     var auxValidate = true;
                     
                     if (_tmpAsientoSel.FlagVenta === '7') {
-                        if (!(Usuario.Nivel === 2 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
+                        if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
                             APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
                             return auxValidate = false;
                         }
