@@ -338,7 +338,9 @@ namespace SisComWeb.Aplication.Controllers
                         RucCliente = (string)data["RucCliente"],
                         CodiDestino = (short)data["CodiDestino"],
                         SerieBoleto = (short)data["SerieBoleto"],
-                        NumeBoleto = (int)data["NumeBoleto"]
+                        NumeBoleto = (int)data["NumeBoleto"],
+                        CodiEmpresa = (byte)data["CodiEmpresa"],
+                        FechaVenta = (string)data["FechaVenta"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -363,13 +365,22 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"IdVenta\": " + request.IdVenta +
+                                    ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
+                                    ",\"CodiEmpresa\": " + request.CodiEmpresa +
+                                    ",\"SerieBoleto\": " + request.SerieBoleto +
+                                    ",\"NumeBoleto\": " + request.NumeBoleto +
+                                    ",\"Tipo\": \"" + request.Tipo + "\"" +
+                                    ",\"FechaVenta\": \"" + request.FechaVenta + "\"" +
                                     ",\"CodiUsuario\": " + usuario.CodiUsuario +
+                                    ",\"TipoPago\": \"" + request.TipoPago + "\"" +
                                     ",\"CodiOficina\": " + usuario.CodiSucursal +
                                     ",\"CodiPuntoVenta\": " + usuario.CodiPuntoVenta +
-                                    ",\"NomUsuario\": \"" + usuario.Nombre + "\"" + 
-                                    ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
+                                    ",\"NomUsuario\": \"" + usuario.Nombre + "\"" +
+                                    ",\"PrecioVenta\": \"" + request.PrecioVenta + "\"" +
                                     ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
+                                    ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
+                                    ",\"Terminal\": " + usuario.Terminal +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("AnularReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

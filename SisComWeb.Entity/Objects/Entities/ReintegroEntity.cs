@@ -38,6 +38,7 @@
         public int Sucursal { get; set; }
         public string TipoPago { get; set; }
         public string ClavUsuario { get; set; }
+        public string FechaVenta { get; set; }
     }
 
     public class SelectReintegroEntity

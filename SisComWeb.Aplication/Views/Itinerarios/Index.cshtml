@@ -10578,9 +10578,16 @@
                 anularReintegro: async function (data) {
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
                         IdVenta: data.IdVenta,
-                        CodiEsca: `${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`,
+                        CodiEsca: data.CodiEsca,
                         CodiDestinoPas: data.CodiDestino,
-                        IngresoManualPasajes: IngresoManualPasajes
+                        IngresoManualPasajes: IngresoManualPasajes,
+                        CodiEmpresa: data.CodiEmpresa,
+                        FechaVenta: data.FechaVenta,
+                        SerieBoleto: data.SerieBoleto,
+                        NumeBoleto: data.NumeBoleto,
+                        Tipo: data.Tipo,
+                        TipoPago: data.TipoPago,
+                        PrecioVenta: data.PrecioVenta
                     }))
                         .then(async (res) => {
                             if (res.data.EsCorrecto) {
