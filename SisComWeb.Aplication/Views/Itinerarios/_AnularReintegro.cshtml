@@ -17,10 +17,10 @@
                                           :placeholder="'EMPRESA'"
                                           :select-on-tab="true"
                                           :get-option-label="getLabel"
-                                          @@keydown.13.native.prevent=""
+                                          @@keydown.13.native.prevent="$refs.refANURESerie.focus()"
                                           ref="refANUREEmpresa">
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                        <div @@click="$refs.refANURESerie.focus()">{{ option.id }} - {{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -29,25 +29,32 @@
                         <div class="col-md-4 separate-in-form">
                             <label class="control-label label-sm">Serie:</label>
                             <div class="">
-                                <input @*:value="item.precio | fixed2"*@
+                                <input v-model="filtro.serie"
                                        class="form-control input-sm"
-                                       disabled />
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="$refs.refANURENumero.focus()"
+                                       @@blur=""
+                                       ref="refANURESerie"/>
                             </div>
                         </div>
                         <div class="col-md-8 separate-in-form">
                             <label class="control-label label-sm">Número:</label>
                             <div class="">
-                                <input @*:value="item.precio | fixed2"*@
+                                <input :value="filtro.numero | concatZero"
                                        class="form-control input-sm"
-                                       disabled />
+                                       @@focus="$event.target.select()"
+                                       @@keydown.13.prevent="$refs.refANUREAceptar.focus()"
+                                       @@blur="filtro.numero = $event.target.value.padStart(7,'0')"
+                                       ref="refANURENumero"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click=""
-                        class="btn btn-primary waves-effect waves-light">
+                <button @@click="confirm"
+                        class="btn btn-primary waves-effect waves-light"
+                        ref="refANUREAceptar">
                     <span class="fa fa-floppy-o fa-fw"></span>Aceptar
                 </button>
                 <button @@click="close"

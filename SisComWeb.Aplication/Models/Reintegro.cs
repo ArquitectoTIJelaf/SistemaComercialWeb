@@ -39,6 +39,9 @@ namespace SisComWeb.Aplication.Models
         public string FechaNac { get; set; }
         public string CodiBus { get; set; }
         public string DirEmbarque { get; set; }
+        public int Sucursal { get; set; }
+        public string TipoPago { get; set; }
+        public string ClavUsuario { get; set; }
         public string[] SplitNombre
         {
             get

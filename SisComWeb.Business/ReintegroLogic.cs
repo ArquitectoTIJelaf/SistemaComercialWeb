@@ -505,5 +505,122 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcConsultaIgv, false);
             }
         }
+
+        public static Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request)
+        {
+            try
+            {
+                var res = ReintegroRepository.ValidaReintegroParaAnualar(request);
+                if (res != null && res.IdVenta != 0)
+                {
+                    return new Response<ReintegroEntity>(true, res, string.Empty, true);
+                }
+                else
+                {
+                    return new Response<ReintegroEntity>(false, res, Message.MsgNoConsultaReintegroParaAnular, true);
+                }                
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReintegroEntity>(false, null, Message.MsgExcConsultaReintegroParaAnular, false);
+            }
+        }
+
+        public static Response<byte> AnularReintegro(AnularVentaRequest request)
+        {
+            try
+            {
+                var anularVenta = new byte();
+
+                var objVenta = VentaRepository.BuscarVentaById(request.IdVenta);
+                // Anulación de su respectivo 'Reintegro'
+                if (!string.IsNullOrEmpty(request.CodiEsca))
+                {
+                    // Consulta 'VentaReintegro'
+                    var objReintegro = VentaRepository.ConsultaVentaReintegro(request.CodiEsca.Substring(1, 3), request.CodiEsca.Substring(5), objVenta.CodiEmpresa.ToString(), request.CodiEsca.Substring(0, 1));
+
+                    if (objReintegro.IdVenta > 0)
+                    {
+                        if (objReintegro.TipoPago == "03")
+                        {
+                            // Consulta 'PagoTarjetaVenta'
+                            var consultaPagoTarjetaVenta = VentaRepository.ConsultaPagoTarjetaVenta(objReintegro.IdVenta);
+
+                            // Actualiza 'CajaAnulacion'
+                            VentaRepository.ActualizarCajaAnulacion(consultaPagoTarjetaVenta);
+                        }
+
+                        // Valida 'AnularDocumentoSUNAT'
+                        if (request.CodiEsca.Substring(0, 1) != "M")
+                        {
+                            // Anula 'DocumentoSUNAT'
+                            var objVentaReintegro = new VentaEntity
+                            {
+                                CodiEmpresa = objReintegro.CodiEmpresa,
+                                SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
+                                NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
+                                Tipo = objReintegro.Tipo,
+                                FechaVenta = objReintegro.FechaVenta
+                            };
+
+                            var resAnularDocumentoSUNAT = VentaLogic.AnularDocumentoSUNAT(objVentaReintegro);
+                            if (!resAnularDocumentoSUNAT.Estado)
+                                return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
+                        }
+
+                        // Genera 'CorrelativoAuxiliar'
+                        var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
+                        if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
+                            return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
+
+                        // Graba 'CajaReintegro'
+                        var objCajaReintegro = new CajaEntity
+                        {
+                            NumeCaja = generarCorrelativoAuxiliarReintegro.PadLeft(7, '0'),
+                            CodiEmpresa = objReintegro.CodiEmpresa,
+                            CodiSucursal = short.Parse(request.CodiOficina),
+                            FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                            TipoVale = "S",
+                            Boleto = request.CodiEsca.Substring(1),
+                            NomUsuario = request.NomUsuario,
+                            CodiBus = string.Empty,
+                            CodiChofer = string.Empty,
+                            CodiGasto = string.Empty,
+                            ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
+                            Monto = objReintegro.PrecioVenta,
+                            CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
+                            IndiAnulado = "F",
+                            TipoDescuento = "RE",
+                            TipoDoc = string.Empty,
+                            TipoGasto = "P",
+                            Liqui = 0M,
+                            Diferencia = 0M,
+                            Recibe = "RE",
+                            CodiDestino = request.CodiDestinoPas,
+                            FechaViaje = "01/01/1900",
+                            HoraViaje = "VNA",
+                            CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
+                            Voucher = "RE",
+                            Asiento = string.Empty,
+                            Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
+                            IdVenta = objReintegro.IdVenta,
+                            Origen = "AR",
+                            Modulo = "PV",
+                            Tipo = request.CodiEsca.Substring(0, 1),
+
+                            IdCaja = 0
+                        };
+                        var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                    }
+                }
+                return new Response<byte>(true, anularVenta, Message.MsgCorrectoAnularVenta, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<byte>(false, 0, Message.MsgExcAnularVenta, false);
+            }
+        }
     }
 }

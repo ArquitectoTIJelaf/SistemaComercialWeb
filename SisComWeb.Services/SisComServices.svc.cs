@@ -1143,6 +1143,19 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, "", false);
             }
         }
+        //ValidaReintegroParaAnualar
+        public Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request)
+        {
+            try
+            {
+                return ReintegroLogic.ValidaReintegroParaAnualar(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReintegroEntity>(false, null, "", false);
+            }
+        }
         #endregion
     }
 }

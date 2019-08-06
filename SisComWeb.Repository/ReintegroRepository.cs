@@ -273,5 +273,38 @@ namespace SisComWeb.Repository
 
             return CodiEmpresa;
         }
+        
+        public static ReintegroEntity ValidaReintegroParaAnualar(ReintegroRequest request)
+        {
+            var objeto = new ReintegroEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.AddParameter("@ser", DbType.String, ParameterDirection.Input, request.Serie);
+                db.AddParameter("@bol", DbType.String, ParameterDirection.Input, request.Numero);
+                db.AddParameter("@emp", DbType.String, ParameterDirection.Input, request.CodiEmpresa);
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, request.Tipo);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        objeto = new ReintegroEntity
+                        {
+                            IdVenta = Reader.GetIntValue(drlector, "id_venta"),
+                            CodiEsca = Reader.GetStringValue(drlector, "codi_esca"),
+                            Sucursal = Reader.GetIntValue(drlector, "Codi_Sucursal"),
+                            PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA"),
+                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
+                            ClavUsuario = Reader.GetStringValue(drlector, "clav_usuario"),
+                            Tipo = Reader.GetStringValue(drlector, "tipo"),
+                            RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE")
+                        };
+                    }
+                }
+            }
+
+            return objeto;
+        }
     }
 }

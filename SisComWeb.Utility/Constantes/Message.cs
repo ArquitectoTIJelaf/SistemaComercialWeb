@@ -348,5 +348,7 @@
         public const string MsgExcVentaReintegro = "Excepción: VentaReintegro.";
         public const string MsgExcConsultaIgv = "Excepción: ConsultaIgv.";
         public const string MsgExcConsultaPrecioRuta = "Excepción: ConsultaPrecioRuta.";
+        public const string MsgExcConsultaReintegroParaAnular = "Excepción: ConsultaReintegroParaAnular.";
+        public const string MsgNoConsultaReintegroParaAnular = "Boleto no existe, esta anulado o no es un boleto reintegro";
     }
 }

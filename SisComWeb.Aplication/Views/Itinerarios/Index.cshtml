@@ -9272,7 +9272,7 @@
                         }
                     } else {
                         _this.$refs.refREAceptar.focus();
-                    }                    
+                    }
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -9300,7 +9300,7 @@
 
                     _this.limpiarRERuta();
 
-                    _this.$nextTick(() => {                        
+                    _this.$nextTick(() => {
                         _this.$refs.refREAsientoNew.focus();
                         _this.showMiniMapa();
                     });
@@ -9321,7 +9321,7 @@
                                 _this.$nextTick(() => {
                                     _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
                                 });
-                            } else 
+                            } else
                                 _this.$refs.refREAsientoNew.focus();
                         });
                     });
@@ -9607,7 +9607,7 @@
                                 input.TELEF = _this.item.telefono;
                                 input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
                                 input.porcentaje = igv;
-                                input.Codi_Esca = _this.item.boleto.substring(0, 4) + '-' + _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length)//_this.item.boleto;
+                                input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
                                 input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
                                 input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
                                 input.Punto_Venta = Usuario.CodiPuntoVenta;
@@ -9669,10 +9669,10 @@
                                     appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
 
                                     _this.disabledAceptar = false;
-                                    
+
                                     if (updateReintegro) {
-                                        _this.updateReintegro(_this.dataOriginal.IdVenta, auxCodiProgramacion, auxDestinoPas, auxAsiento, auxOrigenPas, _this.dataSignalR.NroViaje, _this.dataSignalR.FechaProgramacion, res.data.Valor);                                        
-                                    }                                                                        
+                                        _this.updateReintegro(_this.dataOriginal.IdVenta, auxCodiProgramacion, auxDestinoPas, auxAsiento, auxOrigenPas, _this.dataSignalR.NroViaje, _this.dataSignalR.FechaProgramacion, res.data.Valor);
+                                    }
                                 }
                                 else {
                                     await appController.chargeTurnos();
@@ -9720,8 +9720,11 @@
                 },
                 anularReintegro: async function () {
                     let _this = this;
-
-                    appVueAnulaReintegro.show();
+                    var item = {};
+                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa);
+                    item.serie = (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0');
+                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0');
+                    appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
                         window.removeEventListener('keyup', _this.esc);
@@ -10000,7 +10003,7 @@
                     _this.$nextTick(async () => {
                         await _this.searchData(_item);
                         $('#appVueMiniMapa').modal('show');
-                    });                    
+                    });
                 },
                 searchData: async function (_item) {
                     let _this = this;
@@ -10136,7 +10139,7 @@
                     if (!this.errors.any()) {
                         this.trustedSave = true;
                         this.close();
-                    }                    
+                    }
                 },
                 limpiarCampos2: function () {
                     let _this = this;
@@ -10395,8 +10398,18 @@
         var appVueAnulaReintegro = new Vue({
             el: '#appVueAnulaReintegro',
             data: {
+                list: {
+                    empresas: []
+                },
+                filtro: {
+                    codEmpresa: '',
+                    serie: '',
+                    numero: ''
+                }
             },
             mounted: function () {
+                let _this = this;
+
                 var modal = $('#appVueAnulaReintegro');
 
                 modal.modal({
@@ -10404,22 +10417,99 @@
                     'keyboard': false,
                     'show': false
                 });
+
+                $('#appVueAnulaReintegro').on('shown.bs.modal', function () {
+                    $(document).off('focusin.modal');
+
+                    if (_this.filtro.codEmpresa && _this.filtro.serie && _this.filtro.numero)
+                        _this.$refs.refANUREAceptar.focus();
+                    else
+                        _this.$refs.refANUREEmpresa.$el.querySelector('input').focus();
+                });
             },
             methods: {
-                show: function () {
+                show: function (item) {
                     this.limpiarCampos();
+                    this.setData(item);
+                    if (!this.list.empresas.length > 0)
+                        this.list.empresas = empresas
                     this.$nextTick(() => {
                         $('#appVueAnulaReintegro').modal('show');
                     });
                 },
-                limpiarCampos: function () {
+                setData: function (_item) {
+                    let _this = this;
+                    _this.filtro.codEmpresa = (_item) ? _item.codEmpresa || '' : '';
+                    _this.filtro.serie = (_item) ? _item.serie || '' : '';
+                    _this.filtro.numero = (_item) ? _item.numero || '' : '';
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                confirm: async function () {
+                    let _this = this;
 
+                    var data = null;
+
+                    var auxTipo = (_this.filtro.serie.substring(0, 1) === '0') ? 'M' : _this.filtro.serie.substring(0, 1);
+                    
+                    await APP.rq.axios2.get(APP.base + '/reintegro/verifica-reintegro-anular' + APP.util.getQueryParamByObject({
+                        Serie: parseInt(_this.filtro.serie.substring(1, 4)),
+                        Numero: parseInt(_this.filtro.numero),
+                        CodiEmpresa: parseInt(_this.filtro.codEmpresa),
+                        Tipo: auxTipo
+                    }))
+                        .then(async (res) => {                            
+                            if (res.data.EsCorrecto)
+                                data = res.data.Valor;
+                            else APP.msg.error(res.data.Mensaje);
+                        }).catch(APP.rq.axios_handler_error_alert);
+                    
+                    if (data &&  data.IdVenta) {
+                        if (await APP.msg.confirm('Mensaje de confirmación', `¿Desea anular el reintegro ${_this.filtro.serie}-${_this.filtro.numero} con monto ${_this.$options.filters.money(data.PrecioVenta)}?`)) {
+                            await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular', data)
+                                .then(async (res) => {
+                                    if (res.data.EsCorrecto) {
+                                        _this.close();
+                                        APP.msg.info('Se anuló correctamente');
+                                    }
+                                }).catch(APP.rq.axios_handler_error_alert);
+                            
+                        } else return;
+                    }                   
+                },
+                limpiarCampos: function () {
+                    let _this = this;
+                    _this.filtro.codEmpresa = '';
+                    _this.filtro.serie = '';
+                    _this.filtro.numero = '';
                 },
                 close: function () {
                     $('#appVueAnulaReintegro').modal('hide');
                 }
             },
             computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.filtro.codEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.filtro.codEmpresa)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.filtro.codEmpresa = value.id;
+                                //this.$refs.refRESerie.focus()
+                            }
+                        } else {
+                            this.filtro.codEmpresa = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refANUREEmpresa.typeAheadPointer = this.$getSelectorVselect(this.list.empresas, value);
+                        });
+                    }
+                },
             },
             watch: {}
         });

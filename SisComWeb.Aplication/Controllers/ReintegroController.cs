@@ -296,5 +296,55 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        [Route("verifica-reintegro-anular")]
+        public async Task<ActionResult> ValidaReintegroParaAnualar(FiltroReintegro filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Serie\" : " + filtro.Serie +
+                                    ",\"Numero\" : " + filtro.Numero +
+                                    ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
+                                    ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ValidaReintegroParaAnualar", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Reintegro> res = new Response<Reintegro>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Reintegro()
+                    {
+                        IdVenta = (int)data["IdVenta"],
+                        CodiEsca = (string)data["CodiEsca"],
+                        Sucursal = (int)data["Sucursal"],
+                        PrecioVenta = (decimal)data["PrecioVenta"],
+                        TipoPago = (string)data["TipoPago"],
+                        ClavUsuario = (string)data["ClavUsuario"],
+                        Tipo = (string)data["Tipo"],
+                        RucCliente = (string)data["RucCliente"]
+                    },
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
