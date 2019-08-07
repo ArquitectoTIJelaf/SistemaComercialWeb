@@ -59,10 +59,10 @@ namespace SisComWeb.Business
                     }
                     //Verfica si tiene Nota de Crédito
                     var notaCredito = VentaRepository.VerificaNC(valor.IdVenta);
-                    if (notaCredito != 0)
+                    if (Convert.ToInt32(notaCredito.id) > 0)
                     {
                         valor.CodiError = 3;
-                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito + " " + notaCredito, true);
+                        return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NotaCredito + " " + notaCredito.label, true);
                     }
                     //Verfica si esta como Reintegro
                     if (valor.FlagVenta == "O")

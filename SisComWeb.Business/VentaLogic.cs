@@ -1434,7 +1434,7 @@ namespace SisComWeb.Business
             {
                 var verificaNC = VentaRepository.VerificaNC(IdVenta);
 
-                return new Response<int>(true, verificaNC, Message.MsgCorrectoVerificaNC, true);
+                return new Response<int>(true, Convert.ToInt32(verificaNC.id), Message.MsgCorrectoVerificaNC, true);
             }
             catch (Exception ex)
             {
