@@ -2448,6 +2448,7 @@
                     return auxResponse;
                 },
                 fillDataAsientoVendido: async function (asientoSel) {
+                    var _this = this;
                     var _fillData = false;
 
                     // Before
@@ -2567,8 +2568,10 @@
                         }
                         this.list.ventas[this.indexVenta].Info += asientoSel.NomOrigen + ' - ' + asientoSel.NomDestino;
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
-
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
+                        
+                        this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
+                        this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
 
                         // Checked opción 'RegistrarNino'
                         if (asientoSel.ObjAcompaniante.Documento)
@@ -2576,8 +2579,11 @@
 
                         this.$nextTick(() => {
                             this.disabledCampoNroAsiento = true;
-                            if (this.pickedBusVenta === 'V' && this.list.ventas[this.indexVenta].FlagVenta === 'R')
-                                this.recorridoSectionVentas();
+                            if (this.pickedBusVenta === 'V' && this.list.ventas[this.indexVenta].FlagVenta === 'R') {
+                                setTimeout(function () {
+                                    _this.recorridoSectionVentas();
+                                }, 400);
+                            }
                             else {
                                 this.disabledCamposTicket = true;
                                 this.disabledCamposTicket_Pase = true;
@@ -2984,6 +2990,8 @@
                                                 _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
 
+                                                _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+
                                                 if (validatorSetRuc) {
                                                     _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
                                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
@@ -3003,6 +3011,9 @@
                                                 _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
+
+                                                _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+
                                                 if (_this.pickedBusVenta !== '1') {
                                                     if (validatorSetRuc) {
                                                         _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
@@ -3028,6 +3039,8 @@
                                                 _this.list.ventas[_this.indexVenta].Edad = '';
                                                 _this.list.ventas[_this.indexVenta].Sexo = null;
                                                 _this.list.ventas[_this.indexVenta].Telefono = '';
+
+                                                _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = false;
 
                                                 if (_this.pickedBusVenta !== '1') {
                                                     _this.list.ventas[_this.indexVenta].Ruc = '';
@@ -6244,6 +6257,12 @@
                 },
                 listVentasCampoCodiTipoDoc: function () {
                     return this.list.ventas[this.indexVenta].CodiTipoDoc;
+                },
+                listVentasCampoFechaReservacion: function () {
+                    return this.list.ventas[this.indexVenta].FechaReservacion;
+                },
+                listVentasCampoHoraReservacion: function () {
+                    return this.list.ventas[this.indexVenta].HoraReservacion;
                 }
             },
             watch: {
@@ -6436,6 +6455,20 @@
                                 this.list.ventas[this.indexVenta].Nacionalidad = '';
                                 break;
                         }
+                    }
+                },
+                listVentasCampoFechaReservacion: function (newVal, oldVal) {
+                    if (newVal && newVal.length === 10) {
+                        this.list.ventas.forEach(function (objVenta) {
+                            objVenta.FechaReservacion = newVal;
+                        });
+                    }
+                },
+                listVentasCampoHoraReservacion: function (newVal, oldVal) {
+                    if (newVal && newVal.length === 8) {
+                        this.list.ventas.forEach(function (objVenta) {
+                            objVenta.HoraReservacion = newVal;
+                        });
                     }
                 }
             }
@@ -6671,6 +6704,7 @@
                         input.ImporteDescontadoDC = objVenta.ImporteDescontadoDC;
                         input.AutorizadoDC = objVenta.AutorizadoDC;
                         input.IngresoManualPasajes = IngresoManualPasajes;
+                        input.EstadoAsiento = (objVenta.ValidadorClienteEspecial ? 'N1' : 'N');
 
                         // TIPOS DE VENTA
                         switch (this.$getValuePickedBusVenta()) {

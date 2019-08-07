@@ -52,7 +52,8 @@
                         <div class="col-md-12">
                             <label class="col-md-2 control-label label-sm">Concepto:</label>
                             <div class="col-md-10">
-                                <input v-model="concepto"
+                                <input :value="concepto"
+                                       @@input="concepto = $event.target.value.toUpperCase()"
                                        id="txtConceptoPC"
                                        class="form-control input-sm"
                                        type="text"

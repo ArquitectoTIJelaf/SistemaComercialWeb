@@ -14,7 +14,6 @@ namespace SisComWeb.Entity.Objects.Entities
         public int ClavUsuario { get; set; }
         public string IndiAnulado { get; set; }
         public int ClavUsuario1 { get; set; }
-        public string EstadoAsiento { get; set; }
         public int CodiSucursalVenta { get; set; }
         public string ValeRemoto { get; set; }
         public int IdVentaWeb { get; set; }

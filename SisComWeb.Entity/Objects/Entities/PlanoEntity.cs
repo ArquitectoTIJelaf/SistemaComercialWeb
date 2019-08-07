@@ -126,7 +126,11 @@
 
         public string CodiEsca { get; set; }
 
-
         public byte CodiEmpresa { get; set; }
+
+
+        public string FechaReservacion { get; set; }
+
+        public string HoraReservacion { get; set; }
     }
 }

@@ -183,20 +183,7 @@ namespace SisComWeb.Business
             entidad.PrecioVenta = item.PrecioVenta;
             entidad.RecogeEn = item.RecogeEn;
             entidad.FlagVenta = item.FlagVenta;
-
-            switch (entidad.FlagVenta)
-            {
-                case "7": // Pase de cortesía
-                    entidad.Sigla = "PS";
-                    break;
-                case "1": // Crédito
-                    entidad.Sigla = "VC";
-                    break;
-                default:
-                    entidad.Sigla = item.Sigla;
-                    break;
-            }
-
+            entidad.Sigla = item.Sigla;
             entidad.Boleto = item.Boleto;
             entidad.TipoBoleto = item.TipoBoleto;
             entidad.CodiOrigen = item.CodiOrigen;
@@ -245,6 +232,12 @@ namespace SisComWeb.Business
 
             switch (entidad.FlagVenta)
             {
+                case "7": // Pase de cortesía
+                    entidad.Sigla = "PS";
+                    break;
+                case "1": // Crédito
+                    entidad.Sigla = "VC";
+                    break;
                 case "X": // Asiento bloqueado
                 case "AB": // Asiento bloqueado por módulo
                     entidad.IdVenta = string.Empty;
@@ -292,6 +285,12 @@ namespace SisComWeb.Business
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
             }
 
+            if(entidad.FlagVenta == "R")
+            {
+                var consultarFechaHoraReservacion = VentaRepository.ConsultarFechaHoraReservacion(int.Parse(entidad.IdVenta));
+                entidad.FechaReservacion = consultarFechaHoraReservacion.FechaReservacion;
+                entidad.HoraReservacion = consultarFechaHoraReservacion.HoraReservacion;
+            }
         }
     }
 }

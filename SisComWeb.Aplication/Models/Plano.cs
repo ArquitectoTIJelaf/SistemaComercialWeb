@@ -56,8 +56,10 @@
         public string TipoPago { get; set; }
         public string ValeRemoto { get; set; }
         public string CodiEsca { get; set; }
-
         public byte CodiEmpresa { get; set; }
+
+        public string FechaReservacion { get; set; }
+        public string HoraReservacion { get; set; }
     }
 
     public class FiltroBloqueoAsiento

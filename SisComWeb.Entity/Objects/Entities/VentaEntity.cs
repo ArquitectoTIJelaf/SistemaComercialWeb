@@ -80,7 +80,7 @@ namespace SisComWeb.Entity
 
         public string UserWebSUNAT { get; set; }
 
-        public string NomEmpresaRuc { get; set; } 
+        public string NomEmpresaRuc { get; set; }
 
         public string DirEmpresaRuc { get; set; }
 
@@ -144,9 +144,10 @@ namespace SisComWeb.Entity
 
         public AcompanianteEntity ObjAcompaniante { get; set; }
 
-
         public bool IngresoManualPasajes { get; set; }
 
+
+        public string EstadoAsiento { get; set; }
 
         // ANULACIÓN
 
@@ -377,5 +378,12 @@ namespace SisComWeb.Entity
         public string NomPuntoVenta { get; set; }
 
         public int Terminal { get; set; }
+    }
+
+    public class ReservacionEntity
+    {
+        public string FechaReservacion { get; set; }
+
+        public string HoraReservacion { get; set; }
     }
 }

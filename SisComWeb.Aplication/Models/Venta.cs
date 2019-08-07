@@ -176,6 +176,8 @@ namespace SisComWeb.Aplication.Models
         public Acompaniante ObjAcompaniante { get; set; }
         public bool IngresoManualPasajes { get; set; }
 
+        public string EstadoAsiento { get; set; }
+
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; } // Código de gerente que autoriza el pase
         public string CodiSocio { get; set; } // Código de socio solictante
