@@ -100,7 +100,7 @@
     <script>
 
         var UsuarioJML = '@JLMrootCode';
-        var pvOrigenesBus = [];
+        var PuntosDeVenta = [];
 
         var appVueLogin = new Vue({
             el: '#appVueLogin',
@@ -127,8 +127,8 @@
                 });
             },
             methods: {
-                getListPvOrigenesBus: function (_CodiOrigenBus) {
-                    return _.filter(pvOrigenesBus, function (obj) { return obj.CodiSucursal == _CodiOrigenBus; });
+                getListPuntosDeVenta: function (_CodiOrigenBus) {
+                    return _.filter(PuntosDeVenta, function (obj) { return obj.CodiSucursal == _CodiOrigenBus; });
                 },
                 confirmUsuario: async function (filtro) {
 
@@ -198,7 +198,7 @@
                             if (res.data.Estado) {
                                 _this.list.puntosventa = _.cloneDeep(res.data.Valor);
 
-                                pvOrigenesBus = _.cloneDeep(res.data.Valor);
+                                PuntosDeVenta = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -306,7 +306,7 @@
                 'filtro.Sucursal': function (newVal, oldVal) {
                     if (newVal) {
                         if (String(newVal.id).replace(/\s/g, '').length > 0)
-                            this.list.puntosventa = this.getListPvOrigenesBus(newVal.id);
+                            this.list.puntosventa = this.getListPuntosDeVenta(newVal.id);
                     }
                     else {
                         this.list.puntosventa = [];
