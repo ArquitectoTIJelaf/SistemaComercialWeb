@@ -5045,7 +5045,7 @@
                 },
                 validaPorFlagVenta: async function (_tmpAsientoSel, _valPanelAnularFechaPasada) {
                     var auxValidate = true;
-                    
+
                     if (_tmpAsientoSel.FlagVenta === '7') {
                         if (!(Usuario.Nivel === 1 || Usuario.Nivel === 5 || Usuario.Nivel === 11)) {
                             APP.msg.warning('Los boletos de tipo Pase solo pueden ser anulados por usuarios con nivel de pases.');
@@ -8556,6 +8556,16 @@
                 },
                 saveModBoleto: async function () {
                     let _this = this;
+
+                    //Validación: No debe tener nota de crédito
+                    var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(_this.filtro.idVenta));
+                    if (verificaNotaCredito) {
+                        if (verificaNotaCredito.Valor > 0) {
+                            APP.msg.warning(verificaNotaCredito.Mensaje);
+                            return;
+                        }
+                    } else return;
+
                     if (_this.filtro.idVenta !== 0) {
                         await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
                             IdVenta: _this.filtro.idVenta,
@@ -9249,6 +9259,7 @@
                     });
                 },
                 searchData: async function () {
+                    debugger;
                     let _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF12' + APP.util.getQueryParamByObject({
                         Serie: parseInt(_this.filtro.serie),
@@ -9316,7 +9327,8 @@
                                 } else APP.msg.warning('No se encontró resultados');
                             } else {
                                 if (res.data.Valor.CodiError === 5) { //ya tiene adjunto un Reintegro
-                                    var data = null;
+                                    debugger;
+                                    var data2 = null;
                                     await APP.rq.axios2.get(APP.base + '/reintegro/verifica-reintegro-anular' + APP.util.getQueryParamByObject({
                                         Serie: parseInt(res.data.Valor.CodiEsca.substring(1, 4)),
                                         Numero: parseInt(res.data.Valor.CodiEsca.substring(5)),
@@ -9324,15 +9336,16 @@
                                         Tipo: res.data.Valor.CodiEsca.substring(0, 1)
                                     }))
                                         .then(async (res2) => {
+                                            debugger;
                                             if (res2.data.EsCorrecto)
-                                                data = _.cloneDeep(res2.data.Valor);
+                                                data2 = _.cloneDeep(res2.data.Valor);
                                             else APP.msg.error(res2.data.Mensaje);
                                         }).catch(APP.rq.axios_handler_error_alert);
 
-                                    if (data && data.IdVenta) {
+                                    if (data2 && data2.IdVenta) {
                                         debugger;
-                                        if (await APP.msg.confirm(res.data.Mensaje, `¿Desea anular el reintegro ${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 8, '0')} con monto ${_this.$options.filters.money(data.PrecioVenta)}?`)) {
-                                            appVueAnulaReintegro.anularReintegro(data);
+                                        if (await APP.msg.confirm(res.data.Mensaje, `¿Desea anular el reintegro ${data2.Tipo}${_.padStart(data2.SerieBoleto, 3, '0')}-${_.padStart(data2.NumeBoleto, 8, '0')} con monto ${_this.$options.filters.money(data2.PrecioVenta)}?`)) {
+                                            appVueAnulaReintegro.anularReintegro(data2);
                                         } else return;
                                     }
                                 } else {
@@ -10587,6 +10600,69 @@
                 confirm: async function () {
                     let _this = this;
 
+                    //Panel 226                    
+                    if (appController.validatePanel('226') === '1') {
+
+                        var checkClaveAutorizacion = false;
+
+                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
+
+                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                            });
+                        });
+
+                        if (!checkClaveAutorizacion) {
+                            return;
+                        }
+                    }
+
+                    //Panel 36
+                    if (appController.validatePanel('36') === '1') {
+
+                        var checkClaveAutorizacion = false;
+
+                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
+
+                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                            });
+                        });
+
+                        if (!checkClaveAutorizacion) {
+                            return;
+                        }
+                    }
+
+                    //Panel 163 y Nivel 11
+                    debugger;
+                    if (appController.validatePanel('163') === '1') {
+                        if (Usuario.Nivel === 11) { 
+                            APP.msg.warning("Solo los administradores pueden anular comprobantes");                            
+                            return;
+                        }
+                    }
+
+                    //Panel 35
+                    if (appController.validatePanel('35') === '1') {
+
+                        var checkClaveAutorizacion = false;
+
+                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
+
+                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                            });
+                        });
+
+                        if (!checkClaveAutorizacion) {
+                            return;
+                        }
+                    }
+                    
                     var data = null;
 
                     var auxTipo = (_this.filtro.serie.substring(0, 1) === '0') ? 'M' : _this.filtro.serie.substring(0, 1);

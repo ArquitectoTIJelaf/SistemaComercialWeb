@@ -89,8 +89,8 @@ namespace SisComWeb.Business
             try
             {
                 var Response = VentaRepository.VerificaNC(IdVenta);
-                var mensaje = (Response > 0) ? Message.MsgVerificaNotaCredito : string.Empty;
-                return new Response<int>(true, Response, mensaje, true);
+                var mensaje = (Convert.ToInt32(Response.id) > 0) ? Message.MsgVerificaNotaCredito + " " + Response.label : string.Empty;
+                return new Response<int>(true, Convert.ToInt32(Response.id), mensaje, true);
             }
             catch (Exception ex)
             {

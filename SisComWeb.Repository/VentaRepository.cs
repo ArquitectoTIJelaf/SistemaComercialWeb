@@ -355,9 +355,9 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
-        public static int VerificaNC(int IdVenta)
+        public static BaseEntity VerificaNC(int IdVenta)
         {
-            var valor = new int();
+            var entidad = new BaseEntity();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -367,13 +367,14 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetIntValue(drlector, "ID_VENTA");
+                        entidad.id = Reader.GetStringValue(drlector, "codorden");
+                        entidad.label = Reader.GetStringValue(drlector, "nc");
                         break;
                     }
                 }
             }
 
-            return valor;
+            return entidad;
         }
 
         public static decimal ConsultaControlTiempo(string tipo)
