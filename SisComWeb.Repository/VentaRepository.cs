@@ -357,7 +357,10 @@ namespace SisComWeb.Repository
 
         public static BaseEntity VerificaNC(int IdVenta)
         {
-            var entidad = new BaseEntity();
+            var entidad = new BaseEntity()
+            {
+                id = "0"
+            };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -367,7 +370,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.id = Reader.GetStringValue(drlector, "codorden");
+                        entidad.id = Reader.GetStringValue(drlector, "codorden") ?? "0";
                         entidad.label = Reader.GetStringValue(drlector, "nc");
                         break;
                     }

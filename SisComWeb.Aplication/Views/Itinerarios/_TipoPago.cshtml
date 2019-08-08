@@ -7,8 +7,6 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal">
-
-
                     <div v-show="$getValuePickedBusVenta() != '7' && $getValuePickedBusVenta() != '1'">
                         <div class="form-group m-b-5">
                             <div class="col-md-6 separate-in-form">
@@ -37,11 +35,7 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="form-group m-b-5">
-
-
                         <div v-show="$getValuePickedBusVenta() != '7' && $getValuePickedBusVenta() != '1'">
                             <div class="col-md-12 separate-in-form">
                                 <label class="col-md-2 control-label label-sm">Tipo Pago:</label>
@@ -72,7 +66,7 @@
                                                    name="Imp. Pagado"
                                                    :disabled="disabledTipoPago"
                                                    onPaste="return false"
-                                                   @@input="calcMontos('IPC', $event, 3)"
+                                                   @@input="calcMontos('IPC', $event, 4)"
                                                    @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                    @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                    v-validate="'min_value:' + (sumaTotal)"
@@ -136,7 +130,7 @@
                                                    class="form-control input-sm"
                                                    name="Monto Tarjeta"
                                                    onPaste="return false"
-                                                   @@input="calcMontos('T', $event, 3)"
+                                                   @@input="calcMontos('T', $event, 4)"
                                                    @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                    @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                    v-validate="'between:1, '+(sumaTotal-1)"
@@ -152,7 +146,7 @@
                                                    class="form-control input-sm"
                                                    name="Monto Efectivo"
                                                    onPaste="return false"
-                                                   @@input="calcMontos('E', $event, 3)"
+                                                   @@input="calcMontos('E', $event, 4)"
                                                    @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                    @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                    v-validate="'between:1, '+sumaTotal"
@@ -168,7 +162,7 @@
                                                    class="form-control input-sm"
                                                    name="Imp. Pagado"
                                                    onPaste="return false"
-                                                   @@input="calcMontos('IP', $event, 3)"
+                                                   @@input="calcMontos('IP', $event, 4)"
                                                    @@keypress.13.prevent="recorridoSectionTipoPagos"
                                                    @*@@keypress.9.prevent="recorridoSectionTipoPagos"*@
                                                    v-validate="'min_value:' + (efectivo)"
@@ -267,8 +261,6 @@
                                 </div>
                             </template>
                         </div>
-
-
                         <div class="col-md-12 separate-in-form">
                             <label class="col-md-2 control-label label-sm">Embarques:</label>
                             <div class="col-md-10">

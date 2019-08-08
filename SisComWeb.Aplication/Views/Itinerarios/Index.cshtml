@@ -1795,6 +1795,7 @@
                 showTextTurnos: false,
                 firstCharge: true,
                 indexVenta: 0,
+                oldIndexVenta: 0,
                 oldPeople: [],
                 firstAsiento: true,
                 pickedBusVenta: 'V',
@@ -2569,7 +2570,7 @@
                         this.list.ventas[this.indexVenta].Info += asientoSel.NomOrigen + ' - ' + asientoSel.NomDestino;
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
-                        
+
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
                         this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
 
@@ -2914,13 +2915,13 @@
                     }
 
                     if (this.pickedBusVenta === 'R' && !this.list.ventas[this.indexVenta].FechaReservacion) {
-                            document.getElementById('txtFechaReservacion').focus();
-                            return;
-                        }
+                        document.getElementById('txtFechaReservacion').focus();
+                        return;
+                    }
                     if (this.pickedBusVenta === 'R' && !this.list.ventas[this.indexVenta].HoraReservacion) {
-                            document.getElementById('txtHoraReservacion').focus();
-                            return;
-                        }
+                        document.getElementById('txtHoraReservacion').focus();
+                        return;
+                    }
 
                     if (!this.list.ventas[this.indexVenta].ObjAcompaniante.CodiTipoDoc
                         && !this.list.ventas[this.indexVenta].ObjAcompaniante.Documento) {
@@ -3733,6 +3734,16 @@
                                 return auxValidate = false;
                             }
 
+                            var tmpHoraBase = '';
+
+                            // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
+                            var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
+                            if (auxObjEmbarque)
+                                tmpHoraBase = auxObjEmbarque.Hora;
+                            else
+                                tmpHoraBase = this.filtro.Turno;
+                            // -------------------------------------------------------------------------
+
                             if (this.list.ventas[i].FechaReservacion === moment().format('DD/MM/YYYY')) {
                                 if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
                                     this.indexVenta = i;
@@ -3749,7 +3760,7 @@
 
                                 if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
                                     this.indexVenta = i;
-                                    APP.msg.warning('La hora de confirmación debe ser menor a la hora del turno.');
+                                    APP.msg.warning('La hora de confirmación debe ser menor a la hora de ' + (auxObjEmbarque ? 'embarque' : 'turno') + ' (' + tmpHoraBase + ').');
 
                                     this.$nextTick(() => {
                                         document.getElementById('txtHoraReservacion').focus();
@@ -3758,17 +3769,8 @@
                                 }
 
                                 if (VerificaHoraConfirmacion !== '0') {
-                                    var auxHoraBase = '';
 
-                                    // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
-                                    var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
-                                    if (auxObjEmbarque)
-                                        auxHoraBase = auxObjEmbarque.Hora;
-                                    else
-                                        auxHoraBase = this.filtro.Turno;
-                                    // -------------------------------------------------------------------------
-
-                                    var HoraReal = moment(auxHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                                    var HoraReal = moment(tmpHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
 
                                     if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
@@ -3817,8 +3819,11 @@
                     this.list.ventas[this.indexVenta].ApellidoMaterno = '';
                     this.list.ventas[this.indexVenta].FechaNac = '';
                     this.list.ventas[this.indexVenta].Edad = '';
-                    this.list.ventas[this.indexVenta].Sexo = '';
+                    this.list.ventas[this.indexVenta].Sexo = null;
                     this.list.ventas[this.indexVenta].Telefono = '';
+
+                    this.list.ventas[this.indexVenta].ValidadorClienteEspecial = false;
+
                     if (this.pickedBusVenta !== '1') {
                         this.list.ventas[this.indexVenta].Ruc = '';
                         this.list.ventas[this.indexVenta].RazonSocial = '';
@@ -5071,7 +5076,7 @@
                         if (await APP.msg.confirm(
                             ''
                             , 'El asiento cuenta con reintegro, para anular el reintegro dar click derecho en el asiento y elegir la opción Reintegro, ' +
-                              'caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar? ')) {
+                            'caso contrario se anulará el boleto original más el reintegro, ¿Desea continuar? ')) {
                             if (appController.validatePanel('231') === '1') {
 
                                 var resConfirmClaveFechaActualCodiUsuario = await APP.msg.confirmClaveFechaActualCodiUsuario(
@@ -5805,6 +5810,15 @@
                     this.list.ventas[this.indexVenta].HoraReservacion = this.$getValueDateTimePicker_Hours(event);
 
                     if (_keyCode === 13) {
+                        var tmpHoraBase = '';
+
+                        // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
+                        var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
+                        if (auxObjEmbarque)
+                            tmpHoraBase = auxObjEmbarque.Hora;
+                        else
+                            tmpHoraBase = this.filtro.Turno;
+                        // -------------------------------------------------------------------------
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === moment().format('DD/MM/YYYY')) {
                             if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
@@ -5814,23 +5828,14 @@
                         }
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
-                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
-                                APP.msg.warning('La hora de confirmación debe ser menor a la hora del turno.');
+                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
+                                APP.msg.warning('La hora de confirmación debe ser menor a la hora de ' + (auxObjEmbarque ? 'embarque' : 'turno') + ' (' + tmpHoraBase + ').');
                                 return false;
                             }
 
                             if (VerificaHoraConfirmacion !== '0') {
-                                var auxHoraBase = '';
 
-                                // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
-                                var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
-                                if (auxObjEmbarque)
-                                    auxHoraBase = auxObjEmbarque.Hora;
-                                else
-                                    auxHoraBase = this.filtro.Turno;
-                               // -------------------------------------------------------------------------
-
-                                var HoraReal = moment(auxHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                                var HoraReal = moment(tmpHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
 
                                 if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
@@ -6339,13 +6344,17 @@
                     });
                 },
                 listVentasCampoDocumento: function (newVal, oldVal) {
-                    if (oldVal && oldVal.length >= 8 && !this.list.ventas[this.indexVenta].IdVenta)
-                        this.clearUser();
+                    if (this.oldIndexVenta === this.indexVenta) {
+                        if (oldVal && oldVal.length >= 8 && !this.list.ventas[this.indexVenta].IdVenta)
+                            this.clearUser();
+                    }
                 },
                 listVentasCampoRuc: function (newVal, oldVal) {
-                    if (oldVal && oldVal.length >= 11 && !this.list.ventas[this.indexVenta].IdVenta) {
-                        this.clearRazSoc();
-                        this.list.ventas[this.indexVenta].DisabledRazonSocial = false;
+                    if (this.oldIndexVenta === this.indexVenta) {
+                        if (oldVal && newVal && (newVal.length === 0 || oldVal.length >= 11) && !this.list.ventas[this.indexVenta].IdVenta) {
+                            this.clearRazSoc();
+                            this.list.ventas[this.indexVenta].DisabledRazonSocial = false;
+                        }
                     }
 
                     switch (this.pickedBusVenta) {
@@ -6473,6 +6482,9 @@
                             objVenta.HoraReservacion = newVal;
                         });
                     }
+                },
+                indexVenta: function (newVal, oldVal) {
+                    this.oldIndexVenta = _.cloneDeep(this.indexVenta);
                 }
             }
         });

@@ -821,7 +821,16 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label class="control-label">Nombres</label>
+                                                <label class="control-label"
+                                                       style="min-width: calc(100% - 30px); width: calc(100% - 30px); display: inline-block; ">
+                                                    Nombres
+                                                </label>
+                                                <button v-show="list.ventas[indexVenta].ValidadorClienteEspecial"
+                                                        class="btn-warning btn-xs"
+                                                        title="Cliente especial"
+                                                        tabindex="-1">
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                </button>
                                                 <input v-model="list.ventas[indexVenta].Nombres"
                                                        @@input="list.ventas[indexVenta].Nombres = $filterLettersToName(list.ventas[indexVenta].Nombres)"
                                                        @@keydown.13.prevent="recorridoSectionVentas"

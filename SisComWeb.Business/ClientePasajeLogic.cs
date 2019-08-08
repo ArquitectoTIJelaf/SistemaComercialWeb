@@ -174,16 +174,22 @@ namespace SisComWeb.Business
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
 
-                    if (result != "[]") {
-                        JToken tmpResult = JObject.Parse(result);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        if (result != "[]")
+                        {
+                            JToken tmpResult = JObject.Parse(result);
 
-                        entidad.RazonSocial = (string)tmpResult["razon_social"];
-                        entidad.Direccion = (string)tmpResult["domicilio_fiscal"];
+                            entidad.RazonSocial = (string)tmpResult["razon_social"];
+                            entidad.Direccion = (string)tmpResult["domicilio_fiscal"];
 
-                        return new Response<RucEntity>(true, entidad, Message.MsgCorrectoConsultaSUNAT, true);
+                            return new Response<RucEntity>(true, entidad, Message.MsgCorrectoConsultaSUNAT, true);
+                        }
+                        else
+                            return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, true);
                     }
                     else
-                        return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, true);
+                        return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, true);
                 }
                 else
                     return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, true);
