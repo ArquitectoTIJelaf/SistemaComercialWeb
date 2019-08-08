@@ -4873,8 +4873,11 @@
                         IdVenta: _IdVenta
                     })
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.Estado) {
                                 auxResponse = res.data.Valor;
+                                if (res.data.Valor > 0)
+                                    APP.msg.warning(res.data.Mensaje);
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })

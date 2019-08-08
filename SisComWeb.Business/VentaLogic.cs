@@ -1433,8 +1433,14 @@ namespace SisComWeb.Business
             try
             {
                 var verificaNC = VentaRepository.VerificaNC(IdVenta);
+                var mensaje = string.Empty;
 
-                return new Response<int>(true, Convert.ToInt32(verificaNC.id), Message.MsgCorrectoVerificaNC, true);
+                if (int.Parse(verificaNC.id) > 0)
+                    mensaje = "El boleto está sujeto a Nota de Crédito " + "(N.C.: " + verificaNC.label + ").";
+                else
+                    mensaje = Message.MsgCorrectoVerificaNC;
+
+                return new Response<int>(true, Convert.ToInt32(verificaNC.id), mensaje, true);
             }
             catch (Exception ex)
             {
