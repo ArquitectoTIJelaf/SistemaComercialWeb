@@ -154,6 +154,8 @@ namespace SisComWeb.Business
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
                 FechaAbiertaRepository.VentaDerivadaUpdateViaje(filtro.IdVenta, filtro.FechaViaje, filtro.HoraViaje, filtro.CodiServicio);
                 FechaAbiertaRepository.VentaUpdateCnt(0, filtro.CodiProgramacion, filtro.Oficina, filtro.Oficina);
+                if(filtro.CodiProgramacion > 0)
+                    FechaAbiertaRepository.VentaUpdateCnt(filtro.CodiProgramacion, filtro.CodiProgramacion, filtro.Oficina, filtro.Oficina);
 
                 var objAuditoria = new AuditoriaEntity
                 {

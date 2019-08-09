@@ -10002,9 +10002,9 @@
                 anularReintegro: async function () {
                     let _this = this;
                     var item = {};
-                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa);
-                    item.serie = (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0');
-                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0');
+                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
+                    item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
+                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -10030,66 +10030,68 @@
                 },
                 consultaReniec: function () {
                     let _this = this;
+                    if (!_this.readOnlyCodiMotivo) {
+                        // Validaciones
+                        if (!_this.item.documento) {
+                            _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
+                            APP.msg.warning('Seleccione tipo de documento.');
+                            return;
+                        }
+                        else if (_this.item.numero.length !== 8) {
+                            _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
+                            APP.msg.warning('Ingrese DNI de 8 dígitos.');
+                            return;
+                        }
 
-                    // Validaciones
-                    if (!_this.item.documento) {
-                        _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
-                        APP.msg.warning('Seleccione tipo de documento.');
-                        return;
-                    }
-                    else if (_this.item.numero.length !== 8) {
-                        _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
-                        APP.msg.warning('Ingrese DNI de 8 dígitos.');
-                        return;
-                    }
-
-                    APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
-                        numeroDoc: _this.item.numero
-                    }), { timeout: 5000 })
-                        .then(res => {
-                            if (res.data.EsCorrecto) {
-                                _this.item.nombre = res.data.Valor.Nombres;
-                                _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
-                                _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
-                            }
-                            else {
-                                if (res.data.Estado)
-                                    APP.msg.warning(res.data.Mensaje);
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
+                            numeroDoc: _this.item.numero
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.EsCorrecto) {
+                                    _this.item.nombre = res.data.Valor.Nombres;
+                                    _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                    _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                }
+                                else {
+                                    if (res.data.Estado)
+                                        APP.msg.warning(res.data.Mensaje);
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                }
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED")
+                                    APP.msg.warning('No se pudo consultar a la RENIEC.');
                                 else
-                                    APP.msg.error(res.data.Mensaje);
-                            }
-                        })
-                        .catch(err => {
-                            if (err.code === "ECONNABORTED")
-                                APP.msg.warning('No se pudo consultar a la RENIEC.');
-                            else
-                                APP.rq.axios_handler_error_alert;
-                        });
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }
                 },
                 consultaSunat: function () {
                     var _this = this;
-
-                    APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
-                        rucContacto: _this.item.ruc
-                    }), { timeout: 5000 })
-                        .then(res => {
-                            if (res.data.EsCorrecto) {
-                                _this.item.razonSocial = res.data.Valor.RazonSocial;
-                                _this.item.direccion = res.data.Valor.Direccion;
-                            }
-                            else {
-                                if (res.data.Estado)
-                                    APP.msg.warning(res.data.Mensaje);
+                    if (!_this.readOnlyCodiMotivo) {
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
+                            rucContacto: _this.item.ruc
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.EsCorrecto) {
+                                    _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                    _this.item.direccion = res.data.Valor.Direccion;
+                                }
+                                else {
+                                    if (res.data.Estado)
+                                        APP.msg.warning(res.data.Mensaje);
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                }
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED")
+                                    APP.msg.warning('No se pudo consultar a la SUNAT.');
                                 else
-                                    APP.msg.error(res.data.Mensaje);
-                            }
-                        })
-                        .catch(err => {
-                            if (err.code === "ECONNABORTED")
-                                APP.msg.warning('No se pudo consultar a la SUNAT.');
-                            else
-                                APP.rq.axios_handler_error_alert;
-                        });
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }                    
                 },
                 searchUser: async function () {
                     let _this = this;
@@ -11030,6 +11032,47 @@
                         });
                     }
                 },
+            },
+            watch: {}
+        });
+
+        var appVuePaseLote = new Vue({
+            el: '#appVuePaseLote',
+            data: {
+            },
+            mounted: function () {
+                let _this = this;
+
+                window.addEventListener('keydown', e => {
+                    if (e.ctrlKey && e.keyCode == 118{
+                        //algo
+                    }
+                });
+            },
+            methods: {
+                show: function (item) {
+                    //this.limpiarCampos();
+                    //this.setData(item);
+                    //if (!this.list.empresas.length > 0)
+                    //    this.list.empresas = empresas
+                    this.$nextTick(() => {
+                        $('#appVuePaseLote').modal('show');
+                    });
+                },
+                setData: function (_item) {
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                confirm: async function () {
+                },
+                limpiarCampos: function () {
+                },
+                close: function () {
+                    $('#appVuePaseLote').modal('hide');
+                }
+            },
+            computed: {
             },
             watch: {}
         });
