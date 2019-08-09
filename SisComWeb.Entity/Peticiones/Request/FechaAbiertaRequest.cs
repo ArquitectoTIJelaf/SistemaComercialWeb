@@ -76,5 +76,12 @@ namespace SisComWeb.Entity.Peticiones.Request
         public string NomDestino { get; set; }
 
         public decimal PrecioVenta { get; set; }
+
+
+        public string CodiEsca { get; set; }
+
+        public string CodiOrigen { get; set; }
+
+        public int CodiProgramacion { get; set; }
     }
 }

@@ -1709,12 +1709,29 @@ namespace SisComWeb.Business
 
         #region MODIFICAR VENTA FECHA ABIERTA
 
-        public static Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
+        public static Response<bool> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
-                var modificarVentaAFechaAbierta = VentaRepository.ModificarVentaAFechaAbierta(request.IdVenta, request.CodiServicio, request.CodiRuta);
-                if (modificarVentaAFechaAbierta > 0)
+                var objFechaAbierta = new FechaAbiertaRequest()
+                {
+                    CodiEsca = request.CodiEsca,
+                    CodiProgramacion = 0,
+                    CodiOrigen = request.CodiOrigen,
+                    IdVenta = request.IdVenta,
+                    NumeAsiento = request.NumeAsiento.ToString("D2"),
+                    CodiRuta = request.CodiRuta.ToString(),
+                    CodiServicio = request.CodiServicio.ToString(),
+                    Tipo = "" // No es utilizado en: Usp_Tb_Venta_Update_Postergacion_Ele
+                };
+                var modificarVentaAFechaAbierta = FechaAbiertaRepository.VentaUpdatePostergacionEle(objFechaAbierta);
+
+                FechaAbiertaRepository.VentaDerivadaUpdateViaje(request.IdVenta, request.FechaViaje, request.HoraViaje, request.CodiServicio.ToString());
+                FechaAbiertaRepository.VentaUpdateCnt(request.CodiProgramacion, 0, int.Parse(request.CodiOrigen), 0);
+                FechaAbiertaRepository.VentaUpdateImpManifiesto(request.IdVenta);
+                
+
+                if (modificarVentaAFechaAbierta)
                 {
 
                     // Graba 'AuditoriaFechaAbierta'
@@ -1736,20 +1753,20 @@ namespace SisComWeb.Business
                         Obs1 = string.Empty,
                         Obs2 = string.Empty,
                         Obs3 = string.Empty,
-                        Obs4 = "POSTEGADO A FECHA ABIERTA",
+                        Obs4 = "POSTERGADO A FECHA ABIERTA",
                         Obs5 = "TERMINAL : " + request.CodiTerminal
                     };
                     VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
 
-                    return new Response<byte>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
+                    return new Response<bool>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
                 }
                 else
-                    return new Response<byte>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
+                    return new Response<bool>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<byte>(false, 0, Message.MsgExcModificarVentaAFechaAbierta, false);
+                return new Response<bool>(false, false, Message.MsgExcModificarVentaAFechaAbierta, false);
             }
         }
 

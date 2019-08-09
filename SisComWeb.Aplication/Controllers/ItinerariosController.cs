@@ -1668,6 +1668,10 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"NomDestino\" : \"" + request.NomDestino + "\"" +
                                     ",\"PrecioVenta\" : " + request.PrecioVenta +
+
+                                    ",\"CodiEsca\" : \"" + (request.CodiEsca ?? string.Empty) + "\"" +
+                                    ",\"CodiOrigen\" : \"" + request.CodiOrigen + "\"" +
+                                    ",\"CodiProgramacion\" : " + request.CodiProgramacion +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1676,11 +1680,11 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<byte> res = new Response<byte>()
+                Response<bool> res = new Response<bool>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (byte)tmpResult["Valor"],
+                    Valor = (bool)tmpResult["Valor"],
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
@@ -1688,7 +1692,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<byte>(false, Constant.EXCEPCION, 0, false), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false, false), JsonRequestBehavior.AllowGet);
             }
         }
 

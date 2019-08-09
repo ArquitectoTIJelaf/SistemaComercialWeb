@@ -2115,8 +2115,9 @@
 
                     // Validar 'AsientoSel' vendido
                     if (asientoSel.FlagVenta) {
-                        _this.fillDataAsientoVendido(asientoSel);
                         _this.disabledAsiento = false;
+
+                        _this.fillDataAsientoVendido(asientoSel);
                         return;
                     }
 
@@ -4515,7 +4516,7 @@
                 },
                 sendToFechaAbierta: async function (asientoSel) {
                     var _this = this;
-
+                    
                     // En un caso específico, el SignalR limpia 'asientoSel', por eso:
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
 
@@ -4527,6 +4528,13 @@
                         // Valida 'Manifiesto'
                         var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
                         if (!resValidaManifiestoProgramacion) {
+                            _this.disabledAsiento = false;
+                            return;
+                        }
+                        
+                        // Validación Pre 'FechaAbierta'
+                        var validatePreFechaAbierta = await _this.validatePreFechaAbierta(tmpAsientoSel);
+                        if (!validatePreFechaAbierta) {
                             _this.disabledAsiento = false;
                             return;
                         }
@@ -4542,7 +4550,7 @@
                                 _this.disabledAsiento = false;
                                 return;
                             }
-
+                            
                             await APP.rq.axios.post(APP.base + '/itinerarios/modificar-venta-a-fecha-abierta' + APP.util.getQueryParamByObject({
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
@@ -4554,7 +4562,11 @@
                                 FechaViaje: _this.filtro.Fecha,
                                 HoraViaje: _this.filtro.Turno,
                                 NomDestino: tmpAsientoSel.NomDestino,
-                                PrecioVenta: tmpAsientoSel.PrecioVenta
+                                PrecioVenta: tmpAsientoSel.PrecioVenta,
+                                
+                                CodiEsca: tmpAsientoSel.CodiEsca ? tmpAsientoSel.CodiEsca.substr(1) : '',
+                                CodiOrigen: tmpAsientoSel.CodiOrigen,
+                                CodiProgramacion: _this.filtro.CodiProgramacion
                             }))
                                 .then(async function (res) {
                                     await appController.chargeTurnos();
@@ -4586,6 +4598,39 @@
                     }
                     else
                         appController.showFechaAbierta(asientoSel);
+                },
+                validatePreFechaAbierta: async function (_tmpAsientoSel) {
+                    var auxValidate = true;
+
+                    if (_tmpAsientoSel.CodiOrigen != this.filtro.CodiSucursal.id) {
+                        APP.msg.warning('El turno del asiento (' + _tmpAsientoSel.NomOrigen + ') no pertenece al turno actual, seleccione el correcto.');
+                        return auxValidate = false;
+                    }
+
+                    if (appController.validatePanelClave('167') === '1') {
+                        if (Usuario.Nivel !== 1 && Usuario.Nivel !== 11) {
+                            APP.msg.warning('Usuario no autorizado. Solo los administradores puede enviar a fecha abierta.');
+                            return auxValidate = false;
+                        }
+                    }
+
+                    var verificaNC = await this.verificaNC(_tmpAsientoSel.IdVenta);
+                    if (verificaNC !== 0)
+                        return auxValidate = false;
+
+                    var verificaLiquidacionComiDet = await this.verificaLiquidacionComiDet(_tmpAsientoSel.IdVenta);
+                    if (verificaLiquidacionComiDet !== 0) {
+                        APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
+                        return auxValidate = false;
+                    }
+
+                    var verificaLiquidacionComi = await this.verificaLiquidacionComi(this.filtro.CodiProgramacion, _tmpAsientoSel.CodiPuntoVenta);
+                    if (verificaLiquidacionComi === "1") {
+                        APP.msg.warning('El boleto se encuentra liquidado.');
+                        return auxValidate = false;
+                    }
+
+                    return auxValidate;
                 },
                 validateFechaAbierta: async function (_tmpAsientoSel) {
                     var auxValidate = true;
@@ -4670,6 +4715,36 @@
                                 APP.msg.warning('No se puede procesar datos de fechas pasadas');
                                 return auxValidate = false;
                             }
+                        }
+                    }
+
+                    if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isSameOrBefore(moment(), 'days')) {
+
+                        if (appController.validatePanel('123') === '1') {
+
+                            var controlTiempo = await this.controlTiempo("01");
+                            if (controlTiempo > 0) {
+
+                                var auxDiffMinutes = moment(this.filtro.Turno, 'hh:mmA').diff(moment(), 'minutes');
+                                if ((auxDiffMinutes / 60) < controlTiempo) {
+
+                                    var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                        `${_.padStart(ClaveMoverVentaFueraDeHora, 3, '0')} - Anular boleto fuera de hora`
+                                        , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                        , ClaveMoverVentaFueraDeHora);
+                                    if (!resConfirmClaveAutorizacion) {
+                                        APP.msg.warning('Usuario no autorizado.');
+                                        return auxValidate = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (appController.validatePanel('128') === '1') {
+                        if (_tmpAsientoSel.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
+                            APP.msg.warning('No puede enviar a fecha abierta boletos con otro punto de venta.');
+                            return auxValidate = false;
                         }
                     }
 
@@ -4821,7 +4896,7 @@
                     var valPanelAnular125 = appController.validatePanel('125'); // An_Venta_Suc
 
                     var verificaNC = await this.verificaNC(_tmpAsientoSel.IdVenta);
-                    if (verificaNC != 0)
+                    if (verificaNC !== 0)
                         return auxResponse;
 
                     if (!_StAnulacion && _tmpAsientoSel.FlagVenta != "AB") {
@@ -4902,7 +4977,7 @@
 
                                 if (moment(this.filtro.Turno, 'hh:mmA').isAfter(moment(), 'minutes')) {
 
-                                    var auxDiffMinutes = moment().diff(moment(this.filtro.Turno, 'hh:mmA'), 'minutes');
+                                    var auxDiffMinutes = moment(this.filtro.Turno, 'hh:mmA').diff(moment(), 'minutes');
                                     if ((auxDiffMinutes / 60) < controlTiempo) {
 
                                         var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(

@@ -287,7 +287,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", ResponseFormat = WebMessageFormat.Json)]
-        Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request);
+        Response<bool> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request);
 
         #endregion
 

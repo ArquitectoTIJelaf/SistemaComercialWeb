@@ -823,7 +823,7 @@ namespace SisComWeb.Services
 
         #region FECHA ABIERTA
 
-        public Response<byte> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
+        public Response<bool> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
             try
             {
@@ -832,7 +832,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<byte>(false, 0, Message.MsgExcModificarVentaAFechaAbierta, false);
+                return new Response<bool>(false, false, Message.MsgExcModificarVentaAFechaAbierta, false);
             }
         }
 
