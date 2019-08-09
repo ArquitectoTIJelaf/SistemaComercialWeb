@@ -247,11 +247,12 @@
                                                                    class="form-control input-sm"
                                                                    :class="{'p-r-20': item.documento == '1'}"
                                                                    style="background-color: white;"
-                                                                   @@keydown.13.prevent="$refs.refREApePat.focus()"
+                                                                   @@keydown.13.prevent="searchUser(); $refs.refREApePat.focus()"
+                                                                   @@focus="$event.target.select()"
                                                                    :disabled="readOnlyCodiMotivo"
                                                                    ref="refRENumeroDoc"/>
                                                             <span v-if="item.documento == '1'"
-                                                                  @@click=""
+                                                                  @@click="consultaReniec"
                                                                   class="fa fa-cloud field-icon fa-fw"
                                                                   title="Consultar a RENIEC"
                                                                   :disabled="readOnlyCodiMotivo"></span>
@@ -358,11 +359,12 @@
                                                         <input v-model="item.ruc"
                                                                class="form-control input-sm p-r-20"
                                                                style="background-color: white;"
-                                                               @@keydown.13.prevent="$refs.refRERazSoc.focus()"
+                                                               @@keydown.13.prevent="searchEmpresa(); $refs.refRERazSoc.focus()"
                                                                :disabled="readOnlyCodiMotivo"
                                                                v-mask="'#'.repeat(11)"
                                                                ref="refRERuc"/>
-                                                        <span @@click=""
+                                                        <span v-if="item.ruc.length == 11"
+                                                              @@click="consultaSunat"
                                                               class="fa fa-cloud field-icon fa-fw"
                                                               title="Consultar a SUNAT"
                                                               :disabled="readOnlyCodiMotivo"></span>
