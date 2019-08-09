@@ -1,0 +1,136 @@
+﻿
+<div id="appVuePaseLote" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Pase en Lote</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="panel panel-default m-b-0" v-show="true">
+                        <div class="panel-heading p-0">
+                            <div class="font-12 p-t-0 p-b-0">
+                                FILTROS DE ORIGEN
+                                <div class="panel-action">
+                                    <a @@click="" ref="" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="" class="panel-wrapper collapse in a-transition" aria-expanded="true">
+                            <div class="panel-body p-0">
+                                <div class="form-horizontal">
+                                    <div class="form-group m-b-5">
+                                        <div class="col-md-11 p-0">
+                                            <div class="col-md-8 p-0">
+                                                <div class="col-md-4 separate-in-form">
+                                                    <label class="control-label label-sm">Origen:</label>
+                                                    <div class="">
+                                                        <v-select v-model="filtroCodiOrigen1"
+                                                                  :options="list.rutas"
+                                                                  :placeholder="'ORIGEN'"
+                                                                  :select-on-tab="true"
+                                                                  :get-option-label="getLabel"
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEDestino1.$el.querySelector('input').focus()"
+                                                                  ref="refLOTEOrigen1">
+                                                            <template slot="option" slot-scope="option">
+                                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                            </template>
+                                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                        </v-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 separate-in-form">
+                                                    <label class="control-label label-sm">Destino:</label>
+                                                    <div class="">
+                                                        <v-select v-model="filtroCodiDestino1"
+                                                                  :options="list.rutasAll"
+                                                                  :placeholder="'DESTINO'"
+                                                                  :select-on-tab="true"
+                                                                  :get-option-label="getLabel"
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEServicio1.$el.querySelector('input').focus()"
+                                                                  ref="refLOTEDestino1">
+                                                            <template slot="option" slot-scope="option">
+                                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                            </template>
+                                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                        </v-select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 separate-in-form">
+                                                    <label class="control-label label-sm">Servicio:</label>
+                                                    <div class="">
+                                                        <v-select v-model="filtroCodiServicio1"
+                                                                  :options="list.servicios"
+                                                                  :placeholder="'SERVICIO'"
+                                                                  :select-on-tab="true"
+                                                                  :get-option-label="getLabel"
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEFechaIt1.focus()"
+                                                                  ref="refLOTEServicio1">
+                                                            <template slot="option" slot-scope="option">
+                                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                            </template>
+                                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                        </v-select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 separate-in-form">
+                                                <label class="control-label label-sm" style="text-align:left;">Fecha:</label>
+                                                <div class="">
+                                                    <input v-model="filtroOrigen.FechaViaje"
+                                                           class="form-control input-sm dpFiltro"
+                                                           placeholder="DD/MM/YYYY"
+                                                           v-mask="'##/##/####'"
+                                                           @@focus="$event.target.select()"
+                                                           @@keydown.13.prevent="$refs.refLOTEHoraIt1.focus()"
+                                                           @@blur="filtroOrigen.FechaViaje = $getValueDateTimePicker($event)"
+                                                           autocomplete="off"
+                                                           ref="refLOTEFechaIt1" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 separate-in-form">
+                                                <label class="control-label label-sm" style="text-align:left;">Hora:</label>
+                                                <div class="">
+                                                    <input v-model="filtroOrigen.Hora"
+                                                           class="form-control input-sm dph"
+                                                           placeholder="HH:MM AM"
+                                                           v-mask="'##:## AM'"
+                                                           @@focus="$event.target.select()"
+                                                           @@keydown.13.prevent="$refs.refLOTEBuscar1.focus()"
+                                                           @@blur="filtroOrigen.Hora = $event.target.value"
+                                                           autocomplete="off"
+                                                           ref="refLOTEHoraIt1" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 separate-in-form text-center">
+                                            <label class="full-width">&nbsp;</label>
+                                            <button @@click=""
+                                                    class="btn btn-primary btn-block-custom waves-effect waves-light"
+                                                    ref="refLOTEBuscar1">
+                                                <span class="fa fa-search fa-fw"></span>Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<button id="btnSaveVentaTipoPago2"
+                            class="btn btn-primary waves-effect"
+                            ref="refBtnAceptarTP2"
+                            @@click="saveVenta2"
+                            :disabled="(processing2 || errors.any())">
+                        <span class="fa fa-save fa-fw"></span>Aceptar
+                    </button>*@
+                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

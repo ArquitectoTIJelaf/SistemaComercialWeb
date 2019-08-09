@@ -44,6 +44,7 @@
 @Html.Partial("_MiniMapa")
 @Html.Partial("_TipoPago2")
 @Html.Partial("_AnularReintegro")
+@Html.Partial("_PaseLote")
 
 @section styles{
     <style type="text/css">
@@ -843,6 +844,9 @@
                             case 'txtFechaRE':
                                 appVueReintegro.$refs.refREHoraIt.focus();
                                 break;
+                            default:
+                                debugger;
+                                e.target.nextElementSibling.focus();
                         }
                     }
                 });
@@ -9465,6 +9469,7 @@
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
                                 if (data) {
+                                    debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -9608,7 +9613,7 @@
                     let _this = this;
                     if (parseFloat(_this.filtroCambio.DiferenciaPrecio) > parseFloat(_this.item.reintegro)) {
                         if (await APP.msg.confirm('Diferencia de precios', 'El monto del reintegro es menor a la diferencia entre precios, ¿Desea Continuar?')) {
-                           _this.$refs.refREAceptar.click();
+                            _this.$refs.refREAceptar.click();
                         } else {
                             _this.$refs.refREDifPrecio.focus();
                         }
@@ -10005,7 +10010,7 @@
                                 input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
                                 input.NombDestino = _this.$options.filters.rutas(auxDestinoPas);
                                 input.CodiBus = _this.dataOriginal.CodiBus;
-                                input.DirEmbarque = rutas.find(x => x.id === String(_this.dataOriginal.CodiEmbarque)).label;
+                                input.DirEmbarque = pvOrigenesBus.find(x => x.id === String(_this.dataOriginal.CodiEmbarque)).label;
                                 input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
                                 input.NomEmpresaRuc = _this.item.razonSocial;
                                 input.DirEmpresaRuc = _this.item.direccion;
@@ -10030,7 +10035,9 @@
                     });
 
                     //Graba reintegro
+                    //_this.$nextTick(() => {
                     if (checkTipoPago) {
+                        debugger;
                         await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
                             .then(async function (res) {
                                 if (res.data.Estado) {
@@ -10060,6 +10067,7 @@
                         _this.disabledAceptar = false;
                         return;
                     }
+                    //});
 
                     _this.disabledAceptar = false;
                 },
@@ -11126,27 +11134,39 @@
         var appVuePaseLote = new Vue({
             el: '#appVuePaseLote',
             data: {
+                filtroOrigen: {
+                    CodiOrigen: '',
+                    CodiDestino: '',
+                    CodiServicio: '',
+                    FechaViaje: '',
+                    Hora: ''
+                },
+                list: {
+                    rutas: [],
+                    rutasAll: [],
+                    servicios: []
+                }
             },
             mounted: function () {
                 let _this = this;
 
                 window.addEventListener('keydown', e => {
                     if (e.ctrlKey && e.keyCode == 118) {
-                        //algo
+                        _this.show();
                     }
                 });
             },
             methods: {
-                show: function (item) {
+                show: function () {
                     //this.limpiarCampos();
-                    //this.setData(item);
+                    //this.setData();
                     //if (!this.list.empresas.length > 0)
                     //    this.list.empresas = empresas
                     this.$nextTick(() => {
                         $('#appVuePaseLote').modal('show');
                     });
                 },
-                setData: function (_item) {
+                setData: function () {
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -11160,6 +11180,66 @@
                 }
             },
             computed: {
+                filtroCodiOrigen1: {
+                    get: function () {
+                        if (this.list.rutas.length > 0 && this.list.rutas.find(x => x.id === this.filtroOrigen.CodiOrigen)) {
+                            return this.list.rutas.find(x => x.id === this.filtroOrigen.CodiOrigen)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.rutas.find(x => x.id === value.id)) {
+                                this.filtroOrigen.CodiOrigen = value.id;
+                            }
+                        } else {
+                            this.filtroOrigen.CodiOrigen = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEOrigen1.typeAheadPointer = this.$getSelectorVselect(this.list.rutas, value);
+                        });
+                    }
+                },
+                filtroCodiDestino1: {
+                    get: function () {
+                        if (this.list.rutasAll.length > 0 && this.list.rutasAll.find(x => x.id === this.filtroOrigen.CodiDestino)) {
+                            return this.list.rutasAll.find(x => x.id === this.filtroOrigen.CodiDestino)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.rutasAll.find(x => x.id === value.id)) {
+                                this.filtroOrigen.CodiDestino = value.id;
+                            }
+                        } else {
+                            this.filtroOrigen.CodiDestino = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEDestino1.typeAheadPointer = this.$getSelectorVselect(this.list.rutasAll, value);
+                        });
+                    }
+                },
+                filtroCodiServicio1: {
+                    get: function () {
+                        if (this.list.servicios.length > 0 && this.list.servicios.find(x => x.id === this.filtroOrigen.CodiServicio)) {
+                            return this.list.servicios.find(x => x.id === this.filtroOrigen.CodiServicio)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.servicios.find(x => x.id === value.id)) {
+                                this.filtroOrigen.CodiServicio = value.id;
+                            }
+                        } else {
+                            this.filtroOrigen.CodiServicio = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEServicio1.typeAheadPointer = this.$getSelectorVselect(this.list.servicios, value);
+                        });
+                    }
+                },
             },
             watch: {}
         });
