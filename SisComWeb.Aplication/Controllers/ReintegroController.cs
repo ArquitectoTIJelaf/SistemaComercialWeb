@@ -388,24 +388,12 @@ namespace SisComWeb.Aplication.Controllers
                 }
 
                 JToken tmpResult = JObject.Parse(result);
-                JObject data = (JObject)tmpResult["Valor"];
 
-                Response<Reintegro> res = new Response<Reintegro>()
+                Response<byte> res = new Response<byte>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = new Reintegro()
-                    {
-                        IdVenta = (int)data["IdVenta"],
-                        CodiEsca = (string)data["CodiEsca"],
-                        Sucursal = (int)data["Sucursal"],
-                        PrecioVenta = (decimal)data["PrecioVenta"],
-                        TipoPago = (string)data["TipoPago"],
-                        ClavUsuario = (string)data["ClavUsuario"],
-                        Tipo = (string)data["Tipo"],
-                        RucCliente = (string)data["RucCliente"],
-                        CodiDestino = (short)data["CodiDestino"]
-                    },
+                    Valor = (byte)tmpResult["Valor"],
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
 
@@ -413,7 +401,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+                return Json(new Response<byte>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
     }

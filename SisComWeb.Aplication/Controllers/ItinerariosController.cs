@@ -1383,7 +1383,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NomPuntoVenta\" : \"" + (request.NomPuntoVenta ?? string.Empty) + "\"" +
                                     ",\"Pasajero\" : \"" + (request.Pasajero ?? string.Empty) + "\"" +
                                     ",\"FechaViaje\" : \"" + (request.FechaViaje ?? string.Empty) + "\"" +
-                                    ",\"HoraViaje\" : \"" + (request.HoraViaje.Replace(" ", "") ?? string.Empty) + "\"" +
+                                    ",\"HoraViaje\" : \"" + (request.HoraViaje ?? string.Empty).Replace(" ", "") + "\"" +
                                     ",\"NomDestino\" : \"" + (request.NomDestino ?? string.Empty) + "\"" +
                                     ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(request.Precio) + "\"" +
                                     ",\"Obs1\" : \"" + (request.Obs1 ?? string.Empty).ToUpper() + "\"" +

@@ -3,6 +3,7 @@
     var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
     var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
     var clavereintegroconfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
+    var clavereintegro = Constant.CLAVE_REINTEGRO;
 }
 
 <div id="appClaveAutorizacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 2000;">
@@ -53,7 +54,7 @@
                             </div>
                         </div>
                     </template>
-                    <template v-else-if="Tipo == '@clavereintegroconfirmacion'">
+                    <template v-else-if="Tipo == '@clavereintegroconfirmacion' || Tipo == '@clavereintegro'">
                         <div class="form-group m-b-5">
                             <div class="col-md-12" style="padding-left: 0px; padding-right: 0px; ">
                                 <label class="col-md-3 control-label label-sm">Usuario: </label>
@@ -67,6 +68,7 @@
                                               :filterable="false"
                                               @@search="getUsuarioControlPwd"
                                               @@keydown.13.native.prevent="$refs.refContraseniaCA.focus()"
+                                              :disabled="disabledUsuario"
                                               ref="refUsuarioRE">
                                         <template slot="option" slot-scope="option">
                                             <div @@click="$refs.refContraseniaCA.focus()">{{ option.id }} - {{ option.label }}</div>
@@ -95,7 +97,7 @@
                             </div>
                         </div>
                     </div>
-                    <template v-if="Tipo == '@claveDescuentoDePasajes' || Tipo == '@clavereintegroconfirmacion'">
+                    <template v-if="Tipo == '@claveDescuentoDePasajes' || Tipo == '@clavereintegroconfirmacion' || Tipo == '@clavereintegro'">
                         <div class="form-group m-b-5">
 
                             <div class="col-md-12" style="padding-left: 0px; padding-right: 0px;">

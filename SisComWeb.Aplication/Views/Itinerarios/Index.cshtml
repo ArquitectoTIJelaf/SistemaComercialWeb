@@ -19,7 +19,8 @@
     var claveConfirmacionDeBoletosRemotosSinManifiesto = Constant.CLAVE_CONFIRMACION_DE_BOLETOS_REMOTOS_SIN_MANIFIESTO;
     var claveCambioDeNivelDeAsiento = Constant.CLAVE_CAMBIO_DE_NIVEL_DE_ASIENTO;
     var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
-    var clavereintegroconfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
+    var claveReintegro = Constant.CLAVE_REINTEGRO;
+    var claveReintegroConfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
 }
 
 @Html.Partial("_Filtros")
@@ -665,8 +666,12 @@
                     case ClaveHoraConfirmacion:
                         $('#cboUsuarioCA input[type=search]').focus();
                         break;
-                    case Clavereintegroconfirmacion:
-                        $('#cboUsuarioRE input[type=search]').focus();
+                    case claveReintegro:
+                    case claveReintegroConfirmacion:
+                        if (appController.validatePanel('147') === '1') //Disabled Combo
+                            $('#txtContraseniaCA').focus();
+                        else
+                            $('#cboUsuarioRE input[type=search]').focus();
                         break;
                     default:
                         document.getElementById('txtContraseniaCA').focus();
@@ -974,7 +979,8 @@
         var ClaveConfirmacionDeBoletosRemotosSinManifiesto = '@claveConfirmacionDeBoletosRemotosSinManifiesto';
         var ClaveCambioDeNivelDeAsiento = '@claveCambioDeNivelDeAsiento';
         var ClaveHoraConfirmacion = '@claveHoraConfirmacion';
-        var Clavereintegroconfirmacion = '@clavereintegroconfirmacion';
+        var claveReintegro = '@claveReintegro';
+        var claveReintegroConfirmacion = '@claveReintegroConfirmacion';
 
         var ClaveCancelarReserva = '';
 
@@ -1444,6 +1450,16 @@
                         }).catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
+                },
+                UsuarioClaveAutorizacion: function (codiPanel) {
+                    var objUsuario = {};
+                    switch (codiPanel) {
+                        case '147': {
+                            objUsuario.id = Usuario.CodiUsuario;
+                            objUsuario.label = Usuario.Nombre;
+                        }; break;
+                    }
+                    return objUsuario;
                 }
             };
         })();
@@ -7868,7 +7884,26 @@
                 },
                 // Solo para reserva
                 horaReal: '',
-                trustedPassword: false
+                // Usado en reintegro
+                trustedPassword: false,
+                disabledUsuario: false,
+                idVenta: '',
+                auditoria: {
+                    Tabla: 'VENTA',
+                    TipoMovimiento: '',
+                    Boleto: '',
+                    NumeAsiento: '',
+                    Pasajero: '',
+                    FechaViaje: '01/01/1900',
+                    HoraViaje: '',
+                    NomDestino: '',
+                    Precio: 0,
+                    Obs1: '',
+                    Obs2: `TERMINAL ${String(Usuario.Terminal).padStart(3, '0')}`,
+                    Obs3: null,
+                    Obs4: null,
+                    Obs5: ''
+                }
             },
             methods: {
                 show: async function (_Tipo) {
@@ -7883,9 +7918,17 @@
                         case ClaveHoraConfirmacion:
                             this.getUsuariosHC('', null);
                             break;
-                        case Clavereintegroconfirmacion:
-                            this.getUsuarioControlPwd('', null);
-                            break;
+                        case claveReintegro:
+                        case claveReintegroConfirmacion: {
+                            //Panel 147 Configurar clave de anulacion para que sea igual a la sesion del usuario
+                            if (appController.validatePanel('147') === '1') {
+                                this.usuario = appController.UsuarioClaveAutorizacion('147');
+                                this.disabledUsuario = true;
+                            }
+                            else {
+                                this.getUsuarioControlPwd('', null);
+                            }
+                        };break;
                     }
 
                     $('#appClaveAutorizacion').modal('show');
@@ -7936,15 +7979,21 @@
                         $('#cboUsuarioCA input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
                     }
-                    else if (this.Tipo === Clavereintegroconfirmacion && !this.usuario) { //TODO
-                        $('#cboUsuarioRE input[type=search]').focus();
-                        if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
+                    else if ((this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro) && !this.usuario) {
+                        if (appController.validatePanel('147') === '1') {
+                            APP.msg.warning('Usuario no válido.')
+                            return;
+                        }
+                        else {
+                            $('#cboUsuarioRE input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
+                        }
                     }
                     else if (!this.password) {
                         document.getElementById('txtContraseniaCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese contraseña.');
                     }
-                    else if ((this.Tipo === ClaveDescuentoDePasajes || this.Tipo === Clavereintegroconfirmacion) && !this.observacion) {
+                    else if ((this.Tipo === ClaveDescuentoDePasajes || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro) && !this.observacion) {
                         document.getElementById('txtObservacionCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese observación.');
                     }
@@ -7974,13 +8023,50 @@
                                     document.getElementById('txtContraseniaCA').focus();
                             };
                             break;
-                        case Clavereintegroconfirmacion:
+                        case claveReintegroConfirmacion:
+                            {
+                                _this.trustedPassword = await appVueVenta.consultaClaveAnuRei(_this.usuario.id, _this.password);
+                                if (_this.trustedPassword) {
+                                    var objAuditoria = {};
+                                    objAuditoria.CodiUsuario = Usuario.CodiUsuario;
+                                    objAuditoria.NomUsuario = Usuario.Nombre;
+                                    objAuditoria.Tabla = _this.auditoria.Tabla;
+                                    objAuditoria.TipoMovimiento = _this.auditoria.TipoMovimiento;
+                                    objAuditoria.Boleto = _this.auditoria.Boleto;
+                                    objAuditoria.NumeAsiento = _this.auditoria.NumeAsiento;
+                                    objAuditoria.NomOficina = Usuario.NomSucursal;
+                                    objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
+                                    objAuditoria.Pasajero = _this.auditoria.Pasajero;
+                                    objAuditoria.FechaViaje = _this.auditoria.FechaViaje;
+                                    objAuditoria.HoraViaje = _this.auditoria.HoraViaje;
+                                    objAuditoria.NomDestino = _this.auditoria.NomDestino;
+                                    objAuditoria.Precio = _this.auditoria.Precio;
+                                    objAuditoria.Obs1 = _this.auditoria.Obs1;
+                                    objAuditoria.Obs2 = _this.auditoria.Obs2;
+                                    objAuditoria.Obs3 = (_this.auditoria.Obs3 == null) ? `AUTORIZA CODIGO:${_this.usuario.id} NOMBRE:${_this.usuario.label}` : _this.auditoria.Obs3;
+                                    objAuditoria.Obs4 = (_this.auditoria.Obs4 == null) ? _this.observacion : _this.auditoria.Obs4;
+                                    objAuditoria.Obs5 = _this.auditoria.Obs5;
+
+                                    appVueVenta.grabarAuditoria(objAuditoria);
+
+                                    $('#appClaveAutorizacion').modal('hide');
+                                } else {
+                                    document.getElementById('txtContraseniaCA').focus();
+                                    APP.msg.warning('Usuario no es Correcto. No esta Autorizado para la acción');
+                                }
+                            };
+                            break;
+                        case claveReintegro:
                             {
                                 _this.trustedPassword = await appController.consultaClaveControl(_this.usuario.id, _this.password);
-                                if (_this.trustedPassword)
+                                if (_this.trustedPassword) {
+                                    appVueVenta.insertarUsuarioPorVenta(Usuario.CodiUsuario, APP.cte.Accion.Reintegro, _this.idVenta, _this.observacion);
+
                                     $('#appClaveAutorizacion').modal('hide');
-                                else
+                                } else {
                                     document.getElementById('txtContraseniaCA').focus();
+                                    APP.msg.warning('Usuario no es Correcto. No esta Autorizado para la acción');
+                                }
                             };
                             break;
                         default:
@@ -7990,11 +8076,29 @@
                     _this.disabledBtnAceptar = false;
                 },
                 limpiarClaveAutorizacion: function () {
-                    this.password = '';
-                    this.observacion = '';
-                    this.disabledBtnAceptar = false;
-                    this.usuario = null;
-                    this.trustedPassword = false;
+                    let _this = this;
+                    _this.password = '';
+                    _this.observacion = '';
+                    _this.disabledBtnAceptar = false;
+                    _this.usuario = null;
+                    _this.trustedPassword = false;
+                    _this.disabledUsuario = false;
+                    _this.idVenta = '';
+                    //auditoria
+                    _this.auditoria.Tabla = 'VENTA';
+                    _this.auditoria.TipoMovimiento = '';
+                    _this.auditoria.Boleto = '';
+                    _this.auditoria.NumeAsiento = '';
+                    _this.auditoria.Pasajero = '';
+                    _this.auditoria.FechaViaje = '01/01/1900';
+                    _this.auditoria.HoraViaje = '';
+                    _this.auditoria.NomDestino = '';
+                    _this.auditoria.Precio = 0;
+                    _this.auditoria.Obs1 = '';
+                    _this.auditoria.Obs2 = `TERMINAL ${String(Usuario.Terminal).padStart(3, '0')}`;
+                    _this.auditoria.Obs3 = null;
+                    _this.auditoria.Obs4 = null;
+                    _this.auditoria.Obs5 = '';
                 },
                 cerrarClaveAutorizacion: function () {
                     $('#appClaveAutorizacion').modal('hide');
@@ -9349,7 +9453,6 @@
                     });
                 },
                 searchData: async function () {
-                    debugger;
                     let _this = this;
                     await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF12' + APP.util.getQueryParamByObject({
                         Serie: parseInt(_this.filtro.serie),
@@ -9418,7 +9521,10 @@
                             } else {
                                 if (res.data.Valor.CodiError === 5) { //ya tiene adjunto un Reintegro
                                     debugger;
+                                    await APP.msg.infoMessage(res.data.Mensaje, 'debe anular el reintegro antes de continuar');
+
                                     var data2 = null;
+
                                     await APP.rq.axios2.get(APP.base + '/reintegro/verifica-reintegro-anular' + APP.util.getQueryParamByObject({
                                         Serie: parseInt(res.data.Valor.CodiEsca.substring(1, 4)),
                                         Numero: parseInt(res.data.Valor.CodiEsca.substring(5)),
@@ -9426,18 +9532,13 @@
                                         Tipo: res.data.Valor.CodiEsca.substring(0, 1)
                                     }))
                                         .then(async (res2) => {
-                                            debugger;
                                             if (res2.data.EsCorrecto)
                                                 data2 = _.cloneDeep(res2.data.Valor);
                                             else APP.msg.error(res2.data.Mensaje);
                                         }).catch(APP.rq.axios_handler_error_alert);
 
-                                    if (data2 && data2.IdVenta) {
-                                        debugger;
-                                        if (await APP.msg.confirm(res.data.Mensaje, `¿Desea anular el reintegro ${data2.Tipo}${_.padStart(data2.SerieBoleto, 3, '0')}-${_.padStart(data2.NumeBoleto, 8, '0')} con monto ${_this.$options.filters.money(data2.PrecioVenta)}?`)) {
-                                            appVueAnulaReintegro.anularReintegro(data2);
-                                        } else return;
-                                    }
+                                    await appVueAnulaReintegro.validateToAnulRein(data2);
+                                    _this.$refs.refREVerificar.focus();
                                 } else {
                                     APP.msg.warning(res.data.Mensaje);
                                     _this.limpiarRE();
@@ -9773,15 +9874,20 @@
                         return;
                     }
 
+                    debugger;
+
                     //Panel Clave 99
                     if (appController.validatePanelClave('99') === '1') {
 
                         var checkClaveAutorizacion = false;
 
-                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
+                        appController.showClaveAutorizacion(claveReintegro);
 
                         await deferredModal($('#appClaveAutorizacion'), true).done(function () {
-                            window.removeEventListener('keyup', _this.esc);
+                            appClaveAutorizacion.$nextTick(() => {
+                                window.removeEventListener('keyup', _this.esc);
+                                appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
+                            });
                         });
 
                         await deferredModal($('#appClaveAutorizacion'), false).done(function () {
@@ -9793,6 +9899,30 @@
 
                         if (!checkClaveAutorizacion) {
                             _this.disabledAceptar = false;
+                            return;
+                        }
+                    }
+
+                    //Panel 35
+                    if (appController.validatePanel('35') === '1') {
+
+                        var checkClaveAutorizacion = false;
+
+                        appController.showClaveAutorizacion(claveReintegro);
+
+                        await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
+                            });
+                        });
+
+                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                            appClaveAutorizacion.$nextTick(() => {
+                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                            });
+                        });
+
+                        if (!checkClaveAutorizacion) {
                             return;
                         }
                     }
@@ -9942,9 +10072,6 @@
                         .catch(APP.rq.axios_handler_error_alert);
                     return igv;
                 },
-                verificaPanel35: function () {
-
-                },
                 updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
                     APP.rq.axios2.get(APP.base + '/reintegro/update-reintegro' + APP.util.getQueryParamByObject({
                         IdVenta: IdVenta,
@@ -9962,9 +10089,9 @@
                 anularReintegro: async function () {
                     let _this = this;
                     var item = {};
-                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa);
-                    item.serie = (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0');
-                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0');
+                    item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
+                    item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
+                    item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -9987,6 +10114,139 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                     return response;
+                },
+                consultaReniec: function () {
+                    let _this = this;
+                    if (!_this.readOnlyCodiMotivo) {
+                        // Validaciones
+                        if (!_this.item.documento) {
+                            _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
+                            APP.msg.warning('Seleccione tipo de documento.');
+                            return;
+                        }
+                        else if (_this.item.numero.length !== 8) {
+                            _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
+                            APP.msg.warning('Ingrese DNI de 8 dígitos.');
+                            return;
+                        }
+
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
+                            numeroDoc: _this.item.numero
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.EsCorrecto) {
+                                    _this.item.nombre = res.data.Valor.Nombres;
+                                    _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                    _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                }
+                                else {
+                                    if (res.data.Estado)
+                                        APP.msg.warning(res.data.Mensaje);
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                }
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED")
+                                    APP.msg.warning('No se pudo consultar a la RENIEC.');
+                                else
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }
+                },
+                consultaSunat: function () {
+                    var _this = this;
+                    if (!_this.readOnlyCodiMotivo) {
+                        APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
+                            rucContacto: _this.item.ruc
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.EsCorrecto) {
+                                    _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                    _this.item.direccion = res.data.Valor.Direccion;
+                                }
+                                else {
+                                    if (res.data.Estado)
+                                        APP.msg.warning(res.data.Mensaje);
+                                    else
+                                        APP.msg.error(res.data.Mensaje);
+                                }
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED")
+                                    APP.msg.warning('No se pudo consultar a la SUNAT.');
+                                else
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }                    
+                },
+                searchUser: async function () {
+                    let _this = this;
+
+                    await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                        tipoDoc: _this.item.documento,
+                        numeroDoc: _this.item.numero
+                    }), { timeout: 5000 })
+                        .then(res => {
+                            if (res.data.Estado) {
+
+                                if (res.data.Valor.IdCliente > 0) {
+                                    //_this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
+                                    _this.item.nombre = res.data.Valor.NombreCliente;
+                                    _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                    _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                    _this.item.fechaNac = res.data.Valor.FechaNacimiento;
+                                    _this.item.edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
+                                    //_this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
+                                    _this.item.telefono = res.data.Valor.Telefono;
+                                    _this.item.ruc = res.data.Valor.RucContacto;
+                                    _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                    _this.item.direccion = res.data.Valor.Direccion;
+                                    //_this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+                                }
+
+                                if (!res.data.EsCorrecto)
+                                    APP.msg.warning(res.data.Mensaje);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(err => {
+                            if (err.code === "ECONNABORTED") {
+                                APP.msg.warning('No se pudo cargar los datos del pasajero.');
+                            }
+                            else
+                                APP.rq.axios_handler_error_alert;
+                        });
+                },
+                searchEmpresa: async function () {
+                    var _this = this;
+
+                    if (_this.item.ruc) {
+
+                        await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
+                            rucContacto: _this.item.ruc
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.Estado) {
+
+                                    _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                    _this.item.direccion = res.data.Valor.Direccion;
+
+                                    if (!res.data.EsCorrecto)
+                                        APP.msg.warning(res.data.Mensaje);
+                                }
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED") {
+                                    APP.msg.warning('No se pudo cargar los datos de la empresa.');
+                                }
+                                else
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -10690,69 +10950,6 @@
                 confirm: async function () {
                     let _this = this;
 
-                    //Panel 226                    
-                    if (appController.validatePanel('226') === '1') {
-
-                        var checkClaveAutorizacion = false;
-
-                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
-
-                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                            });
-                        });
-
-                        if (!checkClaveAutorizacion) {
-                            return;
-                        }
-                    }
-
-                    //Panel 36
-                    if (appController.validatePanel('36') === '1') {
-
-                        var checkClaveAutorizacion = false;
-
-                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
-
-                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                            });
-                        });
-
-                        if (!checkClaveAutorizacion) {
-                            return;
-                        }
-                    }
-
-                    //Panel 163 y Nivel 11
-                    debugger;
-                    if (appController.validatePanel('163') === '1') {
-                        if (Usuario.Nivel === 11) { 
-                            APP.msg.warning("Solo los administradores pueden anular comprobantes");                            
-                            return;
-                        }
-                    }
-
-                    //Panel 35
-                    if (appController.validatePanel('35') === '1') {
-
-                        var checkClaveAutorizacion = false;
-
-                        appController.showClaveAutorizacion(Clavereintegroconfirmacion);
-
-                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                            });
-                        });
-
-                        if (!checkClaveAutorizacion) {
-                            return;
-                        }
-                    }
-                    
                     var data = null;
 
                     var auxTipo = (_this.filtro.serie.substring(0, 1) === '0') ? 'M' : _this.filtro.serie.substring(0, 1);
@@ -10766,16 +10963,110 @@
                         .then(async (res) => {
                             if (res.data.EsCorrecto)
                                 data = _.cloneDeep(res.data.Valor);
-                            else APP.msg.infoMessage(null, res.data.Mensaje);
+                            else {
+                                APP.msg.infoMessage(null, res.data.Mensaje);
+                                return;
+                            }
                         }).catch(APP.rq.axios_handler_error_alert);
 
-                    if (data &&  data.IdVenta) {
-                        if (await APP.msg.confirm('Mensaje de confirmación', `¿Desea anular el reintegro ${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 8, '0')} con monto ${_this.$options.filters.money(data.PrecioVenta)}?`)) {
-                            _this.anularReintegro(data);
-                        } else return;
+                    await _this.validateToAnulRein(data);
+                },
+                validateToAnulRein: async function (data) {
+                    let _this = this;
+
+                    if (data && data.IdVenta) {
+                        //Panel 226 'Activar opción de Mantenimiento de clave para Reimprimir'
+                        if (appController.validatePanel('226') === '1') {
+
+                            var checkClaveAutorizacion = false;
+
+                            appController.showClaveAutorizacion(claveReintegroConfirmacion);
+
+                            await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_REI';
+                                    appClaveAutorizacion.auditoria.Boleto = `BOLETO: ${_this.filtro.serie}-${_this.filtro.numero}`;
+                                });
+                            });
+
+                            await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                });
+                            });
+
+                            if (!checkClaveAutorizacion) {
+                                return;
+                            }
+                        } else {
+                            //Panel 36 'Emitir Giros Terrestes'
+                            if (appController.validatePanel('36') === '1') {
+
+                                var checkClaveAutorizacion = false;
+
+                                appController.showClaveAutorizacion(claveReintegro);
+
+                                await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        appClaveAutorizacion.idVenta = data.IdVenta;
+                                    });
+                                });
+
+                                await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                    });
+                                });
+
+                                if (!checkClaveAutorizacion) {
+                                    return;
+                                }
+                            }
+
+                            //Panel 163 y Nivel Usuario 11
+                            if (appController.validatePanel('163') === '1') {
+                                if (Usuario.Nivel === 11) {
+                                    APP.msg.warning("Solo los administradores pueden anular comprobantes");
+                                    return;
+                                }
+                            }
+
+                            //Panel 35 'Editar consignado en entrega de encomiendas'
+                            if (appController.validatePanel('35') === '1') {
+
+                                var checkClaveAutorizacion = false;
+
+                                appController.showClaveAutorizacion(claveReintegro);
+
+                                await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        appClaveAutorizacion.idVenta = data.IdVenta;
+                                    });
+                                });
+
+                                await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                    });
+                                });
+
+                                if (!checkClaveAutorizacion) {
+                                    return;
+                                }
+                            }
+                        }
+
+                        //Mensaje de confirmación antes de enviar a anular
+                        if (data && data.IdVenta) {
+                            if (await APP.msg.confirm('Mensaje de confirmación', `¿Desea anular el reintegro ${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 8, '0')} con monto ${_this.$options.filters.money(data.PrecioVenta)}?`)) {
+                                _this.anularReintegro(data);
+                            } else return;
+                        }
                     }
+
                 },
                 anularReintegro: async function (data) {
+                    var _this = this;
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
                         IdVenta: data.IdVenta,
                         CodiEsca: data.CodiEsca,
@@ -10828,6 +11119,47 @@
                         });
                     }
                 },
+            },
+            watch: {}
+        });
+
+        var appVuePaseLote = new Vue({
+            el: '#appVuePaseLote',
+            data: {
+            },
+            mounted: function () {
+                let _this = this;
+
+                window.addEventListener('keydown', e => {
+                    if (e.ctrlKey && e.keyCode == 118{
+                        //algo
+                    }
+                });
+            },
+            methods: {
+                show: function (item) {
+                    //this.limpiarCampos();
+                    //this.setData(item);
+                    //if (!this.list.empresas.length > 0)
+                    //    this.list.empresas = empresas
+                    this.$nextTick(() => {
+                        $('#appVuePaseLote').modal('show');
+                    });
+                },
+                setData: function (_item) {
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                confirm: async function () {
+                },
+                limpiarCampos: function () {
+                },
+                close: function () {
+                    $('#appVuePaseLote').modal('hide');
+                }
+            },
+            computed: {
             },
             watch: {}
         });

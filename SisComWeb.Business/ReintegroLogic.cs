@@ -531,7 +531,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                var anularVenta = new byte();
+                var anularVentaReintegro = new byte();
 
                 if (request.IdVenta > 0)
                 {
@@ -550,11 +550,11 @@ namespace SisComWeb.Business
 
                         var resAnularDocumentoSUNAT = VentaLogic.AnularDocumentoSUNAT(objVentaReintegro);
                         if (!resAnularDocumentoSUNAT.Estado)
-                            return new Response<byte>(false, anularVenta, resAnularDocumentoSUNAT.MensajeError, false);
+                            return new Response<byte>(false, anularVentaReintegro, resAnularDocumentoSUNAT.MensajeError, false);
                     }
 
                     // Anula 'Reintegro'
-                    var anularVentaReintegro = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
+                    anularVentaReintegro = VentaRepository.AnularVenta(request.IdVenta, request.CodiUsuario);
                     if (anularVentaReintegro > 0)
                     {
                         if (request.TipoPago == "03")
@@ -575,7 +575,7 @@ namespace SisComWeb.Business
                         // Genera 'CorrelativoAuxiliar'
                         var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
-                            return new Response<byte>(false, anularVenta, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
+                            return new Response<byte>(false, anularVentaReintegro, Message.MsgErrorGenerarCorrelativoAuxiliarReintegro, false);
 
                         // Graba 'CajaReintegro'
                         var objCajaReintegro = new CajaEntity
@@ -643,7 +643,7 @@ namespace SisComWeb.Business
                         //TODO: Falta implementar Usp_Tb_venta_AnulaReintegro_ele
                     }
                 }
-                return new Response<byte>(true, anularVenta, "Se anuló el reintegro correctamente", true);
+                return new Response<byte>(true, anularVentaReintegro, "Se anuló el reintegro correctamente", true);
             }
             catch (Exception ex)
             {
