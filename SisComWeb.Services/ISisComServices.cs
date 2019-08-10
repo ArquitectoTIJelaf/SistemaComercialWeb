@@ -75,12 +75,8 @@ namespace SisComWeb.Services
         Response<List<BaseEntity>> ListaAreas(string idContrato);
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveAnuRei", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaUsuariosClaveAnuRei();
-
-        [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "ListaUsuariosClaveControl", ResponseFormat = WebMessageFormat.Json)]
-        Response<List<BaseEntity>> ListaUsuariosClaveControl();
+        [WebInvoke(Method = "POST", UriTemplate = "ListaUsuariosClaveAnuRei", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaUsuariosClaveAnuRei(string Value);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaUsuariosHC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
@@ -232,6 +228,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VerificaHoraConfirmacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<string> VerificaHoraConfirmacion(int Origen, int Destino);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "ObtenerTiempoReserva", ResponseFormat = WebMessageFormat.Json)]
+        Response<ReservacionEntity> ObtenerTiempoReserva();
 
         #endregion
 

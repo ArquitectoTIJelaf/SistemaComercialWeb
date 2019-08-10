@@ -391,13 +391,14 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
-        public static List<BaseEntity> ListaUsuariosClaveAnuRei()
+        public static List<BaseEntity> ListaUsuariosClaveAnuRei(string Value)
         {
             var Lista = new List<BaseEntity>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Scwsp_vw_tb_Mantenimiento_ClaveAnuRei_Consulta";
+                db.ProcedureName = "scwsp_tb_Mantenimiento_ClaveAnuRei_Autocomplete";
+                db.AddParameter("@value", DbType.String, ParameterDirection.Input, Value);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -410,25 +411,6 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
-        public static List<BaseEntity> ListaUsuariosClaveControl()
-        {
-            var Lista = new List<BaseEntity>();
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_vw_Tb_Control_Pwd_Consulta";
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        Lista.Add(GetItem(drlector, 17));
-                    }
-                }
-            }
-
-            return Lista;
-        }
-        
         public static List<BaseEntity> ListaOpcionesModificacion()
         {
             var Lista = new List<BaseEntity>();

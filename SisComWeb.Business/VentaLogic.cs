@@ -961,6 +961,21 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<ReservacionEntity> ObtenerTiempoReserva()
+        {
+            try
+            {
+                var obtenerTiempoReserva = VentaRepository.ObtenerTiempoReserva();
+
+                return new Response<ReservacionEntity>(true, obtenerTiempoReserva, Message.MsgCorrectoObtenerTiempoReserva, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReservacionEntity>(false, null, Message.MsgExcObtenerTiempoReserva, false);
+            }
+        }
+
         #endregion
 
         #region ELIMINAR RESERVA

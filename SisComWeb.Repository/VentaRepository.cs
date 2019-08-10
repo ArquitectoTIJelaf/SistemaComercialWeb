@@ -820,6 +820,27 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static ReservacionEntity ObtenerTiempoReserva()
+        {
+            var entidad = new ReservacionEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_TiempoReserva";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.FechaReservacion = Reader.GetStringValue(drlector, "fecha");
+                        entidad.HoraReservacion = Reader.GetStringValue(drlector, "hora");
+                        break;
+                    }
+                }
+            }
+
+            return entidad;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

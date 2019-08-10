@@ -21,6 +21,9 @@
     var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
     var claveReintegro = Constant.CLAVE_REINTEGRO;
     var claveReintegroConfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
+
+    var claveAnulacionPanel234 = Constant.CLAVE_ANULACION_PANEL234;
+    var claveAnulacionPanel36 = Constant.CLAVE_ANULACION_PANEL36;
 }
 
 @Html.Partial("_Filtros")
@@ -668,10 +671,12 @@
                         break;
                     case claveReintegro:
                     case claveReintegroConfirmacion:
+                    case ClaveAnulacionPanel234:
+                    case ClaveAnulacionPanel36:
                         if (appController.validatePanel('147') === '1') //Disabled Combo
                             $('#txtContraseniaCA').focus();
                         else
-                            $('#cboUsuarioRE input[type=search]').focus();
+                            $('#cboUsuarioCA input[type=search]').focus();
                         break;
                     default:
                         document.getElementById('txtContraseniaCA').focus();
@@ -982,14 +987,17 @@
         var claveReintegro = '@claveReintegro';
         var claveReintegroConfirmacion = '@claveReintegroConfirmacion';
 
-        var ClaveCancelarReserva = '';
+        var ClaveAnulacionPanel234 = '@claveAnulacionPanel234';
+        var ClaveAnulacionPanel36 = '@claveAnulacionPanel36';
 
+        var ClaveCancelarReserva = '';
         var IngresoManualPasajes = false;
         var NacionalidadPorDefault = 'PERUANA';
         var TipoImprimir = 'Impresion';
         var TipoReimprimir = 'Reimpresion';
 
         var VerificaHoraConfirmacion = '0';
+        var TiempoReserva = null;
 
         var selectAll = {
             id: '0',
@@ -1460,6 +1468,17 @@
                         }; break;
                     }
                     return objUsuario;
+                },
+                getHoraBaseReservacion: function (_embarques, _CodiPuntoVenta) {
+                    var tmpHoraBase = '';
+                    
+                    var auxObjEmbarque = _.find(_embarques, { 'CodiPuntoVenta': _CodiPuntoVenta });
+                    if (auxObjEmbarque)
+                        tmpHoraBase = auxObjEmbarque.Hora;
+                    else
+                        tmpHoraBase = appVueVenta.filtro.Turno;
+
+                    return tmpHoraBase;
                 }
             };
         })();
@@ -2119,7 +2138,7 @@
                     var auxResponse = false;
                     var tmpAsientoSel = _.cloneDeep(asientoSel);
                     var tmpTicketActual = _.cloneDeep(_this.list.ventas[_this.indexVenta]);
-
+                    
                     _this.disabledAsiento = true;
 
                     // Validar 'liberarAsiento'
@@ -2290,13 +2309,45 @@
                                 break;
                             case 'FA':
                                 {
-                                    if (Usuario.Nivel === 8 || Usuario.Nivel === 14 || Usuario.Nivel === 15) {
-                                        APP.msg.warning("Para vender Fecha Abierta, debe tener un plano activo");
-                                        _this.disabledAsiento = false;
-                                        return;
+                                    if (Usuario.Nivel !== 8 && Usuario.Nivel !== 14 && Usuario.Nivel !== 15) {
+
+                                        if (!_this.filtro.CodiEmpresa) {
+                                            APP.msg.warning("Para vender en Fecha Abierta debe tener el plano activo.");
+                                            _this.disabledAsiento = false;
+                                            return;
+                                        }
                                     }
                                 }
                                 break;
+                            //case 'R':
+                            //    {
+                            //        debugger;
+
+                            //        if (appController.validatePanel('189') !== '1') { // === '1'
+                            //            await _this.obtenerTiempoReserva();
+
+                            //            if (TiempoReserva) {
+                            //                if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(TiempoReserva.Fecha, 'DD/MM/YYYY'))) {
+
+                            //                    // Pop up.
+
+                            //                }
+                            //                else {
+
+                            //                    if (this.filtro.Fecha === TiempoReserva.Fecha) {
+                            //                        var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
+
+                            //                        if (moment(tmpHoraBase, 'hh:mmss').isBefore(TiempoReserva.Hora, 'minutes')) {
+
+                            //                            // Pop up.
+
+                            //                        }
+                            //                    }
+                            //                }
+                            //            }
+                            //        }
+                            //    };
+                            //    break;
                         }
                     }
 
@@ -2396,6 +2447,19 @@
                     _this.disabledAsiento = false;
 
                     return auxResponse;
+                },
+                obtenerTiempoReserva: async function () {
+                    if (TiempoReserva)
+                        return;
+
+                    await APP.rq.axios2.get(APP.base + '/itinerarios/obtenerTiempoReserva')
+                        .then(res => {
+                            if (res.data.Estado)
+                                TiempoReserva = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 validaManifiestoProgramacion: async function () {
                     var auxResponse = true;
@@ -3493,6 +3557,7 @@
 
                                                 this.list.ventas[i].FechaReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].FechaReservacion);
                                                 this.list.ventas[i].HoraReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].HoraReservacion);
+                                                this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(this.list.ventas[auxLength - 1].ValidadorClienteEspecial);
                                             }
                                         }
                                     }
@@ -3751,15 +3816,7 @@
                                 return auxValidate = false;
                             }
 
-                            var tmpHoraBase = '';
-
-                            // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
-                            var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
-                            if (auxObjEmbarque)
-                                tmpHoraBase = auxObjEmbarque.Hora;
-                            else
-                                tmpHoraBase = this.filtro.Turno;
-                            // -------------------------------------------------------------------------
+                            var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                             if (this.list.ventas[i].FechaReservacion === moment().format('DD/MM/YYYY')) {
                                 if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
@@ -5209,87 +5266,48 @@
 
                             if (appController.validatePanel('234') === '1') {
 
-                                var objUsuario = {
-                                    disabled: false,
-                                    id: "0",
-                                    label: "SELECCIONE"
-                                };
+                                var checkClaveAutorizacion = false;
 
-                                if (appController.validatePanel('147') === '1') {
-                                    objUsuario.disabled = true;
-                                    objUsuario.id = Usuario.CodiUsuario;
-                                    objUsuario.label = Usuario.Nombre;
-                                }
-                                else
-                                    await this.listaUsuariosClaveAnuRei();
+                                appController.showClaveAutorizacion(ClaveAnulacionPanel234);
 
-                                var objResponse = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
-                                    'Anular boleto'
-                                    , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado, ingrese el motivo y la clave de autorización.'
-                                    , this.list.usuariosClaveAnuRei
-                                    , objUsuario
-                                    , '234'); // Utilizamos 'código panel' para diferenciar el consumo de servicios del 'sweet alert' reutilizable.
-                                if (objResponse && objResponse.Estado) {
-                                    var objAuditoria = {};
-                                    objAuditoria.CodiUsuario = Usuario.CodiUsuario;
-                                    objAuditoria.NomUsuario = Usuario.Nombre;
-                                    objAuditoria.Tabla = "VENTA";
-                                    objAuditoria.TipoMovimiento = "AUTORIZACION_ANU";
-                                    objAuditoria.Boleto = _tmpAsientoSel.Boleto;
-                                    objAuditoria.NumeAsiento = "";
-                                    objAuditoria.NomOficina = Usuario.NomSucursal;
-                                    objAuditoria.NomPuntoVenta = Usuario.CodiPuntoVenta;
-                                    objAuditoria.Pasajero = "";
-                                    objAuditoria.FechaViaje = "01/01/1900";
-                                    objAuditoria.HoraViaje = "";
-                                    objAuditoria.NomDestino = "";
-                                    objAuditoria.Precio = 0;
-                                    objAuditoria.Obs1 = "";
-                                    objAuditoria.Obs2 = "Terminal" + String(Usuario.Terminal).padStart(3, '0');
-                                    objAuditoria.Obs3 = "AUTORIZA CODIGO:" + objResponse.UsuarioId + " NOMBRE:" + objResponse.UsuarioLabel;
-                                    objAuditoria.Obs4 = objResponse.Motivo;
-                                    objAuditoria.Obs5 = "";
+                                await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_ANU';
+                                        appClaveAutorizacion.auditoria.Boleto = _tmpAsientoSel.Boleto;
+                                    });
+                                });
 
-                                    var resGrabarAuditoria = await this.grabarAuditoria(objAuditoria);
-                                    if (!resGrabarAuditoria)
-                                        return auxValidate = false;
-                                }
-                                else
+                                await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                    appClaveAutorizacion.$nextTick(() => {
+                                        checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                    });
+                                });
+
+                                if (!checkClaveAutorizacion)
                                     return auxValidate = false;
                             }
                             else {
-
                                 if (_valPanelAnularFechaPasada !== '2') {
-
+                                    
                                     if (appController.validatePanelClave('36') === '1') {
 
-                                        var objUsuario = {
-                                            disabled: false,
-                                            id: "0",
-                                            label: "SELECCIONE"
-                                        };
+                                        var checkClaveAutorizacion = false;
 
-                                        if (appController.validatePanel('147') === '1') {
-                                            objUsuario.disabled = true;
-                                            objUsuario.id = Usuario.CodiUsuario;
-                                            objUsuario.label = Usuario.Nombre;
-                                        }
-                                        else
-                                            await this.listaUsuariosClaveControl();
+                                        appController.showClaveAutorizacion(ClaveAnulacionPanel36);
 
-                                        var objResponse = await APP.msg.confirmClaveAutorizacionWhitUsuarioAndObs(
-                                            'Anular boleto'
-                                            , 'Necesita permiso para realizar esta acción, seleccione el usuario autorizado, ingrese el motivo y la clave de autorización.'
-                                            , this.list.usuariosClaveControl
-                                            , objUsuario
-                                            , '36'); // Utilizamos 'código panel' para diferenciar el consumo de servicios del 'sweet alert' reutilizable.
-                                        if (objResponse && objResponse.Estado) {
+                                        await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                            appClaveAutorizacion.$nextTick(() => {
+                                                appClaveAutorizacion.idVenta = _tmpAsientoSel.IdVenta;
+                                            });
+                                        });
 
-                                            var resInsertarUsuarioPorVenta = await this.insertarUsuarioPorVenta(Usuario.CodiUsuario, APP.cte.Accion.Anulacion, _tmpAsientoSel.IdVenta, objResponse.Motivo);
-                                            if (!resInsertarUsuarioPorVenta)
-                                                return auxValidate = false;
-                                        }
-                                        else
+                                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                            appClaveAutorizacion.$nextTick(() => {
+                                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                            });
+                                        });
+
+                                        if (!checkClaveAutorizacion)
                                             return auxValidate = false;
                                     }
                                 }
@@ -5381,21 +5399,6 @@
 
                     return auxResponse;
                 },
-                listaUsuariosClaveAnuRei: async function () {
-                    var _this = this;
-
-                    if (_this.list.usuariosClaveAnuRei && _this.list.usuariosClaveAnuRei.length > 0)
-                        return;
-
-                    await APP.rq.axios2.get(APP.base + '/base/get-usuario-claveAnuRei')
-                        .then(res => {
-                            if (res.data.Estado)
-                                _this.list.usuariosClaveAnuRei = _.cloneDeep(res.data.Valor);
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-                },
                 consultaClaveAnuRei: async function (_CodiUsuario, _Clave) {
                     var auxResponse = false;
 
@@ -5418,38 +5421,6 @@
 
                     await APP.rq.axios2.post(APP.base + '/itinerarios/grabarAuditoria', {
                         request: _objAuditoria
-                    })
-                        .then(res => {
-                            if (res.data.Estado)
-                                auxResponse = res.data.Valor;
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-
-                    return auxResponse;
-                },
-                listaUsuariosClaveControl: async function () {
-                    var _this = this;
-
-                    if (_this.list.usuariosClaveControl && _this.list.usuariosClaveControl.length > 0)
-                        return;
-
-                    await APP.rq.axios2.get(APP.base + '/base/get-usuario-claveControl')
-                        .then(res => {
-                            if (res.data.Estado)
-                                _this.list.usuariosClaveControl = _.cloneDeep(res.data.Valor);
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-                },
-                consultaClaveControl: async function (_Usuario, _Pwd) {
-                    var auxResponse = false;
-
-                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaClaveControl', {
-                        Usuario: _Usuario,
-                        Pwd: _Pwd
                     })
                         .then(res => {
                             if (res.data.Estado)
@@ -5901,15 +5872,7 @@
                     this.list.ventas[this.indexVenta].HoraReservacion = this.$getValueDateTimePicker_Hours(event);
 
                     if (_keyCode === 13) {
-                        var tmpHoraBase = '';
-
-                        // Si hay embarques, tomar hora correspondiente, sino tomar el por defecto.
-                        var auxObjEmbarque = _.find(this.list.embarques, { 'CodiPuntoVenta': Usuario.CodiPuntoVenta });
-                        if (auxObjEmbarque)
-                            tmpHoraBase = auxObjEmbarque.Hora;
-                        else
-                            tmpHoraBase = this.filtro.Turno;
-                        // -------------------------------------------------------------------------
+                        var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === moment().format('DD/MM/YYYY')) {
                             if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
@@ -7919,7 +7882,8 @@
                             this.getUsuariosHC('', null);
                             break;
                         case claveReintegro:
-                        case claveReintegroConfirmacion: {
+                        case claveReintegroConfirmacion:
+                        case ClaveAnulacionPanel36: {
                             //Panel 147 Configurar clave de anulacion para que sea igual a la sesion del usuario
                             if (appController.validatePanel('147') === '1') {
                                 this.usuario = appController.UsuarioClaveAutorizacion('147');
@@ -7928,7 +7892,17 @@
                             else {
                                 this.getUsuarioControlPwd('', null);
                             }
-                        };break;
+                        }; break;
+                        case ClaveAnulacionPanel234:
+                            {
+                                if (appController.validatePanel('147') === '1') {
+                                    this.usuario = appController.UsuarioClaveAutorizacion('147');
+                                    this.disabledUsuario = true;
+                                }
+                                else
+                                    this.getUsuarioClaveAnuRei('', null);
+                            };
+                            break;
                     }
 
                     $('#appClaveAutorizacion').modal('show');
@@ -7972,20 +7946,32 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                getUsuarioClaveAnuRei: async function (search, loading) {
+                    var _this = this;
+                    if (loading)
+                        loading(true);
+                    await APP.rq.axios2.post(APP.base + '/base/get-usuario-claveAnuRei', { Value: search })
+                        .then(res => {
+                            if (res.data.Estado) {
+                                if (loading)
+                                    loading(false);
+                                _this.list.usuarios = _.cloneDeep(res.data.Valor);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
                 recorrerClaveAutorizacion: function (auxValidate) {
                     var auxResponse = false;
 
-                    if (this.Tipo === ClaveHoraConfirmacion && !this.usuario) {
-                        $('#cboUsuarioCA input[type=search]').focus();
-                        if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
-                    }
-                    else if ((this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro) && !this.usuario) {
-                        if (appController.validatePanel('147') === '1') {
-                            APP.msg.warning('Usuario no válido.')
-                            return;
+                    if ((this.Tipo === ClaveHoraConfirmacion || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro ||
+                        this.Tipo === ClaveAnulacionPanel234 || this.Tipo === ClaveAnulacionPanel36) && !this.usuario) {
+                        if (this.Tipo !== ClaveHoraConfirmacion && appController.validatePanel('147') === '1') {
+                            if (auxValidate === true) APP.msg.warning('Usuario no válido.');
                         }
                         else {
-                            $('#cboUsuarioRE input[type=search]').focus();
+                            $('#cboUsuarioCA input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
                         }
                     }
@@ -7993,7 +7979,8 @@
                         document.getElementById('txtContraseniaCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese contraseña.');
                     }
-                    else if ((this.Tipo === ClaveDescuentoDePasajes || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro) && !this.observacion) {
+                    else if ((this.Tipo === ClaveDescuentoDePasajes || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro ||
+                        this.Tipo === ClaveAnulacionPanel234 || this.Tipo === ClaveAnulacionPanel36) && !this.observacion) {
                         document.getElementById('txtObservacionCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese observación.');
                     }
@@ -8024,6 +8011,7 @@
                             };
                             break;
                         case claveReintegroConfirmacion:
+                        case ClaveAnulacionPanel234:
                             {
                                 _this.trustedPassword = await appVueVenta.consultaClaveAnuRei(_this.usuario.id, _this.password);
                                 if (_this.trustedPassword) {
@@ -8052,7 +8040,7 @@
                                     $('#appClaveAutorizacion').modal('hide');
                                 } else {
                                     document.getElementById('txtContraseniaCA').focus();
-                                    APP.msg.warning('Usuario no es Correcto. No esta Autorizado para la acción');
+                                    APP.msg.warning('Usuario no autorizado o clave incorrecta.');
                                 }
                             };
                             break;
@@ -8065,7 +8053,21 @@
                                     $('#appClaveAutorizacion').modal('hide');
                                 } else {
                                     document.getElementById('txtContraseniaCA').focus();
-                                    APP.msg.warning('Usuario no es Correcto. No esta Autorizado para la acción');
+                                    APP.msg.warning('Usuario no autorizado o clave incorrecta.');
+                                }
+                            };
+                            break;
+                        case ClaveAnulacionPanel36:
+                            {
+                                _this.trustedPassword = await appController.consultaClaveControl(_this.usuario.id, _this.password);
+                                if (_this.trustedPassword) {
+                                    appVueVenta.insertarUsuarioPorVenta(Usuario.CodiUsuario, APP.cte.Accion.Anulacion, _this.idVenta, _this.observacion);
+
+                                    $('#appClaveAutorizacion').modal('hide');
+                                }
+                                else {
+                                    document.getElementById('txtContraseniaCA').focus();
+                                    APP.msg.warning('Usuario no autorizado o clave incorrecta.');
                                 }
                             };
                             break;
@@ -8105,6 +8107,21 @@
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
+                },
+                getSearchAutocomplete: function (search, loading) {
+                    switch (this.Tipo) {
+                        case ClaveHoraConfirmacion:
+                            this.getUsuariosHC(search, loading);
+                            break;
+                        case claveReintegroConfirmacion:
+                        case claveReintegro:
+                        case ClaveAnulacionPanel36:
+                            this.getUsuarioControlPwd(search, loading);
+                            break;
+                        case ClaveAnulacionPanel234:
+                            this.getUsuarioClaveAnuRei(search, loading);
+                            break;
+                    }
                 }
             }
         });

@@ -210,29 +210,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<BaseEntity>> ListaUsuariosClaveAnuRei()
+        public Response<List<BaseEntity>> ListaUsuariosClaveAnuRei(string Value)
         {
             try
             {
-                return BaseLogic.ListaUsuariosClaveAnuRei();
+                return BaseLogic.ListaUsuariosClaveAnuRei(Value);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveAnuRei, false);
-            }
-        }
-
-        public Response<List<BaseEntity>> ListaUsuariosClaveControl()
-        {
-            try
-            {
-                return BaseLogic.ListaUsuariosClaveControl();
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
         }
 
@@ -669,6 +656,19 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<string>(false, null, Message.MsgExcVerificaHoraConfirmacion, false);
+            }
+        }
+
+        public Response<ReservacionEntity> ObtenerTiempoReserva()
+        {
+            try
+            {
+                return VentaLogic.ObtenerTiempoReserva();
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<ReservacionEntity>(false, null, Message.MsgExcObtenerTiempoReserva, false);
             }
         }
 

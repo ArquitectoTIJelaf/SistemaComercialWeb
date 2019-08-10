@@ -100,5 +100,8 @@
         public const int CLAVE_HORA_CONFIRMACION = 777;        
         public const int CLAVE_REINTEGRO = 778;
         public const int CLAVE_REINTEGRO_CONFIRMACION = 779;
+
+        public const int CLAVE_ANULACION_PANEL234 = 780;
+        public const int CLAVE_ANULACION_PANEL36 = 781;
     }
 }

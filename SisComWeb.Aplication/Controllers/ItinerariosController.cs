@@ -3047,5 +3047,42 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        [Route("obtenerTiempoReserva")]
+        public async Task<ActionResult> ObtenerTiempoReserva()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ObtenerTiempoReserva");
+                    HttpResponseMessage response = await client.GetAsync(url + "ObtenerTiempoReserva");
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Reservacion> res = new Response<Reservacion>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new Reservacion
+                    {
+                        FechaReservacion = (string)data["FechaReservacion"],
+                        HoraReservacion = (string)data["HoraReservacion"],
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

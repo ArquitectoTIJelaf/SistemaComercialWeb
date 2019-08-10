@@ -354,4 +354,11 @@ namespace SisComWeb.Aplication.Models
 
         public decimal PrecioVenta { get; set; }
     }
+
+    public class Reservacion
+    {
+        public string FechaReservacion { get; set; }
+
+        public string HoraReservacion { get; set; }
+    }
 }

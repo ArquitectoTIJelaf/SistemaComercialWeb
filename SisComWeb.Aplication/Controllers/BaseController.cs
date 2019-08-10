@@ -562,53 +562,26 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("get-usuario-claveAnuRei")]
-        public async Task<JsonResult> GetUsuariosClaveAnuRei()
+        public async Task<JsonResult> GetUsuariosClaveAnuRei(string Value)
         {
             try
             {
+                if (string.IsNullOrEmpty(Value))
+                    Value = "null";
+
                 string result = string.Empty;
+
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url + "ListaUsuariosClaveAnuRei");
-                    HttpResponseMessage response = await client.GetAsync(url + "ListaUsuariosClaveAnuRei");
-                    if (response.IsSuccessStatusCode)
-                        result = await response.Content.ReadAsStringAsync();
-                }
 
-                JToken tmpResult = JObject.Parse(result);
+                    var _body = "{" +
+                                    "\"Value\" : \"" + Value + "\"" +
+                                " }";
 
-                Response<List<Base>> res = new Response<List<Base>>()
-                {
-                    Estado = (bool)tmpResult.SelectToken("Estado"),
-                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
-                    {
-                        id = (string)x["id"],
-                        label = (string)x["label"]
-                    }).ToList()
-                };
-
-                return Json(res, JsonRequestBehavior.AllowGet);
-            }
-            catch
-            {
-                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        [Route("get-usuario-claveControl")]
-        public async Task<JsonResult> GetUsuariosClaveControl()
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url + "ListaUsuariosClaveControl");
-                    HttpResponseMessage response = await client.GetAsync(url + "ListaUsuariosClaveControl");
+                    HttpResponseMessage response = await client.PostAsync(url + "ListaUsuariosClaveAnuRei", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }

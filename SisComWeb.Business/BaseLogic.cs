@@ -221,31 +221,20 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<BaseEntity>> ListaUsuariosClaveAnuRei()
+        public static Response<List<BaseEntity>> ListaUsuariosClaveAnuRei(string Value)
         {
             try
             {
-                var lista = BaseRepository.ListaUsuariosClaveAnuRei();
+                if (Value == "null")
+                    Value = string.Empty;
+
+                var lista = BaseRepository.ListaUsuariosClaveAnuRei(Value);
                 return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuariosClaveAnuRei, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveAnuRei, false);
-            }
-        }
-
-        public static Response<List<BaseEntity>> ListaUsuariosClaveControl()
-        {
-            try
-            {
-                var lista = BaseRepository.ListaUsuariosClaveControl();
-                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaUsuariosClaveConrol, true);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuariosClaveConrol, false);
             }
         }
 
