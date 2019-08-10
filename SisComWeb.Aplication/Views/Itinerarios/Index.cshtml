@@ -9469,7 +9469,6 @@
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
                                 if (data) {
-                                    debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -9525,7 +9524,6 @@
                                 } else APP.msg.warning('No se encontró resultados');
                             } else {
                                 if (res.data.Valor.CodiError === 5) { //ya tiene adjunto un Reintegro
-                                    debugger;
                                     await APP.msg.infoMessage(res.data.Mensaje, 'debe anular el reintegro antes de continuar');
 
                                     var data2 = null;
@@ -9878,9 +9876,7 @@
                         _this.disabledAceptar = false;
                         return;
                     }
-
-                    debugger;
-
+                    
                     //Panel Clave 99
                     if (appController.validatePanelClave('99') === '1') {
 
@@ -10037,7 +10033,6 @@
                     //Graba reintegro
                     //_this.$nextTick(() => {
                     if (checkTipoPago) {
-                        debugger;
                         await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
                             .then(async function (res) {
                                 if (res.data.Estado) {
@@ -10993,7 +10988,7 @@
                             await deferredModal($('#appClaveAutorizacion'), true).done(function () {
                                 appClaveAutorizacion.$nextTick(() => {
                                     appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_REI';
-                                    appClaveAutorizacion.auditoria.Boleto = `BOLETO: ${_this.filtro.serie}-${_this.filtro.numero}`;
+                                    appClaveAutorizacion.auditoria.Boleto = `BOLETO: ${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 8, '0')}`;
                                 });
                             });
 

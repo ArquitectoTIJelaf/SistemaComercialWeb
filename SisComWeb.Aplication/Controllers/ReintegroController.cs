@@ -380,7 +380,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
                                     ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
-                                    ",\"Terminal\": " + usuario.Terminal +
+                                    ",\"Terminal\": " + usuario.Terminal.ToString("D3") +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("AnularReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
