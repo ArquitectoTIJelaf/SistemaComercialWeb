@@ -96,12 +96,12 @@
         public const int CLAVE_REIMPRESION_DE_GIRO = 90;
         public const int CLAVE_ANULACION_DE_TARJETA_DE_CREDITO = 91;
         public const int CLAVE_MODIFICAR_OPCION_DE_ENTREGA_EN_MANIFIESTO = 92;
-
-        public const int CLAVE_HORA_CONFIRMACION = 777;        
+        public const int CLAVE_HORA_CONFIRMACION = 777;
         public const int CLAVE_REINTEGRO = 778;
         public const int CLAVE_REINTEGRO_CONFIRMACION = 779;
-
         public const int CLAVE_ANULACION_PANEL234 = 780;
         public const int CLAVE_ANULACION_PANEL36 = 781;
+
+        public const int CLAVE_TIEMPO_RESERVA = 782;
     }
 }
