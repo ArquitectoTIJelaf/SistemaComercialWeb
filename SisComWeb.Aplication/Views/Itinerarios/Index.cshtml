@@ -21,9 +21,10 @@
     var claveHoraConfirmacion = Constant.CLAVE_HORA_CONFIRMACION;
     var claveReintegro = Constant.CLAVE_REINTEGRO;
     var claveReintegroConfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
-
     var claveAnulacionPanel234 = Constant.CLAVE_ANULACION_PANEL234;
     var claveAnulacionPanel36 = Constant.CLAVE_ANULACION_PANEL36;
+
+    var claveTiempoReserva = Constant.CLAVE_TIEMPO_RESERVA;
 }
 
 @Html.Partial("_Filtros")
@@ -668,6 +669,7 @@
 
                 switch (appClaveAutorizacion.Tipo) {
                     case ClaveHoraConfirmacion:
+                    case ClaveTiempoReserva:
                         $('#cboUsuarioCA input[type=search]').focus();
                         break;
                     case claveReintegro:
@@ -990,9 +992,10 @@
         var ClaveHoraConfirmacion = '@claveHoraConfirmacion';
         var claveReintegro = '@claveReintegro';
         var claveReintegroConfirmacion = '@claveReintegroConfirmacion';
-
         var ClaveAnulacionPanel234 = '@claveAnulacionPanel234';
         var ClaveAnulacionPanel36 = '@claveAnulacionPanel36';
+
+        var ClaveTiempoReserva = '@claveTiempoReserva';
 
         var ClaveCancelarReserva = '';
         var IngresoManualPasajes = false;
@@ -1879,6 +1882,7 @@
                 },
                 // Reserva
                 validatorReservaHC: false,
+                validatorTiempoReserva: false,
                 // Correlativos
                 CorrelativoVentaBoleta: '',
                 CorrelativoVentaFactura: '',
@@ -2323,35 +2327,49 @@
                                     }
                                 }
                                 break;
-                            //case 'R':
-                            //    {
-                            //        debugger;
+                            case 'R':
+                                {
+                                    if (appController.validatePanel('189') === '1' || !_this.validatorTiempoReserva) {
+                                        await _this.obtenerTiempoReserva();
 
-                            //        if (appController.validatePanel('189') !== '1') { // === '1'
-                            //            await _this.obtenerTiempoReserva();
+                                        if (TiempoReserva) {
+                                            if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(TiempoReserva.FechaReservacion, 'DD/MM/YYYY'))) {
 
-                            //            if (TiempoReserva) {
-                            //                if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(TiempoReserva.Fecha, 'DD/MM/YYYY'))) {
+                                                appController.showClaveAutorizacion(ClaveTiempoReserva);
 
-                            //                    // Pop up.
+                                                await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                                    // Continue
+                                                });
 
-                            //                }
-                            //                else {
+                                                if (!_this.validatorTiempoReserva) {
+                                                    _this.disabledAsiento = false;
+                                                    return;
+                                                }
+                                            }
+                                            else {
 
-                            //                    if (this.filtro.Fecha === TiempoReserva.Fecha) {
-                            //                        var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
+                                                if (_this.filtro.Fecha === TiempoReserva.FechaReservacion) {
+                                                    var tmpHoraBase = appController.getHoraBaseReservacion(_this.list.embarques, Usuario.CodiPuntoVenta);
 
-                            //                        if (moment(tmpHoraBase, 'hh:mmss').isBefore(TiempoReserva.Hora, 'minutes')) {
+                                                    if (moment(tmpHoraBase, 'hh:mmss').isBefore(TiempoReserva.HoraReservacion, 'minutes')) {
 
-                            //                            // Pop up.
+                                                        appController.showClaveAutorizacion(ClaveTiempoReserva);
 
-                            //                        }
-                            //                    }
-                            //                }
-                            //            }
-                            //        }
-                            //    };
-                            //    break;
+                                                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                                            // Continue
+                                                        });
+
+                                                        if (!_this.validatorTiempoReserva) {
+                                                            _this.disabledAsiento = false;
+                                                            return;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                };
+                                break;
                         }
                     }
 
@@ -3823,14 +3841,28 @@
                             var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                             if (this.list.ventas[i].FechaReservacion === moment().format('DD/MM/YYYY')) {
-                                if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
-                                    this.indexVenta = i;
-                                    APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
 
-                                    this.$nextTick(() => {
-                                        document.getElementById('txtHoraReservacion').focus();
-                                    });
-                                    return auxValidate = false;
+                                if (this.list.ventas[i].ValidadorClienteEspecial) {
+                                    if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isBefore(moment(), 'minutes')) {
+                                        this.indexVenta = i;
+                                        APP.msg.warning('La hora de confirmación debe ser igual o mayor a la hora actual.');
+
+                                        this.$nextTick(() => {
+                                            document.getElementById('txtHoraReservacion').focus();
+                                        });
+                                        return auxValidate = false;
+                                    }
+                                }
+                                else {
+                                    if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
+                                        this.indexVenta = i;
+                                        APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
+
+                                        this.$nextTick(() => {
+                                            document.getElementById('txtHoraReservacion').focus();
+                                        });
+                                        return auxValidate = false;
+                                    }
                                 }
                             }
 
@@ -3838,7 +3870,7 @@
 
                                 if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
                                     this.indexVenta = i;
-                                    APP.msg.warning('La hora de confirmación debe ser menor a la hora de ' + (auxObjEmbarque ? 'embarque' : 'turno') + ' (' + tmpHoraBase + ').');
+                                    APP.msg.warning('La hora de confirmación debe ser menor a la hora de embarque (' + tmpHoraBase + ').');
 
                                     this.$nextTick(() => {
                                         document.getElementById('txtHoraReservacion').focus();
@@ -4017,6 +4049,8 @@
                     this.disabledCamposTicket_Pase = false;
                     this.disabledCampoNumSolicitud = true;
                     this.validatorReservaHC = false;
+
+                    this.validatorTiempoReserva = false;
 
                     switch (this.pickedBusVenta) {
                         case '1': // 'Crédito'
@@ -5879,15 +5913,24 @@
                         var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === moment().format('DD/MM/YYYY')) {
-                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
-                                APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
-                                return false;
+
+                            if (this.list.ventas[this.indexVenta].ValidadorClienteEspecial) {
+                                if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isBefore(moment(), 'minutes')) {
+                                    APP.msg.warning('La hora de confirmación debe ser igual o mayor a la hora actual.');
+                                    return false;
+                                }
+                            }
+                            else {
+                                if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
+                                    APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
+                                    return false;
+                                }
                             }
                         }
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
                             if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
-                                APP.msg.warning('La hora de confirmación debe ser menor a la hora de ' + (auxObjEmbarque ? 'embarque' : 'turno') + ' (' + tmpHoraBase + ').');
+                                APP.msg.warning('La hora de confirmación debe ser menor a la hora de embarque (' + tmpHoraBase + ').');
                                 return false;
                             }
 
@@ -5904,9 +5947,8 @@
 
                                         await deferredModal($('#appClaveAutorizacion'), false).done(function () {
                                             appClaveAutorizacion.horaReal = '';
-                                            this.validatorReservaHC = appClaveAutorizacion.response;
                                         });
-
+                                        
                                         if (!this.validatorReservaHC) {
                                             document.getElementById('txtHoraReservacion').focus();
                                             return false;
@@ -7883,6 +7925,7 @@
 
                     switch (this.Tipo) {
                         case ClaveHoraConfirmacion:
+                        case ClaveTiempoReserva:
                             this.getUsuariosHC('', null);
                             break;
                         case claveReintegro:
@@ -7969,14 +8012,23 @@
                 recorrerClaveAutorizacion: function (auxValidate) {
                     var auxResponse = false;
 
-                    if ((this.Tipo === ClaveHoraConfirmacion || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro ||
-                        this.Tipo === ClaveAnulacionPanel234 || this.Tipo === ClaveAnulacionPanel36) && !this.usuario) {
-                        if (this.Tipo !== ClaveHoraConfirmacion && appController.validatePanel('147') === '1') {
-                            if (auxValidate === true) APP.msg.warning('Usuario no válido.');
-                        }
-                        else {
+                    if (!this.usuario) {
+                        if (this.Tipo === ClaveHoraConfirmacion || this.Tipo === ClaveTiempoReserva) {
                             $('#cboUsuarioCA input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
+                        }
+                        else {
+                            if (this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro || this.Tipo === ClaveAnulacionPanel234 ||
+                                this.Tipo === ClaveAnulacionPanel36) {
+
+                                if (appController.validatePanel('147') === '1') {
+                                    if (auxValidate === true) APP.msg.warning('Usuario no válido.');
+                                }
+                                else {
+                                    $('#cboUsuarioCA input[type=search]').focus();
+                                    if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
+                                }
+                            }
                         }
                     }
                     else if (!this.password) {
@@ -8075,6 +8127,17 @@
                                 }
                             };
                             break;
+                        case ClaveTiempoReserva:
+                            {
+                                var auxResponse = await appController.sendClaveAutorizacionReserva(_this.usuario.id, _this.password);
+                                if (auxResponse) {
+                                    appVueVenta.validatorTiempoReserva = auxResponse;
+                                    $('#appClaveAutorizacion').modal('hide');
+                                }
+                                else
+                                    document.getElementById('txtContraseniaCA').focus();
+                            };
+                            break;
                         default:
                             await appController.sendClaveAutorizacion(_this.password, _this.Tipo, _this.observacion);
                     }
@@ -8115,6 +8178,7 @@
                 getSearchAutocomplete: function (search, loading) {
                     switch (this.Tipo) {
                         case ClaveHoraConfirmacion:
+                        case ClaveTiempoReserva:
                             this.getUsuariosHC(search, loading);
                             break;
                         case claveReintegroConfirmacion:
