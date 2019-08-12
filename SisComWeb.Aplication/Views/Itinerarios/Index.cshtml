@@ -9557,8 +9557,11 @@
                                             else APP.msg.error(res2.data.Mensaje);
                                         }).catch(APP.rq.axios_handler_error_alert);
 
+                                    window.removeEventListener('keyup', _this.esc);
+
                                     await appVueAnulaReintegro.validateToAnulRein(data2);
-                                    _this.$refs.refREVerificar.focus();
+                                   
+                                    window.addEventListener('keyup', _this.esc);
                                 } else {
                                     APP.msg.warning(res.data.Mensaje);
                                     _this.limpiarRE();
@@ -11167,6 +11170,16 @@
                         _this.show();
                     }
                 });
+
+                $('#appVuePaseLote').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+
+                    $(document).off('focusin.modal');
+
+                    _this.$nextTick(() => {
+                        //_this.$refs.refREMotivo.$el.querySelector('input').focus();
+                    });
+                });
             },
             methods: {
                 show: function () {
@@ -11186,6 +11199,11 @@
                 confirm: async function () {
                 },
                 limpiarCampos: function () {
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
                 },
                 close: function () {
                     $('#appVuePaseLote').modal('hide');
