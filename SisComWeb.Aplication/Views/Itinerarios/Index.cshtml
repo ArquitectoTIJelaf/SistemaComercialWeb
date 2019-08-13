@@ -9917,6 +9917,7 @@
                     var auxAsiento = '';
                     var auxAsientoAuditoria = '';
                     var auxCodiProgramacion = '';
+                    var auxPrecioSinDescuento = '';
 
                     //Diferencias por Código de Motivo
                     switch (_this.filtro.codMotivo) {
@@ -9931,6 +9932,7 @@
                             auxHoraViaje = _this.dataOriginal.HoraViaje;
                             auxAsientoAuditoria = '00';
                             auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
+                            auxPrecioSinDescuento = _this.item.reintegro;
                         }; break;
                         case '00003':
                         case '00004': {
@@ -9943,6 +9945,7 @@
                             auxAsiento = _this.filtroCambio.NumAsiento;
                             auxAsientoAuditoria = _this.dataOriginal.NumAsiento;
                             auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
+                            auxPrecioSinDescuento = "";
 
                             updateReintegro = true;
                         }; break;
@@ -10057,7 +10060,7 @@
                                 input.CODI_SUCURSAL = Usuario.CodiSucursal;
                                 input.CODI_PROGRAMACION = auxCodiProgramacion;
                                 input.CODI_SUBRUTA = auxDestinoPas;
-                                input.CODI_Cliente = "";
+                                input.CODI_Cliente = auxPrecioSinDescuento;
                                 input.NIT_CLIENTE = _this.item.ruc;
                                 input.PRECIO_VENTA = _this.item.reintegro;
                                 input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
