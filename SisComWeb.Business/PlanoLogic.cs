@@ -310,12 +310,35 @@ namespace SisComWeb.Business
                 }
             }
 
-            if(entidad.FlagVenta == "R")
+            // Consulta 'FechaHoraReservacion'
+            if (entidad.FlagVenta == "R")
             {
                 var consultarFechaHoraReservacion = VentaRepository.ConsultarFechaHoraReservacion(int.Parse(entidad.IdVenta));
                 entidad.FechaReservacion = consultarFechaHoraReservacion.FechaReservacion;
                 entidad.HoraReservacion = consultarFechaHoraReservacion.HoraReservacion;
             }
+
+            // Seteo 'Info'
+            entidad.Info = entidad.CodiUsuario + " " + entidad.NomUsuario + " - " + entidad.NomPuntoVenta + " - ";
+            switch (entidad.FlagVenta)
+            {
+                case "7":
+                    entidad.Info += "(PS)" + " - ";
+                    break;
+                case "1":
+                    entidad.Info += "(VC)" + " - ";
+                    break;
+            }
+            entidad.Info += entidad.NomOrigen + " - " + entidad.NomDestino;
+
+            // Seteo 'Observacion'
+            if (entidad.FlagVenta == "I")
+            {
+                var consultaUsrValeR = VentaRepository.ConsultaUsrValeR(int.Parse(entidad.IdVenta));
+
+                entidad.Observacion = "USR VALE: " + consultaUsrValeR;
+            }
+            entidad.Observacion += entidad.CodiEsca;
         }
     }
 }
