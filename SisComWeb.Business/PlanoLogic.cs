@@ -283,6 +283,31 @@ namespace SisComWeb.Business
                 entidad.ClavUsuarioReintegro = consultaVentaReintegro.CodiUsuario;
                 entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
+                //TESTSSSSSSSSSS XDDDDDDDD
+                entidad.Nombres = consultaVentaReintegro.Nombre;
+                entidad.Nombres = consultaVentaReintegro.SplitNombre[0];
+                entidad.ApellidoPaterno = consultaVentaReintegro.SplitNombre[1];
+                entidad.ApellidoMaterno = consultaVentaReintegro.SplitNombre[2];
+                entidad.TipoDocumento = consultaVentaReintegro.TipoDocumento;
+                entidad.NumeroDocumento = consultaVentaReintegro.Dni;
+                entidad.Edad = consultaVentaReintegro.Edad;
+                entidad.RucContacto = consultaVentaReintegro.RucCliente;
+                entidad.Telefono = consultaVentaReintegro.Telefono;
+                // Busca 'Pasajero'
+                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
+                entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
+                // Busca 'Empresa'
+                if (!string.IsNullOrEmpty(entidad.RucContacto))
+                {
+                    var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(entidad.RucContacto);
+                    entidad.RazonSocial = buscarEmpresa.RazonSocial;
+                    entidad.Direccion = buscarEmpresa.Direccion;
+                }
+                else
+                {
+                    entidad.RazonSocial = string.Empty;
+                    entidad.Direccion = string.Empty;
+                }
             }
 
             // Consulta 'FechaHoraReservacion'
