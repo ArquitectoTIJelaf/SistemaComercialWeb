@@ -32,9 +32,17 @@ namespace SisComWeb.Business
                     return new Response<ReintegroEntity>(false, valor, Message.MsgExcF12NoExiste, true);
                 }
                 //Setea Razón Social y Dirección con el RUC
-                var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(valor.RucCliente);
-                valor.RazonSocial = buscarEmpresa.RazonSocial;
-                valor.Direccion = buscarEmpresa.Direccion;
+                if (!string.IsNullOrEmpty(valor.RucCliente))
+                {
+                    var buscarEmpresa = ClientePasajeRepository.BuscarEmpresa(valor.RucCliente);
+                    valor.RazonSocial = buscarEmpresa.RazonSocial;
+                    valor.Direccion = buscarEmpresa.Direccion;
+                }
+                else
+                {
+                    valor.RazonSocial = string.Empty;
+                    valor.Direccion = string.Empty;
+                }
 
                 // Busca 'AgenciaEmpresa' (E -> GenerarAdicionales, M -> También se va a necesitar.)
                 var buscarAgenciaEmpresa = new AgenciaEntity();
@@ -212,7 +220,7 @@ namespace SisComWeb.Business
                 entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
                 entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
 
-                // Valida 'ConsultaPoliza'
+                //Valida 'ConsultaPoliza'
                 var consultaNroPoliza = new PolizaEntity()
                 {
                     NroPoliza = string.Empty,
@@ -221,7 +229,11 @@ namespace SisComWeb.Business
                 };
                 var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
                 if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                {
                     consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
+                    if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorConsultaNroPoliza, false);
+                }
 
                 entidad.PolizaNum = consultaNroPoliza.NroPoliza;
                 entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
@@ -446,7 +458,7 @@ namespace SisComWeb.Business
                 }
                 else
                 {
-                    return new Response<VentaResponse>(false, null, Message.MsgErrorWebServiceFacturacionElectronica, false);
+                    return new Response<VentaResponse>(false, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
                 }
             }
             catch (Exception ex)
@@ -585,32 +597,32 @@ namespace SisComWeb.Business
                             CodiSucursal = short.Parse(request.CodiOficina),
                             FechaCaja = DataUtility.ObtenerFechaDelSistema(),
                             TipoVale = "S",
-                            Boleto = request.CodiEsca.Substring(1),//Tipo SerieBoleto NumeBoleto
-                            NomUsuario = request.NomUsuario,
+                            Boleto = String.Format("{0}-{1}", request.SerieBoleto, request.NumeBoleto),
+                            NomUsuario = String.Format("{0} {1}", request.CodiUsuario, request.NomUsuario),
                             CodiBus = string.Empty,
                             CodiChofer = string.Empty,
                             CodiGasto = string.Empty,
-                            ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,//Tipo SerieBoleto NumeBoleto
+                            ConcCaja = String.Format("ANUL DE BOLETO REINT {0}{1}-{2}", request.Tipo, request.SerieBoleto, request.NumeBoleto),
                             Monto = request.PrecioVenta,
                             CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                             IndiAnulado = "F",
                             TipoDescuento = "RE",
-                            TipoDoc = string.Empty,
+                            TipoDoc = "16",
                             TipoGasto = "P",
                             Liqui = 0M,
                             Diferencia = 0M,
                             Recibe = "RE",
-                            CodiDestino = request.CodiDestinoPas,
+                            CodiDestino = string.Empty,
                             FechaViaje = "01/01/1900",
-                            HoraViaje = "VNA",
+                            HoraViaje = string.Empty,
                             CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),
-                            Voucher = "RE",
+                            Voucher = string.Empty,
                             Asiento = string.Empty,
-                            Ruc = request.IngresoManualPasajes ? "MA" : string.Empty,
-                            IdVenta = request.IdVenta,
+                            Ruc = string.Empty,
+                            IdVenta = 0,
                             Origen = "AR",
-                            Modulo = "PV",
-                            Tipo = request.CodiEsca.Substring(0, 1),
+                            Modulo = "PR",
+                            Tipo = request.Tipo,
 
                             IdCaja = 0
                         };
