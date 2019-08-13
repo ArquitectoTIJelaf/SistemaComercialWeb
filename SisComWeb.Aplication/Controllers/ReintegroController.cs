@@ -90,7 +90,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CODI_SUCURSAL\" : \"" + filtro.CODI_SUCURSAL + "\"" +
                                     ",\"CODI_PROGRAMACION\" : \"" + filtro.CODI_PROGRAMACION + "\"" +
                                     ",\"CODI_SUBRUTA\" : \"" + filtro.CODI_SUBRUTA + "\"" +
-                                    ",\"CODI_Cliente\" : \"" + filtro.CODI_Cliente + "\"" +
+                                    ",\"CODI_Cliente\" : \"" + (filtro.CODI_Cliente ?? "") + "\"" +
                                     ",\"NIT_CLIENTE\" : \"" + (filtro.NIT_CLIENTE ?? "") + "\"" +
                                     ",\"PRECIO_VENTA\" : \"" + filtro.PRECIO_VENTA + "\"" +
                                     ",\"NUMERO_ASIENTO\" : \"" + "00" + "\"" +

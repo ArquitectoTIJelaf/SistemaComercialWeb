@@ -9930,6 +9930,7 @@
                             auxFechaViaje = _this.dataOriginal.FechaViaje;
                             auxHoraViaje = _this.dataOriginal.HoraViaje;
                             auxAsientoAuditoria = '00';
+                            auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
                         }; break;
                         case '00003':
                         case '00004': {
@@ -10054,9 +10055,9 @@
                                 input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
                                 input.Codi_Empresa = auxEmpresa;
                                 input.CODI_SUCURSAL = Usuario.CodiSucursal;
-                                input.CODI_PROGRAMACION = _this.dataOriginal.CodiProgramacion;
+                                input.CODI_PROGRAMACION = auxCodiProgramacion;
                                 input.CODI_SUBRUTA = auxDestinoPas;
-                                input.CODI_Cliente = _this.item.reintegro;
+                                input.CODI_Cliente = "";
                                 input.NIT_CLIENTE = _this.item.ruc;
                                 input.PRECIO_VENTA = _this.item.reintegro;
                                 input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
