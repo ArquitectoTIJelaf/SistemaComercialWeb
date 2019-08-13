@@ -2329,7 +2329,7 @@
                                 break;
                             case 'R':
                                 {
-                                    if (appController.validatePanel('189') === '1' || !_this.validatorTiempoReserva) {
+                                    if (appController.validatePanel('189') === '1' && !_this.validatorTiempoReserva) {
                                         await _this.obtenerTiempoReserva();
 
                                         if (TiempoReserva) {
@@ -2659,23 +2659,15 @@
                         this.list.ventas[this.indexVenta].NroVenta = formatoBoletoCompleto(asientoSel.TipoBoleto, asientoSel.Boleto);
                         this.list.ventas[this.indexVenta].IdVenta = asientoSel.IdVenta;
                         this.list.ventas[this.indexVenta].FechaVen = asientoSel.FechaVenta;
-                        this.list.ventas[this.indexVenta].Info = asientoSel.CodiUsuario + ' ' + asientoSel.NomUsuario + ' - ' + asientoSel.NomPuntoVenta + ' - ';
+                        this.list.ventas[this.indexVenta].Info = asientoSel.Info;
                         this.list.ventas[this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
                         this.list.ventas[this.indexVenta].Reintegro = (asientoSel.PrecVentaReintegro === 0 ? '' : parseFloat(asientoSel.PrecVentaReintegro).toFixed(2));
-                        switch (this.list.ventas[this.indexVenta].FlagVenta) {
-                            case '7':
-                                this.list.ventas[this.indexVenta].Info += '(PS)' + ' - ';
-                                break;
-                            case '1':
-                                this.list.ventas[this.indexVenta].Info += '(VC)' + ' - ';
-                                break;
-                        }
-                        this.list.ventas[this.indexVenta].Info += asientoSel.NomOrigen + ' - ' + asientoSel.NomDestino;
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
-
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
                         this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
+                        
+                        this.list.ventas[this.indexVenta].Observacion = asientoSel.Observacion;
 
                         // Checked opción 'RegistrarNino'
                         if (asientoSel.ObjAcompaniante.Documento)

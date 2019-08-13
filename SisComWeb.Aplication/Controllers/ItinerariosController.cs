@@ -89,9 +89,11 @@ namespace SisComWeb.Aplication.Controllers
                 ValeRemoto = (string)x["ValeRemoto"],
                 CodiEsca = (string)x["CodiEsca"],
                 CodiEmpresa = (byte)x["CodiEmpresa"],
-
                 FechaReservacion = (string)x["FechaReservacion"],
-                HoraReservacion = (string)x["HoraReservacion"]
+                HoraReservacion = (string)x["HoraReservacion"],
+
+                Info = (string)x["Info"],
+                Observacion = (string)x["Observacion"]
             }).ToList();
 
             return lista;

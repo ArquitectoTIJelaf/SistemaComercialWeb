@@ -57,9 +57,11 @@
         public string ValeRemoto { get; set; }
         public string CodiEsca { get; set; }
         public byte CodiEmpresa { get; set; }
-
         public string FechaReservacion { get; set; }
         public string HoraReservacion { get; set; }
+
+        public string Info { get; set; }
+        public string Observacion { get; set; }
     }
 
     public class FiltroBloqueoAsiento

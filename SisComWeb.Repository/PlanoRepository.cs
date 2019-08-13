@@ -61,9 +61,11 @@ namespace SisComWeb.Repository
                             TipoPago = string.Empty,
                             ValeRemoto = string.Empty,
                             CodiEsca = string.Empty,
-
                             FechaReservacion = string.Empty,
-                            HoraReservacion = string.Empty
+                            HoraReservacion = string.Empty,
+
+                            Info = string.Empty,
+                            Observacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -225,7 +227,10 @@ namespace SisComWeb.Repository
                             OrdenOrigen = string.Empty,
                             Tipo = string.Empty,
                             FechaReservacion = string.Empty,
-                            HoraReservacion = string.Empty
+                            HoraReservacion = string.Empty,
+
+                            Info = string.Empty,
+                            Observacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -291,9 +296,11 @@ namespace SisComWeb.Repository
                             TipoPago = string.Empty,
                             ValeRemoto = string.Empty,
                             CodiEsca = string.Empty,
-
                             FechaReservacion = string.Empty,
-                            HoraReservacion = string.Empty
+                            HoraReservacion = string.Empty,
+
+                            Info = string.Empty,
+                            Observacion = string.Empty
                         };
                         Lista.Add(entidad);
                     }

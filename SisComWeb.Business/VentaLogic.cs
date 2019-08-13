@@ -236,18 +236,20 @@ namespace SisComWeb.Business
                                 }
                             };
                             break;
-                        default:
-                            {
-                                var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
-                                if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
-                                    consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
-
-                                entidad.PolizaNum = consultaNroPoliza.NroPoliza;
-                                entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
-                                entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
-                            }
-                            break;
                     }
+
+                    // Consulta 'NroPoliza'
+                    var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
+                    if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                    {
+                        consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
+                        if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
+                            return new Response<VentaResponse>(true, valor, Message.MsgErrorConsultaNroPoliza, false);
+                    }
+
+                    entidad.PolizaNum = consultaNroPoliza.NroPoliza;
+                    entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
+                    entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
 
                     // RESERVA
                     if (entidad.FlagVenta == "R")
@@ -1837,6 +1839,12 @@ namespace SisComWeb.Business
             {
                 var listaImpresiones = new List<ImpresionEntity>();
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
+                var consultaNroPoliza = new PolizaEntity()
+                {
+                    NroPoliza = string.Empty,
+                    FechaReg = "01/01/1900",
+                    FechaVen = "01/01/1900"
+                };
 
                 var objPanelCopia1 = ListarPanelControl.Find(x => x.CodiPanel == "197");
                 var objPanelCopia2 = ListarPanelControl.Find(x => x.CodiPanel == "198");
@@ -1846,15 +1854,14 @@ namespace SisComWeb.Business
                     var paginaWebEmisor = string.Empty;
                     var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
-                    var consultaNroPoliza = new PolizaEntity()
-                    {
-                        NroPoliza = string.Empty,
-                        FechaReg = "01/01/1900",
-                        FechaVen = "01/01/1900"
-                    };
+
                     var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
                     if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                    {
                         consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
+                        if(string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
+                            return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorConsultaNroPoliza, true);
+                    }
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M")

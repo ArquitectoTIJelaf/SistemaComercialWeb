@@ -344,7 +344,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? "";
+                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? string.Empty;
                         entidad.FechaReg = Reader.GetDateStringValue(drlector, "Fecha_Reg") ?? "01/01/1900";
                         entidad.FechaVen = Reader.GetDateStringValue(drlector, "Fecha_Ven") ?? "01/01/1900";
                         break;
@@ -839,6 +839,26 @@ namespace SisComWeb.Repository
             }
 
             return entidad;
+        }
+
+        public static string ConsultaUsrValeR(int IdVenta)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_TB_VENTA_USR_VALE_R";
+                db.AddParameter("@ID", DbType.Int32, ParameterDirection.Input, IdVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "NOMB_USUARIO") ?? string.Empty;
+                    }
+                }
+            }
+
+            return valor;
         }
 
         #endregion
