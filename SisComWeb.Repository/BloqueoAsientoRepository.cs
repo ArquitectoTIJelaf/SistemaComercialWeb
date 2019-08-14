@@ -1,5 +1,4 @@
 ﻿using SisComWeb.Entity;
-using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
@@ -8,9 +7,9 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static int ValidarBloqueoAsiento(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string NumeAsiento, string FechaProgramacion)
+        public static bool ValidarBloqueoAsiento(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string NumeAsiento, string FechaProgramacion)
         {
-            var valor = new int();
+            var valor = new bool();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -25,7 +24,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = 1;
+                        valor = Reader.GetBooleanValue(drlector, "Validator");
                         break;
                     }
                 }
@@ -52,6 +51,7 @@ namespace SisComWeb.Repository
                         entidad.Asientos = Reader.GetStringValue(drlector, "Asientos");
                         entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "cod_OrigenP");
                         entidad.CodiDestino = Reader.GetSmallIntValue(drlector, "Cod_DestinoP");
+                        break;
                     }
                 }
             }

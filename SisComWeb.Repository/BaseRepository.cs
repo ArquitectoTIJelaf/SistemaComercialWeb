@@ -78,18 +78,14 @@ namespace SisComWeb.Repository
                     item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
                     break;
                 case 17:
-                    item.id = DataUtility.ObjectToString(reader["USUARIO"]);
-                    item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
-                    break;
-                case 18:
                     item.id = DataUtility.ObjectToString(reader["CODIGO"]);
                     item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
                     break;
-                case 19:
+                case 18:
                     item.id = DataUtility.ObjectToString(reader["Codigo"]);
                     item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
                     break;
-                case 20:
+                case 19:
                     item.id = DataUtility.ObjectToString(reader["USUARIO"]);
                     item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
                     break;
@@ -164,7 +160,7 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarServicios";
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -184,7 +180,7 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListarEmpresas";
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -261,7 +257,7 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_ListaDistrito";
-                
+
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -422,7 +418,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        Lista.Add(GetItem(drlector, 18));
+                        Lista.Add(GetItem(drlector, 17));
                     }
                 }
             }
@@ -444,7 +440,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        Lista.Add(GetItem(drlector, 19));
+                        Lista.Add(GetItem(drlector, 18));
                     }
                 }
             }
@@ -464,7 +460,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        Lista.Add(GetItem(drlector, 20));
+                        Lista.Add(GetItem(drlector, 19));
                     }
                 }
             }

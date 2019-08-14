@@ -16,7 +16,7 @@ namespace SisComWeb.Business
                 // Validar 'BloqueoAsiento'
                 var validarBloqueoAsiento = BloqueoAsientoRepository.ValidarBloqueoAsiento(request.CodiProgramacion, request.NroViaje, request.CodiOrigen, request.CodiDestino, request.NumeAsiento.ToString(), request.FechaProgramacion);
 
-                if (validarBloqueoAsiento == 1)
+                if (validarBloqueoAsiento)
                     return new Response<int>(false, int.Parse(bloquearAsiento.ToString()), Message.MsgValidaBloqueoAsiento, true);
                 else
                 {

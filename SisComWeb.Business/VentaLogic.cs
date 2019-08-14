@@ -108,7 +108,7 @@ namespace SisComWeb.Business
                                     };
                                     break;
                             }
-                            // ----------
+                            // ----------------
                         };
                         break;
                 };
@@ -133,23 +133,25 @@ namespace SisComWeb.Business
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
-                var consultaNroPoliza = new PolizaEntity()
-                {
-                    NroPoliza = string.Empty,
-                    FechaReg = "01/01/1900",
-                    FechaVen = "01/01/1900"
-                };
-                var buscarAgenciaEmpresa = new AgenciaEntity()
-                {
-                    Direccion = string.Empty,
-                    Telefono1 = string.Empty,
-                    Telefono2 = string.Empty
-                };
 
                 foreach (var entidad in Listado)
                 {
                     string auxBoletoCompleto = string.Empty;
                     entidad.UserWebSUNAT = UserWebSUNAT;
+
+                    var consultaNroPoliza = new PolizaEntity()
+                    {
+                        NroPoliza = string.Empty,
+                        FechaReg = "01/01/1900",
+                        FechaVen = "01/01/1900"
+                    };
+                    var buscarAgenciaEmpresa = new AgenciaEntity()
+                    {
+                        Direccion = string.Empty,
+                        Telefono1 = string.Empty,
+                        Telefono2 = string.Empty
+                    };
+                    var buscarCorrelativo = new CorrelativoEntity();
 
                     // Verifica 'CodiProgramacion'
                     var objProgramacion = new ProgramacionEntity()
@@ -276,12 +278,43 @@ namespace SisComWeb.Business
                         {
                             case "V": // VENTA
                             case "1": // CRÉDITO
-                                entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
+                                {
+                                    // Correlativo '20'
+                                    switch (validarTerminalElectronico.Tipo)
+                                    {
+                                        case "M":
+                                            {
+                                                var objPanelCorrelativoCredito = ListarPanelControl.Find(x => x.CodiPanel == "105");
+                                                if (objPanelCorrelativoCredito != null && objPanelCorrelativoCredito.Valor == "1")
+                                                {
+                                                    if (entidad.FlagVenta != "1")
+                                                    {
+                                                        var objPanelCorrelativoCredito02 = ListarPanelControl.Find(x => x.CodiPanel == "145");
+                                                        if (objPanelCorrelativoCredito02 != null && objPanelCorrelativoCredito02.Valor == "1")
+                                                        {
+                                                            entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
+
+                                                            // Busca 'Correlativo'
+                                                            buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                            entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                                                            entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                                                        }
+                                                    }
+                                                }
+                                            };
+                                            break;
+                                    };
+
+                                    // Para continuar el flujo normal
+                                    if (buscarCorrelativo.SerieBoleto == 0)
+                                        entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
+                                };
                                 break;
                             case "7": // PASE DE CORTESÍA
                                 entidad.AuxCodigoBF_Interno = CodiCorrelativoPaseFactura;
                                 break;
                         };
+
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "01"; // Factura
                     }
@@ -298,14 +331,18 @@ namespace SisComWeb.Business
                                 entidad.AuxCodigoBF_Interno = CodiCorrelativoPaseBoleta;
                                 break;
                         };
+
                         // Seteo 'CodiDocumento'
                         entidad.CodiDocumento = "03"; // Boleta
                     }
 
                     // Busca 'Correlativo'
-                    var buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
-                    entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                    if (buscarCorrelativo.SerieBoleto != 0)
+                    {
+                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                        entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                        entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                    }
 
                     if (buscarCorrelativo.SerieBoleto == 0)
                     {
