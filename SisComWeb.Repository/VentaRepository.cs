@@ -582,6 +582,7 @@ namespace SisComWeb.Repository
                         entidad.HoraProgramacion = Reader.GetStringValue(drlector, "Hora_programacion");
                         entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
                         entidad.Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad");
+                        entidad.FechaViaje = Reader.GetDateStringValue(drlector, "FECHA_VIAJE");
                         break;
                     }
                 }

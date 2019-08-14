@@ -106,7 +106,7 @@
                                         </div>
                                         <div class="col-md-1 separate-in-form text-center">
                                             <label class="full-width">&nbsp;</label>
-                                            <button @@click=""
+                                            <button @@click="searchProgramacion(1)"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
                                                     ref="refLOTEBuscar1">
                                                 <span class="fa fa-search fa-fw"></span>Buscar
@@ -115,8 +115,8 @@
                                     </div>
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
-                                            <div class="table-responsive" style="background-color: #616e7e;">
-                                                <table class="table table-hover" style="cursor:default;background-color:white;">
+                                            <div class="table-responsive m-b-0" style="background-color: #616e7e;">
+                                                <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>
                                                             <th class="custom-th" width="%">Estado</th>
@@ -142,7 +142,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <paginate ref="paginator" name="items" :list="list.itinerarios1" :per="5">
-                                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion1(item)">
+                                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion(item, 1)">
                                                                 <td class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -185,23 +185,107 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="panel panel-default m-b-0 m-t-10" v-show="true">
-                        <div class="panel-heading p-0">
-                            <div class="font-12 p-t-0 p-b-0">
-                                BUS ORIGEN
-                                <div class="panel-action">
-                                    <a @@click="" ref="" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
-                                </div>
-                            </div>
+                <div class="row" v-show="list.tempListOri.length > 0">
+                    <div class="container-bus bgc-emp">
+                        <div class="img-bus">
+                            <img height="210" src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
                         </div>
-                        <div id="" class="panel-wrapper collapse in a-transition" aria-expanded="true">
-                            <div class="panel-body p-0">
-                                <div class="form-horizontal">
-                                    <div class="form-group m-b-5">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="table-responsive form-bus">
+
+                            <table id="tblLista" class="table table-bus mini-bus">
+                                <tbody>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano1_Ori"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano2_Ori"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano3_Ori"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano4_Ori"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano5_Ori"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -224,13 +308,13 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Origen:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiOrigen1"
+                                                        <v-select v-model="filtroCodiOrigen2"
                                                                   :options="list.rutas"
                                                                   :placeholder="'ORIGEN'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent="$refs.refLOTEDestino1.$el.querySelector('input').focus()"
-                                                                  ref="refLOTEOrigen1">
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEDestino2.$el.querySelector('input').focus()"
+                                                                  ref="refLOTEOrigen2">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -241,13 +325,13 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Destino:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiDestino1"
+                                                        <v-select v-model="filtroCodiDestino2"
                                                                   :options="list.rutasAll"
                                                                   :placeholder="'DESTINO'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent="$refs.refLOTEServicio1.$el.querySelector('input').focus()"
-                                                                  ref="refLOTEDestino1">
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEServicio2.$el.querySelector('input').focus()"
+                                                                  ref="refLOTEDestino2">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -258,13 +342,13 @@
                                                 <div class="col-md-4 separate-in-form">
                                                     <label class="control-label label-sm">Servicio:</label>
                                                     <div class="">
-                                                        <v-select v-model="filtroCodiServicio1"
+                                                        <v-select v-model="filtroCodiServicio2"
                                                                   :options="list.servicios"
                                                                   :placeholder="'SERVICIO'"
                                                                   :select-on-tab="true"
                                                                   :get-option-label="getLabel"
-                                                                  @@keydown.13.native.prevent="$refs.refLOTEFechaIt1.focus()"
-                                                                  ref="refLOTEServicio1">
+                                                                  @@keydown.13.native.prevent="$refs.refLOTEFechaIt2.focus()"
+                                                                  ref="refLOTEServicio2">
                                                             <template slot="option" slot-scope="option">
                                                                 <div @@click="">{{ option.id }} - {{ option.label }}</div>
                                                             </template>
@@ -276,45 +360,45 @@
                                             <div class="col-md-2 separate-in-form">
                                                 <label class="control-label label-sm" style="text-align:left;">Fecha:</label>
                                                 <div class="">
-                                                    <input v-model="filtroOrigen.FechaViaje"
+                                                    <input v-model="filtroDestino.FechaViaje"
                                                            class="form-control input-sm dpFiltro"
                                                            placeholder="DD/MM/YYYY"
                                                            v-mask="'##/##/####'"
                                                            @@focus="$event.target.select()"
-                                                           @@keydown.13.prevent="$refs.refLOTEHoraIt1.focus()"
-                                                           @@blur="filtroOrigen.FechaViaje = $getValueDateTimePicker($event)"
+                                                           @@keydown.13.prevent="$refs.refLOTEHoraIt2.focus()"
+                                                           @@blur="filtroDestino.FechaViaje = $getValueDateTimePicker($event)"
                                                            autocomplete="off"
-                                                           ref="refLOTEFechaIt1" />
+                                                           ref="refLOTEFechaIt2" />
                                                 </div>
                                             </div>
                                             <div class="col-md-2 separate-in-form">
                                                 <label class="control-label label-sm" style="text-align:left;">Hora:</label>
                                                 <div class="">
-                                                    <input v-model="filtroOrigen.Hora"
+                                                    <input v-model="filtroDestino.Hora"
                                                            class="form-control input-sm dph"
                                                            placeholder="HH:MM AM"
                                                            v-mask="'##:## AM'"
                                                            @@focus="$event.target.select()"
-                                                           @@keydown.13.prevent="$refs.refLOTEBuscar1.focus()"
-                                                           @@blur="filtroOrigen.Hora = $event.target.value"
+                                                           @@keydown.13.prevent="$refs.refLOTEBuscar2.focus()"
+                                                           @@blur="filtroDestino.Hora = $event.target.value"
                                                            autocomplete="off"
-                                                           ref="refLOTEHoraIt1" />
+                                                           ref="refLOTEHoraIt2" />
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-1 separate-in-form text-center">
                                             <label class="full-width">&nbsp;</label>
-                                            <button @@click=""
+                                            <button @@click="searchProgramacion(2)"
                                                     class="btn btn-primary btn-block-custom waves-effect waves-light"
-                                                    ref="refLOTEBuscar1">
+                                                    ref="refLOTEBuscar2">
                                                 <span class="fa fa-search fa-fw"></span>Buscar
                                             </button>
                                         </div>
                                     </div>
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
-                                            <div class="table-responsive" style="background-color: #616e7e;">
-                                                <table class="table table-hover" style="cursor:default;background-color:white;">
+                                            <div class="table-responsive m-b-0" style="background-color: #616e7e;">
+                                                <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>
                                                             <th class="custom-th" width="%">Estado</th>
@@ -339,8 +423,8 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <paginate ref="paginator" name="items" :list="list.itinerarios1" :per="5">
-                                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion1(item)">
+                                                        <paginate ref="paginator" name="items2" :list="list.itinerarios2" :per="5">
+                                                            <tr v-for="(item, key) in paginated('items2')" @@dblclick="dbClickProgramacion(item, 2)">
                                                                 <td class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -375,7 +459,7 @@
                                             </div>
                                         </div>
                                         <center>
-                                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                                            <paginate-links for="items2" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
                                         </center>
                                     </div>
                                 </div>
@@ -383,35 +467,119 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="panel panel-default m-b-0 m-t-10" v-show="true">
-                        <div class="panel-heading p-0">
-                            <div class="font-12 p-t-0 p-b-0">
-                                BUS DESTINO
-                                <div class="panel-action">
-                                    <a @@click="" ref="" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
-                                </div>
-                            </div>
+                <div class="row" v-show="list.tempListDes.length > 0">
+                    <div class="container-bus bgc-emp">
+                        <div class="img-bus">
+                            <img height="210" src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
                         </div>
-                        <div id="" class="panel-wrapper collapse in a-transition" aria-expanded="true">
-                            <div class="panel-body p-0">
-                                <div class="form-horizontal">
-                                    <div class="form-group m-b-5">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="table-responsive form-bus">
+
+                            <table id="tblLista" class="table table-bus mini-bus">
+                                <tbody>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano1_Des"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano2_Des"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano3_Des"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano4_Des"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td v-for="(item, key) in list.plano5_Des"
+                                                class="bus-td">
+                                                <template v-if="!isNaN(item.Tipo)">
+                                                    <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
+                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
+                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                        <div class="number-of-seat">
+                                                            {{item.Tipo}}
+                                                        </div>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <span :class="[item.Tipo]"></span>
+                                                </template>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                @*<button id="btnSaveVentaTipoPago2"
-                            class="btn btn-primary waves-effect"
-                            ref="refBtnAceptarTP2"
-                            @@click="saveVenta2"
-                            :disabled="(processing2 || errors.any())">
-                        <span class="fa fa-save fa-fw"></span>Aceptar
-                    </button>*@
+                <button id="btnProccesingLote"
+                        class="btn btn-primary waves-effect"
+                        @@click=""
+                        :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                        ref="refBtnProccesingLote">
+                    <span class="fa fa-save fa-fw"></span>Procesar en Lote
+                </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>

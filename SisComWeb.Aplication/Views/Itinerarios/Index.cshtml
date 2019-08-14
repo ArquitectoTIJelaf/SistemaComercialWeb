@@ -52,7 +52,7 @@
 
 @section styles{
     <style type="text/css">
-
+        
         .btn-mini-ticket:focus {
             opacity: 0.3;
         }
@@ -278,6 +278,14 @@
             float: left;
         }
 
+        .mini-bus {
+            height: 206px !important;
+        }
+
+            .mini-bus .bus-td {
+                height: 30px;
+            }
+
         .form-bus {
             background-color: #616e7e;
             width: calc(100% - 108px);
@@ -474,6 +482,27 @@
             -o-transition: all 0.6s ease;
             transition: all 0.6s ease;
         }
+
+        .tbl-mini-row .custom-th {
+            padding: 8px 5px;
+        }
+
+        .rainUp {
+            -webkit-animation: fadeInUp 2s 1s infinite;
+            animation: fadeInUp 2s 1s infinite;
+            -webkit-animation-direction: reverse;
+            animation-direction: reverse;
+            -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+        }
+
+        .rainDown {
+            -webkit-animation: fadeInDown 2s 1s infinite;
+            animation: fadeInDown 2s 1s infinite;
+            -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+        }
+
     </style>
 
     <style type="text/css">
@@ -848,9 +877,9 @@
                             case 'txtFechaReservacion':
                                 appVueVenta.validateFechaReservacion(13);
                                 break;
-                            case 'txtFechaRE':
-                                appVueReintegro.$refs.refREHoraIt.focus();
-                                break;
+                            //case 'txtFechaRE':
+                            //    appVueReintegro.$refs.refREHoraIt.focus();
+                            //    break;
                             default:
                                 debugger;
                                 e.target.nextElementSibling.focus();
@@ -1145,6 +1174,12 @@
         Vue.prototype.$getValuePickedBusVenta = function obtenerValorPickedBusVenta() {
             return appVueVenta.pickedBusVenta;
         }
+
+        Vue.prototype.$getFormatName = function $obtenerSeleccionadorVselect(_nombres, _apePaterno, _apeMaterno) {
+            if (_nombres && _apePaterno && _apeMaterno) {
+                return `${_nombres} ${_apePaterno} ${_apeMaterno}`;
+            } else return 'NO DISPONIBLE';
+        };
 
         function formatoBoletoCompleto(_TipoBoleto, _Boleto) {
             return (_TipoBoleto === 'M' ? '0' : _TipoBoleto) + _Boleto;
@@ -8685,7 +8720,8 @@
                     observacion: '',
                     nombre: '',
                     apepat: '',
-                    apemat: ''
+                    apemat: '',
+                    notaCredito: ''
                 },
                 list: {
                     empresas: []
@@ -8738,8 +8774,18 @@
                         Tipo: _this.item.tipo,
                         CodEmpresa: _this.item.codEmpresa
                     }))
-                        .then(res => {
+                        .then(async (res) => {
                             if (res.data.Valor) {
+
+                                //Validación: No debe tener nota de crédito
+                                _this.item.notaCredito = ''; 
+                                var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(res.data.Valor.IdVenta));
+                                if (verificaNotaCredito) {
+                                    if (verificaNotaCredito.Valor > 0) {
+                                        _this.item.notaCredito = _this.item.tipo + _.cloneDeep(verificaNotaCredito.Mensaje).substring(verificaNotaCredito.Mensaje.length - 11);
+                                    }
+                                } 
+
                                 _this.filtro.idVenta = res.data.Valor.IdVenta;
                                 _this.filtro.dni = res.data.Valor.Dni;
                                 _this.filtro.nombre = res.data.Valor.Nombre;
@@ -8754,7 +8800,7 @@
                                 _this.item.turno = res.data.Valor.HoraProgramacion;
                                 _this.item.ruta = res.data.Valor.CodiSubruta;
                                 _this.item.dia = res.data.Valor.FechaProgramacion;
-                                _this.item.fechaViaje = res.data.Valor.FechaProgramacion;
+                                _this.item.fechaViaje = res.data.Valor.FechaViaje;
                                 _this.item.fechaVenta = res.data.Valor.FechaVenta;
                                 _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
                                 _this.item.sexo = res.data.Valor.Sexo;
@@ -8798,7 +8844,7 @@
                         _this.item.empresa = '';
                         _this.item.tipo = 'M';
                         _this.item.serie = '';
-                        _this.item.numero = '';
+                        _this.item.numero = '';                        
                     }
                     _this.filtro.idVenta = 0;
                     _this.filtro.dni = '';
@@ -8823,7 +8869,8 @@
                     _this.item.observacion = '';
                     _this.item.nombre = '';
                     _this.item.apepat = '';
-                    _this.item.apemat = '';
+                    _this.item.apemat = '';     
+                    _this.item.notaCredito = '';
                     _this.showData = false;
                 },
                 saveModBoleto: async function () {
@@ -9727,12 +9774,18 @@
                         _this.showMiniMapa();
                     });
                 },
-                showMiniMapa: function () {
+                showMiniMapa: async function () {
                     let _this = this;
 
                     appController.showMiniMapa(_this.filtroMiniMapa);
 
-                    deferredModal($('#appVueMiniMapa'), false).done(function () {
+                    await deferredModal($('#appVueMiniMapa'), true).done(function () {
+                        appClaveAutorizacion.$nextTick(() => {
+                            window.removeEventListener('keyup', _this.esc);
+                        });
+                    });
+
+                    await deferredModal($('#appVueMiniMapa'), false).done(function () {
                         appVueMiniMapa.$nextTick(() => {
                             if (appVueMiniMapa.asientoSel.Tipo) {
                                 _this.filtroCambio.NumAsiento = appVueMiniMapa.asientoSel.Tipo;
@@ -9743,8 +9796,9 @@
                                 _this.$nextTick(() => {
                                     _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
                                 });
-                            } else
-                                _this.$refs.refREAsientoNew.focus();
+                            } else _this.$refs.refREAsientoNew.focus();
+
+                            window.addEventListener('keyup', _this.esc);
                         });
                     });
                 },
@@ -9794,6 +9848,7 @@
                     _this.filtroProgramacion.CodiServicio = '';//appVueVenta.filtro.CodiServicio.id;
                     _this.filtroProgramacion.FechaViaje = moment().format('DD/MM/YYYY');
                     _this.filtroProgramacion.Hora = moment().format('hh:mm A');
+                    _this.filtroProgramacion.NomDestino = '';
                     if (!document.getElementById('VerifBoletoRE').classList.contains("in")) {
                         _this.$nextTick(() => {
                             _this.$refs.refREVerifBoleto.click();
@@ -9894,8 +9949,6 @@
                 },
                 saveReintegro: async function () {
                     let _this = this;
-
-                    debugger;
 
                     _this.disabledAceptar = true;
 
@@ -10037,7 +10090,7 @@
 
                     //Código interno de documento
                     var CodiInternoDocumento = (appVueVenta.CodiTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
-                        : ((appVueVenta.CodiTerminalElectronico === 'F') ? '17' : '16');
+                        : ((_this.item.ruc) ? '17' : '16');
 
                     //Consulta del IGV
                     var igv = await _this.verificaIgv(CodiInternoDocumento);
@@ -10101,6 +10154,7 @@
                                 input.id_original = _this.dataOriginal.IdVenta;
                                 input.CodMotivo = _this.filtro.codMotivo;
                                 input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                debugger;
                                 input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
                                 input.T_DNI2 = _this.dataOriginal.Dni;
                                 input.NOMB2 = _this.dataOriginal.Nombre;
@@ -10117,7 +10171,6 @@
                     });
 
                     //Graba reintegro
-                    //_this.$nextTick(() => {
                     if (checkTipoPago) {
                         await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
                             .then(async function (res) {
@@ -10148,7 +10201,6 @@
                         _this.disabledAceptar = false;
                         return;
                     }
-                    //});
 
                     _this.disabledAceptar = false;
                 },
@@ -10256,7 +10308,7 @@
                                     _this.$nextTick(() => {
                                         _this.item.razonSocial = res.data.Valor.RazonSocial;
                                         _this.item.direccion = res.data.Valor.Direccion;
-                                    });                                    
+                                    });
                                 }
                                 else {
                                     if (res.data.Estado)
@@ -10439,9 +10491,11 @@
                         if (value !== '' && value !== null) {
                             if (this.list.rutasAll.find(x => x.id === value.id)) {
                                 this.filtroProgramacion.CodiDestino = value.id;
+                                this.filtroProgramacion.NomDestino = value.label;
                             }
                         } else {
                             this.filtroProgramacion.CodiDestino = '';
+                            this.filtroProgramacion.NomDestino = '';
                         }
 
                         this.$nextTick(() => {
@@ -11223,17 +11277,43 @@
                     CodiOrigen: '',
                     CodiDestino: '',
                     CodiServicio: '',
-                    FechaViaje: '',
-                    Hora: ''
+                    FechaViaje: moment().format('DD/MM/YYYY'),
+                    Hora: moment().format('hh:mm A'),
+                    TodosTurnos: false,
+                    SoloProgramados: true,
+                    NomDestino: ''
+                },
+                filtroDestino: {
+                    CodiOrigen: '',
+                    CodiDestino: '',
+                    CodiServicio: '',
+                    FechaViaje: moment().format('DD/MM/YYYY'),
+                    Hora: moment().format('hh:mm A'),
+                    TodosTurnos: false,
+                    SoloProgramados: true,
+                    NomDestino: ''
                 },
                 list: {
                     empresas: [],//
                     rutas: [],
                     rutasAll: [],
                     servicios: [],
-                    itinerarios1: []
+                    itinerarios1: [],
+                    itinerarios2: [],
+                    tempListOri: [],
+                    plano5_Ori: [],
+                    plano4_Ori: [],
+                    plano3_Ori: [],
+                    plano2_Ori: [],
+                    plano1_Ori: [],
+                    tempListDes: [],
+                    plano5_Des: [],
+                    plano4_Des: [],
+                    plano3_Des: [],
+                    plano2_Des: [],
+                    plano1_Des: []
                 },
-                paginate: ['items']
+                paginate: ['items','items2']
             },
             mounted: function () {
                 let _this = this;
@@ -11257,6 +11337,7 @@
             methods: {
                 show: async function () {
                     this.limpiarCampos();
+                    this.limpiarBus(0);
                     this.setData();
                     this.$nextTick(() => {
                         $('#appVuePaseLote').modal('show');
@@ -11267,17 +11348,17 @@
                     _this.$nextTick(() => {
 
                         if (_this.list.empresas.length === 0) {
-                                _this.list.empresas = empresas;
-                            }
+                            _this.list.empresas = empresas;
+                        }
 
                         if (_this.list.rutas.length === 0) {
-                                _this.list.rutas = _.cloneDeep(rutas);
-                            }
+                            _this.list.rutas = _.cloneDeep(rutas);
+                        }
 
                         if (_this.list.rutasAll.length === 0 || _this.list.rutasAll.length === 1) {
-                                _this.list.rutasAll = _.cloneDeep(rutas);
-                                _this.list.rutasAll.unshift(selectAll);
-                            }
+                            _this.list.rutasAll = _.cloneDeep(rutas);
+                            _this.list.rutasAll.unshift(selectAll);
+                        }
 
                         if (_this.list.servicios.length === 0 || _this.list.servicios.length === 1) {
                             _this.list.servicios = _.cloneDeep(servicios);
@@ -11288,30 +11369,60 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
-                dbClickProgramacion1: function (item) {
-                    //let _this = this;
-                    //_this.filtroMiniMapa.CodiEmpresa = item.CodiEmpresa;
-                    //_this.filtroMiniMapa.CodiOrigen = item.CodiOrigen;
-                    //_this.filtroMiniMapa.CodiDestino = item.CodiDestino;
-                    //_this.filtroMiniMapa.CodiSucursal = item.CodiSucursal;
-                    //_this.filtroMiniMapa.CodiRuta = item.CodiRuta;
-                    //_this.filtroMiniMapa.CodiPuntoVenta = item.CodiPuntoVenta;
-                    //_this.filtroMiniMapa.CodiServicio = item.CodiServicio;
-                    //_this.filtroMiniMapa.HoraViaje = item.HoraPartida;
-                    //_this.filtroMiniMapa.FechaViaje = item.FechaViaje;
-                    //_this.filtroMiniMapa.CodiProgramacion = item.CodiProgramacion;
+                dbClickProgramacion: async function (item, auxMapa) {
+                    let _this = this;
 
-                    //_this.dataSignalR.NroViaje = item.NroViaje;
-                    //_this.dataSignalR.FechaProgramacion = item.FechaProgramacion;
+                    var input = {};
+                    input.CodiEmpresa = item.CodiEmpresa;
+                    input.CodiOrigen = item.CodiOrigen;
+                    input.CodiDestino = item.CodiDestino;
+                    input.CodiSucursal = item.CodiSucursal;
+                    input.CodiRuta = item.CodiRuta;
+                    input.CodiPuntoVenta = item.CodiPuntoVenta;
+                    input.CodiServicio = item.CodiServicio;
+                    input.HoraViaje = item.HoraPartida;
+                    input.FechaViaje = item.FechaViaje;
+                    input.CodiProgramacion = item.CodiProgramacion;
 
-                    //_this.$refs.refRECambioBoleto.click();
+                    await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
+                        .then(res => {
+                            switch (auxMapa) {
+                                case 1: {
+                                    _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                    _this.list.plano5_Ori = _this.list.tempListOri.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano4_Ori = _this.list.tempListOri.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano2_Ori = _this.list.tempListOri.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano1_Ori = _this.list.tempListOri.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                }; break;
+                                case 2: {
+                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                    _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano2_Des = _this.list.tempListDes.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.list.plano1_Des = _this.list.tempListDes.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                }; break;
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                searchProgramacion: function (auxProg) {
+                    let _this = this;
+                    var filtroProg = (auxProg === 1) ? _this.filtroOrigen : _this.filtroDestino;
+                    APP.rq.axios.post(APP.base + '/itinerarios/lista-itinerarios', filtroProg)
+                        .then(res => {
+                            if (res.data.Estado) {
+                                var _data = _.cloneDeep(res.data.Valor);
+                                if (auxProg === 1) _this.list.itinerarios1 = _data;
+                                else _this.list.itinerarios2 = _data;
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
 
-                    //_this.limpiarRERuta();
-
-                    //_this.$nextTick(() => {
-                    //    _this.$refs.refREAsientoNew.focus();
-                    //    _this.showMiniMapa();
-                    //});
+                            _this.processing = false;
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 confirm: async function () {
                 },
@@ -11320,8 +11431,51 @@
                     _this.filtroOrigen.CodiOrigen = '';
                     _this.filtroOrigen.CodiDestino = '';
                     _this.filtroOrigen.CodiServicio = '';
-                    _this.filtroOrigen.FechaViaje = '';
-                    _this.filtroOrigen.Hora = '';
+                    _this.filtroOrigen.FechaViaje = moment().format('DD/MM/YYYY');
+                    _this.filtroOrigen.Hora = moment().format('hh:mm A');
+                    _this.filtroOrigen.NomDestino = '';
+                    _this.filtroDestino.CodiOrigen = '';
+                    _this.filtroDestino.CodiDestino = '';
+                    _this.filtroDestino.CodiServicio = '';
+                    _this.filtroDestino.FechaViaje = moment().format('DD/MM/YYYY');
+                    _this.filtroDestino.Hora = moment().format('hh:mm A');
+                    _this.filtroDestino.NomDestino = '';
+                    _this.list.itinerarios1 = [];
+                    _this.list.itinerarios2 = [];
+                },
+                limpiarBus: function (auxMapa) {
+                    let _this = this;
+                    switch (auxMapa) {
+                        case 1: {
+                            _this.list.tempListOri = [];
+                            _this.list.plano5_Ori = [];
+                            _this.list.plano4_Ori = [];
+                            _this.list.plano3_Ori = [];
+                            _this.list.plano2_Ori = [];
+                            _this.list.plano1_Ori = [];
+                        }; break;
+                        case 2: {
+                            _this.list.tempListDes = [];
+                            _this.list.plano5_Des = [];
+                            _this.list.plano4_Des = [];
+                            _this.list.plano3_Des = [];
+                            _this.list.plano2_Des = [];
+                            _this.list.plano1_Des = [];
+                        }; break;
+                        default:
+                            _this.list.tempListOri = [];
+                            _this.list.plano5_Ori = [];
+                            _this.list.plano4_Ori = [];
+                            _this.list.plano3_Ori = [];
+                            _this.list.plano2_Ori = [];
+                            _this.list.plano1_Ori = [];
+                            _this.list.tempListDes = [];
+                            _this.list.plano5_Des = [];
+                            _this.list.plano4_Des = [];
+                            _this.list.plano3_Des = [];
+                            _this.list.plano2_Des = [];
+                            _this.list.plano1_Des = [];
+                    }
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -11330,7 +11484,7 @@
                 },
                 close: function () {
                     $('#appVuePaseLote').modal('hide');
-                    window.removeEventListener('keyup', _this.esc);
+                    window.removeEventListener('keyup', this.esc);
                 }
             },
             computed: {
@@ -11364,9 +11518,11 @@
                         if (value !== '' && value !== null) {
                             if (this.list.rutasAll.find(x => x.id === value.id)) {
                                 this.filtroOrigen.CodiDestino = value.id;
+                                this.filtroOrigen.NomDestino = value.label;
                             }
                         } else {
                             this.filtroOrigen.CodiDestino = '';
+                            this.filtroOrigen.NomDestino = '';
                         }
 
                         this.$nextTick(() => {
@@ -11391,6 +11547,68 @@
 
                         this.$nextTick(() => {
                             this.$refs.refLOTEServicio1.typeAheadPointer = this.$getSelectorVselect(this.list.servicios, value);
+                        });
+                    }
+                },
+                filtroCodiOrigen2: {
+                    get: function () {
+                        if (this.list.rutas.length > 0 && this.list.rutas.find(x => x.id === this.filtroDestino.CodiOrigen)) {
+                            return this.list.rutas.find(x => x.id === this.filtroDestino.CodiOrigen)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.rutas.find(x => x.id === value.id)) {
+                                this.filtroDestino.CodiOrigen = value.id;
+                            }
+                        } else {
+                            this.filtroDestino.CodiOrigen = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEOrigen2.typeAheadPointer = this.$getSelectorVselect(this.list.rutas, value);
+                        });
+                    }
+                },
+                filtroCodiDestino2: {
+                    get: function () {
+                        if (this.list.rutasAll.length > 0 && this.list.rutasAll.find(x => x.id === this.filtroDestino.CodiDestino)) {
+                            return this.list.rutasAll.find(x => x.id === this.filtroDestino.CodiDestino)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.rutasAll.find(x => x.id === value.id)) {
+                                this.filtroDestino.CodiDestino = value.id;
+                                this.filtroDestino.NomDestino = value.label;
+                            }
+                        } else {
+                            this.filtroDestino.CodiDestino = '';
+                            this.filtroDestino.NomDestino = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEDestino2.typeAheadPointer = this.$getSelectorVselect(this.list.rutasAll, value);
+                        });
+                    }
+                },
+                filtroCodiServicio2: {
+                    get: function () {
+                        if (this.list.servicios.length > 0 && this.list.servicios.find(x => x.id === this.filtroDestino.CodiServicio)) {
+                            return this.list.servicios.find(x => x.id === this.filtroDestino.CodiServicio)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.servicios.find(x => x.id === value.id)) {
+                                this.filtroDestino.CodiServicio = value.id;
+                            }
+                        } else {
+                            this.filtroDestino.CodiServicio = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLOTEServicio2.typeAheadPointer = this.$getSelectorVselect(this.list.servicios, value);
                         });
                     }
                 },

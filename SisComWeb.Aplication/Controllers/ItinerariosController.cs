@@ -2378,7 +2378,8 @@ namespace SisComWeb.Aplication.Controllers
                         CodiServicio = (byte)data["CodiServicio"],
                         Nacionalidad = (string)data["Nacionalidad"],
                         RazonSocial = (string)data["RazonSocial"],
-                        DireccionFiscal = (string)data["DireccionFiscal"]
+                        DireccionFiscal = (string)data["DireccionFiscal"],
+                        FechaViaje = (string)data["FechaViaje"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
