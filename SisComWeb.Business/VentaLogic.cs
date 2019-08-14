@@ -337,7 +337,7 @@ namespace SisComWeb.Business
                     }
 
                     // Busca 'Correlativo'
-                    if (buscarCorrelativo.SerieBoleto != 0)
+                    if (entidad.AuxCodigoBF_Interno != CodiCorrelativoCredito)
                     {
                         buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
                         entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
