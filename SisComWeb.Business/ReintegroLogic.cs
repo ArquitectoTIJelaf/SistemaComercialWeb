@@ -314,7 +314,7 @@ namespace SisComWeb.Business
 
                 if (resValidarDocumentoSUNAT != null || filtro.Tipo.Equals("M"))
                 {
-                    if (resValidarDocumentoSUNAT.Estado || filtro.Tipo.Equals("M"))
+                    if ((resValidarDocumentoSUNAT != null && resValidarDocumentoSUNAT.Estado) || filtro.Tipo.Equals("M"))
                     {
                         //Graba Reintegro
                         var res = ReintegroRepository.SaveReintegro(filtro);
@@ -456,16 +456,19 @@ namespace SisComWeb.Business
                                 VentaRepository.GrabarAuditoria(objAuditoria2);
                             }
 
-                            //Registra 'DocumentoSUNAT'
-                            var resRegistrarDocumentoSUNAT = VentaLogic.RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
+                            if (!filtro.Tipo.Equals("M"))
+                            {
+                                //Registra 'DocumentoSUNAT'
+                                var resRegistrarDocumentoSUNAT = VentaLogic.RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
 
-                            if (resRegistrarDocumentoSUNAT.Estado)
-                            {
-                                entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
-                            }
-                            else
-                            {
-                                return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                                if (resRegistrarDocumentoSUNAT.Estado)
+                                {
+                                    entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
+                                }
+                                else
+                                {
+                                    return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                                }
                             }
                         }
 

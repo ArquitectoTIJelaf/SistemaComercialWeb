@@ -423,8 +423,8 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <paginate ref="paginator" name="items" :list="list.itinerarios2" :per="5">
-                                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion(item, 2)">
+                                                        <paginate ref="paginator" name="items2" :list="list.itinerarios2" :per="5">
+                                                            <tr v-for="(item, key) in paginated('items2')" @@dblclick="dbClickProgramacion(item, 2)">
                                                                 <td class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
@@ -459,7 +459,7 @@
                                             </div>
                                         </div>
                                         <center>
-                                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                                            <paginate-links for="items2" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
                                         </center>
                                     </div>
                                 </div>
