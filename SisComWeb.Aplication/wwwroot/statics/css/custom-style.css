@@ -549,8 +549,8 @@ body {
 }
 
 .custom-scroll-container ::-webkit-scrollbar {
-    /*width: 28px;
-    height: 28px;*/
+    width: inherit;
+    height: inherit;
 }
 
 .custom-scroll-container ::-webkit-scrollbar-thumb:horizontal {
@@ -736,7 +736,7 @@ ul.pagination {
 }
 
 .fix-header {
-   padding-right: 0 !important;
+    padding-right: 0 !important;
 }
 
 @media (min-width: 768px) {

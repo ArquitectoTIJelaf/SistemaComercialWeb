@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
-                                            <div class="table-responsive" style="background-color: #616e7e;">
+                                            <div class="table-responsive m-b-0" style="background-color: #616e7e;">
                                                 <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>
@@ -199,6 +199,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="[item.NumeAsiento ? 'rainUp' : '']"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -392,7 +393,7 @@
                                     </div>
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
-                                            <div class="table-responsive" style="background-color: #616e7e;">
+                                            <div class="table-responsive m-b-0" style="background-color: #616e7e;">
                                                 <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>

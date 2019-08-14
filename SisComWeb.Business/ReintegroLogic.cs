@@ -176,6 +176,8 @@ namespace SisComWeb.Business
                     TipoPago = filtro.Tipo_Pago
                 };
 
+                var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
+
                 // Seteo 'CodiDocumento'
                 if (!string.IsNullOrEmpty(entidad.RucCliente))
                 {
@@ -188,8 +190,66 @@ namespace SisComWeb.Business
                     entidad.CodiDocumento = "03"; // Boleta
                 }
 
+                // Busca 'Correlativo'
+                var buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+
+                if (buscarCorrelativo.SerieBoleto == 0)
+                {
+                    switch (validarTerminalElectronico.Tipo)
+                    {
+                        case "M":
+                            {
+                                switch (entidad.CodiDocumento)
+                                {
+                                    case "01": // Factura
+                                        {
+                                            if (buscarCorrelativo.SerieBoleto == 0)
+                                            {
+                                                // Seteo 'CodiBF Interno'
+                                                entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
+                                                // Seteo 'CodiDocumento'
+                                                entidad.CodiDocumento = "03"; // Boleta
+
+                                                // Busca 'Correlativo'
+                                                buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                if (buscarCorrelativo.SerieBoleto == 0)
+                                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                                else
+                                                {
+                                                    entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                                                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                                                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                                            }
+                                        };
+                                        break;
+                                    case "03": // Boleta
+                                        {
+                                            if (buscarCorrelativo.SerieBoleto == 0)
+                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
+                                            else
+                                            {
+                                                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                                                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                                            }
+                                        };
+                                        break;
+                                };
+                            };
+                            break;
+                        case "E":
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
+                    };
+                }
+
                 // Seteo 'Tipo'
-                var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
+                
                 switch (validarTerminalElectronico.Tipo)
                 {
                     case "M":

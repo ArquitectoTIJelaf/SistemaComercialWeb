@@ -52,7 +52,7 @@
 
 @section styles{
     <style type="text/css">
-
+        
         .btn-mini-ticket:focus {
             opacity: 0.3;
         }
@@ -487,26 +487,24 @@
             padding: 8px 5px;
         }
 
-        .rain {
-            -webkit-animation: fadeInDown 8s 2s infinite;
-            animation: fadeInDown 8s 2s infinite;
+        .rainUp {
+            -webkit-animation: fadeInUp 4s 2s infinite;
+            animation: fadeInUp 4s 2s infinite;
+            -webkit-animation-direction: reverse;
+            animation-direction: reverse;
             -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
         }
 
-        @@-webkit-keyframes fadeInDown {
+        @@-webkit-keyframes fadeInUp {
             0% {
                 -webkit-transform: translateY(0);
             }
 
             50% {
-                -webkit-transform: translateY(200%);
+                -webkit-transform: translateY(100%);
             }
-
-            50.1% {
-                -webkit-transform: translateY(0);
-            }
-
+            
             100% {
                 -webkit-transform: translateY(200%);
             }
