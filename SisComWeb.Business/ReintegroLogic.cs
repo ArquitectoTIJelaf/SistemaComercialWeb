@@ -276,6 +276,9 @@ namespace SisComWeb.Business
                         break;
                 };
 
+                // Siempre '+ 1' al 'NumeBoleto'
+                entidad.NumeBoleto = entidad.NumeBoleto + 1;
+
                 //Para enviar a grabar
                 filtro.Tipo = entidad.Tipo;
 
@@ -316,6 +319,10 @@ namespace SisComWeb.Business
                 {
                     if ((resValidarDocumentoSUNAT != null && resValidarDocumentoSUNAT.Estado) || filtro.Tipo.Equals("M"))
                     {
+                        //Setea CodiDocumento, Serie y Número.
+                        filtro.Codi_Documento__ = entidad.AuxCodigoBF_Interno;
+                        filtro.Serie = entidad.SerieBoleto.ToString();
+                        filtro.nume_boleto = entidad.NumeBoleto.ToString();
                         //Graba Reintegro
                         var res = ReintegroRepository.SaveReintegro(filtro);
                         var ventaRealizada = (res > 0) ? true : false;
