@@ -70,7 +70,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Contrato_Pasajes_Verifica";
+                db.ProcedureName = "scwsp_Tb_Contrato_Pasajes_Verifica";
                 db.AddParameter("@ruc", DbType.String, ParameterDirection.Input, ruc);
                 db.AddParameter("@f1", DbType.String, ParameterDirection.Input, f1);
                 db.AddParameter("@f2", DbType.String, ParameterDirection.Input, f2);
