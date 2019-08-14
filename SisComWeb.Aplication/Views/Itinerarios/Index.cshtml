@@ -8719,7 +8719,8 @@
                     observacion: '',
                     nombre: '',
                     apepat: '',
-                    apemat: ''
+                    apemat: '',
+                    notaCredito: ''
                 },
                 list: {
                     empresas: []
@@ -8772,8 +8773,18 @@
                         Tipo: _this.item.tipo,
                         CodEmpresa: _this.item.codEmpresa
                     }))
-                        .then(res => {
+                        .then(async (res) => {
                             if (res.data.Valor) {
+
+                                //Validación: No debe tener nota de crédito
+                                _this.item.notaCredito = ''; 
+                                var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(res.data.Valor.IdVenta));
+                                if (verificaNotaCredito) {
+                                    if (verificaNotaCredito.Valor > 0) {
+                                        _this.item.notaCredito = _this.item.tipo + _.cloneDeep(verificaNotaCredito.Mensaje).substring(verificaNotaCredito.Mensaje.length - 11);
+                                    }
+                                } 
+
                                 _this.filtro.idVenta = res.data.Valor.IdVenta;
                                 _this.filtro.dni = res.data.Valor.Dni;
                                 _this.filtro.nombre = res.data.Valor.Nombre;
@@ -8788,7 +8799,7 @@
                                 _this.item.turno = res.data.Valor.HoraProgramacion;
                                 _this.item.ruta = res.data.Valor.CodiSubruta;
                                 _this.item.dia = res.data.Valor.FechaProgramacion;
-                                _this.item.fechaViaje = res.data.Valor.FechaProgramacion;
+                                _this.item.fechaViaje = res.data.Valor.FechaViaje;
                                 _this.item.fechaVenta = res.data.Valor.FechaVenta;
                                 _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
                                 _this.item.sexo = res.data.Valor.Sexo;
@@ -8832,7 +8843,7 @@
                         _this.item.empresa = '';
                         _this.item.tipo = 'M';
                         _this.item.serie = '';
-                        _this.item.numero = '';
+                        _this.item.numero = '';                        
                     }
                     _this.filtro.idVenta = 0;
                     _this.filtro.dni = '';
@@ -8857,7 +8868,8 @@
                     _this.item.observacion = '';
                     _this.item.nombre = '';
                     _this.item.apepat = '';
-                    _this.item.apemat = '';
+                    _this.item.apemat = '';     
+                    _this.item.notaCredito = '';
                     _this.showData = false;
                 },
                 saveModBoleto: async function () {

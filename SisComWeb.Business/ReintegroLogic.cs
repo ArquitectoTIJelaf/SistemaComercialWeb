@@ -17,6 +17,7 @@ namespace SisComWeb.Business
         private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"].ToString();
         private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"].ToString();
         private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
+        private static readonly string CodiCorrelativoCredito = ConfigurationManager.AppSettings["codiCorrelativoCredito"].ToString();
 
         public static Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest request)
         {
@@ -222,22 +223,12 @@ namespace SisComWeb.Business
                                                     entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                                                 }
                                             }
-                                            else
-                                            {
-                                                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                                                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
-                                            }
                                         };
                                         break;
                                     case "03": // Boleta
                                         {
                                             if (buscarCorrelativo.SerieBoleto == 0)
                                                 return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
-                                            else
-                                            {
-                                                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                                                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
-                                            }
                                         };
                                         break;
                                 };
@@ -249,15 +240,30 @@ namespace SisComWeb.Business
                 }
 
                 // Seteo 'Tipo'
-                
+
                 switch (validarTerminalElectronico.Tipo)
                 {
                     case "M":
                         entidad.Tipo = "M";
-                        var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "145");
-                        if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
+                        if (!string.IsNullOrEmpty(entidad.RucCliente))
                         {
-                            entidad.AuxCodigoBF_Interno = "20";
+                            var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "145");
+                            if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
+                            {
+                                entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
+                                // Busca 'Correlativo'
+                                var buscarCorrelativo2 = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                if (buscarCorrelativo2.SerieBoleto != 0)
+                                {
+                                    entidad.SerieBoleto = buscarCorrelativo2.SerieBoleto;
+                                    entidad.NumeBoleto = buscarCorrelativo2.NumeBoleto;
+                                }
+                                else
+                                {
+                                    return new Response<VentaResponse>(false, valor, "Número de correlativo no esta configurado para el tipo " + entidad.AuxCodigoBF_Interno, false);
+                                }
+
+                            }
                         }
                         break;
                     case "E":
@@ -306,215 +312,219 @@ namespace SisComWeb.Business
                     resValidarDocumentoSUNAT = VentaLogic.ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
 
 
-
                 if (resValidarDocumentoSUNAT != null || filtro.Tipo.Equals("M"))
                 {
-                    //Graba Reintegro
-                    var res = ReintegroRepository.SaveReintegro(filtro);
-                    var ventaRealizada = (res > 0) ? true : false;
-
-                    if (ventaRealizada)
+                    if (resValidarDocumentoSUNAT.Estado || filtro.Tipo.Equals("M"))
                     {
-                        entidad.IdVenta = res;
+                        //Graba Reintegro
+                        var res = ReintegroRepository.SaveReintegro(filtro);
+                        var ventaRealizada = (res > 0) ? true : false;
 
-                        var objAuditoria = new AuditoriaEntity
+                        if (ventaRealizada)
                         {
-                            CodiUsuario = Convert.ToInt16(filtro.Clav_Usuario),
-                            NomUsuario = filtro.NomUsuario,
-                            Tabla = "VENTA",
-                            TipoMovimiento = "BOL-REINTEGRO",
-                            Boleto = filtro.BoletoAuditoria,
-                            NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
-                            NomOficina = filtro.NomSucursal,
-                            NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),
-                            Pasajero = filtro.NOMB,
-                            FechaViaje = filtro.Fecha_viaje,
-                            HoraViaje = filtro.HORA_V,
-                            NomDestino = filtro.NombDestino,
-                            Precio = (decimal)filtro.PRECIO_VENTA,
-                            Obs1 = "REINTEGRO DE PASAJES",
-                            Obs2 = filtro.CODI_PROGRAMACION,
-                            Obs3 = "BOL-" + filtro.Serie + "-" + filtro.nume_boleto,
-                            Obs4 = filtro.NomMotivo,
-                            Obs5 = string.Empty
-                        };
-                        //Graba Auditoria
-                        VentaRepository.GrabarAuditoria(objAuditoria);
+                            entidad.IdVenta = res;
 
-                        // Valida 'TipoPago'
-                        switch (entidad.TipoPago)
-                        {
-                            case "02": // Múltiple pago
-                            case "03": // Tarjeta de crédito    
-                                {
-                                    //  Genera 'CorrelativoAuxiliar'
-                                    var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
-                                    if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
-
-                                    var auxBoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
-
-                                    var auxCodiDestino = (filtro.CodMotivo.Equals("00003") || filtro.CodMotivo.Equals("00004")) ? filtro.CODI_SUBRUTA : "";
-
-                                    // Graba 'Caja'
-                                    var objCajaEntity = new CajaEntity
-                                    {
-                                        NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
-                                        CodiEmpresa = entidad.CodiEmpresa,
-                                        CodiSucursal = entidad.CodiOficina,
-                                        FechaCaja = DataUtility.ObtenerFechaDelSistema(),
-                                        TipoVale = "S",
-                                        Boleto = auxBoletoCompleto.Substring(1),
-                                        NomUsuario = filtro.NomUsuario,
-                                        CodiBus = string.Empty,
-                                        CodiChofer = string.Empty,
-                                        CodiGasto = string.Empty,
-                                        ConcCaja = auxBoletoCompleto.Substring(1),
-                                        Monto = entidad.PrecioVenta,
-                                        CodiUsuario = entidad.CodiUsuario,
-                                        IndiAnulado = "F",
-                                        TipoDescuento = string.Empty,
-                                        TipoDoc = "XX",
-                                        TipoGasto = "P",
-                                        Liqui = 0M,
-                                        Diferencia = 0M,
-                                        Recibe = string.Empty,
-                                        CodiDestino = auxCodiDestino,
-                                        FechaViaje = entidad.FechaViaje,
-                                        HoraViaje = entidad.HoraViaje,
-                                        CodiPuntoVenta = entidad.CodiPuntoVenta,
-                                        Voucher = "PA",
-                                        Asiento = string.Empty,
-                                        Ruc = "N",
-                                        IdVenta = entidad.IdVenta,
-                                        Origen = "MT",
-                                        Modulo = "PM",
-                                        Tipo = entidad.Tipo,
-
-                                        IdCaja = 0
-                                    };
-
-                                    var grabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
-                                    if (grabarCaja > 0)
-                                    {
-                                        // Seteo 'NumeCaja'
-                                        var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
-
-                                        // Graba 'PagoTarjetaCredito'
-                                        var objTarjetaCreditoEntity = new TarjetaCreditoEntity
-                                        {
-                                            IdVenta = entidad.IdVenta,
-                                            Boleto = auxBoletoCompleto.Substring(1),
-                                            CodiTarjetaCredito = filtro.CodiTarjetaCredito,
-                                            NumeTarjetaCredito = filtro.NumeTarjetaCredito,
-                                            Vale = auxNumeCaja,
-                                            IdCaja = grabarCaja,
-                                            Tipo = entidad.Tipo
-                                        };
-                                        var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
-                                        if (!grabarPagoTarjetaCredito)
-                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
-                                    }
-                                    else
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarCaja, false);
-                                };
-                                break;
-                        };
-
-
-                        if (filtro.stReintegro.Equals("X"))
-                        {
-                            var objAuditoria2 = new AuditoriaEntity
+                            var objAuditoria = new AuditoriaEntity
                             {
                                 CodiUsuario = Convert.ToInt16(filtro.Clav_Usuario),
                                 NomUsuario = filtro.NomUsuario,
                                 Tabla = "VENTA",
-                                TipoMovimiento = "BOL-REI-CRE",
+                                TipoMovimiento = "BOL-REINTEGRO",
                                 Boleto = filtro.BoletoAuditoria,
                                 NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
                                 NomOficina = filtro.NomSucursal,
-                                NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),//
+                                NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),
                                 Pasajero = filtro.NOMB,
                                 FechaViaje = filtro.Fecha_viaje,
                                 HoraViaje = filtro.HORA_V,
                                 NomDestino = filtro.NombDestino,
                                 Precio = (decimal)filtro.PRECIO_VENTA,
-                                Obs1 = "REINTEGRO CON CREDITO",
+                                Obs1 = "REINTEGRO DE PASAJES",
                                 Obs2 = filtro.CODI_PROGRAMACION,
-                                Obs3 = "BOL-" + filtro.nume_boleto,
+                                Obs3 = "BOL-" + filtro.Serie + "-" + filtro.nume_boleto,
                                 Obs4 = filtro.NomMotivo,
                                 Obs5 = string.Empty
                             };
-                            //Graba Auditoria Adicional
-                            VentaRepository.GrabarAuditoria(objAuditoria2);
+                            //Graba Auditoria
+                            VentaRepository.GrabarAuditoria(objAuditoria);
+
+                            // Valida 'TipoPago'
+                            switch (entidad.TipoPago)
+                            {
+                                case "02": // Múltiple pago
+                                case "03": // Tarjeta de crédito    
+                                    {
+                                        //  Genera 'CorrelativoAuxiliar'
+                                        var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
+                                        if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
+
+                                        var auxBoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+
+                                        var auxCodiDestino = (filtro.CodMotivo.Equals("00003") || filtro.CodMotivo.Equals("00004")) ? filtro.CODI_SUBRUTA : "";
+
+                                        // Graba 'Caja'
+                                        var objCajaEntity = new CajaEntity
+                                        {
+                                            NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
+                                            CodiEmpresa = entidad.CodiEmpresa,
+                                            CodiSucursal = entidad.CodiOficina,
+                                            FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                            TipoVale = "S",
+                                            Boleto = auxBoletoCompleto.Substring(1),
+                                            NomUsuario = filtro.NomUsuario,
+                                            CodiBus = string.Empty,
+                                            CodiChofer = string.Empty,
+                                            CodiGasto = string.Empty,
+                                            ConcCaja = auxBoletoCompleto.Substring(1),
+                                            Monto = entidad.PrecioVenta,
+                                            CodiUsuario = entidad.CodiUsuario,
+                                            IndiAnulado = "F",
+                                            TipoDescuento = string.Empty,
+                                            TipoDoc = "XX",
+                                            TipoGasto = "P",
+                                            Liqui = 0M,
+                                            Diferencia = 0M,
+                                            Recibe = string.Empty,
+                                            CodiDestino = auxCodiDestino,
+                                            FechaViaje = entidad.FechaViaje,
+                                            HoraViaje = entidad.HoraViaje,
+                                            CodiPuntoVenta = entidad.CodiPuntoVenta,
+                                            Voucher = "PA",
+                                            Asiento = string.Empty,
+                                            Ruc = "N",
+                                            IdVenta = entidad.IdVenta,
+                                            Origen = "MT",
+                                            Modulo = "PM",
+                                            Tipo = entidad.Tipo,
+
+                                            IdCaja = 0
+                                        };
+
+                                        var grabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
+                                        if (grabarCaja > 0)
+                                        {
+                                            // Seteo 'NumeCaja'
+                                            var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
+
+                                            // Graba 'PagoTarjetaCredito'
+                                            var objTarjetaCreditoEntity = new TarjetaCreditoEntity
+                                            {
+                                                IdVenta = entidad.IdVenta,
+                                                Boleto = auxBoletoCompleto.Substring(1),
+                                                CodiTarjetaCredito = filtro.CodiTarjetaCredito,
+                                                NumeTarjetaCredito = filtro.NumeTarjetaCredito,
+                                                Vale = auxNumeCaja,
+                                                IdCaja = grabarCaja,
+                                                Tipo = entidad.Tipo
+                                            };
+                                            var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
+                                            if (!grabarPagoTarjetaCredito)
+                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
+                                        }
+                                        else
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarCaja, false);
+                                    };
+                                    break;
+                            };
+
+
+                            if (filtro.stReintegro.Equals("X"))
+                            {
+                                var objAuditoria2 = new AuditoriaEntity
+                                {
+                                    CodiUsuario = Convert.ToInt16(filtro.Clav_Usuario),
+                                    NomUsuario = filtro.NomUsuario,
+                                    Tabla = "VENTA",
+                                    TipoMovimiento = "BOL-REI-CRE",
+                                    Boleto = filtro.BoletoAuditoria,
+                                    NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
+                                    NomOficina = filtro.NomSucursal,
+                                    NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),//
+                                    Pasajero = filtro.NOMB,
+                                    FechaViaje = filtro.Fecha_viaje,
+                                    HoraViaje = filtro.HORA_V,
+                                    NomDestino = filtro.NombDestino,
+                                    Precio = (decimal)filtro.PRECIO_VENTA,
+                                    Obs1 = "REINTEGRO CON CREDITO",
+                                    Obs2 = filtro.CODI_PROGRAMACION,
+                                    Obs3 = "BOL-" + filtro.nume_boleto,
+                                    Obs4 = filtro.NomMotivo,
+                                    Obs5 = string.Empty
+                                };
+                                //Graba Auditoria Adicional
+                                VentaRepository.GrabarAuditoria(objAuditoria2);
+                            }
+
+                            //Registra 'DocumentoSUNAT'
+                            var resRegistrarDocumentoSUNAT = VentaLogic.RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
+
+                            if (resRegistrarDocumentoSUNAT.Estado)
+                            {
+                                entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
+                            }
+                            else
+                            {
+                                return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
+                            }
                         }
 
-                        //Registra 'DocumentoSUNAT'
-                        var resRegistrarDocumentoSUNAT = VentaLogic.RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
+                        //Se crea esta entidad para la parte de impresión
+                        var auxVentaRealizada = new VentaRealizadaEntity
+                        {
+                            // Para la vista 'BoletosVendidos'
+                            BoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),//ok
+                            NumeAsiento = entidad.NumeAsiento.ToString("D2"),
+                            // Para el método 'ConvertirVentaToBase64'
+                            IdVenta = res,//entidad.IdVenta,
+                            BoletoTipo = entidad.Tipo,
+                            BoletoSerie = entidad.SerieBoleto.ToString("D3"),
+                            BoletoNum = entidad.NumeBoleto.ToString("D8"),
+                            CodDocumento = entidad.CodiDocumento,
+                            EmisionFecha = DataUtility.ObtenerFechaDelSistema(),
+                            EmisionHora = DataUtility.Obtener12HorasDelSistema(),
+                            CajeroCod = entidad.CodiUsuario,
+                            CajeroNom = filtro.NomUsuario,
+                            PasNombreCom = entidad.SplitNombre[0] + " " + entidad.SplitNombre[1] + " " + entidad.SplitNombre[2],
+                            PasRuc = entidad.RucCliente,
+                            PasRazSocial = entidad.NomEmpresaRuc,
+                            PasDireccion = entidad.DirEmpresaRuc,
+                            NomOriPas = filtro.NomOrigen,
+                            NomDesPas = entidad.NomDestino,
+                            DocTipo = VentaLogic.TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
+                            DocNumero = entidad.Dni,
+                            PrecioCan = entidad.PrecioVenta,
+                            PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)),
+                            NomServicio = entidad.NomServicio,
+                            FechaViaje = entidad.FechaViaje,
+                            EmbarqueDir = filtro.DirEmbarque,
+                            EmbarqueHora = filtro.Hora_Emb,
+                            CodigoX_FE = entidad.SignatureValue,
+                            CodTerminal = validarTerminalElectronico.Tipo,
+                            TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
 
-                        if (resRegistrarDocumentoSUNAT.Estado)
-                        {
-                            entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
-                        }
-                        else
-                        {
-                            return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
-                        }
+                            EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
+                            EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
+                            EmpTelefono2 = entidad.EmpTelefono2 ?? string.Empty,
+                            PolizaNum = entidad.PolizaNum,
+                            PolizaFechaReg = entidad.PolizaFechaReg,
+                            PolizaFechaVen = entidad.PolizaFechaVen,
+
+                            // Parámetros extras
+                            EmpCodigo = entidad.CodiEmpresa,
+                            PVentaCodigo = entidad.CodiPuntoVenta,
+                            BusCodigo = entidad.CodiBus,
+                            EmbarqueCod = entidad.CodiEmbarque
+                        };
+                        listaVentasRealizadas.Add(auxVentaRealizada);
+
+                        valor.ListaVentasRealizadas = listaVentasRealizadas;
+                        valor.CodiProgramacion = Convert.ToInt32(filtro.CODI_PROGRAMACION);
+
+                        return (ventaRealizada) ? new Response<VentaResponse>(true, valor, string.Empty, true) : new Response<VentaResponse>(true, null, Message.MsgNoVentaReintegro, true);
                     }
-
-                    //Se crea esta entidad para la parte de impresión
-                    var auxVentaRealizada = new VentaRealizadaEntity
-                    {
-                        // Para la vista 'BoletosVendidos'
-                        BoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),//ok
-                        NumeAsiento = entidad.NumeAsiento.ToString("D2"),
-                        // Para el método 'ConvertirVentaToBase64'
-                        IdVenta = res,//entidad.IdVenta,
-                        BoletoTipo = entidad.Tipo,
-                        BoletoSerie = entidad.SerieBoleto.ToString("D3"),
-                        BoletoNum = entidad.NumeBoleto.ToString("D8"),
-                        CodDocumento = entidad.CodiDocumento,
-                        EmisionFecha = DataUtility.ObtenerFechaDelSistema(),
-                        EmisionHora = DataUtility.Obtener12HorasDelSistema(),
-                        CajeroCod = entidad.CodiUsuario,
-                        CajeroNom = filtro.NomUsuario,
-                        PasNombreCom = entidad.SplitNombre[0] + " " + entidad.SplitNombre[1] + " " + entidad.SplitNombre[2],
-                        PasRuc = entidad.RucCliente,
-                        PasRazSocial = entidad.NomEmpresaRuc,
-                        PasDireccion = entidad.DirEmpresaRuc,
-                        NomOriPas = filtro.NomOrigen,
-                        NomDesPas = entidad.NomDestino,
-                        DocTipo = VentaLogic.TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
-                        DocNumero = entidad.Dni,
-                        PrecioCan = entidad.PrecioVenta,
-                        PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)),
-                        NomServicio = entidad.NomServicio,
-                        FechaViaje = entidad.FechaViaje,
-                        EmbarqueDir = filtro.DirEmbarque,
-                        EmbarqueHora = filtro.Hora_Emb,
-                        CodigoX_FE = entidad.SignatureValue,
-                        CodTerminal = validarTerminalElectronico.Tipo,
-                        TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
-
-                        EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
-                        EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
-                        EmpTelefono2 = entidad.EmpTelefono2 ?? string.Empty,
-                        PolizaNum = entidad.PolizaNum,
-                        PolizaFechaReg = entidad.PolizaFechaReg,
-                        PolizaFechaVen = entidad.PolizaFechaVen,
-
-                        // Parámetros extras
-                        EmpCodigo = entidad.CodiEmpresa,
-                        PVentaCodigo = entidad.CodiPuntoVenta,
-                        BusCodigo = entidad.CodiBus,
-                        EmbarqueCod = entidad.CodiEmbarque
-                    };
-                    listaVentasRealizadas.Add(auxVentaRealizada);
-
-                    valor.ListaVentasRealizadas = listaVentasRealizadas;
-                    valor.CodiProgramacion = Convert.ToInt32(filtro.CODI_PROGRAMACION);
-
-                    return (ventaRealizada) ? new Response<VentaResponse>(true, valor, string.Empty, true) : new Response<VentaResponse>(true, null, Message.MsgNoVentaReintegro, true);
+                    else
+                        return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
                 }
                 else
                 {
