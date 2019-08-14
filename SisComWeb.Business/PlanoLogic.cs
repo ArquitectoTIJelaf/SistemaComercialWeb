@@ -223,6 +223,8 @@ namespace SisComWeb.Business
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
                 entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
 
+                entidad.Especial = buscaPasajero.Especial;
+
                 if (entidad.Edad == 0 && string.IsNullOrEmpty(entidad.Telefono))
                 {
                     entidad.Edad = buscaPasajero.Edad; // La tabla 'Tb_Boleto_Ruta' no contiene 'Edad'

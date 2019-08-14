@@ -132,9 +132,11 @@
 
         public string HoraReservacion { get; set; }
 
-
         public string Info { get; set; }
 
         public string Observacion { get; set; }
+
+
+        public string Especial { get; set; }
     }
 }
