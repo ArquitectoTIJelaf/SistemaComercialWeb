@@ -488,45 +488,21 @@
         }
 
         .rainUp {
-            -webkit-animation: fadeInUp 4s 2s infinite;
-            animation: fadeInUp 4s 2s infinite;
+            -webkit-animation: fadeInUp 2s 1s infinite;
+            animation: fadeInUp 2s 1s infinite;
             -webkit-animation-direction: reverse;
             animation-direction: reverse;
             -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
         }
 
-        @@-webkit-keyframes fadeInUp {
-            0% {
-                -webkit-transform: translateY(0);
-            }
-
-            50% {
-                -webkit-transform: translateY(100%);
-            }
-            
-            100% {
-                -webkit-transform: translateY(200%);
-            }
+        .rainDown {
+            -webkit-animation: fadeInDown 2s 1s infinite;
+            animation: fadeInDown 2s 1s infinite;
+            -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
         }
 
-        /*@@-keyframes fadeInDown {
-            0% {
-                -webkit-transform: translateY(0);
-            }
-
-            50% {
-                -webkit-transform: translateY(200%);
-            }
-
-            50.1% {
-                -webkit-transform: translateY(0);
-            }
-
-            100% {
-                -webkit-transform: translateY(200%);
-            }
-        }*/
     </style>
 
     <style type="text/css">

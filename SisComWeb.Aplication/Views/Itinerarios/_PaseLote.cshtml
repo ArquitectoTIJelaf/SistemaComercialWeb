@@ -199,7 +199,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
-                                                            :class="[item.NumeAsiento ? 'rainUp' : '']"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -217,6 +217,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -234,6 +235,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -251,6 +253,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -268,6 +271,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainUp' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -477,6 +481,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -494,6 +499,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -511,6 +517,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -528,6 +535,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -545,6 +553,7 @@
                                                 class="bus-td">
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
+                                                            :class="{'rainDown' : item.NumeAsiento}"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
