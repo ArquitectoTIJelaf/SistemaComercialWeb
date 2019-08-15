@@ -13,11 +13,11 @@
                             <div class="font-12 p-t-0 p-b-0">
                                 FILTROS DE ORIGEN
                                 <div class="panel-action">
-                                    <a @@click="" ref="" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                    <a @@click="" ref="refCollapseOrigen" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div id="" class="panel-wrapper collapse in a-transition" aria-expanded="true">
+                        <div id="CollapseOrigen" class="panel-wrapper collapse in a-transition" aria-expanded="true">
                             <div class="panel-body p-0">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
@@ -295,11 +295,11 @@
                             <div class="font-12 p-t-0 p-b-0">
                                 FILTROS DE DESTINO
                                 <div class="panel-action">
-                                    <a @@click="" ref="" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
+                                    <a @@click="" ref="refCollapseDestino" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div id="" class="panel-wrapper collapse in a-transition" aria-expanded="true">
+                        <div id="CollapseDestino" class="panel-wrapper collapse in a-transition" aria-expanded="true">
                             <div class="panel-body p-0">
                                 <div class="form-horizontal">
                                     <div class="form-group m-b-5">
@@ -579,6 +579,13 @@
                         :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
                         ref="refBtnProccesingLote">
                     <span class="fa fa-save fa-fw"></span>Procesar en Lote
+                </button>
+                <button id="btnProccesingLote"
+                        class="btn btn-success waves-effect"
+                        @@click="previsualizar"
+                        :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                        ref="refBtnPrevisualizar">
+                    <span class="fa fa-eye fa-fw"></span>Previsualizar
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar

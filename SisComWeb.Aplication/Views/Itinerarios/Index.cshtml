@@ -52,7 +52,7 @@
 
 @section styles{
     <style type="text/css">
-        
+
         .btn-mini-ticket:focus {
             opacity: 0.3;
         }
@@ -502,7 +502,6 @@
             -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
         }
-
     </style>
 
     <style type="text/css">
@@ -2702,7 +2701,7 @@
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
                         this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
                         this.list.ventas[this.indexVenta].Observacion = asientoSel.Observacion;
-                        
+
                         this.list.ventas[this.indexVenta].ValidadorClienteEspecial = asientoSel.Especial;
 
                         // Checked opción 'RegistrarNino'
@@ -8778,13 +8777,13 @@
                             if (res.data.Valor) {
 
                                 //Validación: No debe tener nota de crédito
-                                _this.item.notaCredito = ''; 
+                                _this.item.notaCredito = '';
                                 var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(res.data.Valor.IdVenta));
                                 if (verificaNotaCredito) {
                                     if (verificaNotaCredito.Valor > 0) {
                                         _this.item.notaCredito = _this.item.tipo + _.cloneDeep(verificaNotaCredito.Mensaje).substring(verificaNotaCredito.Mensaje.length - 11);
                                     }
-                                } 
+                                }
 
                                 _this.filtro.idVenta = res.data.Valor.IdVenta;
                                 _this.filtro.dni = res.data.Valor.Dni;
@@ -8844,7 +8843,7 @@
                         _this.item.empresa = '';
                         _this.item.tipo = 'M';
                         _this.item.serie = '';
-                        _this.item.numero = '';                        
+                        _this.item.numero = '';
                     }
                     _this.filtro.idVenta = 0;
                     _this.filtro.dni = '';
@@ -8869,7 +8868,7 @@
                     _this.item.observacion = '';
                     _this.item.nombre = '';
                     _this.item.apepat = '';
-                    _this.item.apemat = '';     
+                    _this.item.apemat = '';
                     _this.item.notaCredito = '';
                     _this.showData = false;
                 },
@@ -9545,8 +9544,8 @@
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: traer Empresa desde el asiento Seleccionado
-                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.filtro.empresa = _this.asientoSel.CodiEmpresa;
+                    _this.filtro.codEmpresa =_this.asientoSel.CodiEmpresa;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
                             _this.list.empresas = empresas;
@@ -9873,8 +9872,8 @@
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = appVueVenta.$refs.refEmpresa.value.label; //TODO: traer Empresa desde el asiento Seleccionado
-                    _this.filtro.codEmpresa = appVueVenta.$refs.refEmpresa.value.id; //TODO: traer Empresa desde el asiento Seleccionado
+                    _this.filtro.empresa = _this.asientoSel.CodiEmpresa;
+                    _this.filtro.codEmpresa = _this.asientoSel.CodiEmpresa;
                     _this.showData = false;
                     _this.lockFilters = false;
                     _this.limpiarRE();
@@ -11328,8 +11327,16 @@
 
                     $(document).off('focusin.modal');
 
-                    _this.$nextTick(() => {
-                        //_this.$refs.refREMotivo.$el.querySelector('input').focus();
+                    if (!document.getElementById('CollapseOrigen').classList.contains("in")) {
+                        _this.$refs.refCollapseOrigen.click();
+                    }
+
+                    if (!document.getElementById('CollapseDestino').classList.contains("in")) {
+                        _this.$refs.refCollapseDestino.click();
+                    }
+
+                    _this.$nextTick(() => {     
+                        _this.$refs.refLOTEOrigen1.$el.querySelector('input').focus();
                     });
                 });
             },
@@ -11393,18 +11400,51 @@
                                     _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano2_Ori = _this.list.tempListOri.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano1_Ori = _this.list.tempListOri.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.$refs.refCollapseOrigen.click();
+                                    _this.$refs.refLOTEOrigen2.$el.querySelector('input').focus();
                                 }; break;
                                 case 2: {
-                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                    $('#appVuePaseLote').animate({ scrollTop: 100 }, 800);
+                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);        
                                     _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano2_Des = _this.list.tempListDes.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano1_Des = _this.list.tempListDes.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                    _this.$refs.refCollapseDestino.click();
                                 }; break;
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                previsualizar: function () {
+                    let _this = this;
+                    _.forEachRight(_this.list.tempListOri, (e1) => {
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            if (e1.NumeAsiento !== 0) {
+                                if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
+
+                                    e1.IDS = _.cloneDeep(e1.NumeAsiento);
+                                    e2.NumeAsiento = _.cloneDeep(e1.NumeAsiento);
+                                    e2.IDS = _.cloneDeep(e1.NumeAsiento);
+                                }
+                            }
+                        });
+                    });
+                },
+                stopPrevisualizar: function () {
+                    let _this = this;
+                    _.forEachRight(_this.list.tempListOri, (e1) => {
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            if (e1.NumeAsiento !== 0) {
+                                if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
+                                    e1.IDS = _.cloneDeep(e1.NumeAsiento);
+                                    e2.NumeAsiento = _.cloneDeep(e1.NumeAsiento);
+                                    e2.IDS = _.cloneDeep(e1.NumeAsiento);
+                                }
+                            }
+                        });
+                    });
                 },
                 searchProgramacion: function (auxProg) {
                     let _this = this;

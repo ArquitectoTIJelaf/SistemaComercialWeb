@@ -267,12 +267,21 @@ body {
     background-color: #ECF1F4;
 }
 
-.btn-success {
+/*.btn-success {
     background-color: #1FDB7D;
 }
 
     .btn-success:hover {
         background-color: #42E493;
+    }*/
+
+.btn-success, .btn-success.disabled {
+    background: #0c9d54;
+    border: 1px solid #0c9d54;
+}
+
+    .btn-success:hover {
+        background-color: #5cb85c;
     }
 
 /*Custom styles*/
