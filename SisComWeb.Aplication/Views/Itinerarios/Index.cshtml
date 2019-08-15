@@ -2696,7 +2696,7 @@
                         this.list.ventas[this.indexVenta].FechaVen = asientoSel.FechaVenta;
                         this.list.ventas[this.indexVenta].Info = asientoSel.Info;
                         this.list.ventas[this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
-                        this.list.ventas[this.indexVenta].Reintegro = (asientoSel.PrecVentaReintegro === 0 ? '' : parseFloat(asientoSel.PrecVentaReintegro).toFixed(2));
+                        this.list.ventas[this.indexVenta].Reintegro = (asientoSel.CodiEsca ? parseFloat(asientoSel.PrecVentaReintegro).toFixed(2) : '');
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
@@ -6797,9 +6797,9 @@
                         input.FechaViaje = _this.ticketVenta.FechaViaje;
                         input.HoraViaje = _this.ticketVenta.HoraViaje;
                         input.CodiServicio = _this.ticketVenta.CodiServicio;
-                        input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : 0);
-                        input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : 0);
-                        input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : '');
+                        input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : _this.ticketVenta.CodiOrigen);
+                        input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : _this.ticketVenta.CodiDestino);
+                        input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : _this.ticketVenta.HoraViaje);
                         input.NivelAsiento = objVenta.NivelAsiento;
                         input.NomDestino = _this.ticketVenta.NomDestino;
                         input.NomServicio = _this.ticketVenta.NomServicio;
@@ -6836,7 +6836,7 @@
                         // -------------------
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
-                        input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
+                        input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : _this.ticketVenta.NomOrigen);
                         input.FechaAbierta = objVenta.FechaAbierta;
                         input.PrecioNormal = objVenta.PrecioNormal;
                         input.ValidadorDescuento = objVenta.ValidadorDescuento;
@@ -10154,7 +10154,6 @@
                                 input.id_original = _this.dataOriginal.IdVenta;
                                 input.CodMotivo = _this.filtro.codMotivo;
                                 input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                debugger;
                                 input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
                                 input.T_DNI2 = _this.dataOriginal.Dni;
                                 input.NOMB2 = _this.dataOriginal.Nombre;

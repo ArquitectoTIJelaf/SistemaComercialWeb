@@ -234,12 +234,6 @@ namespace SisComWeb.Business
 
             switch (entidad.FlagVenta)
             {
-                case "7": // Pase de cortesía
-                    entidad.Sigla = "PS";
-                    break;
-                case "1": // Crédito
-                    entidad.Sigla = "VC";
-                    break;
                 case "X": // Asiento bloqueado
                 case "AB": // Asiento bloqueado por módulo
                     entidad.IdVenta = string.Empty;
@@ -254,10 +248,22 @@ namespace SisComWeb.Business
                     entidad.FechaViaje = string.Empty;
                     break;
                 default:
-                    entidad.IdVenta = item.IdVenta;
-                    entidad.Color = item.Color;
-                    entidad.FechaVenta = item.FechaVenta;
-                    entidad.FechaViaje = item.FechaViaje;
+                    {
+                        switch (entidad.FlagVenta)
+                        {
+                            case "7": // Pase de cortesía
+                                entidad.Sigla = "PS";
+                                break;
+                            case "1": // Crédito
+                                entidad.Sigla = "VC";
+                                break;
+                        };
+
+                        entidad.IdVenta = item.IdVenta;
+                        entidad.Color = item.Color;
+                        entidad.FechaVenta = item.FechaVenta;
+                        entidad.FechaViaje = item.FechaViaje;
+                    };
                     break;
             }
 

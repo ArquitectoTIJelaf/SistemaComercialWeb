@@ -757,7 +757,7 @@ namespace SisComWeb.Business
                         HoraViaje = entidad.HoraViaje,
                         NomDestino = entidad.NomDestino,
                         Precio = entidad.PrecioVenta,
-                        Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES NRO BOLETO:" + auxBoletoCompleto,
+                        Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES",
                         Obs2 = "Empresa : " + entidad.CodiEmpresa.ToString("D2"),
                         Obs3 = "TERMINAL : " + entidad.CodiTerminal + " SER. " + entidad.CodiServicio.ToString("D2"),
                         Obs4 = "PROGRAMACION" + entidad.CodiProgramacion + " ORG PAS " + entidad.CodiOrigen.ToString("D3"),
