@@ -217,9 +217,9 @@ namespace SisComWeb.Business
 
             entidad.CodiEmpresa = item.CodiEmpresa;
 
+            // Busca 'Pasajero'
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {
-                // Busca 'Pasajero'
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
                 entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
 
@@ -287,23 +287,27 @@ namespace SisComWeb.Business
             // Consulta 'Reintegro'
             if (!string.IsNullOrEmpty(entidad.CodiEsca))
             {
-                var consultaVentaReintegro = VentaRepository.ConsultaVentaReintegro(entidad.CodiEsca.Substring(1, 3), entidad.CodiEsca.Substring(5), request.CodiEmpresa.ToString(), entidad.CodiEsca.Substring(0, 1));
+                var consultaVentaReintegro = VentaRepository.ConsultaVentaReintegro(entidad.CodiEsca.Substring(1, 3), entidad.CodiEsca.Substring(5), entidad.CodiEmpresa.ToString(), entidad.CodiEsca.Substring(0, 1));
                 entidad.ClavUsuarioReintegro = consultaVentaReintegro.CodiUsuario;
                 entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
                 //TESTSSSSSSSSSS XDDDDDDDD
-                entidad.Nombres = consultaVentaReintegro.Nombre;
                 entidad.Nombres = consultaVentaReintegro.SplitNombre[0];
                 entidad.ApellidoPaterno = consultaVentaReintegro.SplitNombre[1];
                 entidad.ApellidoMaterno = consultaVentaReintegro.SplitNombre[2];
-                entidad.TipoDocumento = consultaVentaReintegro.TipoDocumento;
+                entidad.TipoDocumento = consultaVentaReintegro.TipoDocumento.TrimStart('0'); // Formato de la vista: Combo 'tiposDoc' = {"1", "4", "7"}
                 entidad.NumeroDocumento = consultaVentaReintegro.Dni;
                 entidad.Edad = consultaVentaReintegro.Edad;
                 entidad.RucContacto = consultaVentaReintegro.RucCliente;
                 entidad.Telefono = consultaVentaReintegro.Telefono;
+
                 // Busca 'Pasajero'
-                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
-                entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
+                if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
+                {
+                    var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
+                    entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
+                }
+
                 // Busca 'Empresa'
                 if (!string.IsNullOrEmpty(entidad.RucContacto))
                 {

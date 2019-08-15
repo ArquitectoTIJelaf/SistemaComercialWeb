@@ -14,7 +14,10 @@
 var APP = APP || {};
 //APP.path = ["/"].indexOf(window.location.pathname[window.location.pathname.length - 1]) !== -1 ? window.location.pathname : window.location.pathname + "/";
 //if ((window.location.origin).includes("localhost"))
-APP.path = window.location.pathname;
+//APP.path = window.location.pathname;
+APP.path = ["/"].indexOf(window.location.pathname[window.location.pathname.length - 1]) !== -1 ? window.location.pathname : window.location.pathname + "/";
+if ((window.location.origin).includes("localhost"))
+    APP.path = window.location.pathname;
 APP.base = APP.path.substring(0, APP.path.indexOf('/', 1));
 APP.area = APP.path.substring(0, APP.path.indexOf('/', APP.path.indexOf('/', 1) + 1));
 APP.ctrl = APP.path.substring(0, APP.path.indexOf('/', APP.path.indexOf('/', APP.path.indexOf('/', 1) + 1) + 1));

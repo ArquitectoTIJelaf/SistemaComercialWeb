@@ -1388,7 +1388,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_venta_promo_kmt_Update";
+                db.ProcedureName = "scwsp_venta_promo_kmt_Delete";
                 db.AddParameter("@id_venta", DbType.Int32, ParameterDirection.Input, IdVenta);
 
                 db.Execute();
