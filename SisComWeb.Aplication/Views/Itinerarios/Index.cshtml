@@ -2696,13 +2696,14 @@
                         this.list.ventas[this.indexVenta].FechaVen = asientoSel.FechaVenta;
                         this.list.ventas[this.indexVenta].Info = asientoSel.Info;
                         this.list.ventas[this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
-                        this.list.ventas[this.indexVenta].Reintegro = (asientoSel.PrecVentaReintegro === 0 ? '' : parseFloat(asientoSel.PrecVentaReintegro).toFixed(2));
+                        this.list.ventas[this.indexVenta].Reintegro = (asientoSel.CodiEsca ? parseFloat(asientoSel.PrecVentaReintegro).toFixed(2) : '');
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
                         this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
-                        
                         this.list.ventas[this.indexVenta].Observacion = asientoSel.Observacion;
+                        
+                        this.list.ventas[this.indexVenta].ValidadorClienteEspecial = asientoSel.Especial;
 
                         // Checked opción 'RegistrarNino'
                         if (asientoSel.ObjAcompaniante.Documento)
@@ -6796,9 +6797,9 @@
                         input.FechaViaje = _this.ticketVenta.FechaViaje;
                         input.HoraViaje = _this.ticketVenta.HoraViaje;
                         input.CodiServicio = _this.ticketVenta.CodiServicio;
-                        input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : 0);
-                        input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : 0);
-                        input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : '');
+                        input.CodiEmbarque = (_this.embarque ? _this.embarque.CodiPuntoVenta : _this.ticketVenta.CodiOrigen);
+                        input.CodiArribo = (_this.arribo ? _this.arribo.CodiPuntoVenta : _this.ticketVenta.CodiDestino);
+                        input.HoraEmbarque = (_this.embarque ? _this.embarque.Hora : _this.ticketVenta.HoraViaje);
                         input.NivelAsiento = objVenta.NivelAsiento;
                         input.NomDestino = _this.ticketVenta.NomDestino;
                         input.NomServicio = _this.ticketVenta.NomServicio;
@@ -6835,7 +6836,7 @@
                         // -------------------
                         input.ObjAcompaniante = objVenta.ObjAcompaniante;
                         input.Concepto = objVenta.Recoger;
-                        input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : '');
+                        input.DirEmbarque = (_this.embarque ? _this.embarque.Lugar : _this.ticketVenta.NomOrigen);
                         input.FechaAbierta = objVenta.FechaAbierta;
                         input.PrecioNormal = objVenta.PrecioNormal;
                         input.ValidadorDescuento = objVenta.ValidadorDescuento;

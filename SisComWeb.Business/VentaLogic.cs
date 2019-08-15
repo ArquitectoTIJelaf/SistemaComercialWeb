@@ -757,7 +757,7 @@ namespace SisComWeb.Business
                         HoraViaje = entidad.HoraViaje,
                         NomDestino = entidad.NomDestino,
                         Precio = entidad.PrecioVenta,
-                        Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES NRO BOLETO:" + auxBoletoCompleto,
+                        Obs1 = "ID " + entidad.IdVenta + " VENTA DE PASAJES",
                         Obs2 = "Empresa : " + entidad.CodiEmpresa.ToString("D2"),
                         Obs3 = "TERMINAL : " + entidad.CodiTerminal + " SER. " + entidad.CodiServicio.ToString("D2"),
                         Obs4 = "PROGRAMACION" + entidad.CodiProgramacion + " ORG PAS " + entidad.CodiOrigen.ToString("D3"),
@@ -1268,7 +1268,7 @@ namespace SisComWeb.Business
                     }
                     else if (request.FlagVenta == "1" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = "VC";
                         objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
                         objCaja.HoraViaje = "VCA";
@@ -1278,7 +1278,7 @@ namespace SisComWeb.Business
                     }
                     else if (request.FlagVenta == "1")
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = "VC";
                         objCaja.Recibe = request.CodiUsuarioBoleto != request.CodiUsuario ? "XVC" : string.Empty;
                         objCaja.HoraViaje = "VCA";
@@ -1288,7 +1288,7 @@ namespace SisComWeb.Business
                     }
                     else if (request.FlagVenta == "I" && (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta))
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
                         objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
                         objCaja.HoraViaje = "VNA";
@@ -1298,7 +1298,7 @@ namespace SisComWeb.Business
                     }
                     else if (request.FlagVenta == "I")
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
                         objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
                         objCaja.HoraViaje = "VNA";
@@ -1308,7 +1308,7 @@ namespace SisComWeb.Business
                     }
                     else if (request.CodiUsuarioBoleto != request.CodiUsuario || DataUtility.ObtenerFechaDelSistema() != request.FechaVenta)
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
                         objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
                         objCaja.HoraViaje = "VNA";
@@ -1318,7 +1318,7 @@ namespace SisComWeb.Business
                     }
                     else
                     {
-                        objCaja.ConcCaja = "AN.BOL " + objVenta.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
+                        objCaja.ConcCaja = "AN.BOL " + request.Tipo + objVenta.SerieBoleto.ToString("D3") + "-" + objVenta.NumeBoleto.ToString("D7");
                         objCaja.TipoDescuento = " ";
                         objCaja.Recibe = request.FlagVenta == "Y" || request.FlagVenta == "I" ? "REMOTO" : string.Empty;
                         objCaja.HoraViaje = "VNA";
@@ -1404,9 +1404,10 @@ namespace SisComWeb.Business
                             }
 
                             // Anula 'VentaReintegro'
-                            var anularVentaReintegro =  VentaRepository.AnularVenta(objReintegro.IdVenta, request.CodiUsuario);
+                            var anularVentaReintegro = VentaRepository.AnularVenta(objReintegro.IdVenta, request.CodiUsuario);
 
-                            if (anularVentaReintegro > 0) {
+                            if (anularVentaReintegro > 0)
+                            {
                                 // Genera 'CorrelativoAuxiliar'
                                 var generarCorrelativoAuxiliarReintegro = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", request.CodiOficina, request.CodiPuntoVenta, string.Empty);
                                 if (string.IsNullOrEmpty(generarCorrelativoAuxiliarReintegro))
@@ -1425,17 +1426,17 @@ namespace SisComWeb.Business
                                     CodiBus = string.Empty,
                                     CodiChofer = string.Empty,
                                     CodiGasto = string.Empty,
-                                    ConcCaja = "ANUL. BOL. REINTEGRO" + request.CodiEsca,
+                                    ConcCaja = "ANUL. BOL. REINTEGRO " + request.CodiEsca,
                                     Monto = objReintegro.PrecioVenta,
                                     CodiUsuario = short.Parse(request.CodiUsuario.ToString()),
                                     IndiAnulado = "F",
                                     TipoDescuento = "RE",
-                                    TipoDoc = string.Empty,
+                                    TipoDoc = "16",
                                     TipoGasto = "P",
                                     Liqui = 0M,
                                     Diferencia = 0M,
                                     Recibe = "RE",
-                                    CodiDestino = request.CodiDestinoPas,
+                                    CodiDestino = short.Parse(request.CodiDestinoPas).ToString("D3"),
                                     FechaViaje = "01/01/1900",
                                     HoraViaje = "VNA",
                                     CodiPuntoVenta = short.Parse(request.CodiPuntoVenta),

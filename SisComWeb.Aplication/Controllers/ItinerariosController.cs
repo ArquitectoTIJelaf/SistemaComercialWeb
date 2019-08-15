@@ -91,9 +91,10 @@ namespace SisComWeb.Aplication.Controllers
                 CodiEmpresa = (byte)x["CodiEmpresa"],
                 FechaReservacion = (string)x["FechaReservacion"],
                 HoraReservacion = (string)x["HoraReservacion"],
-
                 Info = (string)x["Info"],
-                Observacion = (string)x["Observacion"]
+                Observacion = (string)x["Observacion"],
+
+                Especial = (string)x["Especial"]
             }).ToList();
 
             return lista;
