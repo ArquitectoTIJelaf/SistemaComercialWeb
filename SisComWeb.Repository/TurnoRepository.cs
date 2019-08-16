@@ -155,7 +155,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_TB_manifiesto_programacion_consulta";
+                db.ProcedureName = "scwsp_TB_manifiesto_programacion_consulta";
                 db.AddParameter("@prog", DbType.Int32, ParameterDirection.Input, prog);
                 db.AddParameter("@Suc", DbType.String, ParameterDirection.Input, Suc);
                 using (IDataReader drlector = db.GetDataReader())
