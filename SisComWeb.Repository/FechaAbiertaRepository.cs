@@ -67,6 +67,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         NivelAsiento = Reader.GetIntValue(drlector, "nivel_asi");
+                        break;
                     }
                 }
             }
@@ -87,6 +88,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Nivel = Reader.GetIntValue(drlector, "nivel");
+                        break;
                     }
                 }
             }
@@ -106,6 +108,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         Codigo = Reader.GetIntValue(drlector, "cod_tip");
+                        break;
                     }
                 }
             }
