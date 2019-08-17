@@ -1143,7 +1143,7 @@ namespace SisComWeb.Services
                 return new Response<PlanoEntity>(false, null, Message.MsgExcConsultaPrecioRuta, false);
             }
         }
-        
+
         public Response<bool> UpdateReintegro(UpdateReintegroRequest filtro)
         {
             try
@@ -1156,7 +1156,7 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, "", false);
             }
         }
-        
+
         public Response<ReintegroEntity> ValidaReintegroParaAnualar(ReintegroRequest request)
         {
             try
@@ -1169,7 +1169,7 @@ namespace SisComWeb.Services
                 return new Response<ReintegroEntity>(false, null, Message.MsgExcAnulaReintegro, false);
             }
         }
-        
+
         public Response<byte> AnularReintegro(AnularVentaRequest request)
         {
             try
@@ -1180,6 +1180,35 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<byte>(false, 0, Message.MsgExcAnulaReintegro, false);
+            }
+        }
+        #endregion
+
+        #region "PASE EN LOTE"
+
+        public Response<bool> UpdatePostergacion(UpdatePostergacionRequest request)
+        {
+            try
+            {
+                return PaseLoteLogic.UpdatePostergacion(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
+            }
+        }
+        
+        public Response<bool> UpdateProgramacion(int CodiProgramacion, int IdVenta)
+        {
+            try
+            {
+                return PaseLoteLogic.UpdateProgramacion(CodiProgramacion, IdVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
             }
         }
         #endregion
