@@ -488,8 +488,8 @@
         }
 
         .rainUp {
-            -webkit-animation: fadeInUp 2s 1s infinite;
-            animation: fadeInUp 2s 1s infinite;
+            -webkit-animation: fadeInUp 1.6s infinite;
+            animation: fadeInUp 1.6s infinite;
             -webkit-animation-direction: reverse;
             animation-direction: reverse;
             -webkit-animation-timing-function: linear;
@@ -497,8 +497,8 @@
         }
 
         .rainDown {
-            -webkit-animation: fadeInDown 2s 1s infinite;
-            animation: fadeInDown 2s 1s infinite;
+            -webkit-animation: fadeInDown 1.6s infinite;
+            animation: fadeInDown 1.6s infinite;
             -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
         }
@@ -11309,9 +11309,15 @@
                     plano4_Des: [],
                     plano3_Des: [],
                     plano2_Des: [],
-                    plano1_Des: []
+                    plano1_Des: [],
+                    newAsientos: [],
+                    newAsientosManuales: []
                 },
-                paginate: ['items','items2']
+                paginate: ['items', 'items2'],
+                rainEfect: false,
+                processingLote: false,
+                dragItem: {},
+                objProgramacion: {}
             },
             mounted: function () {
                 let _this = this;
@@ -11335,7 +11341,7 @@
                         _this.$refs.refCollapseDestino.click();
                     }
 
-                    _this.$nextTick(() => {     
+                    _this.$nextTick(() => {
                         _this.$refs.refLOTEOrigen1.$el.querySelector('input').focus();
                     });
                 });
@@ -11405,7 +11411,11 @@
                                 }; break;
                                 case 2: {
                                     $('#appVuePaseLote').animate({ scrollTop: 100 }, 800);
-                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);        
+                                    _this.objProgramacion.CodiProgramacion = _.cloneDeep(res.data.Valor.CodiProgramacion);
+                                    _this.objProgramacion.CodiServicio = _.cloneDeep(res.data.Valor.CodiServicio);
+                                    _this.objProgramacion.FechaProgramacion = _.cloneDeep(res.data.Valor.FechaProgramacion);
+                                    _this.objProgramacion.HoraProgramacion = _.cloneDeep(res.data.Valor.HoraProgramacion);
+                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                     _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                     _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -11416,35 +11426,6 @@
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
-                },
-                previsualizar: function () {
-                    let _this = this;
-                    _.forEachRight(_this.list.tempListOri, (e1) => {
-                        _.forEachRight(_this.list.tempListDes, (e2) => {
-                            if (e1.NumeAsiento !== 0) {
-                                if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
-
-                                    e1.IDS = _.cloneDeep(e1.NumeAsiento);
-                                    e2.NumeAsiento = _.cloneDeep(e1.NumeAsiento);
-                                    e2.IDS = _.cloneDeep(e1.NumeAsiento);
-                                }
-                            }
-                        });
-                    });
-                },
-                stopPrevisualizar: function () {
-                    let _this = this;
-                    _.forEachRight(_this.list.tempListOri, (e1) => {
-                        _.forEachRight(_this.list.tempListDes, (e2) => {
-                            if (e1.NumeAsiento !== 0) {
-                                if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
-                                    e1.IDS = _.cloneDeep(e1.NumeAsiento);
-                                    e2.NumeAsiento = _.cloneDeep(e1.NumeAsiento);
-                                    e2.IDS = _.cloneDeep(e1.NumeAsiento);
-                                }
-                            }
-                        });
-                    });
                 },
                 searchProgramacion: function (auxProg) {
                     let _this = this;
@@ -11463,7 +11444,222 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                previsualizar: function () {
+                    let _this = this;
+
+                    if (!_this.processingLote) {
+
+                        _this.rainEfect = true;
+
+                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                            _.forEachRight(_this.list.tempListDes, (e2) => {
+                                if (e1.NumeAsiento !== 0 && e1.Nombres !== '') {//TODO: Reemplazar Nombres por Flag
+                                    if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
+                                        var numeAsiento = _.cloneDeep(e1.NumeAsiento)
+                                        _this.list.newAsientos.push(numeAsiento);
+                                        e1.IDS = numeAsiento;
+                                        e2.NumeAsiento = numeAsiento;
+                                        e2.IDS = numeAsiento;
+                                    }
+                                }
+                            });
+                        });
+
+                        _this.$refs.refBtnProccesingLote.focus();
+                    }
+                },
+                stopPrevisualizar: function () {
+                    let _this = this;
+
+                    _this.rainEfect = false;
+
+                    _.forEachRight(_this.list.tempListOri, (e1) => {
+                        if (e1.NumeAsiento !== 0) {
+                            if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
+                                e1.IDS = 0;
+                            }
+                        }
+                    });
+
+                    if (!_this.processingLote) {
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            if (e2.NumeAsiento !== 0) {
+                                if (_this.list.newAsientos.includes(e2.NumeAsiento)) {
+                                    e2.NumeAsiento = 0;
+                                    e2.IDS = 0;
+                                }
+                            }
+                        });
+                    }                    
+                },                
+                procesarEnLote: function () {
+                    let _this = this;
+
+                    _this.processingLote = true;                    
+
+                    if (_this.rainEfect) {
+
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            if (e2.NumeAsiento !== 0) {
+                                if (_this.list.newAsientos.includes(e2.NumeAsiento)) {
+                                    e2.NumeAsiento = 0;
+                                    e2.IDS = 0;
+                                }
+                            }
+                        });
+
+                        _this.stopPrevisualizar();
+                        _this.rainEfect = false;
+                    }
+                    
+                    _this.$nextTick(() => {
+
+                        if (!_this.list.newAsientos.length > 0) {
+                                _.forEachRight(_this.list.tempListOri, (e1) => {
+                                    _.forEachRight(_this.list.tempListDes, (e2) => {
+                                        if (e1.NumeAsiento !== 0 && e1.Nombres !== '') {//TODO: Reemplazar Nombres por Flag
+                                            if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
+                                                _this.list.newAsientos.push(_.cloneDeep(e1.NumeAsiento));
+                                            }
+                                        }
+                                    });
+                                });
+                            }
+
+                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                            if (e1.NumeAsiento !== 0) {
+                                if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
+                                    e1.NumeAsiento = 0;
+                                }
+                            }
+                        });
+
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            _.forEachRight(_this.list.newAsientos, (asiento) => {
+                                if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
+                                    e2.NumeAsiento = asiento;
+                                }
+                            });
+                        });
+                    });
+                },
+                restaurarLote: function () {
+                    let _this = this;
+
+                    _this.processingLote = false;   
+
+                    _.forEachRight(_this.list.tempListOri, (e2) => {
+                        _.forEachRight(_this.list.newAsientos, (asiento) => {
+                            if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
+                                e2.NumeAsiento = asiento;
+                            }
+                        });
+                    });
+
+                    _.forEachRight(_this.list.tempListDes, (e1) => {
+                        if (e1.NumeAsiento !== 0) {
+                            if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
+                                e1.NumeAsiento = 0;
+                            }
+                        }
+                    });
+
+                    _.forEachRight(_this.list.newAsientosManuales, (e3) => {
+
+                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                            if (e1.NumeAsiento === 0) {
+                                if (e3.origen == parseInt(e1.Tipo)) {
+                                    e1.NumeAsiento = e3.origen;
+                                }
+                            }
+                        });
+
+                        _.forEachRight(_this.list.tempListDes, (e2) => {
+                            if (e2.NumeAsiento !== 0) {
+                                if (e3.destino == e2.NumeAsiento) {
+                                    e2.NumeAsiento = 0;
+                                }
+                            }
+                        });
+                    });
+                },                
+                OrigenDraggable: function (_item) {
+                    if (_item && _item.NumeAsiento && !_item.IDS && _item.Nombres)//TODO: Reemplazar Nombres por Flag
+                        return true
+                    else 
+                        return false;                     
+                },
+                onDragstart: function (item) {                
+                    this.dragItem = _.cloneDeep(item);
+                },
+                onDrop: function (event, item) {
+                    let _this = this
+                    
+                    event.stopPropagation();
+                    event.preventDefault();
+
+                    _.forEachRight(_this.list.tempListOri, (e1) => {
+                        if (e1.NumeAsiento !== 0) {
+                            if (e1.NumeAsiento === _this.dragItem.NumeAsiento) {
+                                e1.NumeAsiento = 0;
+                            }
+                        }
+                    });
+                    
+                    _this.list.newAsientosManuales.push({ origen: _this.dragItem.NumeAsiento, destino: parseInt(item.Tipo) });
+                    item.NumeAsiento = parseInt(item.Tipo);
+
+                    _this.dragItem = {};
+                },
                 confirm: async function () {
+                    let _this = this;
+
+                    _.forEachRight(_this.list.newAsientos, (e) => {
+                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                            if (parseInt(e1.Tipo) === e) {
+
+                                var filtroProg = {};
+                                filtroProg.CodiProgramacion = _this.objProgramacion.CodiProgramacion;
+                                filtroProg.IdVenta = e1.IdVenta;
+                                filtroProg.NumeAsiento = e;
+                                filtroProg.CodiServicio = _this.objProgramacion.CodiServicio;
+                                filtroProg.FechaViaje = _this.objProgramacion.FechaProgramacion;
+                                filtroProg.HoraViaje = _this.objProgramacion.HoraProgramacion;
+                                
+                                APP.rq.axios.post(APP.base + '/paseLote/update-postergacion', filtroProg)
+                                    .then(res => {
+                                        console.log('' + filtroProg)
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            }
+                        });
+                    });
+
+                    _.forEachRight(_this.list.newAsientosManuales, (e) => {
+                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                            if (parseInt(e1.Tipo) === e.origen) {
+
+                                var filtroProg = {};
+                                filtroProg.CodiProgramacion = _this.objProgramacion.CodiProgramacion;
+                                filtroProg.IdVenta = e1.IdVenta;
+                                filtroProg.NumeAsiento = e.destino;
+                                filtroProg.CodiServicio = _this.objProgramacion.CodiServicio;
+                                filtroProg.FechaViaje = _this.objProgramacion.FechaProgramacion;
+                                filtroProg.HoraViaje = _this.objProgramacion.HoraProgramacion;
+
+                                APP.rq.axios.post(APP.base + '/paseLote/update-postergacion', filtroProg)
+                                    .then(res => {
+                                        console.log('' + filtroProg)
+                                    })
+                                    .catch(APP.rq.axios_handler_error_alert);
+                            }
+                        });
+                    });
+
+                    _this.$nextTick(() => {
+                        APP.msg.info('Proceso se realizó correctamente');
+                        _this.close();
+                    });
                 },
                 limpiarCampos: function () {
                     let _this = this;
@@ -11481,6 +11677,11 @@
                     _this.filtroDestino.NomDestino = '';
                     _this.list.itinerarios1 = [];
                     _this.list.itinerarios2 = [];
+
+                    _this.objProgramacion.CodiProgramacion = '';
+                    _this.objProgramacion.CodiServicio = '';
+                    _this.objProgramacion.FechaProgramacion = '';
+                    _this.objProgramacion.HoraProgramacion = '';
                 },
                 limpiarBus: function (auxMapa) {
                     let _this = this;

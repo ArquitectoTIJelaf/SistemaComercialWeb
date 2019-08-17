@@ -75,7 +75,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 separate-in-form">
+                                            <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm" style="text-align:left;">Fecha:</label>
                                                 <div class="">
                                                     <input v-model="filtroOrigen.FechaViaje"
@@ -89,7 +89,7 @@
                                                            ref="refLOTEFechaIt1" />
                                                 </div>
                                             </div>
-                                            <div class="col-md-2 separate-in-form">
+                                            <div class="col-md-2 col-xs-6 separate-in-form">
                                                 <label class="control-label label-sm" style="text-align:left;">Hora:</label>
                                                 <div class="">
                                                     <input v-model="filtroOrigen.Hora"
@@ -200,6 +200,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainUp' : item.IDS}"
+                                                            :draggable="OrigenDraggable(item)"
+                                                            @@dragstart="onDragstart(item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -218,6 +220,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainUp' : item.IDS}"
+                                                            :draggable="OrigenDraggable(item)"
+                                                            @@dragstart="onDragstart(item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -236,6 +240,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainUp' : item.IDS}"
+                                                            :draggable="OrigenDraggable(item)"
+                                                            @@dragstart="onDragstart(item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -254,6 +260,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainUp' : item.IDS}"
+                                                            :draggable="OrigenDraggable(item)"
+                                                            @@dragstart="onDragstart(item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -272,6 +280,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainUp' : item.IDS}"
+                                                            :draggable="OrigenDraggable(item)"
+                                                            @@dragstart="onDragstart(item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -482,6 +492,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainDown' : item.IDS}"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -500,6 +512,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainDown' : item.IDS}"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -518,6 +532,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainDown' : item.IDS}"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -536,6 +552,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainDown' : item.IDS}"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -554,6 +572,8 @@
                                                 <template v-if="!isNaN(item.Tipo)">
                                                     <button class="btn btn-bus"
                                                             :class="{'rainDown' : item.IDS}"
+                                                            @@dragover.prevent 
+                                                            @@drop="onDrop($event, item)"
                                                             :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
                                                             :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
                                                         <div class="number-of-seat">
@@ -572,22 +592,51 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer p-t-0">
                 <button id="btnProccesingLote"
-                        class="btn btn-primary waves-effect"
-                        @@click=""
+                        class="btn btn-primary waves-effect m-t-10"
+                        @@click="confirm"
                         :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
                         ref="refBtnProccesingLote">
-                    <span class="fa fa-save fa-fw"></span>Procesar en Lote
+                    <span class="fa fa-save fa-fw"></span>Grabar
                 </button>
-                <button id="btnProccesingLote"
-                        class="btn btn-success waves-effect"
-                        @@click="previsualizar"
-                        :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
-                        ref="refBtnPrevisualizar">
-                    <span class="fa fa-eye fa-fw"></span>Previsualizar
-                </button>
-                <button @@click="close" class="btn btn-inverse waves-effect waves-light">
+                <template v-if="!processingLote">
+                    <button id="btnProccesingLote"
+                            class="btn btn-info waves-effect m-t-10"
+                            @@click="procesarEnLote"
+                            :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                            ref="refBtnProccesingLote">
+                        <span class="fa fa-refresh fa-fw"></span>Procesar en Lote
+                    </button>
+                </template>
+                <template v-else>
+                    <button id="btnProccesingLote"
+                            class="btn btn-warning waves-effect m-t-10"
+                            @@click="restaurarLote"
+                            :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                            ref="refBtnProccesingLote">
+                        <span class="fa fa-refresh fa-fw"></span>Restaurar
+                    </button>
+                </template>                
+                <template v-if="rainEfect">
+                    <button id="btnNoProccesingLote"
+                            class="btn btn-warning waves-effect m-t-10"
+                            @@click="stopPrevisualizar"
+                            :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                            ref="refBtnNoPrevisualizar">
+                        <span class="fa fa-eye-slash fa-fw"></span>Detener Previsualización
+                    </button>
+                </template>
+                <template v-else>
+                    <button id="btnProccesingLote"
+                            class="btn btn-success waves-effect m-t-10"
+                            @@click="previsualizar"
+                            :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0)"
+                            ref="refBtnPrevisualizar">
+                        <span class="fa fa-eye fa-fw"></span>Previsualizar
+                    </button>
+                </template>
+                <button @@click="close" class="btn btn-inverse waves-effect waves-light m-t-10">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
             </div>

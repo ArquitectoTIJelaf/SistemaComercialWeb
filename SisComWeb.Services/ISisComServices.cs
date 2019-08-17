@@ -411,5 +411,16 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "AnularReintegro", ResponseFormat = WebMessageFormat.Json)]
         Response<byte> AnularReintegro(AnularVentaRequest request);
         #endregion
+
+        #region "PASE EN LOTE"
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdatePostergacion",ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> UpdatePostergacion(UpdatePostergacionRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "UpdateProgramacion", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> UpdateProgramacion(int CodiProgramacion, int IdVenta);
+        #endregion
     }
 }
