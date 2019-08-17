@@ -137,6 +137,7 @@ namespace SisComWeb.Business
             {
                 var ListarPanelControl = CreditoRepository.ListarPanelControl();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
+                var buscarCorrelativo = new CorrelativoEntity();
 
                 SetInvoiceRequestBody bodyDocumentoSUNAT = null;
 
@@ -183,6 +184,37 @@ namespace SisComWeb.Business
                 if (!string.IsNullOrEmpty(entidad.RucCliente))
                 {
                     entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
+
+                    // Correlativo '20'
+                    switch (validarTerminalElectronico.Tipo)
+                    {
+                        case "M":
+                            {
+                                if (entidad.FlagVenta != "1")
+                                {
+                                    var objPanelCorrelativoCredito02 = ListarPanelControl.Find(x => x.CodiPanel == "145");
+                                    if (objPanelCorrelativoCredito02 != null && objPanelCorrelativoCredito02.Valor == "1")
+                                    {
+                                        entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
+
+                                        // Busca 'Correlativo'
+                                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                        if (buscarCorrelativo.SerieBoleto != 0)
+                                        {
+                                            entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                                            entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                                        }
+                                        else
+                                        {
+                                            return new Response<VentaResponse>(false, valor, "Número de correlativo no esta configurado para el tipo " + entidad.AuxCodigoBF_Interno, false);
+                                        }
+
+                                    }
+                                }
+                            };
+                            break;
+                    };
+
                     entidad.CodiDocumento = "01"; // Factura
                 }
                 else
@@ -192,9 +224,12 @@ namespace SisComWeb.Business
                 }
 
                 // Busca 'Correlativo'
-                var buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
-                entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
-                entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                if (entidad.AuxCodigoBF_Interno != CodiCorrelativoCredito)
+                {
+                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                    entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
+                    entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
+                }
 
                 if (buscarCorrelativo.SerieBoleto == 0)
                 {
@@ -240,31 +275,10 @@ namespace SisComWeb.Business
                 }
 
                 // Seteo 'Tipo'
-
                 switch (validarTerminalElectronico.Tipo)
                 {
                     case "M":
                         entidad.Tipo = "M";
-                        if (!string.IsNullOrEmpty(entidad.RucCliente))
-                        {
-                            var objPanelPrecioValor = ListarPanelControl.Find(x => x.CodiPanel == "145");
-                            if (objPanelPrecioValor != null && objPanelPrecioValor.Valor == "1")
-                            {
-                                entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
-                                // Busca 'Correlativo'
-                                var buscarCorrelativo2 = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
-                                if (buscarCorrelativo2.SerieBoleto != 0)
-                                {
-                                    entidad.SerieBoleto = buscarCorrelativo2.SerieBoleto;
-                                    entidad.NumeBoleto = buscarCorrelativo2.NumeBoleto;
-                                }
-                                else
-                                {
-                                    return new Response<VentaResponse>(false, valor, "Número de correlativo no esta configurado para el tipo " + entidad.AuxCodigoBF_Interno, false);
-                                }
-
-                            }
-                        }
                         break;
                     case "E":
                         {

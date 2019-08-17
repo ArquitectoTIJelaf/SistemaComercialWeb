@@ -3864,7 +3864,7 @@
                                 });
                                 return auxValidate = false;
                             }
-                            
+
                             var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                             if (this.list.ventas[i].FechaReservacion === moment().format('DD/MM/YYYY')) {
@@ -9003,7 +9003,7 @@
                 },
                 setData: function () {
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario 
+                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario
                     _this.item.CodEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
@@ -9576,6 +9576,7 @@
                 },
                 searchData: async function () {
                     let _this = this;
+
                     await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF12' + APP.util.getQueryParamByObject({
                         Serie: parseInt(_this.filtro.serie),
                         Numero: parseInt(_this.filtro.numero),
@@ -10097,8 +10098,8 @@
                             checkTipoPago = appVueTipoPago2.trustedSave;
                             if (checkTipoPago) {
                                 //Data para Grabar Reintegro
-                                input.Serie = _this.item.boleto.substring(1, 4);
-                                input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                input.Serie = _this.item.boleto.substring(1, 4); //TODO
+                                input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length); //TODO
                                 input.Codi_Empresa = auxEmpresa;
                                 input.CODI_SUCURSAL = Usuario.CodiSucursal;
                                 input.CODI_PROGRAMACION = auxCodiProgramacion;
@@ -10586,10 +10587,17 @@
                         switch (appVueVenta.CodiTerminalElectronico) {
                             case 'M':
                                 {
-                                    if (appVueVenta.CorrelativoVentaFactura === '0000-00000000')
-                                        this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
-                                    else
-                                        this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaFactura);
+                                    if (appController.validatePanel('145') === '1') {
+                                        this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoCredito);
+                                        if (this.item.boleto === '0000-00000000')
+                                            APP.msg.error('No se encontró serie para el boleto.');
+                                    }
+                                    else {
+                                        if (appVueVenta.CorrelativoVentaFactura === '0000-00000000')
+                                            this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
+                                        else
+                                            this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaFactura);
+                                    }
                                 };
                                 break;
                             case 'E':
@@ -11488,12 +11496,12 @@
                                 }
                             }
                         });
-                    }                    
-                },                
+                    }
+                },
                 procesarEnLote: function () {
                     let _this = this;
 
-                    _this.processingLote = true;                    
+                    _this.processingLote = true;
 
                     if (_this.rainEfect) {
 
@@ -11509,7 +11517,7 @@
                         _this.stopPrevisualizar();
                         _this.rainEfect = false;
                     }
-                    
+
                     _this.$nextTick(() => {
 
                         if (!_this.list.newAsientos.length > 0) {
@@ -11544,7 +11552,7 @@
                 restaurarLote: function () {
                     let _this = this;
 
-                    _this.processingLote = false;   
+                    _this.processingLote = false;
 
                     _.forEachRight(_this.list.tempListOri, (e2) => {
                         _.forEachRight(_this.list.newAsientos, (asiento) => {
@@ -11580,19 +11588,19 @@
                             }
                         });
                     });
-                },                
+                },
                 OrigenDraggable: function (_item) {
                     if (_item && _item.NumeAsiento && !_item.IDS && _item.Nombres)//TODO: Reemplazar Nombres por Flag
                         return true
-                    else 
-                        return false;                     
+                    else
+                        return false;
                 },
-                onDragstart: function (item) {                
+                onDragstart: function (item) {
                     this.dragItem = _.cloneDeep(item);
                 },
                 onDrop: function (event, item) {
                     let _this = this
-                    
+
                     event.stopPropagation();
                     event.preventDefault();
 
@@ -11603,7 +11611,7 @@
                             }
                         }
                     });
-                    
+
                     _this.list.newAsientosManuales.push({ origen: _this.dragItem.NumeAsiento, destino: parseInt(item.Tipo) });
                     item.NumeAsiento = parseInt(item.Tipo);
 
@@ -11612,10 +11620,11 @@
                 confirm: async function () {
                     let _this = this;
 
-                    _.forEachRight(_this.list.newAsientos, (e) => {
-                        _.forEachRight(_this.list.tempListOri, (e1) => {
-                            if (parseInt(e1.Tipo) === e) {
+                    var asientoCambiados = [];
 
+                    for (var e of _this.list.newAsientos) {
+                        for (var e1 of _this.list.tempListOri) {
+                            if (parseInt(e1.Tipo) === e) {
                                 var filtroProg = {};
                                 filtroProg.CodiProgramacion = _this.objProgramacion.CodiProgramacion;
                                 filtroProg.IdVenta = e1.IdVenta;
@@ -11623,18 +11632,18 @@
                                 filtroProg.CodiServicio = _this.objProgramacion.CodiServicio;
                                 filtroProg.FechaViaje = _this.objProgramacion.FechaProgramacion;
                                 filtroProg.HoraViaje = _this.objProgramacion.HoraProgramacion;
-                                
-                                APP.rq.axios.post(APP.base + '/paseLote/update-postergacion', filtroProg)
+
+                                await APP.rq.axios2.post(APP.base + '/paseLote/update-postergacion', filtroProg)
                                     .then(res => {
-                                        console.log('' + filtroProg)
+                                        asientoCambiados.push(_.padStart(e, 2, '0'));
                                     })
                                     .catch(APP.rq.axios_handler_error_alert);
                             }
-                        });
-                    });
+                        }
+                    }
 
-                    _.forEachRight(_this.list.newAsientosManuales, (e) => {
-                        _.forEachRight(_this.list.tempListOri, (e1) => {
+                    for (var e of _this.list.newAsientosManuales) {
+                        for (var e1 of _this.list.tempListOri) {
                             if (parseInt(e1.Tipo) === e.origen) {
 
                                 var filtroProg = {};
@@ -11645,18 +11654,18 @@
                                 filtroProg.FechaViaje = _this.objProgramacion.FechaProgramacion;
                                 filtroProg.HoraViaje = _this.objProgramacion.HoraProgramacion;
 
-                                APP.rq.axios.post(APP.base + '/paseLote/update-postergacion', filtroProg)
+                                await APP.rq.axios2.post(APP.base + '/paseLote/update-postergacion', filtroProg)
                                     .then(res => {
-                                        console.log('' + filtroProg)
+                                        asientoCambiados.push(_.padStart(e.origen, 2, '0'));
                                     })
                                     .catch(APP.rq.axios_handler_error_alert);
                             }
-                        });
-                    });
+                        }
+                    }
 
-                    _this.$nextTick(() => {
-                        APP.msg.info('Proceso se realizó correctamente');
-                        _this.close();
+                    _this.$nextTick(async () => {
+                        if(await APP.msg.infoMessage('Asientos Cambiados','Se cambió correctamente los asientos: ' + asientoCambiados.join()))
+                            _this.close();
                     });
                 },
                 limpiarCampos: function () {
