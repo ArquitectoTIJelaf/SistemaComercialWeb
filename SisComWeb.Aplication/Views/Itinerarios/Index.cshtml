@@ -9003,10 +9003,7 @@
                 },
                 setData: function () {
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();
-                    //_this.item.Tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
-                    //_this.item.Serie = correlativo.substring(1, 4);
-                    //_this.item.Numero = correlativo.substring(5, 13);
+                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario 
                     _this.item.CodEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
@@ -9539,13 +9536,14 @@
                     _this.listaOpcionesModificacion();
                 },
                 setData: function () {
+                    debugger;
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();
+                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = _this.asientoSel.CodiEmpresa;
-                    _this.filtro.codEmpresa =_this.asientoSel.CodiEmpresa;
+                    _this.filtro.empresa = _this.$options.filters.empresas(_this.asientoSel.CodiEmpresa);
+                    _this.filtro.codEmpresa =String(_this.asientoSel.CodiEmpresa);
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
                             _this.list.empresas = empresas;
@@ -9872,8 +9870,8 @@
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = _this.asientoSel.CodiEmpresa;
-                    _this.filtro.codEmpresa = _this.asientoSel.CodiEmpresa;
+                    _this.filtro.empresa = _this.$options.filters.empresas(_this.asientoSel.CodiEmpresa);
+                    _this.filtro.codEmpresa = String(_this.asientoSel.CodiEmpresa);
                     _this.showData = false;
                     _this.lockFilters = false;
                     _this.limpiarRE();
