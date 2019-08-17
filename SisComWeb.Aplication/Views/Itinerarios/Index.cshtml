@@ -3864,7 +3864,7 @@
                                 });
                                 return auxValidate = false;
                             }
-
+                            
                             var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
 
                             if (this.list.ventas[i].FechaReservacion === moment().format('DD/MM/YYYY')) {
@@ -3895,9 +3895,9 @@
 
                             if (this.list.ventas[i].FechaReservacion === this.filtro.Fecha) {
 
-                                if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(this.filtro.Turno, 'hh:mmA'), 'minutes')) {
+                                if (moment(this.list.ventas[i].HoraReservacion, 'hh:mmA').isAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
                                     this.indexVenta = i;
-                                    APP.msg.warning('La hora de confirmación debe ser menor a la hora de embarque (' + tmpHoraBase + ').');
+                                    APP.msg.warning('La hora de confirmación debe ser menor o igual a la hora de embarque (' + tmpHoraBase + ').');
 
                                     this.$nextTick(() => {
                                         document.getElementById('txtHoraReservacion').focus();
@@ -5956,8 +5956,8 @@
                         }
 
                         if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
-                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
-                                APP.msg.warning('La hora de confirmación debe ser menor a la hora de embarque (' + tmpHoraBase + ').');
+                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
+                                APP.msg.warning('La hora de confirmación debe ser menor o igual a la hora de embarque (' + tmpHoraBase + ').');
                                 return false;
                             }
 
