@@ -336,7 +336,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_NroPoliza";
+                db.ProcedureName = "scwsp_NroPoliza";
                 db.AddParameter("@codi_Empresa", DbType.Int32, ParameterDirection.Input, CodiEmpresa);
                 db.AddParameter("@codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
                 db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, Fecha);
@@ -364,7 +364,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_VeriNc";
+                db.ProcedureName = "scwsp_Tb_Venta_VeriNc";
                 db.AddParameter("@ID_VENTA", DbType.Int32, ParameterDirection.Input, IdVenta);
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -407,7 +407,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_panel_Niveles_Trae";
+                db.ProcedureName = "scwsp_Tb_panel_Niveles_Trae";
                 db.AddParameter("@codigo", DbType.Int32, ParameterDirection.Input, codigo);
                 db.AddParameter("@Nivel", DbType.Int32, ParameterDirection.Input, Nivel);
                 using (IDataReader drlector = db.GetDataReader())
@@ -436,6 +436,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "Id_lquidaciondet");
+                        break;
                     }
                 }
             }
@@ -457,6 +458,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "estado");
+                        break;
                     }
                 }
             }
@@ -477,6 +479,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = true;
+                        break;
                     }
                 }
             }
@@ -498,6 +501,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = true;
+                        break;
                     }
                 }
             }
@@ -519,6 +523,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = true;
+                        break;
                     }
                 }
             }
@@ -628,6 +633,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetIntValue(drlector, "");
+                        break;
                     }
                 }
             }
@@ -648,6 +654,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = true;
+                        break;
                     }
                 }
             }
@@ -724,7 +731,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_caja_COnsulta_Pase";
+                db.ProcedureName = "scwsp_Tb_caja_COnsulta_Pase";
                 db.AddParameter("@nume", DbType.String, ParameterDirection.Input, Nume);
                 using (IDataReader drlector = db.GetDataReader())
                 {
@@ -732,7 +739,6 @@ namespace SisComWeb.Repository
                     {
                         entidad.Monto = Reader.GetDecimalValue(drlector, "MONT_CAJA");
                         entidad.IdCaja = Reader.GetIntValue(drlector, "idcaja");
-
                         break;
                     }
                 }
@@ -861,6 +867,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "NOMB_USUARIO") ?? string.Empty;
+                        break;
                     }
                 }
             }

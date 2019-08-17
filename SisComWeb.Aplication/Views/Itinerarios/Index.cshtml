@@ -743,8 +743,8 @@
                                         appVueVenta.list.ventas[appVueVenta.indexVenta].ReadonlyPrecio = false;
                                     }
 
-                                    var auxPrecioNormal = parseFloat(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal || '0') || 0;
-                                    appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecioNormal.toFixed(2);
+                                    var auxPrecio = parseFloat(appVueVenta.list.ventas[appVueVenta.indexVenta].PrecioNormal || '0') || 0;
+                                    appVueVenta.list.ventas[appVueVenta.indexVenta].Precio = auxPrecio.toFixed(2);
                                 }
 
                                 document.getElementById('txtPrecio').focus();
@@ -1843,7 +1843,6 @@
                         FechaReservacion: '',
                         HoraReservacion: '',
                         ValidadorClienteEspecial: false,
-
                         CodiEmpresa: 0
                     }],
                     sexos: [
@@ -2279,6 +2278,9 @@
                         switch (_this.pickedBusVenta) {
                             case '1': // Crédito
                                 {
+                                    // Iniciamos una variable temporal que se seteará al final del bloqueo de asiento
+                                    tmpAsientoSel.FlagPrecioNormal = false;
+
                                     if (!_this.objCreditoCliente.idContrato) {
                                         APP.msg.warning('No ha seleccionado un Cliente, haga click en la opción Crédito.');
                                         _this.disabledAsiento = false;
@@ -2297,22 +2299,20 @@
                                     if (appController.validatePanel('121') === '1')
                                         validatorPrecioValor = true;
 
-                                    if (validatorPrecioValor)
-                                        tmpAsientoSel.Precio = asientoSel.Precio;
-                                    else {
+                                    if (!validatorPrecioValor) {
                                         // Verifica 'PrecioNormal'
                                         var resObjPrecioNormal = await _this.verificarPrecioNormal(_this.objCreditoCliente.idContrato);
 
                                         if (resObjPrecioNormal) {
                                             if (resObjPrecioNormal.IdNormal !== -1) {
-                                                tmpAsientoSel.Precio = tmpAsientoSel.Precio + resVerificarPrecioNormal.MontoMas - resVerificarPrecioNormal.MontoMenos;
+                                                tmpAsientoSel.PrecioNormal = tmpAsientoSel.PrecioNormal + resObjPrecioNormal.MontoMas - resObjPrecioNormal.MontoMenos;
                                                 tmpAsientoSel.FlagPrecioNormal = true;
 
                                                 var auxLength = _this.list.ventas.length;
                                                 if (auxLength === 1) {
                                                     if (resObjPrecioNormal.Saldo <= 0) {
                                                         APP.msg.warning("Contrato sin boletos disponibles.");
-                                                        _this.disabledAsiento = true;
+                                                        _this.disabledAsiento = false;
                                                         return;
                                                     }
                                                 }
@@ -2329,15 +2329,16 @@
 
                                                 if (_this.objCreditoCliente.SaldoBoletos > 0) {
                                                     if (resPrecioFecha > 0)
-                                                        tmpAsientoSel.Precio = resPrecioFecha;
+                                                        tmpAsientoSel.PrecioNormal = resPrecioFecha;
                                                     else
-                                                        tmpAsientoSel.Precio = _this.objCreditoCliente.Precio;
+                                                        tmpAsientoSel.PrecioNormal = _this.objCreditoCliente.Precio;
                                                 }
                                                 else {
                                                     APP.msg.warning("Contrato sin boletos disponibles.");
                                                     _this.disabledAsiento = false;
                                                     return;
                                                 }
+
                                                 tmpAsientoSel.FlagPrecioNormal = false;
                                             }
                                         }
@@ -2345,7 +2346,6 @@
                                             _this.disabledAsiento = false;
                                             return;
                                         }
-
                                     }
                                 }
                                 break;
@@ -2470,7 +2470,8 @@
                                         break;
                                     case '1': // Crédito
                                         appController.showCreditoOpciones(_this.objCreditoCliente.idContrato);
-                                        _this.list.ventas[_this.indexVenta].Precio = parseFloat(tmpAsientoSel.Precio).toFixed(2);
+                                        _this.list.ventas[_this.indexVenta].Precio = parseFloat(tmpAsientoSel.PrecioNormal).toFixed(2);
+                                        _this.list.ventas[_this.indexVenta].PrecioNormal = parseFloat(tmpAsientoSel.PrecioNormal).toFixed(2);
                                         _this.list.ventas[_this.indexVenta].FlagPrecioNormal = tmpAsientoSel.FlagPrecioNormal;
                                         break;
                                 }
@@ -2784,10 +2785,10 @@
                         ReadonlyPrecio: false,
                         CheckRegistrarNino: false,
                         DisabledRazonSocial: false,
-
                         FechaReservacion: '',
                         HoraReservacion: '',
-                        ValidadorClienteEspecial: false
+                        ValidadorClienteEspecial: false,
+                        CodiEmpresa: 0
                     });
 
                     if (this.pickedBusVenta === '1') { // Crédito
@@ -4068,7 +4069,6 @@
                     this.list.ventas[this.indexVenta].FechaReservacion = '';
                     this.list.ventas[this.indexVenta].HoraReservacion = '';
                     this.list.ventas[this.indexVenta].ValidadorClienteEspecial = false;
-
                     this.list.ventas[this.indexVenta].CodiEmpresa = 0;
 
                     this.disabledCampoNroAsiento = false;
@@ -4121,7 +4121,7 @@
                 validateRangePrice: function (event) {
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
-
+                    
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || '0') || 0;
                     var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || '0') || 0;
                     var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || '0') || 0;
@@ -4141,7 +4141,6 @@
                                             APP.msg.warning('Ya se realizó un descuento.');
                                             document.getElementById('txtPrecio').focus();
                                         }
-
                                     };
 
                                     this.eventTxtPrecio = '';
@@ -7150,8 +7149,10 @@
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        // Imprime 'Boleto'
-                                                        _this.imprimirBoleto(_listaImpresiones[i]);
+                                                        if (i === 0)
+                                                            _this.imprimirBoleto(_listaImpresiones[i], true);
+                                                        else
+                                                            _this.imprimirBoleto(_listaImpresiones[i], false);
                                                     }, i * 5000);
                                                 })(i);
                                             }
@@ -7179,8 +7180,10 @@
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        // Imprime 'Boleto'
-                                                        _this.imprimirBoleto(_listaImpresiones[i]);
+                                                        if (i === 0)
+                                                            _this.imprimirBoleto(_listaImpresiones[i], true);
+                                                        else
+                                                            _this.imprimirBoleto(_listaImpresiones[i], false);
                                                     }, i * 5000);
                                                 })(i);
                                             }
@@ -7197,7 +7200,8 @@
                             break;
                     }
                 },
-                imprimirBoleto: function (_Documentos) {
+                imprimirBoleto: function (_Documentos, _PrimerBoleto) {
+                    var auxValidate = true;
                     var auxUrl = '';
 
                     for (const doc in _Documentos) {
@@ -7216,14 +7220,25 @@
                         if (auxUrl) {
                             axios({ method: "GET", "url": auxUrl })
                                 .then(res => {
-                                    APP.msg.success('Boleto enviado a imprimir correctamente.');
+                                    //APP.msg.success('Boleto enviado a imprimir correctamente.');
                                 }, error => {
-                                    APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                                    //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                                    auxValidate = false;
                                 });
                         }
 
                         auxUrl = '';
+
+                        if (!auxValidate)
+                            break;
                     }
+
+                    if (auxValidate) {
+                        if (_PrimerBoleto)
+                            APP.msg.success('Boleto enviado a imprimir correctamente.');
+                    }
+                    else
+                        APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                 }
             },
             computed: {
@@ -8038,8 +8053,8 @@
                 },
                 recorrerClaveAutorizacion: function (auxValidate) {
                     var auxResponse = false;
-
-                    if (!this.usuario) {
+                    
+                    if (!this.usuario && this.Tipo !== ClaveDescuentoDePasajes) {
                         if (this.Tipo === ClaveHoraConfirmacion || this.Tipo === ClaveTiempoReserva) {
                             $('#cboUsuarioCA input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione usuario.');
@@ -8068,7 +8083,8 @@
                         if (auxValidate === true) APP.msg.warning('Ingrese observación.');
                     }
                     else {
-                        document.getElementById('btnAceptarClaveAutorizacion').focus();
+                        //document.getElementById('btnAceptarClaveAutorizacion').focus();
+                        if (auxValidate !== true) this.sendClaveAutorizacion();;
                         auxResponse = true;
                     }
 
