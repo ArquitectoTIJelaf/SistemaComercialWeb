@@ -99,6 +99,14 @@ namespace SisComWeb.Business
                     }
                 }
 
+                // Verifica cambios 'ValidarTurnoAdicional'
+                if (buscarTurno.StOpcional == "1" && DateTime.Parse(buscarTurno.FechaProgramacion).Date >= DateTime.Now.Date)
+                {
+                    var validarTurnoAdicional = ItinerarioRepository.ValidarTurnoAdicional(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
+                    if (validarTurnoAdicional != 1)
+                        return new Response<ItinerarioEntity>(false, buscarTurno, Message.MsgErrorValidarTurnoAdicional, true);
+                }
+
                 // Consulta 'ManifiestoProgramacion'
                 var resConsultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
                 if (resConsultaManifiestoProgramacion.Estado)
