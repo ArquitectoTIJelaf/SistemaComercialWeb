@@ -163,7 +163,7 @@ namespace SisComWeb.Business
                     NomUsuario = filtro.NomUsuario,//
                     Tabla = "VENTA",
                     TipoMovimiento = "CONFIRMA FECHA ABIERTA",
-                    Boleto = filtro.Serie.PadLeft(3, '0') + "-" + filtro.Numero.PadLeft(8, '0'),
+                    Boleto = filtro.Serie.PadLeft(3, '0') + "-" + filtro.Numero.PadLeft(7, '0'),
                     NumeAsiento = filtro.NumeAsiento.PadLeft(2, '0'),
                     NomOficina = filtro.NomSucursal,//
                     NomPuntoVenta = filtro.CodiPuntoVenta.PadLeft(3, '0'),//

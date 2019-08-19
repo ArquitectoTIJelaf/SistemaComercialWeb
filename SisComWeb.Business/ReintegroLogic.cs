@@ -337,6 +337,7 @@ namespace SisComWeb.Business
                         filtro.Codi_Documento__ = entidad.AuxCodigoBF_Interno;
                         filtro.Serie = entidad.SerieBoleto.ToString();
                         filtro.nume_boleto = entidad.NumeBoleto.ToString();
+                        filtro.NUME_CORRELATIVO__ = entidad.NumeBoleto.ToString();
                         //Graba Reintegro
                         var res = ReintegroRepository.SaveReintegro(filtro);
                         var ventaRealizada = (res > 0) ? true : false;
