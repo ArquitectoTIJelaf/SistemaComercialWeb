@@ -42,7 +42,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_Tb_AsientosBloqueados_Consulta02";
+                db.ProcedureName = "scwsp_Tb_AsientosBloqueados_Consulta";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
                 db.AddParameter("@Codi_Sucursal", DbType.Int32, ParameterDirection.Input, CodiSucursal);
                 db.AddParameter("@Codi_Ruta", DbType.Int32, ParameterDirection.Input, CodiRuta);

@@ -316,7 +316,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ObtenerOrdenOficinaRuta02";
+                db.ProcedureName = "scwsp_ObtenerOrdenOficinaRuta";
                 db.AddParameter("@Nro_Viaje", DbType.String, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@Codi_OriDes", DbType.Int16, ParameterDirection.Input, CodiOriDes);
                 using (IDataReader drlector = db.GetDataReader())
