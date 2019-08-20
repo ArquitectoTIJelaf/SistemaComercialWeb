@@ -21,5 +21,10 @@ namespace SisComWeb.Aplication.Models
         public string TipoDoc { get; set; }
         public string FechaViaje { get; set; }
         public string HoraViaje { get; set; }
+        public string FlagVenta { get; set; }
+        public string CodiEsca { get; set; }
+        public int CodiEmpresa { get; set; }
+        public string Boleto { get; set; }
+        public string Pasajero { get; set; }
     }
 }

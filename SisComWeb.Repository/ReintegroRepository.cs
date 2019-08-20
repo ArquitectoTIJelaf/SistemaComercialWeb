@@ -49,7 +49,8 @@ namespace SisComWeb.Repository
                             Telefono = Reader.GetStringValue(drlector, "TELEFONO"),
                             Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad"),
                             Tipo = Reader.GetStringValue(drlector, "TIPO"),
-                            CodiPuntoVenta = Reader.GetIntValue(drlector, "Punto_Venta")
+                            CodiPuntoVenta = Reader.GetIntValue(drlector, "Punto_Venta"),
+                            CodiServicio = Reader.GetByteValue(drlector, "Servicio")
                         };
                     }
                 }

@@ -19,14 +19,14 @@ namespace SisComWeb.Repository
                 db.AddParameter("@asiento", DbType.String, ParameterDirection.Input, filtro.NumeAsiento);
                 db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, filtro.Ruta);
                 db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, filtro.CodiServicio);
-                db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.TipoDoc);
+                db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.TipoDoc);//TODO: No se usa en el procedure
                 db.Execute();
                 Response = true;
             }
             return Response;
         }
 
-        public static bool UpdateProgramacion(int CodiProgramacion, int IdVenta)
+        public static bool UpdateProgramacion(string CodiProgramacion, int IdVenta)
         {
             bool Response = false;
 

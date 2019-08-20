@@ -1198,19 +1198,6 @@ namespace SisComWeb.Services
                 return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
             }
         }
-        
-        public Response<bool> UpdateProgramacion(int CodiProgramacion, int IdVenta)
-        {
-            try
-            {
-                return PaseLoteLogic.UpdateProgramacion(CodiProgramacion, IdVenta);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
-            }
-        }
         #endregion
     }
 }
