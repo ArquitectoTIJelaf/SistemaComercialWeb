@@ -28,9 +28,9 @@ namespace SisComWeb.Business
                 var listarAsientosBloqueados = PlanoRepository.ListarAsientosBloqueados(request.NroViaje, request.CodiProgramacion, request.FechaProgramacion);
 
                 // Obtiene 'OrdenOrigenPasajero'
-                var ordenOrigenPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiOrigen, request.CodiOrigen);
+                var ordenOrigenPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiOrigen);
                 // Obtiene 'OrdenDestinoPasajero'
-                var ordenDestinoPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiDestino, request.CodiDestino);
+                var ordenDestinoPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiDestino);
 
                 // Recorre cada registro
                 foreach (var entidad in buscarPlanoBus)
@@ -65,8 +65,8 @@ namespace SisComWeb.Business
                         {
                             if (auxValue == item.NumeAsiento)
                             {
-                                item.OrdenOrigen = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, item.CodiOrigen, item.CodiOrigen);
-                                var ordenDestino = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, item.CodiDestino, item.CodiDestino);
+                                item.OrdenOrigen = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, item.CodiOrigen);
+                                var ordenDestino = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, item.CodiDestino);
 
                                 // Valida 'OrdenOrigen' y 'ordenDestino'
                                 if (string.IsNullOrEmpty(item.OrdenOrigen) || string.IsNullOrEmpty(ordenDestino))
