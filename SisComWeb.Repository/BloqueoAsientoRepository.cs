@@ -33,7 +33,7 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static TablaAsientosBloqueadosEntity ConsultarTablaAsientosBloqueados(int NroViaje)
+        public static TablaAsientosBloqueadosEntity ConsultarTablaAsientosBloqueados(byte CodiEmpresa, short CodiSucursal, short CodiRuta, byte CodiServicio, string Turno)
         {
             var entidad = new TablaAsientosBloqueadosEntity()
             {
@@ -43,7 +43,11 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_Tb_AsientosBloqueados_Consulta";
-                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@Codi_Sucursal", DbType.Int32, ParameterDirection.Input, CodiSucursal);
+                db.AddParameter("@Codi_Ruta", DbType.Int32, ParameterDirection.Input, CodiRuta);
+                db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Turno", DbType.String, ParameterDirection.Input, Turno);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

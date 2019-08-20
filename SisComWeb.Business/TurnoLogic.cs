@@ -99,6 +99,14 @@ namespace SisComWeb.Business
                     }
                 }
 
+                // Verifica cambios 'ValidarTurnoAdicional'
+                if (buscarTurno.StOpcional == "1" && DateTime.Parse(buscarTurno.FechaProgramacion).Date >= DateTime.Now.Date)
+                {
+                    var validarTurnoAdicional = ItinerarioRepository.ValidarTurnoAdicional(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
+                    if (validarTurnoAdicional != 1)
+                        return new Response<ItinerarioEntity>(false, buscarTurno, Message.MsgErrorValidarTurnoAdicional, true);
+                }
+
                 // Consulta 'ManifiestoProgramacion'
                 var resConsultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
                 if (resConsultaManifiestoProgramacion.Estado)
@@ -113,7 +121,7 @@ namespace SisComWeb.Business
 
                 // Obtiene 'TotalVentas'
                 if (buscarTurno.CodiProgramacion > 0)
-                    buscarTurno.AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarTurno.CodiProgramacion, buscarTurno.CodiOrigen, buscarTurno.CodiDestino);
+                    buscarTurno.AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarTurno.CodiProgramacion, buscarTurno.NroViaje, buscarTurno.CodiOrigen, buscarTurno.CodiDestino);
 
                 // Lista 'PuntosEmbarque'
                 var listarPuntosEmbarque = TurnoRepository.ListarPuntosEmbarque(buscarTurno.CodiOrigen, buscarTurno.CodiDestino, buscarTurno.CodiServicio, buscarTurno.CodiEmpresa, buscarTurno.CodiPuntoVenta, buscarTurno.HoraPartida);
@@ -158,7 +166,7 @@ namespace SisComWeb.Business
                 }
 
                 // Consulta tabla 'AsientosBloqueados'
-                var consultarTablaAsientosBloqueados = BloqueoAsientoRepository.ConsultarTablaAsientosBloqueados(buscarTurno.NroViaje);
+                var consultarTablaAsientosBloqueados = BloqueoAsientoRepository.ConsultarTablaAsientosBloqueados(buscarTurno.CodiEmpresa, buscarTurno.CodiSucursal, buscarTurno.CodiRuta, buscarTurno.CodiServicio, buscarTurno.HoraPartida);
 
                 buscarTurno.TablaBloqueoAsientos = new TablaBloqueoAsientosEntity()
                 {

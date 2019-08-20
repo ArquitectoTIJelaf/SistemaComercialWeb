@@ -104,6 +104,7 @@
         // Turno
         public const string MsgCorrectoMuestraTurno = "Correcto: MuestraTurno.";
         public const string MsgExcMuestraTurno = "Excepción: MuestraTurno.";
+        public const string MsgErrorValidarTurnoAdicional = "El turno no está disponible para la venta, verifique configuración.";
 
         // Bloqueo Asiento
         public const string MsgValidaBloqueoAsiento = "Asiento no disponible.";

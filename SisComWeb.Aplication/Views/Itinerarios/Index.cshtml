@@ -1162,8 +1162,13 @@
         }
 
         Vue.prototype.$filterLettersToName = function $filtroLetrasParaNombres(value) {
-            if (value && isNaN(value))
-                value = value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi).join("");
+            if (value && isNaN(value)) {
+                var auxValue = value.match(/[a-zA-ZçáàãâéèêíìóòõôúùüñÇÁÀÃÂÉÈÊÍÌÓÒÕÔÚÙÜÑ,'. ]/gi);
+                if (auxValue)
+                    value = auxValue.join("");
+                else
+                    value = '';
+            }      
             else
                 value = '';
 
@@ -1962,14 +1967,7 @@
                     _this.processing = true;
                     if (_this.pickedBusVenta !== '1') // Crédito
                         _this.pickedBusVenta = 'V';
-                    // --------------------------------------
-                    if (!_this.firstCharge) {
-                        if ($("#panelWrapperV").hasClass("in")) {
-                            $('#btnDesplegar').click();
-                            this.showTextTurnos = true;
-                        }
-                    }
-                    // --------------------------------------
+
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -1992,6 +1990,13 @@
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.EsCorrecto) {
+                                // --------------------------------------
+                                if (!_this.firstCharge) {
+                                    if ($("#panelWrapperV").hasClass("in")) {
+                                        $('#btnDesplegar').click();
+                                        _this.showTextTurnos = true; // DESPLEGAR TURNOS
+                                    }
+                                }
                                 // --------------------------------------------------
                                 if (res.data.Valor.ListaAuxDestinosRuta.length > 0)
                                     _this.list.destinosPas = _.cloneDeep(res.data.Valor.ListaAuxDestinosRuta);
@@ -2064,10 +2069,13 @@
 
                     _this.$nextTick(() => {
                         if (_this.showTextTurnos) {
-                            // Animación 'ScrollTop'
-                            animateScrollTop(800);
                             _this.$refs.refNroAsientoVenta.focus();
                             appController.disabledAsientos(false);
+
+                            setTimeout(function () {
+                                // Animación 'ScrollTop'
+                                animateScrollTop(800);
+                            }, 400);
                         }
                     });
                 },
@@ -2149,6 +2157,7 @@
                     this.firstCharge = false;
                     if (!$("#panelWrapperV").hasClass("in")) {
                         $('#btnDesplegar').click();
+                        this.showTextTurnos = false;
                     }
                     appController.hideVentas();
 
@@ -3528,8 +3537,10 @@
                     switch (code) {
                         case 1:
                             {
-                                if (!$("#panelWrapperV").hasClass("in"))
+                                if (!$("#panelWrapperV").hasClass("in")) {
                                     $('#btnDesplegar').click();
+                                    this.showTextTurnos = false;
+                                }
 
                                 $('#cboSucursal input[type=search]').focus();
                             };

@@ -206,7 +206,7 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static int ObtenerTotalVentas(int CodiProgramacion, short CodiOrigen, short CodiDestino)
+        public static int ObtenerTotalVentas(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino)
         {
             var valor = new int();
 
@@ -214,8 +214,9 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ObtenerTotalVentas";
                 db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
-                db.AddParameter("@Codi_Origen", DbType.Int32, ParameterDirection.Input, CodiOrigen);
-                db.AddParameter("@Codi_Destino", DbType.Int32, ParameterDirection.Input, CodiDestino);
+                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
+                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

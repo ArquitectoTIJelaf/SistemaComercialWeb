@@ -310,7 +310,7 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
-        public static string ObtenerOrdenOficinaRuta(int NroViaje, short CodiOrigen, short CodiDestino)
+        public static string ObtenerOrdenOficinaRuta(int NroViaje, short CodiOriDes)
         {
             var valor = string.Empty;
 
@@ -318,8 +318,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_ObtenerOrdenOficinaRuta";
                 db.AddParameter("@Nro_Viaje", DbType.String, ParameterDirection.Input, NroViaje);
-                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
-                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
+                db.AddParameter("@Codi_OriDes", DbType.Int16, ParameterDirection.Input, CodiOriDes);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())

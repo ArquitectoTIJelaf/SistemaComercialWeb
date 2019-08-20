@@ -130,7 +130,7 @@ namespace SisComWeb.Business
 
                     // Obtiene 'TotalVentas'
                     if (buscarItinerarios[i].CodiProgramacion > 0)
-                        buscarItinerarios[i].AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarItinerarios[i].CodiProgramacion, buscarItinerarios[i].CodiOrigen, buscarItinerarios[i].CodiDestino);
+                        buscarItinerarios[i].AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarItinerarios[i].CodiProgramacion, buscarItinerarios[i].NroViaje, buscarItinerarios[i].CodiOrigen, buscarItinerarios[i].CodiDestino);
 
                     // Seteo 'Color'
                     buscarItinerarios[i].Color = GetColor(buscarItinerarios[i].ProgramacionCerrada, buscarItinerarios[i].AsientosVendidos, int.Parse(buscarItinerarios[i].CapacidadBus), buscarItinerarios[i].StOpcional);

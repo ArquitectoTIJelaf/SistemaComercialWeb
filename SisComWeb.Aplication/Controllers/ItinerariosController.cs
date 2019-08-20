@@ -256,6 +256,11 @@ namespace SisComWeb.Aplication.Controllers
                 AsientosLiberados = string.Empty,
             };
 
+            // Valida 'obj'
+            if (string.IsNullOrEmpty(obj.ToString()))
+                return objeto;
+            // ------------
+
             JObject data = (JObject)obj;
             
             objeto.AsientosOcupados = (string)data["AsientosOcupados"];
