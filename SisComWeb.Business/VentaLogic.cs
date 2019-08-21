@@ -787,7 +787,7 @@ namespace SisComWeb.Business
                         PasDireccion = entidad.DirEmpresaRuc,
                         NomOriPas = entidad.NomOrigen,
                         NomDesPas = entidad.NomDestino,
-                        DocTipo = TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
+                        DocTipo = TipoDocumentoHomologado(entidad.TipoDocumento),
                         DocNumero = entidad.Dni,
                         PrecioCan = entidad.PrecioVenta,
                         PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)),
@@ -1924,7 +1924,7 @@ namespace SisComWeb.Business
                         entidad.BoletoNum = entidad.BoletoNum.PadLeft(8, '0');
                         entidad.EmisionFecha = entidad.EmisionFecha;
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
-                        entidad.DocTipo = TipoDocumentoHomologadoParaFE(entidad.DocTipo.ToString());
+                        entidad.DocTipo = TipoDocumentoHomologado(entidad.DocTipo.ToString("D2"));
                         entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
                         entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue ?? string.Empty;
                         entidad.CodTerminal = validarTerminalElectronico.Tipo;
@@ -2089,7 +2089,7 @@ namespace SisComWeb.Business
                 sb.Append("[IdTipoDocIdentidad]|[NumDocIdentidad]|[RazonNombres]|[RazonComercial]|[DireccionFiscal]|[UbigeoSUNAT]|[Departamento]|[Provincia]|[Distrito]|[Urbanizacion]|[PaisCodSUNAT]");
                 if (entidad.CodiDocumento == "03")
                 {
-                    var auxIdTipoDocIdentidad = TipoDocumentoHomologadoParaFE(entidad.TipoDocumento);
+                    var auxIdTipoDocIdentidad = TipoDocumentoHomologado(entidad.TipoDocumento);
 
                     sb = sb.Replace("[IdTipoDocIdentidad]", auxIdTipoDocIdentidad.ToString());
                     sb = sb.Replace("[NumDocIdentidad]", entidad.Dni);
@@ -2333,18 +2333,18 @@ namespace SisComWeb.Business
             return boletoCompleto;
         }
 
-        public static byte TipoDocumentoHomologadoParaFE(string TipoDocumento)
+        public static byte TipoDocumentoHomologado(string TipoDocumento)
         {
             var valor = new byte();
 
-            TipoDocumento = TipoDocumento.PadLeft(2, '0');
-
             if (TipoDocumento == "01")
                 valor = 1;
-            else if (TipoDocumento == "04")
+            else if (TipoDocumento == "03")
+                valor = 4;
+            else if (TipoDocumento == "07")
                 valor = 7;
             else
-                valor = 4;
+                valor = 0;
 
             return valor;
         }

@@ -1022,7 +1022,6 @@
         var claveReintegroConfirmacion = '@claveReintegroConfirmacion';
         var ClaveAnulacionPanel234 = '@claveAnulacionPanel234';
         var ClaveAnulacionPanel36 = '@claveAnulacionPanel36';
-
         var ClaveTiempoReserva = '@claveTiempoReserva';
 
         var ClaveCancelarReserva = '';
@@ -1030,7 +1029,6 @@
         var NacionalidadPorDefault = 'PERUANA';
         var TipoImprimir = 'Impresion';
         var TipoReimprimir = 'Reimpresion';
-
         var VerificaHoraConfirmacion = '0';
         var TiempoReserva = null;
 
@@ -1038,7 +1036,6 @@
             id: '0',
             label: 'TODOS'
         };
-
         var rutas = [];
         var empresas = [];
         var servicios = [];
@@ -1073,19 +1070,6 @@
                 return '';
         });
 
-        Vue.filter('tipoDocumento', function (value) {
-            if (!value) return '';
-            value = parseInt(value);
-            var response = '';
-            switch (value) {
-                case 1: response = 'DNI'; break;
-                case 4: response = 'PASAPORTE'; break;
-                case 7: response = 'C.EXTRANJERIA'; break;
-                default: response = ''; break;
-            }
-            return response;
-        });
-
         Vue.filter('rutas', function (value) {
             if (!value) return '';
             value = value.toString();
@@ -1104,12 +1088,9 @@
             return _.filter(servicios, function (o) { return o.id == value; })[0].label;
         });
 
-        Vue.filter('tiposDoc', function (value) {
+        Vue.filter('tipoDocumento', function (value) {
             if (!value) return '';
             value = value.toString();
-            if (value == APP.cte.Documento.Dni.CodTip) value = APP.cte.Documento.Dni.SabCon;
-            if (value == APP.cte.Documento.Pasap.CodTip) value = APP.cte.Documento.Pasap.SabCon;
-            if (value == APP.cte.Documento.CExtranj.CodTip) value = APP.cte.Documento.CExtranj.SabCon;
             return _.filter(tiposDoc, function (o) { return o.id == value; })[0].label;
         });
 
@@ -1525,6 +1506,28 @@
                         tmpHoraBase = appVueVenta.filtro.Turno;
 
                     return tmpHoraBase;
+                },
+                findTipoDocumento: function (_TipoDocumento) {
+                    return _.find(tiposDoc, { 'id': _TipoDocumento }) || null;
+                },
+                findSexo: function (_Sexo) {
+                    return _.find(appVueVenta.list.sexos, { 'id': _Sexo }) || null;
+                },
+                validateTipoDocumento: function (_TipoDocumento, _Documento, auxValidate) {
+                    var auxResponse = false;
+
+                    var tmpTipoDocumento = this.findTipoDocumento(_TipoDocumento);
+                    if (tmpTipoDocumento && _Documento.length >= tmpTipoDocumento.MinLonDocumento && _Documento.length <= tmpTipoDocumento.MaxLonDocumento)
+                        auxResponse = true;
+
+                    if (!auxResponse && auxValidate === true)
+                        APP.msg.warning('Ingrese ' +
+                            (tmpTipoDocumento.label === '-' ? 'documento' : tmpTipoDocumento.label) +
+                            ' de ' + tmpTipoDocumento.MinLonDocumento +
+                            (tmpTipoDocumento.MinLonDocumento === '1' ? ' carácter' : ' caracteres') +
+                            ' como mínimo.');
+
+                    return auxResponse;
                 }
             };
         })();
@@ -2069,10 +2072,11 @@
 
                     _this.$nextTick(() => {
                         if (_this.showTextTurnos) {
-                            _this.$refs.refNroAsientoVenta.focus();
                             appController.disabledAsientos(false);
 
                             setTimeout(function () {
+                                _this.$refs.refNroAsientoVenta.focus();
+
                                 // Animación 'ScrollTop'
                                 animateScrollTop(800);
                             }, 400);
@@ -2684,14 +2688,14 @@
                         this.limpiarVenta();
 
                         this.list.ventas[this.indexVenta].NroAsiento = String(asientoSel.NumeAsiento).padStart(2, '0');
-                        this.list.ventas[this.indexVenta].CodiTipoDoc = _.find(this.list.tiposDoc, { 'id': asientoSel.TipoDocumento }) || null;
+                        this.list.ventas[this.indexVenta].CodiTipoDoc = appController.findTipoDocumento(asientoSel.TipoDocumento);
                         this.list.ventas[this.indexVenta].Documento = asientoSel.NumeroDocumento;
                         this.list.ventas[this.indexVenta].Nombres = asientoSel.Nombres;
                         this.list.ventas[this.indexVenta].ApellidoPaterno = asientoSel.ApellidoPaterno;
                         this.list.ventas[this.indexVenta].ApellidoMaterno = asientoSel.ApellidoMaterno;
                         this.list.ventas[this.indexVenta].FechaNac = asientoSel.FechaNacimiento;
                         this.list.ventas[this.indexVenta].Edad = asientoSel.Edad;
-                        this.list.ventas[this.indexVenta].Sexo = _.find(this.list.sexos, { 'id': asientoSel.Sexo }) || null;
+                        this.list.ventas[this.indexVenta].Sexo = appController.findSexo(asientoSel.Sexo);
                         this.list.ventas[this.indexVenta].Telefono = asientoSel.Telefono;
                         this.list.ventas[this.indexVenta].Recoger = asientoSel.RecogeEn;
                         this.list.ventas[this.indexVenta].Ruc = asientoSel.RucContacto;
@@ -2737,7 +2741,7 @@
                     this.indexVenta++;
                     this.list.ventas.push({
                         IdCliente: 0,
-                        CodiTipoDoc: this.list.tiposDoc.find(x => x.id = '1'),
+                        CodiTipoDoc: appController.findTipoDocumento('01'),
                         Documento: '',
                         Nombres: '',
                         ApellidoPaterno: '',
@@ -2950,19 +2954,8 @@
                         document.getElementById('txtDocumento').focus();
                         return;
                     }
-                    if (this.list.ventas[this.indexVenta].Documento.length < 8) {
+                    if (!appController.validateTipoDocumento(this.list.ventas[this.indexVenta].CodiTipoDoc.id, this.list.ventas[this.indexVenta].Documento, true)) {
                         document.getElementById('txtDocumento').focus();
-                        switch (this.list.ventas[this.indexVenta].CodiTipoDoc.id) {
-                            case '1':
-                                APP.msg.warning('Ingrese DNI de 8 dígitos.');
-                                break;
-                            case '4':
-                                APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
-                                break;
-                            case '7':
-                                APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
-                                break;
-                        }
                         return;
                     }
                     if (anulaValidacion === 'searchUser')
@@ -3674,44 +3667,14 @@
                             });
                             return auxValidate = false;
                         }
+                        
+                        if (!appController.validateTipoDocumento(this.list.ventas[i].CodiTipoDoc.id, this.list.ventas[i].Documento, true)) {
+                            this.indexVenta = i;
 
-                        if (this.list.ventas[i].Documento.length < 8) {
-
-                            switch (this.list.ventas[i].CodiTipoDoc.id) {
-                                case '1':
-                                    {
-                                        this.indexVenta = i;
-                                        APP.msg.warning('Ingrese DNI de 8 dígitos.');
-
-                                        this.$nextTick(() => {
-                                            document.getElementById('txtDocumento').focus();
-                                        });
-                                        return auxValidate = false;
-                                    };
-                                    break;
-                                case '4':
-                                    {
-                                        this.indexVenta = i;
-                                        APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
-
-                                        this.$nextTick(() => {
-                                            document.getElementById('txtDocumento').focus();
-                                        });
-                                        return auxValidate = false;
-                                    };
-                                    break;
-                                case '7':
-                                    {
-                                        this.indexVenta = i;
-                                        APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
-
-                                        this.$nextTick(() => {
-                                            document.getElementById('txtDocumento').focus();
-                                        });
-                                        return auxValidate = false;
-                                    };
-                                    break;
-                            }
+                            this.$nextTick(() => {
+                                document.getElementById('txtDocumento').focus();
+                            });
+                            return auxValidate = false;
                         }
 
                         if (!this.list.ventas[i].Nombres) {
@@ -4023,7 +3986,7 @@
                     this.indexVenta = 0;
                     this.list.ventas.length = 1;
                     this.list.ventas[this.indexVenta].IdCliente = 0;
-                    this.list.ventas[this.indexVenta].CodiTipoDoc = this.list.tiposDoc.find(x => x.id = '1');
+                    this.list.ventas[this.indexVenta].CodiTipoDoc = appController.findTipoDocumento('01');
                     this.list.ventas[this.indexVenta].Documento = '';
                     this.list.ventas[this.indexVenta].Nombres = '';
                     this.list.ventas[this.indexVenta].ApellidoPaterno = '';
@@ -4331,27 +4294,6 @@
 
                     return auxObj;
                 },
-                passNumDocToDocumento: function (auxValidate) {
-                    var codiTipoDoc = this.list.ventas[this.indexVenta].CodiTipoDoc;
-                    if (codiTipoDoc) {
-                        id = codiTipoDoc.id;
-                        if (id === '1') { // DNI
-                            this.mask.documento = "#".repeat(8);
-                            this.list.ventas[this.indexVenta].Nacionalidad = nacionalidadPorDefault;
-                        }
-                        else if (id === '4') { // PASAPORTE
-                            this.mask.documento = "N".repeat(15);
-                            this.list.ventas[this.indexVenta].Nacionalidad = '';
-                        }
-                        else if (id === '7') { // CARNET DE EXTRANJERÍA
-                            this.mask.documento = "N".repeat(15);
-                            this.list.ventas[this.indexVenta].Nacionalidad = '';
-                        }
-                    }
-
-                    if (auxValidate !== true)
-                        this.recorridoSectionVentas();
-                },
                 passSinceRegistrarNino: function () {
                     if (this.list.ventas[this.indexVenta].NroAsiento) {
                         if (this.disabledPrecio)
@@ -4646,12 +4588,12 @@
                         nomBen = ['', '', ''];
                     // ------------
 
-                    this.list.ventas[this.indexVenta].CodiTipoDoc = _.find(this.list.tiposDoc, { 'id': _beneficiario.TipoDocumento.replace(/0/g, '') }) || null;
+                    this.list.ventas[this.indexVenta].CodiTipoDoc = appController.findTipoDocumento(_beneficiario.TipoDocumento);
                     this.list.ventas[this.indexVenta].Documento = _beneficiario.NumeroDocumento;
                     this.list.ventas[this.indexVenta].Nombres = nomBen[2];
                     this.list.ventas[this.indexVenta].ApellidoPaterno = nomBen[0];
                     this.list.ventas[this.indexVenta].ApellidoMaterno = nomBen[1];
-                    this.list.ventas[this.indexVenta].Sexo = _.find(this.list.sexos, { 'id': _beneficiario.Sexo.replace(/0/g, '') }) || null;
+                    this.list.ventas[this.indexVenta].Sexo = appController.findSexo(_beneficiario.Sexo);
                     this.list.ventas[this.indexVenta].CodiGerente = appVuePaseCortesia.gerente ? appVuePaseCortesia.gerente.id : '';
                     this.list.ventas[this.indexVenta].CodiSocio = appVuePaseCortesia.solicitante ? appVuePaseCortesia.solicitante.id : '';
                     this.list.ventas[this.indexVenta].Concepto = appVuePaseCortesia.concepto;
@@ -5636,7 +5578,7 @@
                 },
                 showBuscaClientePasaje: function (e) {
                     if (e.keyCode === 112) { // F1
-                        if (this.list.ventas[this.indexVenta].CodiTipoDoc)
+                        if (this.list.ventas[this.indexVenta].CodiTipoDoc && this.list.ventas[this.indexVenta].CodiTipoDoc !== '00') // '00' --> Rayita
                             appController.showBuscaClientePasaje(this.list.ventas[this.indexVenta].CodiTipoDoc.id);
                     }
                 },
@@ -6035,6 +5977,24 @@
                             return { 'color': '#1e4672' };
                     }
                 },
+                configEventKeyF3: function (e) {
+                    if (e.keyCode === 114) {
+                        if (this.showVentas && this.filtro.CodiProgramacion !== 0) {
+                            e.preventDefault();
+
+                            var objRequest = {};
+                            objRequest.CodiEmpresa = this.filtro.CodiEmpresa;
+                            objRequest.CodiOrigenBus = this.filtro.CodiOrigenBus;
+                            objRequest.CodiPVOrigenBus = this.filtro.CodiPVOrigenBus;
+                            objRequest.CodiDestinoBus = this.filtro.CodiDestinoBus;
+                            objRequest.CodiServicio = this.filtro.CodiServicio;
+                            objRequest.Fecha = this.filtro.Fecha;
+                            objRequest.Turno = this.filtro.Turno;
+
+                            appController.showManifiestoPasajeros(objRequest);
+                        }
+                    }
+                },
                 anularAsientosBloqueadosTb: async function (_asientoSel) {
                     this.disabledAsiento = true;
 
@@ -6099,6 +6059,9 @@
 
                     return auxValidate;
                 },
+
+
+
                 openMenu: function (e, _item) {
                     // Animación 'ScrollTop'
                     animateScrollTop(800);
@@ -6131,10 +6094,22 @@
                     this.showContextMenu = false;
                     this.itemSelected = null;
                 },
-                contextMenuReimprimir: function () {
-                    var ListaVentasRealizadas = [];
+                contextMenuReimprimir: async function () {
+                    //debugger;
+                    //var auxBoletoCompleto = formatoBoletoCompleto(this.itemSelected.TipoBoleto, this.itemSelected.Boleto);
+
+                    //var resConfirm = await APP.msg.confirm(
+                    //    'Reimprimir boleto'
+                    //    , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será reimpreso, ¿Desea continuar?')
+
+                    //if (resConfirm) { }
+                    //else { }
+
+                    //return;
 
                     if (this.itemSelected) {
+                        var ListaVentasRealizadas = [];
+
                         var objVentaRealizada = {};
                         objVentaRealizada.IdVenta = this.itemSelected.IdVenta;
                         objVentaRealizada.NumeAsiento = this.itemSelected.NumeAsiento;
@@ -6186,24 +6161,6 @@
                     }
 
                     this.closeMenu();
-                },
-                configEventKeyF3: function (e) {
-                    if (e.keyCode === 114) {
-                        if (this.showVentas && this.filtro.CodiProgramacion !== 0) {
-                            e.preventDefault();
-
-                            var objRequest = {};
-                            objRequest.CodiEmpresa = this.filtro.CodiEmpresa;
-                            objRequest.CodiOrigenBus = this.filtro.CodiOrigenBus;
-                            objRequest.CodiPVOrigenBus = this.filtro.CodiPVOrigenBus;
-                            objRequest.CodiDestinoBus = this.filtro.CodiDestinoBus;
-                            objRequest.CodiServicio = this.filtro.CodiServicio;
-                            objRequest.Fecha = this.filtro.Fecha;
-                            objRequest.Turno = this.filtro.Turno;
-
-                            appController.showManifiestoPasajeros(objRequest);
-                        }
-                    }
                 },
                 contextMenuReintegro: async function () {
                     let _this = this;
@@ -6590,20 +6547,10 @@
                 },
                 listVentasCampoCodiTipoDoc: function (newVal, oldVal) {
                     if (newVal) {
-                        switch (newVal.id) {
-                            case '1':
-                                this.mask.documento = "#".repeat(8);
-                                this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
-                                break;
-                            case '4':
-                                this.mask.documento = "N".repeat(15);
-                                this.list.ventas[this.indexVenta].Nacionalidad = '';
-                                break;
-                            case '7':
-                                this.mask.documento = "N".repeat(15);
-                                this.list.ventas[this.indexVenta].Nacionalidad = '';
-                                break;
-                        }
+                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+
+                        if (newVal.id === '01')
+                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
                     }
                 },
                 listVentasCampoFechaReservacion: function (newVal, oldVal) {
@@ -7374,36 +7321,12 @@
                     var auxResponse = false;
 
                     var auxEdad = parseInt(this.Edad || '0') || 0;
-
                     if (!this.CodiTipoDoc) {
                         $('#cboTipoDocRA input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                     }
-                    else if (this.Documento.length < 8) {
-
+                    else if (!appController.validateTipoDocumento(this.CodiTipoDoc.id, this.Documento, auxValidate))
                         document.getElementById('txtDocumentoRA').focus();
-
-                        switch (this.CodiTipoDoc.id) {
-                            case '1':
-                                {
-                                    if (auxValidate === true)
-                                        APP.msg.warning('Ingrese DNI de 8 dígitos.');
-                                };
-                                break;
-                            case '4':
-                                {
-                                    if (auxValidate === true)
-                                        APP.msg.warning('Ingrese pasaporte de 8 caracteres como mínimo.');
-                                };
-                                return;
-                            case '7':
-                                {
-                                    if (auxValidate === true)
-                                        APP.msg.warning('Ingrese carnet de extranjería de 8 caracteres como mínimo.');
-                                };
-                                return;
-                        }
-                    }
                     else if (!this.Nombres) {
                         document.getElementById('txtNombresRA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese nombres.');
@@ -7524,20 +7447,8 @@
             watch: {
                 CodiTipoDoc: function (newVal, oldVal) {
                     if (newVal) {
-                        switch (newVal.id) {
-                            case '1':
-                                this.mask.documento = "#".repeat(8);
-                                this.validateMinNumero = '8';
-                                break;
-                            case '4':
-                                this.mask.documento = "N".repeat(15);
-                                this.validateMinNumero = '8';
-                                break;
-                            case '7':
-                                this.mask.documento = "N".repeat(15);
-                                this.validateMinNumero = '8';
-                                break;
-                        }
+                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+                        this.validateMinNumero = newVal.MinLonDocumento;
                     }
                 }
             }
@@ -9622,7 +9533,7 @@
                                     _this.item.servicio = data.CodiServicio;
                                     _this.item.fechaVenta = data.FechaViaje;
                                     _this.item.horaVenta = data.HoraViaje;
-                                    _this.item.documento = data.TipoDocumento.substring(1, 2);
+                                    _this.item.documento = data.TipoDocumento;
                                     _this.item.numero = data.Dni;
                                     _this.item.apellidoPaterno = data.SplitNombre[1];
                                     _this.item.apellidoMaterno = data.SplitNombre[2];

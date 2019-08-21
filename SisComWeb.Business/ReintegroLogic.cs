@@ -25,7 +25,7 @@ namespace SisComWeb.Business
             {
                 var valor = ReintegroRepository.VentaConsultaF12(request);
                 //Datos adicionales: 'FechaNacimiento'
-                var clientePasaje = ClientePasajeRepository.BuscaPasajero(valor.TipoDocumento, valor.Dni);
+                var clientePasaje = ClientePasajeRepository.BuscaPasajero(VentaLogic.TipoDocumentoHomologado(valor.TipoDocumento).ToString(), valor.Dni);
                 valor.FechaNac = clientePasaje.FechaNacimiento;
 
                 if (valor.IdVenta == 0)
@@ -516,7 +516,7 @@ namespace SisComWeb.Business
                             PasDireccion = entidad.DirEmpresaRuc,
                             NomOriPas = filtro.NomOrigen,
                             NomDesPas = entidad.NomDestino,
-                            DocTipo = VentaLogic.TipoDocumentoHomologadoParaFE(entidad.TipoDocumento),
+                            DocTipo = VentaLogic.TipoDocumentoHomologado(entidad.TipoDocumento),
                             DocNumero = entidad.Dni,
                             PrecioCan = entidad.PrecioVenta,
                             PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioVenta)),

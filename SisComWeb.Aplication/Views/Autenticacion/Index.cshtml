@@ -51,6 +51,7 @@
                               :get-option-label="getLabel"
                               :options="list.sucursales"
                               :select-on-tab="true"
+                              @@input="$refs.refSucursal.typeAheadPointer = $getSelectorVselect(list.sucursales, filtro.Sucursal)"
                               @@keydown.13.native.prevent="recorridoSucursal"
                               @*@@keydown.9.native.prevent="recorridoSucursal"*@
                               ref="refSucursal">
@@ -67,6 +68,7 @@
                               :get-option-label="getLabel"
                               :options="list.puntosventa"
                               :select-on-tab="true"
+                              @@input="$refs.refPuntoVenta.typeAheadPointer = $getSelectorVselect(list.puntosventa, filtro.PuntoVenta)"
                               @@keydown.13.native.prevent="recorrido"
                               @*@@keydown.9.native.prevent="recorrido"*@
                               ref="refPuntoVenta">
@@ -247,7 +249,7 @@
                     else {
                         document.getElementById("txtContrasena").focus();
                         response = true;
-                    }   
+                    }
 
                     return response;
                 },
@@ -260,7 +262,7 @@
                 }
             },
             computed: {
-                filledFiltro: function() {
+                filledFiltro: function () {
                     if (this.filtro.Codigo) {
                         if (this.filtro.Codigo === UsuarioJML) {
                             return (

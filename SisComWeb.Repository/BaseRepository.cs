@@ -36,6 +36,10 @@ namespace SisComWeb.Repository
                 case 6:
                     item.id = DataUtility.ObjectToString(reader["Codi_Documento"]);
                     item.label = DataUtility.ObjectToString(reader["Nom_Documento"]).ToUpper();
+
+                    item.MinLonDocumento = DataUtility.ObjectToString(reader["Min_Lon_Documento"]);
+                    item.MaxLonDocumento = DataUtility.ObjectToString(reader["Max_Lon_Documento"]);
+                    item.TipoDatoDocumento = DataUtility.ObjectToString(reader["Tipo_Dato_Documento"]);
                     break;
                 case 7:
                     item.id = DataUtility.ObjectToString(reader["Codi_Tipo_Pago"]);
@@ -199,7 +203,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListaTipoDocumento";
+                db.ProcedureName = "scwsp_ListaTipoDocumento02";
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
