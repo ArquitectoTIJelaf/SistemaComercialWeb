@@ -29,54 +29,28 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"NumeroReintegro\" : \"" + "" + "\"" +//
+                                    "\"NumeroReintegro\" : \"" + string.Empty + "\"" + 
                                     ",\"CodiProgramacion\" : \"" + filtro.CodiProgramacion + "\"" +
-                                    ",\"Origen\" : \"" + "" + "\"" +//
+                                    ",\"Origen\" : \"" + string.Empty + "\"" + 
                                     ",\"IdVenta\" : " + filtro.IdVenta +
                                     ",\"NumeAsiento\" : \"" + filtro.NumeAsiento + "\"" +
-                                    ",\"Ruta\" : \"" + "" + "\"" +//
+                                    ",\"Ruta\" : \"" + string.Empty + "\"" + 
                                     ",\"CodiServicio\" : \"" + filtro.CodiServicio + "\"" +
-                                    ",\"TipoDoc\" : \"" + "" + "\"" +
+                                    ",\"TipoDoc\" : \"" + string.Empty + "\"" + 
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                    ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
+                                    ",\"CodiEsca\" : \"" + filtro.CodiEsca + "\"" +
+                                    ",\"CodiEmpresa\" : \"" + filtro.CodiEmpresa + "\"" +
+                                    ",\"CodiUsuario\" : \"" + usuario.CodiUsuario + "\"" +
+                                    ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"Boleto\" : \"" + filtro.Boleto + "\"" +
+                                    ",\"Pasajero\" : \"" + filtro.Pasajero + "\"" +
+                                    ",\"NomSucursal\" : \"" + usuario.NomSucursal + "\"" +
+                                    ",\"PuntoVenta\" : \"" + usuario.CodiPuntoVenta + "\"" +
+                                    ",\"Terminal\" : \"" + usuario.Terminal + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("UpdatePostergacion", new StringContent(_body, Encoding.UTF8, "application/json"));
-                    if (response.IsSuccessStatusCode)
-                        result = await response.Content.ReadAsStringAsync();
-                }
-
-                JToken tmpResult = JObject.Parse(result);
-
-                Response<decimal> res = new Response<decimal>()
-                {
-                    Estado = (bool)tmpResult["Estado"],
-                    Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (decimal)tmpResult["Valor"]
-                };
-
-                return Json(res, JsonRequestBehavior.AllowGet);
-            }
-            catch
-            {
-                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        [Route("update-programacion")]
-        public async Task<ActionResult> UpdateProgramacion(int CodiProgramacion, int IdVenta)
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    var _body = "{" +
-                                    "\"NumeroReintegro\" : " + CodiProgramacion +
-                                    ",\"CodiProgramacion\" : " + IdVenta + 
-                                "}";
-                    HttpResponseMessage response = await client.PostAsync("UpdateProgramacion", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }
