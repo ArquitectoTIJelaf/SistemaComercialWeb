@@ -8802,7 +8802,7 @@
                     }))
                         .then(async (res) => {
                             if (res.data.Valor) {
-
+                                debugger;
                                 //Validación: No debe tener nota de crédito
                                 _this.item.notaCredito = '';
                                 var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(res.data.Valor.IdVenta));
@@ -8811,6 +8811,8 @@
                                         _this.item.notaCredito = _this.item.tipo + _.cloneDeep(verificaNotaCredito.Mensaje).substring(verificaNotaCredito.Mensaje.length - 11);
                                     }
                                 }
+
+                                var codiProgramacion = _.cloneDeep(res.data.Valor.CodiProgramacion);
 
                                 _this.filtro.idVenta = res.data.Valor.IdVenta;
                                 _this.filtro.dni = res.data.Valor.Dni;
@@ -8822,11 +8824,11 @@
                                 _this.filtro.tipoDoc = res.data.Valor.TipoDocumento;
                                 _this.filtro.nacionidad = res.data.Valor.Nacionalidad;
                                 //_this.item.codEmpresa = res.data.Valor.CodiEmpresa;
-                                _this.item.destinoBus = res.data.Valor.CodiRuta;
-                                _this.item.turno = res.data.Valor.HoraProgramacion;
+                                _this.item.destinoBus = (codiProgramacion) ? res.data.Valor.CodiRuta : '';
+                                _this.item.turno = (codiProgramacion) ? res.data.Valor.HoraProgramacion : '';
                                 _this.item.ruta = res.data.Valor.CodiSubruta;
-                                _this.item.dia = res.data.Valor.FechaProgramacion;
-                                _this.item.fechaViaje = res.data.Valor.FechaViaje;
+                                _this.item.dia = (codiProgramacion) ? res.data.Valor.FechaProgramacion: '';
+                                _this.item.fechaViaje = (codiProgramacion) ? res.data.Valor.FechaViaje : '';
                                 _this.item.fechaVenta = res.data.Valor.FechaVenta;
                                 _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
                                 _this.item.sexo = res.data.Valor.Sexo;
@@ -9986,7 +9988,6 @@
                     var auxFechaViaje = '';
                     var auxHoraViaje = '';
                     var auxAsiento = '';
-                    var auxAsientoAuditoria = '';
                     var auxCodiProgramacion = '';
                     var auxPrecioSinDescuento = '';
 
@@ -10001,7 +10002,6 @@
                             auxServicio = _this.dataOriginal.CodiServicio;
                             auxFechaViaje = _this.dataOriginal.FechaViaje;
                             auxHoraViaje = _this.dataOriginal.HoraViaje;
-                            auxAsientoAuditoria = '00';
                             auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
                             auxPrecioSinDescuento = _this.item.reintegro;
                         }; break;
@@ -10013,14 +10013,12 @@
                             auxServicio = _this.filtroMiniMapa.CodiServicio;
                             auxFechaViaje = _this.filtroMiniMapa.FechaViaje;
                             auxHoraViaje = _this.filtroMiniMapa.HoraViaje;
-                            auxAsiento = _this.filtroCambio.NumAsiento;
-                            auxAsientoAuditoria = _this.dataOriginal.NumAsiento;
+                            auxAsiento = _this.filtroCambio.NumAsiento;                            
                             auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
                             auxPrecioSinDescuento = "";
 
                             updateReintegro = true;
                         }; break;
-                        default:
                     }
 
                     //Valida 'Precio Reintegro'
@@ -10185,8 +10183,8 @@
                                 input.TipoOri = _this.dataOriginal.Tipo;
                                 input.CodiTarjetaCredito = (appVueTipoPago2.tarjeta2) ? appVueTipoPago2.tarjeta2.id : '';
                                 input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
-                                input.NumAsientoAuditoria = auxAsientoAuditoria;
-                                input.BoletoAuditoria = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
+                                input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
 
                                 _this.disabledAceptar = false;
                             }

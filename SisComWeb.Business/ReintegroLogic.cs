@@ -363,7 +363,7 @@ namespace SisComWeb.Business
                                 Precio = (decimal)filtro.PRECIO_VENTA,
                                 Obs1 = "REINTEGRO DE PASAJES",
                                 Obs2 = filtro.CODI_PROGRAMACION,
-                                Obs3 = "BOL-" + filtro.Serie + "-" + filtro.nume_boleto,
+                                Obs3 = "BOL-" + filtro.Serie.PadLeft(3, '0') + "-" + filtro.nume_boleto.PadLeft(7, '0'),
                                 Obs4 = filtro.NomMotivo,
                                 Obs5 = string.Empty
                             };
