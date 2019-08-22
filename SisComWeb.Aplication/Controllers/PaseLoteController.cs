@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace SisComWeb.Aplication.Controllers
 {
@@ -20,32 +22,27 @@ namespace SisComWeb.Aplication.Controllers
 
         [HttpPost]
         [Route("update-postergacion")]
-        public async Task<ActionResult> UpdatePostergacion(FiltroPaseLote filtro)
+        public async Task<ActionResult> UpdatePostergacion(List<FiltroPaseLote> list)
         {
             try
             {
                 string result = string.Empty;
+
+                XmlSerializer ser = new XmlSerializer(typeof(List<FiltroPaseLote>), new XmlRootAttribute("PaseLoteList"));
+                StringBuilder sb = new StringBuilder();
+                using (XmlWriter xml = XmlWriter.Create(sb))
+                {
+                    ser.Serialize(xml, list);
+                }
+                string cadxml = sb.ToString();
+
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"NumeroReintegro\" : \"" + string.Empty + "\"" + 
-                                    ",\"CodiProgramacion\" : \"" + filtro.CodiProgramacion + "\"" +
-                                    ",\"Origen\" : \"" + string.Empty + "\"" + 
-                                    ",\"IdVenta\" : " + filtro.IdVenta +
-                                    ",\"NumeAsiento\" : \"" + filtro.NumeAsiento + "\"" +
-                                    ",\"Ruta\" : \"" + string.Empty + "\"" + 
-                                    ",\"CodiServicio\" : \"" + filtro.CodiServicio + "\"" +
-                                    ",\"TipoDoc\" : \"" + string.Empty + "\"" + 
-                                    ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-                                    ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
-                                    ",\"FlagVenta\" : \"" + filtro.FlagVenta + "\"" +
-                                    ",\"CodiEsca\" : \"" + filtro.CodiEsca + "\"" +
-                                    ",\"CodiEmpresa\" : \"" + filtro.CodiEmpresa + "\"" +
+                                    "\"Lista\" : \"" + cadxml.Replace('"','\'') + "\"" +
                                     ",\"CodiUsuario\" : \"" + usuario.CodiUsuario + "\"" +
                                     ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
-                                    ",\"Boleto\" : \"" + filtro.Boleto + "\"" +
-                                    ",\"Pasajero\" : \"" + filtro.Pasajero + "\"" +
                                     ",\"NomSucursal\" : \"" + usuario.NomSucursal + "\"" +
                                     ",\"PuntoVenta\" : \"" + usuario.CodiPuntoVenta + "\"" +
                                     ",\"Terminal\" : \"" + usuario.Terminal + "\"" +
@@ -54,14 +51,23 @@ namespace SisComWeb.Aplication.Controllers
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }
-
+                
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<decimal> res = new Response<decimal>()
+                Response<List<PaseLote>> res = new Response<List<PaseLote>>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (decimal)tmpResult["Valor"]
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new PaseLote
+                    {
+                        Boleto = (string)x["Boleto"],
+                        NumeAsiento = (string)x["NumeAsiento"],
+                        Pasajero = (string)x["Pasajero"],
+                        FechaViaje = (string)x["FechaViaje"],
+                        HoraViaje = (string)x["HoraViaje"],
+                        IdVenta = (int)x["IdVenta"],
+                        CodiProgramacion = (string)x["CodiProgramacion"]
+                    }).ToList()
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);

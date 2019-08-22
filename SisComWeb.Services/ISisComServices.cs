@@ -416,7 +416,7 @@ namespace SisComWeb.Services
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "UpdatePostergacion",ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> UpdatePostergacion(UpdatePostergacionRequest request);
+        Response<List<PaseLoteResponse>> UpdatePostergacion(UpdatePostergacionRequest request);
         #endregion
     }
 }
