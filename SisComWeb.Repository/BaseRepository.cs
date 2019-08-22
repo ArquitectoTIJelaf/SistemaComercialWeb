@@ -203,7 +203,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_ListaTipoDocumento02";
+                db.ProcedureName = "scwsp_ListaTipoDocumento";
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
