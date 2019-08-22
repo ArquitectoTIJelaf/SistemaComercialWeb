@@ -63,7 +63,6 @@ namespace SisComWeb.Repository
                             CodiEsca = string.Empty,
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
-
                             Info = string.Empty,
                             Observacion = string.Empty
                         };
@@ -216,7 +215,6 @@ namespace SisComWeb.Repository
                             ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
                             CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
                             CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
-
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,
                             ApellidoMaterno = string.Empty,
@@ -228,7 +226,6 @@ namespace SisComWeb.Repository
                             Tipo = string.Empty,
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
-
                             Info = string.Empty,
                             Observacion = string.Empty
                         };
@@ -298,7 +295,6 @@ namespace SisComWeb.Repository
                             CodiEsca = string.Empty,
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
-
                             Info = string.Empty,
                             Observacion = string.Empty
                         };
@@ -312,7 +308,7 @@ namespace SisComWeb.Repository
 
         public static string ObtenerOrdenOficinaRuta(int NroViaje, short CodiOriDes)
         {
-            var valor = string.Empty;
+            var valor = "0";
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -323,7 +319,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "orden");
+                        valor = Reader.GetStringValue(drlector, "orden") ?? "0";
                         break;
                     }
                 }

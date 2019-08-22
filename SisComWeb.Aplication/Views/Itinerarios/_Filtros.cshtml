@@ -20,6 +20,7 @@
                                                   :options="list.origenesPas"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
+                                                  @@input="$refs.refOrigenPas.typeAheadPointer = $getSelectorVselect(list.origenesPas, filtro.CodiOrigen)"
                                                   @@keydown.13.native.prevent="nextStep(1)"
                                                   @*@@keydown.9.native.prevent="nextStep(1)"*@
                                                   ref="refOrigenPas">
@@ -39,6 +40,7 @@
                                                   :options="list.destinosPas"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
+                                                  @@input="$refs.refDestinoPas.typeAheadPointer = $getSelectorVselect(list.destinosPas, filtro.CodiDestino)"
                                                   @@keydown.13.native.prevent="nextStep(2)"
                                                   @*@@keydown.9.native.prevent="nextStep(2)"*@
                                                   ref="refDestinoPas">
@@ -58,6 +60,7 @@
                                                   :options="list.destinosBus"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
+                                                  @@input="$refs.refDestinoBus.typeAheadPointer = $getSelectorVselect(list.destinosBus, filtro.CodiRuta)"
                                                   @@keydown.13.native.prevent="nextStep(3)"
                                                   @*@@keydown.9.native.prevent="nextStep(3)"*@
                                                   ref="refDestinoBus">

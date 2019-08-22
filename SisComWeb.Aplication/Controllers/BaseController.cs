@@ -219,14 +219,18 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<List<Base>> res = new Response<List<Base>>()
+                Response<List<DocumentoBase>> res = new Response<List<DocumentoBase>>()
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new DocumentoBase
                     {
                         id = (string)x["id"],
-                        label = (string)x["label"]
+                        label = (string)x["label"],
+
+                        MinLonDocumento = (string)x["MinLonDocumento"],
+                        MaxLonDocumento = (string)x["MaxLonDocumento"],
+                        TipoDatoDocumento = (string)x["TipoDatoDocumento"]
                     }).ToList()
                 };
 
@@ -234,7 +238,7 @@ namespace SisComWeb.Aplication.Controllers
             }
             catch
             {
-                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<DocumentoBase>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
 

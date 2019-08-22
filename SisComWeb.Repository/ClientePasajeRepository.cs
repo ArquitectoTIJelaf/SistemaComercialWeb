@@ -32,7 +32,7 @@ namespace SisComWeb.Repository
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "scwsp_BuscarPasajero";
-                db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, TipoDoc.TrimStart('0'));
+                db.AddParameter("@Tipo_Doc_Id", DbType.String, ParameterDirection.Input, TipoDoc);
                 db.AddParameter("@Numero_Doc", DbType.String, ParameterDirection.Input, NumeroDoc);
                 using (IDataReader drlector = db.GetDataReader())
                 {

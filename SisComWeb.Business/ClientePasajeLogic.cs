@@ -18,7 +18,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(TipoDoc, NumeroDoc);
+                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(VentaLogic.TipoDocumentoHomologado(TipoDoc).ToString(), NumeroDoc);
 
                 // Valida 'FechaNacimiento'
                 if (buscaPasajero.FechaNacimiento == "01/01/1900")
@@ -207,6 +207,9 @@ namespace SisComWeb.Business
             {
                 foreach (var entidad in lista)
                 {
+                    // Seteo el 'TipoDocumentoHomologado'
+                    entidad.TipoDoc = VentaLogic.TipoDocumentoHomologado(entidad.TipoDoc).ToString();
+
                     if (entidad.IdCliente > 0)
                     {
                         // Modifica 'Pasajero'
@@ -266,7 +269,7 @@ namespace SisComWeb.Business
         {
             try
             {
-                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(campo, nombres, paterno, materno, TipoDocId);
+                var BuscarClientesPasaje = ClientePasajeRepository.BuscarClientesPasaje(campo, nombres, paterno, materno, VentaLogic.TipoDocumentoHomologado(TipoDocId).ToString());
 
                 return new Response<List<ClientePasajeEntity>>(true, BuscarClientesPasaje, Message.MsgCorrectoBuscarClientesPasaje, true);
             }

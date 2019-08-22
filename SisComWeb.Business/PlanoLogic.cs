@@ -203,7 +203,7 @@ namespace SisComWeb.Business
             entidad.EmbarqueHora = item.EmbarqueHora;
             entidad.ImpManifiesto = item.ImpManifiesto;
             entidad.CodiSucursal = item.CodiSucursal;
-            entidad.TipoDocumento = item.TipoDocumento.TrimStart('0'); // Formato de la vista: Combo 'tiposDoc' = {"1", "4", "7"}
+            entidad.TipoDocumento = item.TipoDocumento;
             entidad.NumeroDocumento = item.NumeroDocumento;
             entidad.Nombres = item.SplitNombres[0];
             entidad.ApellidoPaterno = item.SplitNombres[1];
@@ -214,13 +214,12 @@ namespace SisComWeb.Business
             entidad.Telefono = item.Telefono;
             entidad.ValeRemoto = item.ValeRemoto;
             entidad.CodiEsca = item.CodiEsca;
-
             entidad.CodiEmpresa = item.CodiEmpresa;
 
             // Busca 'Pasajero'
             if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
             {
-                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
+                var buscaPasajero = ClientePasajeRepository.BuscaPasajero(VentaLogic.TipoDocumentoHomologado(entidad.TipoDocumento).ToString(), entidad.NumeroDocumento);
                 entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
 
                 entidad.Especial = buscaPasajero.Especial;
@@ -291,11 +290,10 @@ namespace SisComWeb.Business
                 entidad.ClavUsuarioReintegro = consultaVentaReintegro.CodiUsuario;
                 entidad.SucVentaReintegro = consultaVentaReintegro.SucVenta;
                 entidad.PrecVentaReintegro = consultaVentaReintegro.PrecioVenta;
-                //TESTSSSSSSSSSS XDDDDDDDD
                 entidad.Nombres = consultaVentaReintegro.SplitNombre[0];
                 entidad.ApellidoPaterno = consultaVentaReintegro.SplitNombre[1];
                 entidad.ApellidoMaterno = consultaVentaReintegro.SplitNombre[2];
-                entidad.TipoDocumento = consultaVentaReintegro.TipoDocumento.TrimStart('0'); // Formato de la vista: Combo 'tiposDoc' = {"1", "4", "7"}
+                entidad.TipoDocumento = consultaVentaReintegro.TipoDocumento;
                 entidad.NumeroDocumento = consultaVentaReintegro.Dni;
                 entidad.Edad = consultaVentaReintegro.Edad;
                 entidad.RucContacto = consultaVentaReintegro.RucCliente;
@@ -304,7 +302,7 @@ namespace SisComWeb.Business
                 // Busca 'Pasajero'
                 if (!string.IsNullOrEmpty(entidad.TipoDocumento) && !string.IsNullOrEmpty(entidad.NumeroDocumento))
                 {
-                    var buscaPasajero = ClientePasajeRepository.BuscaPasajero(entidad.TipoDocumento, entidad.NumeroDocumento);
+                    var buscaPasajero = ClientePasajeRepository.BuscaPasajero(VentaLogic.TipoDocumentoHomologado(entidad.TipoDocumento).ToString(), entidad.NumeroDocumento);
                     entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
                 }
 
