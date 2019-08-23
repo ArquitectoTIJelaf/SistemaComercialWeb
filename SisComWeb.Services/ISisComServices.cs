@@ -390,10 +390,6 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "SaveReintegro", ResponseFormat = WebMessageFormat.Json)]
         Response<VentaResponse> SaveReintegro(ReintegroVentaRequest filtro);
-        
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ConsultarIgv", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<decimal> ConsultarIgv(string TipoDoc);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultarPrecioRuta", ResponseFormat = WebMessageFormat.Json)]

@@ -157,6 +157,12 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NumeTarjetaCredito\" : \"" + (filtro.NumeTarjetaCredito ?? "") + "\"" +
                                     ",\"NumAsientoAuditoria\" : \"" + filtro.NumAsientoAuditoria + "\"" +
                                     ",\"BoletoAuditoria\" : \"" + filtro.BoletoAuditoria + "\"" +
+
+                                    ",\"NomEmpresa\" : \"" + filtro.NomEmpresa + "\"" +
+                                    ",\"RucEmpresa\" : \"" + filtro.RucEmpresa + "\"" +
+                                    ",\"DireccionEmpresa\" : \"" + filtro.DireccionEmpresa + "\"" +
+                                    ",\"ElectronicoEmpresa\" : \"" + filtro.ElectronicoEmpresa + "\"" +
+                                    ",\"TipoImpresora\" : " + filtro.TipoImpresora +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("SaveReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -183,41 +189,6 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        [Route("verifica-igv")]
-        public async Task<ActionResult> ConsultarIgv(string TipoDoc)
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    var _body = "{" +
-                                    "\"TipoDoc\" : \"" + TipoDoc + "\"" +
-                                "}";
-                    HttpResponseMessage response = await client.PostAsync("ConsultarIgv", new StringContent(_body, Encoding.UTF8, "application/json"));
-                    if (response.IsSuccessStatusCode)
-                        result = await response.Content.ReadAsStringAsync();
-                }
-
-                JToken tmpResult = JObject.Parse(result);
-
-                Response<decimal> res = new Response<decimal>()
-                {
-                    Estado = (bool)tmpResult["Estado"],
-                    Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (decimal)tmpResult["Valor"]
-                };
-
-                return Json(res, JsonRequestBehavior.AllowGet);
-            }
-            catch
-            {
-                return Json(new Response<decimal>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -381,6 +352,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
                                     ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
                                     ",\"Terminal\": " + usuario.Terminal.ToString("D3") +
+
+                                    ",\"RucEmpresa\" : \"" + request.RucEmpresa + "\"" +
+                                    ",\"ElectronicoEmpresa\" : \"" + request.ElectronicoEmpresa + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("AnularReintegro", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

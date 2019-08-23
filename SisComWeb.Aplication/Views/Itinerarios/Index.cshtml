@@ -9554,6 +9554,7 @@
                                 }
 
                                 if (data) {
+                                    debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -10033,16 +10034,7 @@
                             return;
                         }
                     }
-
-                    ////Confirmar conservar crédito
-                    //if (_this.dataOriginal.FlagVenta === '1') {
-                    //    if (await APP.msg.confirm('Boleto emitido como crédito', '¿desea emitir el boleto crédito bajo las misma modalidad?')) {
-                    //        _this.item.stReintegro = 'X';
-                    //    } else {
-                    //        _this.item.stReintegro = '';
-                    //    }
-                    //}
-
+                    
                     //appController.showTipoPago();
                     appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
 
@@ -10054,14 +10046,7 @@
                     });
 
                     var input = {};
-
-                    //Código interno de documento
-                    var CodiInternoDocumento = (appVueVenta.TipoTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
-                        : ((_this.item.ruc) ? '17' : '16');
-
-                    //Consulta del IGV
-                    var igv = await _this.verificaIgv(CodiInternoDocumento);
-
+                    
                     await deferredModal($('#appVueTipoPago2'), false).done(function () {
                         appVueTipoPago2.$nextTick(() => {
                             checkTipoPago = appVueTipoPago2.trustedSave;
@@ -10084,10 +10069,10 @@
                                 input.EDAD = _this.item.edad;
                                 input.TELEF = _this.item.telefono;
                                 input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
-                                input.porcentaje = igv;
+                                input.porcentaje = 0;
                                 input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
-                                input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
+                                input.tota_ruta1 = 0;
+                                input.tota_ruta2 = 0;
                                 input.Punto_Venta = Usuario.CodiPuntoVenta;
                                 input.tipo_doc = _this.item.documento;
                                 input.codi_ori_psj = auxOrigenPas;
@@ -10103,7 +10088,7 @@
                                 input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
                                 input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
                                 input.CODI_TERMINAL__ = Usuario.Terminal;
-                                input.Codi_Documento__ = CodiInternoDocumento;
+                                input.Codi_Documento__ = 0;
                                 input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
                                 input.fecha_venta__ = moment().format('DD/MM/YYYY');
                                 input.Pventa__ = Usuario.CodiPuntoVenta;
@@ -10129,6 +10114,13 @@
                                 input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
                                 input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
                                 input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                //NEW
+                                var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
+                                input.NomEmpresa = auxObjEmpresa.label;
+                                input.RucEmpresa = auxObjEmpresa.Ruc;
+                                input.DireccionEmpresa = auxObjEmpresa.Direccion;
+                                input.ElectronicoEmpresa = auxObjEmpresa.Electronico;
+                                input.TipoImpresora = appVueVenta.TipoImpresora;
 
                                 _this.disabledAceptar = false;
                             }
@@ -10170,15 +10162,6 @@
 
                     _this.disabledAceptar = false;
                 },
-                verificaIgv: async function (CodiInternoDocumento) {
-                    var igv = 0;
-                    await APP.rq.axios2.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento }))
-                        .then(res => {
-                            igv = _.cloneDeep(res.data.Valor);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-                    return igv;
-                },
                 updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
                     APP.rq.axios2.get(APP.base + '/reintegro/update-reintegro' + APP.util.getQueryParamByObject({
                         IdVenta: IdVenta,
@@ -10199,6 +10182,7 @@
                     item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
                     item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
                     item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
+                    debugger;
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -11212,6 +11196,10 @@
                 },
                 anularReintegro: async function (data) {
                     var _this = this;
+
+                    debugger;
+                    var auxObjEmpresa = appController.findEmpresa(data.CodiEmpresa);
+                    
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
                         IdVenta: data.IdVenta,
                         CodiEsca: data.CodiEsca,
@@ -11223,7 +11211,10 @@
                         NumeBoleto: data.NumeBoleto,
                         Tipo: data.Tipo,
                         TipoPago: data.TipoPago,
-                        PrecioVenta: data.PrecioVenta
+                        PrecioVenta: data.PrecioVenta,
+
+                        RucEmpresa: auxObjEmpresa.Ruc,
+                        ElectronicoEmpresa: auxObjEmpresa.Electronico
                     }))
                         .then(async (res) => {
                             if (res.data.EsCorrecto) {

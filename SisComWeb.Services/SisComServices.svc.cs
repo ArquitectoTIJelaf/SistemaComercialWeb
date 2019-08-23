@@ -1118,19 +1118,6 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<decimal> ConsultarIgv(string TipoDoc)
-        {
-            try
-            {
-                return ReintegroLogic.ConsultarIgv(TipoDoc);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
-            }
-        }
-
         public Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
         {
             try

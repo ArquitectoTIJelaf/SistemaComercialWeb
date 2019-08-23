@@ -175,18 +175,23 @@ namespace SisComWeb.Business
                     CodiBus = filtro.CodiBus,
                     CodiEmbarque = short.Parse(filtro.Sube_en),
                     Nombre = filtro.NOMB,
-                    TipoPago = filtro.Tipo_Pago
+                    TipoPago = filtro.Tipo_Pago,
+
+                    NomEmpresa = filtro.NomEmpresa,
+                    RucEmpresa = filtro.RucEmpresa,
+                    DireccionEmpresa = filtro.DireccionEmpresa,
+                    ElectronicoEmpresa = filtro.ElectronicoEmpresa,
+                    TipoTerminalElectronico = filtro.Tipo, //Solo para validar SUNAT
+                    TipoImpresora = filtro.TipoImpresora
                 };
-
-                var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
-
+                
                 // Seteo 'CodiDocumento'
                 if (!string.IsNullOrEmpty(entidad.RucCliente))
                 {
                     entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaFactura;
 
                     // Correlativo '20'
-                    switch (validarTerminalElectronico.Tipo)
+                    switch (entidad.TipoTerminalElectronico)
                     {
                         case "M":
                             {
@@ -198,7 +203,7 @@ namespace SisComWeb.Business
                                         entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
 
                                         // Busca 'Correlativo'
-                                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                         if (buscarCorrelativo.SerieBoleto != 0)
                                         {
                                             entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
@@ -226,14 +231,14 @@ namespace SisComWeb.Business
                 // Busca 'Correlativo'
                 if (entidad.AuxCodigoBF_Interno != CodiCorrelativoCredito)
                 {
-                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                     entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
                     entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                 }
 
                 if (buscarCorrelativo.SerieBoleto == 0)
                 {
-                    switch (validarTerminalElectronico.Tipo)
+                    switch (entidad.TipoTerminalElectronico)
                     {
                         case "M":
                             {
@@ -249,7 +254,7 @@ namespace SisComWeb.Business
                                                 entidad.CodiDocumento = "03"; // Boleta
 
                                                 // Busca 'Correlativo'
-                                                buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                                 if (buscarCorrelativo.SerieBoleto == 0)
                                                     return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                 else
@@ -275,7 +280,7 @@ namespace SisComWeb.Business
                 }
 
                 // Seteo 'Tipo'
-                switch (validarTerminalElectronico.Tipo)
+                switch (entidad.TipoTerminalElectronico)
                 {
                     case "M":
                         entidad.Tipo = "M";
@@ -338,6 +343,12 @@ namespace SisComWeb.Business
                         filtro.Serie = entidad.SerieBoleto.ToString();
                         filtro.nume_boleto = entidad.NumeBoleto.ToString();
                         filtro.NUME_CORRELATIVO__ = entidad.NumeBoleto.ToString();
+
+                        var igv = ReintegroRepository.ConsultarIgv(entidad.AuxCodigoBF_Interno);
+                        filtro.porcentaje = igv;
+                        filtro.tota_ruta1 = filtro.PRECIO_VENTA / (1 + (igv / 100));
+                        filtro.tota_ruta2 = filtro.PRECIO_VENTA - filtro.tota_ruta1;
+
                         //Graba Reintegro
                         var res = ReintegroRepository.SaveReintegro(filtro);
                         var ventaRealizada = (res > 0) ? true : false;
@@ -381,7 +392,7 @@ namespace SisComWeb.Business
                                         if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
                                             return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
-                                        var auxBoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+                                        var auxBoletoCompleto = VentaLogic.BoletoFormatoCompleto(entidad.TipoTerminalElectronico, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
                                         var auxCodiDestino = (filtro.CodMotivo.Equals("00003") || filtro.CodMotivo.Equals("00004")) ? filtro.CODI_SUBRUTA : "";
 
@@ -478,7 +489,7 @@ namespace SisComWeb.Business
                                 VentaRepository.GrabarAuditoria(objAuditoria2);
                             }
 
-                            if (!filtro.Tipo.Equals("M"))
+                            if (!filtro.Tipo.Equals("M") && entidad.ElectronicoEmpresa == "1")
                             {
                                 //Registra 'DocumentoSUNAT'
                                 var resRegistrarDocumentoSUNAT = VentaLogic.RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
@@ -498,7 +509,7 @@ namespace SisComWeb.Business
                         var auxVentaRealizada = new VentaRealizadaEntity
                         {
                             // Para la vista 'BoletosVendidos'
-                            BoletoCompleto = VentaLogic.BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),//ok
+                            BoletoCompleto = VentaLogic.BoletoFormatoCompleto(entidad.TipoTerminalElectronico, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),//ok
                             NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                             // Para el método 'ConvertirVentaToBase64'
                             IdVenta = res,//entidad.IdVenta,
@@ -524,9 +535,9 @@ namespace SisComWeb.Business
                             FechaViaje = entidad.FechaViaje,
                             EmbarqueDir = filtro.DirEmbarque,
                             EmbarqueHora = filtro.Hora_Emb,
-                            CodigoX_FE = entidad.SignatureValue,
-                            TipoTerminalElectronico = validarTerminalElectronico.Tipo,
-                            TipoImpresora = byte.Parse(validarTerminalElectronico.Imp),
+                            CodigoX_FE = entidad.SignatureValue ?? string.Empty,
+                            TipoTerminalElectronico = entidad.TipoTerminalElectronico,
+                            TipoImpresora = entidad.TipoImpresora,
 
                             EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
                             EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
@@ -534,6 +545,12 @@ namespace SisComWeb.Business
                             PolizaNum = entidad.PolizaNum,
                             PolizaFechaReg = entidad.PolizaFechaReg,
                             PolizaFechaVen = entidad.PolizaFechaVen,
+
+                            //NEW
+                            EmpRuc = entidad.RucEmpresa,
+                            EmpRazSocial = entidad.NomEmpresa,
+                            EmpDireccion = entidad.DireccionEmpresa,
+                            EmpElectronico = entidad.ElectronicoEmpresa,
 
                             // Parámetros extras
                             EmpCodigo = entidad.CodiEmpresa,
@@ -562,21 +579,7 @@ namespace SisComWeb.Business
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaReintegro, false);
             }
         }
-
-        public static Response<decimal> ConsultarIgv(string TipoDoc)
-        {
-            try
-            {
-                var res = ReintegroRepository.ConsultarIgv(TipoDoc);
-                return new Response<decimal>(true, res, string.Empty, true);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
-            }
-        }
-
+        
         public static Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
         {
             try
@@ -643,7 +646,7 @@ namespace SisComWeb.Business
                 if (request.IdVenta > 0)
                 {
                     // Valida 'AnularDocumentoSUNAT'
-                    if (request.CodiEsca.Substring(0, 1) != "M")
+                    if (!request.Tipo.Equals("M") && request.ElectronicoEmpresa == "1")
                     {
                         // Anula 'DocumentoSUNAT'
                         var objVentaReintegro = new VentaEntity
@@ -652,7 +655,8 @@ namespace SisComWeb.Business
                             SerieBoleto = request.SerieBoleto,
                             NumeBoleto = request.NumeBoleto,
                             Tipo = request.Tipo,
-                            FechaVenta = request.FechaVenta
+                            FechaVenta = request.FechaVenta,
+                            RucEmpresa = request.RucEmpresa
                         };
 
                         var resAnularDocumentoSUNAT = VentaLogic.AnularDocumentoSUNAT(objVentaReintegro);
