@@ -51,8 +51,8 @@ namespace SisComWeb.Aplication.Controllers
                 EmbarqueDir = (string)x["EmbarqueDir"],
                 EmbarqueHora = (string)x["EmbarqueHora"],
                 CodigoX_FE = (string)x["CodigoX_FE"],
-                CodTerminal = (string)x["CodTerminal"],
-                TipImpresora = (byte)x["TipImpresora"],
+                TipoTerminalElectronico = (string)x["TipoTerminalElectronico"],
+                TipoImpresora = (byte)x["TipoImpresora"],
                 CodX = (string)x["CodX"],
 
                 EmpDirAgencia = (string)x["EmpDirAgencia"],

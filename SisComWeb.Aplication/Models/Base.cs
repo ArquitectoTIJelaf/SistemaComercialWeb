@@ -19,4 +19,15 @@
 
         public string TipoDatoDocumento { get; set; }
     }
+
+    public class EmpresaBase : Base
+    {
+        public string Ruc { get; set; }
+
+        public string Direccion { get; set; }
+
+        public string Electronico { get; set; }
+
+        public string Contingencia { get; set; }
+    }
 }

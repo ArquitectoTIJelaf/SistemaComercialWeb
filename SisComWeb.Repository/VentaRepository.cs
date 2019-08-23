@@ -90,39 +90,6 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static EmpresaEntity BuscarEmpresaEmisor(byte CodiEmpresa)
-        {
-            var entidad = new EmpresaEntity
-            {
-                Ruc = string.Empty,
-                RazonSocial = string.Empty,
-                Direccion = string.Empty,
-                Electronico = string.Empty,
-                Contingencia = string.Empty
-            };
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_BuscarEmpresaEmisor";
-                db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
-
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        entidad.Ruc = Reader.GetStringValue(drlector, "Ruc") ?? string.Empty;
-                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? string.Empty;
-                        entidad.Direccion = Reader.GetStringValue(drlector, "DIRECCION") ?? string.Empty;
-                        entidad.Electronico = Reader.GetStringValue(drlector, "electronico") ?? string.Empty;
-                        entidad.Contingencia = Reader.GetStringValue(drlector, "contingencia") ?? string.Empty;
-                        break;
-                    }
-                }
-            }
-
-            return entidad;
-        }
-
         public static AgenciaEntity BuscarAgenciaEmpresa(byte CodiEmpresa, int CodiSucursal)
         {
             var entidad = new AgenciaEntity()

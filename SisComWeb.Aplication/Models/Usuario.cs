@@ -10,7 +10,6 @@
         public int Nivel { get; set; }
         public string NomSucursal { get; set; }
         public string NomPuntoVenta { get; set; }
-
         public int Terminal { get; set; }
     }
 }

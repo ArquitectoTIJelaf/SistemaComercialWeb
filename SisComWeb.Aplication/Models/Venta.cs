@@ -175,8 +175,14 @@ namespace SisComWeb.Aplication.Models
         public string AutorizadoDC { get; set; }
         public Acompaniante ObjAcompaniante { get; set; }
         public bool IngresoManualPasajes { get; set; }
-
         public string EstadoAsiento { get; set; }
+
+        public string NomEmpresa { get; set; }
+        public string RucEmpresa { get; set; }
+        public string DireccionEmpresa { get; set; }
+        public string ElectronicoEmpresa { get; set; }
+        public string TipoTerminalElectronico { get; set; }
+        public byte TipoImpresora { get; set; }
 
         // PASE DE CORTESÍA
         public string CodiGerente { get; set; } // Código de gerente que autoriza el pase
@@ -272,9 +278,9 @@ namespace SisComWeb.Aplication.Models
 
         public string CodigoX_FE { get; set; }
 
-        public string CodTerminal { get; set; }
+        public string TipoTerminalElectronico { get; set; }
 
-        public byte TipImpresora { get; set; }
+        public byte TipoImpresora { get; set; }
 
         public string CodX { get; set; }
 
@@ -291,6 +297,15 @@ namespace SisComWeb.Aplication.Models
         public string BusCodigo { get; set; }
 
         public short EmbarqueCod { get; set; }
+
+
+        public string EmpRuc { get; set; }
+
+        public string EmpRazSocial { get; set; }
+
+        public string EmpDireccion { get; set; }
+
+        public string EmpElectronico { get; set; }
     }
 
     public class AnularVentaRequest
@@ -327,8 +342,12 @@ namespace SisComWeb.Aplication.Models
 
         public bool IngresoManualPasajes { get; set; }
 
-
         public string NomOrigenPas { get; set; }
+
+
+        public string RucEmpresa { get; set; }
+
+        public string ElectronicoEmpresa { get; set; }
 
         //06/08/2019
         public byte CodiEmpresa { get; set; }

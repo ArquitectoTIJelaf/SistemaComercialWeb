@@ -12,6 +12,9 @@
 
         public string CorrelativoCredito { get; set; }
 
-        public string CodiTerminalElectronico { get; set; }
+        public string TipoTerminalElectronico { get; set; }
+
+
+        public string TipoImpresora { get; set; }
     }
 }

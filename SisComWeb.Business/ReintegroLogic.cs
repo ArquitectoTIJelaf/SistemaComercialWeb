@@ -525,8 +525,8 @@ namespace SisComWeb.Business
                             EmbarqueDir = filtro.DirEmbarque,
                             EmbarqueHora = filtro.Hora_Emb,
                             CodigoX_FE = entidad.SignatureValue,
-                            CodTerminal = validarTerminalElectronico.Tipo,
-                            TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
+                            TipoTerminalElectronico = validarTerminalElectronico.Tipo,
+                            TipoImpresora = byte.Parse(validarTerminalElectronico.Imp),
 
                             EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
                             EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,

@@ -32,6 +32,11 @@ namespace SisComWeb.Repository
                 case 5:
                     item.id = DataUtility.ObjectToString(reader["Codi_Empresa"]);
                     item.label = DataUtility.ObjectToString(reader["Razon_Social"]).ToUpper();
+
+                    item.Ruc = DataUtility.ObjectToString(reader["Ruc"]);
+                    item.Direccion = DataUtility.ObjectToString(reader["DIRECCION"]);
+                    item.Electronico = DataUtility.ObjectToString(reader["electronico"]);
+                    item.Contingencia = DataUtility.ObjectToString(reader["contingencia"]);
                     break;
                 case 6:
                     item.id = DataUtility.ObjectToString(reader["Codi_Documento"]);
