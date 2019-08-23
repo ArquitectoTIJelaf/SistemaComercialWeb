@@ -14,8 +14,6 @@
 
     public class CorrelativoResponse
     {
-        public string CodiTerminalElectronico { get; set; }
-
         public string CorrelativoVentaBoleta { get; set; }
 
         public string CorrelativoVentaFactura { get; set; }
@@ -25,5 +23,10 @@
         public string CorrelativoPaseFactura { get; set; }
 
         public string CorrelativoCredito { get; set; }
+
+
+        public string TipoTerminalElectronico { get; set; }
+
+        public string TipoImpresora { get; set; }
     }
 }

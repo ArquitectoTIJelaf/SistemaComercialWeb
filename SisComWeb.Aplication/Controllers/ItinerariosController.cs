@@ -202,16 +202,20 @@ namespace SisComWeb.Aplication.Controllers
                 EmbarqueDir = (string)x["EmbarqueDir"],
                 EmbarqueHora = (string)x["EmbarqueHora"],
                 CodigoX_FE = (string)x["CodigoX_FE"],
-                CodTerminal = (string)x["CodTerminal"],
-                TipImpresora = (byte)x["TipImpresora"],
+                TipoTerminalElectronico = (string)x["TipoTerminalElectronico"],
+                TipoImpresora = (byte)x["TipoImpresora"],
                 CodX = (string)x["CodX"],
-
                 EmpDirAgencia = (string)x["EmpDirAgencia"],
                 EmpTelefono1 = (string)x["EmpTelefono1"],
                 EmpTelefono2 = (string)x["EmpTelefono2"],
                 PolizaNum = (string)x["PolizaNum"],
                 PolizaFechaReg = (string)x["PolizaFechaReg"],
                 PolizaFechaVen = (string)x["PolizaFechaVen"],
+
+                EmpRuc = (string)x["EmpRuc"],
+                EmpRazSocial = (string)x["EmpRazSocial"],
+                EmpDireccion = (string)x["EmpDireccion"],
+                EmpElectronico = (string)x["EmpElectronico"],
 
                 // Parámetros extras
                 EmpCodigo = (byte)x["EmpCodigo"],
@@ -854,9 +858,15 @@ namespace SisComWeb.Aplication.Controllers
                                         ",\"Parentesco\" : \"" + Listado[i].ObjAcompaniante.Parentesco + "\"" +
                                     "}" +
                                     ",\"IngresoManualPasajes\" : " + Listado[i].IngresoManualPasajes.ToString().ToLower() +
-
                                     ",\"EstadoAsiento\" : \"" + Listado[i].EstadoAsiento + "\"" +
 
+                                    ",\"NomEmpresa\" : \"" + Listado[i].NomEmpresa + "\"" +
+                                    ",\"RucEmpresa\" : \"" + Listado[i].RucEmpresa + "\"" +
+                                    ",\"DireccionEmpresa\" : \"" + Listado[i].DireccionEmpresa + "\"" +
+                                    ",\"ElectronicoEmpresa\" : \"" + Listado[i].ElectronicoEmpresa + "\"" +
+                                    ",\"TipoTerminalElectronico\" : \"" + Listado[i].TipoTerminalElectronico + "\"" +
+                                    ",\"TipoImpresora\" : " + Listado[i].TipoImpresora +
+                                    
                                     // PASE DE CORTESÍA
                                     ",\"CodiGerente\" : \"" + Listado[i].CodiGerente + "\"" +
                                     ",\"CodiSocio\" : \"" + Listado[i].CodiSocio + "\"" +
@@ -953,12 +963,14 @@ namespace SisComWeb.Aplication.Controllers
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = new CorrelativoResponse()
                     {
-                        CodiTerminalElectronico = (string)data["CodiTerminalElectronico"],
                         CorrelativoVentaBoleta = (string)data["CorrelativoVentaBoleta"],
                         CorrelativoVentaFactura = (string)data["CorrelativoVentaFactura"],
                         CorrelativoPaseBoleta = (string)data["CorrelativoPaseBoleta"],
                         CorrelativoPaseFactura = (string)data["CorrelativoPaseFactura"],
-                        CorrelativoCredito = (string)data["CorrelativoCredito"]
+                        CorrelativoCredito = (string)data["CorrelativoCredito"],
+
+                        TipoTerminalElectronico = (string)data["TipoTerminalElectronico"],
+                        TipoImpresora = (string)data["TipoImpresora"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -1125,8 +1137,10 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiEsca\": \"" + request.CodiEsca + "\"" +
                                     ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
-
                                     ",\"NomOrigenPas\": \"" + request.NomOrigenPas + "\"" +
+
+                                    ",\"RucEmpresa\": \"" + request.RucEmpresa + "\"" +
+                                    ",\"ElectronicoEmpresa\": \"" + request.ElectronicoEmpresa + "\"" +
                                 "}";
 
                     HttpResponseMessage response = await client.PostAsync("AnularVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
@@ -1926,16 +1940,20 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"EmbarqueDir\" : \"" + ListaVentasRealizadas[i].EmbarqueDir + "\"" +
                                     ",\"EmbarqueHora\" : \"" + ListaVentasRealizadas[i].EmbarqueHora + "\"" +
                                     ",\"CodigoX_FE\" : \"" + ListaVentasRealizadas[i].CodigoX_FE + "\"" +
-                                    ",\"CodTerminal\" : \"" + ListaVentasRealizadas[i].CodTerminal + "\"" +
-                                    ",\"TipImpresora\": " + ListaVentasRealizadas[i].TipImpresora +
-                                    ",\"CodX\" : \"" + ListaVentasRealizadas[i].CodX + "\"" +
-
+                                    ",\"TipoTerminalElectronico\" : \"" + ListaVentasRealizadas[i].TipoTerminalElectronico + "\"" +
+                                    ",\"TipoImpresora\": " + ListaVentasRealizadas[i].TipoImpresora +
+                                    ",\"CodX\": \"" + ListaVentasRealizadas[i].CodX + "\"" +
                                     ",\"EmpDirAgencia\" : \"" + ListaVentasRealizadas[i].EmpDirAgencia + "\"" +
                                     ",\"EmpTelefono1\" : \"" + ListaVentasRealizadas[i].EmpTelefono1 + "\"" +
                                     ",\"EmpTelefono2\" : \"" + ListaVentasRealizadas[i].EmpTelefono2 + "\"" +
                                     ",\"PolizaNum\" : \"" + ListaVentasRealizadas[i].PolizaNum + "\"" +
                                     ",\"PolizaFechaReg\" : \"" + ListaVentasRealizadas[i].PolizaFechaReg + "\"" +
                                     ",\"PolizaFechaVen\" : \"" + ListaVentasRealizadas[i].PolizaFechaVen + "\"" +
+
+                                    ",\"EmpRuc\" : \"" + ListaVentasRealizadas[i].EmpRuc + "\"" +
+                                    ",\"EmpRazSocial\" : \"" + ListaVentasRealizadas[i].EmpRazSocial + "\"" +
+                                    ",\"EmpDireccion\" : \"" + ListaVentasRealizadas[i].EmpDireccion + "\"" +
+                                    ",\"EmpElectronico\": \"" + ListaVentasRealizadas[i].EmpElectronico + "\"" +
 
                                     // Parámetros extras
                                     ",\"EmpCodigo\" : " + ListaVentasRealizadas[i].EmpCodigo +
@@ -1945,7 +1963,6 @@ namespace SisComWeb.Aplication.Controllers
                                     // Para 'Reimpresión'
                                     ",\"CajeroOficina\" : " + usuario.CodiSucursal +
                                     ",\"CajeroPVenta\" : " + usuario.CodiPuntoVenta +
-                                    ",\"CajeroTerminal\" : " + usuario.Terminal +
                                 "}";
 
                         if (i < ListaVentasRealizadas.Count - 1)

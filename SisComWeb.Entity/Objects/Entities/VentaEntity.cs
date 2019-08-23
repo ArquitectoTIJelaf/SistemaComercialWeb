@@ -146,8 +146,16 @@ namespace SisComWeb.Entity
 
         public bool IngresoManualPasajes { get; set; }
 
-
         public string EstadoAsiento { get; set; }
+
+
+        public string NomEmpresa { get; set; }
+
+        public string RucEmpresa { get; set; }
+
+        public string DireccionEmpresa { get; set; }
+
+        public string ElectronicoEmpresa { get; set; }
 
         // ANULACIÓN
 
@@ -169,6 +177,9 @@ namespace SisComWeb.Entity
         public string Concepto { get; set; } // @Reco_Venta en el store.
 
         public string DirEmbarque { get; set; }
+
+
+        public string TipoTerminalElectronico { get; set; }
 
         // CRÉDITO
         public int IdContrato { get; set; }
@@ -214,6 +225,9 @@ namespace SisComWeb.Entity
 
         public string PolizaFechaVen { get; set; }
 
+
+        public byte TipoImpresora { get; set; }
+
         // Reintegro
         public string CodiEsca { get; set; }
 
@@ -225,7 +239,6 @@ namespace SisComWeb.Entity
         public string FechaReservacion { get; set; }
 
         public string HoraReservacion { get; set; }
-
 
         public string HoraEscala { get; set; } // Para eliminar las reservas de manera escalonada
     }
@@ -251,6 +264,8 @@ namespace SisComWeb.Entity
         public string EmpRazSocial { get; set; }
 
         public string EmpDireccion { get; set; }
+
+        public string EmpElectronico { get; set; }
 
         public string EmpDirAgencia { get; set; }
 
@@ -300,9 +315,9 @@ namespace SisComWeb.Entity
 
         public string LinkPag_FE { get; set; }
 
-        public string CodTerminal { get; set; }
+        public string TipoTerminalElectronico { get; set; }
 
-        public byte TipImpresora { get; set; }
+        public byte TipoImpresora { get; set; }
 
         public string CodX { get; set; }
 
@@ -321,13 +336,6 @@ namespace SisComWeb.Entity
         public short EmbarqueCod { get; set; }
 
         public string EmbarqueDirAgencia { get; set; }
-
-
-        public short CajeroOficina { get; set; }
-
-        public short CajeroPVenta { get; set; }
-
-        public int CajeroTerminal { get; set; }
     }
 
     public class DescuentoBoletoEntity

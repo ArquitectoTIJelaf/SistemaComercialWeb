@@ -63,9 +63,14 @@ namespace SisComWeb.Entity
 
         public bool IngresoManualPasajes { get; set; }
 
-
         public string NomOrigenPas { get; set; }
-        
+
+
+        public string RucEmpresa { get; set; }
+
+        public string ElectronicoEmpresa { get; set; }
+
+
         //06/08/2019
         public byte CodiEmpresa { get; set; }
         public short SerieBoleto { get; set; }

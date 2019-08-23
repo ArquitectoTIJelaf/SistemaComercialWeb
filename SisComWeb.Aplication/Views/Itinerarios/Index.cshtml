@@ -1094,15 +1094,9 @@
             return _.filter(tiposDoc, function (o) { return o.id == value; })[0].label;
         });
 
-        Vue.filter('formatCodiProgramacion', function (value, length = 6) {
+        Vue.filter('formatCodiProgramacion', function (value, length = 7) {
             value = String(value || '') || '';
-
-            if (value.length <= length) {
-                value = '0'.repeat(length) + value;
-                return value.substr(value.length - length);
-            }
-            else
-                return value;
+            return value.padStart(length, '0');
         });
 
         Vue.prototype.$formatNumberWithTwoDecimals = function formatoNumeroConDosDecimales(value, _parteEntera) {
@@ -1413,9 +1407,6 @@
                     auxResponse = await appVueVenta.verificaTurnoDisponible();
                     return auxResponse;
                 },
-                getEmpresas: function () {
-                    return _.cloneDeep(appVueVenta.list.empresas);
-                },
                 acompanianteVentaCRUD: async function (_ObjAcompaniante) {
                     await appVueVenta.setAcompanianteVenta(_ObjAcompaniante);
                 },
@@ -1512,6 +1503,10 @@
                 },
                 findSexo: function (_Sexo) {
                     return _.find(appVueVenta.list.sexos, { 'id': _Sexo }) || null;
+                },
+                findEmpresa: function (_Empresa) {
+                    _Empresa = String(_Empresa);
+                    return _.find(empresas, { 'id': _Empresa }) || null;
                 },
                 validateTipoDocumento: function (_TipoDocumento, _Documento, auxValidate) {
                     var auxResponse = false;
@@ -1930,7 +1925,8 @@
                 CorrelativoPaseBoleta: '',
                 CorrelativoPaseFactura: '',
                 CorrelativoCredito: '',
-                CodiTerminalElectronico: '',
+                TipoTerminalElectronico: '',
+                TipoImpresora: '',
                 // ContextMenu
                 showContextMenu: false,
                 itemSelected: null,
@@ -2467,7 +2463,7 @@
                                     case 'PO': // Postergarción
                                         {
                                             var objFiltros = {};
-                                            objFiltros.Empresa = _.find(appController.getEmpresas(), { 'id': String(tmpTicketActual.CodiEmpresa) }) || null;
+                                            objFiltros.Empresa = appController.findEmpresa(tmpTicketActual.CodiEmpresa);
                                             objFiltros.NroVenta = tmpTicketActual.NroVenta;
 
                                             appController.setFiltrosPostergacion(objFiltros);
@@ -3413,7 +3409,8 @@
                         .then(res => {
                             if (res.data.Estado) {
                                 auxValidator = res.data.Estado;
-                                this.CodiTerminalElectronico = res.data.Valor.CodiTerminalElectronico;
+                                this.TipoTerminalElectronico = res.data.Valor.TipoTerminalElectronico;
+                                this.TipoImpresora = res.data.Valor.TipoImpresora;
 
                                 switch (_PickedBusVenta) {
                                     case '7':
@@ -3421,7 +3418,7 @@
                                             this.CorrelativoPaseBoleta = res.data.Valor.CorrelativoPaseBoleta;
                                             this.CorrelativoPaseFactura = res.data.Valor.CorrelativoPaseFactura;
 
-                                            switch (this.CodiTerminalElectronico) {
+                                            switch (this.TipoTerminalElectronico) {
                                                 case 'M':
                                                     {
                                                         if (this.CorrelativoPaseBoleta === '0000-00000000')
@@ -3453,7 +3450,8 @@
                                 this.CorrelativoPaseBoleta = '';
                                 this.CorrelativoPaseFactura = '';
                                 this.CorrelativoCredito = '';
-                                this.CodiTerminalElectronico = '';
+                                this.TipoTerminalElectronico = '';
+                                this.TipoImpresora = '';
 
                                 APP.msg.warning(res.data.Mensaje);
                             }
@@ -3646,10 +3644,16 @@
                     input.CodiBus = this.objPlano.CodiBus;
                     input.CodiSucursal = this.filtro.CodiOrigenBus.id;
                     input.CodiRuta = this.filtro.CodiDestinoBus.id;
-
                     input.IdContrato = this.objCreditoCliente.idContrato;
                     input.IdPrecio = this.objCreditoCliente.IdPrecio;
                     input.IdRuc = this.objCreditoCliente.IdRuc;
+                    
+                    input.NomEmpresa = this.filtro.CodiEmpresa.label;
+                    input.RucEmpresa = this.filtro.CodiEmpresa.Ruc;
+                    input.DireccionEmpresa = this.filtro.CodiEmpresa.Direccion;
+                    input.ElectronicoEmpresa = this.filtro.CodiEmpresa.Electronico;
+                    input.TipoTerminalElectronico = this.TipoTerminalElectronico;
+                    input.TipoImpresora = this.TipoImpresora;
 
                     appController.showTipoPago(this.list.embarques, this.list.arribos, input, this.list.ventas);
                 },
@@ -4550,7 +4554,7 @@
                         case '7':
                             {
                                 if (this.CorrelativoPaseFactura && this.CorrelativoPaseBoleta) {
-                                    switch (this.CodiTerminalElectronico) {
+                                    switch (this.TipoTerminalElectronico) {
                                         case 'M':
                                             {
                                                 if (this.CorrelativoPaseBoleta === '0000-00000000')
@@ -4935,8 +4939,10 @@
                         CodiEsca: tmpAsientoSel.CodiEsca,
                         CodiDestinoPas: tmpAsientoSel.CodiDestino,
                         IngresoManualPasajes: IngresoManualPasajes,
+                        NomOrigenPas: tmpAsientoSel.NomOrigen,
 
-                        NomOrigenPas: tmpAsientoSel.NomOrigen
+                        RucEmpresa: appController.findEmpresa(tmpAsientoSel.CodiEmpresa).Ruc,
+                        ElectronicoEmpresa: appController.findEmpresa(tmpAsientoSel.CodiEmpresa).ElectronicoEmpresa
                     }))
                         .then(async function (res) {
                             await appController.chargeTurnos();
@@ -6095,7 +6101,6 @@
                     this.itemSelected = null;
                 },
                 contextMenuReimprimir: async function () {
-                    //debugger;
                     //var auxBoletoCompleto = formatoBoletoCompleto(this.itemSelected.TipoBoleto, this.itemSelected.Boleto);
 
                     //var resConfirm = await APP.msg.confirm(
@@ -6138,6 +6143,14 @@
                         objVentaRealizada.BusCodigo = this.objPlano.CodiBus;
                         objVentaRealizada.PVentaCodigo = this.itemSelected.CodiPuntoVenta;
                         objVentaRealizada.EmbarqueCod = this.itemSelected.EmbarqueCod;
+                        
+                        var auxObjEmpresa = appController.findEmpresa(this.itemSelected.CodiEmpresa);
+                        objVentaRealizada.EmpRuc = auxObjEmpresa.Ruc;
+                        objVentaRealizada.EmpRazSocial = auxObjEmpresa.label;
+                        objVentaRealizada.EmpDireccion = auxObjEmpresa.Direccion;
+                        objVentaRealizada.EmpElectronico = auxObjEmpresa.Electronico;
+                        objVentaRealizada.TipoTerminalElectronico = this.TipoTerminalElectronico;
+                        objVentaRealizada.TipoImpresora = this.TipoImpresora;
 
                         ListaVentasRealizadas.push(objVentaRealizada);
 
@@ -6455,7 +6468,7 @@
                         case '7':
                             {
                                 if (newVal.length === 11) {
-                                    switch (this.CodiTerminalElectronico) {
+                                    switch (this.TipoTerminalElectronico) {
                                         case 'M':
                                             {
                                                 if (this.CorrelativoPaseFactura === '0000-00000000') {
@@ -6481,7 +6494,7 @@
                                 }
                                 else {
                                     if (newVal.length === 0) {
-                                        switch (this.CodiTerminalElectronico) {
+                                        switch (this.TipoTerminalElectronico) {
                                             case 'M':
                                                 {
                                                     if (this.CorrelativoPaseBoleta === '0000-00000000')
@@ -6506,7 +6519,7 @@
                         default:
                             {
                                 if (newVal.length === 11) {
-                                    switch (this.CodiTerminalElectronico) {
+                                    switch (this.TipoTerminalElectronico) {
                                         case 'M':
                                             {
                                                 var auxCorrelativoCredito = '0000-00000000';
@@ -6804,6 +6817,13 @@
                         input.AutorizadoDC = objVenta.AutorizadoDC;
                         input.IngresoManualPasajes = IngresoManualPasajes;
                         input.EstadoAsiento = (objVenta.ValidadorClienteEspecial ? 'N1' : 'N');
+                        
+                        input.NomEmpresa = _this.ticketVenta.NomEmpresa;
+                        input.RucEmpresa = _this.ticketVenta.RucEmpresa;
+                        input.DireccionEmpresa = _this.ticketVenta.DireccionEmpresa;
+                        input.ElectronicoEmpresa = _this.ticketVenta.ElectronicoEmpresa;
+                        input.TipoTerminalElectronico = _this.ticketVenta.TipoTerminalElectronico;
+                        input.TipoImpresora = _this.ticketVenta.TipoImpresora;
 
                         // TIPOS DE VENTA
                         switch (this.$getValuePickedBusVenta()) {
@@ -8693,7 +8713,7 @@
                     _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
-                            _this.list.empresas = appController.getEmpresas();
+                            _this.list.empresas = _.cloneDeep(empresas);
                     });
                 },
                 configEventKeyF9: function (event) {
@@ -8713,7 +8733,6 @@
                     }))
                         .then(async (res) => {
                             if (res.data.Valor) {
-                                debugger;
                                 //Validación: No debe tener nota de crédito
                                 _this.item.notaCredito = '';
                                 var verificaNotaCredito = await appVueFechaAbierta.verificaNotaCredito(parseInt(res.data.Valor.IdVenta));
@@ -9476,7 +9495,6 @@
                     _this.listaOpcionesModificacion();
                 },
                 setData: function () {
-                    debugger;
                     let _this = this;
                     var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
@@ -10023,7 +10041,7 @@
                     var input = {};
 
                     //Código interno de documento
-                    var CodiInternoDocumento = (appVueVenta.CodiTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
+                    var CodiInternoDocumento = (appVueVenta.TipoTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
                         : ((_this.item.ruc) ? '17' : '16');
 
                     //Consulta del IGV
@@ -10058,7 +10076,7 @@
                                 input.Punto_Venta = Usuario.CodiPuntoVenta;
                                 input.tipo_doc = _this.item.documento;
                                 input.codi_ori_psj = auxOrigenPas;
-                                input.Tipo = appVueVenta.CodiTerminalElectronico;
+                                input.Tipo = appVueVenta.TipoTerminalElectronico;
                                 input.Tipo_Pago = appVueTipoPago2.tipoPago2;
                                 input.Fecha_viaje = auxFechaViaje;
                                 input.HORA_V = auxHoraViaje;
@@ -10520,7 +10538,7 @@
             watch: {
                 'item.ruc': function (newVal) {
                     if (newVal.length === 11) {
-                        switch (appVueVenta.CodiTerminalElectronico) {
+                        switch (appVueVenta.TipoTerminalElectronico) {
                             case 'M':
                                 {
                                     if (appController.validatePanel('145') === '1') {
@@ -11589,7 +11607,6 @@
                     for (var e of _this.list.newAsientos) {
                         for (var e1 of _this.list.tempListOri) {
                             if (parseInt(e1.Tipo) === e) {
-                                debugger;
                                 var filtroProg = {};
                                 filtroProg.CodiProgramacion = _this.objProgramacion.CodiProgramacion;
                                 filtroProg.IdVenta = e1.IdVenta;

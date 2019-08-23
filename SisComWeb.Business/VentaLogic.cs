@@ -39,7 +39,7 @@ namespace SisComWeb.Business
                     CorrelativoPaseBoleta = string.Empty,
                     CorrelativoPaseFactura = string.Empty,
                     CorrelativoCredito = string.Empty,
-                    CodiTerminalElectronico = string.Empty
+                    TipoTerminalElectronico = string.Empty
                 };
 
                 var auxCorrelativos = new CorrelativoEntity[3];
@@ -47,8 +47,9 @@ namespace SisComWeb.Business
                 // Valida 'TerminalElectronico'
                 var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(request.CodiEmpresa, request.CodiSucursal, request.CodiPuntoVenta, short.Parse(request.CodiTerminal));
 
-                // Seteo 'CodiTerminalElectronico'
-                valor.CodiTerminalElectronico = validarTerminalElectronico.Tipo;
+                // Seteo 'TerminalElectronico'
+                valor.TipoTerminalElectronico = validarTerminalElectronico.Tipo;
+                valor.TipoImpresora = validarTerminalElectronico.Imp;
 
                 switch (request.FlagVenta)
                 {
@@ -183,9 +184,6 @@ namespace SisComWeb.Business
                     // Seteo 'valor.CodiProgramacion'
                     valor.CodiProgramacion = entidad.CodiProgramacion;
 
-                    // Valida 'TerminalElectronico'
-                    var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, short.Parse(entidad.CodiTerminal));
-
                     // Valida 'SaldoPaseCortesia', consulta 'Contrato' y otros
                     switch (FlagVenta)
                     {
@@ -280,7 +278,7 @@ namespace SisComWeb.Business
                             case "1": // CRÉDITO
                                 {
                                     // Correlativo '20'
-                                    switch (validarTerminalElectronico.Tipo)
+                                    switch (entidad.CodiTerminal)
                                     {
                                         case "M":
                                             {
@@ -295,7 +293,7 @@ namespace SisComWeb.Business
                                                             entidad.AuxCodigoBF_Interno = CodiCorrelativoCredito;
 
                                                             // Busca 'Correlativo'
-                                                            buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                            buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                                             entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
                                                             entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                                                         }
@@ -339,14 +337,14 @@ namespace SisComWeb.Business
                     // Busca 'Correlativo'
                     if (entidad.AuxCodigoBF_Interno != CodiCorrelativoCredito)
                     {
-                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                        buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                         entidad.SerieBoleto = buscarCorrelativo.SerieBoleto;
                         entidad.NumeBoleto = buscarCorrelativo.NumeBoleto;
                     }
 
                     if (buscarCorrelativo.SerieBoleto == 0)
                     {
-                        switch (validarTerminalElectronico.Tipo)
+                        switch (entidad.TipoTerminalElectronico)
                         {
                             case "M":
                                 {
@@ -361,7 +359,7 @@ namespace SisComWeb.Business
                                                     // Seteo 'CodiDocumento'
                                                     entidad.CodiDocumento = "03"; // Boleta
                                                     // Busca 'Correlativo'
-                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                                 }
 
                                                 if (buscarCorrelativo.SerieBoleto == 0)
@@ -372,7 +370,7 @@ namespace SisComWeb.Business
                                                     entidad.CodiDocumento = "03"; // Boleta
 
                                                     // Busca 'Correlativo'
-                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                                     if (buscarCorrelativo.SerieBoleto == 0)
                                                         return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                     else
@@ -395,7 +393,7 @@ namespace SisComWeb.Business
                                                     // Seteo 'CodiBF Interno'
                                                     entidad.AuxCodigoBF_Interno = CodiCorrelativoVentaBoleta;
                                                     // Busca 'Correlativo'
-                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, validarTerminalElectronico.Tipo);
+                                                    buscarCorrelativo = VentaRepository.BuscarCorrelativo(entidad.CodiEmpresa, entidad.AuxCodigoBF_Interno, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiTerminal, entidad.TipoTerminalElectronico);
                                                     if (buscarCorrelativo.SerieBoleto == 0)
                                                         return new Response<VentaResponse>(false, valor, Message.MsgErrorSerieBoleto, false);
                                                 }
@@ -418,7 +416,7 @@ namespace SisComWeb.Business
                     }
 
                     // Seteo 'Tipo'
-                    switch (validarTerminalElectronico.Tipo)
+                    switch (entidad.TipoTerminalElectronico)
                     {
                         case "M":
                             entidad.Tipo = "M";
@@ -443,91 +441,60 @@ namespace SisComWeb.Business
                     entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
 
                     // Graba 'Venta', 'FacturaciónElectrónica' y otros
-                    switch (validarTerminalElectronico.Tipo)
+                    SetInvoiceRequestBody bodyDocumentoSUNAT = null;
+
+                    // Valida 'DocumentoSUNAT'
+                    var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
+
+                    if (resValidarDocumentoSUNAT != null)
                     {
-                        case "M":
+                        if (resValidarDocumentoSUNAT.Estado)
+                        {
+                            // Valida 'FechaAbierta'
+                            if (entidad.FechaAbierta)
                             {
-                                // Valida 'FechaAbierta'
-                                if (entidad.FechaAbierta)
-                                {
-                                    var auxCodiProgramacion = entidad.CodiProgramacion;
-                                    entidad.CodiProgramacion = 0;
+                                var auxCodiProgramacion = entidad.CodiProgramacion;
+                                entidad.CodiProgramacion = 0;
 
-                                    // Graba 'VentaFechaAbierta'
-                                    var grabarVentaFechaAbierta = VentaRepository.GrabarVenta(entidad);
-                                    if (grabarVentaFechaAbierta <= 0)
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
+                                // Graba 'VentaFechaAbierta'
+                                var grabarVentaFechaAbierta = VentaRepository.GrabarVenta(entidad);
+                                if (grabarVentaFechaAbierta <= 0)
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
-                                    entidad.IdVenta = grabarVentaFechaAbierta;
-                                    entidad.CodiProgramacion = auxCodiProgramacion;
-                                }
-                                else
-                                {
-                                    // Graba 'Venta'
-                                    var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                    if (grabarVenta <= 0)
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
-
-                                    entidad.IdVenta = grabarVenta;
-                                }
-                            };
-                            break;
-                        case "E":
+                                entidad.IdVenta = grabarVentaFechaAbierta;
+                                entidad.CodiProgramacion = auxCodiProgramacion;
+                            }
+                            else
                             {
-                                SetInvoiceRequestBody bodyDocumentoSUNAT = null;
+                                // Graba 'Venta'
+                                var grabarVenta = VentaRepository.GrabarVenta(entidad);
+                                if (grabarVenta <= 0)
+                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
 
-                                // Valida 'DocumentoSUNAT'
-                                var resValidarDocumentoSUNAT = ValidarDocumentoSUNAT(entidad, ref bodyDocumentoSUNAT);
+                                entidad.IdVenta = grabarVenta;
+                            }
 
-                                if (resValidarDocumentoSUNAT != null)
+                            if (entidad.IdVenta > 0)
+                            {
+                                if (entidad.TipoTerminalElectronico == "E" && entidad.ElectronicoEmpresa == "1")
                                 {
-                                    if (resValidarDocumentoSUNAT.Estado)
-                                    {
-                                        // Valida 'FechaAbierta'
-                                        if (entidad.FechaAbierta)
-                                        {
-                                            var auxCodiProgramacion = entidad.CodiProgramacion;
-                                            entidad.CodiProgramacion = 0;
+                                    //Registra 'DocumentoSUNAT'
+                                    var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
 
-                                            // Graba 'VentaFechaAbierta'
-                                            var grabarVentaFechaAbierta = VentaRepository.GrabarVenta(entidad);
-                                            if (grabarVentaFechaAbierta <= 0)
-                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
-
-                                            entidad.IdVenta = grabarVentaFechaAbierta;
-                                            entidad.CodiProgramacion = auxCodiProgramacion;
-                                        }
-                                        else
-                                        {
-                                            // Graba 'Venta'
-                                            var grabarVenta = VentaRepository.GrabarVenta(entidad);
-                                            if (grabarVenta <= 0)
-                                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
-
-                                            entidad.IdVenta = grabarVenta;
-                                        }
-
-                                        if (entidad.IdVenta > 0)
-                                        {
-                                            //Registra 'DocumentoSUNAT'
-                                            var resRegistrarDocumentoSUNAT = RegistrarDocumentoSUNAT(bodyDocumentoSUNAT);
-
-                                            if (resRegistrarDocumentoSUNAT.Estado)
-                                                entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
-                                            else
-                                                return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
-                                        }
-                                        else
-                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
-                                    }
+                                    if (resRegistrarDocumentoSUNAT.Estado)
+                                        entidad.SignatureValue = resRegistrarDocumentoSUNAT.SignatureValue ?? string.Empty;
                                     else
-                                        return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                                        return new Response<VentaResponse>(false, valor, resRegistrarDocumentoSUNAT.MensajeError, false);
                                 }
-                                else
-                                    return new Response<VentaResponse>(true, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
-                            };
-                            break;
-                    };
+                            }
+                            else
+                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
+                        }
+                        else
+                            return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                    }
+                    else
+                        return new Response<VentaResponse>(true, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
 
                     // Graba 'Acompañante'
                     if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
@@ -542,7 +509,7 @@ namespace SisComWeb.Business
                     }
 
                     // Seteo 'auxBoletoCompleto'
-                    auxBoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
+                    auxBoletoCompleto = BoletoFormatoCompleto(entidad.TipoTerminalElectronico, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "7");
 
                     // Modifica 'SaldoPaseCortesia', actualiza 'BoletosStock' y otros
                     switch (FlagVenta)
@@ -769,7 +736,7 @@ namespace SisComWeb.Business
                     var ventaRealizada = new VentaRealizadaEntity
                     {
                         // Para la vista 'BoletosVendidos'
-                        BoletoCompleto = BoletoFormatoCompleto(validarTerminalElectronico.Tipo, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),
+                        BoletoCompleto = BoletoFormatoCompleto(entidad.TipoTerminalElectronico, entidad.AuxCodigoBF_Interno, entidad.SerieBoleto, entidad.NumeBoleto, "3", "8"),
                         NumeAsiento = entidad.NumeAsiento.ToString("D2"),
                         // Para el método 'ConvertirVentaToBase64'
                         IdVenta = entidad.IdVenta,
@@ -795,16 +762,20 @@ namespace SisComWeb.Business
                         FechaViaje = entidad.FechaViaje,
                         EmbarqueDir = entidad.DirEmbarque,
                         EmbarqueHora = entidad.HoraEmbarque,
-                        CodigoX_FE = entidad.SignatureValue,
-                        CodTerminal = validarTerminalElectronico.Tipo,
-                        TipImpresora = byte.Parse(validarTerminalElectronico.Imp),
-
+                        CodigoX_FE = entidad.SignatureValue ?? string.Empty,
+                        TipoTerminalElectronico = entidad.TipoTerminalElectronico,
+                        TipoImpresora = entidad.TipoImpresora,
                         EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
                         EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
                         EmpTelefono2 = entidad.EmpTelefono2 ?? string.Empty,
                         PolizaNum = entidad.PolizaNum,
                         PolizaFechaReg = entidad.PolizaFechaReg,
                         PolizaFechaVen = entidad.PolizaFechaVen,
+
+                        EmpRuc = entidad.RucEmpresa,
+                        EmpRazSocial = entidad.NomEmpresa,
+                        EmpDireccion = entidad.DireccionEmpresa,
+                        EmpElectronico = entidad.ElectronicoEmpresa,
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
@@ -1146,11 +1117,12 @@ namespace SisComWeb.Business
                     return new Response<byte>(false, anularVenta, Message.MsgErrorAnularVenta, true);
 
                 // Valida 'AnularDocumentoSUNAT'
-                if (request.Tipo != "M" && request.FlagVenta != "Y")
+                if (request.Tipo != "M" && request.FlagVenta != "Y" && request.ElectronicoEmpresa == "1")
                 {
                     // Anula 'DocumentoSUNAT'
                     objVenta.Tipo = request.Tipo;
                     objVenta.FechaVenta = request.FechaVenta;
+                    objVenta.RucEmpresa = request.RucEmpresa;
 
                     var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVenta);
                     if (!resAnularDocumentoSUNAT.Estado)
@@ -1386,7 +1358,7 @@ namespace SisComWeb.Business
                             }
 
                             // Valida 'AnularDocumentoSUNAT'
-                            if (request.CodiEsca.Substring(0, 1) != "M")
+                            if (request.CodiEsca.Substring(0, 1) != "M" && request.ElectronicoEmpresa == "1")
                             {
                                 // Anula 'DocumentoSUNAT'
                                 var objVentaReintegro = new VentaEntity
@@ -1890,21 +1862,12 @@ namespace SisComWeb.Business
                 foreach (var entidad in Listado)
                 {
                     var paginaWebEmisor = string.Empty;
-                    var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.EmpCodigo);
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
 
-                    var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
-                    if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
-                    {
-                        consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
-                        if(string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
-                            return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorConsultaNroPoliza, true);
-                    }
-
                     // Solo para 'Terminales electrónicos'
-                    if (entidad.BoletoTipo != "M")
+                    if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
                     {
-                        paginaWebEmisor = ObtenerPaginaWebEmisor(buscarEmpresaEmisor.Ruc);
+                        paginaWebEmisor = ObtenerPaginaWebEmisor(entidad.EmpRuc);
                         if (string.IsNullOrEmpty(paginaWebEmisor))
                             return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
                     }
@@ -1913,11 +1876,23 @@ namespace SisComWeb.Business
                     if (TipoImpresion == TipoReimprimir)
                     {
                         var resObtenerCodigoX = new ResponseDocument();
-                        if (entidad.BoletoTipo != "M")
-                            resObtenerCodigoX = ObtenerCodigoX(buscarEmpresaEmisor.Ruc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+                        if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
+                        {
+                            resObtenerCodigoX = ObtenerCodigoX(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+                            if (resObtenerCodigoX == null)
+                                return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
+                        }
+                            
 
                         var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
-                        var validarTerminalElectronico = VentaRepository.ValidarTerminalElectronico(entidad.EmpCodigo, entidad.CajeroOficina, entidad.CajeroPVenta, short.Parse(entidad.CajeroTerminal.ToString()));
+
+                        var objPanelPoliza = ListarPanelControl.Find(x => x.CodiPanel == "224");
+                        if (objPanelPoliza != null && objPanelPoliza.Valor == "1")
+                        {
+                            consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.EmpCodigo, entidad.BusCodigo, entidad.FechaViaje);
+                            if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
+                                return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorConsultaNroPoliza, true);
+                        }
 
                         entidad.NumeAsiento = entidad.NumeAsiento.PadLeft(2, '0');
                         entidad.BoletoSerie = entidad.BoletoSerie.PadLeft(3, '0');
@@ -1927,12 +1902,9 @@ namespace SisComWeb.Business
                         entidad.DocTipo = TipoDocumentoHomologado(entidad.DocTipo.ToString("D2"));
                         entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
                         entidad.CodigoX_FE = resObtenerCodigoX.SignatureValue ?? string.Empty;
-                        entidad.CodTerminal = validarTerminalElectronico.Tipo;
-                        entidad.TipImpresora = byte.Parse(validarTerminalElectronico.Imp);
                         entidad.PolizaNum = consultaNroPoliza.NroPoliza;
                         entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
                         entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
-
                         entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
                         entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
                         entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
@@ -1940,9 +1912,6 @@ namespace SisComWeb.Business
 
                     entidad.NomTipVenta = "EFECTIVO";
                     entidad.CodX = "1";
-                    entidad.EmpRuc = buscarEmpresaEmisor.Ruc;
-                    entidad.EmpRazSocial = buscarEmpresaEmisor.RazonSocial;
-                    entidad.EmpDireccion = buscarEmpresaEmisor.Direccion;
                     entidad.LinkPag_FE = paginaWebEmisor;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
@@ -1983,15 +1952,20 @@ namespace SisComWeb.Business
         {
             try
             {
+                // Valida "ElectronicoEmpresa"
+                if (entidad.TipoTerminalElectronico != "E" || entidad.ElectronicoEmpresa != "1")
+                {
+                    var tmpResponseW = new ResponseW { Estado = true };
+                    return tmpResponseW;
+                }
+                // ---------------------------
+
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 var entidadFE = new SetInvoiceRequestBody();
 
-                // Busca 'RucEmpresa'
-                var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
-
                 var seguridadFE = new Security
                 {
-                    ID = buscarEmpresaEmisor.Ruc,
+                    ID = entidad.RucEmpresa,
                     User = entidad.UserWebSUNAT
                 };
 
@@ -2044,12 +2018,9 @@ namespace SisComWeb.Business
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 var auxTDocumento = string.Empty;
 
-                // Busca 'RucEmpresa'
-                var buscarEmpresaEmisor = VentaRepository.BuscarEmpresaEmisor(entidad.CodiEmpresa);
-
                 var seguridadFE = new Security
                 {
-                    ID = buscarEmpresaEmisor.Ruc,
+                    ID = entidad.RucEmpresa,
                     User = UserWebSUNAT
                 };
 

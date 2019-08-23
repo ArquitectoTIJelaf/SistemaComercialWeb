@@ -15,5 +15,14 @@
         public string MaxLonDocumento { get; set; }
 
         public string TipoDatoDocumento { get; set; }
+
+        // Empresas
+        public string Ruc { get; set; }
+
+        public string Direccion { get; set; }
+
+        public string Electronico { get; set; }
+
+        public string Contingencia { get; set; }
     }
 }

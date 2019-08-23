@@ -16,7 +16,7 @@ namespace SisComWeb.CuadreImpresora
         {
             StringBuilder texto = new StringBuilder();
             // Impresora Térmica
-            if (venta.TipImpresora == 1)
+            if (venta.TipoImpresora == 1)
             {
                 texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "|||^"));
                 texto.AppendLine(SplitStringPreserving("R.U.C. " + venta.EmpRuc, 30, "|||^"));
@@ -76,7 +76,7 @@ namespace SisComWeb.CuadreImpresora
                 }
             }
             // Impresora Matricial
-            else if (venta.TipImpresora == 3)
+            else if (venta.TipoImpresora == 3)
             {
                 texto.AppendLine("@@@");
                 texto.AppendLine("DRAFT 10CPI");
@@ -129,7 +129,7 @@ namespace SisComWeb.CuadreImpresora
                 }
             }
             // Impresora Matricial (Formato reducido)
-            else if (venta.TipImpresora == 4)
+            else if (venta.TipoImpresora == 4)
             {
                 texto.AppendLine("@@@");
                 texto.AppendLine("DRAFT 17CPI");
@@ -189,7 +189,7 @@ namespace SisComWeb.CuadreImpresora
             StringBuilder texto = new StringBuilder();
 
             // Impresora Térmica
-            if (venta.TipImpresora == 1)
+            if (venta.TipoImpresora == 1)
             {
                 texto.AppendLine(SplitStringPreserving(venta.EmpRazSocial, 30, "||||^"));
                 texto.AppendLine(SplitStringPreserving("R.U.C. " + venta.EmpRuc, 30, "|||^"));
@@ -242,7 +242,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("^" + PadBoth("USUARIO CONFORME", 45));
             }
             // Impresora Matricial
-            else if (venta.TipImpresora == 3)
+            else if (venta.TipoImpresora == 3)
             {
                 texto.AppendLine("@@@");
                 texto.AppendLine("DRAFT 10CPI");
@@ -295,7 +295,7 @@ namespace SisComWeb.CuadreImpresora
                 }
             }
             // Impresora Matricial (Formato reducido)
-            else if (venta.TipImpresora == 4)
+            else if (venta.TipoImpresora == 4)
             {
                 texto.AppendLine("@@@");
                 texto.AppendLine("DRAFT 17CPI");

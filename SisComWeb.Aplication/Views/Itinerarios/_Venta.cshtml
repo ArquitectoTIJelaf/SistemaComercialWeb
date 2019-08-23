@@ -776,6 +776,7 @@
                                                               placeholder="TIPO"
                                                               ref="refTipoDoc"
                                                               v-model="list.ventas[indexVenta].CodiTipoDoc"
+                                                              @@input="$refs.refTipoDoc.typeAheadPointer = $getSelectorVselect(list.tiposDoc, list.ventas[indexVenta].CodiTipoDoc)"
                                                               @@keydown.13.native.prevent="$refs.refDocumento.focus();"
                                                               @*@@keydown.9.native.prevent="$refs.refDocumento.focus();"*@
                                                               :options="list.tiposDoc"
@@ -944,6 +945,7 @@
                                                               placeholder="SEXO"
                                                               label="label"
                                                               v-model="list.ventas[indexVenta].Sexo"
+                                                              @@input="$refs.refSexo.typeAheadPointer = $getSelectorVselect(list.sexos, list.ventas[indexVenta].Sexo)"
                                                               @@keydown.13.native.prevent="recorridoSectionVentas"
                                                               @*@@keydown.9.native.prevent="recorridoSectionVentas"*@
                                                               :options="list.sexos"
