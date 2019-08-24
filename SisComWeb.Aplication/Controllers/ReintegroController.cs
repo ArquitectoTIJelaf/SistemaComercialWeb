@@ -53,7 +53,6 @@ namespace SisComWeb.Aplication.Controllers
                 CodigoX_FE = (string)x["CodigoX_FE"],
                 TipoTerminalElectronico = (string)x["TipoTerminalElectronico"],
                 TipoImpresora = (byte)x["TipoImpresora"],
-                CodX = (string)x["CodX"],
 
                 EmpDirAgencia = (string)x["EmpDirAgencia"],
                 EmpTelefono1 = (string)x["EmpTelefono1"],

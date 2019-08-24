@@ -1875,14 +1875,71 @@ namespace SisComWeb.Business
                     // Solo para 'Reimpresion'
                     if (TipoImpresion == TipoReimprimir)
                     {
+                        var auxBoletoCompleto = entidad.BoletoTipo + entidad.BoletoSerie + "-" + entidad.BoletoNum;
+                        var obtenerPrecioReimpresion = new decimal();
+
                         var resObtenerCodigoX = new ResponseDocument();
-                        if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
+                        if (entidad.BoletoTipo != "M")
                         {
-                            resObtenerCodigoX = ObtenerCodigoX(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
-                            if (resObtenerCodigoX == null)
-                                return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
+                            if (entidad.ValidateCaja)
+                            {
+                                obtenerPrecioReimpresion = VentaRepository.ObtenerPrecioReimpresion();
+
+                                if (obtenerPrecioReimpresion <= 0)
+                                    return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorObtenerPrecioReimpresion, true);
+
+                                //  Genera 'CorrelativoAuxiliar'
+                                var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.UsuarioCodOficina.ToString(), entidad.UsuarioCodPVenta.ToString(), string.Empty);
+                                if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
+                                    return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorGenerarCorrelativoAuxiliar, true);
+
+                                // Graba 'Caja'
+                                var objCajaEntity = new CajaEntity
+                                {
+                                    NumeCaja = generarCorrelativoAuxiliar.PadLeft(7, '0'),
+                                    CodiEmpresa = entidad.EmpCodigo,
+                                    CodiSucursal = entidad.UsuarioCodOficina,
+                                    FechaCaja = DataUtility.ObtenerFechaDelSistema(),
+                                    TipoVale = "I",
+                                    Boleto = auxBoletoCompleto,
+                                    NomUsuario = "REIMPRESION",
+                                    CodiBus = string.Empty,
+                                    CodiChofer = string.Empty,
+                                    CodiGasto = "L",
+                                    ConcCaja = "REIMPRESION POR EL BOLETO : " + auxBoletoCompleto,
+                                    Monto = obtenerPrecioReimpresion,
+                                    CodiUsuario = entidad.UsuarioCodigo,
+                                    IndiAnulado = "F",
+                                    TipoDescuento = string.Empty,
+                                    TipoDoc = entidad.PasRuc.Length == 11 ? "17" : "16",
+                                    TipoGasto = "11",
+                                    Liqui = 0M,
+                                    Diferencia = 0M,
+                                    Recibe = string.Empty,
+                                    CodiDestino = string.Empty,
+                                    FechaViaje = entidad.FechaViaje,
+                                    HoraViaje = entidad.HoraViaje, // TRAER
+                                    CodiPuntoVenta = entidad.UsuarioCodPVenta,
+                                    Voucher = "PA",
+                                    Asiento = entidad.NumeAsiento,
+                                    Ruc = entidad.PasRuc,
+                                    IdVenta = entidad.IdVenta,
+                                    Origen = "CA",
+                                    Modulo = "PA",
+                                    Tipo = entidad.BoletoTipo,
+
+                                    IdCaja = 0
+                                };
+                                VentaRepository.GrabarCaja(objCajaEntity);
+                            }
+                                
+                            if (entidad.EmpElectronico == "1")
+                            {
+                                resObtenerCodigoX = ObtenerCodigoX(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+                                if (resObtenerCodigoX == null)
+                                    return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
+                            }
                         }
-                            
 
                         var buscarAgenciaEmpresa = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.PVentaCodigo);
 
@@ -1908,10 +1965,32 @@ namespace SisComWeb.Business
                         entidad.EmpDirAgencia = buscarAgenciaEmpresa.Direccion;
                         entidad.EmpTelefono1 = buscarAgenciaEmpresa.Telefono1;
                         entidad.EmpTelefono2 = buscarAgenciaEmpresa.Telefono2;
+
+                        var objAuditoria = new AuditoriaEntity
+                        {
+                            CodiUsuario = entidad.UsuarioCodigo,
+                            NomUsuario = entidad.UsuarioNombre,
+                            Tabla = "VENTA",
+                            TipoMovimiento = "REIMPRESION",
+                            Boleto = auxBoletoCompleto.Substring(1),
+                            NumeAsiento = entidad.NumeAsiento,
+                            NomOficina = entidad.UsuarioNomOficina,
+                            NomPuntoVenta = entidad.UsuarioCodPVenta.ToString(),
+                            Pasajero = entidad.PasNombreCom,
+                            FechaViaje = entidad.FechaViaje,
+                            HoraViaje = entidad.HoraViaje,
+                            NomDestino = entidad.NomDesPas,
+                            Precio = entidad.PrecioCan,
+                            Obs1 = string.Empty,
+                            Obs2 = string.Empty,
+                            Obs3 = "TERMINAL : " + entidad.UsuarioCodTerminal,
+                            Obs4 = "REIMPRESION",
+                            Obs5 = string.Empty
+                        };
+                        VentaRepository.GrabarAuditoria(objAuditoria);
                     }
 
                     entidad.NomTipVenta = "EFECTIVO";
-                    entidad.CodX = "1";
                     entidad.LinkPag_FE = paginaWebEmisor;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 

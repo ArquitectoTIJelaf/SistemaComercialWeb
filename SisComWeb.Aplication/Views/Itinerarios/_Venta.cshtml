@@ -413,19 +413,20 @@
                                         @@blur="closeMenu"
                                         :style="{top: top, left: left}"
                                         v-show="showContextMenuBloquearAsiento() || itemSelected.FlagVenta !== ''">
-                                        <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
-                                            @@click="contextMenuReimprimir()">
+
+                                        <li v-show="showContextMenuReimprimir()"
+                                            @@click="contextMenuReimprimir(itemSelected)">
                                             <i class="fa fa-print fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reimprimir
                                         </li>
                                         <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1' ||
                                                     itemSelected.FlagVenta === 'R' || itemSelected.FlagVenta === 'AB'"
-                                            @@click="contextMenuAnular()">
+                                            @@click="contextMenuAnular(itemSelected)">
                                             <i class="fa fa-ban fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Anular
                                         </li>
                                         <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
-                                            @@click="contextMenuReintegro()">
+                                            @@click="contextMenuReintegro(itemSelected)">
                                             <i class="fa fa-ticket fa-fw" aria-hidden="true" style="color: var(--emp-color); "></i>
                                             Reintegro
                                         </li>

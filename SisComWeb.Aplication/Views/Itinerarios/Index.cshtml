@@ -23,8 +23,9 @@
     var claveReintegroConfirmacion = Constant.CLAVE_REINTEGRO_CONFIRMACION;
     var claveAnulacionPanel234 = Constant.CLAVE_ANULACION_PANEL234;
     var claveAnulacionPanel36 = Constant.CLAVE_ANULACION_PANEL36;
-
     var claveTiempoReserva = Constant.CLAVE_TIEMPO_RESERVA;
+
+    var claveReimpresionPanel226 = Constant.CLAVE_REIMPRESION_PANEL226;
 }
 
 @Html.Partial("_Filtros")
@@ -704,10 +705,13 @@
                     case claveReintegroConfirmacion:
                     case ClaveAnulacionPanel234:
                     case ClaveAnulacionPanel36:
-                        if (appController.validatePanel('147') === '1') //Disabled Combo
-                            $('#txtContraseniaCA').focus();
-                        else
-                            $('#cboUsuarioCA input[type=search]').focus();
+                    case ClaveReimpresionPanel226:
+                        {
+                            if (appController.validatePanel('147') === '1') // Disabled Combo
+                                $('#txtContraseniaCA').focus();
+                            else
+                                $('#cboUsuarioCA input[type=search]').focus();
+                        };
                         break;
                     default:
                         document.getElementById('txtContraseniaCA').focus();
@@ -1023,6 +1027,8 @@
         var ClaveAnulacionPanel234 = '@claveAnulacionPanel234';
         var ClaveAnulacionPanel36 = '@claveAnulacionPanel36';
         var ClaveTiempoReserva = '@claveTiempoReserva';
+
+        var ClaveReimpresionPanel226 = '@claveReimpresionPanel226';
 
         var ClaveCancelarReserva = '';
         var IngresoManualPasajes = false;
@@ -2720,12 +2726,8 @@
 
                         this.$nextTick(() => {
                             this.disabledCampoNroAsiento = true;
-                            if (this.pickedBusVenta === 'V' && this.list.ventas[this.indexVenta].FlagVenta === 'R') {
-                                setTimeout(function () {
-                                    _this.recorridoSectionVentas();
-                                }, 400);
-                            }
-                            else {
+
+                            if (this.pickedBusVenta !== 'V' || this.list.ventas[this.indexVenta].FlagVenta !== 'R') {
                                 this.disabledCamposTicket = true;
                                 this.disabledCamposTicket_Pase = true;
                             }
@@ -4392,7 +4394,7 @@
                 },
                 validateCancelarReserva: async function (_asientoSel) {
                     var auxValidate = true;
-
+                    
                     if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
                         APP.msg.warning('Solicitud cancelada, los datos enviados son de fechas pasadas.');
                         return auxValidate = false;
@@ -4405,9 +4407,9 @@
 
                             if (ClaveCancelarReserva) {
                                 var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                                    `Cancelar reserva`
+                                    'Cancelar reserva'
                                     , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                                    , ClaveCancelarReserva);
+                                    , 'CanRes_148');
 
                                 ClaveCancelarReserva = '';
 
@@ -4942,7 +4944,7 @@
                         NomOrigenPas: tmpAsientoSel.NomOrigen,
 
                         RucEmpresa: appController.findEmpresa(tmpAsientoSel.CodiEmpresa).Ruc,
-                        ElectronicoEmpresa: appController.findEmpresa(tmpAsientoSel.CodiEmpresa).ElectronicoEmpresa
+                        ElectronicoEmpresa: appController.findEmpresa(tmpAsientoSel.CodiEmpresa).Electronico
                     }))
                         .then(async function (res) {
                             await appController.chargeTurnos();
@@ -6065,9 +6067,68 @@
 
                     return auxValidate;
                 },
+                showContextMenuReimprimir: function () {
+                    var auxValidate = false;
 
+                    if (
+                        (this.itemSelected.FlagVenta === 'V' || this.itemSelected.FlagVenta === '7' || this.itemSelected.FlagVenta === '1')
+                        && (this.itemSelected.TipoBoleto === 'F' || this.itemSelected.TipoBoleto === 'B')
+                    )
+                        auxValidate = true;
 
+                    return auxValidate;
+                },
+                validateReimprimir: async function (_itemSelected) {
+                    var auxValidate = {};
+                    auxValidate.ValReimprimir = true;
+                    auxValidate.ValCaja = false;
+                    
+                    if (appController.validatePanel('235') === '1') {
+                        var resConfirmCaja = await APP.msg.confirm(
+                            'Ingreso de caja'
+                            , '¿Desea generar la reimpresión con ingreso de caja?')
 
+                        if (resConfirmCaja)
+                            auxValidate.ValCaja = true;
+                    }
+
+                    if (appController.validatePanel('232') === '1') {
+
+                        if (appController.validatePanel('226') === '1') {
+
+                            var checkClaveAutorizacion = false;
+
+                            appController.showClaveAutorizacion(ClaveReimpresionPanel226);
+
+                            await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_REI';
+                                    appClaveAutorizacion.auditoria.Boleto = _itemSelected.Boleto;
+                                });
+                            });
+
+                            await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                });
+                            });
+
+                            if (!checkClaveAutorizacion)
+                                auxValidate.ValReimprimir = false;
+                        }
+                        else {
+                            var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
+                                ''
+                                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                , 'Rei_226');
+
+                            if (!resConfirmClaveAutorizacion)
+                                auxValidate.ValReimprimir = false;
+                        }
+                    }
+
+                    return auxValidate;
+                },
                 openMenu: function (e, _item) {
                     // Animación 'ScrollTop'
                     animateScrollTop(800);
@@ -6100,84 +6161,86 @@
                     this.showContextMenu = false;
                     this.itemSelected = null;
                 },
-                contextMenuReimprimir: async function () {
-                    //var auxBoletoCompleto = formatoBoletoCompleto(this.itemSelected.TipoBoleto, this.itemSelected.Boleto);
+                contextMenuReimprimir: async function (_itemSelected) {
+                    var auxBoletoCompleto = formatoBoletoCompleto(_itemSelected.TipoBoleto, _itemSelected.Boleto);
 
-                    //var resConfirm = await APP.msg.confirm(
-                    //    'Reimprimir boleto'
-                    //    , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será reimpreso, ¿Desea continuar?')
+                    var resConfirmReimprimir = await APP.msg.confirm(
+                        'Reimprimir boleto'
+                        , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será reimpreso, ¿Desea continuar?')
 
-                    //if (resConfirm) { }
-                    //else { }
+                    if (resConfirmReimprimir) {
+                        var resValidateReimprimir = await this.validateReimprimir(_itemSelected);
+                        if (resValidateReimprimir.ValReimprimir) {
+                            if (_itemSelected) {
+                                var ListaVentasRealizadas = [];
 
-                    //return;
+                                var objVentaRealizada = {};
+                                objVentaRealizada.IdVenta = _itemSelected.IdVenta;
+                                objVentaRealizada.NumeAsiento = _itemSelected.NumeAsiento;
+                                objVentaRealizada.BoletoTipo = _itemSelected.TipoBoleto;
+                                objVentaRealizada.BoletoSerie = _itemSelected.Boleto.substring(0, 3);
+                                objVentaRealizada.BoletoNum = _itemSelected.Boleto.substring(4);
+                                objVentaRealizada.CodDocumento = _itemSelected.RucContacto ? '01' : '03';
+                                objVentaRealizada.EmisionFecha = _itemSelected.FechaVenta;
+                                objVentaRealizada.EmisionHora = _itemSelected.HoraVenta;
+                                objVentaRealizada.CajeroCod = _itemSelected.CodiUsuario;
+                                objVentaRealizada.CajeroNom = _itemSelected.NomUsuario;
+                                objVentaRealizada.PasNombreCom = _itemSelected.Nombres + " " + _itemSelected.ApellidoPaterno + " " + _itemSelected.ApellidoMaterno;
+                                objVentaRealizada.PasRuc = _itemSelected.RucContacto;
+                                objVentaRealizada.PasRazSocial = _itemSelected.RazonSocial;
+                                objVentaRealizada.PasDireccion = _itemSelected.Direccion;
+                                objVentaRealizada.NomOriPas = _itemSelected.NomOrigen;
+                                objVentaRealizada.NomDesPas = _itemSelected.NomDestino;
+                                objVentaRealizada.DocTipo = _itemSelected.TipoDocumento;
+                                objVentaRealizada.DocNumero = _itemSelected.NumeroDocumento;
+                                objVentaRealizada.PrecioCan = _itemSelected.PrecioVenta;
+                                objVentaRealizada.NomServicio = this.filtro.CodiServicio.label;
+                                objVentaRealizada.FechaViaje = _itemSelected.FechaViaje;
+                                objVentaRealizada.EmbarqueDir = _itemSelected.EmbarqueDir;
+                                objVentaRealizada.EmbarqueHora = _itemSelected.EmbarqueHora;
+                                objVentaRealizada.EmpCodigo = _itemSelected.CodiEmpresa;
+                                objVentaRealizada.BusCodigo = this.objPlano.CodiBus;
+                                objVentaRealizada.PVentaCodigo = _itemSelected.CodiPuntoVenta;
+                                objVentaRealizada.EmbarqueCod = _itemSelected.EmbarqueCod;
+                                var auxObjEmpresa = appController.findEmpresa(_itemSelected.CodiEmpresa);
+                                objVentaRealizada.EmpRuc = auxObjEmpresa.Ruc;
+                                objVentaRealizada.EmpRazSocial = auxObjEmpresa.label;
+                                objVentaRealizada.EmpDireccion = auxObjEmpresa.Direccion;
+                                objVentaRealizada.EmpElectronico = auxObjEmpresa.Electronico;
+                                objVentaRealizada.TipoTerminalElectronico = this.TipoTerminalElectronico;
+                                objVentaRealizada.TipoImpresora = this.TipoImpresora;
+                                
+                                objVentaRealizada.ValidateCaja = resValidateReimprimir.ValCaja;
+                                objVentaRealizada.HoraViaje = this.filtro.Turno;
 
-                    if (this.itemSelected) {
-                        var ListaVentasRealizadas = [];
-
-                        var objVentaRealizada = {};
-                        objVentaRealizada.IdVenta = this.itemSelected.IdVenta;
-                        objVentaRealizada.NumeAsiento = this.itemSelected.NumeAsiento;
-                        objVentaRealizada.BoletoTipo = this.itemSelected.TipoBoleto;
-                        objVentaRealizada.BoletoSerie = this.itemSelected.Boleto.substring(0, 3);
-                        objVentaRealizada.BoletoNum = this.itemSelected.Boleto.substring(4);
-                        objVentaRealizada.CodDocumento = this.itemSelected.RucContacto ? '01' : '03';
-                        objVentaRealizada.EmisionFecha = this.itemSelected.FechaVenta;
-                        objVentaRealizada.EmisionHora = this.itemSelected.HoraVenta;
-                        objVentaRealizada.CajeroCod = this.itemSelected.CodiUsuario;
-                        objVentaRealizada.CajeroNom = this.itemSelected.NomUsuario;
-                        objVentaRealizada.PasNombreCom = this.itemSelected.Nombres + " " + this.itemSelected.ApellidoPaterno + " " + this.itemSelected.ApellidoMaterno;
-                        objVentaRealizada.PasRuc = this.itemSelected.RucContacto;
-                        objVentaRealizada.PasRazSocial = this.itemSelected.RazonSocial;
-                        objVentaRealizada.PasDireccion = this.itemSelected.Direccion;
-                        objVentaRealizada.NomOriPas = this.itemSelected.NomOrigen;
-                        objVentaRealizada.NomDesPas = this.itemSelected.NomDestino;
-                        objVentaRealizada.DocTipo = this.itemSelected.TipoDocumento;
-                        objVentaRealizada.DocNumero = this.itemSelected.NumeroDocumento;
-                        objVentaRealizada.PrecioCan = this.itemSelected.PrecioVenta;
-                        objVentaRealizada.NomServicio = this.filtro.CodiServicio.label;
-                        objVentaRealizada.FechaViaje = this.itemSelected.FechaViaje;
-                        objVentaRealizada.EmbarqueDir = this.itemSelected.EmbarqueDir;
-                        objVentaRealizada.EmbarqueHora = this.itemSelected.EmbarqueHora;
-                        objVentaRealizada.EmpCodigo = this.itemSelected.CodiEmpresa;
-                        objVentaRealizada.BusCodigo = this.objPlano.CodiBus;
-                        objVentaRealizada.PVentaCodigo = this.itemSelected.CodiPuntoVenta;
-                        objVentaRealizada.EmbarqueCod = this.itemSelected.EmbarqueCod;
-                        
-                        var auxObjEmpresa = appController.findEmpresa(this.itemSelected.CodiEmpresa);
-                        objVentaRealizada.EmpRuc = auxObjEmpresa.Ruc;
-                        objVentaRealizada.EmpRazSocial = auxObjEmpresa.label;
-                        objVentaRealizada.EmpDireccion = auxObjEmpresa.Direccion;
-                        objVentaRealizada.EmpElectronico = auxObjEmpresa.Electronico;
-                        objVentaRealizada.TipoTerminalElectronico = this.TipoTerminalElectronico;
-                        objVentaRealizada.TipoImpresora = this.TipoImpresora;
-
-                        ListaVentasRealizadas.push(objVentaRealizada);
-
-                        appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
+                                ListaVentasRealizadas.push(objVentaRealizada);
+                                
+                                appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
+                            }
+                        }
                     }
-
+                    
                     this.closeMenu();
                 },
-                contextMenuAnular: function () {
-                    if (this.itemSelected) {
-                        switch (this.itemSelected.FlagVenta) {
+                contextMenuAnular: function (_itemSelected) {
+                    if (_itemSelected) {
+                        switch (_itemSelected.FlagVenta) {
                             case 'R':
-                                this.cancelarReserva(this.itemSelected);
+                                this.cancelarReserva(_itemSelected);
                                 break;
                             case 'AB':
-                                this.anularAsientosBloqueadosTb(this.itemSelected);
+                                this.anularAsientosBloqueadosTb(_itemSelected);
                                 break;
                             default:
-                                this.sendToAnularVenta(this.itemSelected);
+                                this.sendToAnularVenta(_itemSelected);
                         }
                     }
 
                     this.closeMenu();
                 },
-                contextMenuReintegro: async function () {
+                contextMenuReintegro: async function (_itemSelected) {
                     let _this = this;
-                    if (this.itemSelected) {
+                    if (_itemSelected) {
 
                         _this.disabledAsientos = true;
                         // Valida 'TurnoDisponible'
@@ -6208,7 +6271,7 @@
                         }
 
                         _this.disabledAsientos = false;
-                        appController.showReintegro(this.itemSelected);
+                        appController.showReintegro(_itemSelected);
                     }
                     this.closeMenu();
                 },
@@ -7631,7 +7694,7 @@
                         if (auxValidate) {
                             // SweetAlert para 'fechaAbierta'
                             if (await APP.msg.confirm(
-                                'Confirmar acción'
+                                'Fecha Abierta'
                                 , '¿Desea enviar el Pase a Fecha Abierta?'))
                                 _this.fechaAbierta = true;
 
@@ -7925,6 +7988,7 @@
                             }
                         }; break;
                         case ClaveAnulacionPanel234:
+                        case ClaveReimpresionPanel226:
                             {
                                 if (appController.validatePanel('147') === '1') {
                                     this.usuario = appController.UsuarioClaveAutorizacion('147');
@@ -8003,7 +8067,7 @@
                         }
                         else {
                             if (this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro || this.Tipo === ClaveAnulacionPanel234 ||
-                                this.Tipo === ClaveAnulacionPanel36) {
+                                this.Tipo === ClaveAnulacionPanel36 || this.Tipo === ClaveReimpresionPanel226) {
 
                                 if (appController.validatePanel('147') === '1') {
                                     if (auxValidate === true) APP.msg.warning('Usuario no válido.');
@@ -8019,13 +8083,13 @@
                         document.getElementById('txtContraseniaCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese contraseña.');
                     }
-                    else if ((this.Tipo === ClaveDescuentoDePasajes || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro ||
-                        this.Tipo === ClaveAnulacionPanel234 || this.Tipo === ClaveAnulacionPanel36) && !this.observacion) {
+                    else if (!this.observacion &&
+                        (this.Tipo === ClaveDescuentoDePasajes || this.Tipo === claveReintegroConfirmacion || this.Tipo === claveReintegro ||
+                        this.Tipo === ClaveAnulacionPanel234 || this.Tipo === ClaveAnulacionPanel36 || this.Tipo === ClaveReimpresionPanel226)) {
                         document.getElementById('txtObservacionCA').focus();
                         if (auxValidate === true) APP.msg.warning('Ingrese observación.');
                     }
                     else {
-                        //document.getElementById('btnAceptarClaveAutorizacion').focus();
                         if (auxValidate !== true) this.sendClaveAutorizacion();;
                         auxResponse = true;
                     }
@@ -8053,6 +8117,7 @@
                             break;
                         case claveReintegroConfirmacion:
                         case ClaveAnulacionPanel234:
+                        case ClaveReimpresionPanel226:
                             {
                                 _this.trustedPassword = await appVueVenta.consultaClaveAnuRei(_this.usuario.id, _this.password);
                                 if (_this.trustedPassword) {
@@ -8387,7 +8452,7 @@
 
                     // SweetAlert para 'fechaAbierta'
                     if (await APP.msg.confirm(
-                        'Confirmar acción'
+                        'Fecha Abierta'
                         , '¿Desea enviar la venta al Crédito a Fecha Abierta?'))
                         request.fechaAbierta = true;
                     else
