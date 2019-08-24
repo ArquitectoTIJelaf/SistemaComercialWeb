@@ -1967,7 +1967,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"UsuarioCodTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
 
                                     ",\"ValidateCaja\" : " + ListaVentasRealizadas[i].ValidateCaja.ToString().ToLower() +
-                                    ",\"HoraViaje\" : \"" + ListaVentasRealizadas[i].HoraViaje.Replace(" ", "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (ListaVentasRealizadas[i].HoraViaje ?? string.Empty).Replace(" ", "") + "\"" +
                                 "}";
 
                         if (i < ListaVentasRealizadas.Count - 1)
