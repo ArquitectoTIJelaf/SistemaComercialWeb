@@ -2514,8 +2514,13 @@ namespace SisComWeb.Business
         {
             try
             {
-                VentaRepository.ActualizaF9Elec(request.IdVenta, request.Dni, request.Nombre, request.Ruc, request.Edad, request.Telefono, request.RecoVenta, request.TipoDoc, request.Nacionalidad);
-                return new Response<bool>(true, true, Message.MsgCorrectoActualizaBoletoF9, true);
+                var res = VentaRepository.ActualizaF9Elec(request.IdVenta, request.Dni, request.Nombre, request.Ruc, request.Edad, request.Telefono, request.RecoVenta, request.TipoDoc, request.Nacionalidad);
+
+                if (res)
+                {
+                    //TODO: Auditoria
+                }
+                return new Response<bool>(true, res, Message.MsgCorrectoActualizaBoletoF9, true);
             }
             catch (Exception ex)
             {

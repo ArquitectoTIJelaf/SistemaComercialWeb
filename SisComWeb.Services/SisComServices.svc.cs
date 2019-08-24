@@ -1118,19 +1118,6 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<decimal> ConsultarIgv(string TipoDoc)
-        {
-            try
-            {
-                return ReintegroLogic.ConsultarIgv(TipoDoc);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<decimal>(false, 0, Message.MsgExcConsultaIgv, false);
-            }
-        }
-
         public Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
         {
             try
@@ -1186,7 +1173,7 @@ namespace SisComWeb.Services
 
         #region "PASE EN LOTE"
 
-        public Response<bool> UpdatePostergacion(UpdatePostergacionRequest request)
+        public Response<List<PaseLoteResponse>> UpdatePostergacion(UpdatePostergacionRequest request)
         {
             try
             {
@@ -1195,7 +1182,7 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
+                return new Response<List<PaseLoteResponse>>(false, null, Message.MsgExActualizaBoletoF9, false);
             }
         }
         #endregion

@@ -1,44 +1,37 @@
-﻿using SisComWeb.Entity.Peticiones.Request;
+﻿using SisComWeb.Entity.Peticiones.Response;
+using System.Collections.Generic;
 using System.Data;
 
 namespace SisComWeb.Repository
 {
     public class PaseLoteRepository
-    {        
-        public static bool UpdatePostergacion(UpdatePostergacionRequest filtro)
+    {   
+        public static List<PaseLoteResponse> UpdatePostergacion(string Lista)
         {
-            bool Response = false;
+            var lista = new List<PaseLoteResponse>();
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "Usp_Tb_Venta_Update_Postergacion_Ele";
-                db.AddParameter("@Numero_reint", DbType.String, ParameterDirection.Input, filtro.NumeroReintegro);
-                db.AddParameter("@programacion", DbType.String, ParameterDirection.Input, filtro.CodiProgramacion);
-                db.AddParameter("@origen", DbType.String, ParameterDirection.Input, filtro.Origen);
-                db.AddParameter("@id_Venta", DbType.Int32, ParameterDirection.Input, filtro.IdVenta);
-                db.AddParameter("@asiento", DbType.String, ParameterDirection.Input, filtro.NumeAsiento);
-                db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, filtro.Ruta);
-                db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, filtro.CodiServicio);
-                db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.TipoDoc);//TODO: No se usa en el procedure
-                db.Execute();
-                Response = true;
+                db.ProcedureName = "scwsp_UspTbVentaUpdatePostergacionEle_List";
+                db.AddParameter("@Lista", DbType.String, ParameterDirection.Input, Lista);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        lista.Add(new PaseLoteResponse
+                        {
+                            Boleto = Reader.GetStringValue(drlector, "Boleto"),
+                            NumeAsiento = Reader.GetStringValue(drlector, "NumeAsiento"),
+                            Pasajero = Reader.GetStringValue(drlector, "Pasajero"),
+                            FechaViaje = Reader.GetStringValue(drlector, "FechaViaje"),
+                            HoraViaje = Reader.GetStringValue(drlector, "HoraViaje"),
+                            IdVenta = Reader.GetIntValue(drlector, "IdVenta"),
+                            CodiProgramacion = Reader.GetStringValue(drlector, "CodiProgramacion")                            
+                        });
+                    }
+                }
             }
-            return Response;
-        }
-
-        public static bool UpdateProgramacion(string CodiProgramacion, int IdVenta)
-        {
-            bool Response = false;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_venta_Update_Prog";
-                db.AddParameter("@p", DbType.String, ParameterDirection.Input, CodiProgramacion);
-                db.AddParameter("@id", DbType.String, ParameterDirection.Input, IdVenta);
-                db.Execute();
-                Response = true;
-            }
-            return Response;
-        }
+            return lista;
+        }        
     }    
 }

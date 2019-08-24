@@ -884,7 +884,7 @@
                             //    appVueReintegro.$refs.refREHoraIt.focus();
                             //    break;
                             default:
-                                debugger;
+                                //TODO: Buscar solución general
                                 e.target.nextElementSibling.focus();
                         }
                     }
@@ -1149,7 +1149,7 @@
                     value = auxValue.join("");
                 else
                     value = '';
-            }      
+            }
             else
                 value = '';
 
@@ -3673,7 +3673,7 @@
                             });
                             return auxValidate = false;
                         }
-                        
+
                         if (!appController.validateTipoDocumento(this.list.ventas[i].CodiTipoDoc.id, this.list.ventas[i].Documento, true)) {
                             this.indexVenta = i;
 
@@ -4101,7 +4101,7 @@
                 validateRangePrice: function (event) {
                     if (this.eventTxtPrecio)
                         event = this.eventTxtPrecio;
-                    
+
                     var actual = parseFloat(this.list.ventas[this.indexVenta].Precio || '0') || 0;
                     var normal = parseFloat(this.list.ventas[this.indexVenta].PrecioNormal || '0') || 0;
                     var max = parseFloat(this.list.ventas[this.indexVenta].PrecioMax || '0') || 0;
@@ -8059,7 +8059,7 @@
                 },
                 recorrerClaveAutorizacion: function (auxValidate) {
                     var auxResponse = false;
-                    
+
                     if (!this.usuario && this.Tipo !== ClaveDescuentoDePasajes) {
                         if (this.Tipo === ClaveHoraConfirmacion || this.Tipo === ClaveTiempoReserva) {
                             $('#cboUsuarioCA input[type=search]').focus();
@@ -9027,7 +9027,6 @@
                 },
                 setData: function () {
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario
                     _this.item.CodEmpresa = appVueVenta.$refs.refEmpresa.value.id;
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
@@ -9530,7 +9529,8 @@
                 lockReintegro: false,
                 lockFilters: false,
                 lockCancelar: true,
-                disabledAceptar: false
+                disabledAceptar: false,
+                validateDocumento: {}
             },
             mounted: function () {
                 let _this = this;
@@ -9561,11 +9561,9 @@
                 },
                 setData: function () {
                     let _this = this;
-                    var correlativo = appController.getCurrentCorrelativo();//TODO: innecesario
                     _this.filtro.tipo = _this.asientoSel.TipoBoleto;
                     _this.filtro.serie = _this.asientoSel.Boleto.substring(0, 3);
                     _this.filtro.numero = _this.asientoSel.Boleto.substring(11, 4);
-                    _this.filtro.empresa = _this.$options.filters.empresas(_this.asientoSel.CodiEmpresa);
                     _this.filtro.codEmpresa =String(_this.asientoSel.CodiEmpresa);
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0) {
@@ -9610,7 +9608,18 @@
                             _this.lockCancelar = false;
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
+
+                                //Confirmar conservar crédito
+                                if (data.FlagVenta === '1') {
+                                    if (await APP.msg.confirm('Boleto emitido como crédito', '¿desea emitir el boleto crédito bajo las misma modalidad?')) {
+                                        _this.item.stReintegro = 'X';
+                                    } else {
+                                        _this.item.stReintegro = '';
+                                    }
+                                }
+
                                 if (data) {
+                                    debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -9870,6 +9879,7 @@
                     _this.filtroProgramacion.FechaViaje = moment().format('DD/MM/YYYY');
                     _this.filtroProgramacion.Hora = moment().format('hh:mm A');
                     _this.filtroProgramacion.NomDestino = '';
+                    _this.validateDocumento = {};
                     if (!document.getElementById('VerifBoletoRE').classList.contains("in")) {
                         _this.$nextTick(() => {
                             _this.$refs.refREVerifBoleto.click();
@@ -10007,7 +10017,7 @@
                             auxServicio = _this.filtroMiniMapa.CodiServicio;
                             auxFechaViaje = _this.filtroMiniMapa.FechaViaje;
                             auxHoraViaje = _this.filtroMiniMapa.HoraViaje;
-                            auxAsiento = _this.filtroCambio.NumAsiento;                            
+                            auxAsiento = _this.filtroCambio.NumAsiento;
                             auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
                             auxPrecioSinDescuento = "";
 
@@ -10025,6 +10035,12 @@
                     }
 
                     //Valida 'Ex Dni'
+                    if (await _this.haveExDni()) {
+                        _this.disabledAceptar = false;
+                        return;
+                    }
+
+                    //Valida 'Documento'
                     if (await _this.haveExDni()) {
                         _this.disabledAceptar = false;
                         return;
@@ -10083,16 +10099,7 @@
                             return;
                         }
                     }
-
-                    //Confirmar conservar crédito
-                    if (_this.dataOriginal.FlagVenta === '1') {
-                        if (await APP.msg.confirm('El boleto de viaje esta emitido como reintegro', '¿desea emitir el boleto reintegro bajo las misma modalidad?')) {
-                            _this.item.stReintegro = 'X';
-                        } else {
-                            _this.item.stReintegro = '';
-                        }
-                    }
-
+                    
                     //appController.showTipoPago();
                     appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
 
@@ -10104,14 +10111,7 @@
                     });
 
                     var input = {};
-
-                    //Código interno de documento
-                    var CodiInternoDocumento = (appVueVenta.TipoTerminalElectronico === 'M' && appController.validatePanel('145') === '1') ? '20'
-                        : ((_this.item.ruc) ? '17' : '16');
-
-                    //Consulta del IGV
-                    var igv = await _this.verificaIgv(CodiInternoDocumento);
-
+                    
                     await deferredModal($('#appVueTipoPago2'), false).done(function () {
                         appVueTipoPago2.$nextTick(() => {
                             checkTipoPago = appVueTipoPago2.trustedSave;
@@ -10134,10 +10134,10 @@
                                 input.EDAD = _this.item.edad;
                                 input.TELEF = _this.item.telefono;
                                 input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
-                                input.porcentaje = igv;
+                                input.porcentaje = 0;
                                 input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                input.tota_ruta1 = parseFloat(_this.item.reintegro || 0) / (1 + (igv / 100));
-                                input.tota_ruta2 = parseFloat(_this.item.reintegro || 0) - parseFloat(input.tota_ruta1 || 0);
+                                input.tota_ruta1 = 0;
+                                input.tota_ruta2 = 0;
                                 input.Punto_Venta = Usuario.CodiPuntoVenta;
                                 input.tipo_doc = _this.item.documento;
                                 input.codi_ori_psj = auxOrigenPas;
@@ -10153,7 +10153,7 @@
                                 input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
                                 input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
                                 input.CODI_TERMINAL__ = Usuario.Terminal;
-                                input.Codi_Documento__ = CodiInternoDocumento;
+                                input.Codi_Documento__ = 0;
                                 input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
                                 input.fecha_venta__ = moment().format('DD/MM/YYYY');
                                 input.Pventa__ = Usuario.CodiPuntoVenta;
@@ -10179,6 +10179,13 @@
                                 input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
                                 input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
                                 input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                //NEW
+                                var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
+                                input.NomEmpresa = auxObjEmpresa.label;
+                                input.RucEmpresa = auxObjEmpresa.Ruc;
+                                input.DireccionEmpresa = auxObjEmpresa.Direccion;
+                                input.ElectronicoEmpresa = auxObjEmpresa.Electronico;
+                                input.TipoImpresora = appVueVenta.TipoImpresora;
 
                                 _this.disabledAceptar = false;
                             }
@@ -10220,15 +10227,6 @@
 
                     _this.disabledAceptar = false;
                 },
-                verificaIgv: async function (CodiInternoDocumento) {
-                    var igv = 0;
-                    await APP.rq.axios2.get(APP.base + '/reintegro/verifica-igv' + APP.util.getQueryParamByObject({ TipoDoc: CodiInternoDocumento }))
-                        .then(res => {
-                            igv = _.cloneDeep(res.data.Valor);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-                    return igv;
-                },
                 updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
                     APP.rq.axios2.get(APP.base + '/reintegro/update-reintegro' + APP.util.getQueryParamByObject({
                         IdVenta: IdVenta,
@@ -10249,6 +10247,7 @@
                     item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
                     item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
                     item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
+                    debugger;
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -10315,7 +10314,7 @@
                 },
                 consultaSunat: async function () {
                     var _this = this;
-                    if (!_this.readOnlyCodiMotivo) {
+                    if (!_this.readOnlyCodiMotivo && _this.item.ruc.length === 11) {
                         await APP.rq.axios.get(APP.base + '/itinerarios/consulta-sunat' + APP.util.getQueryParamByObject({
                             rucContacto: _this.item.ruc
                         }), { timeout: 5000 })
@@ -10352,18 +10351,21 @@
                             if (res.data.Estado) {
 
                                 if (res.data.Valor.IdCliente > 0) {
-                                    //_this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
+                                    //TODO: No se incluye IdCliente, Sexo y ValidadorClienteEspecial
+                                    debugger;
                                     _this.item.nombre = res.data.Valor.NombreCliente;
                                     _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
                                     _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
                                     _this.item.fechaNac = res.data.Valor.FechaNacimiento;
-                                    _this.item.edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
-                                    //_this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
+                                    _this.item.edad = _this.calculaEdad();
                                     _this.item.telefono = res.data.Valor.Telefono;
-                                    _this.item.ruc = res.data.Valor.RucContacto;
-                                    _this.item.razonSocial = res.data.Valor.RazonSocial;
-                                    _this.item.direccion = res.data.Valor.Direccion;
-                                    //_this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+                                    if (_this.item.stReintegro !== 'X') {
+                                        _this.item.ruc = res.data.Valor.RucContacto;
+                                        _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                        _this.item.direccion = res.data.Valor.Direccion;
+                                    }
+                                    _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
+
                                 }
 
                                 if (!res.data.EsCorrecto)
@@ -10549,9 +10551,11 @@
                         if (value !== '' && value !== null) {
                             if (this.list.tiposDoc.find(x => x.id === value.id)) {
                                 this.item.documento = value.id;
+                                this.validateDocumento = value;
                             }
                         } else {
                             this.item.documento = '';
+                            this.validateDocumento = {};
                         }
 
                         this.$nextTick(() => {
@@ -10601,7 +10605,9 @@
                 }
             },
             watch: {
-                'item.ruc': function (newVal) {
+                'item.ruc': function (newVal, oldVal) {
+                    let _this = this;
+                    //Seteo de Correlativo
                     if (newVal.length === 11) {
                         switch (appVueVenta.TipoTerminalElectronico) {
                             case 'M':
@@ -10632,6 +10638,24 @@
                     else {
                         if (newVal.length === 0)
                             this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
+                    }
+
+                    if (newVal != oldVal && oldVal) {
+                        _this.item.razonSocial = '';
+                        _this.item.direccion = '';
+                    }
+                },
+                'item.documento': function (newVal, oldVal) {
+                    let _this = this;
+                    if (newVal != oldVal && oldVal) {
+                        _this.item.apellidoPaterno = '';
+                        _this.item.apellidoMaterno = '';
+                        _this.item.nombre = '';
+                        _this.item.fechaNac = '';
+                        _this.item.edad = '';
+                        _this.item.telefono = '';
+                        _this.item.nacionalidad = '';
+                        _this.item.nacionalidad = (newVal === '01') ? 'PERUANA' : '';
                     }
                 }
             }
@@ -11237,6 +11261,10 @@
                 },
                 anularReintegro: async function (data) {
                     var _this = this;
+
+                    debugger;
+                    var auxObjEmpresa = appController.findEmpresa(data.CodiEmpresa);
+                    
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
                         IdVenta: data.IdVenta,
                         CodiEsca: data.CodiEsca,
@@ -11248,7 +11276,10 @@
                         NumeBoleto: data.NumeBoleto,
                         Tipo: data.Tipo,
                         TipoPago: data.TipoPago,
-                        PrecioVenta: data.PrecioVenta
+                        PrecioVenta: data.PrecioVenta,
+
+                        RucEmpresa: auxObjEmpresa.Ruc,
+                        ElectronicoEmpresa: auxObjEmpresa.Electronico
                     }))
                         .then(async (res) => {
                             if (res.data.EsCorrecto) {
@@ -11409,6 +11440,8 @@
                 dbClickProgramacion: async function (item, auxMapa) {
                     let _this = this;
 
+                    _this.limpiarBus(auxMapa);
+
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -11423,32 +11456,34 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
-                            switch (auxMapa) {
-                                case 1: {
-                                    _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
-                                    _this.list.plano5_Ori = _this.list.tempListOri.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano4_Ori = _this.list.tempListOri.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano2_Ori = _this.list.tempListOri.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano1_Ori = _this.list.tempListOri.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.$refs.refCollapseOrigen.click();
-                                    _this.$refs.refLOTEOrigen2.$el.querySelector('input').focus();
-                                }; break;
-                                case 2: {
-                                    $('#appVuePaseLote').animate({ scrollTop: 100 }, 800);
-                                    _this.objProgramacion.CodiProgramacion = _.cloneDeep(res.data.Valor.CodiProgramacion);
-                                    _this.objProgramacion.CodiServicio = _.cloneDeep(res.data.Valor.CodiServicio);
-                                    _this.objProgramacion.FechaProgramacion = _.cloneDeep(res.data.Valor.FechaProgramacion);
-                                    _this.objProgramacion.HoraProgramacion = _.cloneDeep(res.data.Valor.HoraProgramacion);
-                                    _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
-                                    _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano2_Des = _this.list.tempListDes.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.list.plano1_Des = _this.list.tempListDes.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
-                                    _this.$refs.refCollapseDestino.click();
-                                }; break;
-                            }
+                            _this.$nextTick(() => {
+                                switch (auxMapa) {
+                                    case 1: {
+                                        _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                        _this.list.plano5_Ori = _this.list.tempListOri.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano4_Ori = _this.list.tempListOri.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano2_Ori = _this.list.tempListOri.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano1_Ori = _this.list.tempListOri.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.$refs.refCollapseOrigen.click();
+                                        _this.$refs.refLOTEOrigen2.$el.querySelector('input').focus();
+                                    }; break;
+                                    case 2: {
+                                        $('#appVuePaseLote').animate({ scrollTop: 100 }, 800);
+                                        _this.objProgramacion.CodiProgramacion = _.cloneDeep(res.data.Valor.CodiProgramacion);
+                                        _this.objProgramacion.CodiServicio = _.cloneDeep(res.data.Valor.CodiServicio);
+                                        _this.objProgramacion.FechaProgramacion = _.cloneDeep(res.data.Valor.FechaProgramacion);
+                                        _this.objProgramacion.HoraProgramacion = _.cloneDeep(res.data.Valor.HoraProgramacion);
+                                        _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                        _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano2_Des = _this.list.tempListDes.filter(x => x.Indice + 3 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.list.plano1_Des = _this.list.tempListDes.filter(x => x.Indice + 4 === Math.ceil(x.Indice / 5) * 5);
+                                        _this.$refs.refCollapseDestino.click();
+                                    }; break;
+                                }
+                            });
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
@@ -11459,8 +11494,11 @@
                         .then(res => {
                             if (res.data.Estado) {
                                 var _data = _.cloneDeep(res.data.Valor);
-                                if (auxProg === 1) _this.list.itinerarios1 = _data;
-                                else _this.list.itinerarios2 = _data;
+                                _this.limpiarBus(auxProg);
+                                _this.$nextTick(() => {
+                                    if (auxProg === 1) _this.list.itinerarios1 = _data;
+                                    else _this.list.itinerarios2 = _data;
+                                });
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -11474,11 +11512,9 @@
 
                     if (!_this.processingLote) {
 
-                        _this.rainEfect = true;
-                        
                         for (var e1 of _this.list.tempListOri) {
                             for (var e2 of _this.list.tempListDes) {
-                                if (e1.NumeAsiento !== 0 && e1.Nombres !== '') {//TODO: Reemplazar Nombres por Flag
+                                if (e1.NumeAsiento !== 0 && e1.IdVenta !== '') {
                                     if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
                                         var numeAsiento = _.cloneDeep(e1.NumeAsiento)
                                         _this.list.newAsientos.push(numeAsiento);
@@ -11490,18 +11526,25 @@
                             }
                         }
 
-                        _this.$refs.refBtnProccesingLote.focus();
+                        if (_this.list.newAsientos.length > 0) {
+                            _this.rainEfect = true;
+                            _this.$refs.refBtnProccesingLote.focus();
+                        } else APP.msg.info('No se encontró coincidencias');
+
+
+
                     }
                 },
                 stopPrevisualizar: function () {
                     let _this = this;
 
                     _this.rainEfect = false;
-                    
+
                     for (var e1 of _this.list.tempListOri) {
                         if (e1.NumeAsiento !== 0) {
                             if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
                                 e1.IDS = 0;
+                                //_.dropWhile(_this.list.newAsientos, e1.NumeAsiento);
                             }
                         }
                     }
@@ -11513,6 +11556,7 @@
                                 if (_this.list.newAsientos.includes(e2.NumeAsiento)) {
                                     e2.NumeAsiento = 0;
                                     e2.IDS = 0;
+                                    //_.dropWhile(_this.list.newAsientos, e2.NumeAsiento);
                                 }
                             }
                         }
@@ -11521,10 +11565,8 @@
                 procesarEnLote: function () {
                     let _this = this;
 
-                    _this.processingLote = true;
-
                     if (_this.rainEfect) {
-                        
+
                         for (var e2 of _this.list.tempListDes) {
                             if (e2.NumeAsiento !== 0) {
                                 if (_this.list.newAsientos.includes(e2.NumeAsiento)) {
@@ -11546,41 +11588,46 @@
 
                             for (var e1 of _this.list.tempListOri) {
                                 for (var e2 of _this.list.tempListDes) {
-                                    if (e1.NumeAsiento !== 0 && e1.Nombres !== '') {//TODO: Reemplazar Nombres por Flag
+                                    if (e1.NumeAsiento !== 0 && e1.IdVenta !== '') {
                                         if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
-                                            _this.list.newAsientos.push(_.cloneDeep(e1.NumeAsiento));                                            
+                                            _this.list.newAsientos.push(_.cloneDeep(e1.NumeAsiento));
                                         }
                                     }
                                 }
                             }
                         }
-;
-                        for (var e1 of _this.list.tempListOri) {
-                            if (e1.NumeAsiento !== 0) {
-                                if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
-                                    e1.NumeAsiento = 0;
-                                }
-                            }
-                        }
-                        
-                        for (var e2 of _this.list.tempListDes) {
-                            for (var asiento of _this.list.newAsientos) {
-                                if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
-                                    e2.NumeAsiento = asiento;
-                                    asientosBloqueados.push(_.padStart(asiento, 2, '0'));
-                                }
-                            }
-                        }
 
-                        //TODO: Bloquear asientos
-                        await APP.msg.infoMessage('Asientos Bloqueados', 'Se bloqueó correctamente los asientos: ' + asientosBloqueados.join())
+                        if (_this.list.newAsientos.length > 0) {
+
+                            for (var e1 of _this.list.tempListOri) {
+                                if (e1.NumeAsiento !== 0) {
+                                    if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
+                                        e1.NumeAsiento = 0;
+                                    }
+                                }
+                            }
+
+                            for (var e2 of _this.list.tempListDes) {
+                                for (var asiento of _this.list.newAsientos) {
+                                    if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
+                                        e2.NumeAsiento = asiento;
+                                        asientosBloqueados.push(_.padStart(asiento, 2, '0'));
+                                    }
+                                }
+                            }
+
+                            _this.processingLote = true;
+
+                            //TODO: Bloquear asientos
+                            await APP.msg.infoMessage('Asientos Bloqueados', `Se bloqueó correctamente los asientos: ${asientosBloqueados.join(', ')}`)
+                        } else APP.msg.info('No se encontró coincidencias');
                     });
                 },
                 restaurarLote: function () {
                     let _this = this;
 
                     _this.processingLote = false;
-                    
+
                     for (var e2 of _this.list.tempListOri) {
                         for (var asiento of _this.list.newAsientos) {
                             if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
@@ -11588,7 +11635,7 @@
                             }
                         }
                     }
-                    
+
                     for (var e1 of _this.list.tempListDes) {
                         if (e1.NumeAsiento !== 0) {
                             if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
@@ -11596,7 +11643,7 @@
                             }
                         }
                     }
-                  
+
 
                     for (var e3 of _this.list.newAsientosManuales) {
 
@@ -11624,7 +11671,7 @@
                     APP.msg.info('Se desbloquearon los asientos');
                 },
                 OrigenDraggable: function (_item) {
-                    if (_item && _item.NumeAsiento && !_item.IDS && _item.Nombres)//TODO: Reemplazar Nombres por Flag
+                    if (_item && _item.NumeAsiento && !_item.IDS && _item.IdVenta)//TODO: Reemplazar Nombres por Flag
                         return true
                     else
                         return false;
@@ -11650,7 +11697,7 @@
                     _this.list.newAsientosManuales.push({ origen: _this.dragItem.NumeAsiento, destino: parseInt(item.Tipo) });
                     item.NumeAsiento = parseInt(item.Tipo);
 
-                    if ((_.findIndex(_this.list.tempListOri, (o) => { return o.NumeAsiento !== 0 && o.IdVenta !== ''; })) < 0) {
+                    if ((_.findIndex(_this.list.tempListOri, (o) => { return o.NumeAsiento !== 0 && o.IdVenta !== ''; })) <= -1) {
                         _this.processingLote = true;
                     }
 
@@ -11660,14 +11707,17 @@
                     APP.msg.warning('Se bloqueó el asiento: ' + _.cloneDeep(_.padStart(parseInt(item.Tipo), 2, '0')))
                 },
                 confirm: async function () {
-                    let _this = this;                    
-                    
+                    let _this = this;
+
                     if (_.findIndex(_this.list.tempListOri, (o) => { return o.NumeAsiento !== 0 && o.IdVenta !== ''; }) >= 0) {
                         if (await APP.msg.confirm(null, 'Existen asientos en el plano de Origen. ¿Desea continuar con la operación?')) {
                         } else return;
                     }
 
                     var asientoCambiados = [];
+
+                    var input = {};
+                    input.list = [];
 
                     for (var e of _this.list.newAsientos) {
                         for (var e1 of _this.list.tempListOri) {
@@ -11685,12 +11735,10 @@
                                 filtroProg.Boleto = e1.TipoBoleto + e1.Boleto;
                                 filtroProg.Pasajero = `${e1.Nombres},${e1.ApellidoPaterno},${e1.ApellidoMaterno}`;
                                 filtroProg.Ruta = e1.CodiDestino;
+                                filtroProg.Origen = e1.CodiOrigen;
 
-                                await APP.rq.axios2.post(APP.base + '/paseLote/update-postergacion', filtroProg)
-                                    .then(res => {
-                                        asientoCambiados.push(_.padStart(e, 2, '0'));
-                                    })
-                                    .catch(APP.rq.axios_handler_error_alert);
+                                input.list.push(filtroProg);
+                                asientoCambiados.push(_.padStart(e, 2, '0'));
                             }
                         }
                     }
@@ -11711,22 +11759,44 @@
                                 filtroProg.Boleto = e1.TipoBoleto + e1.Boleto;
                                 filtroProg.Pasajero = `${e1.Nombres},${e1.ApellidoPaterno},${e1.ApellidoMaterno}`;
                                 filtroProg.Ruta = e1.CodiDestino;
+                                filtroProg.Origen = e1.CodiOrigen;
 
-                                await APP.rq.axios2.post(APP.base + '/paseLote/update-postergacion', filtroProg)
-                                    .then(res => {
-                                        asientoCambiados.push(_.padStart(e.origen, 2, '0'));
-                                    })
-                                    .catch(APP.rq.axios_handler_error_alert);
+                                input.list.push(filtroProg);
+                                asientoCambiados.push(_.padStart(e.destino, 2, '0'));
                             }
                         }
                     }
 
-                    _this.$nextTick(async () => {
-                        _this.list.newAsientos = [];
-                        _this.list.newAsientosManuales = [];
-                        if(await APP.msg.infoMessage('Asientos Cambiados','Se cambió correctamente los asientos: ' + asientoCambiados.join()))
-                            _this.close();
-                    });
+                    await APP.rq.axios2.post(APP.base + '/paseLote/update-postergacion', input)
+                        .then(async (res) => {
+                            var asientosCorrectos = _.map(_.cloneDeep(res.data.Valor), 'NumeAsiento');
+
+                            if (await APP.msg.successMessage('Asientos Cambiados', `Se cambió correctamente los asientos: ${asientosCorrectos.join(', ')}`)) {
+                                if (JSON.stringify(asientosCorrectos) == JSON.stringify(asientoCambiados)) {
+
+                                    _this.close();
+                                } else {
+                                    var asientosNoCorrectos = [];
+
+                                    for (var e of asientoCambiados) {
+                                        if (asientosCorrectos.indexOf(e) <= -1) {
+                                            asientosNoCorrectos.push(e);
+                                        }
+                                    }
+
+                                    if (await APP.msg.errorMessage('Asientos No Cambiados', `No se cambiaron los asientos: ${asientosNoCorrectos.join(', ')}`)) {
+                                        _this.close();
+                                    }
+                                }
+                            }
+
+                            //TODO: Desbloquear Asientos
+
+                            _this.list.newAsientos = [];
+                            _this.list.newAsientosManuales = [];
+
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarCampos: function () {
                     let _this = this;
@@ -11749,9 +11819,6 @@
                     _this.objProgramacion.CodiServicio = '';
                     _this.objProgramacion.FechaProgramacion = '';
                     _this.objProgramacion.HoraProgramacion = '';
-
-                    _this.list.newAsientos = [];
-                    _this.list.newAsientosManuales = [];
                 },
                 limpiarBus: function (auxMapa) {
                     let _this = this;
@@ -11763,6 +11830,28 @@
                             _this.list.plano3_Ori = [];
                             _this.list.plano2_Ori = [];
                             _this.list.plano1_Ori = [];
+
+                            for (var e2 of _this.list.newAsientos) {
+                                for (var e1 of _this.list.tempListDes) {
+                                    if (e1.NumeAsiento !== 0) {
+                                        if (parseInt(e1.Tipo) === e2) {
+                                            e1.NumeAsiento = 0;
+                                            e1.IDS = 0;
+                                        }
+                                    }
+                                }
+                            }
+
+                            for (var e2 of _this.list.newAsientosManuales) {
+                                for (var e1 of _this.list.tempListDes) {
+                                    if (e1.NumeAsiento !== 0) {
+                                        if (parseInt(e1.Tipo) === e2.destino) {
+                                            e1.NumeAsiento = 0;
+                                            e1.IDS = 0;
+                                        }
+                                    }
+                                }
+                            }
                         }; break;
                         case 2: {
                             _this.list.tempListDes = [];
@@ -11771,6 +11860,29 @@
                             _this.list.plano3_Des = [];
                             _this.list.plano2_Des = [];
                             _this.list.plano1_Des = [];
+
+                            for (var e2 of _this.list.newAsientos) {
+                                for (var e1 of _this.list.tempListOri) {
+                                    if (e1.NumeAsiento === 0) {
+                                        if (parseInt(e1.Tipo) === e2) {
+                                            e1.NumeAsiento = e2;
+                                            e1.IDS = 0;
+                                        }
+                                    }
+                                }
+                            }
+
+                            for (var e2 of _this.list.newAsientosManuales) {
+                                for (var e1 of _this.list.tempListOri) {
+                                    if (e1.NumeAsiento === 0) {
+                                        if (parseInt(e1.Tipo) === e2.origen) {
+                                            e1.NumeAsiento = e2.origen;
+                                            e1.IDS = 0;
+                                        }
+                                    }
+                                }
+                            }
+
                         }; break;
                         default:
                             _this.list.tempListOri = [];
@@ -11786,6 +11898,13 @@
                             _this.list.plano2_Des = [];
                             _this.list.plano1_Des = [];
                     }
+
+                    _this.$nextTick(() => {
+                        _this.rainEfect = false;
+                        _this.processingLote = false;
+                        _this.list.newAsientos = [];
+                        _this.list.newAsientosManuales = [];
+                    });
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {

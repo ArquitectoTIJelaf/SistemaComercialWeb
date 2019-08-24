@@ -135,5 +135,11 @@ namespace SisComWeb.Aplication.Models
         public string NumeTarjetaCredito { get; set; }
         public string NumAsientoAuditoria { get; set; }
         public string BoletoAuditoria { get; set; }
+        //NEW
+        public string NomEmpresa { get; set; }
+        public string RucEmpresa { get; set; }
+        public string DireccionEmpresa { get; set; }
+        public string ElectronicoEmpresa { get; set; }
+        public byte TipoImpresora { get; set; }
     }
 }

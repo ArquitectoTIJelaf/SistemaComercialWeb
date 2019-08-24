@@ -217,10 +217,10 @@ namespace SisComWeb.Repository
             return response;
         }
         
-        //Consulta IGV con el tipo de documento ('16','17')
-        public static decimal ConsultarIgv(string TipoDoc)
+        //Consulta IGV con el tipo de documento ('16','17','20')
+        public static double ConsultarIgv(string TipoDoc)
         {
-            decimal response = 0;
+            double response = 0;
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -230,7 +230,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        response = Reader.GetDecimalValue(drlector, "COD_EMP");
+                        response = Reader.GetFloatValue(drlector, "COD_EMP");
                     }
                 }
             }

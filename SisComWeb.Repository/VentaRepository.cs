@@ -1341,8 +1341,9 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static void ActualizaF9Elec(int IdVenta, string Dni, string Nombre, string Ruc, int Edad, string Telefono, string RecoVenta, string TipoDoc, string Nacionalidad)
+        public static bool ActualizaF9Elec(int IdVenta, string Dni, string Nombre, string Ruc, int Edad, string Telefono, string RecoVenta, string TipoDoc, string Nacionalidad)
         {
+            var response = false;
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
                 db.ProcedureName = "Usp_Tb_Venta_Update_F9_2";
@@ -1356,7 +1357,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@tipo_doc", DbType.String, ParameterDirection.Input, TipoDoc);
                 db.AddParameter("@Nacionidad", DbType.String, ParameterDirection.Input, Nacionalidad);
                 db.Execute();
+                response = true;
             }
+            return response;
         }
 
         public static bool ActualizarVentaPromokmt(int IdVentaCan)

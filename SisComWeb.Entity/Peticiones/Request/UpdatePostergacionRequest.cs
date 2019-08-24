@@ -28,5 +28,6 @@ namespace SisComWeb.Entity.Peticiones.Request
         public string NomSucursal { get; set; }
         public string PuntoVenta { get; set; }
         public string Terminal { get; set; }
+        public string Lista { get; set; }
     }
 }

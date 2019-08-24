@@ -350,9 +350,9 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
         allowOutsideClick: false
     }).then(res => {
         if (res.value) _bool = res.value;
-    }).catch(error => {
-        APP.msg.error(error);
-    });
+        }).catch(error => {
+            APP.msg.error(error);
+        });
 
     return _bool;
 };
@@ -368,9 +368,45 @@ APP.msg.infoMessage = async function (_title, _message) {
     }).then(res => {
         if (res.value)
             _bool = res.value;
-    }).catch(error => {
-        APP.msg.error(error);
-    });
+        }).catch(error => {
+            APP.msg.error(error);
+        });
+
+    return _bool;
+};
+
+APP.msg.successMessage = async function (_title, _message) {
+    var _bool = false;
+
+    await Swal.fire({  
+        title: _title || 'Mensaje del sistema',
+        text: _message || 'El proceso se realizó de forma correcta',
+        type: 'success',
+        allowOutsideClick: false
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+        }).catch(error => {
+            APP.msg.error(error);
+        });
+
+    return _bool;
+};
+
+APP.msg.errorMessage = async function (_title, _message) {
+    var _bool = false;
+
+    await Swal.fire({
+        title: _title || 'Mensaje del sistema',
+        text: _message || 'Ocurrió un Error. Verifique',
+        type: 'error',
+        allowOutsideClick: false
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+        }).catch(error => {
+            APP.msg.error(error);
+        });
 
     return _bool;
 };
