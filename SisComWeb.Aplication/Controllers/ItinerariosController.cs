@@ -93,8 +93,9 @@ namespace SisComWeb.Aplication.Controllers
                 HoraReservacion = (string)x["HoraReservacion"],
                 Info = (string)x["Info"],
                 Observacion = (string)x["Observacion"],
+                Especial = (string)x["Especial"],
 
-                Especial = (string)x["Especial"]
+                Correo = (string)x["Correo"],
             }).ToList();
 
             return lista;
@@ -481,7 +482,6 @@ namespace SisComWeb.Aplication.Controllers
                         ApellidoMaterno = (string)data["ApellidoMaterno"],
                         ApellidoPaterno = (string)data["ApellidoPaterno"],
                         Edad = (byte)data["Edad"],
-                        Email = (string)data["Email"],
                         FechaNacimiento = (string)data["FechaNacimiento"],
                         IdCliente = (int)data["IdCliente"],
                         NombreCliente = (string)data["NombreCliente"],
@@ -492,8 +492,9 @@ namespace SisComWeb.Aplication.Controllers
                         Sexo = (string)data["Sexo"],
                         RazonSocial = (string)data["RazonSocial"],
                         Direccion = (string)data["Direccion"],
+                        Especial = (string)data["Especial"],
 
-                        Especial = (string)data["Especial"]
+                        Correo = (string)data["Correo"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -657,11 +658,12 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"FechaNacimiento\" : \"" + listado[i].FechaNacimiento + "\"" +
                                     ",\"Edad\" : " + listado[i].Edad +
                                     ",\"Telefono\" : \"" + listado[i].Telefono + "\"" +
-                                    ",\"Email\" : \"" + listado[i].Email + "\"" +
                                     ",\"Sexo\" : \"" + listado[i].Sexo + "\"" +
                                     ",\"RucContacto\" : \"" + listado[i].RucContacto + "\"" +
                                     ",\"RazonSocial\" : \"" + listado[i].RazonSocial + "\"" +
                                     ",\"Direccion\" : \"" + listado[i].Direccion + "\"" +
+
+                                    ",\"Correo\" : \"" + listado[i].Correo + "\"" +
                                  "}";
                         if (i < listado.Count - 1)
                             _body += ",";

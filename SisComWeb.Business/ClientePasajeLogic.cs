@@ -54,7 +54,7 @@ namespace SisComWeb.Business
                 }
 
                 // Consulta 'SUNAT'
-                if (!string.IsNullOrEmpty(buscaPasajero.RucContacto))
+                if (!string.IsNullOrEmpty(buscaPasajero.RucContacto) && buscaPasajero.RucContacto.Length == 11)
                 {
                     if (string.IsNullOrEmpty(buscaEmpresa.RucCliente))
                     {
@@ -189,7 +189,7 @@ namespace SisComWeb.Business
                             return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, true);
                     }
                     else
-                        return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, true);
+                        return new Response<RucEntity>(false, entidad, Message.MsgErrorConsultaSUNAT, true);
                 }
                 else
                     return new Response<RucEntity>(false, entidad, Message.MsgErrorServicioConsultaSUNAT, true);
