@@ -265,6 +265,8 @@
         public const string MsgCorrectoConvertirVentaToBase64 = "Correcto: ConvertirVentaToBase64.";
         public const string MsgExcConvertirVentaToBase64 = "Excepción: ConvertirVentaToBase64.";
 
+        public const string MsgErrorObtenerPrecioReimpresion = "Necesita configurar precio de impresión en: TABLA 59.";
+
         // Clientes Contrato
         public const string MsgCorrectoListarClientesContrato = "Correcto: ListarClientesContrato.";
         public const string MsgValidaListarClientesContrato = "No se encontró ningún Cliente.";

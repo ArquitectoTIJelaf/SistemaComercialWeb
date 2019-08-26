@@ -429,12 +429,26 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
         allowOutsideClick: false,
         showLoaderOnConfirm: true,
         preConfirm: async function (value) {
-            if (ClaveCancelarReserva && value === ClaveCancelarReserva)
-                _bool = true;
-            else {
-                var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
-                if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
-                    _bool = true;
+            switch (_tipo) {
+                case 'CanRes_148':
+                    {
+                        if (ClaveCancelarReserva && value === ClaveCancelarReserva)
+                            _bool = true;
+                    }
+                    break;
+                case 'Rei_226':
+                    {
+                        if (value === ('F' + moment().format('MM') + moment().format('DD') + 'C'))
+                            _bool = true;
+                    }
+                    break;
+                default:
+                    {
+                        var resSendClaveAutorizacion = await appController.sendClaveAutorizacion(value, _tipo);
+                        if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
+                            _bool = true;
+                    }
+                    break;
             }
 
             if (!_bool)

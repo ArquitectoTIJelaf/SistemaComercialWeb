@@ -319,8 +319,6 @@ namespace SisComWeb.Entity
 
         public byte TipoImpresora { get; set; }
 
-        public string CodX { get; set; }
-
         public string PolizaNum { get; set; }
 
         public string PolizaFechaReg { get; set; }
@@ -336,6 +334,24 @@ namespace SisComWeb.Entity
         public short EmbarqueCod { get; set; }
 
         public string EmbarqueDirAgencia { get; set; }
+
+        // Reimpresión
+        public short UsuarioCodigo { get; set; }
+
+        public string UsuarioNombre { get; set; }
+
+        public short UsuarioCodOficina { get; set; }
+
+        public string UsuarioNomOficina { get; set; }
+
+        public short UsuarioCodPVenta { get; set; }
+
+        public string UsuarioCodTerminal { get; set; }
+
+
+        public bool ValidateCaja { get; set; }
+
+        public string HoraViaje { get; set; }
     }
 
     public class DescuentoBoletoEntity

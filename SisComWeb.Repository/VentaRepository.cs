@@ -842,6 +842,26 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static decimal ObtenerPrecioReimpresion()
+        {
+            var valor = new decimal();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_BuscarPrecioReimpresion";
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetDecimalValue(drlector, "TAB_FAC");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

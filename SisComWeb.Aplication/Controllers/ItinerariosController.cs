@@ -204,7 +204,6 @@ namespace SisComWeb.Aplication.Controllers
                 CodigoX_FE = (string)x["CodigoX_FE"],
                 TipoTerminalElectronico = (string)x["TipoTerminalElectronico"],
                 TipoImpresora = (byte)x["TipoImpresora"],
-                CodX = (string)x["CodX"],
                 EmpDirAgencia = (string)x["EmpDirAgencia"],
                 EmpTelefono1 = (string)x["EmpTelefono1"],
                 EmpTelefono2 = (string)x["EmpTelefono2"],
@@ -1942,7 +1941,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodigoX_FE\" : \"" + ListaVentasRealizadas[i].CodigoX_FE + "\"" +
                                     ",\"TipoTerminalElectronico\" : \"" + ListaVentasRealizadas[i].TipoTerminalElectronico + "\"" +
                                     ",\"TipoImpresora\": " + ListaVentasRealizadas[i].TipoImpresora +
-                                    ",\"CodX\": \"" + ListaVentasRealizadas[i].CodX + "\"" +
                                     ",\"EmpDirAgencia\" : \"" + ListaVentasRealizadas[i].EmpDirAgencia + "\"" +
                                     ",\"EmpTelefono1\" : \"" + ListaVentasRealizadas[i].EmpTelefono1 + "\"" +
                                     ",\"EmpTelefono2\" : \"" + ListaVentasRealizadas[i].EmpTelefono2 + "\"" +
@@ -1961,8 +1959,15 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"BusCodigo\" : \"" + ListaVentasRealizadas[i].BusCodigo + "\"" +
                                     ",\"EmbarqueCod\" : " + ListaVentasRealizadas[i].EmbarqueCod +
                                     // Para 'Reimpresión'
-                                    ",\"CajeroOficina\" : " + usuario.CodiSucursal +
-                                    ",\"CajeroPVenta\" : " + usuario.CodiPuntoVenta +
+                                    ",\"UsuarioCodigo\" : " + usuario.CodiUsuario +
+                                    ",\"UsuarioNombre\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"UsuarioCodOficina\" : " + usuario.CodiSucursal +
+                                    ",\"UsuarioNomOficina\" : \"" + usuario.NomSucursal + "\"" +
+                                    ",\"UsuarioCodPVenta\" : " + usuario.CodiPuntoVenta +
+                                    ",\"UsuarioCodTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
+
+                                    ",\"ValidateCaja\" : " + ListaVentasRealizadas[i].ValidateCaja.ToString().ToLower() +
+                                    ",\"HoraViaje\" : \"" + (ListaVentasRealizadas[i].HoraViaje ?? string.Empty).Replace(" ", "") + "\"" +
                                 "}";
 
                         if (i < ListaVentasRealizadas.Count - 1)

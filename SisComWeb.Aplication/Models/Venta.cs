@@ -282,8 +282,6 @@ namespace SisComWeb.Aplication.Models
 
         public byte TipoImpresora { get; set; }
 
-        public string CodX { get; set; }
-
         public string PolizaNum { get; set; }
 
         public string PolizaFechaReg { get; set; }
@@ -306,6 +304,11 @@ namespace SisComWeb.Aplication.Models
         public string EmpDireccion { get; set; }
 
         public string EmpElectronico { get; set; }
+
+        // Reimpresión
+        public bool ValidateCaja { get; set; }
+
+        public string HoraViaje { get; set; }
     }
 
     public class AnularVentaRequest
