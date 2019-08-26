@@ -905,8 +905,8 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-3" style="padding-left: 0px; padding-right: 0px; ">
-                                            <div class="col-md-7 p-0">
+                                        <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
+                                            <div class="col-md-3 p-0">
                                                 <div class="col-md-8">
                                                     <div class="form-group">
                                                         <label class="control-label">Fecha nac.</label>
@@ -939,11 +939,11 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-1">
                                                 <div class="form-group">
                                                     <label class="control-label">Sexo</label>
                                                     <v-select id="cboSexo"
-                                                              placeholder="SEXO"
+                                                              placeholder="S"
                                                               label="label"
                                                               v-model="list.ventas[indexVenta].Sexo"
                                                               @@input="$refs.refSexo.typeAheadPointer = $getSelectorVselect(list.sexos, list.ventas[indexVenta].Sexo)"
@@ -960,24 +960,41 @@
                                                     </v-select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <div class="form-group">
-                                                <label class="control-label">Teléfono</label>
-                                                <input v-model="list.ventas[indexVenta].Telefono"
-                                                       @@keydown.13.prevent="recorridoSectionVentas($event.target.id)"
-                                                       @*@@keydown.9.prevent="recorridoSectionVentas($event.target.id)"*@
-                                                       @@focus="$event.target.select()"
-                                                       id="txtTelefono"
-                                                       ref="refTelefono"
-                                                       class="form-control input-sm"
-                                                       placeholder="TELÉFONO"
-                                                       :disabled="disabledCamposTicket"
-                                                       v-mask="'#'.repeat(9)"
-                                                       autocomplete="off">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="control-label">Teléfono</label>
+                                                    <input v-model="list.ventas[indexVenta].Telefono"
+                                                           @@keydown.13.prevent="recorridoSectionVentas($event.target.id)"
+                                                           @*@@keydown.9.prevent="recorridoSectionVentas($event.target.id)"*@
+                                                           @@focus="$event.target.select()"
+                                                           id="txtTelefono"
+                                                           ref="refTelefono"
+                                                           class="form-control input-sm"
+                                                           placeholder="TELÉFONO"
+                                                           :disabled="disabledCamposTicket"
+                                                           v-mask="'#'.repeat(9)"
+                                                           autocomplete="off">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="control-label">Correo</label>
+                                                    <input :value="list.ventas[indexVenta].Correo.toUpperCase()"
+                                                           @@input="list.ventas[indexVenta].Correo = $event.target.value.toUpperCase()"
+                                                           @@keydown.13.prevent="recorridoTxtCorreo"
+                                                           @*@@keydown.9.prevent="recorridoTxtCorreo"*@
+                                                           @@focus="$event.target.select()"
+                                                           id="txtCorreo"
+                                                           ref="refCorreo"
+                                                           class="form-control input-sm"
+                                                           maxlength="100"
+                                                           :disabled="disabledCamposTicket"
+                                                           :placeholder="$viewEmail()"
+                                                           autocomplete="off">
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"

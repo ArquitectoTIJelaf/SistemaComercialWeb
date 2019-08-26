@@ -32,14 +32,6 @@ APP.rest = '/api/rest';
 
 
 /*!********************* Funciones Generales */
-function formatToChar2(value) {
-    var auxValue = parseFloat(value);
-    if (!isNaN(auxValue)) {
-        return (auxValue <= 9) ? '0' + auxValue : '' + auxValue;
-    }
-    else return '00';
-}
-
 function animateScrollTop(duration = 800) {
     var _heightOfBus = $(".img-bus")[0].getBoundingClientRect().top;
     var _heightOfHeader = $("#appVueNavarHeader")[0].getBoundingClientRect().height;
@@ -51,10 +43,6 @@ function animateScrollTop(duration = 800) {
         if (!isNaN(value))
             $("html, body").animate({ scrollTop: value }, duration);
     }
-}
-
-function jsFilterDosDecimales(_valor) {
-    return _valor.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 /*!********************* Prototype Vue */
@@ -88,6 +76,18 @@ Vue.prototype.$getSelectorVselect = function $obtenerSeleccionadorVselect(_list,
     }
 
     return selector;
+};
+
+Vue.prototype.$formatEmail = function formatoEmail(value) {
+    var auxValidate = false;
+
+    auxValidate = /[\S]+@[\S]+(\.)[\S]+/g.test(value);
+
+    return auxValidate;
+};
+
+Vue.prototype.$viewEmail = function vistaEmail() {
+    return 'PRUEBA@PRUEBA.PRUEBA';
 };
 
 /*!********************* Filter Vue */
@@ -152,7 +152,7 @@ Vue.filter('year', function (value) {
 Vue.filter('sexo', function (value) {
     if (!value) return '';
     value = value.toString();
-    return value === "M" ? 'MASCULINO' : value === "F" ? 'FEMENINO' : '';
+    return value === "M" ? 'M' : value === "F" ? 'F' : '';
 });
 
 Vue.filter('diaSemana', function (value) {

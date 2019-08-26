@@ -1160,7 +1160,7 @@
             return appVueVenta.pickedBusVenta;
         }
 
-        Vue.prototype.$getFormatName = function $obtenerSeleccionadorVselect(_nombres, _apePaterno, _apeMaterno) {
+        Vue.prototype.$getFormatName = function $obtenerFormatName(_nombres, _apePaterno, _apeMaterno) {
             if (_nombres && _apePaterno && _apeMaterno) {
                 return `${_nombres} ${_apePaterno} ${_apeMaterno}`;
             } else return 'NO DISPONIBLE';
@@ -1852,11 +1852,13 @@
                         FechaReservacion: '',
                         HoraReservacion: '',
                         ValidadorClienteEspecial: false,
-                        CodiEmpresa: 0
+                        CodiEmpresa: 0,
+
+                        Correo: ''
                     }],
                     sexos: [
-                        { 'id': 'M', 'label': 'MASCULINO' },
-                        { 'id': 'F', 'label': 'FEMENINO' }
+                        { 'id': 'M', 'label': 'M' },
+                        { 'id': 'F', 'label': 'F' }
                     ],
                     tempList: [],
                     panelControl: [],
@@ -2602,7 +2604,6 @@
                     return auxResponse;
                 },
                 fillDataAsientoVendido: async function (asientoSel) {
-                    var _this = this;
                     var _fillData = false;
 
                     // Before
@@ -2713,12 +2714,13 @@
                         this.list.ventas[this.indexVenta].NroSolicitud = asientoSel.NumeSolicitud;
                         this.list.ventas[this.indexVenta].Reintegro = (asientoSel.CodiEsca ? parseFloat(asientoSel.PrecVentaReintegro).toFixed(2) : '');
                         this.list.ventas[this.indexVenta].ObjAcompaniante = asientoSel.ObjAcompaniante;
-                        this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
                         this.list.ventas[this.indexVenta].FechaReservacion = asientoSel.FechaReservacion;
                         this.list.ventas[this.indexVenta].HoraReservacion = asientoSel.HoraReservacion;
                         this.list.ventas[this.indexVenta].Observacion = asientoSel.Observacion;
-
                         this.list.ventas[this.indexVenta].ValidadorClienteEspecial = asientoSel.Especial;
+                        this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
+
+                        this.list.ventas[this.indexVenta].Correo = asientoSel.Correo;
 
                         // Checked opción 'RegistrarNino'
                         if (asientoSel.ObjAcompaniante.Documento)
@@ -2799,7 +2801,9 @@
                         FechaReservacion: '',
                         HoraReservacion: '',
                         ValidadorClienteEspecial: false,
-                        CodiEmpresa: 0
+                        CodiEmpresa: 0,
+
+                        Correo: ''
                     });
 
                     if (this.pickedBusVenta === '1') { // Crédito
@@ -2993,6 +2997,24 @@
                         APP.msg.warning('Ingrese teléfono de 7 dígitos como mínimo.');
                         return;
                     }
+                    if (!this.list.ventas[this.indexVenta].Correo) {
+                        document.getElementById('txtCorreo').focus();
+                        return;
+                    }
+                    if (this.$formatEmail(this.list.ventas[this.indexVenta].Correo)) {
+                        document.getElementById('txtCorreo').focus();
+                        APP.msg.warning('Ingrese correo con formato válido: ' + this.$viewEmail());
+                        return;
+                    }
+
+                    this.recorridoTxtCorreo();
+                },
+                recorridoTxtCorreo: function () {
+                    if (this.list.ventas[this.indexVenta].Correo && !this.$formatEmail(this.list.ventas[this.indexVenta].Correo)) {
+                        document.getElementById('txtCorreo').focus();
+                        APP.msg.warning('Ingrese correo con formato válido: ' + this.$viewEmail());
+                        return;
+                    }
                     if (!this.list.ventas[this.indexVenta].Recoger) {
                         document.getElementById('txtRecoger').focus();
                         return;
@@ -3010,7 +3032,7 @@
                         return;
                     }
 
-                    this.recorridoTxtRuc()
+                    this.recorridoTxtRuc();
                 },
                 recorridoTxtRuc: function (anulaValidacion) {
                     if (this.list.ventas[this.indexVenta].Ruc) {
@@ -3121,8 +3143,9 @@
                                                 _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
                                                 _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
-
                                                 _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+
+                                                _this.list.ventas[_this.indexVenta].Correo = res.data.Valor.Correo;
 
                                                 if (validatorSetRuc) {
                                                     _this.list.ventas[_this.indexVenta].Ruc = res.data.Valor.RucContacto;
@@ -3143,8 +3166,9 @@
                                                 _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
-
                                                 _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
+
+                                                _this.list.ventas[_this.indexVenta].Correo = res.data.Valor.Correo;
 
                                                 if (_this.pickedBusVenta !== '1') {
                                                     if (validatorSetRuc) {
@@ -3171,8 +3195,9 @@
                                                 _this.list.ventas[_this.indexVenta].Edad = '';
                                                 _this.list.ventas[_this.indexVenta].Sexo = null;
                                                 _this.list.ventas[_this.indexVenta].Telefono = '';
-
                                                 _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = false;
+
+                                                _this.list.ventas[_this.indexVenta].Correo = '';
 
                                                 if (_this.pickedBusVenta !== '1') {
                                                     _this.list.ventas[_this.indexVenta].Ruc = '';
@@ -3477,11 +3502,12 @@
                         input.FechaNacimiento = objVenta.FechaNac;
                         input.Edad = objVenta.Edad;
                         input.Telefono = objVenta.Telefono;
-                        input.Email = '';
                         input.Sexo = objVenta.Sexo.id;
                         input.RucContacto = objVenta.Ruc;
                         input.RazonSocial = objVenta.RazonSocial;
                         input.Direccion = objVenta.Direccion;
+
+                        input.Correo = objVenta.Correo;
 
                         listado.push(input);
                     };
@@ -3608,10 +3634,11 @@
                                                 this.list.ventas[i].Sexo = _.cloneDeep(this.list.ventas[auxLength - 1].Sexo);
                                                 this.list.ventas[i].Telefono = _.cloneDeep(this.list.ventas[auxLength - 1].Telefono);
                                                 this.list.ventas[i].Precio = _.cloneDeep(this.list.ventas[auxLength - 1].Precio);
-
                                                 this.list.ventas[i].FechaReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].FechaReservacion);
                                                 this.list.ventas[i].HoraReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].HoraReservacion);
                                                 this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(this.list.ventas[auxLength - 1].ValidadorClienteEspecial);
+
+                                                this.list.ventas[i].Correo = _.cloneDeep(this.list.ventas[auxLength - 1].Correo);
                                             }
                                         }
                                     }
@@ -3739,6 +3766,16 @@
 
                             this.$nextTick(() => {
                                 document.getElementById('txtTelefono').focus();
+                            });
+                            return auxValidate = false;
+                        }
+
+                        if (this.list.ventas[i].Correo && !this.$formatEmail(this.list.ventas[i].Correo)) {
+                            this.indexVenta = i;
+                            APP.msg.warning('Ingrese correo con formato válido: ' + this.$viewEmail());
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtCorreo').focus();
                             });
                             return auxValidate = false;
                         }
@@ -3939,8 +3976,9 @@
                     this.list.ventas[this.indexVenta].Edad = '';
                     this.list.ventas[this.indexVenta].Sexo = null;
                     this.list.ventas[this.indexVenta].Telefono = '';
-
                     this.list.ventas[this.indexVenta].ValidadorClienteEspecial = false;
+
+                    this.list.ventas[this.indexVenta].Correo = '';
 
                     if (this.pickedBusVenta !== '1') {
                         this.list.ventas[this.indexVenta].Ruc = '';
@@ -4050,6 +4088,8 @@
                     this.list.ventas[this.indexVenta].HoraReservacion = '';
                     this.list.ventas[this.indexVenta].ValidadorClienteEspecial = false;
                     this.list.ventas[this.indexVenta].CodiEmpresa = 0;
+
+                    this.list.ventas[this.indexVenta].Correo = '';
 
                     this.disabledCampoNroAsiento = false;
                     this.disabledCamposTicket = false;
@@ -4206,7 +4246,7 @@
                         e = this.eventTxtNroAsientoVenta;
 
                     if (this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
-                        this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+                        this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].NroAsiento.padStart(2, '0');
 
                         var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                         if (!auxObj) {
@@ -4233,7 +4273,7 @@
                         }
                     }
                     else if (this.list.ventas[this.indexVenta].NroVenta) {
-                        this.list.ventas[this.indexVenta].NroAsiento = formatToChar2(this.list.ventas[this.indexVenta].NroAsiento);
+                        this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].NroAsiento.padStart(2, '0');
 
                         if (this.list.ventas[this.indexVenta].NroAsiento !== this.list.ventas[this.indexVenta].OldNroAsiento) {
 
@@ -6353,6 +6393,8 @@
                         objAsiento.Telefono = "";
                         objAsiento.TipoBoleto = "";
                         objAsiento.TipoDocumento = "";
+
+                        objAsiento.Correo = "";
                     }
                 },
                 signalR_ActualizarTurnoPlano: function (_ListaVentasRealizadas) {
@@ -6823,7 +6865,7 @@
                         input.Edad = objVenta.Edad;
                         input.Telefono = objVenta.Telefono;
                         input.Dni = objVenta.Documento;
-                        input.TipoDocumento = formatToChar2(objVenta.CodiTipoDoc.id);
+                        input.TipoDocumento = objVenta.CodiTipoDoc.id;
                         input.Sexo = objVenta.Sexo.id;
                         input.TipoPago = _this.tipoPago;
                         input.FechaViaje = _this.ticketVenta.FechaViaje;
@@ -7329,8 +7371,8 @@
                     tipoDoc: [],
                     parentesco: [],
                     sexos: [
-                        { 'id': 'M', 'label': 'MASCULINO' },
-                        { 'id': 'F', 'label': 'FEMENINO' }
+                        { 'id': 'M', 'label': 'M' },
+                        { 'id': 'F', 'label': 'F' }
                     ]
                 },
                 mask: {

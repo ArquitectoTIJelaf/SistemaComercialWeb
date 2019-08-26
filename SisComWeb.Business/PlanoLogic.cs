@@ -221,8 +221,9 @@ namespace SisComWeb.Business
             {
                 var buscaPasajero = ClientePasajeRepository.BuscaPasajero(VentaLogic.TipoDocumentoHomologado(entidad.TipoDocumento).ToString(), entidad.NumeroDocumento);
                 entidad.FechaNacimiento = buscaPasajero.FechaNacimiento;
-
                 entidad.Especial = buscaPasajero.Especial;
+
+                entidad.Correo = buscaPasajero.Correo;
 
                 if (entidad.Edad == 0 && string.IsNullOrEmpty(entidad.Telefono))
                 {

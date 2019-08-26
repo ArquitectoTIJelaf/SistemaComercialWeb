@@ -137,5 +137,8 @@
         public string Observacion { get; set; }
 
         public string Especial { get; set; }
+
+
+        public string Correo { get; set; }
     }
 }

@@ -25,8 +25,9 @@ namespace SisComWeb.Repository
                 RucContacto = string.Empty,
                 Sexo = string.Empty,
                 RazonSocial = string.Empty,
+                Especial = string.Empty,
 
-                Especial = string.Empty
+                Correo = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -50,8 +51,9 @@ namespace SisComWeb.Repository
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;
                         entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? string.Empty;
-
                         entidad.Especial = Reader.GetStringValue(drlector, "ESPECIAL") ?? string.Empty;
+
+                        entidad.Correo = Reader.GetStringValue(drlector, "Email") ?? string.Empty;
                         break;
                     }
                 }
@@ -143,6 +145,9 @@ namespace SisComWeb.Repository
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
                 db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
+
+                db.AddParameter("@correo", DbType.String, ParameterDirection.Input, entidad.Correo);
+
                 db.AddParameter("@Id_Clientes", DbType.Int32, ParameterDirection.Output, entidad.IdCliente);
 
                 db.Execute();
@@ -174,6 +179,8 @@ namespace SisComWeb.Repository
                 db.AddParameter("@telefono", DbType.String, ParameterDirection.Input, entidad.Telefono);
                 db.AddParameter("@ruc_contacto", DbType.String, ParameterDirection.Input, entidad.RucContacto);
                 db.AddParameter("@sexo", DbType.String, ParameterDirection.Input, entidad.Sexo);
+
+                db.AddParameter("@correo", DbType.String, ParameterDirection.Input, entidad.Correo);
 
                 db.Execute();
 
