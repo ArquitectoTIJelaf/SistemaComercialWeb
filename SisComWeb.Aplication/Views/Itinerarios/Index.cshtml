@@ -8763,7 +8763,8 @@
             methods: {
                 show: function () {
                     this.limpiarModBoleto(true);
-                    this.panel = (appController.validatePanel('241') === '1') ? true : false;
+                    //TODO: Cambiar 241
+                    this.panel = (appController.validatePanel('241') !== '1') ? true : false;
 
                     $('#appVueModificacionBoleto').modal('show');
                     this.setData();
@@ -8824,6 +8825,7 @@
                                 _this.item.ruta = res.data.Valor.CodiSubruta;
                                 _this.item.dia = (codiProgramacion) ? res.data.Valor.FechaProgramacion: '';
                                 _this.item.fechaViaje = (codiProgramacion) ? res.data.Valor.FechaViaje : '';
+                                _this.item.horaViaje = (codiProgramacion) ? res.data.Valor.HoraViaje : '';
                                 _this.item.fechaVenta = res.data.Valor.FechaVenta;
                                 _this.item.correlativoSinTipo = `${res.data.Valor.Tipo}${res.data.Valor.SerieBoleto}-${_.padStart(res.data.Valor.NumeBoleto, 8, '0')}`;
                                 _this.item.sexo = res.data.Valor.Sexo;
@@ -8834,6 +8836,9 @@
                                 _this.item.nombre = res.data.Valor.SplitNombre[0];
                                 _this.item.apepat = res.data.Valor.SplitNombre[1];
                                 _this.item.apemat = res.data.Valor.SplitNombre[2];
+
+                                _this.filtro.SerieBoleto = res.data.Valor.SerieBoleto;
+                                _this.filtro.NumeBoleto = res.data.Valor.NumeBoleto;
                                 _this.showData = true;
                             } else {
                                 _this.limpiarModBoleto(false);
@@ -8918,7 +8923,14 @@
                             Telefono: _this.filtro.telefono,
                             RecoVenta: _this.filtro.recoger,
                             TipoDoc: _this.filtro.tipoDoc,
-                            Nacionalidad: _this.filtro.nacionidad
+                            Nacionalidad: _this.filtro.nacionidad,
+                            SerieBoleto: _this.filtro.SerieBoleto,
+                            NumeBoleto: _this.filtro.NumeBoleto,
+                            Precio: parseFloat(_this.item.precio).toFixed(2),
+                            NombDestino: _this.$options.filters.rutas(_this.item.turno),
+                            NumAsiento: _this.item.asiento,
+                            FechaViaje: _this.item.fechaViaje,
+                            HoraViaje: _this.item.horaViaje
                         }))
                             .then(async function (res) {
                                 if (res.data.Valor) {

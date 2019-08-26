@@ -2406,7 +2406,8 @@ namespace SisComWeb.Aplication.Controllers
                         Nacionalidad = (string)data["Nacionalidad"],
                         RazonSocial = (string)data["RazonSocial"],
                         DireccionFiscal = (string)data["DireccionFiscal"],
-                        FechaViaje = (string)data["FechaViaje"]
+                        FechaViaje = (string)data["FechaViaje"],
+                        HoraViaje = (string)data["HoraViaje"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -2440,6 +2441,18 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"RecoVenta\" : \"" + request.RecoVenta + "\"" +
                                     ",\"TipoDoc\" : \"" + request.TipoDoc + "\"" +
                                     ",\"Nacionalidad\" :  \"" + request.Nacionalidad + "\"" +
+
+                                    ",\"CodiUsuario\" :  \"" + usuario.CodiUsuario + "\"" +
+                                    ",\"NombUsuario\" :  \"" + usuario.Nombre + "\"" +
+                                    ",\"NomSucursal\" :  \"" + usuario.NomSucursal + "\"" +
+                                    ",\"CodiPuntoVenta\" :  \"" + usuario.CodiPuntoVenta + "\"" +
+                                    ",\"Terminal\" :  \"" + usuario.Terminal + "\"" +
+                                    ",\"Boleto\" :  \"" + request.SerieBoleto.PadLeft(3, '0') + request.NumeBoleto.PadLeft(7, '0') + "\"" +
+                                    ",\"Precio\" :  \"" + request.Precio + "\"" +
+                                    ",\"NombDestino\" :  \"" + request.NombDestino + "\"" +
+                                    ",\"NumAsiento\" :  \"" + request.NumAsiento.PadLeft(2, '0') + "\"" +
+                                    ",\"FechaViaje\" :  \"" + request.FechaViaje + "\"" +
+                                    ",\"HoraViaje\" :  \"" + request.HoraViaje + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ActualizaBoletoF9", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

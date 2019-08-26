@@ -2514,34 +2514,35 @@ namespace SisComWeb.Business
         {
             try
             {
-                var res = VentaRepository.ActualizaF9Elec(request.IdVenta, request.Dni, request.Nombre, request.Ruc, request.Edad, request.Telefono, request.RecoVenta, request.TipoDoc, request.Nacionalidad);
+                //var res = VentaRepository.ActualizaF9Elec(request.IdVenta, request.Dni, request.Nombre, request.Ruc, request.Edad, request.Telefono, request.RecoVenta, request.TipoDoc, request.Nacionalidad);
 
-                if (res)
-                {
-                    //var objAuditoria = new AuditoriaEntity
-                    //{
-                    //    CodiUsuario = Convert.ToInt16(filtro.Clav_Usuario),//
-                    //    NomUsuario = filtro.NomUsuario,//
-                    //    Tabla = "VENTA",
-                    //    TipoMovimiento = "MODIFICACION F9",
-                    //    Boleto = filtro.BoletoAuditoria,
-                    //    NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
-                    //    NomOficina = filtro.NomSucursal,//
-                    //    NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),//
-                    //    Pasajero = filtro.NOMB,
-                    //    FechaViaje = filtro.Fecha_viaje,
-                    //    HoraViaje = filtro.HORA_V,
-                    //    NomDestino = filtro.NombDestino,//
-                    //    Precio = (decimal)filtro.PRECIO_VENTA,
-                    //    Obs1 = "",
-                    //    Obs2 = "",
-                    //    Obs3 = "TERMINAL: " + request.Terminal,
-                    //    Obs4 = "MODIFICACION DE BOLETO F9",
-                    //    Obs5 = ""
-                    //};
-                    ////Graba Auditoria
-                    //VentaRepository.GrabarAuditoria(objAuditoria);
-                }
+                //if (res)
+                //{
+                    var objAuditoria = new AuditoriaEntity
+                    {
+                        CodiUsuario = Convert.ToInt16(request.CodiUsuario),
+                        NomUsuario = request.NombUsuario,
+                        Tabla = "VENTA",
+                        TipoMovimiento = "MODIFICACION F9",
+                        Boleto = request.Boleto,
+                        NumeAsiento = request.NumAsiento.PadLeft(2, '0'),
+                        NomOficina = request.NomSucursal,
+                        NomPuntoVenta = request.CodiPuntoVenta.PadLeft(3, '0'),
+                        Pasajero = request.Nombre,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NombDestino,
+                        Precio = request.Precio,
+                        Obs1 = "",
+                        Obs2 = "",
+                        Obs3 = "TERMINAL: " + request.Terminal,
+                        Obs4 = "MODIFICACION DE BOLETO F9",
+                        Obs5 = ""
+                    };
+                    //Graba Auditoria
+                //    VentaRepository.GrabarAuditoria(objAuditoria);
+                //}
+                var res = true;
                 return new Response<bool>(true, res, Message.MsgCorrectoActualizaBoletoF9, true);
             }
             catch (Exception ex)
