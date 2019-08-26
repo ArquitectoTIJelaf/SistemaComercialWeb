@@ -2439,7 +2439,29 @@ namespace SisComWeb.Business
 
                 if (res)
                 {
-                    //TODO: Auditoria
+                    //var objAuditoria = new AuditoriaEntity
+                    //{
+                    //    CodiUsuario = Convert.ToInt16(filtro.Clav_Usuario),//
+                    //    NomUsuario = filtro.NomUsuario,//
+                    //    Tabla = "VENTA",
+                    //    TipoMovimiento = "MODIFICACION F9",
+                    //    Boleto = filtro.BoletoAuditoria,
+                    //    NumeAsiento = filtro.NumAsientoAuditoria.PadLeft(2, '0'),
+                    //    NomOficina = filtro.NomSucursal,//
+                    //    NomPuntoVenta = filtro.Punto_Venta.PadLeft(3, '0'),//
+                    //    Pasajero = filtro.NOMB,
+                    //    FechaViaje = filtro.Fecha_viaje,
+                    //    HoraViaje = filtro.HORA_V,
+                    //    NomDestino = filtro.NombDestino,//
+                    //    Precio = (decimal)filtro.PRECIO_VENTA,
+                    //    Obs1 = "",
+                    //    Obs2 = "",
+                    //    Obs3 = "TERMINAL: " + request.Terminal,
+                    //    Obs4 = "MODIFICACION DE BOLETO F9",
+                    //    Obs5 = ""
+                    //};
+                    ////Graba Auditoria
+                    //VentaRepository.GrabarAuditoria(objAuditoria);
                 }
                 return new Response<bool>(true, res, Message.MsgCorrectoActualizaBoletoF9, true);
             }
