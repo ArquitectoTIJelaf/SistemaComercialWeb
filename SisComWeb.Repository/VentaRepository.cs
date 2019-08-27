@@ -555,6 +555,7 @@ namespace SisComWeb.Repository
                         entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
                         entidad.Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad");
                         entidad.FechaViaje = Reader.GetDateStringValue(drlector, "FECHA_VIAJE");
+                        entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje");
                         break;
                     }
                 }

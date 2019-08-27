@@ -37,5 +37,12 @@ namespace SisComWeb.Aplication.Models
         public string RecoVenta { get; set; }
         public string TipoDoc { get; set; }
         public string Nacionalidad { get; set; }
+        public string SerieBoleto { get; set; }
+        public string NumeBoleto { get; set; }
+        public string Precio { get; set; }
+        public string NombDestino { get; set; }
+        public string NumAsiento { get; set; }
+        public string FechaViaje { get; set; }
+        public string HoraViaje { get; set; }
     }
 }

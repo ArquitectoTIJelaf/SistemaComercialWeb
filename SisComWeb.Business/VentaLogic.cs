@@ -1004,7 +1004,7 @@ namespace SisComWeb.Business
                     VentaRepository.GrabarAuditoria(objAuditoriaEntity);
 
                     return new Response<byte>(true, eliminarReserva, Message.MsgCorrectoEliminarReserva, true);
-                }                    
+                }
                 else
                     return new Response<byte>(false, eliminarReserva, Message.MsgErrorEliminarReserva, true);
             }
@@ -1733,7 +1733,7 @@ namespace SisComWeb.Business
                 FechaAbiertaRepository.VentaDerivadaUpdateViaje(request.IdVenta, request.FechaViaje, request.HoraViaje, request.CodiServicio.ToString());
                 FechaAbiertaRepository.VentaUpdateCnt(request.CodiProgramacion, 0, int.Parse(request.CodiOrigen), 0);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(request.IdVenta);
-                
+
 
                 if (modificarVentaAFechaAbierta)
                 {
@@ -1909,7 +1909,7 @@ namespace SisComWeb.Business
                                 };
                                 VentaRepository.GrabarCaja(objCajaEntity);
                             }
-                                
+
                             if (entidad.EmpElectronico == "1")
                             {
                                 resObtenerCodigoX = ObtenerCodigoX(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
@@ -2381,7 +2381,7 @@ namespace SisComWeb.Business
             var value = string.Empty;
 
             if (!string.IsNullOrEmpty(ValeRemoto))
-                value = "Val. : " + ValeRemoto + " : " + NomOrigenPas.Substring(0,3) + "-" + NomDestinoPas.Substring(0, 3);
+                value = "Val. : " + ValeRemoto + " : " + NomOrigenPas.Substring(0, 3) + "-" + NomDestinoPas.Substring(0, 3);
             else
                 value = NomOrigenPas.Substring(0, 3) + "-" + NomDestinoPas.Substring(0, 3);
 
@@ -2495,8 +2495,31 @@ namespace SisComWeb.Business
 
                 if (res)
                 {
-                    //TODO: Auditoria
+                    var objAuditoria = new AuditoriaEntity
+                    {
+                        CodiUsuario = Convert.ToInt16(request.CodiUsuario),
+                        NomUsuario = request.NombUsuario,
+                        Tabla = "VENTA",
+                        TipoMovimiento = "MODIFICACION F9",
+                        Boleto = request.Boleto,
+                        NumeAsiento = request.NumAsiento.PadLeft(2, '0'),
+                        NomOficina = request.NomSucursal,
+                        NomPuntoVenta = request.CodiPuntoVenta.PadLeft(3, '0'),
+                        Pasajero = request.Nombre,
+                        FechaViaje = request.FechaViaje,
+                        HoraViaje = request.HoraViaje,
+                        NomDestino = request.NombDestino,
+                        Precio = request.Precio,
+                        Obs1 = "",
+                        Obs2 = "",
+                        Obs3 = "TERMINAL: " + request.Terminal,
+                        Obs4 = "MODIFICACION DE BOLETO F9",
+                        Obs5 = ""
+                    };
+                    //Graba Auditoria
+                    VentaRepository.GrabarAuditoria(objAuditoria);
                 }
+
                 return new Response<bool>(true, res, Message.MsgCorrectoActualizaBoletoF9, true);
             }
             catch (Exception ex)
