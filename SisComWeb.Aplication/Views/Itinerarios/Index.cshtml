@@ -1078,26 +1078,27 @@
 
         Vue.filter('rutas', function (value) {
             if (!value) return '';
-            value = value.toString();
-            return _.filter(rutas, function (o) { return o.id == value; })[0].label;
+            var filter = _.find(rutas, (o) => { return o.id == value.toString(); });
+            return (filter) ? filter.label : '';
         });
 
         Vue.filter('empresas', function (value) {
             if (!value) return '';
             value = value.toString();
-            return _.filter(empresas, function (o) { return o.id == value; })[0].label;
+            var filter = _.find(empresas, (o) => { return o.id == value; });
+            return (filter) ? filter.label : '';
         });
 
         Vue.filter('servicios', function (value) {
             if (!value) return '';
-            value = value.toString();
-            return _.filter(servicios, function (o) { return o.id == value; })[0].label;
+            var filter = _.find(servicios, (o) => { return o.id == value.toString(); });
+            return (filter) ? filter.label : '';
         });
 
         Vue.filter('tipoDocumento', function (value) {
             if (!value) return '';
-            value = value.toString();
-            return _.filter(tiposDoc, function (o) { return o.id == value; })[0].label;
+            var filter = _.find(tiposDoc, (o) => { return o.id == value.toString(); })
+            return (filter) ? filter.label : '';
         });
 
         Vue.filter('formatCodiProgramacion', function (value, length = 7) {
@@ -8805,8 +8806,7 @@
             methods: {
                 show: function () {
                     this.limpiarModBoleto(true);
-                    //TODO: Cambiar 241
-                    this.panel = (appController.validatePanel('241') !== '1') ? true : false;
+                    this.panel = (appController.validatePanel('241') === '1') ? true : false;
 
                     $('#appVueModificacionBoleto').modal('show');
                     this.setData();
@@ -8955,6 +8955,8 @@
                         }
                     } else return;
 
+                    debugger;
+
                     if (_this.filtro.idVenta !== 0) {
                         await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
                             IdVenta: _this.filtro.idVenta,
@@ -8969,7 +8971,7 @@
                             SerieBoleto: _this.filtro.SerieBoleto,
                             NumeBoleto: _this.filtro.NumeBoleto,
                             Precio: parseFloat(_this.item.precio).toFixed(2),
-                            NombDestino: _this.$options.filters.rutas(_this.item.turno),
+                            NombDestino: _this.$options.filters.rutas(_this.item.ruta),
                             NumAsiento: _this.item.asiento,
                             FechaViaje: _this.item.fechaViaje,
                             HoraViaje: _this.item.horaViaje
@@ -11511,6 +11513,7 @@
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
                             _this.$nextTick(() => {
+                                debugger;
                                 switch (auxMapa) {
                                     case 1: {
                                         _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
@@ -11759,6 +11762,34 @@
 
                     //TODO: Bloquear asientos
                     APP.msg.warning('Se bloqueó el asiento: ' + _.cloneDeep(_.padStart(parseInt(item.Tipo), 2, '0')))
+                },
+                bloquearAsiento: async function (_asiento) {
+                    //var input = {};
+                    //input.CodiProgramacion = _this.filtro.CodiProgramacion;
+                    //input.NroViaje = _this.filtro.NroViaje;
+                    //input.CodiOrigen = _this.filtro.CodiSucursal.id;
+                    //input.CodiDestino = _this.filtro.CodiDestinoPas.id;
+                    //input.NumeAsiento = _asiento.Tipo;
+                    //input.FechaProgramacion = _this.filtro.Fecha;
+                    //input.Precio = _asiento.PrecioVenta;
+
+                    //await APP.rq.axios2.post(APP.base + '/itinerarios/bloquearAsiento', input)
+                    //    .then(async function (res) {
+                    //        if (res.data.EsCorrecto) {
+
+                    //            asientoSel.IDS = res.data.Valor;
+
+                    //            //// callSignalR_BloquearAsiento
+                    //            //callSignalR_BloquearAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, asientoSel.Tipo);
+                    //        }
+                    //        else {
+                    //            if (res.data.Estado)
+                    //                APP.msg.warning(res.data.Mensaje);
+                    //            else
+                    //                APP.msg.error(res.data.Mensaje);
+                    //        }
+                    //    })
+                    //    .catch(APP.rq.axios_handler_error_alert);
                 },
                 confirm: async function () {
                     let _this = this;

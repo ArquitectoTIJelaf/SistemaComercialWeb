@@ -21,6 +21,5 @@ namespace SisComWeb.Entity.Objects.Entities
         public string TipoVenta { get; set; }
         public string RazonSocial { get; set; }
         public string DireccionFiscal { get; set; }
-        public string HoraViaje { get; set; }
     }
 }

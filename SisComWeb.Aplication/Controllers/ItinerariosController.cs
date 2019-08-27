@@ -2449,7 +2449,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"NomSucursal\" :  \"" + usuario.NomSucursal + "\"" +
                                     ",\"CodiPuntoVenta\" :  \"" + usuario.CodiPuntoVenta + "\"" +
                                     ",\"Terminal\" :  \"" + usuario.Terminal + "\"" +
-                                    ",\"Boleto\" :  \"" + request.SerieBoleto.PadLeft(3, '0') + request.NumeBoleto.PadLeft(7, '0') + "\"" +
+                                    ",\"Boleto\" :  \"" + request.SerieBoleto.PadLeft(3, '0') + "-" + request.NumeBoleto.PadLeft(7, '0') + "\"" +
                                     ",\"Precio\" :  \"" + request.Precio + "\"" +
                                     ",\"NombDestino\" :  \"" + request.NombDestino + "\"" +
                                     ",\"NumAsiento\" :  \"" + request.NumAsiento.PadLeft(2, '0') + "\"" +
