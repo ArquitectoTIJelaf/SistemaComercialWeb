@@ -15,7 +15,7 @@ namespace SisComWeb.Aplication.Controllers
     public class AutenticacionController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        readonly string JLMrootCode = System.Configuration.ConfigurationManager.AppSettings["JLMrootCode"].ToString();
+        private static readonly string JLMrootCode = System.Configuration.ConfigurationManager.AppSettings["JLMrootCode"];
 
         [HttpGet]
         public ActionResult Index()

@@ -15,16 +15,16 @@ namespace SisComWeb.Business
 {
     public static class VentaLogic
     {
-        private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"].ToString();
-        private static readonly string MotivoAnulacionFE = ConfigurationManager.AppSettings["motivoAnulacionFE"].ToString();
-        private static readonly string CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["codiCorrelativoVentaBoleta"].ToString();
-        private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"].ToString();
-        private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"].ToString();
-        private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
-        private static readonly string CodiCorrelativoCredito = ConfigurationManager.AppSettings["codiCorrelativoCredito"].ToString();
+        private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"];
+        private static readonly string MotivoAnulacionFE = ConfigurationManager.AppSettings["motivoAnulacionFE"];
+        private static readonly string CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["codiCorrelativoVentaBoleta"];
+        private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"];
+        private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"];
+        private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"];
+        private static readonly string CodiCorrelativoCredito = ConfigurationManager.AppSettings["codiCorrelativoCredito"];
         private static readonly short CodiSerieReserva = short.Parse(ConfigurationManager.AppSettings["codiSerieReserva"]);
-        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"].ToString();
-        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"].ToString();
+        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"];
+        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"];
 
         #region BUSCAR CORRELATIVO
 
@@ -192,7 +192,7 @@ namespace SisComWeb.Business
                                 // Valida 'SaldoPaseCortesia'
                                 var validarSaldoPaseCortesia = PaseRepository.ValidarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
                                 if (validarSaldoPaseCortesia <= 0)
-                                    return new Response<VentaResponse>(true, valor, Message.MsgValidaSaldoPaseCortesia, false);
+                                    return new Response<VentaResponse>(false, valor, Message.MsgValidaSaldoPaseCortesia, true);
                             };
                             break;
                         case "1": // CRÉDITO
@@ -204,11 +204,11 @@ namespace SisComWeb.Business
                                     if (consultarContrato.Marcador == "1")
                                     {
                                         if (consultarContrato.Saldo < entidad.PrecioVenta)
-                                            return new Response<VentaResponse>(true, valor, Message.MsgValidaConsultarContrato, false);
+                                            return new Response<VentaResponse>(false, valor, Message.MsgValidaConsultarContrato, true);
                                     }
                                 }
                                 else
-                                    return new Response<VentaResponse>(true, valor, Message.MsgValidaNullConsultarContrato, false);
+                                    return new Response<VentaResponse>(false, valor, Message.MsgValidaNullConsultarContrato, true);
 
                                 // Agrega validación de Precio que está en la vista.
                                 var validatorPrecioValor = false;
@@ -224,14 +224,14 @@ namespace SisComWeb.Business
                                     if (verificarPrecioNormal.IdNormal != -1)
                                     {
                                         if (verificarPrecioNormal.Saldo <= 0)
-                                            return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificarPrecioNormal, true);
                                     }
                                     else
                                     {
                                         var verificarContratoPasajes = CreditoRepository.VerificarContratoPasajes(entidad.RucCliente, entidad.FechaViaje, entidad.FechaViaje, entidad.CodiOrigen.ToString(), entidad.CodiDestino.ToString(), entidad.CodiServicio.ToString(), entidad.IdRuc);
 
                                         if (verificarContratoPasajes.SaldoBoletos <= 0)
-                                            return new Response<VentaResponse>(true, valor, Message.MsgErrorVerificarPrecioNormal, false);
+                                            return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificarPrecioNormal, true);
                                     }
                                 }
                             };
@@ -244,7 +244,7 @@ namespace SisComWeb.Business
                     {
                         consultaNroPoliza = VentaRepository.ConsultaNroPoliza(entidad.CodiEmpresa, entidad.CodiBus, entidad.FechaViaje);
                         if (string.IsNullOrEmpty(consultaNroPoliza.NroPoliza))
-                            return new Response<VentaResponse>(true, valor, Message.MsgErrorConsultaNroPoliza, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorConsultaNroPoliza, true);
                     }
 
                     entidad.PolizaNum = consultaNroPoliza.NroPoliza;
@@ -261,7 +261,7 @@ namespace SisComWeb.Business
                         // Elimina 'Reserva'
                         var eliminarReserva = VentaRepository.EliminarReserva(entidad.IdVenta);
                         if (eliminarReserva <= 0)
-                            return new Response<VentaResponse>(true, valor, Message.MsgErrorEliminarReserva, false);
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorEliminarReserva, true);
                         // Como mandamos 'IdVenta' para 'EliminarReserva', lo volvemos a su valor por defecto.
                         entidad.IdVenta = 0;
                         // Cuando 'confirmasReserva' se venderá como una 'Venta'.
@@ -491,10 +491,10 @@ namespace SisComWeb.Business
                                 return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
                         }
                         else
-                            return new Response<VentaResponse>(true, valor, resValidarDocumentoSUNAT.MensajeError, false);
+                            return new Response<VentaResponse>(false, valor, resValidarDocumentoSUNAT.MensajeError, false);
                     }
                     else
-                        return new Response<VentaResponse>(true, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
+                        return new Response<VentaResponse>(false, valor, Message.MsgErrorWebServiceFacturacionElectronica, false);
 
                     // Graba 'Acompañante'
                     if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
@@ -517,27 +517,19 @@ namespace SisComWeb.Business
                         case "7": // PASE DE CORTESÍA
                             {
                                 // Modifica 'SaldoPaseCortesia'
-                                var modificarSaldoPaseCortesia = PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
-                                if (!modificarSaldoPaseCortesia)
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorModificarSaldoPaseCortesia, false);
+                                PaseRepository.ModificarSaldoPaseCortesia(entidad.CodiSocio, entidad.Mes, entidad.Anno);
 
                                 // Graba 'PaseSocio'
-                                var grabarPaseSocio = PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
-                                if (!grabarPaseSocio)
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPaseSocio, false);
+                                PaseRepository.GrabarPaseSocio(entidad.IdVenta, entidad.CodiGerente, entidad.CodiSocio, entidad.Concepto);
                             };
                             break;
                         case "1": // CRÉDITO
                             {
                                 // Actualiza 'BoletosStock'
-                                var actualizarBoletosStock = false;
                                 if (!entidad.FlagPrecioNormal)
-                                    actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1");
+                                    CreditoRepository.ActualizarBoletosStock("1", entidad.IdPrecio.ToString(), "1");
                                 else
-                                    actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("1", entidad.IdContrato.ToString(), "0");
-
-                                if (!actualizarBoletosStock)
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarBoletosStock, false);
+                                    CreditoRepository.ActualizarBoletosStock("1", entidad.IdContrato.ToString(), "0");
                             };
                             break;
                     }
@@ -557,29 +549,20 @@ namespace SisComWeb.Business
                             Origen = entidad.CodiSucursal,
                             Destino = entidad.CodiDestino
                         };
-                        var insertarDescuentoBoleto = VentaRepository.InsertarDescuentoBoleto(descuentoBoleto);
-                        if (!insertarDescuentoBoleto)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorInsertarDescuentoBoleto, false);
+                        VentaRepository.InsertarDescuentoBoleto(descuentoBoleto);
                     }
 
                     // Inserta 'DescuentoVenta'
                     if (entidad.ValidadorDescuentoControl)
-                    {
-                        var insertarDescuentoVenta = VentaRepository.InsertarDescuentoVenta(entidad.IdVenta, entidad.DescuentoTipoDC, entidad.ImporteDescuentoDC, entidad.ImporteDescontadoDC, entidad.AutorizadoDC);
-                        if (!insertarDescuentoVenta)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorInsertarDescuentoVenta, false);
-                    }
+                        VentaRepository.InsertarDescuentoVenta(entidad.IdVenta, entidad.DescuentoTipoDC, entidad.ImporteDescuentoDC, entidad.ImporteDescontadoDC, entidad.AutorizadoDC);
 
                     // Valida 'LiquidacionVentas'
                     var validarLiquidacionVentas = VentaRepository.ValidarLiquidacionVentas(entidad.CodiUsuario, DataUtility.ObtenerFechaDelSistema());
 
                     // Actualiza 'LiquidacionVentas'
                     if (validarLiquidacionVentas > 0)
-                    {
-                        var actualizarLiquidacionVentas = VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DataUtility.Obtener12HorasDelSistema());
-                        if (!actualizarLiquidacionVentas)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorActualizarLiquidacionVentas, false);
-                    }
+                        VentaRepository.ActualizarLiquidacionVentas(validarLiquidacionVentas, DataUtility.Obtener12HorasDelSistema());
+
                     // Graba 'LiquidacionVentas'
                     else
                     {
@@ -593,9 +576,7 @@ namespace SisComWeb.Business
                         auxCorrelativoAuxiliar = int.Parse(generarCorrelativoAuxiliar) + 1;
 
                         // Graba 'LiquidacionVentas'
-                        var grabarLiquidacionVentas = VentaRepository.GrabarLiquidacionVentas(auxCorrelativoAuxiliar, entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
-                        if (!grabarLiquidacionVentas)
-                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarLiquidacionVentas, false);
+                        VentaRepository.GrabarLiquidacionVentas(auxCorrelativoAuxiliar, entidad.CodiEmpresa, entidad.CodiOficina, entidad.CodiPuntoVenta, entidad.CodiUsuario, entidad.PrecioVenta);
                     }
 
                     // Valida 'TipoPago'
@@ -608,8 +589,6 @@ namespace SisComWeb.Business
                             {
                                 //  Genera 'CorrelativoAuxiliar'
                                 var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
-                                if (string.IsNullOrEmpty(generarCorrelativoAuxiliar))
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGenerarCorrelativoAuxiliar, false);
 
                                 // Graba 'Caja'
                                 var objCajaEntity = new CajaEntity
@@ -650,34 +629,26 @@ namespace SisComWeb.Business
                                 };
 
                                 var grabarCaja = VentaRepository.GrabarCaja(objCajaEntity);
-                                if (grabarCaja > 0)
-                                {
-                                    // Seteo 'NumeCaja'
-                                    var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
 
-                                    // Graba 'PagoTarjetaCredito'
-                                    var objTarjetaCreditoEntity = new TarjetaCreditoEntity
-                                    {
-                                        IdVenta = entidad.IdVenta,
-                                        Boleto = auxBoletoCompleto.Substring(1),
-                                        CodiTarjetaCredito = entidad.CodiTarjetaCredito,
-                                        NumeTarjetaCredito = entidad.NumeTarjetaCredito,
-                                        Vale = auxNumeCaja,
-                                        IdCaja = grabarCaja,
-                                        Tipo = entidad.Tipo
-                                    };
-                                    var grabarPagoTarjetaCredito = VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
-                                    if (!grabarPagoTarjetaCredito)
-                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoTarjetaCredito, false);
-                                }
-                                else
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarCaja, false);
+                                // Seteo 'NumeCaja'
+                                var auxNumeCaja = entidad.CodiOficina.ToString("D3") + entidad.CodiPuntoVenta.ToString("D3") + generarCorrelativoAuxiliar.PadLeft(7, '0');
+
+                                // Graba 'PagoTarjetaCredito'
+                                var objTarjetaCreditoEntity = new TarjetaCreditoEntity
+                                {
+                                    IdVenta = entidad.IdVenta,
+                                    Boleto = auxBoletoCompleto.Substring(1),
+                                    CodiTarjetaCredito = entidad.CodiTarjetaCredito,
+                                    NumeTarjetaCredito = entidad.NumeTarjetaCredito,
+                                    Vale = auxNumeCaja,
+                                    IdCaja = grabarCaja,
+                                    Tipo = entidad.Tipo
+                                };
+                                VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
                             };
                             break;
                         case "04": // Delivery
-                            var grabarPagoDelivery = VentaRepository.GrabarPagoDelivery(entidad.IdVenta, entidad.CodiZona, entidad.Direccion, entidad.Observacion);
-                            if (!grabarPagoDelivery)
-                                return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarPagoDelivery, false);
+                            VentaRepository.GrabarPagoDelivery(entidad.IdVenta, entidad.CodiZona, entidad.Direccion, entidad.Observacion);
                             break;
                     };
 
@@ -845,7 +816,7 @@ namespace SisComWeb.Business
                         NomOrigen = entidad.NomOrigen
                     };
                     var verificaCodiProgramacion = VerificaCodiProgramacion(objProgramacion);
-                    if (verificaCodiProgramacion == 0)
+                    if (verificaCodiProgramacion <= 0)
                         return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaCodiProgramacion, false);
                     else
                         entidad.CodiProgramacion = verificaCodiProgramacion;
@@ -1169,14 +1140,10 @@ namespace SisComWeb.Business
                     if (consultaBoletoPorContrato > 0)
                     {
                         // Actualiza 'BoletosPorContrato'
-                        var actualizarBoletosPorContrato = CreditoRepository.ActualizarBoletosPorContrato(consultaBoletoPorContrato.ToString());
-                        if (!actualizarBoletosPorContrato)
-                            return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosPorContrato, true);
+                        CreditoRepository.ActualizarBoletosPorContrato(consultaBoletoPorContrato.ToString());
 
                         // Actualiza 'BoletosStock'
-                        var actualizarBoletosStock = CreditoRepository.ActualizarBoletosStock("0", objVenta.IdPrecio.ToString(), "1"); // Se está suponiendo que 'FlagPrecioNormal' siempre es 'false'.
-                        if (!actualizarBoletosStock)
-                            return new Response<byte>(false, 0, Message.MsgErrorActualizarBoletosStock, true);
+                        CreditoRepository.ActualizarBoletosStock("0", objVenta.IdPrecio.ToString(), "1"); // Se está suponiendo que 'FlagPrecioNormal' siempre es 'false'.
                     }
                     else
                         return new Response<byte>(false, 0, Message.MsgErrorConsultaBoletoPorContrato, true);
@@ -1432,7 +1399,7 @@ namespace SisComWeb.Business
 
                                     IdCaja = 0
                                 };
-                                var grabarCajaReintegro = VentaRepository.GrabarCaja(objCajaReintegro);
+                                VentaRepository.GrabarCaja(objCajaReintegro);
                             }
                         }
                     }
@@ -1634,7 +1601,7 @@ namespace SisComWeb.Business
                 if (buscarVentaxBoleto.IdVenta > 0)
                     return new Response<VentaBeneficiarioEntity>(true, buscarVentaxBoleto, Message.MsgCorrectoBuscarVentaxBoleto, true);
                 else
-                    return new Response<VentaBeneficiarioEntity>(true, buscarVentaxBoleto, Message.MsgValidaBuscarVentaxBoleto, false);
+                    return new Response<VentaBeneficiarioEntity>(false, buscarVentaxBoleto, Message.MsgValidaBuscarVentaxBoleto, true);
             }
             catch (Exception ex)
             {
@@ -2448,10 +2415,10 @@ namespace SisComWeb.Business
                     };
 
                     // Graba 'Programacion'
-                    var grabarProgramacion = VentaRepository.GrabarProgramacion(objProgramacion);
+                    VentaRepository.GrabarProgramacion(objProgramacion);
 
                     // Graba 'ViajeProgramacion'
-                    var grabarViajeProgramacion = VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, value, entidad.FechaProgramacion, entidad.CodiBus);
+                    VentaRepository.GrabarViajeProgramacion(entidad.NroViaje, value, entidad.FechaProgramacion, entidad.CodiBus);
 
                     // Graba 'AuditoriaProg'
                     var objAuditoriaProg = new AuditoriaEntity

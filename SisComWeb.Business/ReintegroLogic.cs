@@ -12,12 +12,12 @@ namespace SisComWeb.Business
 {
     public class ReintegroLogic
     {
-        private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"].ToString();
-        private static readonly string CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["codiCorrelativoVentaBoleta"].ToString();
-        private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"].ToString();
-        private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"].ToString();
-        private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"].ToString();
-        private static readonly string CodiCorrelativoCredito = ConfigurationManager.AppSettings["codiCorrelativoCredito"].ToString();
+        private static readonly string UserWebSUNAT = ConfigurationManager.AppSettings["userWebSUNAT"];
+        private static readonly string CodiCorrelativoVentaBoleta = ConfigurationManager.AppSettings["codiCorrelativoVentaBoleta"];
+        private static readonly string CodiCorrelativoVentaFactura = ConfigurationManager.AppSettings["codiCorrelativoVentaFactura"];
+        private static readonly string CodiCorrelativoPaseBoleta = ConfigurationManager.AppSettings["codiCorrelativoPaseBoleta"];
+        private static readonly string CodiCorrelativoPaseFactura = ConfigurationManager.AppSettings["codiCorrelativoPaseFactura"];
+        private static readonly string CodiCorrelativoCredito = ConfigurationManager.AppSettings["codiCorrelativoCredito"];
 
         public static Response<ReintegroEntity> VentaConsultaF12(ReintegroRequest request)
         {

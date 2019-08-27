@@ -17,7 +17,7 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        readonly Usuario usuario = DataSession.UsuarioLogueado;
+        private static readonly Usuario usuario = DataSession.UsuarioLogueado;
 
         private static List<Punto> _listPuntos(JToken list)
         {

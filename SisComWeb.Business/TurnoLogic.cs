@@ -2,12 +2,15 @@
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
+using System.Configuration;
 using System.Globalization;
 
 namespace SisComWeb.Business
 {
     public class TurnoLogic
     {
+        private static readonly short DefaultCantMaxBloqAsi = short.Parse(ConfigurationManager.AppSettings["defaultCantMaxBloqAsi"]);
+
         public static Response<ItinerarioEntity> MuestraTurno(TurnoRequest request)
         {
             try
@@ -23,16 +26,6 @@ namespace SisComWeb.Business
                     buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).AddDays(-doubleDias).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
                 else
                     buscarTurno.FechaProgramacion = DateTime.Parse(request.FechaViaje).ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //// Verifica cambios 'TurnoViaje'
-                //var verificaCambiosTurnoViaje = ItinerarioRepository.VerificaCambiosTurnoViaje(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
-                //if (verificaCambiosTurnoViaje.CodiEmpresa > 0)
-                //{
-                //    buscarTurno.CodiServicio = verificaCambiosTurnoViaje.CodiServicio;
-                //    buscarTurno.NomServicio = verificaCambiosTurnoViaje.NomServicio;
-                //    buscarTurno.CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
-                //    buscarTurno.RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
-                //}
 
                 // Busca 'ProgramacionViaje'
                 var buscarProgramacionViaje = ItinerarioRepository.BuscarProgramacionViaje(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
@@ -146,7 +139,7 @@ namespace SisComWeb.Business
                 // Consulta 'BloqueoAsientoCantidad_Max'
                 var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
                 if (consultaBloqueoAsientoCantidad_Max == 0)
-                    buscarTurno.CantidadMaxBloqAsi = 10;
+                    buscarTurno.CantidadMaxBloqAsi = DefaultCantMaxBloqAsi;
                 else
                     buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
 

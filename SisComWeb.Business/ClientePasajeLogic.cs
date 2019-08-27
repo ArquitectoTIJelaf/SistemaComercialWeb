@@ -11,8 +11,8 @@ namespace SisComWeb.Business
 {
     public class ClientePasajeLogic
     {
-        private static readonly string ServiceRENIEC = ConfigurationManager.AppSettings["serviceRENIEC"].ToString();
-        private static readonly string ServiceSUNAT = ConfigurationManager.AppSettings["serviceSUNAT"].ToString();
+        private static readonly string ServiceRENIEC = ConfigurationManager.AppSettings["serviceRENIEC"];
+        private static readonly string ServiceSUNAT = ConfigurationManager.AppSettings["serviceSUNAT"];
 
         public static Response<ClientePasajeEntity> BuscaPasajero(string TipoDoc, string NumeroDoc)
         {
@@ -206,19 +206,11 @@ namespace SisComWeb.Business
                     entidad.TipoDoc = VentaLogic.TipoDocumentoHomologado(entidad.TipoDoc).ToString();
 
                     if (entidad.IdCliente > 0)
-                    {
                         // Modifica 'Pasajero'
-                        var modificarPasajero = ClientePasajeRepository.ModificarPasajero(entidad);
-                        if (!modificarPasajero)
-                            new Response<bool>(false, modificarPasajero, Message.MsgErrorModificarPasajero, false);
-                    }
+                        ClientePasajeRepository.ModificarPasajero(entidad);
                     else
-                    {
                         // Graba 'Pasajero'
-                        var grabarPasajero = ClientePasajeRepository.GrabarPasajero(entidad);
-                        if (grabarPasajero <= 0)
-                            new Response<bool>(false, false, Message.MsgErrorGrabarPasajero, false);
-                    }
+                        ClientePasajeRepository.GrabarPasajero(entidad);
 
                     // Valida 'RucContacto'
                     if (string.IsNullOrEmpty(entidad.RucContacto))
@@ -236,19 +228,11 @@ namespace SisComWeb.Business
                     };
 
                     if (!string.IsNullOrEmpty(buscarEmpresa.RucCliente))
-                    {
                         // Modifica 'Empresa'
-                        var modificarEmpresa = ClientePasajeRepository.ModificarEmpresa(objEmpresa);
-                        if (!modificarEmpresa)
-                            new Response<bool>(false, modificarEmpresa, Message.MsgErrorModificarEmpresa, false);
-                    }
+                        ClientePasajeRepository.ModificarEmpresa(objEmpresa);
                     else
-                    {
                         // Graba 'Empresa'
-                        var grabarEmpresa = ClientePasajeRepository.GrabarEmpresa(objEmpresa);
-                        if (!grabarEmpresa)
-                            new Response<bool>(false, grabarEmpresa, Message.MsgErrorGrabarEmpresa, false);
-                    }
+                        ClientePasajeRepository.GrabarEmpresa(objEmpresa);
                 }
 
                 return new Response<bool>(true, true, Message.MsgCorrectoGrabarClientePasaje, true);

@@ -9,8 +9,8 @@ namespace SisComWeb.CuadreImpresora
 {
     public class Cuadre
     {
-        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"].ToString();
-        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"].ToString();
+        private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"];
+        private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"];
 
         public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {

@@ -48,10 +48,7 @@ namespace SisComWeb.Business
                 // Libera 'Asiento'
                 var liberaAsiento = BloqueoAsientoRepository.LiberaAsiento(IDS);
 
-                if (liberaAsiento)
-                    return new Response<bool>(true, liberaAsiento, Message.MsgCorrectoLiberaAsiento, true);
-                else
-                    return new Response<bool>(false, liberaAsiento, Message.MsgValidaLiberaAsiento, true);
+                return new Response<bool>(true, liberaAsiento, Message.MsgCorrectoLiberaAsiento, true);
             }
             catch (Exception ex)
             {
@@ -80,10 +77,7 @@ namespace SisComWeb.Business
                 // Actualizar 'AsiOcuTbBloqueoAsientos'
                 var actualizarAsiOcuTbBloqueoAsientos = BloqueoAsientoRepository.ActualizarAsiOcuTbBloqueoAsientos(request);
 
-                if (actualizarAsiOcuTbBloqueoAsientos)
-                    return new Response<bool>(true, actualizarAsiOcuTbBloqueoAsientos, Message.MsgCorrectoActualizarAsiOcuTbBloqueoAsientos, true);
-                else
-                    return new Response<bool>(false, actualizarAsiOcuTbBloqueoAsientos, Message.MsgErrorActualizarAsiOcuTbBloqueoAsientos, false);
+                return new Response<bool>(true, actualizarAsiOcuTbBloqueoAsientos, Message.MsgCorrectoActualizarAsiOcuTbBloqueoAsientos, true);
             }
             catch (Exception ex)
             {

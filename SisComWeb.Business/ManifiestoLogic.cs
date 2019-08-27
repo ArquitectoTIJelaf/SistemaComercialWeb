@@ -2,7 +2,6 @@
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
-using System.Collections.Generic;
 
 namespace SisComWeb.Business
 {
@@ -13,56 +12,40 @@ namespace SisComWeb.Business
             try
             {
                 // Actualiza 'ManifiestoProgramacion'
-                var actualizarManifiestoProgramacion = ManifiestoRepository.ActualizarManifiestoProgramacion(request.CodiProgramacion, request.CodiSucursal, request.TipoApertura);
+                ManifiestoRepository.ActualizarManifiestoProgramacion(request.CodiProgramacion, request.CodiSucursal, request.TipoApertura);
 
-                if (actualizarManifiestoProgramacion)
+                if (request.CodiSucursal == request.CodiSucursalBus)
+                    // Actualiza 'Programacion'
+                    ManifiestoRepository.ActualizarProgramacion(request.CodiEmpresa, request.CodiProgramacion, request.CodiSucursal, request.TipoApertura);
+
+                var objAuditoriaEntity = new AuditoriaEntity
                 {
-                    if (request.CodiSucursal == request.CodiSucursalBus)
-                    {
-                        // Actualiza 'Programacion'
-                        var actualizarProgramacion = ManifiestoRepository.ActualizarProgramacion(request.CodiEmpresa, request.CodiProgramacion, request.CodiSucursal, request.TipoApertura);
-                        if (!actualizarProgramacion)
-                            return new Response<bool>(false, actualizarProgramacion, Message.MsgErrorActualizarProgramacion, false);
-                    }
+                    CodiUsuario = request.CodiUsuario,
+                    NomUsuario = request.NomUsuario,
+                    Tabla = "PROGRAMACION",
+                    TipoMovimiento = "EDICION",
+                    Boleto = "CODIGO= " + request.CodiProgramacion.ToString(),
+                    NumeAsiento = string.Empty,
+                    NomOficina = request.CodiSucursal.ToString(),
+                    NomPuntoVenta = request.CodiPuntoVenta,
+                    Pasajero = string.Empty,
+                    FechaViaje = string.Empty,
+                    HoraViaje = string.Empty,
+                    NomDestino = string.Empty,
+                    Precio = 0,
+                    Obs1 = request.TipoApertura ? "APERTURA DE PROGRAMACION PARA SEGUIR VENDIENDO" : "APERTURA DE PROGRAMACION PARA VOLVER A IMPRIMIR EL MANIFIESTO",
+                    Obs2 = string.Empty,
+                    Obs3 = string.Empty,
+                    Obs4 = string.Empty,
+                    Obs5 = string.Empty
+                };
 
-                    var objAuditoriaEntity = new AuditoriaEntity
-                    {
-                        CodiUsuario = request.CodiUsuario,
-                        NomUsuario = request.NomUsuario,
-                        Tabla = "PROGRAMACION",
-                        TipoMovimiento = "EDICION",
-                        Boleto = "CODIGO= " + request.CodiProgramacion.ToString(),
-                        NumeAsiento = string.Empty,
-                        NomOficina = request.CodiSucursal.ToString(),
-                        NomPuntoVenta = request.CodiPuntoVenta,
-                        Pasajero = string.Empty,
-                        FechaViaje = string.Empty,
-                        HoraViaje = string.Empty,
-                        NomDestino = string.Empty,
-                        Precio = 0,
-                        Obs1 = request.TipoApertura ? "APERTURA DE PROGRAMACION PARA SEGUIR VENDIENDO" : "APERTURA DE PROGRAMACION PARA VOLVER A IMPRIMIR EL MANIFIESTO",
-                        Obs2 = string.Empty,
-                        Obs3 = string.Empty,
-                        Obs4 = string.Empty,
-                        Obs5 = string.Empty
-                    };
+                // Graba 'AuditoriaProg'
+                ManifiestoRepository.GrabarAuditoriaProg(objAuditoriaEntity);
+                // Actualiza 'VentaManifiesto'
+                var actualizarVentaManifiesto = ManifiestoRepository.ActualizarVentaManifiesto(request.CodiProgramacion);
 
-                    // Graba 'AuditoriaProg'
-                    var grabarAuditoriaProg = ManifiestoRepository.GrabarAuditoriaProg(objAuditoriaEntity);
-                    if (grabarAuditoriaProg)
-                    {
-                        // Actualiza 'VentaManifiesto'
-                        var actualizarVentaManifiesto = ManifiestoRepository.ActualizarVentaManifiesto(request.CodiProgramacion);
-                        if (actualizarVentaManifiesto)
-                            return new Response<bool>(true, actualizarVentaManifiesto, Message.MsgCorrectoActualizarProgramacionManifiesto, true);
-                        else
-                            return new Response<bool>(false, actualizarVentaManifiesto, Message.MsgErrorActualizarVentaManifiesto, false);
-                    }
-                    else
-                        return new Response<bool>(false, grabarAuditoriaProg, Message.MsgErrorGrabarAuditoriaProg, false);
-                }
-                else
-                    return new Response<bool>(false, actualizarManifiestoProgramacion, Message.MsgExcActualizarProgramacionManifiesto, false);
+                return new Response<bool>(true, actualizarVentaManifiesto, Message.MsgCorrectoActualizarProgramacionManifiesto, true);
             }
             catch (Exception ex)
             {

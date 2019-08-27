@@ -16,7 +16,7 @@ namespace SisComWeb.Aplication.Controllers
     public class ReintegroController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        readonly Usuario usuario = DataSession.UsuarioLogueado;
+        private static readonly Usuario usuario = DataSession.UsuarioLogueado;
 
         private static List<VentaRealizada> _listVentasRealizadas(JToken list)
         {
