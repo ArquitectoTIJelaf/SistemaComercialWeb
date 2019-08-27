@@ -189,6 +189,8 @@
         public const string MsgCorrectoObtenerTiempoReserva = "Correcto: ObtenerTiempoReserva.";
         public const string MsgExcObtenerTiempoReserva = "Excepción: ObtenerTiempoReserva.";
 
+        public const string MsgErrorVerificaClientesP = "Error: VerificaClientesP.";
+
         // Acompaniante
         public const string MsgCorrectoAcompanianteVentaCRUD = "Se guardó los datos del acompañante correctamente.";
         public const string MsgExcAcompanianteVentaCRUD = "Excepción: AcompanianteVentaCRUD.";
