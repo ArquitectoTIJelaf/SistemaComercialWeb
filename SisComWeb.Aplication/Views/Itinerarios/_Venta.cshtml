@@ -778,15 +778,15 @@
                                                               ref="refTipoDoc"
                                                               v-model="list.ventas[indexVenta].CodiTipoDoc"
                                                               @@input="$refs.refTipoDoc.typeAheadPointer = $getSelectorVselect(list.tiposDoc, list.ventas[indexVenta].CodiTipoDoc)"
-                                                              @@keydown.13.native.prevent="$refs.refDocumento.focus();"
-                                                              @*@@keydown.9.native.prevent="$refs.refDocumento.focus();"*@
+                                                              @@keydown.13.native.prevent="recorridoVselectTipoDoc"
+                                                              @*@@keydown.9.native.prevent="recorridoVselectTipoDoc"*@
                                                               :options="list.tiposDoc"
                                                               :select-on-tab="true"
                                                               :get-option-label="labelOfDocumento"
                                                               :disabled="disabledCamposTicket_Pase"
                                                               name="Tipo">
                                                         <template slot="option" slot-scope="option">
-                                                            <div @@click="$refs.refDocumento.focus();">{{ option.label }}</div>
+                                                            <div @@click="recorridoVselectTipoDoc">{{ option.label }}</div>
                                                         </template>
                                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                                     </v-select>
@@ -815,9 +815,10 @@
                                                            ref="refDocumento"
                                                            class="form-control input-sm"
                                                            placeholder="DOCUMENTO"
-                                                           :disabled="disabledCamposTicket_Pase"
+                                                           :disabled="disabledCamposTicket_Pase || disabledDocumentoRaya"
                                                            v-mask="mask.documento"
-                                                           autocomplete="off">
+                                                           autocomplete="off"
+                                                           style="background-color: #fff !important; ">
                                                 </div>
                                             </div>
                                         </div>

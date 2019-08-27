@@ -1209,7 +1209,6 @@
                     appVueTable.loadTable(_list)
                 },
                 showVentas: async function (_item, _turnos) {
-                    appVueVenta.pickedBusVenta = 'V';
                     await appVueVenta.chargeVentas(_item, _turnos);
                     if (appVueVenta.showPlano) {
                         appVueFilter.showVentas = true;
@@ -1529,6 +1528,9 @@
                             ' como mínimo.');
 
                     return auxResponse;
+                },
+                getTiposDocumentosSinRaya: function () {
+                    return _.cloneDeep(_.filter(tiposDoc, function (o) { return o.id !== '00'; }));
                 }
             };
         })();
@@ -1907,6 +1909,7 @@
                 disabledCampoNroAsiento: false,
                 disabledCamposTicket: false,
                 disabledCamposTicket_Pase: false,
+                disabledDocumentoRaya: false,
                 eventTxtNroAsientoVenta: '',
                 eventTxtPrecio: '',
                 // Crédito
@@ -1972,6 +1975,7 @@
                 getTurno: async function (item) {
                     var _this = this;
                     _this.processing = true;
+
                     if (_this.pickedBusVenta !== '1') // Crédito
                         _this.pickedBusVenta = 'V';
 
@@ -2134,9 +2138,12 @@
                     APP.rq.axios2.get(APP.base + '/base/get-tiposDoc')
                         .then(res => {
                             if (res.data.Estado) {
-                                _this.list.tiposDoc = _.cloneDeep(res.data.Valor);
-                                appVueRegistrarInfante.list.tipoDoc = _.cloneDeep(res.data.Valor);
                                 tiposDoc = _.cloneDeep(res.data.Valor);
+
+                                var auxListaSinRaya = appController.getTiposDocumentosSinRaya();
+                                _this.list.tiposDoc = _.cloneDeep(auxListaSinRaya);
+                                appVueRegistrarInfante.list.tipoDoc = _.cloneDeep(auxListaSinRaya);
+                                appVueReintegro.list.tipoDoc = _.cloneDeep(auxListaSinRaya);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -2947,6 +2954,14 @@
                     else
                         appController.chargeTurnos();
                 },
+                recorridoVselectTipoDoc: function () {
+                    this.$nextTick(function () {
+                        if (this.list.ventas[this.indexVenta].CodiTipoDoc.id === '00')
+                            this.recorridoSectionVentas();
+                        else
+                            document.getElementById('txtDocumento').focus();
+                    });
+                },
                 recorridoSectionVentas: function (anulaValidacion) {
                     if (!this.list.ventas[this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -3001,7 +3016,7 @@
                         document.getElementById('txtCorreo').focus();
                         return;
                     }
-                    if (this.$formatEmail(this.list.ventas[this.indexVenta].Correo)) {
+                    if (!this.$formatEmail(this.list.ventas[this.indexVenta].Correo)) {
                         document.getElementById('txtCorreo').focus();
                         APP.msg.warning('Ingrese correo con formato válido: ' + this.$viewEmail());
                         return;
@@ -3109,6 +3124,14 @@
                     var axuValidate = _this.recorridoSectionVentas('searchUser');
                     if (!axuValidate)
                         return;
+
+                    // Valida 'Raya'
+                    if (_this.list.ventas[_this.indexVenta].CodiTipoDoc.id === '00') {
+                        _this.$nextTick(() => {
+                            _this.recorridoSectionVentas();
+                        });
+                        return;
+                    }
 
                     // Valida 'DocumentoRepetido'
                     if (_this.pickedBusVenta !== 'R' && _this.pickedBusVenta !== 'FA' && appController.validatePanel('107') === '1') {
@@ -3492,25 +3515,30 @@
                     var listado = [];
 
                     for (const objVenta of _this.list.ventas) {
-                        var input = {};
-                        input.IdCliente = objVenta.IdCliente;
-                        input.TipoDoc = objVenta.CodiTipoDoc.id;
-                        input.NumeroDoc = objVenta.Documento;
-                        input.NombreCliente = objVenta.Nombres;
-                        input.ApellidoPaterno = objVenta.ApellidoPaterno;
-                        input.ApellidoMaterno = objVenta.ApellidoMaterno;
-                        input.FechaNacimiento = objVenta.FechaNac;
-                        input.Edad = objVenta.Edad;
-                        input.Telefono = objVenta.Telefono;
-                        input.Sexo = objVenta.Sexo.id;
-                        input.RucContacto = objVenta.Ruc;
-                        input.RazonSocial = objVenta.RazonSocial;
-                        input.Direccion = objVenta.Direccion;
+                        if (objVenta.CodiTipoDoc.id !== '00') { // Valida 'Raya'
+                            var input = {};
+                            input.IdCliente = objVenta.IdCliente;
+                            input.TipoDoc = objVenta.CodiTipoDoc.id;
+                            input.NumeroDoc = objVenta.Documento;
+                            input.NombreCliente = objVenta.Nombres;
+                            input.ApellidoPaterno = objVenta.ApellidoPaterno;
+                            input.ApellidoMaterno = objVenta.ApellidoMaterno;
+                            input.FechaNacimiento = objVenta.FechaNac;
+                            input.Edad = objVenta.Edad;
+                            input.Telefono = objVenta.Telefono;
+                            input.Sexo = objVenta.Sexo.id;
+                            input.RucContacto = objVenta.Ruc;
+                            input.RazonSocial = objVenta.RazonSocial;
+                            input.Direccion = objVenta.Direccion;
 
-                        input.Correo = objVenta.Correo;
+                            input.Correo = objVenta.Correo;
 
-                        listado.push(input);
+                            listado.push(input);
+                        }
                     };
+
+                    if (listado.length <= 0)
+                        return;
 
                     APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', listado)
                         .then(res => {
@@ -4096,8 +4124,9 @@
                     this.disabledCamposTicket_Pase = false;
                     this.disabledCampoNumSolicitud = true;
                     this.validatorReservaHC = false;
-
                     this.validatorTiempoReserva = false;
+
+                    this.disabledDocumentoRaya = false;
 
                     switch (this.pickedBusVenta) {
                         case '1': // 'Crédito'
@@ -4571,6 +4600,7 @@
                     // Muestra 'Modal'
                     switch (value) {
                         case '1': // Crédito
+
                             // Animación 'ScrollTop'
                             animateScrollTop(800);
 
@@ -5626,7 +5656,7 @@
                 },
                 showBuscaClientePasaje: function (e) {
                     if (e.keyCode === 112) { // F1
-                        if (this.list.ventas[this.indexVenta].CodiTipoDoc && this.list.ventas[this.indexVenta].CodiTipoDoc !== '00') // '00' --> Rayita
+                        if (this.list.ventas[this.indexVenta].CodiTipoDoc && this.list.ventas[this.indexVenta].CodiTipoDoc !== '00') // Valida 'Raya'
                             appController.showBuscaClientePasaje(this.list.ventas[this.indexVenta].CodiTipoDoc.id);
                     }
                 },
@@ -6555,6 +6585,40 @@
                         this.$refs.refDestinoPas_2.typeAheadPointer = this.$getSelectorVselect(this.list.destinosPas, this.filtro.CodiDestinoPas);
                     });
                 },
+                'list.tiposDoc': function (newVal, oldVal) {
+                    this.$nextTick(() => {
+                        this.$refs.refTipoDoc.typeAheadPointer = this.$getSelectorVselect(this.list.tiposDoc, this.list.ventas[this.indexVenta].CodiTipoDoc)
+                    });
+                },
+                pickedBusVenta: function (newVal, oldVal) {
+                    if (newVal && newVal === 'R') {
+                        if (appController.validatePanel('95') === '1')
+                            this.list.tiposDoc = _.cloneDeep(tiposDoc);
+                    }
+                    else {
+                        if (this.list.tiposDoc.length !== appController.getTiposDocumentosSinRaya().length)
+                            this.list.tiposDoc = appController.getTiposDocumentosSinRaya();
+                    }
+                },
+                listVentasCampoCodiTipoDoc: function (newVal, oldVal) {
+                    if (newVal) {
+                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+
+                        if (newVal.id === '00') {
+                            this.list.ventas[this.indexVenta].Documento = '0';
+                            this.disabledDocumentoRaya = true;
+                        }
+                        else {
+                            this.list.ventas[this.indexVenta].Documento = '';
+                            this.disabledDocumentoRaya = false;
+                        }
+
+                        if (newVal.id === '01')
+                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
+                        else
+                            this.list.ventas[this.indexVenta].Nacionalidad = '';
+                    }
+                },
                 listVentasCampoDocumento: function (newVal, oldVal) {
                     if (this.oldIndexVenta === this.indexVenta) {
                         if (oldVal && oldVal.length >= 8 && !this.list.ventas[this.indexVenta].IdVenta)
@@ -6661,14 +6725,6 @@
                                         this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
                                 }
                             };
-                    }
-                },
-                listVentasCampoCodiTipoDoc: function (newVal, oldVal) {
-                    if (newVal) {
-                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
-
-                        if (newVal.id === '01')
-                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
                     }
                 },
                 listVentasCampoFechaReservacion: function (newVal, oldVal) {
@@ -9626,9 +9682,9 @@
                             _this.list.servicios.unshift(selectAll);
                         }
 
-                        if (_this.list.tiposDoc.length == 0) {
-                            _this.list.tiposDoc = _.cloneDeep(tiposDoc);
-                        }
+                        //if (_this.list.tiposDoc.length == 0) {
+                        //    _this.list.tiposDoc = _.cloneDeep(tiposDoc);
+                        //}
 
                         _this.filtroProgramacion.CodiOrigen = String(Usuario.CodiSucursal);
 

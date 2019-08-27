@@ -862,6 +862,27 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static string VerificaClientesP(string Nombre)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_verificar_Clientes_P";
+                db.AddParameter("@nombre", DbType.String, ParameterDirection.Input, Nombre);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "NUMERO") ?? string.Empty;
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

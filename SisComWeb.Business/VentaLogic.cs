@@ -813,6 +813,16 @@ namespace SisComWeb.Business
                 {
                     string auxBoletoCompleto = string.Empty;
 
+                    // Si 'TipoDoc' es raya, generamos 'Documento'
+                    if (entidad.TipoDocumento == "00")
+                    {
+                        var verificaClientesP = VentaRepository.VerificaClientesP(string.Empty);
+                        if (!string.IsNullOrEmpty(verificaClientesP))
+                            entidad.Dni = verificaClientesP;
+                        else
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaClientesP, false);
+                    }
+
                     // Verifica 'CodiProgramacion'
                     var objProgramacion = new ProgramacionEntity()
                     {
