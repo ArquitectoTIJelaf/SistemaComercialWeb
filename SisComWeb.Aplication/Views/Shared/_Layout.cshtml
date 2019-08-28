@@ -54,6 +54,7 @@
         ClientSignalR.NroViaje = '';
         ClientSignalR.FechaProgramacion = '';
         ClientSignalR.NroAsiento = '';
+        ClientSignalR.ArregloNroAsientos = [];
         ClientSignalR.VentaResponse = {};
         ClientSignalR.Owner = false;
 
@@ -71,6 +72,13 @@
             notification.client.liberarAsiento = function (nroViaje, fechaProgramacion, nroAsiento) {
                 if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.objTurno.FechaProgramacion === fechaProgramacion && !ClientSignalR.Owner) {
                     appVueVenta.signalR_LiberarAsiento(nroAsiento);
+                }
+                ClientSignalR.Owner = false;
+            };
+
+            notification.client.liberarArregloAsientos = function (nroViaje, fechaProgramacion, arregloNroAsientos) {
+                if (String(appVueVenta.filtro.NroViaje) === nroViaje && appVueVenta.objTurno.FechaProgramacion === fechaProgramacion && !ClientSignalR.Owner) {
+                    appVueVenta.signalR_LiberarArregloAsientos(arregloNroAsientos);
                 }
                 ClientSignalR.Owner = false;
             };
@@ -94,6 +102,10 @@
 
                 $('#btnHiddenLiberarAsiento').click(function () {
                     notification.server.liberarAsiento(ClientSignalR.NroViaje, ClientSignalR.FechaProgramacion, ClientSignalR.NroAsiento);
+                });
+
+                $('#btnHiddenLiberarArregloAsientos').click(function () {
+                    notification.server.liberarArregloAsientos(ClientSignalR.NroViaje, ClientSignalR.FechaProgramacion, ClientSignalR.ArregloNroAsientos);
                 });
 
                 $('#btnHiddenActualizarTurnoPlano').click(function () {

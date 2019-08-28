@@ -18,7 +18,7 @@ namespace SisComWeb.Aplication.Controllers
     public class PaseLoteController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        private static readonly Usuario usuario = DataSession.UsuarioLogueado;
+        readonly Usuario usuario = DataSession.UsuarioLogueado;
 
         [HttpPost]
         [Route("update-postergacion")]

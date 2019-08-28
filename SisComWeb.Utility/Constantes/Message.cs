@@ -105,19 +105,21 @@
         public const string MsgCorrectoMuestraTurno = "Correcto: MuestraTurno.";
         public const string MsgExcMuestraTurno = "Excepción: MuestraTurno.";
         public const string MsgErrorValidarTurnoAdicional = "El turno no está disponible para la venta, verifique configuración.";
+        public const string MsgErrorValidarProgramacionCerrada_1 = "La ruta está bloqueada para esta fecha.";
+        public const string MsgErrorValidarProgramacionCerrada_2 = "La ruta está bloqueada desde esta fecha hacia adelante.";
 
         // Bloqueo Asiento
         public const string MsgValidaBloqueoAsiento = "Asiento no disponible.";
-        public const string MsgValidaCeroBloqueoAsiento = "No se puede bloquear el asiento seleccionado.";
+        public const string MsgValidaCeroBloqueoAsiento = "No se pudo bloquear el asiento seleccionado.";
         public const string MsgCorrectoBloqueoAsiento = "Correcto: BloqueoAsiento.";
         public const string MsgExcBloqueoAsiento = "Excepción: BloqueoAsiento.";
 
         public const string MsgCorrectoLiberaAsiento = "Correcto: LiberaAsiento.";
-        public const string MsgValidaLiberaAsiento = "No se puede liberar el asiento seleccionado.";
+        public const string MsgValidaLiberaAsiento = "No se pudo liberar el asiento seleccionado.";
         public const string MsgExcLiberaAsiento = "Excepción: LiberaAsiento.";
 
         public const string MsgCorrectoLiberaArregloAsientos = "Correcto: LiberaArregloAsientos.";
-        public const string MsgErrorLiberaArregloAsientos = "Error: LiberaArregloAsientos.";
+        public const string MsgErrorLiberaArregloAsientos = "No se pudieron liberar los asientos bloqueados.";
         public const string MsgExcLiberaArregloAsientos = "Excepción: LiberaArregloAsientos.";
 
         // Tabla bloqueo_asientos

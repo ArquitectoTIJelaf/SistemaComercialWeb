@@ -448,7 +448,6 @@ APP.msg.confirmClaveAutorizacion = async function (_title, _message, _tipo, _tex
                         if (resSendClaveAutorizacion && resSendClaveAutorizacion.EsCorrecto)
                             _bool = true;
                     }
-                    break;
             }
 
             if (!_bool)

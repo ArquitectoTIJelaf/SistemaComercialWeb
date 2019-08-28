@@ -16,6 +16,11 @@ namespace SisComWeb.Aplication.Hubs
             Clients.All.liberarAsiento(nroViaje, FechaProgramacion, nroAsiento);
         }
 
+        public void LiberarArregloAsientos(string nroViaje, string FechaProgramacion, int[] ArregloNroAsientos)
+        {
+            Clients.All.liberarArregloAsientos(nroViaje, FechaProgramacion, ArregloNroAsientos);
+        }
+
         public void ActualizarTurnoPlano(string nroViaje, string FechaProgramacion, VentaResponse ventaResponse)
         {
             Clients.All.actualizarTurnoPlano(nroViaje, FechaProgramacion, ventaResponse);

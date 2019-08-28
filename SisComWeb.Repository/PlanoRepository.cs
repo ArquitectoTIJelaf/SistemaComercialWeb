@@ -64,7 +64,9 @@ namespace SisComWeb.Repository
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
                             Info = string.Empty,
-                            Observacion = string.Empty
+                            Observacion = string.Empty,
+                            Correo = string.Empty,
+                            Especial = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -227,7 +229,9 @@ namespace SisComWeb.Repository
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
                             Info = string.Empty,
-                            Observacion = string.Empty
+                            Observacion = string.Empty,
+                            Correo = string.Empty,
+                            Especial = string.Empty
                         };
                         Lista.Add(entidad);
                     }
@@ -296,7 +300,9 @@ namespace SisComWeb.Repository
                             FechaReservacion = string.Empty,
                             HoraReservacion = string.Empty,
                             Info = string.Empty,
-                            Observacion = string.Empty
+                            Observacion = string.Empty,
+                            Correo = string.Empty,
+                            Especial = string.Empty
                         };
                         Lista.Add(entidad);
                     }

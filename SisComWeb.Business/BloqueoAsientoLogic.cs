@@ -85,5 +85,28 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcActualizarAsiOcuTbBloqueoAsientos, false);
             }
         }
+
+        public static Response<bool> LiberaArregloAsientos(int[] arregloIDS)
+        {
+            try
+            {
+                var liberaArregloAsientos = new bool();
+
+                // Convertimos a Xml
+                string xml = DataUtility.ConvertListToXml(arregloIDS, "xmlLiberaArregloAsientos");
+
+                liberaArregloAsientos = BloqueoAsientoRepository.LiberaArregloAsientos(xml);
+
+                if (liberaArregloAsientos)
+                    return new Response<bool>(true, liberaArregloAsientos, Message.MsgCorrectoLiberaArregloAsientos, true);
+                else
+                    return new Response<bool>(false, liberaArregloAsientos, Message.MsgErrorLiberaArregloAsientos, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BloqueoAsientoLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcLiberaArregloAsientos, false);
+            }
+        }
     }
 }

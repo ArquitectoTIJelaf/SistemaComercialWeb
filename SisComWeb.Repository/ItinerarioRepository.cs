@@ -184,9 +184,9 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        public static int ValidarProgramacionCerrada(int NroViaje, string FechaProgramacion)
+        public static string ValidarProgramacionCerrada(int NroViaje, string FechaProgramacion)
         {
-            var valor = new int();
+            var valor = "0";
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -197,7 +197,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = 1;
+                        valor = Reader.GetStringValue(drlector, "st") ?? "0";
                         break;
                     }
                 }

@@ -228,6 +228,27 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static bool LiberaArregloAsientos(string Xml)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_LiberaArregloAsientos";
+                db.AddParameter("@Xml", DbType.Xml, ParameterDirection.Input, Xml);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = true;
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
     }
 }

@@ -17,7 +17,7 @@ namespace SisComWeb.Aplication.Controllers
     public class ItinerariosController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
-        private static readonly Usuario usuario = DataSession.UsuarioLogueado;
+        readonly Usuario usuario = DataSession.UsuarioLogueado;
 
         private static List<Punto> _listPuntos(JToken list)
         {
@@ -343,7 +343,7 @@ namespace SisComWeb.Aplication.Controllers
                         PlanoBus = (string)x["PlanoBus"],
                         RazonSocial = (string)x["RazonSocial"],
                         StOpcional = (string)x["StOpcional"],
-                        ProgramacionCerrada = (bool)x["ProgramacionCerrada"],
+                        ProgramacionCerrada = (string)x["ProgramacionCerrada"],
                         FechaViaje = (string)x["FechaViaje"],
                         Color = (string)x["Color"],
                         SecondColor = (string)x["SecondColor"]
@@ -424,7 +424,7 @@ namespace SisComWeb.Aplication.Controllers
                         NroViaje = (int)data["NroViaje"],
                         PlacaBus = (string)data["PlacaBus"],
                         PlanoBus = (string)data["PlanoBus"],
-                        ProgramacionCerrada = (bool)data["ProgramacionCerrada"],
+                        ProgramacionCerrada = (string)data["ProgramacionCerrada"],
                         RazonSocial = (string)data["RazonSocial"],
                         StOpcional = (string)data["StOpcional"],
                         CodiChofer = (string)data["CodiChofer"],
@@ -3128,6 +3128,51 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("liberarArregloAsientos")]
+        public async Task<ActionResult> LiberarArregloAsientos(int[] arregloIDS)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    string _body = string.Empty;
+
+                    _body += "[";
+                    for (var i = 0; i < arregloIDS.Length; i++)
+                    {
+                        _body += arregloIDS[i];
+                        if (i < arregloIDS.Length - 1) _body += ",";
+                    }
+                    _body += "]";
+
+                    HttpResponseMessage response = await client.PostAsync("LiberaArregloAsientos", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = await response.Content.ReadAsStringAsync();
+                    }
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"],
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
     }

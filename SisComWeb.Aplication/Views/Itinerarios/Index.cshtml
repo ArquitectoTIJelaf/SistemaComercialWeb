@@ -1175,7 +1175,7 @@
             ClientSignalR.NroViaje = _NroViaje;
             ClientSignalR.FechaProgramacion = _FechaProgramacion;
             ClientSignalR.NroAsiento = _NroAsiento;
-            ClientSignalR.Owner = true;
+            ClientSignalR.Owner = false;
             if (ClientSignalR.NroViaje && ClientSignalR.FechaProgramacion && ClientSignalR.NroAsiento)
                 document.getElementById('btnHiddenBloquearAsiento').click();
         }
@@ -1184,9 +1184,18 @@
             ClientSignalR.NroViaje = _NroViaje;
             ClientSignalR.FechaProgramacion = _FechaProgramacion;
             ClientSignalR.NroAsiento = _NroAsiento;
-            ClientSignalR.Owner = true;
+            ClientSignalR.Owner = false;
             if (ClientSignalR.NroViaje && ClientSignalR.FechaProgramacion && ClientSignalR.NroAsiento)
                 document.getElementById('btnHiddenLiberarAsiento').click();
+        }
+
+        function callSignalR_LiberarArregloAsientos(_NroViaje, _FechaProgramacion, _ArregloNroAsientos) {
+            ClientSignalR.NroViaje = _NroViaje;
+            ClientSignalR.FechaProgramacion = _FechaProgramacion;
+            ClientSignalR.ArregloNroAsientos = _ArregloNroAsientos;
+            ClientSignalR.Owner = false;
+            if (ClientSignalR.NroViaje && ClientSignalR.FechaProgramacion && ClientSignalR.ArregloNroAsientos)
+                document.getElementById('btnHiddenLiberarArregloAsientos').click();
         }
 
         function callSignalR_ActualizarTurnoPlano(_NroViaje, _FechaProgramacion, _VentaResponse) {
@@ -1717,6 +1726,20 @@
                     });
                 },
                 sendRow: async function (item) {
+
+                    if (item.ProgramacionCerrada !== '0') {
+                        switch (item.ProgramacionCerrada) {
+                            case '1':
+                                APP.msg.warning('La ruta está bloqueada para esta fecha.');
+                                break;
+                            case '2':
+                                APP.msg.warning('La ruta está bloqueada desde esta fecha hacia adelante.');
+                                break;
+                        }
+
+                        return;
+                    }
+
                     var turnos = this.list.itinerarios.reduce(function (filtered, option) {
                         if (option.CodiDestino === item.CodiDestino) {
                             var someNewValue =
@@ -2191,7 +2214,9 @@
                     _this.showPlano = false;
 
                     if (item.FechaViaje !== _this.filtro.Fecha) {
-                        _.forEach(_this.list.turnos, function (obj) { obj.FechaViaje = _this.filtro.Fecha; });
+                        _this.list.turnos.forEach(function (objTurno) {
+                            objTurno.FechaViaje = _this.filtro.Fecha;
+                        });
                     }
 
                     this.getTurno(item);
@@ -2283,7 +2308,7 @@
                                 return;
                         }
                     }
-
+                    
                     // Valida 'Programación cerrada'
                     if (_this.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
@@ -2455,7 +2480,6 @@
                                 animateScrollTop(800);
 
                                 asientoSel.IDS = res.data.Valor;
-                                asientoSel.NumeAsiento = parseInt(asientoSel.Tipo);
 
                                 var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion > 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
                                 APP.util.createCookie(nameCookie, asientoSel.IDS, 7);
@@ -2827,13 +2851,8 @@
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
                             if (res.data.EsCorrecto) {
-                                asientoSel.IDS = 0;
-                                asientoSel.NumeAsiento = 0;
-
-                                var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion > 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
-                                APP.util.deleteCookie(nameCookie);
-
-                                if (_this.list.ventas.length === 1) {
+                                
+                                if (_this.list.ventas.length <= 1) {
                                     _this.firstAsiento = true;
 
                                     if (auxBool_Click_Key)
@@ -2843,7 +2862,24 @@
                                     if (auxBool_Click_Key) {
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
                                         _this.list.ventas.splice(auxIndex, 1);
-                                        _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
+                                        _this.indexVenta = auxIndex - 1;
+                                    }
+                                }
+
+                                var nameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion > 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
+                                var nameCookie02 = '';
+
+                                var readCookie = APP.util.readCookie(nameCookie);
+                                if (readCookie)
+                                    APP.util.deleteCookie(nameCookie);
+                                else {
+                                    // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
+                                    if (_this.filtro.CodiProgramacion > 0) {
+                                        nameCookie02 = 'asientoBloqueado_' + _this.filtro.NroViaje + '_' + _this.filtro.Fecha + '_' + asientoSel.Tipo;
+
+                                        var readCookie02 = APP.util.readCookie(nameCookie02);
+                                        if (readCookie02)
+                                            APP.util.deleteCookie(nameCookie02);
                                     }
                                 }
 
@@ -2862,73 +2898,73 @@
                     return auxResponse;
                 },
                 limpiarAsientosBloqueados: async function () {
-                    var _this = this;
                     var auxResponse = true;
 
-                    var partNameCookie = 'asientoBloqueado_' + (_this.filtro.CodiProgramacion > 0 ? _this.filtro.CodiProgramacion : _this.filtro.NroViaje) + '_' + _this.filtro.Fecha + '_';
+                    var arregloIDS = [];
+                    var arregloCookie = [];
+                    var arregloTipo = [];
+
+                    var partNameCookie = 'asientoBloqueado_' + (this.filtro.CodiProgramacion > 0 ? this.filtro.CodiProgramacion : this.filtro.NroViaje) + '_' + this.filtro.Fecha + '_';
+                    var partNameCookie02 = '';
 
                     // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
-                    if (_this.filtro.CodiProgramacion > 0)
-                        var partNameCookie2 = 'asientoBloqueado_' + _this.filtro.NroViaje + '_' + _this.filtro.Fecha + '_';
+                    if (this.filtro.CodiProgramacion > 0)
+                        partNameCookie02 = 'asientoBloqueado_' + this.filtro.NroViaje + '_' + this.filtro.Fecha + '_';
 
-                    for (var objAsiento of _this.list.tempList) {
+                    for (var objAsiento of this.list.tempList) {
                         if (!isNaN(objAsiento.Tipo)) {
-
                             var valueCookie = APP.util.readCookie(partNameCookie + objAsiento.Tipo);
                             if (valueCookie) {
-                                objAsiento.IDS = valueCookie;
-
-                                await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
-                                    .then(res => {
-                                        if (res.data.EsCorrecto) {
-                                            objAsiento.IDS = 0;
-                                            objAsiento.NumeAsiento = 0;
-
-                                            APP.util.deleteCookie(partNameCookie + objAsiento.Tipo);
-
-                                            // callSignalR_LiberarAsiento
-                                            callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, objAsiento.Tipo);
-                                        }
-                                        else {
-                                            if (!res.data.Estado)
-                                                APP.msg.error(res.data.Mensaje);
-
-                                            return auxResponse = false;
-                                        }
-                                    })
-                                    .catch(APP.rq.axios_handler_error_alert);
+                                arregloIDS.push(valueCookie);
+                                arregloCookie.push(partNameCookie + objAsiento.Tipo);
+                                arregloTipo.push(objAsiento.Tipo);
                             }
                             else {
                                 // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
-                                if (_this.filtro.CodiProgramacion > 0) {
-                                    var valueCookie = APP.util.readCookie(partNameCookie2 + objAsiento.Tipo);
-                                    if (valueCookie) {
-                                        objAsiento.IDS = valueCookie;
-
-                                        await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: valueCookie })
-                                            .then(res => {
-                                                if (res.data.EsCorrecto) {
-                                                    objAsiento.IDS = 0;
-                                                    objAsiento.NumeAsiento = 0;
-
-                                                    APP.util.deleteCookie(partNameCookie2 + objAsiento.Tipo);
-
-                                                    // callSignalR_LiberarAsiento
-                                                    callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, objAsiento.Tipo);
-                                                }
-                                                else {
-                                                    if (!res.data.Estado)
-                                                        APP.msg.error(res.data.Mensaje);
-
-                                                    return auxResponse = false;
-                                                }
-                                            })
-                                            .catch(APP.rq.axios_handler_error_alert);
+                                if (this.filtro.CodiProgramacion > 0) {
+                                    var valueCookie02 = APP.util.readCookie(partNameCookie02 + objAsiento.Tipo);
+                                    if (valueCookie02) {
+                                        arregloIDS.push(valueCookie02);
+                                        arregloCookie.push(partNameCookie02 + objAsiento.Tipo);
+                                        arregloTipo.push(objAsiento.Tipo);
                                     }
                                 }
                             }
                         }
                     }
+                    
+                    if (arregloIDS.length > 0) {
+                        var auxValidate = await this.liberarArregloAsientos(arregloIDS);
+                        if (auxValidate) {
+
+                            arregloCookie.forEach(function (cookie) {
+                                APP.util.deleteCookie(cookie);
+                            });
+
+                            //callSignalR_LiberarArregloAsientos
+                            callSignalR_LiberarArregloAsientos(this.filtro.NroViaje, this.objTurno.FechaProgramacion, arregloTipo);
+
+                            auxResponse = true;
+                        }
+                    }
+
+                    return auxResponse;
+                },
+                liberarArregloAsientos: async function (_arregloIDS) {
+                    auxResponse = false;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/liberarArregloAsientos', _arregloIDS)
+                        .then(res => {
+                            if (res.data.EsCorrecto)
+                                auxResponse = true;
+                            else {
+                                if (res.data.Estado)
+                                    APP.msg.warning(res.data.Mensaje);
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
                 },
@@ -4351,15 +4387,17 @@
                 findObjectAsiento: function (_NroAsiento) {
                     var auxObj = {};
 
-                    auxObj = _.find(this.list.plano1, { 'Tipo': _NroAsiento });
+                    var auxTipo = String(_NroAsiento).padStart(2, '0');
+
+                    auxObj = _.find(this.list.plano1, { 'Tipo': auxTipo });
                     if (!auxObj) {
-                        auxObj = _.find(this.list.plano2, { 'Tipo': _NroAsiento });
+                        auxObj = _.find(this.list.plano2, { 'Tipo': auxTipo });
                         if (!auxObj) {
-                            auxObj = _.find(this.list.plano3, { 'Tipo': _NroAsiento });
+                            auxObj = _.find(this.list.plano3, { 'Tipo': auxTipo });
                             if (!auxObj) {
-                                auxObj = _.find(this.list.plano4, { 'Tipo': _NroAsiento });
+                                auxObj = _.find(this.list.plano4, { 'Tipo': auxTipo });
                                 if (!auxObj) {
-                                    auxObj = _.find(this.list.plano5, { 'Tipo': _NroAsiento });
+                                    auxObj = _.find(this.list.plano5, { 'Tipo': auxTipo });
                                     if (!auxObj) {
                                         return null;
                                     }
@@ -4384,22 +4422,60 @@
                     var auxResponse = true;
                     this.disabledAsiento = true;
 
-                    if (this.list.ventas.length === 1 && (!this.list.ventas[0].NroAsiento || this.list.ventas[0].FlagVenta))
+                    var arregloIDS = [];
+                    var arregloCookie = [];
+                    var arregloTipo = [];
+
+                    if (this.list.ventas.length <= 1 && (!this.list.ventas[0].NroAsiento || this.list.ventas[0].FlagVenta))
                         this.limpiarVenta();
                     else {
+                        var partNameCookie = 'asientoBloqueado_' + (this.filtro.CodiProgramacion > 0 ? this.filtro.CodiProgramacion : this.filtro.NroViaje) + '_' + this.filtro.Fecha + '_';
+                        var partNameCookie02 = '';
+
+                        // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
+                        if (this.filtro.CodiProgramacion > 0)
+                            partNameCookie02 = 'asientoBloqueado_' + this.filtro.NroViaje + '_' + this.filtro.Fecha + '_';
+
                         for (i = 0; i < this.list.ventas.length; i++) {
                             if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
-                                var auxObj = this.findObjectAsiento(this.list.ventas[i].NroAsiento);
-                                var auxResponse2 = await this.liberarAsiento(auxObj, true);
-                                if (auxResponse2)
-                                    i--;
-                                else {
-                                    APP.msg.warning('No se pudo limpiar los asientos bloqueados.');
-                                    this.$nextTick(() => {
-                                        this.disabledAsiento = false;
-                                    });
-                                    return auxResponse = false;
+                                
+                                var valueCookie = APP.util.readCookie(partNameCookie + this.list.ventas[i].NroAsiento.padStart(2, '0'));
+                                if (valueCookie) {
+                                    arregloIDS.push(valueCookie);
+                                    arregloCookie.push(partNameCookie + this.list.ventas[i].NroAsiento.padStart(2, '0'));
+                                    arregloTipo.push(this.list.ventas[i].NroAsiento.padStart(2, '0'));
                                 }
+                                else {
+                                    // Solo cuando exista 'CodiProgramacion', buscar también por 'NroViaje' para un limpiado completo.
+                                    if (this.filtro.CodiProgramacion > 0) {
+                                        var valueCookie02 = APP.util.readCookie(partNameCookie02 + this.list.ventas[i].NroAsiento.padStart(2, '0'));
+                                        if (valueCookie02) {
+                                            arregloIDS.push(valueCookie02);
+                                            arregloCookie.push(partNameCookie02 + this.list.ventas[i].NroAsiento.padStart(2, '0'));
+                                            arregloTipo.push(this.list.ventas[i].NroAsiento.padStart(2, '0'));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if (arregloIDS.length > 0) {
+                            var auxValidate = await this.liberarArregloAsientos(arregloIDS);
+                            if (auxValidate) {
+
+                                this.list.ventas.splice(1);
+                                this.indexVenta = 0;
+                                this.firstAsiento = true;
+                                this.limpiarVenta();
+
+                                arregloCookie.forEach(function (cookie) {
+                                    APP.util.deleteCookie(cookie);
+                                });
+
+                                //callSignalR_LiberarArregloAsientos
+                                callSignalR_LiberarArregloAsientos(this.filtro.NroViaje, this.objTurno.FechaProgramacion, arregloTipo);
+
+                                auxResponse = true;
                             }
                         }
                     }
@@ -4408,6 +4484,7 @@
                         this.disabledAsiento = false;
                         this.$refs.refNroAsientoVenta.focus();
                     });
+
                     return auxResponse;
                 },
                 cancelarReserva: async function (_asientoSel) {
@@ -4449,7 +4526,7 @@
                                     });
 
                                     // callSignalR_LiberarAsiento
-                                    callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, String(_asientoSel.NumeAsiento).padStart(2, '0'));
+                                    callSignalR_LiberarAsiento(_this.filtro.NroViaje, _this.objTurno.FechaProgramacion, _asientoSel.Tipo);
                                 }
                                 else {
                                     _this.$nextTick(() => {
@@ -6381,22 +6458,33 @@
                         objAsiento.ApellidoMaterno = "";
                         objAsiento.ApellidoPaterno = "";
                         objAsiento.Boleto = "";
+                        objAsiento.ClavUsuarioReintegro = 0;
                         objAsiento.CodiDestino = 0;
+                        objAsiento.CodiEmpresa = 0;
+                        objAsiento.CodiEsca = '';
                         objAsiento.CodiOrigen = 0;
                         objAsiento.CodiPuntoVenta = 0;
+                        objAsiento.CodiSucursal = 0;
                         objAsiento.CodiUsuario = 0;
                         objAsiento.Color = "";
+                        objAsiento.Correo = "";
                         objAsiento.Direccion = "";
                         objAsiento.Edad = 0;
                         objAsiento.EmbarqueCod = 0;
                         objAsiento.EmbarqueDir = '';
                         objAsiento.EmbarqueHora = '';
+                        objAsiento.Especial = '';
                         objAsiento.FechaNacimiento = "";
+                        objAsiento.FechaReservacion = "";
                         objAsiento.FechaVenta = "";
                         objAsiento.FechaViaje = "";
                         objAsiento.FlagVenta = "";
+                        objAsiento.HoraReservacion = "";
                         objAsiento.HoraVenta = "";
+                        objAsiento.IDS = 0;
                         objAsiento.IdVenta = "";
+                        objAsiento.ImpManifiesto = "";
+                        objAsiento.Info = "";
                         objAsiento.Nacionalidad = "";
                         objAsiento.NomDestino = "";
                         objAsiento.NomOrigen = "";
@@ -6409,28 +6497,37 @@
                         objAsiento.ObjAcompaniante = {
                             CodiTipoDoc: '',
                             Documento: '',
-                            NombreCompleto: '',
-                            FechaNac: '',
                             Edad: '',
-                            Sexo: '',
-                            Parentesco: ''
+                            FechaNac: '',
+                            NombreCompleto: '',
+                            Parentesco: '',
+                            Sexo: ''
                         };
+                        objAsiento.Observacion = '';
+                        objAsiento.PrecVentaReintegro = 0;
                         objAsiento.PrecioVenta = 0;
-                        objAsiento.RecogeEn = "";
                         objAsiento.RazonSocial = "";
+                        objAsiento.RecogeEn = "";
                         objAsiento.RucContacto = "";
                         objAsiento.Sexo = "";
                         objAsiento.Sigla = "";
+                        objAsiento.SucVentaReintegro = 0;
                         objAsiento.Telefono = "";
                         objAsiento.TipoBoleto = "";
                         objAsiento.TipoDocumento = "";
-
-                        objAsiento.Correo = "";
+                        objAsiento.TipoPago = "";
+                        objAsiento.ValeRemoto = "";
                     }
+                },
+                signalR_LiberarArregloAsientos: function (_ArregloNroAsientos) {
+                    var _this = this;
+                    _ArregloNroAsientos.forEach(function (nroAsiento) {
+                        _this.signalR_LiberarAsiento(nroAsiento)
+                    });
                 },
                 signalR_ActualizarTurnoPlano: function (_ListaVentasRealizadas) {
                     var _this = this;
-                    _.forEach(_ListaVentasRealizadas, function (obj) {
+                    _ListaVentasRealizadas.forEach(function (obj) {
                         var objAsiento = _this.findObjectAsiento(obj.NumeAsiento);
                         if (objAsiento)
                             objAsiento.NumeAsiento = parseInt(obj.NumeAsiento);
@@ -9165,7 +9262,7 @@
                 },
                 sendRow: async function (item) {
                     let _this = this;
-
+                    
                     var resConfirmClaveAutorizacion = false;
                     var flagAuditoria = false;
 

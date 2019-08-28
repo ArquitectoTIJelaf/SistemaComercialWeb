@@ -16,7 +16,7 @@ namespace SisComWeb.Business
                 var obtenerBus = new BusEntity();
 
                 // Validar 'TodosTurnos'
-                if (request.TodosTurnos == true)
+                if (request.TodosTurnos)
                     request.Hora = string.Empty;
 
                 // Lista Itinerarios
@@ -125,9 +125,7 @@ namespace SisComWeb.Business
                     }
 
                     // Valida 'ProgramacionCerrada'
-                    var validarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarItinerarios[i].NroViaje, buscarItinerarios[i].FechaProgramacion);
-                    if (validarProgramacionCerrada == 1)
-                        buscarItinerarios[i].ProgramacionCerrada = true;
+                    buscarItinerarios[i].ProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarItinerarios[i].NroViaje, buscarItinerarios[i].FechaProgramacion);
 
                     // Obtiene 'TotalVentas'
                     if (buscarItinerarios[i].CodiProgramacion > 0)
@@ -149,10 +147,10 @@ namespace SisComWeb.Business
             }
         }
 
-        public static string GetColor(bool ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
+        public static string GetColor(string ProgramacionCerrada, int AsientosVendidos, int CapacidadBus, string StOpcional)
         {
             var color = string.Empty;
-            if (ProgramacionCerrada)
+            if (ProgramacionCerrada != "0")
             {
                 color = "#169BFF"; // Azul
             }

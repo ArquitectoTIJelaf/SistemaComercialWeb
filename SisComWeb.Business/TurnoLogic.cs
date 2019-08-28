@@ -100,21 +100,34 @@ namespace SisComWeb.Business
                         return new Response<ItinerarioEntity>(false, buscarTurno, Message.MsgErrorValidarTurnoAdicional, true);
                 }
 
-                // Consulta 'ManifiestoProgramacion'
-                var resConsultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
-                if (resConsultaManifiestoProgramacion.Estado)
-                    buscarTurno.X_Estado = resConsultaManifiestoProgramacion.Valor;
-                else
-                    buscarTurno.X_Estado = string.Empty;
-
                 // Valida 'ProgramacionCerrada'
-                var resValidarProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
-                if (resValidarProgramacionCerrada == 1)
-                    buscarTurno.ProgramacionCerrada = true;
+                buscarTurno.ProgramacionCerrada = ItinerarioRepository.ValidarProgramacionCerrada(buscarTurno.NroViaje, buscarTurno.FechaProgramacion);
+                if (buscarTurno.ProgramacionCerrada != "0")
+                {
+                    var auxMsgErrorValidarProgramacionCerrada = string.Empty;
+                    switch (buscarTurno.ProgramacionCerrada)
+                    {
+                        case "1":
+                            auxMsgErrorValidarProgramacionCerrada = Message.MsgErrorValidarProgramacionCerrada_1;
+                            break;
+                        case "2":
+                            auxMsgErrorValidarProgramacionCerrada = Message.MsgErrorValidarProgramacionCerrada_2;
+                            break;
+                    };
+
+                    return new Response<ItinerarioEntity>(false, buscarTurno, auxMsgErrorValidarProgramacionCerrada, true);
+                }
 
                 // Obtiene 'TotalVentas'
                 if (buscarTurno.CodiProgramacion > 0)
                     buscarTurno.AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarTurno.CodiProgramacion, buscarTurno.NroViaje, buscarTurno.CodiOrigen, buscarTurno.CodiDestino);
+
+                // Consulta 'ManifiestoProgramacion'
+                var consultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
+                if (consultaManifiestoProgramacion.Estado)
+                    buscarTurno.X_Estado = consultaManifiestoProgramacion.Valor;
+                else
+                    buscarTurno.X_Estado = string.Empty;
 
                 // Lista 'PuntosEmbarque'
                 var listarPuntosEmbarque = TurnoRepository.ListarPuntosEmbarque(buscarTurno.CodiOrigen, buscarTurno.CodiDestino, buscarTurno.CodiServicio, buscarTurno.CodiEmpresa, buscarTurno.CodiPuntoVenta, buscarTurno.HoraPartida);
@@ -136,13 +149,6 @@ namespace SisComWeb.Business
                 // Lista 'DestinosRuta'
                 buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
 
-                // Consulta 'BloqueoAsientoCantidad_Max'
-                var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
-                if (consultaBloqueoAsientoCantidad_Max == 0)
-                    buscarTurno.CantidadMaxBloqAsi = DefaultCantMaxBloqAsi;
-                else
-                    buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
-
                 // Elimina 'Reservas' por escala
                 if (buscarTurno.CodiProgramacion > 0)
                 {
@@ -157,6 +163,13 @@ namespace SisComWeb.Business
                     TurnoRepository.EliminarReservas02(buscarTurno.CodiOrigen.ToString(), buscarTurno.CodiProgramacion, auxHora, buscarTurno.FechaViaje);
                     TurnoRepository.EliminarReservas01(buscarTurno.CodiProgramacion, auxHora);
                 }
+
+                // Consulta 'BloqueoAsientoCantidad_Max'
+                var consultaBloqueoAsientoCantidad_Max = TurnoRepository.ConsultaBloqueoAsientoCantidad_Max(request.CodiEmpresa);
+                if (consultaBloqueoAsientoCantidad_Max == 0)
+                    buscarTurno.CantidadMaxBloqAsi = DefaultCantMaxBloqAsi;
+                else
+                    buscarTurno.CantidadMaxBloqAsi = consultaBloqueoAsientoCantidad_Max;
 
                 // Consulta tabla 'AsientosBloqueados'
                 var consultarTablaAsientosBloqueados = BloqueoAsientoRepository.ConsultarTablaAsientosBloqueados(buscarTurno.CodiEmpresa, buscarTurno.CodiSucursal, buscarTurno.CodiRuta, buscarTurno.CodiServicio, buscarTurno.HoraPartida);

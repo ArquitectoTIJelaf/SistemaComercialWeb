@@ -66,7 +66,7 @@ namespace SisComWeb.Entity
         
         public string FechaProgramacion { get; set; } // Calculado
 
-        public bool ProgramacionCerrada { get; set; }
+        public string ProgramacionCerrada { get; set; }
 
         public string CodiChofer { get; set; }
 
