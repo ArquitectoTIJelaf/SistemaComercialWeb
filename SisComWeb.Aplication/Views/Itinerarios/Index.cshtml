@@ -9696,9 +9696,9 @@
                             _this.list.servicios.unshift(selectAll);
                         }
 
-                        //if (_this.list.tiposDoc.length == 0) {
-                        //    _this.list.tiposDoc = _.cloneDeep(tiposDoc);
-                        //}
+                        if (_this.list.tiposDoc.length == 0) {
+                            _this.list.tiposDoc = _.cloneDeep(tiposDoc);
+                        }
 
                         _this.filtroProgramacion.CodiOrigen = String(Usuario.CodiSucursal);
 
