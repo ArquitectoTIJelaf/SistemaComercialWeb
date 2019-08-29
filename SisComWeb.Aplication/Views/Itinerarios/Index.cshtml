@@ -1417,9 +1417,9 @@
                     auxResponse = await appVueVenta.validaManifiestoProgramacion();
                     return auxResponse;
                 },
-                verificaTurnoDisponible: async function () {
+                verificaTurnoDisponible: function () {
                     var auxResponse = false;
-                    auxResponse = await appVueVenta.verificaTurnoDisponible();
+                    auxResponse = appVueVenta.verificaTurnoDisponible();
                     return auxResponse;
                 },
                 acompanianteVentaCRUD: async function (_ObjAcompaniante) {
@@ -2272,7 +2272,6 @@
                             var verificaTurnoDisponible = _this.verificaTurnoDisponible();
                             if (!verificaTurnoDisponible) {
                                 APP.msg.warning('La hora de viaje ya pasó, verificar.');
-                                _this.disabledAsiento = false;
                                 return;
                             }
                         }
@@ -2308,7 +2307,7 @@
                                 return;
                         }
                     }
-                    
+
                     // Valida 'Programación cerrada'
                     if (_this.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
@@ -2851,7 +2850,7 @@
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
                             if (res.data.EsCorrecto) {
-                                
+
                                 if (_this.list.ventas.length <= 1) {
                                     _this.firstAsiento = true;
 
@@ -2932,7 +2931,7 @@
                             }
                         }
                     }
-                    
+
                     if (arregloIDS.length > 0) {
                         var auxValidate = await this.liberarArregloAsientos(arregloIDS);
                         if (auxValidate) {
@@ -3741,7 +3740,7 @@
                     input.IdContrato = this.objCreditoCliente.idContrato;
                     input.IdPrecio = this.objCreditoCliente.IdPrecio;
                     input.IdRuc = this.objCreditoCliente.IdRuc;
-                    
+
                     input.NomEmpresa = this.filtro.CodiEmpresa.label;
                     input.RucEmpresa = this.filtro.CodiEmpresa.Ruc;
                     input.DireccionEmpresa = this.filtro.CodiEmpresa.Direccion;
@@ -4438,7 +4437,7 @@
 
                         for (i = 0; i < this.list.ventas.length; i++) {
                             if (this.list.ventas[i].NroAsiento && !this.list.ventas[i].FlagVenta) {
-                                
+
                                 var valueCookie = APP.util.readCookie(partNameCookie + this.list.ventas[i].NroAsiento.padStart(2, '0'));
                                 if (valueCookie) {
                                     arregloIDS.push(valueCookie);
@@ -4458,7 +4457,7 @@
                                 }
                             }
                         }
-                        
+
                         if (arregloIDS.length > 0) {
                             var auxValidate = await this.liberarArregloAsientos(arregloIDS);
                             if (auxValidate) {
@@ -4541,7 +4540,7 @@
                 },
                 validateCancelarReserva: async function (_asientoSel) {
                     var auxValidate = true;
-                    
+
                     if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
                         APP.msg.warning('Solicitud cancelada, los datos enviados son de fechas pasadas.');
                         return auxValidate = false;
@@ -6230,7 +6229,7 @@
                     var auxValidate = {};
                     auxValidate.ValReimprimir = true;
                     auxValidate.ValCaja = false;
-                    
+
                     if (appController.validatePanel('235') === '1') {
                         var resConfirmCaja = await APP.msg.confirm(
                             'Ingreso de caja'
@@ -6357,17 +6356,17 @@
                                 objVentaRealizada.EmpElectronico = auxObjEmpresa.Electronico;
                                 objVentaRealizada.TipoTerminalElectronico = this.TipoTerminalElectronico;
                                 objVentaRealizada.TipoImpresora = this.TipoImpresora;
-                                
+
                                 objVentaRealizada.ValidateCaja = resValidateReimprimir.ValCaja;
                                 objVentaRealizada.HoraViaje = this.filtro.Turno;
 
                                 ListaVentasRealizadas.push(objVentaRealizada);
-                                
+
                                 appController.convertirVentaToBase64(ListaVentasRealizadas, TipoReimprimir);
                             }
                         }
                     }
-                    
+
                     this.closeMenu();
                 },
                 contextMenuAnular: function (_itemSelected) {
@@ -7076,7 +7075,7 @@
                         input.AutorizadoDC = objVenta.AutorizadoDC;
                         input.IngresoManualPasajes = IngresoManualPasajes;
                         input.EstadoAsiento = (objVenta.ValidadorClienteEspecial ? 'N1' : 'N');
-                        
+
                         input.NomEmpresa = _this.ticketVenta.NomEmpresa;
                         input.RucEmpresa = _this.ticketVenta.RucEmpresa;
                         input.DireccionEmpresa = _this.ticketVenta.DireccionEmpresa;
@@ -9262,7 +9261,7 @@
                 },
                 sendRow: async function (item) {
                     let _this = this;
-                    
+
                     var resConfirmClaveAutorizacion = false;
                     var flagAuditoria = false;
 
@@ -9990,6 +9989,20 @@
                 },
                 dbClickProgramacion: function (item) {
                     let _this = this;
+
+                    if (item.ProgramacionCerrada !== '0') {
+
+                        switch (item.ProgramacionCerrada) {
+                            case '1':
+                                APP.msg.warning('La ruta está bloqueada para esta fecha.');
+                                break;
+                            case '2':
+                                APP.msg.warning('La ruta está bloqueada desde esta fecha hacia adelante.');
+                                break;
+                        }
+                        return;
+                    }
+
                     _this.filtroMiniMapa.CodiEmpresa = item.CodiEmpresa;
                     _this.filtroMiniMapa.CodiOrigen = item.CodiOrigen;
                     _this.filtroMiniMapa.CodiDestino = item.CodiDestino;
@@ -10308,7 +10321,7 @@
                             return;
                         }
                     }
-                    
+
                     //appController.showTipoPago();
                     appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
 
@@ -10320,7 +10333,7 @@
                     });
 
                     var input = {};
-                    
+
                     await deferredModal($('#appVueTipoPago2'), false).done(function () {
                         appVueTipoPago2.$nextTick(() => {
                             checkTipoPago = appVueTipoPago2.trustedSave;
@@ -11473,7 +11486,7 @@
 
                     debugger;
                     var auxObjEmpresa = appController.findEmpresa(data.CodiEmpresa);
-                    
+
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
                         IdVenta: data.IdVenta,
                         CodiEsca: data.CodiEsca,
@@ -11651,6 +11664,50 @@
 
                     _this.limpiarBus(auxMapa);
 
+                    debugger;
+
+                    // Valida 'ProgramacionCerrada'
+                    if (item.ProgramacionCerrada !== '0') {
+
+                        switch (item.ProgramacionCerrada) {
+                            case '1':
+                                APP.msg.warning('La ruta está bloqueada para esta fecha.');
+                                break;
+                            case '2':
+                                APP.msg.warning('La ruta está bloqueada desde esta fecha hacia adelante.');
+                                break;
+                        }
+                        return;
+                    }
+
+                    var FechaViaje = (auxMapa == 1) ? _this.filtroOrigen.FechaViaje : _this.filtroDestino.FechaViaje;
+                    var Turno = (auxMapa == 1) ? _this.filtroOrigen.Hora : _this.filtroDestino.Hora;
+
+                    // Valida 'FechaViaje'
+                    if (moment(FechaViaje, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                        return;
+                    }
+
+                    // Valida 'TurnoDisponible'
+                    if (!IngresoManualPasajes) {
+                        //validar hora de venta con hora de viajes
+                        if (appController.validatePanel('54') === '1') {
+                            var verificaTurnoDisponible = _this.verificaTurnoDisponible(FechaViaje, Turno);
+                            if (!verificaTurnoDisponible) {
+                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                return;
+                            }
+                        }
+                    }
+                                       
+                    //// Valida 'Manifiesto'
+                    //var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
+                    //if (!resValidaManifiestoProgramacion) {
+                    //    _this.disabledAsiento = false;
+                    //    return;
+                    //}
+
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -11666,7 +11723,15 @@
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
                             _this.$nextTick(() => {
+
                                 debugger;
+
+                                // Valida 'Programación cerrada'
+                                if (res.data.Valor.Activo === '1') {
+                                    APP.msg.warning('La programación se encuentra cerrada.');
+                                    return;
+                                }
+
                                 switch (auxMapa) {
                                     case 1: {
                                         _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
@@ -11696,6 +11761,29 @@
                             });
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                verificaTurnoDisponible: function (Fecha, Hora) {
+
+                    var auxResponse = false;
+
+                    if (Fecha === moment().format('DD/MM/YYYY')) {
+                        if (appController.validatePanel('14') === '1') {
+                            var auxHours = parseInt(AddTimeTurno.substring(0, 2)) || 0;
+                            var auxMinutes = parseInt(AddTimeTurno.substring(3, 5)) || 0;
+                            var auxHoraResult = moment(Hora, 'hh:mmA').add(auxHours, 'hours').add(auxMinutes, 'minutes');
+
+                            if (auxHoraResult.isSameOrAfter(moment(), 'minutes'))
+                                auxResponse = true;
+                        }
+                        else {
+                            if (moment(Hora, 'hh:mmA').isSameOrAfter(moment(), 'minutes'))
+                                auxResponse = true;
+                        }
+                    }
+                    else
+                        auxResponse = true;
+
+                    return auxResponse;
                 },
                 searchProgramacion: function (auxProg) {
                     let _this = this;
