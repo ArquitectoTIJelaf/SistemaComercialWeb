@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using SisComWeb.Aplication.Helpers
+@{
+    var usuario = DataSession.UsuarioLogueado;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -50,6 +55,9 @@
     <script src="~/signalr/hubs"></script>
     <script>
 
+        var Usuario = '@usuario';
+        var ValSetInt_MensajeriaInstantanea = 0;
+
         var ClientSignalR = {};
         ClientSignalR.NroViaje = '';
         ClientSignalR.FechaProgramacion = '';
@@ -58,6 +66,8 @@
         ClientSignalR.VentaResponse = {};
         ClientSignalR.Owner = false;
 
+
+        // SignalR
         $(function () {
 
             var notification = $.connection.notificationHub;
@@ -115,6 +125,90 @@
 
             $.connection.hub.logging = true;
 
+        });
+
+
+        // Vue JS
+        var appVueHeader = new Vue({
+            el: "#appVueHeader",
+            data: {
+                mensaje: ''
+            },
+            mounted: function () {
+                var _this = this;
+
+                // class 'ColorBlue'
+                _this.setClassColorBlueToBorderBottom();
+
+                //setInterval 'MensajeriaInstantanea'
+                ValSetInt_MensajeriaInstantanea = setInterval(function () {
+                    _this.startMensajeriaInstantanea();
+                }, 5000);
+            },
+            methods: {
+                startMensajeriaInstantanea: async function () {
+                    var _this = this;
+
+                    // clearInterval 'MensajeriaInstantanea'
+                    clearInterval(ValSetInt_MensajeriaInstantanea);
+
+                    var input = {};
+                    input.CodiUsuario = Usuario.CodiUsuario;
+                    input.Fecha = moment().format('DD/MM/YYYY');
+                    input.Tipo = '1';
+                    input.CodiSucursal = Usuario.CodiSucursal;
+                    input.CodiPventa = Usuario.CodiPuntoVenta;
+
+                    // Obtener 'Mensaje'
+                    await APP.rq.axios2.post(APP.base + '/base/obtenerMensaje', input)
+                        .then(async function (res) {
+                            if (res.data.EsCorrecto) {
+                                appVueMensajeria.show(res.data.Valor.Mensaje);
+                                
+                                await deferredModal($('#appVueMensajeria'), false).done(function () {
+                                    // Continue
+                                });
+
+                                // Eliminar 'Mensaje'
+                                await APP.rq.axios2.post(APP.base + '/base/eliminarMensaje', res.data.Valor);
+                            }
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    // setInterval 'MensajeriaInstantanea'
+                    ValSetInt_MensajeriaInstantanea = setInterval(function () {
+                        _this.startMensajeriaInstantanea();
+                    }, 5000);
+                },
+                setClassColorBlueToBorderBottom: function () {
+                    var elements = document.getElementsByClassName("borderBottom");
+                    if (elements) {
+                        for (var i = 0; i < elements.length; i++) {
+                            elements[i].addEventListener("click", function () {
+                                var current = document.getElementsByClassName("colorBlue");
+                                current[0].className = current[0].className.replace(" colorBlue", "");
+                                this.className += " colorBlue";
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        var appVueMensajeria = new Vue({
+            el: "#appVueMensajeria",
+            data: {
+                mensaje: ''
+            },
+            methods: {
+                show: function (_Mensaje) {
+                    this.mensaje = _Mensaje;
+                    $('#appVueMensajeria').modal('show');
+                },
+                close: function () {
+                    $('#appVueMensajeria').modal('hide');
+                }
+            }
         });
     </script>
     <!-- CDNJS -->

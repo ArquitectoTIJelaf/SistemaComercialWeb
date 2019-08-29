@@ -4,197 +4,140 @@
     var usuario = DataSession.UsuarioLogueado;
 }
 
+@Html.Partial("_Mensajeria")
+
 <style>
-    #appVueNavarHeader .nav .open > a {
-        background: #ffffff !important;
-        border-bottom-color: #ffffff;
-        color: #337ab7;
-    }
-
-    #appVueNavarHeader .navbar-top-links > li > a {
-        font-weight: 400;
-        padding-left: 15px;
-        padding-right: 15px;
-        border-bottom: 4px solid #1d4672;
-    }
-
-    #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
-        font-size: 14px;
-    }
-
-        #appVueNavarHeader ul.nav.navbar-top-links.navbar-left > li {
-            border-right: 1px solid #0e2843;
+        #appVueNavarHeader .nav .open > a {
+            background: #ffffff !important;
+            border-bottom-color: #ffffff;
+            color: #337ab7;
         }
 
-    #appVueNavarHeader .dropdown-menu > li > a > span {
-        float: right;
-    }
+        #appVueNavarHeader .navbar-top-links > li > a {
+            font-weight: 400;
+            padding-left: 15px;
+            padding-right: 15px;
+            border-bottom: 4px solid #1d4672;
+        }
 
-    #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
-        color: #009cff;
-        border-bottom-color: #009cff !important;
-    }
+        #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
+            font-size: 14px;
+        }
 
-    .container-fluid {
-        margin-top: 25px;
-    }
-</style>
-
-<script>
-
-    var Usuario = '@usuario';
-    var ValSetInt_MensajeriaInstantanea = 0;
-
-    function setClassColorBlueToBorderBottom() {
-        var elements = document.getElementsByClassName("borderBottom");
-        if (elements) {
-            for (var i = 0; i < elements.length; i++) {
-                elements[i].addEventListener("click", function () {
-                    var current = document.getElementsByClassName("colorBlue");
-                    current[0].className = current[0].className.replace(" colorBlue", "");
-                    this.className += " colorBlue";
-                });
+            #appVueNavarHeader ul.nav.navbar-top-links.navbar-left > li {
+                border-right: 1px solid #0e2843;
             }
+
+        #appVueNavarHeader .dropdown-menu > li > a > span {
+            float: right;
         }
-    }
 
-    async function pruebaMensajeriaInstantanea() {
-        // clearInterval 'MensajeriaInstantanea'
-        clearInterval(ValSetInt_MensajeriaInstantanea);
+        #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
+            color: #009cff;
+            border-bottom-color: #009cff !important;
+        }
 
-        var input = {};
-        input.CodiUsuario = Usuario.CodiUsuario;
-        input.Fecha = moment().format('DD/MM/YYYY');
-        input.Tipo = '1';
-        input.CodiSucursal = Usuario.CodiSucursal;
-        input.CodiPventa = Usuario.CodiPuntoVenta;
+        .container-fluid {
+            margin-top: 25px;
+        }
+    </style>
 
-        // Obtener 'Mensaje'
-        await APP.rq.axios2.post(APP.base + '/base/obtenerMensaje', input)
-            .then(async function (res) {
-                if (res.data.EsCorrecto) {
-                    await APP.msg.infoInstantMessage(
-                        'Mensajería instantánea'
-                        , res.data.Valor.Mensaje
-                    );
-
-                    // Eliminar 'Mensaje'
-                    //await APP.rq.axios2.post(APP.base + '/base/eliminarMensaje', res.data.Valor);
-                }
-            })
-            .catch(APP.rq.axios_handler_error_alert);
-
-        // setInterval 'MensajeriaInstantanea'
-        ValSetInt_MensajeriaInstantanea = setInterval(async function () {
-            await pruebaMensajeriaInstantanea();
-        }, 5000);
-    }
-
-    window.onload = function () {
-        // class 'ColorBlue'
-        setClassColorBlueToBorderBottom();
-
-        // setInterval 'MensajeriaInstantanea'
-        ValSetInt_MensajeriaInstantanea = setInterval(async function () {
-            await pruebaMensajeriaInstantanea();
-        }, 5000);
-    };
-</script>
-
-<nav class="navbar navbar-default navbar-static-top m-b-0">
-    <div class="navbar-header" id="appVueNavarHeader">
-        <div class="top-left-part">
-            <a class="logo" href="@Url.Action("Index", "principal")">
-                <b class="hidden-xs">
-                    <img height="40" src="~/wwwroot/plugins/images/users/flores.png" style="padding-left: 40%;" />
-                </b>
-            </a>
-            <button class="hidden" id="btnHiddenBloquearAsiento"></button>
-            <button class="hidden" id="btnHiddenLiberarAsiento"></button>
-            <button class="hidden" id="btnHiddenLiberarArregloAsientos"></button>
-            <button class="hidden" id="btnHiddenActualizarTurnoPlano"></button>
+<div id="appVueHeader">
+    <nav class="navbar navbar-default navbar-static-top m-b-0">
+        <div class="navbar-header" id="appVueNavarHeader">
+            <div class="top-left-part">
+                <a class="logo" href="@Url.Action("Index", "principal")">
+                    <b class="hidden-xs">
+                        <img height="40" src="~/wwwroot/plugins/images/users/flores.png" style="padding-left: 40%;" />
+                    </b>
+                </a>
+                <button class="hidden" id="btnHiddenBloquearAsiento"></button>
+                <button class="hidden" id="btnHiddenLiberarAsiento"></button>
+                <button class="hidden" id="btnHiddenLiberarArregloAsientos"></button>
+                <button class="hidden" id="btnHiddenActualizarTurnoPlano"></button>
+            </div>
+            <ul class="nav navbar-top-links navbar-left">
+                <li class="drop">
+                    <a href="javascript:void(0);"
+                       class="dropdown-toggle"
+                       data-toggle="dropdown"
+                       role="button" aria-haspopup="true" aria-expanded="false">
+                        <i id="herramientas" class="ti-close ti-menu-alt fa-fw"></i>
+                        Herramientas
+                    </a>
+                    <ul class="dropdown-menu" style="padding: 9px 0px; left: -1px; ">
+                        <li>
+                            <a href="javascript:void(0);">
+                                Mantenimiento
+                                &ensp;<span class="fa fa-caret-right"></span>
+                            </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                Pasajes
+                                &ensp;<span class="fa fa-caret-right"></span>
+                            </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                Reportes
+                                &ensp;<span class="fa fa-caret-right"></span>
+                            </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="javascript:void(0);">
+                                Utilitario
+                                &ensp;<span class="fa fa-caret-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="borderBottom">
+                    <a href="@Url.Action("Index","Itinerarios")" class="open-close waves-effect waves-light hidden-xs">
+                        Ventas
+                    </a>
+                </li>
+                <li class="borderBottom">
+                    <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                        Clientes
+                    </a>
+                </li>
+                <li class="borderBottom">
+                    <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                        Correlativos
+                    </a>
+                </li>
+                <li class="borderBottom">
+                    <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                        Rutas/Precios
+                    </a>
+                </li>
+                <li class="borderBottom">
+                    <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                        Liquidaciones
+                    </a>
+                </li>
+            </ul>
+            <ul class="nav navbar-top-links navbar-right pull-right">
+                <li style="margin-right: 30px; ">
+                    <a style="min-height: 30px; height: 30px; line-height: 40px; ">
+                        <i class="fa fa-user fa-fw"></i>
+                        @usuario.Nombre
+                    </a>
+                    <a href="@Url.Action("Logout", "Autenticacion")" style="min-height: 30px; height: 30px; line-height: 25px; ">
+                        <i class="fa fa-sign-out"></i>
+                        Cerrar sesión
+                    </a>
+                </li>
+            </ul>
+            <div class="top-left-part" style="width: 100% !important; height: 20px; background-color: #0e2843; font-size: 11px; ">
+                <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
+                    TERMINAL @usuario.Terminal.ToString("D3") / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+                </p>
+            </div>
         </div>
-        <ul class="nav navbar-top-links navbar-left">
-            <li class="drop">
-                <a href="javascript:void(0);"
-                   class="dropdown-toggle"
-                   data-toggle="dropdown"
-                   role="button" aria-haspopup="true" aria-expanded="false">
-                    <i id="herramientas" class="ti-close ti-menu-alt fa-fw"></i>
-                    Herramientas
-                </a>
-                <ul class="dropdown-menu" style="padding: 9px 0px; left: -1px; ">
-                    <li>
-                        <a href="javascript:void(0);">
-                            Mantenimiento
-                            &ensp;<span class="fa fa-caret-right"></span>
-                        </a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            Pasajes
-                            &ensp;<span class="fa fa-caret-right"></span>
-                        </a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            Reportes
-                            &ensp;<span class="fa fa-caret-right"></span>
-                        </a>
-                    </li>
-                    <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            Utilitario
-                            &ensp;<span class="fa fa-caret-right"></span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="borderBottom">
-                <a href="@Url.Action("Index","Itinerarios")" class="open-close waves-effect waves-light hidden-xs">
-                    Ventas
-                </a>
-            </li>
-            <li class="borderBottom">
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
-                    Clientes
-                </a>
-            </li>
-            <li class="borderBottom">
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
-                    Correlativos
-                </a>
-            </li>
-            <li class="borderBottom">
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
-                    Rutas/Precios
-                </a>
-            </li>
-            <li class="borderBottom">
-                <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
-                    Liquidaciones
-                </a>
-            </li>
-        </ul>
-        <ul class="nav navbar-top-links navbar-right pull-right">
-            <li style="margin-right: 30px; ">
-                <a style="min-height: 30px; height: 30px; line-height: 40px; ">
-                    <i class="fa fa-user fa-fw"></i>
-                    @usuario.Nombre
-                </a>
-                <a href="@Url.Action("Logout", "Autenticacion")" style="min-height: 30px; height: 30px; line-height: 25px; ">
-                    <i class="fa fa-sign-out"></i>
-                    Cerrar sesión
-                </a>
-            </li>
-        </ul>
-        <div class="top-left-part" style="width: 100% !important; height: 20px; background-color: #0e2843; font-size: 11px; ">
-            <p style="color: white; margin-right: 30px; display: inline; float: right; line-height: 22px; ">
-                TERMINAL @usuario.Terminal.ToString("D3") / EMPRESA @usuario.CodiEmpresa.ToString("D2") / @usuario.NomSucursal.ToString().ToUpper() / @usuario.NomPuntoVenta.ToString().ToUpper() &ensp; @DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
-            </p>
-        </div>
-    </div>
-</nav>
+    </nav>
+</div>

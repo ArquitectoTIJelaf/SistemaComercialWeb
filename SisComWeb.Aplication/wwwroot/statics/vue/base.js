@@ -375,33 +375,6 @@ APP.msg.infoMessage = async function (_title, _message) {
     return _bool;
 };
 
-APP.msg.infoInstantMessage = async function (_title, _message) {
-    var _bool = false;
-
-    var span = document.createElement("span");
-    span.innerHTML = _message || "";
-
-    await swal({
-        title: _title || "Mensaje del sistema",
-        html:
-            '<br />' +
-            '<label style="white-space: pre-wrap; font-weight: 400; font-size: 12px; text-align: justify; ">' +
-            (_message || "") +
-            '</label>'
-        ,
-        type: "info",
-        allowOutsideClick: false,
-        onOpen: () => swal.getConfirmButton().blur()
-    }).then(res => {
-        if (res.value)
-            _bool = res.value;
-    }).catch(error => {
-        APP.msg.error(error);
-    });
-
-    return _bool;
-};
-
 APP.msg.successMessage = async function (_title, _message) {
     var _bool = false;
 
