@@ -32,6 +32,27 @@ namespace SisComWeb.Repository
                 }
             }
             return lista;
-        }        
+        }
+
+        public static string ValidarManifiesto(int CodiProgramacion, int CodiSucursal)
+        {
+            var valor = string.Empty;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ObtenerManifiestoProgramacion";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Codi_Sucursal", DbType.Int16, ParameterDirection.Input, CodiSucursal);
+
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetStringValue(drlector, "Nume_Manifiesto");
+                    }
+                }
+            }
+            return valor;
+        }
     }    
 }

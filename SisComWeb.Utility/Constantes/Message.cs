@@ -369,5 +369,7 @@
 
         //Pase en Lote
         public const string MsgExcPaseLote = "Excepción: PaseLote.";
+        public const string MsgValidarManifiesto = "Excepción: ValidarManifiesto.";
+        public const string MsgBloquearAsientos = "Excepción: BloquearAsiento(S).";
     }
 }

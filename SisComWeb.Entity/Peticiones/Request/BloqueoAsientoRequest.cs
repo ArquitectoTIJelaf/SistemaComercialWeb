@@ -1,4 +1,6 @@
-﻿namespace SisComWeb.Entity
+﻿using System.Collections.Generic;
+
+namespace SisComWeb.Entity
 {
     public class BloqueoAsientoRequest
     {
@@ -17,5 +19,7 @@
         public decimal Precio { get; set; }
 
         public int CodiTerminal { get; set; }
+
+        public List<int> NumeAsientos { get; set; }
     }
 }

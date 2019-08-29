@@ -11700,14 +11700,7 @@
                             }
                         }
                     }
-                                       
-                    //// Valida 'Manifiesto'
-                    //var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
-                    //if (!resValidaManifiestoProgramacion) {
-                    //    _this.disabledAsiento = false;
-                    //    return;
-                    //}
-
+                        
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -11722,13 +11715,21 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
-                            _this.$nextTick(() => {
-
-                                debugger;
-
+                            _this.$nextTick(async () => {
+                                
                                 // Valida 'Programación cerrada'
                                 if (res.data.Valor.Activo === '1') {
                                     APP.msg.warning('La programación se encuentra cerrada.');
+                                    return;
+                                }
+
+                                // Valida 'Manifiesto'
+                                var CodiProgramacion = res.data.Valor.CodiProgramacion;
+                                var CodiSucursal = res.data.Valor.CodiSucursal;
+                                
+                                var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion(CodiProgramacion, CodiSucursal);
+                                if (resValidaManifiestoProgramacion) {
+                                    APP.msg.warning('Manifiesto ya fue emitido.');
                                     return;
                                 }
 
@@ -11761,6 +11762,38 @@
                             });
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                bloquearAsientoList: async function () {
+                    let _this = this;
+                    var input = {};
+                    input.CodiProgramacion = _this.filtro.CodiProgramacion;
+                    input.NroViaje = _this.filtro.NroViaje;
+                    input.CodiOrigen = _this.filtro.CodiSucursal.id;
+                    input.CodiDestino = _this.filtro.CodiDestinoPas.id;
+                    input.NumeAsiento = asientoSel.Tipo;
+                    input.FechaProgramacion = _this.filtro.Fecha;
+                    input.Precio = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/paseLote/bloquearAsientoList', input)
+                        .then(async function (res) {
+
+                        });
+                },
+                validaManifiestoProgramacion: async function (_codiProgramacion, _codiSucursal) {
+                    let _this = this;
+
+                    var response = false;
+
+                    await APP.rq.axios2.get(APP.base + '/paseLote/validar-manifiesto' + APP.util.getQueryParamByObject({
+                        CodiProgramacion: _codiProgramacion,
+                        CodiSucursal: _codiSucursal
+                    }))
+                        .then(res => {
+                            response = _.cloneDeep(res.data.EsCorrecto);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return response;
                 },
                 verificaTurnoDisponible: function (Fecha, Hora) {
 
