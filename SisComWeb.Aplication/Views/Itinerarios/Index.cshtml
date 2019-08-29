@@ -1920,7 +1920,7 @@
                     DescServicio: '',
                     X_Estado: '',
                     CantidadMaxBloqAsi: 0,
-                    Xcierre: null, // Según BD
+                    Xcierre: '',
                     TablaBloqueoAsientos: null
                 },
                 Correlativo: '',
@@ -1987,6 +1987,7 @@
                     }
                 });
 
+                window.addEventListener('keydown', this.configEventKeyF5);
                 window.addEventListener('keydown', this.configEventKeyF3);
             },
             methods: {
@@ -5035,6 +5036,13 @@
 
                     _this.disabledAsiento = true;
 
+                    // Valida 'FechaViaje'
+                    if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                        _this.disabledAsiento = false;
+                        return;
+                    }
+
                     // Valida 'TurnoDisponible'
                     if (!IngresoManualPasajes) {
                         if (appController.validatePanel('54') === '1') {
@@ -5935,6 +5943,13 @@
 
                         this.disabledAsiento = true;
 
+                        // Valida 'FechaViaje'
+                        if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                            APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                            this.disabledAsiento = false;
+                            return;
+                        }
+
                         // Valida 'TurnoDisponible'
                         if (!IngresoManualPasajes) {
                             if (appController.validatePanel('54') === '1') {
@@ -5946,13 +5961,6 @@
                                     return;
                                 }
                             }
-                        }
-
-                        // Valida 'FechaViaje'
-                        if (moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                            APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
-                            this.disabledAsiento = false;
-                            return;
                         }
 
                         // Valida 'Programación cerrada'
@@ -6130,6 +6138,14 @@
                             return { 'color': 'var(--emp-color)' };
                         else
                             return { 'color': '#1e4672' };
+                    }
+                },
+                configEventKeyF5: function (e) {
+                    if (e.keyCode === 116 && !e.ctrlKey) {
+                        if (this.showVentas) {
+                            e.preventDefault();
+                            appController.chargeTurnos();
+                        }
                     }
                 },
                 configEventKeyF3: function (e) {
@@ -6390,6 +6406,14 @@
                     if (_itemSelected) {
 
                         _this.disabledAsientos = true;
+
+                        // Valida 'FechaViaje'
+                        if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                            APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                            _this.disabledAsientos = false;
+                            return;
+                        }
+
                         // Valida 'TurnoDisponible'
                         if (!IngresoManualPasajes) {
                             if (appController.validatePanel('54') === '1') {
@@ -6401,13 +6425,6 @@
                                     return;
                                 }
                             }
-                        }
-
-                        // Valida 'FechaViaje'
-                        if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                            APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
-                            _this.disabledAsientos = false;
-                            return;
                         }
 
                         // Valida 'Manifiesto'
@@ -6954,6 +6971,15 @@
                     _this.processing = true;
                     appController.disabledAsientos(true);
 
+                    // Valida 'FechaViaje'
+                    if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
+                        _this.processing = false;
+                        appController.disabledAsientos(false);
+                        document.getElementById('btnTipoPago').disabled = false;
+                        return;
+                    }
+
                     // Valida 'TurnoDisponible'
                     if (!IngresoManualPasajes) {
                         if (appController.validatePanel('54') === '1') {
@@ -6967,15 +6993,6 @@
                                 return;
                             }
                         }
-                    }
-
-                    // Valida 'FechaViaje'
-                    if (moment(appVueVenta.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                        APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
-                        _this.processing = false;
-                        appController.disabledAsientos(false);
-                        document.getElementById('btnTipoPago').disabled = false;
-                        return;
                     }
 
                     // Valida 'Programación cerrada'

@@ -248,15 +248,42 @@ namespace SisComWeb.Services
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
             }
         }
+
+        public Response<MensajeriaEntity> ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa)
+        {
+            try
+            {
+                return BaseLogic.ObtenerMensaje(CodiUsuario, Fecha, Tipo, CodiSucursal, CodiPventa);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<MensajeriaEntity>(false, null, Message.MsgExcObtenerMensaje, false);
+            }
+        }
+
+        public Response<bool> EliminarMensaje(MensajeriaRequest request)
+        {
+            try
+            {
+                return BaseLogic.EliminarMensaje(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcEliminarMensaje, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN
 
-        public Response<UsuarioEntity> ValidaUsuario(string CodiUsuario, string Password)
+        public Response<UsuarioEntity> ValidaUsuario(short CodiUsuario, string Password)
         {
             try
             {
-                return UsuarioLogic.ValidaUsuario(short.Parse(CodiUsuario), Password);
+                return UsuarioLogic.ValidaUsuario(CodiUsuario, Password);
             }
             catch (Exception ex)
             {

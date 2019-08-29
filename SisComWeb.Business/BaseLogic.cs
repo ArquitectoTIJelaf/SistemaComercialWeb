@@ -285,5 +285,61 @@ namespace SisComWeb.Business
                 return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaUsuarios, false);
             }
         }
+
+        public static Response<MensajeriaEntity> ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa)
+        {
+            try
+            {
+                var obtenerMensaje = BaseRepository.ObtenerMensaje(CodiUsuario, Fecha, Tipo, CodiSucursal, CodiPventa);
+
+                if (obtenerMensaje.IdMensaje > 0)
+                    return new Response<MensajeriaEntity>(true, obtenerMensaje, Message.MsgCorrectoObtenerMensaje, true);
+                else
+                    return new Response<MensajeriaEntity>(false, obtenerMensaje, Message.MsgValidaObtenerMensaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<MensajeriaEntity>(false, null, Message.MsgExcObtenerMensaje, false);
+            }
+        }
+
+        public static Response<bool> EliminarMensaje(MensajeriaRequest request)
+        {
+            try
+            {
+                BaseRepository.EliminarMensaje(request.IdMensaje);
+
+                var objAuditoria = new AuditoriaEntity
+                {
+                    CodiUsuario = request.CajeroCod,
+                    NomUsuario = request.CajeroNom,
+                    Tabla = "MENSAJES",
+                    TipoMovimiento = "MENSAJE",
+                    Boleto = string.Empty,
+                    NumeAsiento = "0",
+                    NomOficina = request.CajeroNomSuc,
+                    NomPuntoVenta = request.CajeroCodPven.ToString(),
+                    Pasajero = string.Empty,
+                    FechaViaje = "01/01/1900",
+                    HoraViaje = string.Empty,
+                    NomDestino = string.Empty,
+                    Precio = 0,
+                    Obs1 = "USR ENVIA " + request.CodiUsuario,
+                    Obs2 = "SUCURSAL ENVIA " + request.CodiSucursal,
+                    Obs3 = "TERMINAL QUE ENVIA : " + request.Terminal,
+                    Obs4 = "TERMINAL " + request.CajeroTer,
+                    Obs5 = string.Empty
+                };
+                VentaRepository.GrabarAuditoria(objAuditoria);
+
+                return new Response<bool>(true, true, Message.MsgCorrectoEliminarMensaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcEliminarMensaje, false);
+            }
+        }
     }
 }
