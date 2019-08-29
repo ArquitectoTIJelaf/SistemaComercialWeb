@@ -477,6 +477,60 @@ namespace SisComWeb.Repository
             return Lista;
         }
 
+        public static MensajeriaEntity ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa)
+        {
+            var entidad = new MensajeriaEntity()
+            {
+                Mensaje = string.Empty
+            };
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_Mensaje_Update";
+                db.AddParameter("@usuario", DbType.Int32, ParameterDirection.Input, CodiUsuario);
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, Fecha);
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@Suc", DbType.Int32, ParameterDirection.Input, CodiSucursal);
+                db.AddParameter("@Pv", DbType.Int32, ParameterDirection.Input, CodiPventa);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.IdMensaje = Reader.GetIntValue(drlector, "id_mensaje");
+                        entidad.CodiUsuario = Reader.GetIntValue(drlector, "usr");
+                        entidad.CodiSucursal = Reader.GetIntValue(drlector, "suc");
+                        entidad.CodiPventa = Reader.GetIntValue(drlector, "pv");
+                        entidad.Terminal = Reader.GetIntValue(drlector, "termianl");
+                        entidad.Mensaje = Reader.GetStringValue(drlector, "msgbox") ?? string.Empty;
+                        entidad.Opt = Reader.GetTinyIntValue(drlector, "opt");
+                        break;
+                    }
+                }
+            }
+            return entidad;
+        }
+
+        #endregion
+
+        #region Métodos Transaccionales
+
+        public static bool EliminarMensaje(int IdMensaje)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Mensaje_Delete";
+                db.AddParameter("@Id", DbType.Int32, ParameterDirection.Input, IdMensaje);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
         #endregion
     }
 }

@@ -375,6 +375,33 @@ APP.msg.infoMessage = async function (_title, _message) {
     return _bool;
 };
 
+APP.msg.infoInstantMessage = async function (_title, _message) {
+    var _bool = false;
+
+    var span = document.createElement("span");
+    span.innerHTML = _message || "";
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        html:
+            '<br />' +
+            '<label style="white-space: pre-wrap; font-weight: 400; font-size: 12px; text-align: justify; ">' +
+            (_message || "") +
+            '</label>'
+        ,
+        type: "info",
+        allowOutsideClick: false,
+        onOpen: () => swal.getConfirmButton().blur()
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return _bool;
+};
+
 APP.msg.successMessage = async function (_title, _message) {
     var _bool = false;
 
@@ -468,11 +495,13 @@ APP.msg.confirmAperturaProgramacion = async function (_title, _message, _textBut
     var inputOptions = new Promise(function (resolve) {
         resolve({
             'true':
-                'Solo para vender' + '<br />' +
+                'Solo para vender' +
+                '<br />' +
                 '<p style="font-weight: 400; font-size: 12px; text-align: justify; " >' +
                 'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con el mismo número de manifiesto.</p>',
             'false':
-                'General' + '<br />' +
+                'General' +
+                '<br />' +
                 '<p style="font-weight: 400; font-size: 12px; text-align: justify; " >' +
                 'Después de realizar todas las ventas tendrá que re-imprimir el manifiesto pero esto será con un nuevo número de manifiesto.</p>'
         });
@@ -509,7 +538,7 @@ APP.msg.infoBoletoPromocionadoConDescuento = async function (_title, _message, _
         title: _title || "Mensaje del sistema",
         html:
             '<p style="font-weight: 300; font-size: 13px; text-align: justify; line-height: normal; " >' +
-            _message +
+            (_message || "") +
             '</p>' +
             '<table style="text-align: left; display: unset; ">' +
             '<tr><td>Número de Boleto</td><td> : ' + _objAsiento.NroBoleto + '</td></tr>' +

@@ -72,6 +72,18 @@
         public const string MsgCorrectoListaAreas = "Correcto: ListaAreas.";
         public const string MsgExcListaAreas = "Excepción: ListaAreas.";
 
+        // Empresa
+        public const string MsgCorrectoBuscaEmpresa = "Correcto: BuscaEmpresa.";
+        public const string MsgExcBuscaEmpresa = "Excepción: BuscaEmpresa.";
+
+        // Mensaje
+        public const string MsgCorrectoObtenerMensaje = "Correcto: ObtenerMensaje.";
+        public const string MsgValidaObtenerMensaje = "Valida: ObtenerMensaje.";
+        public const string MsgExcObtenerMensaje = "Excepción: ObtenerMensaje.";
+
+        public const string MsgCorrectoEliminarMensaje = "Correcto: EliminarMensaje.";
+        public const string MsgExcEliminarMensaje = "Excepción: EliminarMensaje.";
+
         // Cliente Pasaje
         public const string MsgCorrectoBuscaPasajero = "Correcto: BuscaPasajero.";
         public const string MsgExcBuscaPasajero = "Excepción: BuscaPasajero.";
@@ -86,10 +98,6 @@
 
         public const string MsgCorrectoBuscarClientesPasaje = "Correcto: BuscarClientesPasaje.";
         public const string MsgExcBuscarClientesPasaje = "Excepción: BuscarClientesPasaje.";
-
-        // Empresa
-        public const string MsgCorrectoBuscaEmpresa = "Correcto: BuscaEmpresa.";
-        public const string MsgExcBuscaEmpresa = "Excepción: BuscaEmpresa.";
 
         // Itinerario
         public const string MsgCorrectoBuscaItinerarios = "Correcto: BuscaItinerarios.";

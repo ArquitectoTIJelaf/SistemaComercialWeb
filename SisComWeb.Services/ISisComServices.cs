@@ -85,13 +85,22 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ListaUsuarioControlPwd", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaUsuarioControlPwd(string Value);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ObtenerMensaje", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<MensajeriaEntity> ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "EliminarMensaje", ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> EliminarMensaje(MensajeriaRequest request);
+
         #endregion
 
         #region LOGIN
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ValidaUsuario", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<UsuarioEntity> ValidaUsuario(string CodiUsuario, string Password);
+        Response<UsuarioEntity> ValidaUsuario(short CodiUsuario, string Password);
 
         #endregion
 

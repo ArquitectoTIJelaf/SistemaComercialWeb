@@ -7,14 +7,15 @@
 <style>
     #appVueNavarHeader .nav .open > a {
         background: #ffffff !important;
+        border-bottom-color: #ffffff;
         color: #337ab7;
-        font-weight: 500;
     }
 
     #appVueNavarHeader .navbar-top-links > li > a {
         font-weight: 400;
         padding-left: 15px;
         padding-right: 15px;
+        border-bottom: 4px solid #1d4672;
     }
 
     #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
@@ -29,13 +30,10 @@
         float: right;
     }
 
-    #appVueNavarHeader .borderBottom.colorBlue, .borderBottom:hover {
-        border-bottom: 4px solid #009cff;
+    #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
+        color: #009cff;
+        border-bottom-color: #009cff !important;
     }
-
-        #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
-            color: #009cff;
-        }
 
     .container-fluid {
         margin-top: 25px;
@@ -43,6 +41,10 @@
 </style>
 
 <script>
+
+    var Usuario = '@usuario';
+    var ValSetInt_MensajeriaInstantanea = 0;
+
     function setClassColorBlueToBorderBottom() {
         var elements = document.getElementsByClassName("borderBottom");
         if (elements) {
@@ -56,8 +58,46 @@
         }
     }
 
+    async function pruebaMensajeriaInstantanea() {
+        // clearInterval 'MensajeriaInstantanea'
+        clearInterval(ValSetInt_MensajeriaInstantanea);
+
+        var input = {};
+        input.CodiUsuario = Usuario.CodiUsuario;
+        input.Fecha = moment().format('DD/MM/YYYY');
+        input.Tipo = '1';
+        input.CodiSucursal = Usuario.CodiSucursal;
+        input.CodiPventa = Usuario.CodiPuntoVenta;
+
+        // Obtener 'Mensaje'
+        await APP.rq.axios2.post(APP.base + '/base/obtenerMensaje', input)
+            .then(async function (res) {
+                if (res.data.EsCorrecto) {
+                    await APP.msg.infoInstantMessage(
+                        'Mensajería instantánea'
+                        , res.data.Valor.Mensaje
+                    );
+
+                    // Eliminar 'Mensaje'
+                    //await APP.rq.axios2.post(APP.base + '/base/eliminarMensaje', res.data.Valor);
+                }
+            })
+            .catch(APP.rq.axios_handler_error_alert);
+
+        // setInterval 'MensajeriaInstantanea'
+        ValSetInt_MensajeriaInstantanea = setInterval(async function () {
+            await pruebaMensajeriaInstantanea();
+        }, 5000);
+    }
+
     window.onload = function () {
+        // class 'ColorBlue'
         setClassColorBlueToBorderBottom();
+
+        // setInterval 'MensajeriaInstantanea'
+        ValSetInt_MensajeriaInstantanea = setInterval(async function () {
+            await pruebaMensajeriaInstantanea();
+        }, 5000);
     };
 </script>
 
@@ -75,7 +115,7 @@
             <button class="hidden" id="btnHiddenActualizarTurnoPlano"></button>
         </div>
         <ul class="nav navbar-top-links navbar-left">
-            <li class="dropdown">
+            <li class="drop">
                 <a href="javascript:void(0);"
                    class="dropdown-toggle"
                    data-toggle="dropdown"

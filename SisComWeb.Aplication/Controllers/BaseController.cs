@@ -15,6 +15,7 @@ namespace SisComWeb.Aplication.Controllers
     public class BaseController : Controller
     {
         private static readonly string url = System.Configuration.ConfigurationManager.AppSettings["urlService"];
+        readonly Usuario usuario = DataSession.UsuarioLogueado;
 
         #region FILTROS
 
@@ -588,7 +589,7 @@ namespace SisComWeb.Aplication.Controllers
 
                     var _body = "{" +
                                     "\"Value\" : \"" + Value + "\"" +
-                                " }";
+                                "}";
 
                     HttpResponseMessage response = await client.PostAsync(url + "ListaUsuariosClaveAnuRei", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -670,7 +671,7 @@ namespace SisComWeb.Aplication.Controllers
                                     "\"Descripcion\" : \"" + Descripcion + "\"" +
                                     ",\"Suc\" : " + Suc +
                                     ",\"Pv\" : " + Pv +
-                                " }";
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ListaUsuariosHC", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
@@ -712,7 +713,7 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url + "ListaUsuarioControlPwd");
                     var _body = "{" +
                                     "\"Value\" : \"" + Value + "\"" +
-                                " }";
+                                "}";
                     HttpResponseMessage response = await client.PostAsync("ListaUsuarioControlPwd", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
@@ -736,6 +737,100 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<List<SelectReintegro>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("obtenerMensaje")]
+        public async Task<JsonResult> ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ObtenerMensaje");
+                    var _body = "{" +
+                                    "\"CodiUsuario\" : " + CodiUsuario +
+                                    ",\"Fecha\" : \"" + Fecha + "\"" +
+                                    ",\"Tipo\" : \"" + Tipo + "\"" +
+                                    ",\"CodiSucursal\" : " + CodiSucursal +
+                                    ",\"CodiPventa\" : " + CodiPventa +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ObtenerMensaje", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<Mensajeria> res = new Response<Mensajeria>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = new Mensajeria
+                    {
+                        IdMensaje = (int)data["IdMensaje"],
+                        CodiUsuario = (int)data["CodiUsuario"],
+                        CodiSucursal = (int)data["CodiSucursal"],
+                        CodiPventa = (int)data["CodiPventa"],
+                        Terminal = (int)data["Terminal"],
+                        Mensaje = (string)data["Mensaje"],
+                        Opt = (byte)data["Opt"]
+                    },
+                    EsCorrecto = (bool)tmpResult.SelectToken("EsCorrecto")
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<Mensajeria>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("eliminarMensaje")]
+        public async Task<ActionResult> EliminarMensaje(int IdMensaje, int CodiUsuario, int CodiSucursal, int Terminal)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"IdMensaje\": " + IdMensaje +
+                                    ",\"CodiUsuario\" : " + CodiUsuario +
+                                    ",\"CodiSucursal\" : " + CodiSucursal +
+                                    ",\"Terminal\" : " + Terminal +
+
+                                    ",\"CajeroCod\" : " + usuario.CodiUsuario +
+                                    ",\"CajeroNom\" : \"" + usuario.Nombre + "\"" +
+                                    ",\"CajeroNomSuc\" : \"" + usuario.NomSucursal + "\"" +
+                                    ",\"CajeroCodPven\" : " + usuario.CodiPuntoVenta +
+                                    ",\"CajeroTer\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("EliminarMensaje", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<bool> res = new Response<bool>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (bool)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 
