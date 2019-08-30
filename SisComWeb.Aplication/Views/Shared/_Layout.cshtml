@@ -190,6 +190,9 @@
                             });
                         }
                     }
+                },
+                showLiquidacion: function () {
+                    appVueLiquidacion.show();
                 }
             }
         });
@@ -207,6 +210,86 @@
                 close: function () {
                     $('#appVueMensajeria').modal('hide');
                 }
+            }
+        });
+
+        var appVueLiquidacion = new Vue({
+            el: "#appVueLiquidacion",
+            data: {
+                filtro: {
+                    codEmpresa: '',
+                    codSucursal: '',
+                    sucursal: '',
+                    fecha: '',
+                    codPuntVenta: '',
+                    puntVenta: '',
+                    usuario: ''
+                },
+                list: {
+                    empresas: []
+                }
+            },
+            methods: {
+                show: function () {
+                    this.setData();
+                    $('#appVueLiquidacion').modal('show');
+                },
+                setData: function () {
+                    let _this = this;
+                    if (_this.list.empresas.length <= 0)
+                        _this.getEmpresas();
+                    if (!_this.filtro.usuario)
+                        _this.filtro.usuario = Usuario.Nombre;
+                    if (!_this.filtro.codSucursal) {
+                        _this.filtro.codSucursal = Usuario.CodiSucursal;
+                        _this.filtro.sucursal = Usuario.NomSucursal;
+                    }
+                    if (!_this.filtro.codPuntVenta) {
+                        _this.filtro.codPuntVenta = Usuario.CodiPuntoVenta;
+                        _this.filtro.puntVenta = Usuario.NomPuntoVenta;
+                    }
+                },
+                getEmpresas: function () {
+                    var _this = this;
+                    APP.rq.axios2.get(APP.base + '/base/get-empresas')
+                        .then(res => {
+                            if (res.data.Estado) {
+                                _this.list.empresas = _.cloneDeep(res.data.Valor);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                close: function () {
+                    $('#appVueLiquidacion').modal('hide');
+                }
+            },
+            computed: {
+                filtroCodiEmpresa: {
+                    get: function () {
+                        if (this.list.empresas.length > 0 && this.list.empresas.find(x => x.id === this.filtro.codEmpresa)) {
+                            return this.list.empresas.find(x => x.id === this.filtro.codEmpresa)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.empresas.find(x => x.id === value.id)) {
+                                this.filtro.codEmpresa = value.id;
+                                this.$refs.refRESerie.focus()
+                            }
+                        } else {
+                            this.filtro.codEmpresa = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refREEmpresa.typeAheadPointer = this.$getSelectorVselect(this.list.empresas, value);
+                        });
+                    }
+                },
             }
         });
 

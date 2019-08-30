@@ -1,0 +1,64 @@
+﻿<div id="appVueLiquidacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 999999; ">
+    <div class="modal-dialog modal-sm" style="width: 1100px; top: 10%; ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Liquidación</b></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group m-b-0">
+                        <div class="col-md-12 p-0">
+                            <div class="col-md-7 p-0">
+                                <div class="col-md-4 separate-in-form">
+                                    <label class="control-label label-sm">Empresa:</label>
+                                    <div class="">
+                                        <v-select v-model="filtroCodiEmpresa"
+                                                  :options="list.empresas"
+                                                  :placeholder="'EMPRESA'"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  @@keydown.13.native.prevent=""
+                                                  :disabled="false"
+                                                  ref="refLIEmpresa">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 separate-in-form">
+                                    <label class="control-label label-sm">Sucursal:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm" :value="filtro.sucursal" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 separate-in-form">
+                                    <label class="control-label label-sm">Fecha:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm" :value="filtro.fecha" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 p-0">
+                                <div class="col-md-6 separate-in-form">
+                                    <label class="control-label label-sm">Punto de Venta:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm" :value="filtro.puntVenta" readonly/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 separate-in-form">
+                                    <label class="control-label label-sm">Usuario:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm" :value="filtro.usuario" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

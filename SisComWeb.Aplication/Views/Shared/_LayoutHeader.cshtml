@@ -5,6 +5,7 @@
 }
 
 @Html.Partial("_Mensajeria")
+@Html.Partial("_Liquidacion")
 
 <style>
         #appVueNavarHeader .nav .open > a {
@@ -116,7 +117,9 @@
                     </a>
                 </li>
                 <li class="borderBottom">
-                    <a href="javascript:void(0)" class="open-close waves-effect waves-light hidden-xs">
+                    <a @@click="showLiquidacion"
+                       href="javascript:void(0)" 
+                       class="open-close waves-effect waves-light hidden-xs">
                         Liquidaciones
                     </a>
                 </li>
