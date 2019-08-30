@@ -349,7 +349,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"PrecioVenta\": \"" + request.PrecioVenta + "\"" +
                                     ",\"CodiDestinoPas\": \"" + request.CodiDestinoPas + "\"" +
                                     ",\"IngresoManualPasajes\": " + request.IngresoManualPasajes.ToString().ToLower() +
-                                    ",\"NomOficina\": \"" + usuario.NomSucursal + "\"" +
+                                    ",\"NomOficina\": \"" + usuario.CodiSucursal + "\"" +
                                     ",\"Terminal\": " + usuario.Terminal.ToString("D3") +
 
                                     ",\"RucEmpresa\" : \"" + request.RucEmpresa + "\"" +

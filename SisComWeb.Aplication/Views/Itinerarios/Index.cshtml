@@ -9404,7 +9404,7 @@
                             }
                         }
                     } else return;
-
+                                       
                     var input = {};
                     input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
                     input.CodiProgramacion = parseInt(appVueVenta.filtro.CodiProgramacion);
@@ -9753,6 +9753,7 @@
                     Nivel: ''
                 },
                 item: {
+                    idCliente: 0,
                     origenPasj: '',
                     destinoPasj: '',
                     destinoBus: '',
@@ -10144,6 +10145,7 @@
                     _this.item.servicio = '';
                     _this.item.fechaVenta = '';
                     _this.item.horaVenta = '';
+                    _this.item.idCliente = 0
                     _this.item.documento = '';
                     _this.item.numero = '';
                     _this.item.apellidoPaterno = '';
@@ -10270,6 +10272,7 @@
                 saveReintegro: async function () {
                     let _this = this;
 
+                    //Todos los campos deben estar llenos
                     if (_this.item.numero && _this.item.apellidoPaterno && _this.item.apellidoMaterno &&
                         _this.item.nombre && _this.item.fechaNac && _this.item.edad && _this.item.telefono &&
                         _this.item.nacionalidad && _this.item.nacionalidad) {
@@ -10286,6 +10289,7 @@
                         var auxAsiento = '';
                         var auxCodiProgramacion = '';
                         var auxPrecioSinDescuento = '';
+                        var auxPrecioBoleto = 0;
 
                         //Diferencias por Código de Motivo
                         switch (_this.filtro.codMotivo) {
@@ -10300,6 +10304,7 @@
                                 auxHoraViaje = _this.dataOriginal.HoraViaje;
                                 auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
                                 auxPrecioSinDescuento = _this.item.reintegro;
+                                auxPrecioBoleto = parseFloat(_this.item.precio);
                             }; break;
                             case '00003':
                             case '00004': {
@@ -10312,6 +10317,7 @@
                                 auxAsiento = _this.filtroCambio.NumAsiento;
                                 auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
                                 auxPrecioSinDescuento = "";
+                                auxPrecioBoleto = parseFloat(_this.filtroCambio.MontoReal);
 
                                 updateReintegro = true;
                             }; break;
@@ -10319,7 +10325,7 @@
 
                         //Valida 'Precio Reintegro'
                         if (appController.validatePanel('181') === '1') {
-                            if (_this.item.reintegro > _this.item.precio) {
+                            if (_this.item.reintegro > auxPrecioBoleto) {
                                 APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
                                 _this.disabledAceptar = false;
                                 return
@@ -10404,10 +10410,43 @@
 
                         var input = {};
 
+                        //Depués del modal tipo de pago
                         await deferredModal($('#appVueTipoPago2'), false).done(function () {
                             appVueTipoPago2.$nextTick(() => {
                                 checkTipoPago = appVueTipoPago2.trustedSave;
                                 if (checkTipoPago) {
+
+                                    //Inserta Cliente si no tiene IdCliente
+                                    if (_this.item.idCliente == 0 && (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004')) {
+                                        debugger;
+                                        var listado = [];
+                                        
+                                        var input2 = {};
+                                        input2.IdCliente = 0;
+                                        input2.TipoDoc = _this.item.documento;
+                                        input2.NumeroDoc = _this.item.numero;
+                                        input2.NombreCliente = _this.item.nombre;
+                                        input2.ApellidoPaterno = _this.item.apellidoPaterno;
+                                        input2.ApellidoMaterno = _this.item.apellidoMaterno;
+                                        input2.FechaNacimiento = _this.item.fechaNac;
+                                        input2.Edad = _this.item.edad;
+                                        input2.Telefono = _this.item.telefono;
+                                        input2.Sexo = 'M';
+                                        input2.RucContacto = _this.item.ruc;
+                                        input2.RazonSocial = _this.item.razonSocial;
+                                        input2.Direccion = _this.item.direccion;
+                                        input2.Correo = '';
+
+                                        listado.push(input2);
+
+                                        APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', listado)
+                                            .then(res => {
+                                                if (!res.data.Estado)
+                                                    APP.msg.error(res.data.Mensaje);
+                                            })
+                                            .catch(APP.rq.axios_handler_error_alert);
+                                    }
+                                    
                                     //Data para Grabar Reintegro
                                     input.Serie = _this.item.boleto.substring(1, 4); //TODO
                                     input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length); //TODO
@@ -10648,7 +10687,8 @@
                                 if (res.data.Estado) {
 
                                     if (res.data.Valor.IdCliente > 0) {
-                                        //TODO: No se incluye IdCliente, Sexo y ValidadorClienteEspecial
+                                        //TODO: No se incluye Sexo y ValidadorClienteEspecial
+                                        _this.item.idCliente = res.data.Valor.IdCliente;
                                         _this.item.nombre = res.data.Valor.NombreCliente;
                                         _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
                                         _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
@@ -10662,6 +10702,15 @@
                                         }
                                         _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
 
+                                    } else {
+                                        _this.item.idCliente = 0;
+                                        _this.item.nombre = res.data.Valor.NombreCliente || '';
+                                        _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno || '';
+                                        _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno || '';
+                                        _this.item.fechaNac = '';
+                                        _this.item.edad = '';
+                                        _this.item.telefono = '';
+                                        _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
                                     }
 
                                     if (!res.data.EsCorrecto)
@@ -10937,17 +10986,16 @@
                             this.item.boleto = _.cloneDeep(appVueVenta.CorrelativoVentaBoleta);
                     }
 
-                    //if (newVal != oldVal && oldVal) {
-                    if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
+                    if (newVal != oldVal && oldVal) {
+                    //if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
                         _this.item.razonSocial = '';
                         _this.item.direccion = '';
                     }
                 },
-                'item.documento': function (newVal, oldVal) {
+                'item.numero': function (newVal, oldVal) {
                     let _this = this;
-                    //if (newVal != oldVal && oldVal) {
-                    if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
-                        _this.item.numero = '';
+                    if (newVal != oldVal && oldVal) {
+                    //if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
                         _this.item.apellidoPaterno = '';
                         _this.item.apellidoMaterno = '';
                         _this.item.nombre = '';

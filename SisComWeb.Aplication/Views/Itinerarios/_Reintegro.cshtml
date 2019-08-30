@@ -272,6 +272,7 @@
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refREApeMat.focus()"
                                                                    :disabled="readOnlyCodiMotivo"
+                                                                   maxlength="50"
                                                                    ref="refREApePat"/>
                                                         </div>
                                                     </div>
@@ -284,6 +285,7 @@
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRENombre.focus()"
                                                                    :disabled="readOnlyCodiMotivo"
+                                                                   maxlength="50"
                                                                    ref="refREApeMat"/>
                                                         </div>
                                                     </div>
@@ -296,6 +298,7 @@
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRETelefono.focus()"
                                                                    :disabled="readOnlyCodiMotivo"
+                                                                   maxlength="200"
                                                                    ref="refRENombre"/>
                                                         </div>
                                                     </div>
@@ -312,6 +315,7 @@
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refRENacionalidad.focus()"
                                                                    :disabled="readOnlyCodiMotivo"
+                                                                   v-mask="'#'.repeat(9)"
                                                                    ref="refRETelefono"/>
                                                         </div>
                                                     </div>
@@ -324,6 +328,7 @@
                                                                    style="background-color: white;"
                                                                    @@keydown.13.prevent="$refs.refREFechaNac.focus()"
                                                                    :disabled="readOnlyCodiMotivo"
+                                                                   v-mask="'A'.repeat(30)"
                                                                    ref="refRENacionalidad"/>
                                                         </div>
                                                     </div>                                                    
@@ -387,6 +392,7 @@
                                                                class="form-control input-sm"
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refREDireccion.focus()"
+                                                               maxlength="100"
                                                                :disabled="(readOnlyCodiMotivo || item.stReintegro == 'X')"
                                                                ref="refRERazSoc"/>
                                                     </div>
@@ -399,6 +405,7 @@
                                                                class="form-control input-sm"
                                                                style="background-color: white;"
                                                                @@keydown.13.prevent="$refs.refREReintegro.focus()"
+                                                               maxlength="200"
                                                                :disabled="(readOnlyCodiMotivo || item.stReintegro == 'X')"
                                                                ref="refREDireccion"/>
                                                     </div>
@@ -739,6 +746,7 @@
                                                                        @@focus="$event.target.select()"
                                                                        @@blur="filtroCambio.DiferenciaPrecio = (filtroCambio.DiferenciaPrecio) ? parseFloat(filtroCambio.DiferenciaPrecio).toFixed(2) : ''" 
                                                                        :style="[(parseFloat(filtroCambio.DiferenciaPrecio) > 0) ? {'color': 'red'} : {}]"
+                                                                       readonly
                                                                        />
                                                             </div>
                                                         </div>

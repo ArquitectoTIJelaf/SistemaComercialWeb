@@ -734,7 +734,7 @@ namespace SisComWeb.Business
                             NomUsuario = request.NomUsuario,
                             Tabla = "VENTA",
                             TipoMovimiento = "ANUL.REINTEGRO",
-                            Boleto = String.Format("{0}{1}-{2}", request.Tipo, request.SerieBoleto.ToString().PadLeft(3, '0'), request.NumeBoleto.ToString().PadLeft(7, '0')),
+                            Boleto = String.Format("{0}-{1}", request.SerieBoleto.ToString().PadLeft(3, '0'), request.NumeBoleto.ToString().PadLeft(7, '0')),
                             NumeAsiento = "0",
                             NomOficina = request.NomOficina,
                             NomPuntoVenta = request.CodiPuntoVenta.PadLeft(3, '0'),
@@ -746,8 +746,8 @@ namespace SisComWeb.Business
                             Obs1 = "LIBERACION AL BOLETO : " + request.CodiEsca,
                             Obs2 = "TERMINAL : " + request.Terminal,
                             Obs3 = "",
-                            Obs4 = "CAJERO AFECTA " + request.NomUsuario,
-                            Obs5 = "NRO VALE SALIDA : " + generarCorrelativoAuxiliarReintegro
+                            Obs4 = "CAJERO AFECTA " + request.CodiUsuario,
+                            Obs5 = "NRO VALE SALIDA : " + generarCorrelativoAuxiliarReintegro.PadLeft(7, '0')
                         };
                         VentaRepository.GrabarAuditoria(objAuditoria);
 
