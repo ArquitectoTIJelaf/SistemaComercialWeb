@@ -156,5 +156,42 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<List<int>>(false, Constant.EXCEPCION, new List<int>(), false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("desbloquearAsientoList")]
+        public async Task<ActionResult> desbloquearAsientoList(int CodiProgramacion)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + CodiProgramacion +
+                                    ",\"CodiTerminal\" : \"" + usuario.Terminal + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("DesbloquearAsientosList", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<int>> res = new Response<List<int>>
+                {
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = tmpResult["Valor"].ToObject<List<int>>(),
+                    Estado = (bool)tmpResult["Estado"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<int>>(false, Constant.EXCEPCION, new List<int>(), false), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

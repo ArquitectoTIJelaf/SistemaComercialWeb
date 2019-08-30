@@ -105,5 +105,19 @@ namespace SisComWeb.Business
                 return new Response<List<int>>(false, new List<int>(), Message.MsgBloquearAsientos, false);
             }
         }
+        
+        public static Response<List<int>> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal)
+        {
+            try
+            {
+                var res = PaseLoteRepository.DesbloquearAsientosList(CodiProgramacion, CodiTerminal);
+                return new Response<List<int>>((res.Count > 0) ? true : false, res, string.Empty, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, new List<int>(), Message.MsgDesbloquearAsientos, false);
+            }
+        }
     }
 }

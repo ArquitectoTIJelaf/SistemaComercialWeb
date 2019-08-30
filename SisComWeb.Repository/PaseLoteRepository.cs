@@ -54,5 +54,26 @@ namespace SisComWeb.Repository
             }
             return valor;
         }
+                
+        public static List<int> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal)
+        {
+            var lista = new List<int>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_DesbloquearAsientosProgramados";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Codi_Terminal", DbType.String, ParameterDirection.Input, CodiTerminal);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        lista.Add(Reader.GetIntValue(drlector, "NUME_ASIENTO"));
+                    }
+                }
+            }
+
+            return lista;
+        }
     }    
 }

@@ -1264,6 +1264,19 @@ namespace SisComWeb.Services
                 return new Response<List<int>>(false, new List<int>(), Message.MsgBloquearAsientos, false);
             }
         }
+
+        public Response<List<int>> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal)
+        {
+            try
+            {
+                return PaseLoteLogic.DesbloquearAsientosList(CodiProgramacion, CodiTerminal);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, new List<int>(), Message.MsgDesbloquearAsientos, false);
+            }
+        }
         #endregion
     }
 }
