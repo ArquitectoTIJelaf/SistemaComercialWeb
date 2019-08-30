@@ -2486,6 +2486,20 @@
                                     return;
                                 }
                                 break;
+                            case 'PO':
+                                //if (!()) {
+
+                                //}
+
+                                //If Not(NIVEL = "50" Or NOMBRE_USUARIO = "JLMROOT") Then
+                                //If ArregloPanel("62", "2") = "1" Then
+                                //MsgBox "Opcion no disponible, consulte a su administrador ...!!", vbExclamation, "Control de sistemas"
+                                //CANCELAR_Click
+                                //Exit Sub
+                                //End If
+                                //End If
+                                debugger;
+                                break;
                         }
                     }
 
@@ -2901,7 +2915,7 @@
                                     if (auxBool_Click_Key) {
                                         var auxIndex = appVueVenta.list.ventas.findIndex(x => x.NroAsiento === asientoSel.Tipo)
                                         _this.list.ventas.splice(auxIndex, 1);
-                                        _this.indexVenta = auxIndex - 1;
+                                        _this.indexVenta = auxIndex > 0 ? auxIndex - 1 : 0;
                                     }
                                 }
 
