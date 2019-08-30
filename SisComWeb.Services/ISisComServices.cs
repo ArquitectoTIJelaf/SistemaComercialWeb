@@ -94,6 +94,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "EliminarMensaje", ResponseFormat = WebMessageFormat.Json)]
         Response<bool> EliminarMensaje(MensajeriaRequest request);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "GetSucursalControl", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<SucursalControlEntity> GetSucursalControl(string CodiPuntoVenta);
+
         #endregion
 
         #region LOGIN

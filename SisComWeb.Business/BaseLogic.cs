@@ -341,5 +341,20 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExcEliminarMensaje, false);
             }
         }
+
+        public static Response<SucursalControlEntity> GetSucursalControl(string CodiPuntoVenta)
+        {
+            try
+            {
+                var obtenerMensaje = BaseRepository.GetSucursalControl(CodiPuntoVenta);
+
+                return new Response<SucursalControlEntity>(true, obtenerMensaje, Message.MsgCorrectoGetSucursalControl, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<SucursalControlEntity>(false, null, Message.MsgExcGetSucursalControl, false);
+            }
+        }
     }
 }

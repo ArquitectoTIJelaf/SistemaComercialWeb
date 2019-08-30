@@ -275,6 +275,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<SucursalControlEntity> GetSucursalControl(string CodiPuntoVenta)
+        {
+            try
+            {
+                return BaseLogic.GetSucursalControl(CodiPuntoVenta);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<SucursalControlEntity>(false, null, Message.MsgExcGetSucursalControl, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN

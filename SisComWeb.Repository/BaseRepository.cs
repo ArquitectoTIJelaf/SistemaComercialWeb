@@ -510,6 +510,33 @@ namespace SisComWeb.Repository
             return entidad;
         }
 
+        public static SucursalControlEntity GetSucursalControl(string CodiPuntoVenta)
+        {
+            var entidad = new SucursalControlEntity()
+            {
+                Reserva = string.Empty,
+                FechaAbierta = string.Empty,
+                Bloqueo = string.Empty
+            };
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_TB_CONTROLSUCURSAL_Consulta";
+                db.AddParameter("@suc", DbType.String, ParameterDirection.Input, CodiPuntoVenta);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.Reserva = Reader.GetStringValue(drlector, "reserva") ?? string.Empty;
+                        entidad.FechaAbierta = Reader.GetStringValue(drlector, "fechAbierta") ?? string.Empty;
+                        entidad.Bloqueo = Reader.GetStringValue(drlector, "bloqueo") ?? string.Empty;
+                        break;
+                    }
+                }
+            }
+            return entidad;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

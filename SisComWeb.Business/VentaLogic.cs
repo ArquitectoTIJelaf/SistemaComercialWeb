@@ -1344,7 +1344,8 @@ namespace SisComWeb.Business
                                     SerieBoleto = short.Parse(request.CodiEsca.Substring(1, 3)),
                                     NumeBoleto = int.Parse(request.CodiEsca.Substring(5)),
                                     Tipo = objReintegro.Tipo,
-                                    FechaVenta = objReintegro.FechaVenta
+                                    FechaVenta = objReintegro.FechaVenta,
+                                    RucEmpresa = request.RucEmpresa // Recordar: el boleto original y su reintegro siempre pertenecen a una misma Empresa.
                                 };
 
                                 var resAnularDocumentoSUNAT = AnularDocumentoSUNAT(objVentaReintegro);
