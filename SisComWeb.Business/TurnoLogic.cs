@@ -206,8 +206,29 @@ namespace SisComWeb.Business
                             BloqueoAsientoRepository.InsertarTablaBloqueoAsientos(requestTBA);
                         }
                         else
-                            // Actualiza tabla 'BloqueoAsientos'
-                            BloqueoAsientoRepository.ActualizarTablaBloqueoAsientos(buscarTurno.CodiProgramacion.ToString(), buscarTurno.NroViaje.ToString(), buscarTurno.FechaProgramacion);
+                        {
+                            // Volvemos a consultar tabla 'BloqueoAsientos'
+                            consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(buscarTurno.NroViaje, "V", buscarTurno.FechaProgramacion);
+
+                            if (consultarTablaBloqueoAsientos == null)
+                            {
+                                // Inserta tabla 'BloqueoAsientos'
+                                var requestTBA = new TablaBloqueoAsientosRequest()
+                                {
+                                    CodiProgramacion = auxCodiProgramacion,
+                                    CodiOrigen = request.CodiOrigen,
+                                    CodiDestino = request.CodiDestino,
+                                    AsientosOcupados = consultarTablaAsientosBloqueados.Asientos,
+                                    AsientosLiberados = string.Empty,
+                                    Tipo = auxTipo,
+                                    Fecha = buscarTurno.FechaProgramacion
+                                };
+                                BloqueoAsientoRepository.InsertarTablaBloqueoAsientos(requestTBA);
+                            }
+                            else
+                                // Actualiza tabla 'BloqueoAsientos'
+                                BloqueoAsientoRepository.ActualizarTablaBloqueoAsientos(buscarTurno.CodiProgramacion.ToString(), buscarTurno.NroViaje.ToString(), buscarTurno.FechaProgramacion);
+                        }
 
                         // Como fue 'null', vuelve a consultar tabla 'BloqueoAsientos'
                         consultarTablaBloqueoAsientos = BloqueoAsientoRepository.ConsultarTablaBloqueoAsientos(auxCodiProgramacion, auxTipo, buscarTurno.FechaProgramacion);
