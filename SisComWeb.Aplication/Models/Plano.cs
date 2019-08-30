@@ -1,4 +1,6 @@
-﻿namespace SisComWeb.Aplication.Models
+﻿using System.Collections.Generic;
+
+namespace SisComWeb.Aplication.Models
 {
     public class Plano
     {
@@ -76,5 +78,6 @@
         public byte NumeAsiento { get; set; }
         public string FechaProgramacion { get; set; }
         public decimal Precio { get; set; }
+        public List<int> NumeAsientos { get; set; }
     }
 }

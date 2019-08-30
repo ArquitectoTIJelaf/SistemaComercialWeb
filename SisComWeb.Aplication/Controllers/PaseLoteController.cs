@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SisComWeb.Aplication.Helpers;
 using SisComWeb.Aplication.Models;
+using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,9 +114,9 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
         
-        [HttpGet]
+        [HttpPost]
         [Route("bloquearAsientoList")]
-        public async Task<ActionResult> bloquearAsientoList(int CodiProgramacion, int CodiSucursal)
+        public async Task<ActionResult> bloquearAsientoList(FiltroBloqueoAsiento filtro)
         {
             try
             {
@@ -124,8 +125,14 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
-                                    "\"CodiProgramacion\" : " + CodiProgramacion +
-                                    ",\"CodiSucursal\" : " + CodiSucursal +
+                                    "\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                    ",\"NroViaje\" : " + filtro.NroViaje +
+                                    ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"NumeAsientos\" : [ " + String.Join(", ", filtro.NumeAsientos.ToArray()) + " ]" +
+                                    ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                    ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.Precio) + "\"" +
+                                    ",\"CodiTerminal\" : " + int.Parse(usuario.Terminal.ToString("D3")) +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("BloqueoAsientoList", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
