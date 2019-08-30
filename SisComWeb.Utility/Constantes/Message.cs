@@ -84,6 +84,10 @@
         public const string MsgCorrectoEliminarMensaje = "Correcto: EliminarMensaje.";
         public const string MsgExcEliminarMensaje = "Excepción: EliminarMensaje.";
 
+        // Sucursal Control
+        public const string MsgCorrectoGetSucursalControl = "Correcto: GetSucursalControl.";
+        public const string MsgExcGetSucursalControl = "Excepción: GetSucursalControl.";
+
         // Cliente Pasaje
         public const string MsgCorrectoBuscaPasajero = "Correcto: BuscaPasajero.";
         public const string MsgExcBuscaPasajero = "Excepción: BuscaPasajero.";

@@ -3175,5 +3175,46 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        [Route("getSucursalControl")]
+        public async Task<ActionResult> GetSucursalControl()
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiPuntoVenta\" : \"" + usuario.CodiPuntoVenta + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("GetSucursalControl", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+                JObject data = (JObject)tmpResult["Valor"];
+
+                Response<SucursalControl> res = new Response<SucursalControl>
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = new SucursalControl()
+                    {
+                        Reserva = (string)data["Reserva"],
+                        FechaAbierta = (string)data["FechaAbierta"],
+                        Bloqueo = (string)data["Bloqueo"]
+                    }
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<SucursalControl>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
