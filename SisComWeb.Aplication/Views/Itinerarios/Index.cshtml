@@ -9230,9 +9230,7 @@
                             return;
                         }
                     } else return;
-
-                    debugger;
-
+                    
                     if (_this.filtro.idVenta !== 0) {
                         await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
                             IdVenta: _this.filtro.idVenta,
@@ -9460,7 +9458,7 @@
                             }
                         }
                     } else return;
-
+                                       
                     var input = {};
                     input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
                     input.CodiProgramacion = parseInt(appVueVenta.filtro.CodiProgramacion);
@@ -9809,6 +9807,7 @@
                     Nivel: ''
                 },
                 item: {
+                    idCliente: 0,
                     origenPasj: '',
                     destinoPasj: '',
                     destinoBus: '',
@@ -9951,7 +9950,6 @@
                                 }
 
                                 if (data) {
-                                    debugger;
                                     _this.dataOriginal = _.cloneDeep(data);
                                     _this.item.origenPasj = data.CodiOrigen;
                                     _this.item.destinoPasj = data.CodiDestino;
@@ -10201,6 +10199,7 @@
                     _this.item.servicio = '';
                     _this.item.fechaVenta = '';
                     _this.item.horaVenta = '';
+                    _this.item.idCliente = 0
                     _this.item.documento = '';
                     _this.item.numero = '';
                     _this.item.apellidoPaterno = '';
@@ -10327,251 +10326,294 @@
                 saveReintegro: async function () {
                     let _this = this;
 
-                    _this.disabledAceptar = true;
+                    //Todos los campos deben estar llenos
+                    if (_this.item.numero && _this.item.apellidoPaterno && _this.item.apellidoMaterno &&
+                        _this.item.nombre && _this.item.fechaNac && _this.item.edad && _this.item.telefono &&
+                        _this.item.nacionalidad && _this.item.nacionalidad) {
+                        _this.disabledAceptar = true;
 
-                    var updateReintegro = false;
+                        var updateReintegro = false;
 
-                    var auxEmpresa = '';
-                    var auxOrigenPas = '';
-                    var auxDestinoPas = '';
-                    var auxServicio = '';
-                    var auxFechaViaje = '';
-                    var auxHoraViaje = '';
-                    var auxAsiento = '';
-                    var auxCodiProgramacion = '';
-                    var auxPrecioSinDescuento = '';
+                        var auxEmpresa = '';
+                        var auxOrigenPas = '';
+                        var auxDestinoPas = '';
+                        var auxServicio = '';
+                        var auxFechaViaje = '';
+                        var auxHoraViaje = '';
+                        var auxAsiento = '';
+                        var auxCodiProgramacion = '';
+                        var auxPrecioSinDescuento = '';
+                        var auxPrecioBoleto = 0;
 
-                    //Diferencias por Código de Motivo
-                    switch (_this.filtro.codMotivo) {
-                        case '00001':
-                        case '00002':
-                        case '00005': {
-                            auxEmpresa = _this.dataOriginal.CodiEmpresa;
-                            auxOrigenPas = _this.item.origenPasj;
-                            auxDestinoPas = _this.item.destinoPasj;
-                            auxServicio = _this.dataOriginal.CodiServicio;
-                            auxFechaViaje = _this.dataOriginal.FechaViaje;
-                            auxHoraViaje = _this.dataOriginal.HoraViaje;
-                            auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
-                            auxPrecioSinDescuento = _this.item.reintegro;
-                        }; break;
-                        case '00003':
-                        case '00004': {
-                            auxEmpresa = _this.filtroMiniMapa.CodiEmpresa;
-                            auxOrigenPas = _this.filtroMiniMapa.CodiOrigen;
-                            auxDestinoPas = _this.filtroMiniMapa.CodiDestino;
-                            auxServicio = _this.filtroMiniMapa.CodiServicio;
-                            auxFechaViaje = _this.filtroMiniMapa.FechaViaje;
-                            auxHoraViaje = _this.filtroMiniMapa.HoraViaje;
-                            auxAsiento = _this.filtroCambio.NumAsiento;
-                            auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
-                            auxPrecioSinDescuento = "";
+                        //Diferencias por Código de Motivo
+                        switch (_this.filtro.codMotivo) {
+                            case '00001':
+                            case '00002':
+                            case '00005': {
+                                auxEmpresa = _this.dataOriginal.CodiEmpresa;
+                                auxOrigenPas = _this.item.origenPasj;
+                                auxDestinoPas = _this.item.destinoPasj;
+                                auxServicio = _this.dataOriginal.CodiServicio;
+                                auxFechaViaje = _this.dataOriginal.FechaViaje;
+                                auxHoraViaje = _this.dataOriginal.HoraViaje;
+                                auxCodiProgramacion = _this.dataOriginal.CodiProgramacion;
+                                auxPrecioSinDescuento = _this.item.reintegro;
+                                auxPrecioBoleto = parseFloat(_this.item.precio);
+                            }; break;
+                            case '00003':
+                            case '00004': {
+                                auxEmpresa = _this.filtroMiniMapa.CodiEmpresa;
+                                auxOrigenPas = _this.filtroMiniMapa.CodiOrigen;
+                                auxDestinoPas = _this.filtroMiniMapa.CodiDestino;
+                                auxServicio = _this.filtroMiniMapa.CodiServicio;
+                                auxFechaViaje = _this.filtroMiniMapa.FechaViaje;
+                                auxHoraViaje = _this.filtroMiniMapa.HoraViaje;
+                                auxAsiento = _this.filtroCambio.NumAsiento;
+                                auxCodiProgramacion = _this.filtroMiniMapa.CodiProgramacion;
+                                auxPrecioSinDescuento = "";
+                                auxPrecioBoleto = parseFloat(_this.filtroCambio.MontoReal);
 
-                            updateReintegro = true;
-                        }; break;
-                    }
-
-                    //Valida 'Precio Reintegro'
-                    if (appController.validatePanel('181') === '1') {
-                        if (_this.item.reintegro > _this.item.precio) {
-                            APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
-                            _this.disabledAceptar = false;
-                            return
+                                updateReintegro = true;
+                            }; break;
                         }
-                    }
 
-                    //Valida 'Ex Dni'
-                    if (await _this.haveExDni()) {
-                        _this.disabledAceptar = false;
-                        return;
-                    }
-
-                    //Valida 'Documento'
-                    if (await _this.haveExDni()) {
-                        _this.disabledAceptar = false;
-                        return;
-                    }
-
-                    //Panel Clave 99
-                    if (appController.validatePanelClave('99') === '1') {
-
-                        var checkClaveAutorizacion = false;
-
-                        appController.showClaveAutorizacion(claveReintegro);
-
-                        await deferredModal($('#appClaveAutorizacion'), true).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                window.removeEventListener('keyup', _this.esc);
-                                appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
-                            });
-                        });
-
-                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                                window.addEventListener('keyup', _this.esc);
-                            });
-                        });
-
-                        if (!checkClaveAutorizacion) {
-                            _this.disabledAceptar = false;
-                            return;
-                        }
-                    }
-
-                    //Panel 35
-                    if (appController.validatePanelClave('35') === '1') {
-
-                        var checkClaveAutorizacion = false;
-
-                        appController.showClaveAutorizacion(claveReintegro);
-
-                        await deferredModal($('#appClaveAutorizacion'), true).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                window.removeEventListener('keyup', _this.esc);
-                                appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
-                            });
-                        });
-
-                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                            appClaveAutorizacion.$nextTick(() => {
-                                checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
-                                window.addEventListener('keyup', _this.esc);
-                            });
-                        });
-
-                        if (!checkClaveAutorizacion) {
-                            _this.disabledAceptar = false;
-                            return;
-                        }
-                    }
-
-                    //appController.showTipoPago();
-                    appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
-
-                    var checkTipoPago = false;
-
-                    await deferredModal($('#appVueTipoPago2'), true).done(function () {
-                        checkTipoPago = false;
-                        window.removeEventListener('keyup', _this.esc);
-                    });
-
-                    var input = {};
-
-                    await deferredModal($('#appVueTipoPago2'), false).done(function () {
-                        appVueTipoPago2.$nextTick(() => {
-                            checkTipoPago = appVueTipoPago2.trustedSave;
-                            if (checkTipoPago) {
-                                //Data para Grabar Reintegro
-                                input.Serie = _this.item.boleto.substring(1, 4); //TODO
-                                input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length); //TODO
-                                input.Codi_Empresa = auxEmpresa;
-                                input.CODI_SUCURSAL = Usuario.CodiSucursal;
-                                input.CODI_PROGRAMACION = auxCodiProgramacion;
-                                input.CODI_SUBRUTA = auxDestinoPas;
-                                input.CODI_Cliente = auxPrecioSinDescuento;
-                                input.NIT_CLIENTE = _this.item.ruc;
-                                input.PRECIO_VENTA = _this.item.reintegro;
-                                input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
-                                input.FECH_VENTA = moment().format('DD/MM/YYYY');
-                                input.Recoger = ''; //TODO: Falta implementar
-                                input.Clav_Usuario = Usuario.CodiUsuario;
-                                input.Dni = _this.item.numero;
-                                input.EDAD = _this.item.edad;
-                                input.TELEF = _this.item.telefono;
-                                input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
-                                input.porcentaje = 0;
-                                input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                input.tota_ruta1 = 0;
-                                input.tota_ruta2 = 0;
-                                input.Punto_Venta = Usuario.CodiPuntoVenta;
-                                input.tipo_doc = _this.item.documento;
-                                input.codi_ori_psj = auxOrigenPas;
-                                input.Tipo = appVueVenta.TipoTerminalElectronico;
-                                input.Tipo_Pago = appVueTipoPago2.tipoPago2;
-                                input.Fecha_viaje = auxFechaViaje;
-                                input.HORA_V = auxHoraViaje;
-                                input.nacionalidad = (_this.item.stReintegro === 'X') ? "R1" : _this.item.nacionalidad;
-                                input.servicio = auxServicio;
-                                input.Sube_en = _this.dataOriginal.CodiEmbarque;
-                                input.Baja_en = _this.dataOriginal.CodiArribo;
-                                input.Hora_Emb = auxHoraViaje;
-                                input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
-                                input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
-                                input.CODI_TERMINAL__ = Usuario.Terminal;
-                                input.Codi_Documento__ = 0;
-                                input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
-                                input.fecha_venta__ = moment().format('DD/MM/YYYY');
-                                input.Pventa__ = Usuario.CodiPuntoVenta;
-                                input.SERIE_BOLETO__ = _this.item.boleto.substring(1, 4);
-                                input.stReintegro = _this.item.stReintegro;
-                                input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
-                                input.NombDestino = _this.$options.filters.rutas(auxDestinoPas);
-                                input.CodiBus = _this.dataOriginal.CodiBus;
-                                input.DirEmbarque = pvOrigenesBus.find(x => x.id === String(_this.dataOriginal.CodiEmbarque)).label;
-                                input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
-                                input.NomEmpresaRuc = _this.item.razonSocial;
-                                input.DirEmpresaRuc = _this.item.direccion;
-                                input.NomUsuario = Usuario.Nombre;
-                                input.NomOrigen = _this.$options.filters.rutas(auxOrigenPas);
-                                input.id_original = _this.dataOriginal.IdVenta;
-                                input.CodMotivo = _this.filtro.codMotivo;
-                                input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
-                                input.T_DNI2 = _this.dataOriginal.Dni;
-                                input.NOMB2 = _this.dataOriginal.Nombre;
-                                input.TipoOri = _this.dataOriginal.Tipo;
-                                input.CodiTarjetaCredito = (appVueTipoPago2.tarjeta2) ? appVueTipoPago2.tarjeta2.id : '';
-                                input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
-                                input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
-                                input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
-                                //NEW
-                                var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
-                                input.NomEmpresa = auxObjEmpresa.label;
-                                input.RucEmpresa = auxObjEmpresa.Ruc;
-                                input.DireccionEmpresa = auxObjEmpresa.Direccion;
-                                input.ElectronicoEmpresa = auxObjEmpresa.Electronico;
-                                input.TipoImpresora = appVueVenta.TipoImpresora;
-
+                        //Valida 'Precio Reintegro'
+                        if (appController.validatePanel('181') === '1') {
+                            if (_this.item.reintegro > auxPrecioBoleto) {
+                                APP.msg.warning('El reintegro no puede ser mayor al precio del boleto');
                                 _this.disabledAceptar = false;
+                                return
                             }
-                            window.addEventListener('keyup', _this.esc);
+                        }
+
+                        //Valida 'Ex Dni'
+                        if (await _this.haveExDni()) {
+                            _this.disabledAceptar = false;
+                            return;
+                        }
+
+                        //Valida 'Documento'
+                        if (await _this.haveExDni()) {
+                            _this.disabledAceptar = false;
+                            return;
+                        }
+
+                        //Panel Clave 99
+                        if (appController.validatePanelClave('99') === '1') {
+
+                            var checkClaveAutorizacion = false;
+
+                            appController.showClaveAutorizacion(claveReintegro);
+
+                            await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    window.removeEventListener('keyup', _this.esc);
+                                    appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
+                                });
+                            });
+
+                            await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                    window.addEventListener('keyup', _this.esc);
+                                });
+                            });
+
+                            if (!checkClaveAutorizacion) {
+                                _this.disabledAceptar = false;
+                                return;
+                            }
+                        }
+
+                        //Panel 35
+                        if (appController.validatePanelClave('35') === '1') {
+
+                            var checkClaveAutorizacion = false;
+
+                            appController.showClaveAutorizacion(claveReintegro);
+
+                            await deferredModal($('#appClaveAutorizacion'), true).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    window.removeEventListener('keyup', _this.esc);
+                                    appClaveAutorizacion.idVenta = _this.dataOriginal.IdVenta;
+                                });
+                            });
+
+                            await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                appClaveAutorizacion.$nextTick(() => {
+                                    checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                                    window.addEventListener('keyup', _this.esc);
+                                });
+                            });
+
+                            if (!checkClaveAutorizacion) {
+                                _this.disabledAceptar = false;
+                                return;
+                            }
+                        }
+
+                        //appController.showTipoPago();
+                        appVueTipoPago2.show([], [], parseFloat(_this.item.reintegro), 1, false, false, 1);
+
+                        var checkTipoPago = false;
+
+                        await deferredModal($('#appVueTipoPago2'), true).done(function () {
+                            checkTipoPago = false;
+                            window.removeEventListener('keyup', _this.esc);
                         });
-                    });
 
-                    //Graba reintegro
-                    if (checkTipoPago) {
-                        await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
-                            .then(async function (res) {
-                                if (res.data.Estado) {
+                        var input = {};
 
-                                    _this.close();
+                        //Depués del modal tipo de pago
+                        await deferredModal($('#appVueTipoPago2'), false).done(function () {
+                            appVueTipoPago2.$nextTick(() => {
+                                checkTipoPago = appVueTipoPago2.trustedSave;
+                                if (checkTipoPago) {
 
-                                    appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
+                                    //Inserta Cliente si no tiene IdCliente
+                                    if (_this.item.idCliente == 0 && (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004')) {
+                                        debugger;
+                                        var listado = [];
+                                        
+                                        var input2 = {};
+                                        input2.IdCliente = 0;
+                                        input2.TipoDoc = _this.item.documento;
+                                        input2.NumeroDoc = _this.item.numero;
+                                        input2.NombreCliente = _this.item.nombre;
+                                        input2.ApellidoPaterno = _this.item.apellidoPaterno;
+                                        input2.ApellidoMaterno = _this.item.apellidoMaterno;
+                                        input2.FechaNacimiento = _this.item.fechaNac;
+                                        input2.Edad = _this.item.edad;
+                                        input2.Telefono = _this.item.telefono;
+                                        input2.Sexo = 'M';
+                                        input2.RucContacto = _this.item.ruc;
+                                        input2.RazonSocial = _this.item.razonSocial;
+                                        input2.Direccion = _this.item.direccion;
+                                        input2.Correo = '';
+
+                                        listado.push(input2);
+
+                                        APP.rq.axios2.post(APP.base + '/itinerarios/grabar-pasajero', listado)
+                                            .then(res => {
+                                                if (!res.data.Estado)
+                                                    APP.msg.error(res.data.Mensaje);
+                                            })
+                                            .catch(APP.rq.axios_handler_error_alert);
+                                    }
+                                    
+                                    //Data para Grabar Reintegro
+                                    input.Serie = _this.item.boleto.substring(1, 4); //TODO
+                                    input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length); //TODO
+                                    input.Codi_Empresa = auxEmpresa;
+                                    input.CODI_SUCURSAL = Usuario.CodiSucursal;
+                                    input.CODI_PROGRAMACION = auxCodiProgramacion;
+                                    input.CODI_SUBRUTA = auxDestinoPas;
+                                    input.CODI_Cliente = auxPrecioSinDescuento;
+                                    input.NIT_CLIENTE = _this.item.ruc;
+                                    input.PRECIO_VENTA = _this.item.reintegro;
+                                    input.FLAG_VENTA = (_this.item.stReintegro === 'X') ? "1" : "O";
+                                    input.FECH_VENTA = moment().format('DD/MM/YYYY');
+                                    input.Recoger = ''; //TODO: Falta implementar
+                                    input.Clav_Usuario = Usuario.CodiUsuario;
+                                    input.Dni = _this.item.numero;
+                                    input.EDAD = _this.item.edad;
+                                    input.TELEF = _this.item.telefono;
+                                    input.NOMB = `${_this.item.nombre},${_this.item.apellidoPaterno},${_this.item.apellidoMaterno}`;
+                                    input.porcentaje = 0;
+                                    input.Codi_Esca = `${_this.dataOriginal.Tipo}${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                    input.tota_ruta1 = 0;
+                                    input.tota_ruta2 = 0;
+                                    input.Punto_Venta = Usuario.CodiPuntoVenta;
+                                    input.tipo_doc = _this.item.documento;
+                                    input.codi_ori_psj = auxOrigenPas;
+                                    input.Tipo = appVueVenta.TipoTerminalElectronico;
+                                    input.Tipo_Pago = appVueTipoPago2.tipoPago2;
+                                    input.Fecha_viaje = auxFechaViaje;
+                                    input.HORA_V = auxHoraViaje;
+                                    input.nacionalidad = (_this.item.stReintegro === 'X') ? "R1" : _this.item.nacionalidad;
+                                    input.servicio = auxServicio;
+                                    input.Sube_en = _this.dataOriginal.CodiEmbarque;
+                                    input.Baja_en = _this.dataOriginal.CodiArribo;
+                                    input.Hora_Emb = auxHoraViaje;
+                                    input.Codi_Empresa__ = _this.dataOriginal.CodiEmpresa;
+                                    input.CODI_SUCURSAL__ = Usuario.CodiSucursal;
+                                    input.CODI_TERMINAL__ = Usuario.Terminal;
+                                    input.Codi_Documento__ = 0;
+                                    input.NUME_CORRELATIVO__ = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length);
+                                    input.fecha_venta__ = moment().format('DD/MM/YYYY');
+                                    input.Pventa__ = Usuario.CodiPuntoVenta;
+                                    input.SERIE_BOLETO__ = _this.item.boleto.substring(1, 4);
+                                    input.stReintegro = _this.item.stReintegro;
+                                    input.NomMotivo = _this.list.motivos.find(x => x.id === _this.filtro.codMotivo).label || '';
+                                    input.NombDestino = _this.$options.filters.rutas(auxDestinoPas);
+                                    input.CodiBus = _this.dataOriginal.CodiBus;
+                                    input.DirEmbarque = pvOrigenesBus.find(x => x.id === String(_this.dataOriginal.CodiEmbarque)).label;
+                                    input.NomServicio = _this.$options.filters.servicios(_this.item.servicio);
+                                    input.NomEmpresaRuc = _this.item.razonSocial;
+                                    input.DirEmpresaRuc = _this.item.direccion;
+                                    input.NomUsuario = Usuario.Nombre;
+                                    input.NomOrigen = _this.$options.filters.rutas(auxOrigenPas);
+                                    input.id_original = _this.dataOriginal.IdVenta;
+                                    input.CodMotivo = _this.filtro.codMotivo;
+                                    input.boleto_original = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                    input.D_DOCUMENTO2 = _this.dataOriginal.TipoDocumento;
+                                    input.T_DNI2 = _this.dataOriginal.Dni;
+                                    input.NOMB2 = _this.dataOriginal.Nombre;
+                                    input.TipoOri = _this.dataOriginal.Tipo;
+                                    input.CodiTarjetaCredito = (appVueTipoPago2.tarjeta2) ? appVueTipoPago2.tarjeta2.id : '';
+                                    input.NumeTarjetaCredito = appVueTipoPago2.numeroTarjeta2 || '';
+                                    input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
+                                    input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
+                                    //NEW
+                                    var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
+                                    input.NomEmpresa = auxObjEmpresa.label;
+                                    input.RucEmpresa = auxObjEmpresa.Ruc;
+                                    input.DireccionEmpresa = auxObjEmpresa.Direccion;
+                                    input.ElectronicoEmpresa = auxObjEmpresa.Electronico;
+                                    input.TipoImpresora = appVueVenta.TipoImpresora;
 
                                     _this.disabledAceptar = false;
+                                }
+                                window.addEventListener('keyup', _this.esc);
+                            });
+                        });
 
-                                    if (updateReintegro) {
-                                        _this.updateReintegro(_this.dataOriginal.IdVenta, auxCodiProgramacion, auxDestinoPas, auxAsiento, auxOrigenPas, _this.dataSignalR.NroViaje, _this.dataSignalR.FechaProgramacion, res.data.Valor);
+                        //Graba reintegro
+                        if (checkTipoPago) {
+                            await APP.rq.axios.post(APP.base + '/reintegro/save-reintegro', input)
+                                .then(async function (res) {
+                                    if (res.data.Estado) {
+
+                                        _this.close();
+
+                                        appController.showBoletosVendidos(res.data.Valor.ListaVentasRealizadas, 1);
+
+                                        _this.disabledAceptar = false;
+
+                                        if (updateReintegro) {
+                                            _this.updateReintegro(_this.dataOriginal.IdVenta, auxCodiProgramacion, auxDestinoPas, auxAsiento, auxOrigenPas, _this.dataSignalR.NroViaje, _this.dataSignalR.FechaProgramacion, res.data.Valor);
+                                        }
                                     }
-                                }
-                                else {
-                                    await appController.chargeTurnos();
-                                    _this.$nextTick(() => {
-                                        if (res.data.EsCorrecto)
-                                            APP.msg.warning(res.data.Mensaje);
-                                        else
-                                            APP.msg.error(res.data.Mensaje);
-                                    });
-                                }
-                            })
-                            .catch(APP.rq.axios_handler_error_alert);
-                    } else {
-                        _this.disabledAceptar = false;
-                        return;
-                    }
+                                    else {
+                                        await appController.chargeTurnos();
+                                        _this.$nextTick(() => {
+                                            if (res.data.EsCorrecto)
+                                                APP.msg.warning(res.data.Mensaje);
+                                            else
+                                                APP.msg.error(res.data.Mensaje);
+                                        });
+                                    }
+                                })
+                                .catch(APP.rq.axios_handler_error_alert);
+                        } else {
+                            _this.disabledAceptar = false;
+                            return;
+                        }
 
-                    _this.disabledAceptar = false;
+                        _this.disabledAceptar = false;
+                    } else {
+                        APP.msg.warning('Debe llenar todos los campos');
+                    }
                 },
                 updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
                     APP.rq.axios2.get(APP.base + '/reintegro/update-reintegro' + APP.util.getQueryParamByObject({
@@ -10593,7 +10635,7 @@
                     item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
                     item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
                     item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
-                    debugger;
+                    
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -10689,44 +10731,56 @@
                 searchUser: async function () {
                     let _this = this;
 
-                    await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
-                        tipoDoc: _this.item.documento,
-                        numeroDoc: _this.item.numero
-                    }), { timeout: 5000 })
-                        .then(res => {
-                            if (res.data.Estado) {
+                    if (_this.item.documento && _this.item.numero) {
 
-                                if (res.data.Valor.IdCliente > 0) {
-                                    //TODO: No se incluye IdCliente, Sexo y ValidadorClienteEspecial
-                                    debugger;
-                                    _this.item.nombre = res.data.Valor.NombreCliente;
-                                    _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
-                                    _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
-                                    _this.item.fechaNac = res.data.Valor.FechaNacimiento;
-                                    _this.item.edad = _this.calculaEdad();
-                                    _this.item.telefono = res.data.Valor.Telefono;
-                                    if (_this.item.stReintegro !== 'X') {
-                                        _this.item.ruc = res.data.Valor.RucContacto;
-                                        _this.item.razonSocial = res.data.Valor.RazonSocial;
-                                        _this.item.direccion = res.data.Valor.Direccion;
+                        await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
+                            tipoDoc: _this.item.documento,
+                            numeroDoc: _this.item.numero
+                        }), { timeout: 5000 })
+                            .then(res => {
+                                if (res.data.Estado) {
+
+                                    if (res.data.Valor.IdCliente > 0) {
+                                        //TODO: No se incluye Sexo y ValidadorClienteEspecial
+                                        _this.item.idCliente = res.data.Valor.IdCliente;
+                                        _this.item.nombre = res.data.Valor.NombreCliente;
+                                        _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                        _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                        _this.item.fechaNac = res.data.Valor.FechaNacimiento;
+                                        _this.item.edad = _this.calculaEdad();
+                                        _this.item.telefono = res.data.Valor.Telefono;
+                                        if (_this.item.stReintegro !== 'X') {
+                                            _this.item.ruc = res.data.Valor.RucContacto;
+                                            _this.item.razonSocial = res.data.Valor.RazonSocial;
+                                            _this.item.direccion = res.data.Valor.Direccion;
+                                        }
+                                        _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
+
+                                    } else {
+                                        _this.item.idCliente = 0;
+                                        _this.item.nombre = res.data.Valor.NombreCliente || '';
+                                        _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno || '';
+                                        _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno || '';
+                                        _this.item.fechaNac = '';
+                                        _this.item.edad = '';
+                                        _this.item.telefono = '';
+                                        _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
                                     }
-                                    _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
 
+                                    if (!res.data.EsCorrecto)
+                                        APP.msg.warning(res.data.Mensaje);
                                 }
-
-                                if (!res.data.EsCorrecto)
-                                    APP.msg.warning(res.data.Mensaje);
-                            }
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(err => {
-                            if (err.code === "ECONNABORTED") {
-                                APP.msg.warning('No se pudo cargar los datos del pasajero.');
-                            }
-                            else
-                                APP.rq.axios_handler_error_alert;
-                        });
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            })
+                            .catch(err => {
+                                if (err.code === "ECONNABORTED") {
+                                    APP.msg.warning('No se pudo cargar los datos del pasajero.');
+                                }
+                                else
+                                    APP.rq.axios_handler_error_alert;
+                            });
+                    }
                 },
                 searchEmpresa: async function () {
                     var _this = this;
@@ -10987,13 +11041,15 @@
                     }
 
                     if (newVal != oldVal && oldVal) {
+                    //if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
                         _this.item.razonSocial = '';
                         _this.item.direccion = '';
                     }
                 },
-                'item.documento': function (newVal, oldVal) {
+                'item.numero': function (newVal, oldVal) {
                     let _this = this;
                     if (newVal != oldVal && oldVal) {
+                    //if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
                         _this.item.apellidoPaterno = '';
                         _this.item.apellidoMaterno = '';
                         _this.item.nombre = '';
@@ -11002,6 +11058,9 @@
                         _this.item.telefono = '';
                         _this.item.nacionalidad = '';
                         _this.item.nacionalidad = (newVal === '01') ? 'PERUANA' : '';
+                        _this.item.ruc = '';
+                        _this.item.razonSocial = '';
+                        _this.item.direccion = '';
                     }
                 }
             }
@@ -11607,8 +11666,7 @@
                 },
                 anularReintegro: async function (data) {
                     var _this = this;
-
-                    debugger;
+                    
                     var auxObjEmpresa = appController.findEmpresa(data.CodiEmpresa);
 
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
@@ -11788,8 +11846,6 @@
 
                     _this.limpiarBus(auxMapa);
 
-                    debugger;
-
                     // Valida 'ProgramacionCerrada'
                     if (item.ProgramacionCerrada !== '0') {
 
@@ -11846,13 +11902,21 @@
 
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
-                            _this.$nextTick(() => {
-
-                                debugger;
-
+                            _this.$nextTick(async () => {
+                                
                                 // Valida 'Programación cerrada'
                                 if (res.data.Valor.Activo === '1') {
                                     APP.msg.warning('La programación se encuentra cerrada.');
+                                    return;
+                                }
+
+                                // Valida 'Manifiesto'
+                                var CodiProgramacion = res.data.Valor.CodiProgramacion;
+                                var CodiSucursal = res.data.Valor.CodiSucursal;
+                                
+                                var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion(CodiProgramacion, CodiSucursal);
+                                if (resValidaManifiestoProgramacion) {
+                                    APP.msg.warning('Manifiesto ya fue emitido.');
                                     return;
                                 }
 
@@ -11873,6 +11937,11 @@
                                         _this.objProgramacion.CodiServicio = _.cloneDeep(res.data.Valor.CodiServicio);
                                         _this.objProgramacion.FechaProgramacion = _.cloneDeep(res.data.Valor.FechaProgramacion);
                                         _this.objProgramacion.HoraProgramacion = _.cloneDeep(res.data.Valor.HoraProgramacion);
+
+                                        _this.objProgramacion.NroViaje = _.cloneDeep(res.data.Valor.NroViaje);
+                                        _this.objProgramacion.CodiOrigen = _.cloneDeep(res.data.Valor.CodiOrigen);
+                                        _this.objProgramacion.CodiDestino = _.cloneDeep(res.data.Valor.CodiDestino);
+
                                         _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                         _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
@@ -11885,6 +11954,22 @@
                             });
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                validaManifiestoProgramacion: async function (_codiProgramacion, _codiSucursal) {
+                    let _this = this;
+
+                    var response = false;
+
+                    await APP.rq.axios2.get(APP.base + '/paseLote/validar-manifiesto' + APP.util.getQueryParamByObject({
+                        CodiProgramacion: _codiProgramacion,
+                        CodiSucursal: _codiSucursal
+                    }))
+                        .then(res => {
+                            response = _.cloneDeep(res.data.EsCorrecto);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return response;
                 },
                 verificaTurnoDisponible: function (Fecha, Hora) {
 
@@ -12039,13 +12124,14 @@
                             }
 
                             _this.processingLote = true;
+                            
+                            await _this.bloquearAsientoList(asientosBloqueados);
 
-                            //TODO: Bloquear asientos
                             await APP.msg.infoMessage('Asientos Bloqueados', `Se bloqueó correctamente los asientos: ${asientosBloqueados.join(', ')}`)
                         } else APP.msg.info('No se encontró coincidencias');
                     });
                 },
-                restaurarLote: function () {
+                restaurarLote: async function () {
                     let _this = this;
 
                     _this.processingLote = false;
@@ -12089,11 +12175,36 @@
                     _this.list.newAsientos = [];
                     _this.list.newAsientosManuales = [];
 
-                    //TODO: Desbloquear Asientos
+                    await _this.desbloquearAsientoList();
+
                     APP.msg.info('Se desbloquearon los asientos');
                 },
+                bloquearAsientoList: async function (asientos) {
+                    let _this = this;
+                    var input = {};
+                    input.CodiProgramacion = _this.objProgramacion.CodiProgramacion;
+                    input.NroViaje = _this.objProgramacion.NroViaje;
+                    input.CodiOrigen = _this.objProgramacion.CodiOrigen;
+                    input.CodiDestino = _this.objProgramacion.CodiDestino;
+                    input.NumeAsientos = asientos;
+                    input.FechaProgramacion = _this.objProgramacion.FechaProgramacion;
+                    input.Precio = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/paseLote/bloquearAsientoList', input)
+                        .then(async function (res) {
+                            //TODO: implementar
+                        });
+                },
+                desbloquearAsientoList: async function () {
+                    let _this = this;
+
+                    await APP.rq.axios2.post(APP.base + '/paseLote/desbloquearAsientoList' + APP.util.getQueryParamByObject({ CodiProgramacion: _this.objProgramacion.CodiProgramacion}))
+                        .then(async function (res) {
+                            //TODO: implementar
+                        });
+                },
                 OrigenDraggable: function (_item) {
-                    if (_item && _item.NumeAsiento && !_item.IDS && _item.IdVenta)//TODO: Reemplazar Nombres por Flag
+                    if (_item && _item.NumeAsiento && !_item.IDS && _item.IdVenta)
                         return true
                     else
                         return false;
@@ -12125,8 +12236,11 @@
 
                     _this.dragItem = {};
 
-                    //TODO: Bloquear asientos
-                    APP.msg.warning('Se bloqueó el asiento: ' + _.cloneDeep(_.padStart(parseInt(item.Tipo), 2, '0')))
+                    var nuevoAsiento = parseInt(item.Tipo);
+
+                    await _this.bloquearAsientoList(nuevoAsiento);
+
+                    APP.msg.warning('Se bloqueó el asiento: ' + _.cloneDeep(_.padStart(nuevoAsiento, 2, '0')))
                 },
                 bloquearAsiento: async function (_asiento) {
                     //var input = {};
@@ -12269,6 +12383,10 @@
                     _this.objProgramacion.CodiServicio = '';
                     _this.objProgramacion.FechaProgramacion = '';
                     _this.objProgramacion.HoraProgramacion = '';
+
+                    _this.objProgramacion.NroViaje = '';
+                    _this.objProgramacion.CodiOrigen = '';
+                    _this.objProgramacion.CodiDestino = '';
                 },
                 limpiarBus: function (auxMapa) {
                     let _this = this;

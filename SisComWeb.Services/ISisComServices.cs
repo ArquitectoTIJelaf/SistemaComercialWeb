@@ -430,6 +430,18 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "UpdatePostergacion",ResponseFormat = WebMessageFormat.Json)]
         Response<List<PaseLoteResponse>> UpdatePostergacion(UpdatePostergacionRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ValidarManifiesto", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ValidarManifiesto(int CodiProgramacion, int CodiSucursal);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "BloqueoAsientoList", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<int>> BloqueoAsientoList(BloqueoAsientoRequest request);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "DesbloquearAsientosList", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<int>> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal);
         #endregion
     }
 }

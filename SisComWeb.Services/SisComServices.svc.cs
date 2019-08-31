@@ -1235,7 +1235,46 @@ namespace SisComWeb.Services
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<PaseLoteResponse>>(false, null, Message.MsgExActualizaBoletoF9, false);
+                return new Response<List<PaseLoteResponse>>(false, null, Message.MsgExcPaseLote, false);
+            }
+        }
+        
+        public Response<string> ValidarManifiesto(int CodiProgramacion, int CodiSucursal)
+        {
+            try
+            {
+                return PaseLoteLogic.ValidarManifiesto(CodiProgramacion, CodiSucursal);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, string.Empty, Message.MsgValidarManifiesto, false);
+            }
+        }
+
+        public Response<List<int>> BloqueoAsientoList(BloqueoAsientoRequest request)
+        {
+            try
+            {
+                return PaseLoteLogic.BloqueoAsientoList(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, new List<int>(), Message.MsgBloquearAsientos, false);
+            }
+        }
+
+        public Response<List<int>> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal)
+        {
+            try
+            {
+                return PaseLoteLogic.DesbloquearAsientosList(CodiProgramacion, CodiTerminal);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<int>>(false, new List<int>(), Message.MsgDesbloquearAsientos, false);
             }
         }
         #endregion
