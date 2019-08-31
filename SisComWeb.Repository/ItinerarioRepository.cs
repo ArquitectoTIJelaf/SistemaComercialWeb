@@ -27,14 +27,14 @@ namespace SisComWeb.Repository
                         var entidad = new ItinerarioEntity
                         {
                             NroViaje = Reader.GetIntValue(drlector, "NRO_VIAJE"),
-                            CodiEmpresa = Reader.GetTinyIntValue(drlector, "CODI_EMPRESA"),
+                            CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
                             RazonSocial = Reader.GetStringValue(drlector, "Razon_Social"),
                             NroRuta = Reader.GetIntValue(drlector, "NRO_RUTA"),
                             CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL"),
                             NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal"),
-                            CodiRuta = Reader.GetTinyIntValue(drlector, "Codi_Ruta"),
+                            CodiRuta = Reader.GetByteValue(drlector, "Codi_Ruta"),
                             NomRuta = Reader.GetStringValue(drlector, "Nom_Ruta"),
-                            CodiServicio = Reader.GetTinyIntValue(drlector, "CODI_SERVICIO"),
+                            CodiServicio = Reader.GetByteValue(drlector, "CODI_SERVICIO"),
                             NomServicio = Reader.GetStringValue(drlector, "Nom_Servicio"),
                             CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta"),
                             NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta"),
@@ -69,9 +69,9 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.CodiServicio = Reader.GetTinyIntValue(drlector, "Codi_Servicio");
+                        entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Servicio");
-                        entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
+                        entidad.CodiEmpresa = Reader.GetByteValue(drlector, "Codi_Empresa");
                         entidad.NomEmpresa = Reader.GetStringValue(drlector, "Empresa");
                         break;
                     }

@@ -2,15 +2,25 @@
 {
     public class VentaBeneficiario
     {
-        public long IdVenta { get; set; }
+        public int IdVenta { get; set; }
+
         public string NombresConcat { get; set; }
-        public int CodiOrigen { get; set; }
-        public string NombOrigen { get; set; }
-        public int CodiDestino { get; set; }
-        public string NombDestino { get; set; }
-        public string NombServicio { get; set; }
-        public string FechViaje { get; set; }
+
+        public short CodiOrigen { get; set; }
+
+        public short CodiDestino { get; set; }
+
+        public string FechaViaje { get; set; }
+
         public string HoraViaje { get; set; }
-        public int NumeAsiento { get; set; }
+
+        public byte NumeAsiento { get; set; }
+
+        public byte CodiServicio { get; set; }
+
+
+        public int CodiProgramacion { get; set; }
+
+        public short CodiPuntoVenta { get; set; }
     }
 }

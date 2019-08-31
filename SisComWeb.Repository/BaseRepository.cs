@@ -502,7 +502,7 @@ namespace SisComWeb.Repository
                         entidad.CodiPventa = Reader.GetIntValue(drlector, "pv");
                         entidad.Terminal = Reader.GetIntValue(drlector, "termianl");
                         entidad.Mensaje = Reader.GetStringValue(drlector, "msgbox") ?? string.Empty;
-                        entidad.Opt = Reader.GetTinyIntValue(drlector, "opt");
+                        entidad.Opt = Reader.GetByteValue(drlector, "opt");
                         break;
                     }
                 }

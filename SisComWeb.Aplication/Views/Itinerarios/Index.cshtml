@@ -6,6 +6,7 @@
     var ImagePath = HttpContext.Current.Request.ApplicationPath == "/" ? "" : HttpContext.Current.Request.ApplicationPath;
     var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
     var addTimeTurno = System.Configuration.ConfigurationManager.AppSettings["addTimeTurno"];
+    var JLMrootCode = System.Configuration.ConfigurationManager.AppSettings["JLMrootCode"];
 
     var claveAcompañanteConMayorEdad = Constant.CLAVE_ACOMPAÑANTE_CON_MAYOR_EDAD;
     var claveDescuentoDePasajes = Constant.CLAVE_CLAVE_DE_DESCUENTO_DE_PASAJES;
@@ -730,7 +731,7 @@
                                     document.getElementById('btnRegistrarAconpaniante').focus();
                                 else
                                     document.getElementById('btnIngresarConClave').focus();
-                            }
+                            };
                             break;
                         case ClaveDescuentoDePasajes:
                             {
@@ -752,7 +753,7 @@
                                 }
 
                                 document.getElementById('txtPrecio').focus();
-                            }
+                            };
                             break;
                     }
                 });
@@ -1008,6 +1009,7 @@
         var ImagePath = '@ImagePath';
         var UrlImprimirBoleto = '@urlImprimirBoleto';
         var AddTimeTurno = '@addTimeTurno';
+        var JLMrootCode = '@JLMrootCode';
 
         var ClaveAcompañanteConMayorEdad = '@claveAcompañanteConMayorEdad';
         var ClaveDescuentoDePasajes = '@claveDescuentoDePasajes';
@@ -1541,6 +1543,20 @@
                 },
                 getTiposDocumentosSinRaya: function () {
                     return _.cloneDeep(_.filter(tiposDoc, function (o) { return o.id !== '00'; }));
+                },
+                verificaLiquidacionComiDet: async function (_IdVenta) {
+                    var auxResponse = 0;
+
+                    auxResponse = await appVueVenta.verificaLiquidacionComiDet(_IdVenta);
+
+                    return auxResponse;
+                },
+                verificaLiquidacionComi: async function (_CodiProgramacion, _CodiPuntoVenta) {
+                    var auxResponse = "0";
+
+                    auxResponse = await appVueVenta.verificaLiquidacionComi(_CodiProgramacion, _CodiPuntoVenta);
+
+                    return auxResponse;
                 }
             };
         })();
@@ -2285,18 +2301,6 @@
                         return;
                     }
 
-                    // Valida 'TurnoDisponible'
-                    if (!IngresoManualPasajes) {
-                        if (appController.validatePanel('54') === '1') {
-
-                            var verificaTurnoDisponible = _this.verificaTurnoDisponible();
-                            if (!verificaTurnoDisponible) {
-                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
-                                return;
-                            }
-                        }
-                    }
-
                     // Valida 'FechaViaje'
                     if (moment(_this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
                         switch (_this.pickedBusVenta) {
@@ -2315,16 +2319,28 @@
                                         //    return;
                                         //}
 
-                                        APP.msg.warning('No se puede procesar datos de fechas pasadas');
+                                        APP.msg.warning('No se puede procesar datos de fechas pasadas.');
                                         _this.disabledAsiento = false;
                                         return;
                                     }
-                                }
+                                };
                                 break;
                             default:
                                 APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
                                 _this.disabledAsiento = false;
                                 return;
+                        }
+                    }
+
+                    // Valida 'TurnoDisponible'
+                    if (!IngresoManualPasajes) {
+                        if (appController.validatePanel('54') === '1') {
+
+                            var verificaTurnoDisponible = _this.verificaTurnoDisponible();
+                            if (!verificaTurnoDisponible) {
+                                APP.msg.warning('La hora de viaje ya pasó, verificar.');
+                                return;
+                            }
                         }
                     }
 
@@ -2416,7 +2432,7 @@
                                             return;
                                         }
                                     }
-                                }
+                                };
                                 break;
                             case 'FA':
                                 {
@@ -2428,7 +2444,7 @@
                                             return;
                                         }
                                     }
-                                }
+                                };
                                 break;
                             case 'R':
                                 {
@@ -2480,25 +2496,34 @@
                                 };
                                 break;
                             case 'V':
-                                if (_this.objTurno.SucControlBloqueo === '1' && _this.list.ventas[0].NroAsiento > 0) {
-                                    APP.msg.warning('La oficina no está autorizada para vender más de un asiento a la vez.');
-                                    _this.disabledAsiento = false;
-                                    return;
-                                }
+                                {
+                                    if (_this.objTurno.SucControlBloqueo === '1' && _this.list.ventas[0].NroAsiento > 0) {
+                                        APP.msg.warning('La oficina no está autorizada para vender más de un asiento a la vez.');
+                                        _this.disabledAsiento = false;
+                                        return;
+                                    }
+                                };
                                 break;
                             case 'PO':
-                                //if (!()) {
-
-                                //}
-
-                                //If Not(NIVEL = "50" Or NOMBRE_USUARIO = "JLMROOT") Then
-                                //If ArregloPanel("62", "2") = "1" Then
-                                //MsgBox "Opcion no disponible, consulte a su administrador ...!!", vbExclamation, "Control de sistemas"
-                                //CANCELAR_Click
-                                //Exit Sub
-                                //End If
-                                //End If
-                                debugger;
+                                {
+                                    if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
+                                        if (appController.validatePanel('62') === '1') {
+                                            APP.msg.warning('Solicitud denegada, consulte con el administrador.');
+                                            _this.disabledAsiento = false;
+                                            return;
+                                        }
+                                    }
+                                    if (Usuario.Nivel === 8) {
+                                        APP.msg.warning('Usuario no autorizado.');
+                                        _this.disabledAsiento = false;
+                                        return;
+                                    }
+                                    if (appController.validatePanelNivel(4, Usuario.Nivel) === '0') {
+                                        APP.msg.warning('Usuario no autorizado, nivel de acceso limitado.');
+                                        _this.disabledAsiento = false;
+                                        return;
+                                    }
+                                };
                                 break;
                         }
                     }
@@ -2577,9 +2602,11 @@
                                     switch (_this.pickedBusVenta) {
                                         case 'V': // Venta
                                         case 'R': // Reserva
-                                            setTimeout(function () {
-                                                _this.recorridoSectionVentas();
-                                            }, 400);
+                                            {
+                                                setTimeout(function () {
+                                                    _this.recorridoSectionVentas();
+                                                }, 400);
+                                            };
                                             break;
                                     }
                                 });
@@ -2702,7 +2729,7 @@
                                             _fillData = true;
                                         };
                                         break;
-                                }
+                                };
                             };
                             break;
                         case 'VI': // Venta intermedia
@@ -3396,9 +3423,7 @@
                                     else
                                         _this.list.ventas[_this.indexVenta].DisabledRazonSocial = false;
 
-                                    if (_this.pickedBusVenta !== '1') // Crédito
-                                        _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-
+                                    _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
                                     _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
 
                                     if (!res.data.EsCorrecto)
@@ -3512,9 +3537,11 @@
                                 else
                                     _this.list.ventas[_this.indexVenta].DisabledRazonSocial = false;
 
-                                if (!_this.list.ventas[_this.indexVenta].DisabledRazonSocial && _this.pickedBusVenta !== '1') // Crédito
+                                if (!_this.list.ventas[_this.indexVenta].DisabledRazonSocial)
                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
-                                _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+
+                                if (_this.pickedBusVenta !== '1')
+                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
                             }
                             else {
                                 if (res.data.Estado)
@@ -3570,7 +3597,7 @@
                                                 case 'E':
                                                     this.Correlativo = _.cloneDeep(this.CorrelativoPaseBoleta);
                                                     break;
-                                            };
+                                            }
                                         };
                                         break;
                                     default:
@@ -4226,7 +4253,7 @@
                                     this.list.ventas[this.indexVenta].RazonSocial = this.objCreditoCliente.RazonSocial;
                                     this.list.ventas[this.indexVenta].Direccion = this.objCreditoCliente.Direccion;
                                 }
-                            }
+                            };
                             break;
                         default:
                             this.list.ventas[this.indexVenta].Ruc = '';
@@ -4777,7 +4804,7 @@
                                     }
                                     return;
                                 }
-                            }
+                            };
                             break;
                         default:
                             this.Correlativo = _.cloneDeep(this.CorrelativoVentaBoleta);
@@ -5338,8 +5365,7 @@
 
                     if (appController.validatePanel('163') === '1' && _valPanelAnularFechaPasada !== '2') {
 
-                        var consultaPanelNiveles = appController.validatePanelNivel(5, Usuario.Nivel);
-                        if (consultaPanelNiveles === '1') {
+                        if (appController.validatePanelNivel(5, Usuario.Nivel) === '1') {
 
                             if (moment(_tmpAsientoSel.FechaVenta, 'DD/MM/YYYY').isBefore(moment())
                                 && moment(this.filtro.Fecha, 'DD/MM/YYYY').isBefore(moment())) {
@@ -5452,7 +5478,7 @@
                     //if (x === 2)
                     //    return; // Goto100
                     // x = 2;
-                    
+
                     if (_tmpAsientoSel.PrecVentaReintegro > 0) {
                         if (await APP.msg.confirm(
                             ''
@@ -5471,7 +5497,7 @@
                         else
                             return auxValidate = false;
                     }
-                    
+
                     var auxBoletoCompleto = formatoBoletoCompleto(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto);
 
                     if (await APP.msg.confirm(
@@ -6885,7 +6911,7 @@
                                                     APP.msg.error('No se encontró serie para el boleto.');
                                             };
                                             break;
-                                    };
+                                    }
                                 }
                                 else {
                                     if (newVal.length === 0)
@@ -6969,7 +6995,7 @@
                             this.vuelto = '0.00';
                             this.disabledTipoPago = true;
                             break;
-                    };
+                    }
 
                     $('#appVueTipoPago').modal('show');
                 },
@@ -7019,7 +7045,7 @@
                                     return;
                             };
                             break;
-                    };
+                    }
 
                     _this.processing = true;
                     appController.disabledAsientos(true);
@@ -8123,63 +8149,91 @@
                 asignBeneficiario: async function () {
                     var _this = this;
 
-                    var _origen = String(appVueVenta.filtro.CodiSucursal.id);
-                    var _destino = String(appVueVenta.filtro.CodiDestinoPas.id);
+                    if (await !_this.validaPostergacion())
+                        return;
 
-                    if (_origen === String(_this.objBeneficiario.CodiOrigen) && _destino === String(_this.objBeneficiario.CodiDestino)) {
-                        var input = {};
-                        input.IdVenta = _this.objBeneficiario.IdVenta;
-                        input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
-                        input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
-                        input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
-                        input.FechaViaje = appVueVenta.filtro.Fecha;
-                        input.HoraViaje = appVueVenta.filtro.Turno;
+                    var input = {};
+                    input.IdVenta = _this.objBeneficiario.IdVenta;
+                    input.CodiProgramacion = appVueVenta.filtro.CodiProgramacion;
+                    input.NumeAsiento = appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento;
+                    input.CodiServicio = appVueVenta.filtro.CodiServicio.id;
+                    input.FechaViaje = appVueVenta.filtro.Fecha;
+                    input.HoraViaje = appVueVenta.filtro.Turno;
+                    input.NroViaje = appVueVenta.filtro.NroViaje;
+                    input.FechaProgramacion = appVueVenta.objTurno.FechaProgramacion;
+                    input.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
+                    input.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
+                    input.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
+                    input.CodiBus = appVueVenta.objPlano.CodiBus;
+                    input.HoraProgramacion = appVueVenta.objTurno.HoraProgramacion;
+                    input.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
+                    input.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
+                    input.NomOrigen = appVueVenta.filtro.CodiSucursal.label;
 
-                        input.NroViaje = appVueVenta.filtro.NroViaje;
-                        input.FechaProgramacion = appVueVenta.objTurno.FechaProgramacion;
-
-                        input.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
-                        input.CodiSucursal = appVueVenta.filtro.CodiOrigenBus.id;
-                        input.CodiRuta = appVueVenta.filtro.CodiDestinoBus.id;
-                        input.CodiBus = appVueVenta.objPlano.CodiBus;
-                        input.HoraProgramacion = appVueVenta.objTurno.HoraProgramacion;
-
-                        input.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
-                        input.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
-                        input.NomOrigen = appVueVenta.filtro.CodiSucursal.label;
-
-                        // Limpiar 'AsientosBloqueados'
-                        var auxResponse = await appVueVenta.cancelarBoletos();
-                        if (!auxResponse) {
-                            APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
-                            return;
-                        }
-
-                        appController.disabledAsientos(true);
-
-                        await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
-                            .then(async function (res) {
-                                await _this.close();
-                                await appController.chargeTurnos();
-
-                                _this.$nextTick(() => {
-                                    if (res.data.EsCorrecto) {
-                                        if (res.data.Estado)
-                                            APP.msg.info(res.data.Mensaje);
-                                        else
-                                            APP.msg.warning(res.data.Mensaje);
-                                    }
-                                    else
-                                        APP.msg.error(res.data.Mensaje);
-                                });
-
-                                // callSignalR_ActualizarTurnoPlano
-                                callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
-                            })
-                            .catch(APP.rq.axios_handler_error_alert);
+                    // Limpiar 'AsientosBloqueados'
+                    var auxResponse = await appVueVenta.cancelarBoletos();
+                    if (!auxResponse) {
+                        APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
+                        return;
                     }
-                    else
-                        APP.msg.warning('El origen y el destino del pasajero son distintos al del bus.');
+
+                    appController.disabledAsientos(true);
+                    //return;
+                    await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
+                        .then(async function (res) {
+                            await _this.close();
+                            await appController.chargeTurnos();
+
+                            _this.$nextTick(() => {
+                                if (res.data.EsCorrecto) {
+                                    if (res.data.Estado)
+                                        APP.msg.info(res.data.Mensaje);
+                                    else
+                                        APP.msg.warning(res.data.Mensaje);
+                                }
+                                else
+                                    APP.msg.error(res.data.Mensaje);
+                            });
+
+                            // callSignalR_ActualizarTurnoPlano
+                            callSignalR_ActualizarTurnoPlano(appVueVenta.filtro.NroViaje, appVueVenta.objTurno.FechaProgramacion, res.data.Valor);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                validaPostergacion: async function () {
+                    var auxValidate = true;
+                    
+                    if (appVueVenta.filtro.CodiSucursal.id !== String(this.objBeneficiario.CodiOrigen)) {
+
+                        APP.msg.warning('El origen del pasajero es distinto al del bus.');
+                        return auxValidate = false;
+                    }
+                    if (appVueVenta.filtro.CodiDestinoPas.id !== String(this.objBeneficiario.CodiDestino)) {
+
+                        APP.msg.warning('El destino del pasajero es distinto al del bus.');
+                        return auxValidate = false;
+                    }
+                    var verificaLiquidacionComiDet = await appController.verificaLiquidacionComiDet(this.objBeneficiario.IdVenta);
+                    if (verificaLiquidacionComiDet !== 0) {
+                        APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
+                        return auxValidate = false;
+                    }
+                    debugger;
+                    var verificaLiquidacionComi = await appController.verificaLiquidacionComi(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiPuntoVenta);
+                    if (verificaLiquidacionComi === "1") {
+                        APP.msg.warning('El boleto se encuentra liquidado.');
+                        return auxValidate = false;
+                    }
+
+                    //eriLiqui = Devuelve1DatoTotSql(BasePASAJE,
+                    //    "Tb_Cierre_LiquiComi", "Estado", "Estado",
+                    //    "Codi_Programacion='" & Rs_Programa!CODI_PROGRAMACION & "' and Tipo='P' and estado='1' and Pvta='" & Rs_Programa!Punto_Venta & "'", False)
+                    //If VeriLiqui = "1" Then
+                    //MsgBox "Boleto se encuentra liquidado ...!", vbCritical, ".:. Control .:."
+                    //Exit Sub
+                    //End If
+
+                    return auxValidate;
                 }
             },
             computed: {
@@ -8250,7 +8304,7 @@
                             }
                             else {
                                 this.getUsuarioControlPwd('', null);
-                            }
+                            };
                         }; break;
                         case ClaveAnulacionPanel234:
                         case ClaveReimpresionPanel226:
@@ -8778,21 +8832,21 @@
                                     document.getElementById('txtNombreBCP').focus();
                                     return;
                                 }
-                            }
+                            };
                             break;
                         case 'paterno':
                             if (_this.ApePaternoBCP.length < 3) {
                                 APP.msg.warning('Ingrese como mínimo 3 caracteres.');
                                 document.getElementById('txtApePaternoBCP').focus();
                                 return;
-                            }
+                            };
                             break;
                         case 'materno':
                             if (_this.ApeMaternoBCP.length < 3) {
                                 APP.msg.warning('Ingrese como mínimo 3 caracteres.');
                                 document.getElementById('txtApeMaternoBCP').focus();
                                 return;
-                            }
+                            };
                             break;
                     }
                     // ---------------------------------------------
@@ -11770,7 +11824,7 @@
                             }
                         }
                     }
-                                       
+
                     //// Valida 'Manifiesto'
                     //var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
                     //if (!resValidaManifiestoProgramacion) {

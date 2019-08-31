@@ -21,11 +21,11 @@ namespace SisComWeb.Repository
                     {
                         entidad.CodiUsuario = Reader.GetSmallIntValue(drlector, "Codi_Usuario");
                         entidad.Login = Reader.GetStringValue(drlector, "Login");
-                        entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "Codi_Empresa");
+                        entidad.CodiEmpresa = Reader.GetByteValue(drlector, "Codi_Empresa");
                         entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "Codi_Sucursal");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_puntoVenta");
                         entidad.Password = Reader.GetStringValue(drlector, "Pws");
-                        entidad.Nivel = Reader.GetTinyIntValue(drlector, "Nivel");
+                        entidad.Nivel = Reader.GetByteValue(drlector, "Nivel");
                         entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
                         entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");
                         entidad.Terminal = Reader.GetIntValue(drlector, "Terminal");

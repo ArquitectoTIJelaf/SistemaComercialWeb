@@ -83,17 +83,17 @@
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Origen</label>
-                                    <input :value="objBeneficiario.NombOrigen" class="form-control input-sm" disabled="disabled" />
+                                    <input :value="objBeneficiario.CodiOrigen | rutas" class="form-control input-sm" disabled="disabled" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Destino</label>
-                                    <input :value="objBeneficiario.NombDestino" class="form-control input-sm" disabled="disabled" />
+                                    <input :value="objBeneficiario.CodiDestino | rutas" class="form-control input-sm" disabled="disabled" />
                                 </div>
                             </div>
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-9">
                                     <label class="control-label label-sm">Servicio</label>
-                                    <input :value="objBeneficiario.NombServicio" class="form-control input-sm" disabled="disabled" />
+                                    <input :value="objBeneficiario.CodiServicio | servicios" class="form-control input-sm" disabled="disabled" />
                                 </div>
                                 <div class="col-md-3">
                                     <label class="control-label label-sm">Asiento</label>
@@ -103,7 +103,7 @@
                             <div class="col-md-12 separate-in-form">
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Fecha de viaje</label>
-                                    <input :value="objBeneficiario.FechViaje" class="form-control input-sm text-right" disabled="disabled" />
+                                    <input :value="objBeneficiario.FechaViaje" class="form-control input-sm text-right" disabled="disabled" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="control-label label-sm">Hora de viaje</label>

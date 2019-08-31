@@ -31,14 +31,14 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.NroViaje = Reader.GetIntValue(drlector, "NRO_VIAJE");
-                        entidad.CodiEmpresa = Reader.GetTinyIntValue(drlector, "CODI_EMPRESA");
+                        entidad.CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA");
                         entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
                         entidad.NroRuta = Reader.GetIntValue(drlector, "NRO_RUTA");
                         entidad.CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL");
                         entidad.NomSucursal = Reader.GetStringValue(drlector, "Nom_Sucursal");
                         entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_Ruta");
                         entidad.NomRuta = Reader.GetStringValue(drlector, "Nom_Ruta");
-                        entidad.CodiServicio = Reader.GetTinyIntValue(drlector, "CODI_SERVICIO");
+                        entidad.CodiServicio = Reader.GetByteValue(drlector, "CODI_SERVICIO");
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Nom_Servicio");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta");
                         entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_PuntoVenta");

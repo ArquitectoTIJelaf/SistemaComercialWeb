@@ -46,7 +46,7 @@ namespace SisComWeb.Repository
                         entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P") ?? string.Empty;
                         entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? string.Empty;
                         entidad.FechaNacimiento = Reader.GetDateStringValue(drlector, "fec_nac");
-                        entidad.Edad = Reader.GetTinyIntValue(drlector, "edad");
+                        entidad.Edad = Reader.GetByteValue(drlector, "edad");
                         entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
                         entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
                         entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;

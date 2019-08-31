@@ -178,16 +178,9 @@ namespace SisComWeb.Repository
         {
             var entidad = new VentaBeneficiarioEntity()
             {
-                IdVenta = 0,
                 NombresConcat = string.Empty,
-                CodiOrigen = 0,
-                NombOrigen = string.Empty,
-                CodiDestino = 0,
-                NombDestino = string.Empty,
-                NombServicio = string.Empty,
-                FechViaje = string.Empty,
-                HoraViaje = string.Empty,
-                NumeAsiento = 0
+                FechaViaje = string.Empty,
+                HoraViaje = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -201,17 +194,17 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-
-                        entidad.IdVenta = Reader.GetBigIntValue(drlector, "Id_Venta");
+                        entidad.IdVenta = Reader.GetIntValue(drlector, "Id_Venta");
                         entidad.NombresConcat = Reader.GetStringValue(drlector, "NOMBRE") ?? string.Empty;
-                        entidad.CodiOrigen = Reader.GetIntValue(drlector, "Codi_Origen");
-                        entidad.NombOrigen = Reader.GetStringValue(drlector, "Nom_Origen") ?? string.Empty;
-                        entidad.CodiDestino = Reader.GetIntValue(drlector, "Codi_Destino");
-                        entidad.NombDestino = Reader.GetStringValue(drlector, "Nom_Destino") ?? string.Empty;
-                        entidad.NombServicio = Reader.GetStringValue(drlector, "Nom_Servicio") ?? string.Empty;
-                        entidad.FechViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
+                        entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen");
+                        entidad.CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino");
+                        entidad.FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
                         entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje") ?? string.Empty;
-                        entidad.NumeAsiento = Reader.GetSmallIntValue(drlector, "NUME_ASIENTO");
+                        entidad.NumeAsiento = Reader.GetByteValue(drlector, "NUME_ASIENTO");
+                        entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
+
+                        entidad.CodiProgramacion = Reader.GetIntValue(drlector, "CODI_PROGRAMACION");
+                        entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta");
                         break;
                     }
                 }

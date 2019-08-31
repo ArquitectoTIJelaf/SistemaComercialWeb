@@ -1580,16 +1580,16 @@ namespace SisComWeb.Aplication.Controllers
                     Mensaje = (string)tmpResult["Mensaje"],
                     Valor = new VentaBeneficiario
                     {
-                        IdVenta = (long)data["IdVenta"],
+                        IdVenta = (int)data["IdVenta"],
                         NombresConcat = (string)data["NombresConcat"],
-                        CodiOrigen = (int)data["CodiOrigen"],
-                        NombOrigen = (string)data["NombOrigen"],
-                        CodiDestino = (int)data["CodiDestino"],
-                        NombDestino = (string)data["NombDestino"],
-                        NombServicio = (string)data["NombServicio"],
-                        FechViaje = (string)data["FechViaje"],
+                        CodiOrigen = (short)data["CodiOrigen"],
+                        CodiDestino = (short)data["CodiDestino"],
+                        FechaViaje = (string)data["FechaViaje"],
                         HoraViaje = (string)data["HoraViaje"],
-                        NumeAsiento = (int)data["NumeAsiento"]
+                        NumeAsiento = (byte)data["NumeAsiento"],
+                        CodiServicio = (byte)data["CodiServicio"],
+                        CodiProgramacion = (int)data["CodiProgramacion"],
+                        CodiPuntoVenta = (short)data["CodiPuntoVenta"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
