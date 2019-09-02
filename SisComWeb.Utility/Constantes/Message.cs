@@ -384,5 +384,9 @@
         public const string MsgValidarManifiesto = "Excepción: ValidarManifiesto.";
         public const string MsgBloquearAsientos = "Excepción: BloquearAsiento(S).";
         public const string MsgDesbloquearAsientos = "Excepción: DesbloquearAsiento(S).";
+
+        // Tabla PNP
+        public const string MsgCorrectoTablasPnpConsulta = "Correcto: TablasPnpConsulta.";
+        public const string MsgExcTablasPnpConsulta = "Excepción: TablasPnpConsulta.";
     }
 }

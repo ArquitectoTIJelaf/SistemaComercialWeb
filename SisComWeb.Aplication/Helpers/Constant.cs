@@ -102,7 +102,8 @@
         public const int CLAVE_ANULACION_PANEL234 = 780;
         public const int CLAVE_ANULACION_PANEL36 = 781;
         public const int CLAVE_TIEMPO_RESERVA = 782;
-
         public const int CLAVE_REIMPRESION_PANEL226 = 226;
+
+        public const int CLAVE_POSTERGACION_FLAG_9 = 109;
     }
 }

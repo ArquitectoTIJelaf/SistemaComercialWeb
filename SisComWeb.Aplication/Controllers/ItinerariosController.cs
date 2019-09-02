@@ -1589,7 +1589,13 @@ namespace SisComWeb.Aplication.Controllers
                         NumeAsiento = (byte)data["NumeAsiento"],
                         CodiServicio = (byte)data["CodiServicio"],
                         CodiProgramacion = (int)data["CodiProgramacion"],
-                        CodiPuntoVenta = (short)data["CodiPuntoVenta"]
+                        CodiPuntoVenta = (short)data["CodiPuntoVenta"],
+                        FechaProgramacion = (string)data["FechaProgramacion"],
+                        CodiServicioProgramacion = (byte)data["CodiServicioProgramacion"],
+                        FlagVenta = (string)data["FlagVenta"],
+                        TipoDocumento = (string)data["TipoDocumento"],
+                        Documento = (string)data["Documento"],
+                        ImpManifiesto = (string)data["ImpManifiesto"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -3214,6 +3220,41 @@ namespace SisComWeb.Aplication.Controllers
             catch
             {
                 return Json(new Response<SucursalControl>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("tablasPnpConsulta")]
+        public async Task<ActionResult> TablasPnpConsulta(string Tabla)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"Tabla\" : \"" + Tabla + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("TablasPnpConsulta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
     }

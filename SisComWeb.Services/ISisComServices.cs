@@ -388,6 +388,11 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "VentaUpdatePostergacionEle", ResponseFormat = WebMessageFormat.Json)]
         Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "TablasPnpConsulta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<int> TablasPnpConsulta(string Tabla);
+
         #endregion
 
         #region REINTEGRO

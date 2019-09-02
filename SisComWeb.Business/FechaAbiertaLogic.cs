@@ -188,5 +188,20 @@ namespace SisComWeb.Business
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
             }
         }
+
+        public static Response<int> TablasPnpConsulta(string Tabla)
+        {
+            try
+            {
+                var tablasPnpConsulta = FechaAbiertaRepository.TablasPnpConsulta(Tabla);
+                
+                return new Response<int>(true, tablasPnpConsulta, Message.MsgCorrectoTablasPnpConsulta, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcTablasPnpConsulta, false);
+            }
+        }
     }
 }

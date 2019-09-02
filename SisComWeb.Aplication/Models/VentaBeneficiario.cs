@@ -18,9 +18,21 @@
 
         public byte CodiServicio { get; set; }
 
-
         public int CodiProgramacion { get; set; }
 
         public short CodiPuntoVenta { get; set; }
+
+
+        public string FechaProgramacion { get; set; }
+
+        public byte CodiServicioProgramacion { get; set; }
+
+        public string FlagVenta { get; set; }
+
+        public string TipoDocumento { get; set; }
+
+        public string Documento { get; set; }
+
+        public string ImpManifiesto { get; set; }
     }
 }

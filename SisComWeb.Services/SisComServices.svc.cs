@@ -1115,6 +1115,20 @@ namespace SisComWeb.Services
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
             }
         }
+
+        public Response<int> TablasPnpConsulta(string Tabla)
+        {
+            try
+            {
+                return FechaAbiertaLogic.TablasPnpConsulta(Tabla);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcTablasPnpConsulta, false);
+            }
+        }
+
         #endregion
 
         #region REINTEGRO

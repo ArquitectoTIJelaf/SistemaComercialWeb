@@ -180,7 +180,12 @@ namespace SisComWeb.Repository
             {
                 NombresConcat = string.Empty,
                 FechaViaje = string.Empty,
-                HoraViaje = string.Empty
+                HoraViaje = string.Empty,
+                FechaProgramacion = string.Empty,
+                FlagVenta = string.Empty,
+                TipoDocumento = string.Empty,
+                Documento = string.Empty,
+                ImpManifiesto = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -202,9 +207,15 @@ namespace SisComWeb.Repository
                         entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje") ?? string.Empty;
                         entidad.NumeAsiento = Reader.GetByteValue(drlector, "NUME_ASIENTO");
                         entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
-
                         entidad.CodiProgramacion = Reader.GetIntValue(drlector, "CODI_PROGRAMACION");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta");
+                        entidad.FechaProgramacion = Reader.GetStringValue(drlector, "Fech_programacion") ?? string.Empty;
+                        entidad.CodiServicioProgramacion = Reader.GetByteValue(drlector, "Codi_Servicio_programacion");
+                        entidad.FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty;
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? string.Empty;
+                        entidad.Documento = Reader.GetStringValue(drlector, "DNI") ?? string.Empty;
+
+                        entidad.ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty;
                         break;
                     }
                 }
