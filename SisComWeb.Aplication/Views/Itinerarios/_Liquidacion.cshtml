@@ -1,5 +1,36 @@
-﻿<div id="appVueLiquidacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 999999; ">
-    <div class="modal-dialog modal-sm" style="width: 1100px; top: 10%; ">
+﻿<style>
+    ul.leaders {
+        max-width: 40em;
+        padding: 0;
+        overflow-x: hidden;
+        list-style: none
+    }
+
+        ul.leaders li:before {
+            float: left;
+            width: 0;
+            white-space: nowrap;
+            content: ". . . . . . . . . . . . . . . . . . . . " ". . . . . . . . . . . . . . . . . . . . " ". . . . . . . . . . . . . . . . . . . . " ". . . . . . . . . . . . . . . . . . . . "
+        }
+
+        ul.leaders span:first-child {
+            padding-right: 0.33em;
+            background: white
+        }
+
+        ul.leaders span + span {
+            float: right;
+            padding-left: 0.33em;
+            background: white
+        }
+
+    .leaders li span {
+        background-color: transparent !important;
+    }
+</style>
+
+<div id="appVueLiquidacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false" style="z-index: 999999; ">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="close">&times;</button>
@@ -7,7 +38,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal">
-                    <div class="form-group m-b-0">
+                    <div class="form-group m-b-5">
                         <div class="col-md-12 p-0">
                             <div class="col-md-7 p-0">
                                 <div class="col-md-4 separate-in-form">
@@ -18,11 +49,11 @@
                                                   :placeholder="'EMPRESA'"
                                                   :select-on-tab="true"
                                                   :get-option-label="getLabel"
-                                                  @@keydown.13.native.prevent=""
+                                                  @@keydown.13.native.prevent="getLiquidacion"
                                                   :disabled="false"
                                                   ref="refLIEmpresa">
                                             <template slot="option" slot-scope="option">
-                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                <div @@click="getLiquidacion">{{ option.id }} - {{ option.label }}</div>
                                             </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -31,13 +62,32 @@
                                 <div class="col-md-4 separate-in-form">
                                     <label class="control-label label-sm">Sucursal:</label>
                                     <div class="">
-                                        <input class="form-control input-sm" :value="filtro.sucursal" readonly/>
+                                        <v-select v-model="filtroCodiSucursal"
+                                                  :options="list.sucursales"
+                                                  :placeholder="'SUCURSAL'"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  @@keydown.13.native.prevent=""
+                                                  :disabled="true"
+                                                  ref="refLISucursal">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                                 <div class="col-md-4 separate-in-form">
                                     <label class="control-label label-sm">Fecha:</label>
                                     <div class="">
-                                        <input class="form-control input-sm" :value="filtro.fecha" />
+                                        <input v-model="filtro.fecha"
+                                               class="form-control input-sm dpFiltro"
+                                               type="text"
+                                               placeholder="DD/MM/YYYY"
+                                               v-mask="'##/##/####'"
+                                               @@focus="$event.target.select()"
+                                               @@blur="filtro.fecha = $event.target.value; getLiquidacion()"
+                                               autocomplete="off" />
                                     </div>
                                 </div>
                             </div>
@@ -45,19 +95,183 @@
                                 <div class="col-md-6 separate-in-form">
                                     <label class="control-label label-sm">Punto de Venta:</label>
                                     <div class="">
-                                        <input class="form-control input-sm" :value="filtro.puntVenta" readonly/>
+                                        <v-select v-model="filtroCodiPuntVenta"
+                                                  :options="list.puntosVenta"
+                                                  :placeholder="'P. VENTA'"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  @@keydown.13.native.prevent=""
+                                                  :disabled="true"
+                                                  ref="refLIPuntVenta">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                                 <div class="col-md-6 separate-in-form">
                                     <label class="control-label label-sm">Usuario:</label>
                                     <div class="">
-                                        <input class="form-control input-sm" :value="filtro.usuario" readonly />
+                                        <v-select v-model="filtroCodiUsuario"
+                                                  :options="list.usuarios"
+                                                  :placeholder="'USUARIO'"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  :filterable="false"
+                                                  @@search="getUsuarios"
+                                                  @@keydown.13.native.prevent=""
+                                                  :disabled="true"
+                                                  ref="refLIUsuario">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="form-group m-b-5">
+                        <div class="col-md-12 p-0">
+                            <div class="col-md-6 p-10">
+                                <div class="col-md-12 bordergray">
+                                    <div class="col-md-12 p-0 text-center"><b>INGRESOS</b></div>
+                                    <div class="col-md-12">
+                                        <ul class=leaders>
+                                            <li>
+                                                <span>VENTA DE PASAJES</span>
+                                                <span>{{objLiquidacion.PasIng | money}}</span>
+                                            <li>
+                                                <span>ING. VENTA REMOTA</span>
+                                                <span>{{objLiquidacion.VenRem | money}}</span>
+                                            <li>
+                                                <span>VENTA DE RUTAS</span>
+                                                <span>{{objLiquidacion.Venrut | money}}</span>
+                                            <li>
+                                                <span>ENCOMIENDAS Y GIROS</span>
+                                                <span>{{objLiquidacion.VenEnc | money}}</span>
+                                            <li>
+                                                <span>VENTA DE EXCESOS</span>
+                                                <span>{{objLiquidacion.VenExe | money}}</span>
+                                            <li>
+                                                <span>FACTURA LIBRE</span>
+                                                <span>{{objLiquidacion.FacLib | money}}</span>
+                                            <li>
+                                                <span>GIROS RECIBIDOS</span>
+                                                <span>{{objLiquidacion.GirRec | money}}</span>
+                                            <li>
+                                                <span>COBRANZAS DESTINO</span>
+                                                <span>{{objLiquidacion.CobDes | money}}</span>
+                                            <li>
+                                                <span>COBRANZAS DELIVERY</span>
+                                                <span>{{objLiquidacion.CobDel | money}}</span>
+                                            <li>
+                                                <span>INGRESOS DE CAJA</span>
+                                                <span>{{objLiquidacion.IngCaj | money}}</span>
+                                            <li>
+                                                <span>INGRESO DE DETRACCIÓN</span>
+                                                <span>{{objLiquidacion.IngDet | money}}</span>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 p-10">
+                                <div class="col-md-12 bordergray">
+                                    <div class="col-md-12 p-0 text-center"><b>EGRESOS</b></div>
+                                    <div class="col-md-12">
+                                        <ul class=leaders>
+                                            <li>
+                                                <span>REMOTOS EMITIDOS</span>
+                                                <span>{{objLiquidacion.RemEmi | money}}</span>
+                                            <li>
+                                                <span>BOLETOS CREDITO</span>
+                                                <span>{{objLiquidacion.BolCre | money}}</span>
+                                            <li>
+                                                <span>WEB EMITIDOS</span>
+                                                <span>{{objLiquidacion.WebEmi | money}}</span>
+                                            <li>
+                                                <span>RED BUS EMITIDOS</span>
+                                                <span>{{objLiquidacion.RedBus | money}}</span>
+                                            <li>
+                                                <span>TIENDA VIRTUAL</span>
+                                                <span>{{objLiquidacion.TieVir | money}}</span>
+                                            <li>
+                                                <span>DELIVERY EMITIDOS</span>
+                                                <span>{{objLiquidacion.DelEmi | money}}</span>
+                                            <li>
+                                                <span>VENTA TARJETA PASAJES</span>
+                                                <span>{{objLiquidacion.Ventar | money}}</span>
+                                            <li>
+                                                <span>VTA. TARJETA ENCOMIENDAS</span>
+                                                <span>{{objLiquidacion.Enctar | money}}</span>
+                                            <li>
+                                                <span>EGRESOS DE CAJA</span>
+                                                <span>{{objLiquidacion.EgrCaj | money}}</span>
+                                            <li>
+                                                <span>GIROS ENTREGADOS</span>
+                                                <span>{{objLiquidacion.GirEnt | money}}</span>
+                                            <li>
+                                                <span>BOL. ANUL. OTRA FECHA</span>
+                                                <span>{{objLiquidacion.BolAnF | money}}</span>
+                                            <li>
+                                                <span>VALES ANULADOS REMOTOS</span>
+                                                <span>{{objLiquidacion.ValAnR | money}}</span>
+                                            <li>
+                                                <span>POR PAGAR ENCOMIENDAS</span>
+                                                <span>{{objLiquidacion.EncPag | money}}</span>
+                                            <li>
+                                                <span>CUENTA CTE GUIAS</span>
+                                                <span>{{objLiquidacion.Ctagui | money}}</span>
+                                            <li>
+                                                <span>CUENTA CTE CAN</span>
+                                                <span>{{objLiquidacion.CtaCan | money}}</span>
+                                            <li>
+                                                <span>NOTAS CRED. EMITIDAS</span>
+                                                <span>{{objLiquidacion.Notcre | money}}</span>
+                                            <li>
+                                                <span>TOTAL DE DETRACCIÓN</span>
+                                                <span>{{objLiquidacion.Totdet | money}}</span>
+                                            <li>
+                                                <span>GASTOS RUTA</span>
+                                                <span>{{objLiquidacion.Gasrut | money}}</span>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 p-10">
+                            <div class="col-md-6 col-md-offset-3 bordergray" style="background-color:antiquewhite;">
+                                <div class="col-md-12">
+                                    <ul class=leaders>
+                                        <li>
+                                            <span class="withoutbgcolor font-bold">TOTAL INGRESOS</span>
+                                            <span class="withoutbgcolor">{{objLiquidacion.TotalAfecto | money}}</span>
+                                        <li>
+                                            <span class="withoutbgcolor font-bold">TOTAL EGRESOS</span>
+                                            <span class="withoutbgcolor">{{objLiquidacion.TotalInafecto | money}}</span>
+                                        <li>
+                                            <span class="withoutbgcolor font-bold">TOTAL GENERAL</span>
+                                            <span class="withoutbgcolor">{{objLiquidacion.Total | money}}</span>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button @@click="getLiquidacion"
+                        class="btn btn-primary waves-effect waves-light">
+                    <span class="fa fa-refresh fa-fw"></span>Refrescar
+                </button>
+                <button @@click="close"
+                        class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
+                </button>
             </div>
         </div>
     </div>

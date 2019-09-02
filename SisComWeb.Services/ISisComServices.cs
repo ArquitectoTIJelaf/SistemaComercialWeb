@@ -448,5 +448,12 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "DesbloquearAsientosList", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<List<int>> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal);
         #endregion
+
+        #region "LIQUIDACIÓN"
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaLiquidacion", ResponseFormat = WebMessageFormat.Json)]
+        Response<LiquidacionEntity> ListaLiquidacion(LiquidacionRequest request);
+        #endregion
     }
 }

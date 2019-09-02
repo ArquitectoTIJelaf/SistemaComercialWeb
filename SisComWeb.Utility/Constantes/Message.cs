@@ -388,5 +388,8 @@
         // Tabla PNP
         public const string MsgCorrectoTablasPnpConsulta = "Correcto: TablasPnpConsulta.";
         public const string MsgExcTablasPnpConsulta = "Excepción: TablasPnpConsulta.";
+
+        //Liquidación
+        public const string MsgExcLiquidacion = "Excepción: MsgExcLiquidacion.";
     }
 }

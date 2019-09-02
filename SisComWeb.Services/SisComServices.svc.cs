@@ -1292,5 +1292,21 @@ namespace SisComWeb.Services
             }
         }
         #endregion
+
+        #region "LIQUIDACIÓN"
+
+        public Response<LiquidacionEntity> ListaLiquidacion(LiquidacionRequest request)
+        {
+            try
+            {
+                return LiquidacionLogic.ListaLiquidacion(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<LiquidacionEntity>(false, new LiquidacionEntity(), Message.MsgExcLiquidacion, false);
+            }
+        }
+        #endregion
     }
 }
