@@ -1868,7 +1868,6 @@ namespace SisComWeb.Business
                 foreach (var entidad in Listado)
                 {
                     var obtenerParametroRempresa = new Rempresa();
-                    var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
@@ -1999,7 +1998,6 @@ namespace SisComWeb.Business
                     entidad.NomTipVenta = "EFECTIVO";
                     entidad.LinkPag_FE = obtenerParametroRempresa.PaginaWebEmisor ?? string.Empty;
                     entidad.ResAut_FE = obtenerParametroRempresa.ResolucionAutorizado ?? string.Empty;
-                    entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
                     var original = CuadreImpresora.Cuadre.WriteText(entidad, TipoImpresion);
 
