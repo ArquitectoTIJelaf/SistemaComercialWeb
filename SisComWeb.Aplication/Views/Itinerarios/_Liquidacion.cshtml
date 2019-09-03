@@ -136,7 +136,7 @@
                     <div class="form-group m-b-5">
                         <div class="col-md-12 p-0">
                             <div class="col-md-6 p-10">
-                                <div class="col-md-12 bordergray">
+                                <div class="col-md-12 bordergray" style="min-height: 350px;">
                                     <div class="col-md-12 p-0 text-center"><b>INGRESOS</b></div>
                                     <div class="col-md-12">
                                         <ul class=leaders>
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6 p-10">
-                                <div class="col-md-12 bordergray">
+                                <div class="col-md-12 bordergray" style="min-height: 350px;">
                                     <div class="col-md-12 p-0 text-center"><b>EGRESOS</b></div>
                                     <div class="col-md-12">
                                         <ul class=leaders>
@@ -247,13 +247,13 @@
                                     <ul class=leaders>
                                         <li>
                                             <span class="withoutbgcolor font-bold">TOTAL INGRESOS</span>
-                                            <span class="withoutbgcolor">{{objLiquidacion.TotalAfecto | money}}</span>
+                                            <span class="withoutbgcolor font-bold">{{objLiquidacion.TotalAfecto | money}}</span>
                                         <li>
                                             <span class="withoutbgcolor font-bold">TOTAL EGRESOS</span>
-                                            <span class="withoutbgcolor">{{objLiquidacion.TotalInafecto | money}}</span>
+                                            <span class="withoutbgcolor font-bold">{{objLiquidacion.TotalInafecto | money}}</span>
                                         <li>
                                             <span class="withoutbgcolor font-bold">TOTAL GENERAL</span>
-                                            <span class="withoutbgcolor">{{objLiquidacion.Total | money}}</span>
+                                            <span class="withoutbgcolor font-bold">{{objLiquidacion.Total | money}}</span>
                                     </ul>
                                 </div>
                             </div>

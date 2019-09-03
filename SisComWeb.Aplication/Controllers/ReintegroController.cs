@@ -61,6 +61,12 @@ namespace SisComWeb.Aplication.Controllers
                 PolizaFechaReg = (string)x["PolizaFechaReg"],
                 PolizaFechaVen = (string)x["PolizaFechaVen"],
 
+                //NEW
+                EmpRuc = (string)x["EmpRuc"],
+                EmpRazSocial = (string)x["EmpRazSocial"],
+                EmpDireccion = (string)x["EmpDireccion"],
+                EmpElectronico = (string)x["EmpElectronico"],
+
                 // Parámetros extras
                 EmpCodigo = (byte)x["EmpCodigo"],
                 PVentaCodigo = (short)x["PVentaCodigo"],

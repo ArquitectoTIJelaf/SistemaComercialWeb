@@ -3851,7 +3851,6 @@
                     input.IdContrato = this.objCreditoCliente.idContrato;
                     input.IdPrecio = this.objCreditoCliente.IdPrecio;
                     input.IdRuc = this.objCreditoCliente.IdRuc;
-                    debugger;
                     input.NomEmpresa = this.filtro.CodiEmpresa.label;
                     input.RucEmpresa = this.filtro.CodiEmpresa.Ruc;
                     input.DireccionEmpresa = this.filtro.CodiEmpresa.Direccion;
@@ -10823,6 +10822,7 @@
                                     input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
                                     input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
                                     //NEW
+                                    debugger;
                                     var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
                                     input.NomEmpresa = auxObjEmpresa.label;
                                     input.RucEmpresa = auxObjEmpresa.Ruc;

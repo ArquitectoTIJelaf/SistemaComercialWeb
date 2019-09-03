@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace SisComWeb.CuadreImpresora
     {
         private static readonly string TipoImprimir = ConfigurationManager.AppSettings["tipoImprimir"];
         private static readonly string TipoReimprimir = ConfigurationManager.AppSettings["tipoReimprimir"];
+
+        #region "VENTA"
 
         public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {
@@ -349,6 +352,30 @@ namespace SisComWeb.CuadreImpresora
 
             return boletoBase64;
         }
+        #endregion
+
+        #region "LIQUIDACION"
+
+        public static string WriteLiquidacion(LiquidacionEntity liquidacion)
+        {
+            StringBuilder texto = new StringBuilder();
+            texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN TOTAL DEL DÍA " + DateTime.Now.ToString("dd/MM/yyyy"), 30, "|||^"));
+            texto.AppendLine("|||^" + string.Format("{0, -20}{1, -10}", liquidacion.Sucursal, "FECHA:" + liquidacion.Fecha));
+            texto.AppendLine(SplitStringPreserving("USUARIO:" + liquidacion.Usuario, 30, "|||^", false));
+            texto.AppendLine(new string('-', 42));
+            texto.AppendLine(SplitStringPreserving("INGRESOS", 30, "|||^"));
+            texto.AppendLine(new string('-', 42));
+            texto.AppendLine(SplitStringPreserving("EGRESOS", 30, "|||^"));
+            texto.AppendLine(new string('-', 42));
+
+            texto.AppendLine(" ");
+
+            byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
+            var boletoBase64 = Convert.ToBase64String(encodedText);
+
+            return boletoBase64;
+        }
+        #endregion
 
         public static string SplitStringPreserving(string str, int length, string starOFline = "", bool center = true)
         {
