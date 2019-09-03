@@ -19,6 +19,8 @@ namespace SisComWeb.Business
                 LiquidacionRepository.Poblar(filtro);
                 //Obtiene Resultado
                 var objeto = LiquidacionRepository.Data(filtro);
+                objeto.Impresion = CuadreImpresora.Cuadre.WriteLiquidacion(objeto);
+
                 return new Response<LiquidacionEntity>(true, objeto, string.Empty, true);
             }
             catch (Exception ex)

@@ -10729,7 +10729,6 @@
 
                                     //Inserta Cliente si no tiene IdCliente
                                     if (_this.item.idCliente == 0 && (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004')) {
-                                        debugger;
                                         var listado = [];
                                         
                                         var input2 = {};
@@ -10822,7 +10821,6 @@
                                     input.NumAsientoAuditoria = _this.dataOriginal.NumeAsiento;
                                     input.BoletoAuditoria = `${_.padStart(_this.dataOriginal.SerieBoleto, 3, '0')}-${_.padStart(_this.dataOriginal.NumeBoleto, 7, '0')}`;
                                     //NEW
-                                    debugger;
                                     var auxObjEmpresa = appController.findEmpresa(auxEmpresa);
                                     input.NomEmpresa = auxObjEmpresa.label;
                                     input.RucEmpresa = auxObjEmpresa.Ruc;

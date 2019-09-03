@@ -126,7 +126,8 @@ namespace SisComWeb.Aplication.Controllers
                         TotalInafecto = (decimal)data["TotalInafecto"],
                         AfectoTotalInafecto = (byte)data["AfectoTotalInafecto"],
                         Total = (decimal)data["Total"],
-                        AfectoTotal = (byte)data["AfectoTotal"]                        
+                        AfectoTotal = (byte)data["AfectoTotal"],
+                        Impresion = (string)data["Impresion"]                        
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

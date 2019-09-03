@@ -78,6 +78,7 @@ namespace SisComWeb.Aplication.Models
         public byte AfectoTotalInafecto { get; set; }
         public decimal Total { get; set; }
         public byte AfectoTotal { get; set; }
+        public string Impresion { get; set; }
     }
 
     public class FiltroLiquidacion

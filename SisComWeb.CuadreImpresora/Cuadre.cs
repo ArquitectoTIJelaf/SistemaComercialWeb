@@ -4,6 +4,7 @@ using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.Text;
 
 namespace SisComWeb.CuadreImpresora
@@ -18,7 +19,7 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {
             StringBuilder texto = new StringBuilder();
-            
+
             // Impresora Térmica
             if (venta.TipoImpresora == 1)
             {
@@ -360,15 +361,49 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteLiquidacion(LiquidacionEntity liquidacion)
         {
             StringBuilder texto = new StringBuilder();
-            texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN TOTAL DEL DÍA " + DateTime.Now.ToString("dd/MM/yyyy"), 30, "|||^"));
-            texto.AppendLine("|||^" + string.Format("{0, -20}{1, -10}", liquidacion.Sucursal, "FECHA:" + liquidacion.Fecha));
-            texto.AppendLine(SplitStringPreserving("USUARIO:" + liquidacion.Usuario, 30, "|||^", false));
+            texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN TOTAL DEL DÍA " + DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"), 30, "|||^"));
+            texto.AppendLine(" ");
+            texto.AppendLine(SplitStringPreserving("SUCURSAL:" + liquidacion.Sucursal, 30, "||||^", false));
+            texto.AppendLine(SplitStringPreserving("USUARIO :" + liquidacion.Usuario, 30, "||||^", false));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(SplitStringPreserving("INGRESOS", 30, "|||^"));
+            texto.AppendLine(" ");
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VENTA DE PASAJES", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.PasIng)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "ING. VENTA REMOTA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.VenRem)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VENTA DE RUTAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Venrut)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "ENCOMIENDAS Y GIROS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.VenEnc)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VENTA DE EXCESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.VenExe)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "FACTURA LIBRE", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.FacLib)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "GIROS RECIBIDOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.GirRec)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "COBRANZAS DESTINO", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.CobDes)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "COBRANZAS DELIVERY", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.CobDel)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "INGRESOS DE CAJA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.IngCaj)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "INGRESO DE DETRACCIÓN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.IngDet)));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(SplitStringPreserving("EGRESOS", 30, "|||^"));
+            texto.AppendLine(" ");
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "REMOTOS EMITIDOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.RemEmi)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "BOLETOS CREDITO", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.BolCre)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "WEB EMITIDOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.WebEmi)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "RED BUS EMITIDOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.RedBus)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "TIENDA VIRTUAL", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TieVir)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "DELIVERY EMITIDOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.DelEmi)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VENTA TARJETA PASAJES", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Ventar)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VTA. TARJETA ENCOMIENDAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Enctar)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "EGRESOS DE CAJA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.EgrCaj)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "GIROS ENTREGADOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.GirEnt)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "BOL. ANUL. OTRA FECHA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.BolAnF)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "VALES ANULADOS REMOTOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.ValAnR)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "POR PAGAR ENCOMIENDAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.EncPag)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "CUENTA CTE GUIAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Ctagui)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "CUENTA CTE CAN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.CtaCan)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "NOTAS CRED. EMITIDAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Notcre)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "TOTAL DE DETRACCIÓN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Totdet)));
+            texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "GASTOS RUTA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Gasrut)));
             texto.AppendLine(new string('-', 42));
-
+            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL INGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalAfecto)));
+            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL EGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalInafecto)));
+            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL (ING - EGR)", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Total)));            
             texto.AppendLine(" ");
 
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
