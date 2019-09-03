@@ -335,8 +335,6 @@ namespace SisComWeb.Entity
 
         public short EmbarqueCod { get; set; }
 
-        public string EmbarqueDirAgencia { get; set; }
-
         // Reimpresión
         public short UsuarioCodigo { get; set; }
 

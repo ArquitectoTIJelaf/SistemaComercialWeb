@@ -18,6 +18,7 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {
             StringBuilder texto = new StringBuilder();
+            
             // Impresora Térmica
             if (venta.TipoImpresora == 1)
             {
@@ -30,12 +31,12 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("");
                 texto.AppendLine("^FECHA DE EMISIÓN : " + venta.EmisionFecha + " - " + venta.EmisionHora);
                 texto.AppendLine("^NRO. DOCUMENTO   : " + venta.DocNumero);
-                texto.AppendLine("^PASAJERO         : " + venta.PasNombreCom);
+                texto.AppendLine(SplitStringPreserving("PASAJERO         : " + venta.PasNombreCom, 45, "^", false));
                 if (venta.BoletoTipo == "F")
                 {
                     texto.AppendLine("^NRO. RUC         : " + venta.PasRuc);
-                    texto.AppendLine("^CLIENTE          : " + venta.PasRazSocial);
-                    texto.AppendLine("^DIRECCION        : " + venta.PasDireccion);
+                    texto.AppendLine(SplitStringPreserving("CLIENTE          : " + venta.PasRazSocial, 45, "^", false));
+                    texto.AppendLine(SplitStringPreserving("DIRECCION        : " + venta.PasDireccion, 45, "^", false));
                 }
                 texto.AppendLine("^COD. CAJERO      : " + venta.CajeroCod);
                 texto.AppendLine(new string('-', 42));
@@ -48,7 +49,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("|||^FECHA VIAJE    : " + venta.FechaViaje);
                 texto.AppendLine("|||^HORA DE SALIDA : " + venta.EmbarqueHora);
                 texto.AppendLine("|||^ASIENTO        : " + venta.NumeAsiento);
-                texto.AppendLine(SplitStringPreserving("DIR.EMBARQUE: " + venta.EmbarqueDir, 30, "||||^", false));
+                texto.AppendLine(SplitStringPreserving("DIR.EMBARQUE: " + venta.EmpDirAgencia, 30, "||||^", false));
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine("|||^TOTAL" + ("S/ " + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan)).PadLeft(20));
                 texto.AppendLine("^SON: " + venta.PrecioDes);
@@ -205,8 +206,8 @@ namespace SisComWeb.CuadreImpresora
                 if (venta.BoletoTipo == "F")
                 {
                     texto.AppendLine("^NRO. RUC         : " + venta.PasRuc);
-                    texto.AppendLine("^CLIENTE          : " + venta.PasRazSocial);
-                    texto.AppendLine("^DIRECCION        : " + venta.PasDireccion);
+                    texto.AppendLine(SplitStringPreserving("CLIENTE          : " + venta.PasRazSocial, 45, "^", false));
+                    texto.AppendLine(SplitStringPreserving("DIRECCION        : " + venta.PasDireccion, 45, "^", false));
                 }
                 texto.AppendLine("^COD. CAJERO      : " + venta.CajeroCod);
                 texto.AppendLine(new string('-', 42));
@@ -216,15 +217,15 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(" # DESCRIPCIÓN                      TOTAL");
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine(" 1 SERVICIO DE TRANSPORTE EN LA     " + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan));
-                texto.AppendLine("   RUTA: " + venta.NomOriPas + " - " + venta.NomDesPas);
+                texto.AppendLine(SplitStringPreserving("RUTA: " + venta.NomOriPas + " - " + venta.NomDesPas, 40, "   ", false));
                 texto.AppendLine("   SERVICIO: " + venta.NomServicio);
                 texto.AppendLine("   NRO ASIENTO: " + venta.NumeAsiento);
-                texto.AppendLine("   PASAJERO: " + venta.PasNombreCom);
+                texto.AppendLine(SplitStringPreserving("PASAJERO: " + venta.PasNombreCom, 40, "   ", false));
                 texto.AppendLine("   DNI: " + venta.DocNumero);
                 texto.AppendLine("   FECHA VIAJE: " + venta.FechaViaje);
                 texto.AppendLine("   HORA EMBARQUE: " + venta.EmbarqueHora);
                 texto.AppendLine(SplitStringPreserving("LUGAR EMBARQUE: " + venta.EmbarqueDir, 40, "   ", false));
-                texto.AppendLine(SplitStringPreserving("DIR. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
+                texto.AppendLine(SplitStringPreserving("DIR. EMBARQUE: " + venta.EmpDirAgencia, 40, "   ", false));
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {
