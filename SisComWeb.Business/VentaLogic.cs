@@ -1840,12 +1840,14 @@ namespace SisComWeb.Business
                 foreach (var entidad in Listado)
                 {
                     var paginaWebEmisor = string.Empty;
+                    var resolucionAutorizado = string.Empty;
                     var buscarDireccionPVenta = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, int.Parse(entidad.EmbarqueCod.ToString()));
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
                     {
                         paginaWebEmisor = ObtenerPaginaWebEmisor(entidad.EmpRuc);
+                        resolucionAutorizado = ObtenerResolucionAutorizado(entidad.EmpRuc);
                         if (string.IsNullOrEmpty(paginaWebEmisor))
                             return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
                     }
@@ -1970,6 +1972,7 @@ namespace SisComWeb.Business
 
                     entidad.NomTipVenta = "EFECTIVO";
                     entidad.LinkPag_FE = paginaWebEmisor;
+                    entidad.ResAut_FE = resolucionAutorizado;
                     entidad.EmbarqueDirAgencia = buscarDireccionPVenta.Direccion;
 
                     var original = CuadreImpresora.Cuadre.WriteText(entidad, TipoImpresion);
@@ -2285,6 +2288,30 @@ namespace SisComWeb.Business
                 paginaWebEmisor = serviceFE.GetParametro(seguridadFE).Rempresa.PaginaWebEmisor ?? string.Empty;
 
                 return paginaWebEmisor;
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return null;
+            }
+        }
+
+        public static string ObtenerResolucionAutorizado(string Ruc)
+        {
+            try
+            {
+                var resolucionAutorizado = string.Empty;
+
+                var serviceFE = new Ws_SeeFacteSoapClient();
+                var seguridadFE = new Security
+                {
+                    ID = Ruc,
+                    User = UserWebSUNAT
+                };
+                
+                resolucionAutorizado = serviceFE.GetParametro(seguridadFE).Rempresa.ResolucionAutorizado ?? string.Empty;
+
+                return resolucionAutorizado;
             }
             catch (Exception ex)
             {
