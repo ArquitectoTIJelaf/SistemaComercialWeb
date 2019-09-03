@@ -6820,27 +6820,29 @@
                             this.list.tiposDoc = _.cloneDeep(tiposDoc);
                     }
                     else {
-                        if (this.list.tiposDoc.length !== appController.getTiposDocumentosSinRaya().length)
+                        if (this.list.tiposDoc.length > appController.getTiposDocumentosSinRaya().length)
                             this.list.tiposDoc = appController.getTiposDocumentosSinRaya();
                     }
                 },
                 listVentasCampoCodiTipoDoc: function (newVal, oldVal) {
-                    if (newVal) {
-                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+                    if (this.oldIndexVenta === this.indexVenta) {
+                        if (this.pickedBusVenta === 'R' && newVal) {
+                            this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                        if (newVal.id === '00') {
-                            this.list.ventas[this.indexVenta].Documento = '0';
-                            this.disabledDocumentoRaya = true;
-                        }
-                        else {
-                            this.list.ventas[this.indexVenta].Documento = '';
-                            this.disabledDocumentoRaya = false;
-                        }
+                            if (newVal.id === '00') {
+                                this.list.ventas[this.indexVenta].Documento = '0';
+                                this.disabledDocumentoRaya = true;
+                            }
+                            else {
+                                this.list.ventas[this.indexVenta].Documento = '';
+                                this.disabledDocumentoRaya = false;
+                            }
 
-                        if (newVal.id === '01')
-                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
-                        else
-                            this.list.ventas[this.indexVenta].Nacionalidad = '';
+                            if (newVal.id === '01')
+                                this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
+                            else
+                                this.list.ventas[this.indexVenta].Nacionalidad = '';
+                        }
                     }
                 },
                 listVentasCampoDocumento: function (newVal, oldVal) {
@@ -6965,6 +6967,7 @@
                         });
                     }
                 },
+                // Debe ser el último watch que se ejecute.
                 indexVenta: function (newVal, oldVal) {
                     this.oldIndexVenta = _.cloneDeep(this.indexVenta);
                 }
