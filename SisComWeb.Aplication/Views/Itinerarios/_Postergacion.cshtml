@@ -7,9 +7,9 @@
             </div>
             <div class="modal-body">
                 <div class="form-horizontal">
-                    <div class="form-group m-b-5">
+                    <div class="form-group m-b-0">
                         <div class="col-md-12 separate-in-form">
-                            <label class="col-md-2 control-label label-sm">Empresa:</label>
+                            <label class="col-md-2 control-label label-sm" style="text-align: left; ">Empresa:</label>
                             <div class="col-md-10">
                                 <v-select v-model="filtro.empresa"
                                           id="cboEmpresaPos"
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 separate-in-form">
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label class="control-label label-sm" for="txtSeriePos">Serie:</label>
                                 <input v-model="filtro.serie"
                                        id="txtSeriePos"
@@ -42,7 +42,7 @@
                                        v-mask="'N'.repeat(4)"
                                        autocomplete="off" />
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <label class="control-label label-sm" for="txtNumeroPos">Número:</label>
                                 <input v-model="filtro.documento"
                                        id="txtNumeroPos"
@@ -56,16 +56,31 @@
                                        v-mask="'#'.repeat(7)"
                                        autocomplete="off" />
                             </div>
-                            <div class="col-md-3">
-                                <label style="width: 100%">&nbsp;</label>
-                                <button @@click="searchPasajero" :disabled="!filledCampos || postClick" id="btnBuscarPos" class="btn btn-primary waves-effect">
-                                    <span class="fa fa-search fa-fw"></span>Buscar
-                                </button>
+                            <div class="col-md-7">
+                                <label class="col-md-12 control-label label-sm">&nbsp;</label>
+                                <div class="col-md-12">
+                                    <input type="radio" id="radCambioHorario" value="0" v-model="TipoPostergacion">
+                                    <label for="radCambioHorario"
+                                           class="lblBoletoTipoDir"
+                                           title="Cambio de horario">
+                                        C. de horario
+                                    </label>
+                                    <input type="radio" id="radPostergacion" value="1" v-model="TipoPostergacion">
+                                    <label for="radPostergacion"
+                                           class="lblBoletoTipoDir">
+                                        Postergación
+                                    </label>
+                                </div>
                             </div>
+                        </div>
+                        <div class="col-md-12 separate-in-form" style="text-align: right; ">
+                            <button @@click="searchPasajero" :disabled="!filledCampos || postClick" id="btnBuscarPos" class="btn btn-primary waves-effect">
+                                <span class="fa fa-search fa-fw"></span>Buscar
+                            </button>
                         </div>
                     </div>
                     <template v-if="showBeneficiario">
-                        <div class="form-group m-b-5">
+                        <div class="form-group m-b-0">
                             <div class="col-md-12 separate-in-form">
                                 <label class="control-label label-sm">Nombres</label>
                                 <input :value="objBeneficiario.Nombre" class="form-control input-sm" disabled="disabled"/>

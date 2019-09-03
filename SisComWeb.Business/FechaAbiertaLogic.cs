@@ -127,30 +127,20 @@ namespace SisComWeb.Business
                     CodiDestino = filtro.CodiDestino,
                     NomOrigen = filtro.NomSucursal
                 };
-
                 var verificaCodiProgramacion = VentaLogic.VerificaCodiProgramacion(objProgramacion);
                 if (verificaCodiProgramacion == 0)
                     return new Response<VentaResponse>(false, valor, Message.MsgErrorVerificaCodiProgramacion, false);
                 else
                     filtro.CodiProgramacion = verificaCodiProgramacion;
 
+                // Seteo 'valor.CodiProgramacion'
                 valor.CodiProgramacion = filtro.CodiProgramacion;
-
-                var ventaRealizada = new VentaRealizadaEntity
-                {
-                    NumeAsiento = filtro.NumeAsiento
-                };
-                listaVentasRealizadas.Add(ventaRealizada);
-
-                valor.ListaVentasRealizadas = listaVentasRealizadas;
 
                 var venta = VentaRepository.BuscarVentaById(filtro.IdVenta);
                 if (venta.CodiProgramacion != 0)
-                {
                     return new Response<VentaResponse>(false, valor, Message.MsgExcSeEncontrabaEnFechaAbierta, false);
-                }
-
-                var Response = FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
+                
+                FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
                 FechaAbiertaRepository.VentaDerivadaUpdateViaje(filtro.IdVenta, filtro.FechaViaje, filtro.HoraViaje, filtro.CodiServicio);
                 FechaAbiertaRepository.VentaUpdateCnt(0, filtro.CodiProgramacion, filtro.Oficina, filtro.Oficina);
@@ -179,6 +169,16 @@ namespace SisComWeb.Business
                     Obs5 = string.Empty
                 };
                 VentaRepository.GrabarAuditoria(objAuditoria);
+
+                // Añado 'ventaRealizada'
+                var ventaRealizada = new VentaRealizadaEntity
+                {
+                    NumeAsiento = filtro.NumeAsiento
+                };
+                listaVentasRealizadas.Add(ventaRealizada);
+
+                // Seteo 'valor.ListaVentasRealizadas'
+                valor.ListaVentasRealizadas = listaVentasRealizadas;
 
                 return new Response<VentaResponse>(true, valor, Message.MsgCorrectoVentaUpdatePostergacionEle, true);
             }

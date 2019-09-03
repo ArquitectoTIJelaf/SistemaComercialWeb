@@ -130,9 +130,12 @@ namespace SisComWeb.Repository
                 db.AddParameter("@ruta", DbType.String, ParameterDirection.Input, "");
                 db.AddParameter("@servicio", DbType.String, ParameterDirection.Input, filtro.CodiServicio);
                 db.AddParameter("@TipoDoc", DbType.String, ParameterDirection.Input, filtro.Tipo);
+
                 db.Execute();
+
                 Response = true;
             }
+
             return Response;
         }
 

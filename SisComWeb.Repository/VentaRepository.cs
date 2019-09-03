@@ -185,7 +185,11 @@ namespace SisComWeb.Repository
                 FlagVenta = string.Empty,
                 TipoDocumento = string.Empty,
                 Documento = string.Empty,
-                ImpManifiesto = string.Empty
+                ImpManifiesto = string.Empty,
+                Cierre = string.Empty,
+                NivelAsiento = string.Empty,
+
+                CodiEsca = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -214,8 +218,13 @@ namespace SisComWeb.Repository
                         entidad.FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty;
                         entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? string.Empty;
                         entidad.Documento = Reader.GetStringValue(drlector, "DNI") ?? string.Empty;
-
                         entidad.ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty;
+                        entidad.Cierre = Reader.GetStringValue(drlector, "Cierre") ?? string.Empty;
+                        entidad.NivelAsiento = Reader.GetStringValue(drlector, "NivelAsiento") ?? string.Empty;
+
+                        entidad.CodiEsca = Reader.GetStringValue(drlector, "CodiEsca") ?? string.Empty;
+                        entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
+                        entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA");
                         break;
                     }
                 }
@@ -1545,6 +1554,30 @@ namespace SisComWeb.Repository
                 db.AddParameter("@CLIENTE", DbType.String, ParameterDirection.Input, Cliente);
                 db.AddParameter("@USUARIO", DbType.Int32, ParameterDirection.Input, Usuario);
                 db.AddParameter("@Oficina", DbType.Int32, ParameterDirection.Input, Oficina);
+
+                db.Execute();
+
+                valor = true;
+            }
+
+            return valor;
+        }
+
+        public static bool InsertarBoletosPostergados(string CodiEmpresa, string Boleto, string Tipo, int CodiUsuario, string CodiSucursal, string CodiPventa, string FechaActual, string TipoDoc)
+        {
+            var valor = new bool();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Bol_Postergados_Insert_Ele";
+                db.AddParameter("@empresa", DbType.String, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@NUMERO", DbType.String, ParameterDirection.Input, Boleto);
+                db.AddParameter("@tipo", DbType.String, ParameterDirection.Input, Tipo);
+                db.AddParameter("@USUARIO", DbType.Int32, ParameterDirection.Input, CodiUsuario);
+                db.AddParameter("@Sucursal", DbType.String, ParameterDirection.Input, CodiSucursal);
+                db.AddParameter("@pVenta", DbType.String, ParameterDirection.Input, CodiPventa);
+                db.AddParameter("@fecha", DbType.String, ParameterDirection.Input, FechaActual);
+                db.AddParameter("@tipo_doc", DbType.String, ParameterDirection.Input, TipoDoc);
 
                 db.Execute();
 

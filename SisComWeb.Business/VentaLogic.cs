@@ -673,7 +673,7 @@ namespace SisComWeb.Business
                             Obs1 = string.Empty,
                             Obs2 = string.Empty,
                             Obs3 = string.Empty,
-                            Obs4 = "POSTEGADO A FECHA ABIERTA",
+                            Obs4 = "POSTERGADO A FECHA ABIERTA",
                             Obs5 = "TERMINAL : " + entidad.CodiTerminal
                         };
                         VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
@@ -1622,8 +1622,6 @@ namespace SisComWeb.Business
                 var valor = new VentaResponse();
                 var listaVentasRealizadas = new List<VentaRealizadaEntity>();
 
-                var postergarVenta = new bool();
-
                 // Verifica 'CodiProgramacion'
                 var objProgramacion = new ProgramacionEntity()
                 {
@@ -1654,24 +1652,61 @@ namespace SisComWeb.Business
                 // Seteo 'valor.CodiProgramacion'
                 valor.CodiProgramacion = filtro.CodiProgramacion;
 
-                postergarVenta = VentaRepository.PostergarVenta(filtro.IdVenta, filtro.CodiProgramacion, filtro.NumeAsiento, filtro.CodiServicio, filtro.FechaViaje, filtro.HoraViaje);
-                if (postergarVenta)
+                var objPostergacion = new FechaAbiertaRequest()
                 {
-                    // Añado 'ventaRealizada'
-                    var ventaRealizada = new VentaRealizadaEntity
-                    {
-                        NumeAsiento = filtro.NumeAsiento.ToString("D2"),
-                        BoletoCompleto = string.Empty
-                    };
-                    listaVentasRealizadas.Add(ventaRealizada);
+                    CodiEsca = filtro.CodiEsca,
+                    CodiProgramacion = filtro.CodiProgramacion, // DEL PLANO FINAL
+                    CodiOrigen = filtro.CodiOrigenBoleto, // DEL BOLETO
+                    IdVenta = filtro.IdVenta,
+                    NumeAsiento = filtro.NumeAsiento.ToString("D2"), // DEL PLANO FINAL
+                    CodiRuta = filtro.CodiRutaBoleto.ToString(), // DEL BOLETO
+                    CodiServicio = filtro.CodiServicio.ToString(), // DEL PLANO FINAL
+                    Tipo = "" // No es utilizado en: Usp_Tb_Venta_Update_Postergacion_Ele
+                };
+                FechaAbiertaRepository.VentaUpdatePostergacionEle(objPostergacion);
+                FechaAbiertaRepository.VentaDerivadaUpdateViaje(filtro.IdVenta, filtro.FechaViaje, filtro.HoraViaje, filtro.CodiServicio.ToString());
+                FechaAbiertaRepository.VentaUpdateCnt(filtro.CodiProgramacionBoleto, filtro.CodiProgramacion, int.Parse(filtro.CodiOrigenBoleto), int.Parse(filtro.CodiOrigenBoleto));
+                if(filtro.CodiProgramacion > 0)
+                    FechaAbiertaRepository.VentaUpdateCnt(filtro.CodiProgramacion, filtro.CodiProgramacion, int.Parse(filtro.CodiOrigenBoleto), int.Parse(filtro.CodiOrigenBoleto));
+                FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
+                VentaRepository.InsertarBoletosPostergados(filtro.CodiEmpresaUsuario, filtro.BoletoCompleto.Substring(1), "1", filtro.CodiUsuario, filtro.CodiSucursalUsuario, filtro.CodiPuntoVenta.ToString(), DataUtility.ObtenerFechaDelSistema(), filtro.BoletoCompleto.Substring(0, 1));
 
-                    // Seteo 'valor.ListaVentasRealizadas'
-                    valor.ListaVentasRealizadas = listaVentasRealizadas;
+                // Graba 'Auditoria'
+                var objAuditoria = new AuditoriaEntity
+                {
+                    CodiUsuario = filtro.CodiUsuario,
+                    NomUsuario = filtro.NomUsuario,
+                    Tabla = "VENTA",
+                    TipoMovimiento = "POSTERGACION DE PASAJES",
+                    Boleto = filtro.BoletoCompleto.Substring(1),
+                    NumeAsiento = filtro.NumeAsiento.ToString("D2"),
+                    NomOficina = filtro.NomSucursalUsuario,
+                    NomPuntoVenta = filtro.CodiPuntoVenta.ToString(),
+                    Pasajero = filtro.NomPasajero,
+                    FechaViaje = filtro.FechaViajeBoleto,
+                    HoraViaje = filtro.HoraViajeBoleto,
+                    NomDestino = filtro.NomDestinoBoleto, // DEL BOLETO
+                    Precio = filtro.PrecioVenta, // DEL BOLETO
+                    Obs1 = "TERMINAL : " + filtro.CodiTerminal,
+                    Obs2 = string.Empty,
+                    Obs3 = string.Empty,
+                    Obs4 = filtro.CodiProgramacion <= 0 ? "POSTERGADO A FECHA ABIERTA" : string.Empty,
+                    Obs5 = string.Empty
+                };
+                VentaRepository.GrabarAuditoria(objAuditoria);
 
-                    return new Response<VentaResponse>(true, valor, Message.MsgCorrectoPostergarVenta, true);
-                }
-                else
-                    return new Response<VentaResponse>(false, valor, Message.MsgErrorPostergarVenta, true);
+                // Añado 'ventaRealizada'
+                var ventaRealizada = new VentaRealizadaEntity
+                {
+                    NumeAsiento = filtro.NumeAsiento.ToString("D2"),
+                    BoletoCompleto = string.Empty
+                };
+                listaVentasRealizadas.Add(ventaRealizada);
+
+                // Seteo 'valor.ListaVentasRealizadas'
+                valor.ListaVentasRealizadas = listaVentasRealizadas;
+
+                return new Response<VentaResponse>(true, valor, Message.MsgCorrectoPostergarVenta, true);
             }
             catch (Exception ex)
             {
@@ -1735,38 +1770,31 @@ namespace SisComWeb.Business
                 FechaAbiertaRepository.VentaUpdateCnt(request.CodiProgramacion, 0, int.Parse(request.CodiOrigen), 0);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(request.IdVenta);
 
-
-                if (modificarVentaAFechaAbierta)
+                // Graba 'AuditoriaFechaAbierta'
+                var objAuditoriaFechaAbierta = new AuditoriaEntity
                 {
+                    CodiUsuario = request.CodiUsuario,
+                    NomUsuario = request.NomUsuario,
+                    Tabla = "VENTA",
+                    TipoMovimiento = "POSTERGACION DE PASAJES",
+                    Boleto = request.BoletoCompleto, // Verificar
+                    NumeAsiento = request.NumeAsiento.ToString("D2"),
+                    NomOficina = request.NomOficina,
+                    NomPuntoVenta = request.CodiPuntoVenta.ToString(),
+                    Pasajero = request.Pasajero,
+                    FechaViaje = request.FechaViaje,
+                    HoraViaje = request.HoraViaje,
+                    NomDestino = request.NomDestino,
+                    Precio = request.PrecioVenta,
+                    Obs1 = string.Empty,
+                    Obs2 = string.Empty,
+                    Obs3 = string.Empty,
+                    Obs4 = "POSTERGADO A FECHA ABIERTA",
+                    Obs5 = "TERMINAL : " + request.CodiTerminal
+                };
+                VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
 
-                    // Graba 'AuditoriaFechaAbierta'
-                    var objAuditoriaFechaAbierta = new AuditoriaEntity
-                    {
-                        CodiUsuario = request.CodiUsuario,
-                        NomUsuario = request.NomUsuario,
-                        Tabla = "VENTA",
-                        TipoMovimiento = "POSTERGACION DE PASAJES",
-                        Boleto = request.BoletoCompleto, // Verificar
-                        NumeAsiento = request.NumeAsiento.ToString("D2"),
-                        NomOficina = request.NomOficina,
-                        NomPuntoVenta = request.CodiPuntoVenta.ToString(),
-                        Pasajero = request.Pasajero,
-                        FechaViaje = request.FechaViaje,
-                        HoraViaje = request.HoraViaje,
-                        NomDestino = request.NomDestino,
-                        Precio = request.PrecioVenta,
-                        Obs1 = string.Empty,
-                        Obs2 = string.Empty,
-                        Obs3 = string.Empty,
-                        Obs4 = "POSTERGADO A FECHA ABIERTA",
-                        Obs5 = "TERMINAL : " + request.CodiTerminal
-                    };
-                    VentaRepository.GrabarAuditoria(objAuditoriaFechaAbierta);
-
-                    return new Response<bool>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
-                }
-                else
-                    return new Response<bool>(false, modificarVentaAFechaAbierta, Message.MsgErrorModificarVentaAFechaAbierta, true);
+                return new Response<bool>(true, modificarVentaAFechaAbierta, Message.MsgCorrectoModificarVentaAFechaAbierta, true);
             }
             catch (Exception ex)
             {

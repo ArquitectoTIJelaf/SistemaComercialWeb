@@ -34,5 +34,15 @@
         public string Documento { get; set; }
 
         public string ImpManifiesto { get; set; }
+
+        public string Cierre { get; set; }
+
+        public string NivelAsiento { get; set; }
+
+        public string CodiEsca { get; set; }
+
+        public short CodiRuta { get; set; }
+
+        public decimal PrecioVenta { get; set; }
     }
 }
