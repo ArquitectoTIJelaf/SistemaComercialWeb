@@ -1578,7 +1578,6 @@
                 validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
                     return appVueVenta.validaDocumentoRepetido(_TipoDocumento, _NumeroDocumento, _NroAsiento);
                 },
-
                 consultaPos: async function (_CodTab, _CodEmp) {
                     return await appVueVenta.consultaPos(_CodTab, _CodEmp);
                 },
@@ -7516,14 +7515,12 @@
                                 })
                                     .then(function (res) {
                                         var _listaImpresiones = res.data.Valor;
+                                        var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
-                                            for (i = 0; i < _listaImpresiones.length; i++) {
+                                            for (i = 0; i < _listaLength; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        if (i === 0)
-                                                            _this.imprimirBoleto(_listaImpresiones[i], true);
-                                                        else
-                                                            _this.imprimirBoleto(_listaImpresiones[i], false);
+                                                        _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
                                                     }, i * 5000);
                                                 })(i);
                                             }
@@ -7547,14 +7544,12 @@
                                 })
                                     .then(function (res) {
                                         var _listaImpresiones = res.data.Valor;
+                                        var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        if (i === 0)
-                                                            _this.imprimirBoleto(_listaImpresiones[i], true);
-                                                        else
-                                                            _this.imprimirBoleto(_listaImpresiones[i], false);
+                                                        _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
                                                     }, i * 5000);
                                                 })(i);
                                             }
@@ -7571,43 +7566,53 @@
                             break;
                     }
                 },
-                imprimirBoleto: function (_Documentos, _PrimerBoleto) {
+                imprimirBoleto: function (_Documentos, _Posicion, _CantidadVentas) {
                     var auxValidate = true;
                     var auxUrl = '';
-
+                    
+                    // Imprime '_Documentos'
                     for (const doc in _Documentos) {
                         var docValor = `${_Documentos[doc]}`;
 
-                        if (!docValor)
-                            docValor = " ";
+                        if (docValor) {
+                            if (doc === 'Original')
+                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
+                            else if (doc === 'Copia1')
+                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I';
+                            else if (doc === 'Copia2')
+                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
 
-                        if (doc === 'Original')
-                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
-                        else if (doc === 'Copia1')
-                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I';
-                        else if (doc === 'Copia2')
-                            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
+                            if (auxUrl) {
+                                // Servicio local
+                                axios({ method: "GET", "url": auxUrl })
+                                    .then(res => {
+                                        //APP.msg.success('Boleto enviado a imprimir correctamente.');
+                                    }, error => {
+                                        //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                                        auxValidate = false;
+                                    });
+                            }
 
-                        if (auxUrl) {
-                            axios({ method: "GET", "url": auxUrl })
-                                .then(res => {
-                                    //APP.msg.success('Boleto enviado a imprimir correctamente.');
-                                }, error => {
-                                    //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
-                                    auxValidate = false;
-                                });
+                            // Para continuar con el siguiente 'doc'
+                            auxUrl = '';
+
+                            // Valida 'error'
+                            if (!auxValidate)
+                                break;
                         }
-
-                        auxUrl = '';
-
-                        if (!auxValidate)
-                            break;
                     }
 
+                    // Valida: Si es venta múltiple y no es el último boleto, entonces se realiza un 'CORTE_SEPARADOR'
+                    if (_CantidadVentas > 1 && _CantidadVentas > (_Posicion + 1)) {
+                        auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'CORTE_SEPARADOR';
+                        axios({ method: "GET", "url": auxUrl })
+                    } 
+
+                    // Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
                     if (auxValidate) {
-                        if (_PrimerBoleto)
+                        if (_Posicion === 0)
                             APP.msg.success('Boleto enviado a imprimir correctamente.');
-                    }
+                    }  
                     else
                         APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                 }
@@ -8808,6 +8813,7 @@
                             this.getUsuarioControlPwd(search, loading);
                             break;
                         case ClaveAnulacionPanel234:
+                        case ClaveReimpresionPanel226:
                             this.getUsuarioClaveAnuRei(search, loading);
                             break;
                     }

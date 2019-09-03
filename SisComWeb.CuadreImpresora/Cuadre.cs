@@ -52,7 +52,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine("^CÓDIGO: " + venta.CodigoX_FE);
                 texto.AppendLine(PadBoth("Autorizado mediante", 43));
-                texto.AppendLine(PadBoth("N° XXXXX/SUNAT", 43));
+                texto.AppendLine(PadBoth("N° " + venta.ResAut_FE + "/SUNAT", 43));
                 texto.AppendLine(PadBoth("Representación impresa del comprobante.", 43));
                 texto.AppendLine(PadBoth("Términos y condiciones, visite", 43));
                 texto.AppendLine(SplitStringPreserving(venta.LinkPag_FE, 45, "^", true));
@@ -106,7 +106,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(39) + PadBoth("OP.INAFECTA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(10));
                 texto.AppendLine("Autorizado mediante: ".PadRight(40) + PadBoth("OP. GRAVADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
-                texto.AppendLine("N° XXXXX/Sunat ".PadRight(40) + PadBoth("OP. EXONERADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
+                texto.AppendLine("N° " + venta.ResAut_FE + "/Sunat ".PadRight(40) + PadBoth("OP. EXONERADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
                 texto.AppendLine("I.G.V. 18%".PadLeft(65) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
                 texto.AppendLine("IMPORTE TOTAL".PadLeft(65) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(10));
                 texto.AppendLine(new string('-', 80));
@@ -157,7 +157,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(32) + PadBoth("OP.INAFECTA", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(8));
                 texto.AppendLine("Autorizado mediante: ".PadRight(32) + PadBoth("OP. GRAVADA", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
-                texto.AppendLine("N° XXXXX/Sunat ".PadRight(32) + PadBoth("I.G.V. 18%", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
+                texto.AppendLine("N° " + venta.ResAut_FE + "/Sunat ".PadRight(32) + PadBoth("I.G.V. 18%", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
                 texto.AppendLine("IMPORTE TOTAL".PadLeft(52) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(8));
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine(SplitStringPreserving("  Consulte el documento en: " + venta.LinkPag_FE, 65, "", false));
@@ -272,7 +272,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(39) + PadBoth("OP.INAFECTA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(10));
                 texto.AppendLine("Autorizado mediante: ".PadRight(40) + PadBoth("OP. GRAVADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
-                texto.AppendLine("N° XXXXX/Sunat ".PadRight(40) + PadBoth("OP. EXONERADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
+                texto.AppendLine("N° " + venta.ResAut_FE + "/Sunat ".PadRight(40) + PadBoth("OP. EXONERADA", 25) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
                 texto.AppendLine("I.G.V. 18%".PadLeft(65) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(10));
                 texto.AppendLine("IMPORTE TOTAL".PadLeft(65) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(10));
                 texto.AppendLine(new string('-', 80));
@@ -323,7 +323,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine(("CODIGO: " + venta.CodigoX_FE).PadRight(32) + PadBoth("OP.INAFECTA", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(8));
                 texto.AppendLine("Autorizado mediante: ".PadRight(32) + PadBoth("OP. GRAVADA", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
-                texto.AppendLine("N° XXXXX/Sunat ".PadRight(32) + PadBoth("I.G.V. 18%", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
+                texto.AppendLine("N° " + venta.ResAut_FE + "/Sunat ".PadRight(32) + PadBoth("I.G.V. 18%", 20) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(0M).PadLeft(8));
                 texto.AppendLine("IMPORTE TOTAL".PadLeft(52) + "S/".PadLeft(5) + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan).PadLeft(8));
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine(SplitStringPreserving("  Consulte el documento en: " + venta.LinkPag_FE, 65, "", false));
