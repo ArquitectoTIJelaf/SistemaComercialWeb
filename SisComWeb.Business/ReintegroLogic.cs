@@ -547,10 +547,10 @@ namespace SisComWeb.Business
                             PolizaFechaVen = entidad.PolizaFechaVen,
 
                             //NEW
-                            EmpRuc = entidad.RucEmpresa,
-                            EmpRazSocial = entidad.NomEmpresa,
-                            EmpDireccion = entidad.DireccionEmpresa,
-                            EmpElectronico = entidad.ElectronicoEmpresa,
+                            EmpRuc = filtro.RucEmpresa,
+                            EmpRazSocial = filtro.NomEmpresa,
+                            EmpDireccion = filtro.DireccionEmpresa,
+                            EmpElectronico = filtro.ElectronicoEmpresa,
 
                             // Parámetros extras
                             EmpCodigo = entidad.CodiEmpresa,
