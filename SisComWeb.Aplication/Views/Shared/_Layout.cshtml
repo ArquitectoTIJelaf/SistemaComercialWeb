@@ -219,42 +219,115 @@
                 filtro: {
                     codEmpresa: '',
                     codSucursal: '',
-                    sucursal: '',
-                    fecha: '',
+                    fecha: moment().format('DD/MM/YYYY'),
                     codPuntVenta: '',
-                    puntVenta: '',
-                    usuario: ''
+                    codUsuario: '0'
                 },
                 list: {
-                    empresas: []
-                }
+                    empresas: [],
+                    sucursales: [],
+                    puntosVenta: [],
+                    usuarios: []
+                },
+                objLiquidacion: {}
             },
             methods: {
                 show: function () {
                     this.setData();
                     $('#appVueLiquidacion').modal('show');
                 },
-                setData: function () {
+                setData: async function () {
                     let _this = this;
-                    if (_this.list.empresas.length <= 0)
-                        _this.getEmpresas();
-                    if (!_this.filtro.usuario)
-                        _this.filtro.usuario = Usuario.Nombre;
+
+                    if (!_this.filtro.codEmpresa) {
+                        await _this.getEmpresas();
+                    }                       
+                    
                     if (!_this.filtro.codSucursal) {
-                        _this.filtro.codSucursal = Usuario.CodiSucursal;
-                        _this.filtro.sucursal = Usuario.NomSucursal;
+                        await _this.getSucursales();
                     }
+
                     if (!_this.filtro.codPuntVenta) {
-                        _this.filtro.codPuntVenta = Usuario.CodiPuntoVenta;
-                        _this.filtro.puntVenta = Usuario.NomPuntoVenta;
+                        await _this.getPuntosVenta();
                     }
+
+                    if (_this.filtro.codUsuario === '0') {
+                        await _this.getUsuarios(Usuario.Nombre);
+                    }
+
+                    _this.$nextTick(() => {
+                        _this.filtro.codEmpresa = String(Usuario.CodiEmpresa);
+                        _this.filtro.codSucursal = String(Usuario.CodiSucursal);
+                        _this.filtro.codPuntVenta = String(Usuario.CodiPuntoVenta);
+                        _this.filtro.codUsuario = String(Usuario.CodiUsuario);
+                        _this.getLiquidacion();
+                    })
                 },
-                getEmpresas: function () {
-                    var _this = this;
-                    APP.rq.axios2.get(APP.base + '/base/get-empresas')
+                getEmpresas: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.get(APP.base + '/base/get-empresas')
                         .then(res => {
                             if (res.data.Estado) {
                                 _this.list.empresas = _.cloneDeep(res.data.Valor);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getSucursales: async function() {
+                    let _this = this;
+                    await APP.rq.axios2.get(APP.base + '/base/get-oficinas')
+                        .then(res => {
+                            if (res.data.Estado) {
+                                _this.list.sucursales = _.cloneDeep(res.data.Valor);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getPuntosVenta: async function () {
+                    let _this = this;
+                    await APP.rq.axios2.get(APP.base + '/base/get-puntosventa')
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.puntosVenta = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getUsuarios: async function (search, loading) {
+                    var _this = this;
+                    if (loading)
+                        loading(true);
+                    await APP.rq.axios2.get(APP.base + '/base/get-usuarios' + APP.util.getQueryParamByObject({ value: search }))
+                        .then(res => {
+                            if (res.data.Estado) {
+                                if (loading)
+                                    loading(false);
+
+                                _this.list.usuarios = _.cloneDeep(res.data.Valor);
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                getLiquidacion: async function () {
+                    let _this = this;
+                    var input = {};
+                    input.FechaLiquidacion = _this.filtro.fecha;
+                    input.CodEmpresa = _this.filtro.codEmpresa;
+                    input.CodSucursal = _this.filtro.codSucursal;
+                    input.CodPuntVenta = _this.filtro.codPuntVenta;
+                    input.CodUsuario = _this.filtro.codUsuario;
+                    input.tipoLiq = (_this.filtro.codUsuario === '0') ? '1' : '0';
+                    await APP.rq.axios.post(APP.base + '/liquidacion/lista-liquidacion', input)
+                        .then(res => {
+                            if (res.data.Estado) {
+                                _this.objLiquidacion = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -279,17 +352,76 @@
                         if (value !== '' && value !== null) {
                             if (this.list.empresas.find(x => x.id === value.id)) {
                                 this.filtro.codEmpresa = value.id;
-                                this.$refs.refRESerie.focus()
                             }
                         } else {
                             this.filtro.codEmpresa = '';
                         }
 
                         this.$nextTick(() => {
-                            this.$refs.refREEmpresa.typeAheadPointer = this.$getSelectorVselect(this.list.empresas, value);
+                            this.$refs.refLIEmpresa.typeAheadPointer = this.$getSelectorVselect(this.list.empresas, value);
                         });
                     }
                 },
+                filtroCodiSucursal: {
+                    get: function () {
+                        if (this.list.sucursales.length > 0 && this.list.sucursales.find(x => x.id === this.filtro.codSucursal)) {
+                            return this.list.sucursales.find(x => x.id === this.filtro.codSucursal)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.sucursales.find(x => x.id === value.id)) {
+                                this.filtro.codSucursal = value.id;
+                            }
+                        } else {
+                            this.filtro.codSucursal = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLISucursal.typeAheadPointer = this.$getSelectorVselect(this.list.sucursales, value);
+                        });
+                    }
+                },
+                filtroCodiPuntVenta: {
+                    get: function () {
+                        if (this.list.puntosVenta.length > 0 && this.list.puntosVenta.find(x => x.id === this.filtro.codPuntVenta)) {
+                            return this.list.puntosVenta.find(x => x.id === this.filtro.codPuntVenta)
+                        }
+                    },
+                    set: function (value) {
+                        if (value !== '' && value !== null) {
+                            if (this.list.puntosVenta.find(x => x.id === value.id)) {
+                                this.filtro.codPuntVenta = value.id;
+                            }
+                        } else {
+                            this.filtro.codPuntVenta = '';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLIPuntVenta.typeAheadPointer = this.$getSelectorVselect(this.list.puntosVenta, value);
+                        });
+                    }
+                },
+                filtroCodiUsuario: {
+                    get: function () {
+                        if (this.list.usuarios.length > 0 && this.list.usuarios.find(x => x.id === this.filtro.codUsuario)) {
+                            return this.list.usuarios.find(x => x.id === this.filtro.codUsuario)
+                        }
+                    },
+                    set: function (value) {
+                        if (value) {                            
+                            if (this.list.usuarios.find(x => x.id === value.id))
+                                this.filtro.codUsuario = value.id;
+                        }
+                        else {
+                            this.filtro.codUsuario = '0';
+                        }
+
+                        this.$nextTick(() => {
+                            this.$refs.refLIUsuario.typeAheadPointer = this.$getSelectorVselect(this.list.usuarios, value);
+                        });
+                    }
+                }
             }
         });
 
