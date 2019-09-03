@@ -314,6 +314,8 @@ namespace SisComWeb.Entity
         public string CodigoX_FE { get; set; }
 
         public string LinkPag_FE { get; set; }
+        //03/09/2019
+        public string ResAut_FE { get; set; }
 
         public string TipoTerminalElectronico { get; set; }
 
