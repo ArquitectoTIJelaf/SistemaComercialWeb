@@ -1595,7 +1595,13 @@ namespace SisComWeb.Aplication.Controllers
                         FlagVenta = (string)data["FlagVenta"],
                         TipoDocumento = (string)data["TipoDocumento"],
                         Documento = (string)data["Documento"],
-                        ImpManifiesto = (string)data["ImpManifiesto"]
+                        ImpManifiesto = (string)data["ImpManifiesto"],
+                        Cierre = (string)data["Cierre"],
+                        NivelAsiento = (string)data["NivelAsiento"],
+
+                        CodiEsca = (string)data["CodiEsca"],
+                        CodiRuta = (short)data["CodiRuta"],
+                        PrecioVenta = (decimal)data["PrecioVenta"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -1625,7 +1631,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
-
                                     ",\"NroViaje\" : " + filtro.NroViaje +
                                     ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
                                     ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +
@@ -1633,7 +1638,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiRuta\" : " + filtro.CodiRuta +
                                     ",\"CodiBus\" : \"" + filtro.CodiBus + "\"" +
                                     ",\"HoraProgramacion\" : \"" + filtro.HoraProgramacion + "\"" +
-
                                     ",\"CodiUsuario\" : " + usuario.CodiUsuario +
                                     ",\"NomUsuario\" : \"" + usuario.Nombre + "\"" +
                                     ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
@@ -1641,6 +1645,20 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiOrigen\" : " + filtro.CodiOrigen +
                                     ",\"CodiDestino\" : " + filtro.CodiDestino +
                                     ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" +
+
+                                    ",\"CodiEsca\" : \"" + filtro.CodiEsca + "\"" +
+                                    ",\"CodiOrigenBoleto\" : \"" + filtro.CodiOrigenBoleto + "\"" +
+                                    ",\"CodiRutaBoleto\" : \"" + filtro.CodiRutaBoleto + "\"" +
+                                    ",\"CodiProgramacionBoleto\" : " + filtro.CodiProgramacionBoleto +
+                                    ",\"BoletoCompleto\" : \"" + filtro.BoletoCompleto + "\"" +
+                                    ",\"CodiEmpresaUsuario\" : \"" + usuario.CodiEmpresa + "\"" +
+                                    ",\"CodiSucursalUsuario\" : \"" + usuario.CodiSucursal + "\"" +
+                                    ",\"NomSucursalUsuario\" : \"" + usuario.NomSucursal + "\"" +
+                                    ",\"NomPasajero\" : \"" + filtro.NomPasajero + "\"" +
+                                    ",\"FechaViajeBoleto\" : \"" + filtro.FechaViajeBoleto + "\"" +
+                                    ",\"HoraViajeBoleto\" : \"" + filtro.HoraViajeBoleto + "\"" +
+                                    ",\"NomDestinoBoleto\" : \"" + filtro.NomDestinoBoleto + "\"" +
+                                    ",\"PrecioVenta\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.PrecioVenta) + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("PostergarVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
