@@ -6825,23 +6825,28 @@
                     }
                 },
                 listVentasCampoCodiTipoDoc: function (newVal, oldVal) {
-                    if (this.oldIndexVenta === this.indexVenta) {
-                        if (this.pickedBusVenta === 'R' && newVal) {
-                            this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+                    if (newVal) {
+                        this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                            if (newVal.id === '00') {
-                                this.list.ventas[this.indexVenta].Documento = '0';
-                                this.disabledDocumentoRaya = true;
-                            }
-                            else {
-                                this.list.ventas[this.indexVenta].Documento = '';
-                                this.disabledDocumentoRaya = false;
-                            }
-
-                            if (newVal.id === '01')
-                                this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
-                            else
+                        if (newVal.id === '01')
+                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
+                        else {
+                            if (!this.list.ventas[this.indexVenta].IdVenta)
                                 this.list.ventas[this.indexVenta].Nacionalidad = '';
+                        }
+
+                        if (this.oldIndexVenta === this.indexVenta) {
+                            if (this.pickedBusVenta === 'R') {
+
+                                if (newVal.id === '00') {
+                                    this.list.ventas[this.indexVenta].Documento = '0';
+                                    this.disabledDocumentoRaya = true;
+                                }
+                                else {
+                                    this.list.ventas[this.indexVenta].Documento = '';
+                                    this.disabledDocumentoRaya = false;
+                                }
+                            }
                         }
                     }
                 },
