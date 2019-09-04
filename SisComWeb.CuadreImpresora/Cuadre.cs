@@ -362,9 +362,12 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteLiquidacion(LiquidacionEntity liquidacion)
         {
             StringBuilder texto = new StringBuilder();
-            texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN TOTAL DEL DÍA " + DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"), 30, "|||^"));
+            texto.AppendLine(SplitStringPreserving("EMPRESA :" + liquidacion.Empresa, 30, "||||^", false));
             texto.AppendLine(" ");
+            texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN DE CAJERO " + DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"), 30, "|||^"));
+            texto.AppendLine(" ");            
             texto.AppendLine(SplitStringPreserving("SUCURSAL:" + liquidacion.Sucursal, 30, "||||^", false));
+            texto.AppendLine(SplitStringPreserving("P.VENTA :" + liquidacion.PuntoVenta, 30, "||||^", false));
             texto.AppendLine(SplitStringPreserving("USUARIO :" + liquidacion.Usuario, 30, "||||^", false));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(SplitStringPreserving("INGRESOS", 30, "|||^"));
@@ -380,6 +383,7 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "COBRANZAS DELIVERY", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.CobDel)));
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "INGRESOS DE CAJA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.IngCaj)));
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "INGRESO DE DETRACCIÓN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.IngDet)));
+            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL INGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalAfecto)));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(SplitStringPreserving("EGRESOS", 30, "|||^"));
             texto.AppendLine(" ");
@@ -401,10 +405,10 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "NOTAS CRED. EMITIDAS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Notcre)));
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "TOTAL DE DETRACCIÓN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Totdet)));
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "GASTOS RUTA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Gasrut)));
-            texto.AppendLine(new string('-', 42));
-            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL INGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalAfecto)));
             texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL EGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalInafecto)));
-            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL (ING - EGR)", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Total)));            
+            texto.AppendLine(new string('-', 42));       
+            texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL (ING - EGR)", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Total)));
+            texto.AppendLine(new string('-', 42));
             texto.AppendLine(" ");
 
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());

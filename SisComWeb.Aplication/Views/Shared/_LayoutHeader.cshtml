@@ -44,10 +44,10 @@
     </style>
 
 <div id="appVueHeader">
-    <nav class="navbar navbar-default navbar-static-top m-b-0">
+    <nav class="navbar navbar-default m-b-0" :class="{'navbar-static-top': fixedHeader}">
         <div class="navbar-header" id="appVueNavarHeader">
             <div class="top-left-part">
-                <a class="logo" href="@Url.Action("Index", "principal")">
+                <a class="logo" href="javascript:void(0);" @@click="fixedHeader = !fixedHeader">
                     <b class="hidden-xs">
                         <img height="40" src="~/wwwroot/plugins/images/users/flores.png" style="padding-left: 40%;" />
                     </b>
