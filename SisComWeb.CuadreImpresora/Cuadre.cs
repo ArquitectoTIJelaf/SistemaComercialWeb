@@ -18,7 +18,7 @@ namespace SisComWeb.CuadreImpresora
         public static string WriteText(VentaRealizadaEntity venta, string TipoImpresion)
         {
             StringBuilder texto = new StringBuilder();
-            
+
             // Impresora Térmica
             if (venta.TipoImpresora == 1)
             {
@@ -55,11 +55,12 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("^SON: " + venta.PrecioDes);
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine("^CÓDIGO: " + venta.CodigoX_FE);
-                texto.AppendLine(PadBoth("Autorizado mediante", 43));
-                texto.AppendLine(PadBoth("N° " + venta.ResAut_FE + "/SUNAT", 43));
-                texto.AppendLine(PadBoth("Representación impresa del comprobante.", 43));
-                texto.AppendLine(PadBoth("Términos y condiciones, visite", 43));
+                texto.AppendLine(SplitStringPreserving("Autorizado mediante", 43, "^", true));
+                texto.AppendLine(SplitStringPreserving("N° " + venta.ResAut_FE + "/SUNAT", 43, "^", true));
+                texto.AppendLine(SplitStringPreserving("Representación impresa del comprobante de venta, puede ser consultado en", 43, "^", true));
                 texto.AppendLine(SplitStringPreserving(venta.LinkPag_FE, 45, "^", true));
+                texto.AppendLine(SplitStringPreserving("Términos y condiciones, visite", 43, "^", true));
+                texto.AppendLine(SplitStringPreserving("https://floreshnos.pe/terminos/", 45, "^", true));
                 texto.AppendLine(SplitStringPreserving("Debe presentarse 30 minutos antes de la hora de salida.", 45, "^", true));
                 texto.AppendLine(SplitStringPreserving("Al abordar el bus debe presentar la representación impresa o digital del comprobante.", 45, "^", true));
                 texto.AppendLine(SplitStringPreserving("No se aceptan cambios ni devoluciones, conservar su comprobante ante cualquier eventualidad.", 45, "^", true));

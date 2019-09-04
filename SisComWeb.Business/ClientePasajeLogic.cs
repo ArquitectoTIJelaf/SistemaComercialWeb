@@ -40,7 +40,7 @@ namespace SisComWeb.Business
                     buscaPasajero.Direccion = string.Empty;
 
                 // Consulta 'RENIEC'
-                if (TipoDoc == "1" && string.IsNullOrEmpty(buscaPasajero.NumeroDoc))
+                if (TipoDoc == "01" && string.IsNullOrEmpty(buscaPasajero.NumeroDoc))
                 {
                     var resConsultaRENIEC = ConsultaRENIEC(NumeroDoc);
                     if (resConsultaRENIEC.EsCorrecto)

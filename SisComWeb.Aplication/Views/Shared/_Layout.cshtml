@@ -168,7 +168,7 @@
                                 await deferredModal($('#appVueMensajeria'), false).done(function () {
                                     // Continue
                                 });
-
+                                
                                 // Eliminar 'Mensaje'
                                 await APP.rq.axios2.post(APP.base + '/base/eliminarMensaje', res.data.Valor);
                             }

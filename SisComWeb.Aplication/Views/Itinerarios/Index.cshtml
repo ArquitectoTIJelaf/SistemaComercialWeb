@@ -2298,7 +2298,7 @@
                     if (asientoSel.IDS > 0) {
                         _this.liberarAsiento(asientoSel, true);
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     // Validar 'AsientoSel' vendido
@@ -2306,7 +2306,7 @@
                         _this.disabledAsiento = false;
 
                         _this.fillDataAsientoVendido(asientoSel);
-                        return;
+                        return auxResponse;
                     }
 
                     // Limpiar si el asiento anterior era solo vista
@@ -2317,14 +2317,14 @@
                     if (_this.Correlativo === 'B000-00000000' || _this.Correlativo === 'F000-00000000') {
                         APP.msg.error('No se encontró serie para el boleto.');
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     // Valida 'Precio'
-                    if (asientoSel.PrecioNormal === 0) {
+                    if (asientoSel.PrecioNormal === 0) { // === 0
                         APP.msg.warning('No se encontró precio del asiento.');
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     // Valida 'FechaViaje'
@@ -2342,19 +2342,19 @@
                                         //if (!resConfirmClaveAutorizacion) {
                                         //    APP.msg.warning('No se puede procesar datos de fechas pasadas');
                                         //    _this.disabledAsiento = false;
-                                        //    return;
+                                        //    return auxResponse;
                                         //}
 
                                         APP.msg.warning('No se puede procesar datos de fechas pasadas.');
                                         _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
                                 };
                                 break;
                             default:
                                 APP.msg.warning('La fecha de viaje debe ser igual o mayor a la fecha actual.');
                                 _this.disabledAsiento = false;
-                                return;
+                                return auxResponse;
                         }
                     }
 
@@ -2365,7 +2365,8 @@
                             var verificaTurnoDisponible = _this.verificaTurnoDisponible();
                             if (!verificaTurnoDisponible) {
                                 APP.msg.warning('La hora de viaje ya pasó, verificar.');
-                                return;
+                                _this.disabledAsiento = false;
+                                return auxResponse;
                             }
                         }
                     }
@@ -2374,14 +2375,14 @@
                     if (_this.objTurno.Xcierre === '1') {
                         APP.msg.warning('La programación se encuentra cerrada.');
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     // Valida 'Manifiesto'
                     var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
                     if (!resValidaManifiestoProgramacion) {
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     // Validar 'AsientoSel' no vendido
@@ -2395,14 +2396,14 @@
                                     if (!_this.objCreditoCliente.idContrato) {
                                         APP.msg.warning('No ha seleccionado un Cliente, haga click en la opción Crédito.');
                                         _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
 
                                     // Consulta 'Contrato'
                                     var resConsultarContrato = await _this.consultarContrato(_this.objCreditoCliente.idContrato, asientoSel.PrecioMaximo);
                                     if (!resConsultarContrato) {
                                         _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
 
                                     // Valida 'PrecioValor'
@@ -2424,14 +2425,14 @@
                                                     if (resObjPrecioNormal.Saldo <= 0) {
                                                         APP.msg.warning("Contrato sin boletos disponibles.");
                                                         _this.disabledAsiento = false;
-                                                        return;
+                                                        return auxResponse;
                                                     }
                                                 }
                                                 else {
                                                     if (resObjPrecioNormal.Saldo < auxLength) {
                                                         APP.msg.warning("Contrato sin boletos disponibles.");
                                                         _this.disabledAsiento = false;
-                                                        return;
+                                                        return auxResponse;
                                                     }
                                                 }
                                             }
@@ -2447,7 +2448,7 @@
                                                 else {
                                                     APP.msg.warning("Contrato sin boletos disponibles.");
                                                     _this.disabledAsiento = false;
-                                                    return;
+                                                    return auxResponse;
                                                 }
 
                                                 tmpAsientoSel.FlagPrecioNormal = false;
@@ -2455,7 +2456,7 @@
                                         }
                                         else {
                                             _this.disabledAsiento = false;
-                                            return;
+                                            return auxResponse;
                                         }
                                     }
                                 };
@@ -2467,7 +2468,7 @@
                                         if (!_this.filtro.CodiEmpresa) {
                                             APP.msg.warning("Para vender en Fecha Abierta debe tener el plano activo.");
                                             _this.disabledAsiento = false;
-                                            return;
+                                            return auxResponse;
                                         }
                                     }
                                 };
@@ -2477,7 +2478,7 @@
                                     if (_this.objTurno.SucControlReserva === '1') {
                                         APP.msg.warning('La oficina no está autorizada para reservar asientos.');
                                         _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
 
                                     if (appController.validatePanel('189') === '1' && !_this.validatorTiempoReserva) {
@@ -2494,7 +2495,7 @@
 
                                                 if (!_this.validatorTiempoReserva) {
                                                     _this.disabledAsiento = false;
-                                                    return;
+                                                    return auxResponse;
                                                 }
                                             }
                                             else {
@@ -2512,7 +2513,7 @@
 
                                                         if (!_this.validatorTiempoReserva) {
                                                             _this.disabledAsiento = false;
-                                                            return;
+                                                            return auxResponse;
                                                         }
                                                     }
                                                 }
@@ -2526,28 +2527,16 @@
                                     if (_this.objTurno.SucControlBloqueo === '1' && _this.list.ventas[0].NroAsiento > 0) {
                                         APP.msg.warning('La oficina no está autorizada para vender más de un asiento a la vez.');
                                         _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
                                 };
                                 break;
                             case 'PO':
                                 {
-                                    if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
-                                        if (appController.validatePanel('62') === '1') {
-                                            APP.msg.warning('Solicitud denegada, consulte con el administrador.');
-                                            _this.disabledAsiento = false;
-                                            return;
-                                        }
-                                    }
                                     if (Usuario.Nivel === 8) {
                                         APP.msg.warning('Usuario no autorizado.');
                                         _this.disabledAsiento = false;
-                                        return;
-                                    }
-                                    if (appController.validatePanelNivel(4, Usuario.Nivel) === '0') {
-                                        APP.msg.warning('Usuario no autorizado, nivel de acceso limitado.');
-                                        _this.disabledAsiento = false;
-                                        return;
+                                        return auxResponse;
                                     }
                                 };
                                 break;
@@ -2558,7 +2547,7 @@
                     if (_this.list.ventas.length >= _this.objTurno.CantidadMaxBloqAsi) {
                         APP.msg.warning('Solo puede bloquear hasta ' + _this.objTurno.CantidadMaxBloqAsi + ' asiento(s) a la vez.');
                         _this.disabledAsiento = false;
-                        return;
+                        return auxResponse;
                     }
 
                     var input = {};
@@ -2631,7 +2620,8 @@
                                         case 'R': // Reserva
                                             {
                                                 setTimeout(function () {
-                                                    _this.recorridoSectionVentas();
+                                                    if (auxBool_Click_Key)
+                                                        _this.recorridoSectionVentas();
                                                 }, 400);
                                             };
                                             break;
@@ -3506,21 +3496,21 @@
                 },
                 consultaReniec: function () {
                     var _this = this;
-
+                    
                     // Validaciones
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
                         APP.msg.warning('Seleccione tipo de documento.');
                         return;
                     }
-                    else if (_this.list.ventas[_this.indexVenta].CodiTipoDoc.id !== '1') {
+                    else if (_this.list.ventas[_this.indexVenta].CodiTipoDoc.id !== '01') {
                         $('#cboTipoDoc input[type=search]').focus();
                         APP.msg.warning('Seleccione la opción DNI.');
                         return;
                     }
-                    else if (_this.list.ventas[_this.indexVenta].Documento.length !== 8) {
-                        $('#cboTipoDoc input[type=search]').focus();
-                        APP.msg.warning('Ingrese DNI de 8 dígitos.');
+                    else if (_this.list.ventas[_this.indexVenta].Documento.length < 8) {
+                        document.getElementById('txtDocumento').focus();
+                        APP.msg.warning('Ingrese DNI de 8 caracteres como mínimo.');
                         return;
                     }
 
@@ -3864,6 +3854,16 @@
                     var auxValidate = true;
 
                     for (i = 0; i < this.list.ventas.length; i++) {
+
+                        if (!this.list.ventas[i].NroAsiento) {
+                            this.indexVenta = i;
+                            APP.msg.warning('Ingrese número de asiento.');
+
+                            this.$nextTick(() => {
+                                document.getElementById('txtNroAsientoVenta').focus();
+                            });
+                            return auxValidate = false;
+                        }
 
                         if (!this.list.ventas[i].CodiTipoDoc) {
                             this.indexVenta = i;
@@ -4455,20 +4455,22 @@
                             var auxObj = this.findObjectAsiento(this.list.ventas[this.indexVenta].NroAsiento);
                             if (!auxObj) {
                                 this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
-
                                 this.eventTxtNroAsientoVenta = '';
                                 return;
                             }
 
                             if (!auxObj.FechaVenta && auxObj.NumeAsiento === 0) {
                                 var auxObjOld = this.findObjectAsiento(this.list.ventas[this.indexVenta].OldNroAsiento);
-
                                 await this.liberarAsiento(auxObjOld, false);
-                                await this.bloquearAsiento(auxObj, false);
 
-                                this.auxFocus.asiento = false;
-                                if (e && e.keyCode === 13)
-                                    this.recorridoSectionVentas();
+                                var auxResponse = await this.bloquearAsiento(auxObj, false);
+                                if (!auxResponse)
+                                    await this.bloquearAsiento(auxObjOld, false);
+                                else {
+                                    this.auxFocus.asiento = false;
+                                    if (e && e.keyCode === 13)
+                                        this.recorridoSectionVentas();
+                                }
                             }
                             else {
                                 if (this.list.ventas[this.indexVenta].OldNroAsiento)
@@ -8268,58 +8270,53 @@
                     var auxValidate = true;
                     
                     // TipoPostergacion = '0' -> Ctrl + F4
-                    var verificaLiquidacionComiDet = await appController.verificaLiquidacionComiDet(this.objBeneficiario.IdVenta);
-                    if (verificaLiquidacionComiDet !== 0) {
-                        APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
-                        return auxValidate = false;
-                    }
-                    var verificaLiquidacionComi = await appController.verificaLiquidacionComi(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiPuntoVenta);
-                    if (verificaLiquidacionComi === "1") {
-                        APP.msg.warning('El boleto se encuentra liquidado.');
-                        return auxValidate = false;
-                    }
-                    var verificaNC = await appController.verificaNC(this.objBeneficiario.IdVenta);
-                    if (verificaNC !== 0)
-                        return auxValidate = false;
-                    if (appController.validatePanel('91') === '1') {
-                        if (this.objBeneficiario.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
-                            APP.msg.warning('No se puede postergar boletos de otros puntos de venta.');
-                            return auxValidate = false;
-                        }
-                    }
-                    if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
-                        if (appController.validatePanel('167') === '1') {
-                            if (Usuario.Nivel !== 1 && Usuario.Nivel !== 11) {
-                                APP.msg.warning('Usuario no autorizado, solo los administradores pueden postergar.');
+                    if (this.TipoPostergacion === '0') {
+                        if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
+                            if (appController.validatePanel('62') === '1') {
+                                APP.msg.warning('Solicitud denegada, consulte con el administrador.');
                                 return auxValidate = false;
                             }
                         }
-                    }
-                    if (moment(this.objBeneficiario.FechaProgramacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                        APP.msg.warning('La fecha de viaje del boleto es menor a la actual.');
-                        return auxValidate = false;
-                    }
-                    if (appController.validatePanel('131') !== '1' || this.TipoPostergacion === '1') {
-                        var obtenerManifiestoProgramacion = await appController.obtenerManifiestoProgramacion(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiOrigen);
-                        if (obtenerManifiestoProgramacion) {
-                            switch (this.TipoPostergacion) {
-                                case '0':
-                                    APP.msg.warning('No se puede postergar boleto porque cuenta con manifiesto.');
+                        if (appController.validatePanelNivel(4, Usuario.Nivel) === '0') {
+                            APP.msg.warning('Usuario no autorizado, nivel de acceso limitado.');
+                            return auxValidate = false;
+                        }
+                        var verificaLiquidacionComiDet = await appController.verificaLiquidacionComiDet(this.objBeneficiario.IdVenta);
+                        if (verificaLiquidacionComiDet !== 0) {
+                            APP.msg.warning('El boleto se encuentra liquidado, revise liquidación avanzada.');
+                            return auxValidate = false;
+                        }
+                        var verificaLiquidacionComi = await appController.verificaLiquidacionComi(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiPuntoVenta);
+                        if (verificaLiquidacionComi === "1") {
+                            APP.msg.warning('El boleto se encuentra liquidado.');
+                            return auxValidate = false;
+                        }
+                        var verificaNC = await appController.verificaNC(this.objBeneficiario.IdVenta);
+                        if (verificaNC !== 0)
+                            return auxValidate = false;
+                        if (appController.validatePanel('91') === '1') {
+                            if (this.objBeneficiario.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
+                                APP.msg.warning('No se puede postergar boletos de otros puntos de venta.');
+                                return auxValidate = false;
+                            }
+                        }
+                        if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
+                            if (appController.validatePanel('167') === '1') {
+                                if (Usuario.Nivel !== 1 && Usuario.Nivel !== 11) {
+                                    APP.msg.warning('Usuario no autorizado, solo los administradores pueden postergar.');
                                     return auxValidate = false;
-                                    break;
-                                case '1':
-                                    {
-                                        if (appController.validatePanelClave('2') === '1') {
-                                            var resClaveProgramacion = await APP.msg.confirmClaveAutorizacion(
-                                                `${_.padStart(ClaveProgramacion, 3, '0')} - Postergar boleto`
-                                                , 'El manifiesto ya fue emitido, ingrese la clave de autorización.'
-                                                , ClaveProgramacion);
-
-                                            if (!resClaveProgramacion)
-                                                return auxValidate = false;
-                                        }
-                                    };
-                                    break;
+                                }
+                            }
+                        }
+                        if (moment(this.objBeneficiario.FechaProgramacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                            APP.msg.warning('La fecha de viaje del boleto es menor a la actual.');
+                            return auxValidate = false;
+                        }
+                        if (appController.validatePanel('131') !== '1') {
+                            var obtenerManifiestoProgramacion = await appController.obtenerManifiestoProgramacion(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiOrigen);
+                            if (obtenerManifiestoProgramacion) {
+                                APP.msg.warning('No se puede postergar boleto porque cuenta con manifiesto.');
+                                return auxValidate = false;
                             }
                         }
                         else {
@@ -8331,76 +8328,74 @@
                                 }
                             }
                         }
-                    }
-                    if (appController.validatePanel('122') !== '1' || this.TipoPostergacion === '1') {
-                        if (appVueVenta.filtro.CodiSucursal.id !== String(this.objBeneficiario.CodiOrigen)) {
-                            APP.msg.warning('El origen del boleto es distinto al del bus.');
-                            return auxValidate = false;
-                        }
-                        if (appVueVenta.filtro.CodiDestinoPas.id !== String(this.objBeneficiario.CodiDestino) && this.TipoPostergacion === '0') {
-                            APP.msg.warning('El destino del boleto es distinto al del bus.');
-                            return auxValidate = false;
-                        }
-                        if (String(this.objBeneficiario.CodiServicioProgramacion) !== appVueVenta.filtro.CodiServicio.id) {
-                            var resClaveCambioNivelServicio = await APP.msg.confirmClaveAutorizacion(
-                                `${_.padStart(ClaveCambioNivelServicio, 3, '0')} - Cambio de servicio`
-                                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                                , ClaveCambioNivelServicio);
-                            if (!resClaveCambioNivelServicio)
+                        if (appController.validatePanel('122') !== '1') {
+                            if (appVueVenta.filtro.CodiSucursal.id !== String(this.objBeneficiario.CodiOrigen)) {
+                                APP.msg.warning('El origen del boleto es distinto al del bus.');
                                 return auxValidate = false;
+                            }
+                            if (appVueVenta.filtro.CodiDestinoPas.id !== String(this.objBeneficiario.CodiDestino)) {
+                                APP.msg.warning('El destino del boleto es distinto al del bus.');
+                                return auxValidate = false;
+                            }
+                            if (String(this.objBeneficiario.CodiServicioProgramacion) !== appVueVenta.filtro.CodiServicio.id) {
+                                var resClaveCambioNivelServicio = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClaveCambioNivelServicio, 3, '0')} - Cambio de servicio`
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClaveCambioNivelServicio);
+                                if (!resClaveCambioNivelServicio)
+                                    return auxValidate = false;
+                            }
                         }
-                    }
-                    if (this.TipoPostergacion === '0' || this.objBeneficiario.FechaViaje !== appVueVenta.filtro.Fecha) {
                         var canPNP = await this.tablasPnpConsulta('10');
                         var valuePNP = appController.getValuePNP(canPNP);
                         if (this.objBeneficiario.FlagVenta === 'S' && !valuePNP) {
                             APP.msg.warning('Se ha superado el número máximo de boletos, no se puede emitir más boletos PNP.');
                             return auxValidate = false;
                         }
-                    }
-                    if (appController.validatePanel('151') === '1') {
-                        if (this.objBeneficiario.FlagVenta === '9') {
-                            var resClavePostergacionFlag9 = await APP.msg.confirmClaveAutorizacion(
-                                `${_.padStart(ClavePostergacionFlag9, 3, '0')} - Postergar boleto`
-                                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
-                                , ClavePostergacionFlag9);
-                            if (!resClavePostergacionFlag9)
-                                return auxValidate = false;
-                        }
-                    }
-                    if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
-                        if (appController.validatePanel('107') === '1') {
-                            if (appController.validaDocumentoRepetido(
-                                this.objBeneficiario.TipoDocumento,
-                                this.objBeneficiario.Documento,
-                                appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento)
-                            )
-                                return auxValidate = false;
-                        }
-                    }
-                    if (Usuario.Nivel !== 11 && Usuario.Nivel !== 1 && Usuario.Nivel !== 2 &&
-                        Usuario.Nivel !== 4 && Usuario.Nivel !== 3 && Usuario.Nivel !== 50 && this.TipoPostergacion === '0') {
-                        if (this.objBeneficiario.ImpManifiesto === 'X') {
-                            APP.msg.warning('No se puede postergar boleto porque cuenta con manifiesto impreso.');
-                            return auxValidate = false;
-                        }
-                    }
-                    var resConsultaPos = await appController.consultaPos('79', '03');
-                    var resConsultaSumaBoletosPostergados = await appController.consultaSumaBoletosPostergados(
-                        this.objBeneficiario.BoletoCompleto.substring(0, 1),
-                        this.objBeneficiario.BoletoCompleto.substring(1),
-                        this.filtro.empresa.id);
-                    if (resConsultaPos !== '0') {
-                        if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
-
-                            if (appController.validatePanelClave('28') === '1') {
-                                var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
-                                    `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
-                                    , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
-                                    , ClavePostergacionesBoleto);
-
-                                if (!resClavePostergacionesBoleto)
+                        if (appController.validatePanel('151') === '1') {
+                            if (this.objBeneficiario.FlagVenta === '9') {
+                                var resClavePostergacionFlag9 = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClavePostergacionFlag9, 3, '0')} - Postergar boleto`
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClavePostergacionFlag9);
+                                if (!resClavePostergacionFlag9)
                                     return auxValidate = false;
+                            }
+                        }
+                        if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
+                            if (appController.validatePanel('107') === '1') {
+                                if (appController.validaDocumentoRepetido(
+                                    this.objBeneficiario.TipoDocumento,
+                                    this.objBeneficiario.Documento,
+                                    appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento)
+                                )
+                                    return auxValidate = false;
+                            }
+                        }
+                        if (Usuario.Nivel !== 11 && Usuario.Nivel !== 1 && Usuario.Nivel !== 2 &&
+                            Usuario.Nivel !== 4 && Usuario.Nivel !== 3 && Usuario.Nivel !== 50) {
+                            if (this.objBeneficiario.ImpManifiesto === 'X') {
+                                APP.msg.warning('No se puede postergar boleto porque cuenta con manifiesto impreso.');
+                                return auxValidate = false;
+                            }
+                        }
+                        var resConsultaPos = await appController.consultaPos('79', '03');
+                        var resConsultaSumaBoletosPostergados = await appController.consultaSumaBoletosPostergados(
+                            this.objBeneficiario.BoletoCompleto.substring(0, 1),
+                            this.objBeneficiario.BoletoCompleto.substring(1),
+                            this.filtro.empresa.id);
+                        if (resConsultaPos !== '0') {
+                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+
+                                if (appController.validatePanelClave('28') === '1') {
+                                    var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
+                                        `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
+                                        , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
+                                        , ClavePostergacionesBoleto);
+
+                                    if (!resClavePostergacionesBoleto)
+                                        return auxValidate = false;
+                                }
                             }
                         }
                     }
@@ -8411,9 +8406,17 @@
                             APP.msg.warning('No se puede postergar boletos de fechas pasadas.');
                             return auxValidate = false;
                         }
-                        if (Usuario.Nivel === 8) {
-                            APP.msg.warning('Usuario no autorizado.');
-                            return auxValidate = false;
+                        var obtenerManifiestoProgramacion = await appController.obtenerManifiestoProgramacion(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiOrigen);
+                        if (obtenerManifiestoProgramacion) {
+                            if (appController.validatePanelClave('2') === '1') {
+                                var resClaveProgramacion = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClaveProgramacion, 3, '0')} - Postergar boleto`
+                                    , 'El manifiesto ya fue emitido, ingrese la clave de autorización.'
+                                    , ClaveProgramacion);
+
+                                if (!resClaveProgramacion)
+                                    return auxValidate = false;
+                            }
                         }
                         if (this.objBeneficiario.Cierre) {
                             APP.msg.warning('No se puede postergar boleto porque cuenta con programación cerrada.');
@@ -8429,6 +8432,23 @@
                                 return auxValidate = false;
                             }
                         }
+                        if (appVueVenta.filtro.CodiSucursal.id !== String(this.objBeneficiario.CodiOrigen)) {
+                            APP.msg.warning('El origen del boleto es distinto al del bus.');
+                            return auxValidate = false;
+                        }
+                        if (String(this.objBeneficiario.CodiServicioProgramacion) !== appVueVenta.filtro.CodiServicio.id) {
+                            var resClaveCambioNivelServicio = await APP.msg.confirmClaveAutorizacion(
+                                `${_.padStart(ClaveCambioNivelServicio, 3, '0')} - Cambio de servicio`
+                                , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                , ClaveCambioNivelServicio);
+                            if (!resClaveCambioNivelServicio)
+                                return auxValidate = false;
+                        }
+                        var verificaLiquidacionComi = await appController.verificaLiquidacionComi(this.objBeneficiario.CodiProgramacion, this.objBeneficiario.CodiPuntoVenta);
+                        if (verificaLiquidacionComi === "1") {
+                            APP.msg.warning('El boleto se encuentra liquidado.');
+                            return auxValidate = false;
+                        }
                         if (appVueVenta.objTurno.X_Estado) {
                             var resClaveProgramacion = await APP.msg.confirmClaveAutorizacion(
                                 `${_.padStart(ClaveProgramacion, 3, '0')} - Postergar boleto`
@@ -8438,6 +8458,9 @@
                             if (!resClaveProgramacion)
                                 return auxValidate = false;
                         }
+                        var verificaNC = await appController.verificaNC(this.objBeneficiario.IdVenta);
+                        if (verificaNC !== 0)
+                            return auxValidate = false;
                         if (this.objBeneficiario.NivelAsiento !== String(appVueVenta.list.ventas[appVueVenta.indexVenta].NivelAsiento)) {
                             var resClaveCambioDeNivelDeAsiento = await APP.msg.confirmClaveAutorizacion(
                                 `${_.padStart(ClaveCambioDeNivelDeAsiento, 3, '0')} - Postergar boleto`
@@ -8447,10 +8470,63 @@
                             if (!resClaveCambioDeNivelDeAsiento)
                                 return auxValidate = false;
                         }
+                        if (appController.validatePanel('91') === '1') {
+                            if (this.objBeneficiario.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
+                                APP.msg.warning('No se puede postergar boletos de otros puntos de venta.');
+                                return auxValidate = false;
+                            }
+                        }
+                        if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
+                            if (appController.validatePanel('107') === '1') {
+                                if (appController.validaDocumentoRepetido(
+                                    this.objBeneficiario.TipoDocumento,
+                                    this.objBeneficiario.Documento,
+                                    appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento)
+                                )
+                                    return auxValidate = false;
+                            }
+                        }
+                        var resConsultaPos = await appController.consultaPos('79', '03');
+                        var resConsultaSumaBoletosPostergados = await appController.consultaSumaBoletosPostergados(
+                            this.objBeneficiario.BoletoCompleto.substring(0, 1),
+                            this.objBeneficiario.BoletoCompleto.substring(1),
+                            this.filtro.empresa.id);
+                        if (resConsultaPos !== '0') {
+                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+
+                                if (appController.validatePanelClave('28') === '1') {
+                                    var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
+                                        `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
+                                        , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
+                                        , ClavePostergacionesBoleto);
+
+                                    if (!resClavePostergacionesBoleto)
+                                        return auxValidate = false;
+                                }
+                            }
+                        }
                         if (Usuario.Nivel !== 11 && Usuario.Nivel !== 1) {
                             if (this.objBeneficiario.ImpManifiesto === 'X') {
                                 APP.msg.warning('No se puede postergar boleto porque cuenta con manifiesto impreso.');
                                 return auxValidate = false;
+                            }
+                        }
+                        if (this.objBeneficiario.FechaViaje !== appVueVenta.filtro.Fecha) {
+                            var canPNP = await this.tablasPnpConsulta('10');
+                            var valuePNP = appController.getValuePNP(canPNP);
+                            if (this.objBeneficiario.FlagVenta === 'S' && !valuePNP) {
+                                APP.msg.warning('Se ha superado el número máximo de boletos, no se puede emitir más boletos PNP.');
+                                return auxValidate = false;
+                            }
+                        }
+                        if (appController.validatePanel('151') === '1') {
+                            if (this.objBeneficiario.FlagVenta === '9') {
+                                var resClavePostergacionFlag9 = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClavePostergacionFlag9, 3, '0')} - Postergar boleto`
+                                    , 'Necesita permiso para realizar esta acción, ingrese la clave de autorización.'
+                                    , ClavePostergacionFlag9);
+                                if (!resClavePostergacionFlag9)
+                                    return auxValidate = false;
                             }
                         }
                         if (moment(this.objBeneficiario.FechaViaje, 'DD/MM/YYYY').isSameOrBefore(moment(), 'days')) {
@@ -8468,6 +8544,14 @@
                                                 return auxValidate = false;
                                         }
                                     }
+                                }
+                            }
+                        }
+                        if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
+                            if (appController.validatePanel('167') === '1') {
+                                if (Usuario.Nivel !== 1 && Usuario.Nivel !== 11) {
+                                    APP.msg.warning('Usuario no autorizado, solo los administradores pueden postergar.');
+                                    return auxValidate = false;
                                 }
                             }
                         }
