@@ -226,6 +226,22 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
+                                                <label class="control-label">Turno:</label>
+                                                <input id="txtTurno"
+                                                       class="form-control input-sm dph"
+                                                       type="text"
+                                                       placeholder="TURNO"
+                                                       v-model="filtro.Turno"
+                                                       v-mask="'##:## AM'"
+                                                       @@focus="$event.target.select()"
+                                                       @@keydown.13.prevent="nextStep(6)"
+                                                       @*@@keydown.9.prevent="nextStep(6)"*@
+                                                       @@blur="filtro.Turno = $getValueDateTimePicker_Hours($event)"
+                                                       autocomplete="off" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
                                                 <label class="control-label">Servicio:</label>
                                                 <v-select id="cboServicio"
                                                           placeholder="SERVICIO"
@@ -234,11 +250,11 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refServicio.typeAheadPointer = $getSelectorVselect(list.servicios, filtro.CodiServicio)"
-                                                          @@keydown.13.native.prevent="nextStep(6)"
-                                                          @*@@keydown.9.native.prevent="nextStep(6)"*@
+                                                          @@keydown.13.native.prevent="nextStep(7)"
+                                                          @*@@keydown.9.native.prevent="nextStep(7)"*@
                                                           ref="refServicio">
                                                     <template slot="option" slot-scope="option">
-                                                        <div @@click="nextStep(6)">{{ option.id }} - {{ option.label }}</div>
+                                                        <div @@click="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
                                                     </template>
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
@@ -254,32 +270,17 @@
                                                           :select-on-tab="true"
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refDestinoPas_2.typeAheadPointer = $getSelectorVselect(list.destinosPas, filtro.CodiDestinoPas)"
-                                                          @@keydown.13.native.prevent="nextStep(7)"
-                                                          @*@@keydown.9.native.prevent="nextStep(7)"*@
+                                                          @@keydown.13.native.prevent="nextStep(8)"
+                                                          @*@@keydown.9.native.prevent="nextStep(8)"*@
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
-                                                        <div @@click.prevent="nextStep(7)">{{ option.id }} - {{ option.label }}</div>
+                                                        <div @@click.prevent="nextStep(8)">{{ option.id }} - {{ option.label }}</div>
                                                     </template>
                                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                                 </v-select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label class="control-label">Turno:</label>
-                                                <input id="txtTurno"
-                                                       class="form-control input-sm dph"
-                                                       type="text"
-                                                       placeholder="TURNO"
-                                                       v-model="filtro.Turno"
-                                                       v-mask="'##:## AM'"
-                                                       @@focus="$event.target.select()"
-                                                       @@keydown.13.prevent="nextStep(8)"
-                                                       @*@@keydown.9.prevent="nextStep(8)"*@
-                                                       @@blur="filtro.Turno = $getValueDateTimePicker_Hours($event)"
-                                                       autocomplete="off" />
-                                            </div>
-                                        </div>
+
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label class="control-label">Fecha viaje:</label>
@@ -778,15 +779,15 @@
                                                               ref="refTipoDoc"
                                                               v-model="list.ventas[indexVenta].CodiTipoDoc"
                                                               @@input="$refs.refTipoDoc.typeAheadPointer = $getSelectorVselect(list.tiposDoc, list.ventas[indexVenta].CodiTipoDoc)"
-                                                              @@keydown.13.native.prevent="recorridoVselectTipoDoc"
-                                                              @*@@keydown.9.native.prevent="recorridoVselectTipoDoc"*@
+                                                              @@keydown.13.native.prevent="recorridoVselectTipoDoc()"
+                                                              @*@@keydown.9.native.prevent="recorridoVselectTipoDoc()"*@
                                                               :options="list.tiposDoc"
                                                               :select-on-tab="true"
                                                               :get-option-label="labelOfDocumento"
                                                               :disabled="disabledCamposTicket_Pase"
                                                               name="Tipo">
                                                         <template slot="option" slot-scope="option">
-                                                            <div @@click="recorridoVselectTipoDoc">{{ option.label }}</div>
+                                                            <div @@click="recorridoVselectTipoDoc()">{{ option.label }}</div>
                                                         </template>
                                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                                     </v-select>
@@ -836,8 +837,8 @@
                                                 </button>
                                                 <input v-model="list.ventas[indexVenta].Nombres"
                                                        @@input="list.ventas[indexVenta].Nombres = $filterLettersToName(list.ventas[indexVenta].Nombres)"
-                                                       @@keydown.13.prevent="recorridoSectionVentas"
-                                                       @*@@keydown.9.prevent="recorridoSectionVentas"*@
+                                                       @@keydown.13.prevent="recorridoSectionVentas()"
+                                                       @*@@keydown.9.prevent="recorridoSectionVentas()"*@
                                                        id="txtNombres"
                                                        ref="refNombres"
                                                        class="form-control input-sm"
@@ -853,8 +854,8 @@
                                                 <label class="control-label">Apellido paterno</label>
                                                 <input v-model="list.ventas[indexVenta].ApellidoPaterno"
                                                        @@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"
-                                                       @@keydown.13.prevent="recorridoSectionVentas"
-                                                       @*@@keydown.9.prevent="recorridoSectionVentas"*@
+                                                       @@keydown.13.prevent="recorridoSectionVentas()"
+                                                       @*@@keydown.9.prevent="recorridoSectionVentas()"*@
                                                        id="txtApellidoPaterno"
                                                        ref="refApellidoPaterno"
                                                        class="form-control input-sm"
@@ -870,8 +871,8 @@
                                                 <label class="control-label">Apellido materno</label>
                                                 <input v-model="list.ventas[indexVenta].ApellidoMaterno"
                                                        @@input="list.ventas[indexVenta].ApellidoMaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoMaterno)"
-                                                       @@keydown.13.prevent="recorridoSectionVentas"
-                                                       @*@@keydown.9.prevent="recorridoSectionVentas"*@
+                                                       @@keydown.13.prevent="recorridoSectionVentas()"
+                                                       @*@@keydown.9.prevent="recorridoSectionVentas()"*@
                                                        id="txtApellidoMaterno"
                                                        ref="refApellidoMaterno"
                                                        class="form-control input-sm"
@@ -912,7 +913,7 @@
                                                     <div class="form-group">
                                                         <label class="control-label">Fecha nac.</label>
                                                         <input id="txtFechaNac"
-                                                               class="form-control input-sm dpyear"
+                                                               class="form-control input-sm dpNac"
                                                                type="text"
                                                                placeholder="FECHA NAC."
                                                                ref="refFechaNac"
@@ -948,8 +949,8 @@
                                                               label="label"
                                                               v-model="list.ventas[indexVenta].Sexo"
                                                               @@input="$refs.refSexo.typeAheadPointer = $getSelectorVselect(list.sexos, list.ventas[indexVenta].Sexo)"
-                                                              @@keydown.13.native.prevent="recorridoSectionVentas"
-                                                              @*@@keydown.9.native.prevent="recorridoSectionVentas"*@
+                                                              @@keydown.13.native.prevent="recorridoTxtFechaNac()"
+                                                              @*@@keydown.9.native.prevent="recorridoTxtFechaNac()"*@
                                                               :options="list.sexos"
                                                               :select-on-tab="true"
                                                               :disabled="disabledCamposTicket_Pase"
@@ -965,8 +966,8 @@
                                                 <div class="form-group">
                                                     <label class="control-label">Teléfono</label>
                                                     <input v-model="list.ventas[indexVenta].Telefono"
-                                                           @@keydown.13.prevent="recorridoSectionVentas($event.target.id)"
-                                                           @*@@keydown.9.prevent="recorridoSectionVentas($event.target.id)"*@
+                                                           @@keydown.13.prevent="recorridoTxtFechaNac($event.target.id)"
+                                                           @*@@keydown.9.prevent="recorridoTxtFechaNac($event.target.id)"*@
                                                            @@focus="$event.target.select()"
                                                            id="txtTelefono"
                                                            ref="refTelefono"
@@ -982,8 +983,8 @@
                                                     <label class="control-label">Correo</label>
                                                     <input :value="list.ventas[indexVenta].Correo.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Correo = $event.target.value.toUpperCase()"
-                                                           @@keydown.13.prevent="recorridoTxtCorreo"
-                                                           @*@@keydown.9.prevent="recorridoTxtCorreo"*@
+                                                           @@keydown.13.prevent="recorridoTxtCorreo()"
+                                                           @*@@keydown.9.prevent="recorridoTxtCorreo()"*@
                                                            @@focus="$event.target.select()"
                                                            id="txtCorreo"
                                                            ref="refCorreo"
@@ -1000,8 +1001,8 @@
                                                 <label class="control-label">Recoger</label>
                                                 <input :value="list.ventas[indexVenta].Recoger.toUpperCase()"
                                                        @@input="list.ventas[indexVenta].Recoger = $event.target.value.toUpperCase()"
-                                                       @@keydown.13.prevent="recorridoTxtRecoger"
-                                                       @*@@keydown.9.prevent="recorridoTxtRecoger"*@
+                                                       @@keydown.13.prevent="recorridoTxtRecoger()"
+                                                       @*@@keydown.9.prevent="recorridoTxtRecoger()"*@
                                                        id="txtRecoger"
                                                        ref="refRecoger"
                                                        class="form-control input-sm"
@@ -1024,8 +1025,8 @@
                                             <div class="form-group">
                                                 <label class="control-label" style="width: 100%; ">Nº Solicitud</label>
                                                 <input v-model="list.ventas[indexVenta].NroSolicitud"
-                                                       @@keydown.13.prevent="recorridoTxtRecoger"
-                                                       @*@@keydown.9.prevent="recorridoTxtRecoger"*@
+                                                       @@keydown.13.prevent="recorridoTxtRecoger()"
+                                                       @*@@keydown.9.prevent="recorridoTxtRecoger()"*@
                                                        id="txtNroSolicitud"
                                                        ref="refNroSolicitud"
                                                        class="form-control input-sm"
@@ -1069,8 +1070,8 @@
                                                         <label class="control-label">Razón social</label>
                                                         <input :value="list.ventas[indexVenta].RazonSocial.toUpperCase()"
                                                                @@input="list.ventas[indexVenta].RazonSocial = $event.target.value.toUpperCase()"
-                                                               @@keydown.13.prevent="recorridoTxtRuc"
-                                                               @*@@keydown.9.prevent="recorridoTxtRuc"*@
+                                                               @@keydown.13.prevent="recorridoTxtRuc()"
+                                                               @*@@keydown.9.prevent="recorridoTxtRuc()"*@
                                                                id="txtRazonSocial"
                                                                ref="refRazonSocial"
                                                                name="razon_social"
@@ -1087,8 +1088,8 @@
                                                     <label class="control-label">Dirección fiscal</label>
                                                     <input :value="list.ventas[indexVenta].Direccion.toUpperCase()"
                                                            @@input="list.ventas[indexVenta].Direccion = $event.target.value.toUpperCase()"
-                                                           @@keydown.13.prevent="recorridoTxtRuc"
-                                                           @*@@keydown.9.prevent="recorridoTxtRuc"*@
+                                                           @@keydown.13.prevent="recorridoTxtRuc()"
+                                                           @*@@keydown.9.prevent="recorridoTxtRuc()"*@
                                                            id="txtDireccion"
                                                            ref="refDireccion"
                                                            name="direccion"
@@ -1116,8 +1117,8 @@
                                                 <label class="control-label">Nacionalidad</label>
                                                 <input :value="list.ventas[indexVenta].Nacionalidad"
                                                        @@input="list.ventas[indexVenta].Nacionalidad = $event.target.value.toUpperCase()"
-                                                       @@keydown.13.prevent="recorridoTxtRuc"
-                                                       @*@@keydown.9.prevent="recorridoTxtRuc"*@
+                                                       @@keydown.13.prevent="recorridoTxtRuc()"
+                                                       @*@@keydown.9.prevent="recorridoTxtRuc()"*@
                                                        @@focus="$event.target.select()"
                                                        id="txtNacionalidad"
                                                        ref="refNacionalidad"
@@ -1199,8 +1200,8 @@
                                                     <label class="control-label" style="width: 100%; ">&nbsp;</label>
                                                     <div id="checkRegistrarNino" class="checkbox checkbox-info checkbox-circle">
                                                         <input v-model="setCheckRegistrarNino"
-                                                               @@keydown.13.prevent="recorridoChckRegistrarNino"
-                                                               @*@@keydown.9.prevent="recorridoChckRegistrarNino"*@
+                                                               @@keydown.13.prevent="recorridoChckRegistrarNino()"
+                                                               @*@@keydown.9.prevent="recorridoChckRegistrarNino()"*@
                                                                id="chckRegistrarNino"
                                                                ref="refRegistrarNino"
                                                                class="check-with-label"

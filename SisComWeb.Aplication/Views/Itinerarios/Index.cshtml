@@ -894,8 +894,8 @@
                 });
             }
 
-            if ($('.dpyear').length) {
-                $('.dpyear').datetimepicker({
+            if ($('.dpNac').length) {
+                $('.dpNac').datetimepicker({
                     keyBinds: {
                         up: null,
                         down: null,
@@ -910,8 +910,8 @@
                     keepOpen: false,
                     toolbarPlacement: 'top',
                     format: 'DD/MM/YYYY',
-                    defaultDate: moment().subtract(1, 'year'),
-                    maxDate: moment().subtract(1, 'year'),
+                    defaultDate: moment(),
+                    maxDate: moment(),
                     minDate: moment().subtract(100, 'years'),
                     tooltips: {
                         today: 'Ir a la fecha actual',
@@ -920,46 +920,12 @@
                     }
                 });
 
-                $(".dpyear").on("dp.change", function (e) {
+                $(".dpNac").on("dp.change", function (e) {
                     if (e && e.target) {
                         switch (e.target.id) {
                             case 'txtFechaNac':
                                 appVueVenta.recorrerFechaNac();
                                 break;
-                        }
-                    }
-                });
-            }
-
-            if ($('.dpyearnino').length) {
-                $('.dpyearnino').datetimepicker({
-                    keyBinds: {
-                        up: null,
-                        down: null,
-                        left: null,
-                        right: null
-                    },
-                    useCurrent: false,
-                    locale: 'es',
-                    showTodayButton: false,
-                    showClose: false,
-                    showClear: false,
-                    keepOpen: false,
-                    toolbarPlacement: 'top',
-                    format: 'DD/MM/YYYY',
-                    defaultDate: moment().subtract(1, 'day'),
-                    maxDate: moment().subtract(1, 'day'),
-                    minDate: moment().subtract(100, 'years'),
-                    tooltips: {
-                        today: 'Ir a la fecha actual',
-                        clear: 'Borrar fecha',
-                        close: 'Cerrar selector'
-                    }
-                });
-
-                $(".dpyearnino").on("dp.change", function (e) {
-                    if (e && e.target) {
-                        switch (e.target.id) {
                             case 'txtFechaNacRA':
                                 appVueRegistrarInfante.recorrerFechaNac();
                                 break;
@@ -1583,6 +1549,14 @@
                 },
                 consultaSumaBoletosPostergados: async function (_Tipo, _Numero, _Emp) {
                     return await appVueVenta.consultaSumaBoletosPostergados(_Tipo, _Numero, _Emp);
+                },
+                calculaEdad: function (_FechaNac) {
+                    var resEdad = '0';
+
+                    if (_FechaNac)
+                        resEdad = String(moment().diff(moment(_FechaNac, 'DD/MM/YYYY'), 'years'));
+
+                    return resEdad;
                 }
             };
         })();
@@ -3128,10 +3102,12 @@
                     }
                     if (!this.list.ventas[this.indexVenta].FechaNac) {
                         document.getElementById('txtFechaNac').focus();
-                        if (this.list.ventas[this.indexVenta].Edad == '0')
-                            APP.msg.warning('Seleccione una fecha válida, la edad debe ser mayor a 0.');
                         return;
                     }
+
+                    this.recorridoTxtFechaNac();
+                },
+                recorridoTxtFechaNac: function (anulaValidacion) {
                     if (!this.list.ventas[this.indexVenta].Sexo) {
                         $('#cboSexo input[type=search]').focus();
                         return;
@@ -3254,6 +3230,21 @@
                     this.indexVenta = _index;
                     this.recorridoSectionVentas();
                 },
+                recorrerFechaNac: function () {
+                    var auxFechaNac = this.list.ventas[this.indexVenta].FechaNac;
+                    this.list.ventas[this.indexVenta].FechaNac = (auxFechaNac ? auxFechaNac : moment().format('DD/MM/YYYY'));
+
+                    this.$nextTick(() => {
+                        this.recorridoTxtFechaNac();
+                    });
+                },
+                setDateAndCalcYears: function () {
+                    if (!document.getElementById('txtFechaNac').value)
+                        document.getElementById('txtFechaNac').value = moment().format('DD/MM/YYYY');
+
+                    this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
+                    this.list.ventas[this.indexVenta].Edad = appController.calculaEdad(this.list.ventas[this.indexVenta].FechaNac);
+                },
                 searchUser: async function () {
                     var _this = this;
 
@@ -3301,7 +3292,7 @@
                                             if (res.data.Valor.IdCliente > 0) {
                                                 _this.list.ventas[_this.indexVenta].IdCliente = res.data.Valor.IdCliente;
                                                 _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
-                                                _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
+                                                _this.list.ventas[_this.indexVenta].Edad = appController.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
                                                 _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
 
@@ -3323,7 +3314,7 @@
                                                 _this.list.ventas[_this.indexVenta].ApellidoPaterno = res.data.Valor.ApellidoPaterno;
                                                 _this.list.ventas[_this.indexVenta].ApellidoMaterno = res.data.Valor.ApellidoMaterno;
                                                 _this.list.ventas[_this.indexVenta].FechaNac = res.data.Valor.FechaNacimiento;
-                                                _this.list.ventas[_this.indexVenta].Edad = _this.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
+                                                _this.list.ventas[_this.indexVenta].Edad = appController.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
                                                 _this.list.ventas[_this.indexVenta].Sexo = _this.list.sexos.find(x => x.id === res.data.Valor.Sexo);
                                                 _this.list.ventas[_this.indexVenta].Telefono = res.data.Valor.Telefono;
                                                 _this.list.ventas[_this.indexVenta].ValidadorClienteEspecial = (res.data.Valor.Especial === '1' ? true : false);
@@ -3411,16 +3402,6 @@
                     }
 
                     return auxResponse;
-                },
-                calculaEdad: function (_FechaNac) {
-                    var auxCalculate = 0;
-
-                    if (_FechaNac) {
-                        var aux_FechaNac = moment(_FechaNac, 'DD/MM/YYYY');
-                        auxCalculate = moment().diff(aux_FechaNac, 'years');
-                    }
-
-                    return auxCalculate;
                 },
                 searchEmpresa: async function () {
                     var _this = this;
@@ -3743,13 +3724,13 @@
                             $('#cboDestinoBus_2 input[type=search]').focus();
                             break;
                         case 5:
-                            $('#cboServicio input[type=search]').focus();
+                            document.getElementById('txtTurno').focus();
                             break;
                         case 6:
-                            $('#cboDestinoPas_2 input[type=search]').focus();
+                            $('#cboServicio input[type=search]').focus();
                             break;
                         case 7:
-                            document.getElementById('txtTurno').focus();
+                            $('#cboDestinoPas_2 input[type=search]').focus();
                             break;
                         case 8:
                             document.getElementById('txtFecha_2').focus();
@@ -3915,13 +3896,8 @@
                         }
 
                         if (!this.list.ventas[i].FechaNac || !this.list.ventas[i].Edad || this.list.ventas[i].Edad == '0') {
-                            this.indexVenta = i;
-                            APP.msg.warning('Seleccione una fecha válida, la edad debe ser mayor a 0.');
-
-                            this.$nextTick(() => {
-                                document.getElementById('txtFechaNac').focus();
-                            });
-                            return auxValidate = false;
+                            this.list.ventas[i].FechaNac = moment().format('DD/MM/YYYY');
+                            this.list.ventas[i].Edad = appController.calculaEdad(this.list.ventas[i].FechaNac);
                         }
 
                         if (!this.list.ventas[i].Sexo) {
@@ -4184,21 +4160,6 @@
                     });
 
                     this.recorridoSectionVentas();
-                },
-                recorrerFechaNac: function () {
-                    var auxFechaNac = this.list.ventas[this.indexVenta].FechaNac;
-                    this.list.ventas[this.indexVenta].FechaNac = (auxFechaNac ? auxFechaNac : moment().subtract(1, 'year').format('DD/MM/YYYY'));
-
-                    this.$nextTick(() => {
-                        this.recorridoSectionVentas();
-                    });
-                },
-                setDateAndCalcYears: function () {
-                    if (!document.getElementById('txtFechaNac').value)
-                        document.getElementById('txtFechaNac').value = moment().subtract(1, 'year').format('DD/MM/YYYY');
-
-                    this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
-                    this.list.ventas[this.indexVenta].Edad = '' + moment().diff(moment(this.list.ventas[this.indexVenta].FechaNac, 'DD/MM/YYYY'), 'years');
                 },
                 limpiarVenta: function () {
                     this.indexVenta = 0;
@@ -7723,7 +7684,7 @@
                         this.disabledBotones = true;
                 },
                 recorrerFechaNac: function () {
-                    this.FechaNac = (this.FechaNac ? this.FechaNac : moment().subtract(1, 'day').format('DD/MM/YYYY'));
+                    this.FechaNac = (this.FechaNac ? this.FechaNac : moment().format('DD/MM/YYYY'));
 
                     this.$nextTick(() => {
                         this.recorridoSectionParentesco();
@@ -7731,10 +7692,10 @@
                 },
                 setDateAndCalcYears: function () {
                     if (!document.getElementById('txtFechaNacRA').value)
-                        document.getElementById('txtFechaNacRA').value = moment().subtract(1, 'day').format('DD/MM/YYYY');
+                        document.getElementById('txtFechaNacRA').value = moment().format('DD/MM/YYYY');
 
                     this.FechaNac = document.getElementById('txtFechaNacRA').value;
-                    this.Edad = '' + moment().diff(moment(this.FechaNac, 'DD/MM/YYYY'), 'years');
+                    this.Edad = appController.calculaEdad(this.FechaNac);
                 },
                 recorridoSectionParentesco: function (auxValidate) {
                     var auxResponse = false;
@@ -10409,7 +10370,7 @@
                 calculaEdad: function () {
                     let _this = this;
                     _this.$nextTick(() => {
-                        _this.item.edad = appVueVenta.calculaEdad(_this.item.fechaNac);
+                        _this.item.edad = appController.calculaEdad(_this.item.fechaNac);
                     });
                 },
                 enterReintegro: function () {

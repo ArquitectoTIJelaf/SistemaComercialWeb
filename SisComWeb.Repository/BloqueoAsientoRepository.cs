@@ -80,9 +80,9 @@ namespace SisComWeb.Repository
                         entidad = new TablaBloqueoAsientosEntity
                         {
                             CodiOrigen = Reader.GetSmallIntValue(drlector, "CODI_ORIGEN"),
-                            AsientosOcupados = Reader.GetStringValue(drlector, "asientos_ocupados") ?? string.Empty,
+                            AsientosOcupados = Reader.GetStringValue(drlector, "asientos_ocupados"),
                             CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino"),
-                            AsientosLiberados = Reader.GetStringValue(drlector, "asientos_liberados") ?? string.Empty
+                            AsientosLiberados = Reader.GetStringValue(drlector, "asientos_liberados")
                         };
                         break;
                     }

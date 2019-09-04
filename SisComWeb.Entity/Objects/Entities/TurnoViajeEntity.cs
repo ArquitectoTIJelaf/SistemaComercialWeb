@@ -9,5 +9,9 @@
         public byte CodiEmpresa { get; set; }
 
         public string NomEmpresa { get; set; }
+
+        public short CodiPuntoVenta { get; set; }
+
+        public string NomPuntoVenta { get; set; }
     }
 }

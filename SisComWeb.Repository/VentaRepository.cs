@@ -109,9 +109,9 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.Direccion = Reader.GetStringValue(drlector, "direccion") ?? string.Empty;
-                        entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1") ?? string.Empty;
-                        entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2") ?? string.Empty;
+                        entidad.Direccion = Reader.GetStringValue(drlector, "direccion");
+                        entidad.Telefono1 = Reader.GetStringValue(drlector, "telefono1");
+                        entidad.Telefono2 = Reader.GetStringValue(drlector, "telefono2");
                         break;
                     }
                 }
@@ -135,11 +135,11 @@ namespace SisComWeb.Repository
                     {
                         Lista.Add(new BeneficiarioEntity
                         {
-                            NombreBeneficiario = Reader.GetStringValue(drlector, "Nombre_Beneficiario") ?? string.Empty,
-                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento") ?? string.Empty,
-                            Documento = Reader.GetStringValue(drlector, "Documento") ?? string.Empty,
-                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento") ?? string.Empty,
-                            Sexo = Reader.GetStringValue(drlector, "Sexo") ?? string.Empty
+                            NombreBeneficiario = Reader.GetStringValue(drlector, "Nombre_Beneficiario"),
+                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento"),
+                            Documento = Reader.GetStringValue(drlector, "Documento"),
+                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento"),
+                            Sexo = Reader.GetStringValue(drlector, "Sexo")
                         });
                     }
                 }
@@ -204,25 +204,25 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.IdVenta = Reader.GetIntValue(drlector, "Id_Venta");
-                        entidad.NombresConcat = Reader.GetStringValue(drlector, "NOMBRE") ?? string.Empty;
+                        entidad.NombresConcat = Reader.GetStringValue(drlector, "NOMBRE");
                         entidad.CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen");
                         entidad.CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino");
                         entidad.FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje");
-                        entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje") ?? string.Empty;
+                        entidad.HoraViaje = Reader.GetStringValue(drlector, "Hora_Viaje");
                         entidad.NumeAsiento = Reader.GetByteValue(drlector, "NUME_ASIENTO");
                         entidad.CodiServicio = Reader.GetByteValue(drlector, "Codi_Servicio");
                         entidad.CodiProgramacion = Reader.GetIntValue(drlector, "CODI_PROGRAMACION");
                         entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta");
-                        entidad.FechaProgramacion = Reader.GetStringValue(drlector, "Fech_programacion") ?? string.Empty;
+                        entidad.FechaProgramacion = Reader.GetStringValue(drlector, "Fech_programacion");
                         entidad.CodiServicioProgramacion = Reader.GetByteValue(drlector, "Codi_Servicio_programacion");
-                        entidad.FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty;
-                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? string.Empty;
-                        entidad.Documento = Reader.GetStringValue(drlector, "DNI") ?? string.Empty;
-                        entidad.ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty;
-                        entidad.Cierre = Reader.GetStringValue(drlector, "Cierre") ?? string.Empty;
-                        entidad.NivelAsiento = Reader.GetStringValue(drlector, "NivelAsiento") ?? string.Empty;
+                        entidad.FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA");
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
+                        entidad.Documento = Reader.GetStringValue(drlector, "DNI");
+                        entidad.ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto");
+                        entidad.Cierre = Reader.GetStringValue(drlector, "Cierre");
+                        entidad.NivelAsiento = Reader.GetStringValue(drlector, "NivelAsiento");
 
-                        entidad.CodiEsca = Reader.GetStringValue(drlector, "CodiEsca") ?? string.Empty;
+                        entidad.CodiEsca = Reader.GetStringValue(drlector, "CodiEsca");
                         entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
                         entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA");
                         break;
@@ -324,7 +324,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza") ?? string.Empty;
+                        entidad.NroPoliza = Reader.GetStringValue(drlector, "Nro_Poliza");
                         entidad.FechaReg = Reader.GetDateStringValue(drlector, "Fecha_Reg") ?? "01/01/1900";
                         entidad.FechaVen = Reader.GetDateStringValue(drlector, "Fecha_Ven") ?? "01/01/1900";
                         break;
@@ -740,7 +740,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "clave") ?? string.Empty;
+                        valor = Reader.GetStringValue(drlector, "clave");
                         break;
                     }
                 }
@@ -761,7 +761,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "clave") ?? string.Empty;
+                        valor = Reader.GetStringValue(drlector, "clave");
                         break;
                     }
                 }
@@ -847,7 +847,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "NOMB_USUARIO") ?? string.Empty;
+                        valor = Reader.GetStringValue(drlector, "NOMB_USUARIO");
                         break;
                     }
                 }
@@ -888,7 +888,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "NUMERO") ?? string.Empty;
+                        valor = Reader.GetStringValue(drlector, "NUMERO");
                         break;
                     }
                 }

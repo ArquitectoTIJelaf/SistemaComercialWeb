@@ -15,7 +15,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarTurno";
+                db.ProcedureName = "scwsp_BuscarTurno02";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, request.CodiEmpresa);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, request.CodiPuntoVenta);
                 db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, request.CodiOrigen);
@@ -238,6 +238,34 @@ namespace SisComWeb.Repository
 
             return valor;
         }
+
+        //public static int BuscarNroViaje(int CodiEmpresa, int CodiOrigenPas, int CodiOrigenBus, int CodiPuntoVentaBus, int CodiDestinoBus, string Turno, int CodiServicio)
+        //{
+        //    var valor = new int();
+
+        //    using (IDatabase db = DatabaseHelper.GetDatabase())
+        //    {
+        //        db.ProcedureName = "scwsp_Tb_programacion_Nro_Viaje";
+        //        db.AddParameter("@CodiOrigenPas", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@CodiDestinoBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@CodiServicio", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@Turno", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@CodiOrigenBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@CodiEmpresa", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+        //        db.AddParameter("@CodiPuntoVentaBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+
+        //        using (IDataReader drlector = db.GetDataReader())
+        //        {
+        //            while (drlector.Read())
+        //            {
+        //                valor = Reader.GetIntValue(drlector, "cnt");
+        //                break;
+        //            }
+        //        }
+        //    }
+
+        //    return valor;
+        //}
 
         #endregion
 

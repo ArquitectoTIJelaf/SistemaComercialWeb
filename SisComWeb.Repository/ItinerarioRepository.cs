@@ -62,7 +62,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje";
+                db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje02";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@FechaProgramacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 using (IDataReader drlector = db.GetDataReader())
@@ -73,6 +73,8 @@ namespace SisComWeb.Repository
                         entidad.NomServicio = Reader.GetStringValue(drlector, "Servicio");
                         entidad.CodiEmpresa = Reader.GetByteValue(drlector, "Codi_Empresa");
                         entidad.NomEmpresa = Reader.GetStringValue(drlector, "Empresa");
+                        entidad.CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PVenta");
+                        entidad.NomPuntoVenta = Reader.GetStringValue(drlector, "PuntoVenta");
                         break;
                     }
                 }

@@ -501,7 +501,7 @@ namespace SisComWeb.Repository
                         entidad.CodiSucursal = Reader.GetIntValue(drlector, "suc");
                         entidad.CodiPventa = Reader.GetIntValue(drlector, "pv");
                         entidad.Terminal = Reader.GetIntValue(drlector, "termianl");
-                        entidad.Mensaje = Reader.GetStringValue(drlector, "msgbox") ?? string.Empty;
+                        entidad.Mensaje = Reader.GetStringValue(drlector, "msgbox");
                         entidad.Opt = Reader.GetByteValue(drlector, "opt");
                         break;
                     }
@@ -527,9 +527,9 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.Reserva = Reader.GetStringValue(drlector, "reserva") ?? string.Empty;
-                        entidad.FechaAbierta = Reader.GetStringValue(drlector, "fechAbierta") ?? string.Empty;
-                        entidad.Bloqueo = Reader.GetStringValue(drlector, "bloqueo") ?? string.Empty;
+                        entidad.Reserva = Reader.GetStringValue(drlector, "reserva");
+                        entidad.FechaAbierta = Reader.GetStringValue(drlector, "fechAbierta");
+                        entidad.Bloqueo = Reader.GetStringValue(drlector, "bloqueo");
                         break;
                     }
                 }

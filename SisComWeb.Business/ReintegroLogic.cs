@@ -539,9 +539,9 @@ namespace SisComWeb.Business
                             TipoTerminalElectronico = entidad.TipoTerminalElectronico,
                             TipoImpresora = entidad.TipoImpresora,
 
-                            EmpDirAgencia = entidad.EmpDirAgencia ?? string.Empty,
-                            EmpTelefono1 = entidad.EmpTelefono1 ?? string.Empty,
-                            EmpTelefono2 = entidad.EmpTelefono2 ?? string.Empty,
+                            EmpDirAgencia = entidad.EmpDirAgencia,
+                            EmpTelefono1 = entidad.EmpTelefono1,
+                            EmpTelefono2 = entidad.EmpTelefono2,
                             PolizaNum = entidad.PolizaNum,
                             PolizaFechaReg = entidad.PolizaFechaReg,
                             PolizaFechaVen = entidad.PolizaFechaVen,

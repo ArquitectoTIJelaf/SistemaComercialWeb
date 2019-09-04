@@ -40,20 +40,20 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         entidad.IdCliente = Reader.GetIntValue(drlector, "Id_Clientes");
-                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id") ?? string.Empty;
-                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? string.Empty;
-                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? string.Empty;
-                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P") ?? string.Empty;
-                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? string.Empty;
+                        entidad.TipoDoc = Reader.GetStringValue(drlector, "Tipo_Doc_id");
+                        entidad.NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc");
+                        entidad.NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes");
+                        entidad.ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_P");
+                        entidad.ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M");
                         entidad.FechaNacimiento = Reader.GetDateStringValue(drlector, "fec_nac");
                         entidad.Edad = Reader.GetByteValue(drlector, "edad");
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
-                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono") ?? string.Empty;
-                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto") ?? string.Empty;
-                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo") ?? string.Empty;
-                        entidad.Especial = Reader.GetStringValue(drlector, "ESPECIAL") ?? string.Empty;
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
+                        entidad.Telefono = Reader.GetStringValue(drlector, "telefono");
+                        entidad.RucContacto = Reader.GetStringValue(drlector, "ruc_contacto");
+                        entidad.Sexo = Reader.GetStringValue(drlector, "sexo");
+                        entidad.Especial = Reader.GetStringValue(drlector, "ESPECIAL");
 
-                        entidad.Correo = Reader.GetStringValue(drlector, "Email") ?? string.Empty;
+                        entidad.Correo = Reader.GetStringValue(drlector, "Email");
                         break;
                     }
                 }
@@ -80,10 +80,10 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente") ?? string.Empty;
-                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social") ?? string.Empty;
-                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion") ?? string.Empty;
-                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono") ?? string.Empty;
+                        entidad.RucCliente = Reader.GetStringValue(drlector, "Ruc_Cliente");
+                        entidad.RazonSocial = Reader.GetStringValue(drlector, "Razon_Social");
+                        entidad.Direccion = Reader.GetStringValue(drlector, "Direccion");
+                        entidad.Telefono = Reader.GetStringValue(drlector, "Telefono");
                         break;
                     }
                 }
@@ -111,10 +111,10 @@ namespace SisComWeb.Repository
                     {
                         Lista.Add(new ClientePasajeEntity
                         {
-                            NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc") ?? string.Empty,
-                            NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes") ?? string.Empty,
-                            ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_p") ?? string.Empty,
-                            ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M") ?? string.Empty
+                            NumeroDoc = Reader.GetStringValue(drlector, "Numero_Doc"),
+                            NombreCliente = Reader.GetStringValue(drlector, "Nombre_Clientes"),
+                            ApellidoPaterno = Reader.GetStringValue(drlector, "Apellido_p"),
+                            ApellidoMaterno = Reader.GetStringValue(drlector, "Apellido_M")
                         });
                     }
                 }

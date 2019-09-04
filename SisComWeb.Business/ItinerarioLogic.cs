@@ -55,6 +55,9 @@ namespace SisComWeb.Business
                         buscarItinerarios[i].NomServicio = verificaCambiosTurnoViaje.NomServicio;
                         buscarItinerarios[i].CodiEmpresa = verificaCambiosTurnoViaje.CodiEmpresa;
                         buscarItinerarios[i].RazonSocial = verificaCambiosTurnoViaje.NomEmpresa;
+
+                        buscarItinerarios[i].CodiPuntoVenta = verificaCambiosTurnoViaje.CodiPuntoVenta;
+                        buscarItinerarios[i].NomPuntoVenta = verificaCambiosTurnoViaje.NomPuntoVenta;
                     }
 
                     // Busca 'ProgramacionViaje'

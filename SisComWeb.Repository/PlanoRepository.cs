@@ -23,8 +23,8 @@ namespace SisComWeb.Repository
                     {
                         var entidad = new PlanoEntity
                         {
-                            Codigo = Reader.GetStringValue(drlector, "Codigo") ?? string.Empty,
-                            Tipo = Reader.GetStringValue(drlector, "Tipo") ?? string.Empty,
+                            Codigo = Reader.GetStringValue(drlector, "Codigo"),
+                            Tipo = Reader.GetStringValue(drlector, "Tipo"),
                             Indice = Reader.GetIntValue(drlector, "Indice"),
                             // Para evitar Null's
                             ApellidoMaterno = string.Empty,
@@ -148,13 +148,13 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC") ?? string.Empty;
-                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI") ?? string.Empty;
-                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE") ?? string.Empty;
+                        entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
+                        entidad.NumeroDocumento = Reader.GetStringValue(drlector, "DNI");
+                        entidad.NombreCompleto = Reader.GetStringValue(drlector, "NOMBRE");
                         entidad.FechaNacimiento = Reader.GetDateStringValue(drlector, "FECHAN");
-                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD") ?? string.Empty;
-                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty;
-                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO") ?? string.Empty;
+                        entidad.Edad = Reader.GetStringValue(drlector, "EDAD");
+                        entidad.Sexo = Reader.GetStringValue(drlector, "SEXO");
+                        entidad.Parentesco = Reader.GetStringValue(drlector, "PARENTESCO");
                         break;
                     }
                 }
@@ -180,42 +180,42 @@ namespace SisComWeb.Repository
                         var entidad = new PlanoEntity
                         {
                             NumeAsiento = Reader.GetByteValue(drlector, "NUME_ASIENTO"),
-                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento") ?? string.Empty,
-                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento") ?? string.Empty,
-                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto") ?? string.Empty,
+                            TipoDocumento = Reader.GetStringValue(drlector, "Tipo_Documento"),
+                            NumeroDocumento = Reader.GetStringValue(drlector, "Numero_Documento"),
+                            RucContacto = Reader.GetStringValue(drlector, "Ruc_Contacto"),
                             FechaViaje = Reader.GetDateStringValue(drlector, "Fecha_Viaje"),
                             FechaVenta = Reader.GetDateStringValue(drlector, "Fecha_Venta"),
-                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad") ?? string.Empty,
+                            Nacionalidad = Reader.GetStringValue(drlector, "Nacionalidad"),
                             PrecioVenta = Reader.GetDecimalValue(drlector, "Precio_Venta"),
-                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En") ?? string.Empty,
-                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")) ?? string.Empty,
-                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA") ?? string.Empty,
-                            Sigla = Reader.GetStringValue(drlector, "Sigla") ?? string.Empty,
+                            RecogeEn = Reader.GetStringValue(drlector, "Recoge_En"),
+                            Color = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "Color")),
+                            FlagVenta = Reader.GetStringValue(drlector, "FLAG_VENTA"),
+                            Sigla = Reader.GetStringValue(drlector, "Sigla"),
                             CodiOrigen = Reader.GetSmallIntValue(drlector, "Codi_Origen"),
                             CodiDestino = Reader.GetSmallIntValue(drlector, "Codi_Destino"),
-                            Boleto = Reader.GetStringValue(drlector, "Boleto") ?? string.Empty,
-                            TipoBoleto = Reader.GetStringValue(drlector, "tipo") ?? string.Empty,
-                            IdVenta = Reader.GetStringValue(drlector, "id_venta") ?? string.Empty,
-                            NomOrigen = Reader.GetStringValue(drlector, "Nom_Origen") ?? string.Empty,
-                            NomDestino = Reader.GetStringValue(drlector, "Nom_Destino") ?? string.Empty,
+                            Boleto = Reader.GetStringValue(drlector, "Boleto"),
+                            TipoBoleto = Reader.GetStringValue(drlector, "tipo"),
+                            IdVenta = Reader.GetStringValue(drlector, "id_venta"),
+                            NomOrigen = Reader.GetStringValue(drlector, "Nom_Origen"),
+                            NomDestino = Reader.GetStringValue(drlector, "Nom_Destino"),
                             CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_Punto_Venta"),
-                            NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_Punto_Venta") ?? string.Empty,
+                            NomPuntoVenta = Reader.GetStringValue(drlector, "Nom_Punto_Venta"),
                             CodiUsuario = Reader.GetSmallIntValue(drlector, "Codi_Usuario"),
-                            NomUsuario = Reader.GetStringValue(drlector, "Nom_Usuario") ?? string.Empty,
-                            NumeSolicitud = Reader.GetStringValue(drlector, "nume_solicitud") ?? string.Empty,
-                            HoraVenta = Reader.GetStringValue(drlector, "HORA_VENTA") ?? string.Empty,
+                            NomUsuario = Reader.GetStringValue(drlector, "Nom_Usuario"),
+                            NumeSolicitud = Reader.GetStringValue(drlector, "nume_solicitud"),
+                            HoraVenta = Reader.GetStringValue(drlector, "HORA_VENTA"),
                             EmbarqueCod = Reader.GetSmallIntValue(drlector, "EmbarqueCod"),
-                            EmbarqueDir = Reader.GetStringValue(drlector, "EmbarqueDir") ?? string.Empty,
-                            EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora") ?? string.Empty,
-                            ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto") ?? string.Empty,
+                            EmbarqueDir = Reader.GetStringValue(drlector, "EmbarqueDir"),
+                            EmbarqueHora = Reader.GetStringValue(drlector, "EmbarqueHora"),
+                            ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto"),
                             CodiSucursal = Reader.GetSmallIntValue(drlector, "CODI_SUCURSAL"),
-                            Nombres = Reader.GetStringValue(drlector, "NombreCompleto") ?? string.Empty,
+                            Nombres = Reader.GetStringValue(drlector, "NombreCompleto"),
                             Edad = Reader.GetByteValue(drlector, "EDAD"),
-                            Telefono = Reader.GetStringValue(drlector, "TELEFONO") ?? string.Empty,
-                            Sexo = Reader.GetStringValue(drlector, "SEXO") ?? string.Empty,
-                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago") ?? string.Empty,
-                            ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto") ?? string.Empty,
-                            CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA") ?? string.Empty,
+                            Telefono = Reader.GetStringValue(drlector, "TELEFONO"),
+                            Sexo = Reader.GetStringValue(drlector, "SEXO"),
+                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
+                            ValeRemoto = Reader.GetStringValue(drlector, "vale_remoto"),
+                            CodiEsca = Reader.GetStringValue(drlector, "CODI_ESCA"),
                             CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA"),
                             // Para evitar Null's
                             ApellidoPaterno = string.Empty,
@@ -347,7 +347,7 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "color")) ?? string.Empty;
+                        valor = DataUtility.ObtenerColorHexadecimal(Reader.GetStringValue(drlector, "color"));
                         break;
                     }
                 }
