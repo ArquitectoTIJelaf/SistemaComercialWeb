@@ -50,7 +50,7 @@ namespace SisComWeb.Repository
                     {
                         objeto = new LiquidacionEntity
                         {
-                            Fecha = Reader.GetStringValue(drlector, "Fecha"),
+                            Fecha = Reader.GetDateStringValue(drlector, "Fecha"),
                             Empresa = Reader.GetStringValue(drlector, "Empresa"),
                             CodiEmpresa = Reader.GetIntValue(drlector, "CodEmpresa"),
                             Sucursal = Reader.GetStringValue(drlector, "Sucursal"),

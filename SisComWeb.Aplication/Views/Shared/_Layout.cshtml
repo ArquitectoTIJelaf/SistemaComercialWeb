@@ -53,9 +53,13 @@
     @Scripts.Render("~/bundles/js")
     <script src="~/wwwroot/plugins/bower_components/signalR/jquery.signalR-2.4.0.min.js"></script>
     <script src="~/signalr/hubs"></script>
+    @{ 
+        var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
+    }
     <script>
 
         var Usuario = '@usuario';
+        var UrlImprimirBoleto = '@urlImprimirBoleto';
         var ValSetInt_MensajeriaInstantanea = 0;
 
         var ClientSignalR = {};
@@ -326,6 +330,7 @@
                     input.tipoLiq = (_this.filtro.codUsuario === '0') ? '1' : '0';
                     await APP.rq.axios.post(APP.base + '/liquidacion/lista-liquidacion', input)
                         .then(res => {
+                            debugger;
                             if (res.data.Estado) {
                                 _this.objLiquidacion = _.cloneDeep(res.data.Valor);
                             }
@@ -333,6 +338,19 @@
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                imprimir: function () {
+                    let _this = this;
+
+                    var auxUrl = UrlImprimirBoleto + '?base=' + _this.objLiquidacion.Impresion + '&' + 'name=' + 'IMPRESORA';
+
+                    axios({ method: "GET", "url": auxUrl })
+                        .then(res => {
+                            //APP.msg.success('Boleto enviado a imprimir correctamente.');
+                        }, error => {
+                            //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                            auxValidate = false;
+                        });
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
