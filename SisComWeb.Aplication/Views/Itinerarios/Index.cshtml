@@ -8718,7 +8718,7 @@
                     NomDestino: '',
                     Precio: 0,
                     Obs1: '',
-                    Obs2: `TERMINAL ${String(Usuario.Terminal).padStart(3, '0')}`,
+                    Obs2: `TERMINAL${String(Usuario.Terminal).padStart(3, '0')}`,
                     Obs3: null,
                     Obs4: null,
                     Obs5: ''
@@ -12026,8 +12026,8 @@
 
                             await deferredModal($('#appClaveAutorizacion'), true).done(function () {
                                 appClaveAutorizacion.$nextTick(() => {
-                                    appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_REI';
-                                    appClaveAutorizacion.auditoria.Boleto = `BOLETO: ${data.Tipo}${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 8, '0')}`;
+                                    appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_RE_';
+                                    appClaveAutorizacion.auditoria.Boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
                                 });
                             });
 
