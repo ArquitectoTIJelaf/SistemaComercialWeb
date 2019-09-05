@@ -16,5 +16,9 @@ namespace SisComWeb.Entity.Peticiones.Request
         public int CodInterno { get; set; }
         public int TipoProc { get; set; }
         public string tipoLiq { get; set; }
+        public string Empresa { get; set; }
+        public string Sucursal { get; set; }
+        public string PuntoVenta { get; set; }
+        public string Usuario { get; set; }
     }
 }

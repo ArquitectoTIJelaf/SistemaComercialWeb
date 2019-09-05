@@ -155,6 +155,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refSucursal.typeAheadPointer = $getSelectorVselect(list.sucursales, filtro.CodiSucursal)"
                                                           @@keydown.13.native.prevent="nextStep(2)"
+                                                          @*@@keydown.27.native.prevent*@
                                                           @*@@keydown.9.native.prevent="nextStep(2)"*@
                                                           ref="refSucursal">
                                                     <template slot="option" slot-scope="option">
@@ -175,6 +176,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refOrigenBus.typeAheadPointer = $getSelectorVselect(list.origenesBus, filtro.CodiOrigenBus)"
                                                           @@keydown.13.native.prevent="nextStep(3)"
+                                                          @@keydown.220.native.prevent="nextStep(1)"
                                                           @*@@keydown.9.native.prevent="nextStep(3)"*@
                                                           ref="refOrigenBus">
                                                     <template slot="option" slot-scope="option">
@@ -195,6 +197,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refPVOrigenBus.typeAheadPointer = $getSelectorVselect(list.pvOrigenesBus, filtro.CodiPVOrigenBus)"
                                                           @@keydown.13.native.prevent="nextStep(4)"
+                                                          @@keydown.220.native.prevent="nextStep(2)"
                                                           @*@@keydown.9.native.prevent="nextStep(4)"*@
                                                           ref="refPVOrigenBus">
                                                     <template slot="option" slot-scope="option">
@@ -215,6 +218,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refDestinoBus_2.typeAheadPointer = $getSelectorVselect(list.destinosBus, filtro.CodiDestinoBus)"
                                                           @@keydown.13.native.prevent="nextStep(5)"
+                                                          @@keydown.220.native.prevent="nextStep(3)"
                                                           @*@@keydown.9.native.prevent="nextStep(5)"*@
                                                           ref="refDestinoBus_2">
                                                     <template slot="option" slot-scope="option">
@@ -235,6 +239,7 @@
                                                        v-mask="'##:## AM'"
                                                        @@focus="$event.target.select()"
                                                        @@keydown.13.prevent="nextStep(6)"
+                                                       @@keydown.220.prevent="nextStep(4)"
                                                        @*@@keydown.9.prevent="nextStep(6)"*@
                                                        @@blur="filtro.Turno = $getValueDateTimePicker_Hours($event)"
                                                        autocomplete="off" />
@@ -251,6 +256,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refServicio.typeAheadPointer = $getSelectorVselect(list.servicios, filtro.CodiServicio)"
                                                           @@keydown.13.native.prevent="nextStep(7)"
+                                                          @@keydown.220.native.prevent="nextStep(5)"
                                                           @*@@keydown.9.native.prevent="nextStep(7)"*@
                                                           ref="refServicio">
                                                     <template slot="option" slot-scope="option">
@@ -271,6 +277,7 @@
                                                           :get-option-label="getLabel"
                                                           @@input="$refs.refDestinoPas_2.typeAheadPointer = $getSelectorVselect(list.destinosPas, filtro.CodiDestinoPas)"
                                                           @@keydown.13.native.prevent="nextStep(8)"
+                                                          @@keydown.220.native.prevent="nextStep(6)"
                                                           @*@@keydown.9.native.prevent="nextStep(8)"*@
                                                           ref="refDestinoPas_2">
                                                     <template slot="option" slot-scope="option">
@@ -454,8 +461,9 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"                                                            
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -512,8 +520,9 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"                                                            
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -571,7 +580,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -629,7 +639,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -687,7 +698,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -757,8 +769,9 @@
                                                     <label class="control-label" style="width: 100%; font-weight: 500; color: var(--emp-color); ">Asiento</label>
                                                     <input v-model="list.ventas[indexVenta].NroAsiento"
                                                            @@keydown.13.prevent="enterTxtNroAsientoVenta($event)"
+                                                           @@keydown.220.prevent="nextStep(7)"
                                                            @*@@keydown.9.prevent="enterTxtNroAsientoVenta($event)"*@
-                                                           @@blur="validateTxtNroAsientoVenta($event)"
+                                                           @*@@blur="validateTxtNroAsientoVenta($event)"*@
                                                            @@focus="focusAsiento($event)"
                                                            id="txtNroAsientoVenta"
                                                            ref="refNroAsientoVenta"

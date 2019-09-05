@@ -333,9 +333,13 @@
                     var input = {};
                     input.FechaLiquidacion = _this.filtro.fecha;
                     input.CodEmpresa = _this.filtro.codEmpresa;
+                    input.Empresa = _.find(_this.list.empresas, { 'id': _this.filtro.codEmpresa }).label;
                     input.CodSucursal = _this.filtro.codSucursal;
+                    input.Sucursal = _.find(_this.list.sucursales, { 'id': _this.filtro.codSucursal }).label;
                     input.CodPuntVenta = _this.filtro.codPuntVenta;
+                    input.PuntoVenta = _.find(_this.list.puntosVenta, { 'id': _this.filtro.codPuntVenta }).label;
                     input.CodUsuario = _this.filtro.codUsuario;
+                    input.Usuario = _.find(_this.list.usuarios, { 'id': _this.filtro.codUsuario }).label;
                     input.tipoLiq = (_this.filtro.codUsuario === '0') ? '1' : '0';
                     await APP.rq.axios.post(APP.base + '/liquidacion/lista-liquidacion', input)
                         .then(res => {

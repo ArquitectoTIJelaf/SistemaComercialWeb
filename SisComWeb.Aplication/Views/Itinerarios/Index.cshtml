@@ -977,59 +977,6 @@
             }
         })
 
-        function auxSetTd(afterEnter) {
-
-            var currCell = $('#tblListaItinerarios tr td').first();
-
-            if (currCell.length > 0) {
-                currCell.focus();
-            }
-
-            $('#tblListaItinerarios tr td').unbind();
-
-            $('#tblListaItinerarios').unbind();
-
-            $('#tblListaItinerarios tr td').click(function () {
-                currCell = $(this);
-            });
-            
-            $('#tblListaItinerarios').keydown(function (e) {
-
-                if (e.which == 39 || e.which == 37 || e.which == 38 || e.which == 40 || e.which == 13 || e.which == 32 || e.which == 9) {
-
-                    var c = "";
-
-                    if (e.which == 39) {
-                        e.preventDefault();
-                        c = currCell.next();
-                    } else if (e.which == 37) {
-                        e.preventDefault();
-                        c = currCell.prev();
-                    } else if (e.which == 38) {
-                        e.preventDefault();
-                        c = currCell.closest('tr').prev().find('td:eq(' + currCell.index() + ')');
-                    } else if (e.which == 40) {
-                        e.preventDefault();
-                        c = currCell.closest('tr').next().find('td:eq(' + currCell.index() + ')');
-                    } else if (e.which == 9 && !e.shiftKey) {
-                        e.preventDefault();
-                        c = currCell.next();
-                    } else if (e.which == 9 && e.shiftKey) {
-                        e.preventDefault();
-                        c = currCell.prev();
-                    } else if (e.which == 13) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        afterEnter(e);
-                    }
-
-                    if (c.length > 0) {
-                        currCell = c;
-                        currCell.focus();
-                    }
-                }
-            });
-        }
 
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
         var Usuario = @Html.Raw(Json.Encode(Model));
@@ -1243,6 +1190,65 @@
             modal.one(state ? 'shown.bs.modal' : 'hidden.bs.modal', d.resolve);
             return d.promise();
         };
+
+        function auxSetTd(afterEnter) {
+
+            debugger;
+
+            var currCell = $('#tblListaItinerarios tr td').first();
+
+            var LastCell = $('#tblListaItinerarios tr td').last();
+            var _LastCell = LastCell.index();
+
+            if (currCell.length > 0) {
+                currCell.focus();
+            }
+
+            $('#tblListaItinerarios tr td').unbind();
+
+            $('#tblListaItinerarios').unbind();
+
+            $('#tblListaItinerarios tr td').click(function () {
+                currCell = $(this);
+            });
+
+            $('#tblListaItinerarios').keydown(function (e) {
+
+                if (e.which == 39 || e.which == 37 || e.which == 38 || e.which == 40 || e.which == 13 || e.which == 32 || e.which == 9) {
+
+                    var c = "";
+
+                    if (e.which == 39) {
+                        e.preventDefault();
+                        c = currCell.next();
+                    } else if (e.which == 37) {
+                        e.preventDefault();
+                        c = currCell.prev();
+                    } else if (e.which == 38) {
+                        e.preventDefault();
+                        c = currCell.closest('tr').prev().find('td:eq(' + currCell.index() + ')');
+                    } else if (e.which == 40) {
+                        e.preventDefault();
+                        c = currCell.closest('tr').next().find('td:eq(' + currCell.index() + ')');
+                    } else if (e.which == 9 && !e.shiftKey) {
+                        e.preventDefault();
+                        c = currCell.next();
+                    } else if (e.which == 9 && e.shiftKey) {
+                        e.preventDefault();
+                        c = currCell.prev();
+                    } else if (e.which == 13) {
+                        e.preventDefault();
+                        //e.stopPropagation();
+                        afterEnter(e);
+                    }
+
+                    if (c.length > 0) {
+                        currCell = c;
+                        currCell.focus();
+                    }
+                }
+            });
+        }
 
         var appController = (function () {
             return {
@@ -1789,7 +1795,7 @@
                 },
                 paginate: ['items'],
                 showVentas: false,
-                currCell: {}
+                chargeCurrCell: false
             },
             mounted: function () {},
             methods: {
@@ -1807,11 +1813,16 @@
                 },
                 sendRowOfTab: async function (e) {
                     let _this = this;
-                    var _index = parseInt(e.target.tabIndex / 19);
-                    var _item = _this.list.itinerarios[_index];
-                    await _this.sendRow(_item);
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 19);
+                        var _item = _this.list.itinerarios[_index];
+                        //en sendRow cambia el valor chargeCurrCell
+                        await _this.sendRow(_item);                        
+                    }
                 },
                 sendRow: async function (item) {
+                    let _this = this;
 
                     if (item.ProgramacionCerrada !== '0') {
                         switch (item.ProgramacionCerrada) {
@@ -1826,7 +1837,7 @@
                         return;
                     }
 
-                    var turnos = this.list.itinerarios.reduce(function (filtered, option) {
+                    var turnos = _this.list.itinerarios.reduce(function (filtered, option) {
                         if (option.CodiDestino === item.CodiDestino) {
                             var someNewValue =
                             {
@@ -1834,19 +1845,18 @@
                                 HoraPartida: option.HoraPartida,
                                 CodiServicio: option.CodiServicio,
                                 CodiRuta: option.CodiRuta,
-                                //TODO Parámetros innecesarios
-                                PlanoBus: option.PlanoBus,
-                                CodiProgramacion: option.CodiProgramacion,
                                 CodiOrigen: option.CodiOrigen,
-                                CodiDestino: option.CodiDestino,
-                                CodiBus: option.CodiBus,
+                                CodiDestino: option.CodiDestino,                                
                                 HoraViaje: option.HoraViaje,
                                 FechaViaje: option.FechaViaje,
                                 CodiEmpresa: option.CodiEmpresa,
-                                FechaProgramacion: option.FechaProgramacion,
-                                NroViaje: option.NroViaje,
                                 CodiPuntoVenta: option.CodiPuntoVenta,
-                                CodiSucursal: option.CodiSucursal
+                                CodiSucursal: option.CodiSucursal,
+                                //PlanoBus: option.PlanoBus,
+                                //CodiProgramacion: option.CodiProgramacion,
+                                //CodiBus: option.CodiBus,
+                                //FechaProgramacion: option.FechaProgramacion,
+                                //NroViaje: option.NroViaje,
                             }
                             filtered.push(someNewValue);
                         }
@@ -1855,11 +1865,13 @@
 
                     await appController.showVentas(item, turnos);
 
-                    this.$nextTick(() => {
+                    _this.$nextTick(() => {
                         //appVueVenta.$refs.refNroAsientoVenta.focus();
 
                         var _topOfBus = $('.img-bus').offset().top;
                         appVueVenta.top = _topOfBus + 'px';
+
+                        _this.chargeCurrCell = false;
                     });
                 }
             },
@@ -3769,16 +3781,15 @@
                 },
                 nextStep: async function (code) {
                     this.showPlano = false;
+
+                    if (!$("#panelWrapperV").hasClass("in")) {
+                        $('#btnDesplegar').click();
+                        this.showTextTurnos = false;
+                    }
+
                     switch (code) {
                         case 1:
-                            {
-                                if (!$("#panelWrapperV").hasClass("in")) {
-                                    $('#btnDesplegar').click();
-                                    this.showTextTurnos = false;
-                                }
-
-                                $('#cboSucursal input[type=search]').focus();
-                            };
+                            $('#cboSucursal input[type=search]').focus();
                             break;
                         case 2:
                             $('#cboOrigenBus input[type=search]').focus();
@@ -6766,59 +6777,7 @@
 
                     if (!item.IdVenta)
                         this.bloquearAsiento(item, true, true);
-                },
-                //reverseNextStep: function (code) {
-                //    this.showPlano = false;
-                //    switch (code) {
-                //        case 1:
-                //            {
-                //                if (!$("#panelWrapperV").hasClass("in")) {
-                //                    $('#btnDesplegar').click();
-                //                    this.showTextTurnos = false;
-                //                }
-
-                //                $('#cboSucursal input[type=search]').focus();
-                //            };
-                //            break;
-                //        case 2:
-                //            $('#cboOrigenBus input[type=search]').focus();
-                //            break;
-                //        case 3:
-                //            {
-                //                this.$nextTick(() => {
-                //                    $('#cboPVOrigenBus input[type=search]').focus();
-                //                });
-                //            };
-                //            break;
-                //        case 4:
-                //            $('#cboDestinoBus_2 input[type=search]').focus();
-                //            break;
-                //        case 5:
-                //            $('#cboServicio input[type=search]').focus();
-                //            break;
-                //        case 6:
-                //            $('#cboDestinoPas_2 input[type=search]').focus();
-                //            break;
-                //        case 7:
-                //            document.getElementById('txtTurno').focus();
-                //            break;
-                //        case 8:
-                //            document.getElementById('txtFecha_2').focus();
-                //            break;
-                //        case 9:
-                //            {
-                //                this.$nextTick(() => {
-                //                    this.recorridoSectionFilter();
-                //                });
-                //            };
-                //            break;
-                //        default:
-                //            // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
-                //            this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
-
-                //            this.recorridoSectionFilter();
-                //    }
-                //},
+                }
             },
             computed: {
                 setCadenaEmbarques: function () {

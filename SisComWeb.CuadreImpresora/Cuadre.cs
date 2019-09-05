@@ -410,7 +410,15 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL (ING - EGR)", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Total)));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(" ");
-
+            texto.AppendLine(" ");
+            texto.AppendLine(" ");
+            texto.AppendLine(" ");
+            texto.AppendLine(" ");
+            texto.AppendLine(" ");
+            texto.AppendLine(new string('-', 42));
+            texto.AppendLine(SplitStringPreserving("CONFORMIDAD DEL CAJERO " + liquidacion.Usuario, 42, "||||^"));
+            texto.AppendLine(" ");
+            texto.AppendLine(" ");
             byte[] encodedText = Encoding.Default.GetBytes(texto.ToString());
             var boletoBase64 = Convert.ToBase64String(encodedText);
 
