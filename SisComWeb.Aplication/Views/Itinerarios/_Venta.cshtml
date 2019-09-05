@@ -461,8 +461,9 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"                                                            
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -519,8 +520,9 @@
                                                             :title="showNombrePasajero(item.FechaVenta, item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno)"
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
-                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"                                                            
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -578,7 +580,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -636,7 +639,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">
@@ -694,7 +698,8 @@
                                                             @@click="bloquearAsiento(item, true)"
                                                             @@contextmenu="openMenu($event, item)"
                                                             :style="bgcVentaBus(item.FechaVenta, item.Color, item.NumeAsiento, item.IDS, item.FlagVenta)"
-                                                            :disabled="disabledAsiento">
+                                                            :disabled="disabledAsiento"
+                                                            tabindex="-1">
                                                         <template v-if="item.FechaVenta">
                                                             <template v-if="item.FlagVenta == 'R'">
                                                                 <div class="icons-of-seat">

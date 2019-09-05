@@ -19,6 +19,13 @@ namespace SisComWeb.Business
                 LiquidacionRepository.Poblar(filtro);
                 //Obtiene Resultado
                 var objeto = LiquidacionRepository.Data(filtro);
+
+                objeto.Fecha = string.IsNullOrEmpty(objeto.Fecha) ? filtro.FechaLiquidacion : objeto.Fecha;
+                objeto.Empresa = string.IsNullOrEmpty(objeto.Empresa) ? filtro.Empresa : objeto.Empresa;
+                objeto.Sucursal = string.IsNullOrEmpty(objeto.Sucursal) ? filtro.Sucursal : objeto.Sucursal;
+                objeto.PuntoVenta = string.IsNullOrEmpty(objeto.PuntoVenta) ? filtro.PuntoVenta : objeto.PuntoVenta;
+                objeto.Usuario = string.IsNullOrEmpty(objeto.Usuario) ? filtro.Usuario : objeto.Usuario;
+
                 objeto.Impresion = CuadreImpresora.Cuadre.WriteLiquidacion(objeto);
 
                 return new Response<LiquidacionEntity>(true, objeto, string.Empty, true);

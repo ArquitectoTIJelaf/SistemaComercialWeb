@@ -89,5 +89,9 @@ namespace SisComWeb.Aplication.Models
         public int CodPuntVenta { get; set; }
         public int CodUsuario { get; set; }
         public string tipoLiq { get; set; }
+        public string Empresa { get; set; }
+        public string Sucursal { get; set; }
+        public string PuntoVenta { get; set; }
+        public string Usuario { get; set; }
     }
 }

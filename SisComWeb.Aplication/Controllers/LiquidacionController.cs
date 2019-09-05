@@ -31,9 +31,13 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"FechaLiquidacion\" : \"" + filtro.FechaLiquidacion + "\"" +
                                     ",\"CodEmpresa\" : \"" + filtro.CodEmpresa + "\"" +
+                                    ",\"Empresa\" : \"" + filtro.Empresa + "\"" +
                                     ",\"CodSucursal\" : \"" + filtro.CodSucursal + "\"" +
+                                    ",\"Sucursal\" : \"" + filtro.Sucursal + "\"" +
                                     ",\"CodPuntVenta\" : \"" + filtro.CodPuntVenta + "\"" +
+                                    ",\"PuntoVenta\" : \"" + filtro.PuntoVenta + "\"" +
                                     ",\"CodUsuario\" : \"" + filtro.CodUsuario + "\"" +
+                                    ",\"Usuario\" : \"" + filtro.Usuario + "\"" +
                                     ",\"CodInterno\" : \"" + CodSistema + "\"" +
                                     ",\"TipoProc\" : \"" + 1 + "\"" +
                                     ",\"tipoLiq\" : \"" + filtro.tipoLiq + "\"" +
