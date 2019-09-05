@@ -506,6 +506,11 @@
             -webkit-animation-timing-function: linear;
             animation-timing-function: linear;
         }
+
+        td:focus {
+            background-color: var(--emp-color) !important;
+            color: white;
+        }
     </style>
 
     <style type="text/css">
@@ -971,6 +976,60 @@
                 });
             }
         })
+
+        function auxSetTd(afterEnter) {
+
+            var currCell = $('#tblListaItinerarios tr td').first();
+
+            if (currCell.length > 0) {
+                currCell.focus();
+            }
+
+            $('#tblListaItinerarios tr td').unbind();
+
+            $('#tblListaItinerarios').unbind();
+
+            $('#tblListaItinerarios tr td').click(function () {
+                currCell = $(this);
+            });
+            
+            $('#tblListaItinerarios').keydown(function (e) {
+
+                if (e.which == 39 || e.which == 37 || e.which == 38 || e.which == 40 || e.which == 13 || e.which == 32 || e.which == 9) {
+
+                    var c = "";
+
+                    if (e.which == 39) {
+                        e.preventDefault();
+                        c = currCell.next();
+                    } else if (e.which == 37) {
+                        e.preventDefault();
+                        c = currCell.prev();
+                    } else if (e.which == 38) {
+                        e.preventDefault();
+                        c = currCell.closest('tr').prev().find('td:eq(' + currCell.index() + ')');
+                    } else if (e.which == 40) {
+                        e.preventDefault();
+                        c = currCell.closest('tr').next().find('td:eq(' + currCell.index() + ')');
+                    } else if (e.which == 9 && !e.shiftKey) {
+                        e.preventDefault();
+                        c = currCell.next();
+                    } else if (e.which == 9 && e.shiftKey) {
+                        e.preventDefault();
+                        c = currCell.prev();
+                    } else if (e.which == 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        afterEnter(e);
+                    }
+
+                    if (c.length > 0) {
+                        currCell = c;
+                        currCell.focus();
+                    }
+                }
+            });
+        }
 
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
         var Usuario = @Html.Raw(Json.Encode(Model));
@@ -1729,17 +1788,34 @@
                     itinerarios: []
                 },
                 paginate: ['items'],
-                showVentas: false
+                showVentas: false,
+                currCell: {}
             },
             mounted: function () {},
             methods: {
                 loadTable: function (list) {
                     this.list.itinerarios = list;
+
                     this.$nextTick(() => {
                         this.shown = true
-                        if (this.$refs.paginator && this.list.itinerarios.length > 0)
+                        if (this.$refs.paginator && this.list.itinerarios.length > 0) {
                             this.$refs.paginator.goToPage(1);
+
+                            auxSetTd(appVueTable.sendRowOfTab);
+                        }
                     });
+                },
+                sendRowOfTab: async function (e) {
+                    let _this = this;
+                    console.log("asd: " + appVueVenta.processing);
+                    if (appVueVenta.processing) {
+                        
+                        return;
+                    }
+
+                    var _index = parseInt(e.target.tabIndex / 19);
+                    var _item = _this.list.itinerarios[_index];
+                    await _this.sendRow(_item);
                 },
                 sendRow: async function (item) {
 
@@ -3477,7 +3553,7 @@
                 },
                 consultaReniec: function () {
                     var _this = this;
-                    
+
                     // Validaciones
                     if (!_this.list.ventas[_this.indexVenta].CodiTipoDoc) {
                         $('#cboTipoDoc input[type=search]').focus();
@@ -6634,7 +6710,59 @@
 
                     if (!item.IdVenta)
                         this.bloquearAsiento(item, true, true);
-                }
+                },
+                //reverseNextStep: function (code) {
+                //    this.showPlano = false;
+                //    switch (code) {
+                //        case 1:
+                //            {
+                //                if (!$("#panelWrapperV").hasClass("in")) {
+                //                    $('#btnDesplegar').click();
+                //                    this.showTextTurnos = false;
+                //                }
+
+                //                $('#cboSucursal input[type=search]').focus();
+                //            };
+                //            break;
+                //        case 2:
+                //            $('#cboOrigenBus input[type=search]').focus();
+                //            break;
+                //        case 3:
+                //            {
+                //                this.$nextTick(() => {
+                //                    $('#cboPVOrigenBus input[type=search]').focus();
+                //                });
+                //            };
+                //            break;
+                //        case 4:
+                //            $('#cboDestinoBus_2 input[type=search]').focus();
+                //            break;
+                //        case 5:
+                //            $('#cboServicio input[type=search]').focus();
+                //            break;
+                //        case 6:
+                //            $('#cboDestinoPas_2 input[type=search]').focus();
+                //            break;
+                //        case 7:
+                //            document.getElementById('txtTurno').focus();
+                //            break;
+                //        case 8:
+                //            document.getElementById('txtFecha_2').focus();
+                //            break;
+                //        case 9:
+                //            {
+                //                this.$nextTick(() => {
+                //                    this.recorridoSectionFilter();
+                //                });
+                //            };
+                //            break;
+                //        default:
+                //            // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
+                //            this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
+
+                //            this.recorridoSectionFilter();
+                //    }
+                //},
             },
             computed: {
                 setCadenaEmbarques: function () {
@@ -7531,7 +7659,7 @@
                 imprimirBoleto: function (_Documentos, _Posicion, _CantidadVentas) {
                     var auxValidate = true;
                     var auxUrl = '';
-                    
+
                     // Imprime '_Documentos'
                     for (const doc in _Documentos) {
                         var docValor = `${_Documentos[doc]}`;
@@ -7568,13 +7696,13 @@
                     if (_CantidadVentas > 1 && _CantidadVentas > (_Posicion + 1)) {
                         auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'CORTE_SEPARADOR';
                         axios({ method: "GET", "url": auxUrl })
-                    } 
+                    }
 
                     // Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
                     if (auxValidate) {
                         if (_Posicion === 0)
                             APP.msg.success('Boleto enviado a imprimir correctamente.');
-                    }  
+                    }
                     else
                         APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                 }
@@ -8135,7 +8263,7 @@
                                 _this.objBeneficiario.Nombre = nombresSplit[0];
                                 _this.objBeneficiario.ApellidoPaterno = nombresSplit[1];
                                 _this.objBeneficiario.ApellidoMaterno = nombresSplit[2];
-                                
+
                                 _this.objBeneficiario.BoletoCompleto = _tipo + String(_serie).padStart(3, '0') + '-' + _.cloneDeep(_this.filtro.documento).padStart(7, '0');
 
                                 _this.$nextTick(() => {
@@ -8182,7 +8310,7 @@
                     input.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
                     input.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
                     input.NomOrigen = appVueVenta.filtro.CodiSucursal.label;
-                    
+
                     // AGREGAMOS NUEVOS
                     input.CodiEsca = _this.objBeneficiario.CodiEsca;
                     input.CodiOrigenBoleto = _this.objBeneficiario.CodiOrigen;
@@ -8201,9 +8329,9 @@
                         APP.msg.error('No se pudo limpiar los asientos bloqueados para realizar la venta.');
                         return;
                     }
-                    
+
                     appController.disabledAsientos(true);
-                    
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
                         .then(async function (res) {
                             await _this.close();
@@ -8229,7 +8357,7 @@
                 },
                 validaPostergacion: async function () {
                     var auxValidate = true;
-                    
+
                     // TipoPostergacion = '0' -> Ctrl + F4
                     if (this.TipoPostergacion === '0') {
                         if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
@@ -8360,7 +8488,7 @@
                             }
                         }
                     }
-                    
+
                     // TipoPostergacion = '1' -> F11
                     if (this.TipoPostergacion === '1') {
                         if (moment(this.objBeneficiario.FechaViaje, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
@@ -9532,7 +9660,7 @@
                             return;
                         }
                     } else return;
-                    
+
                     if (_this.filtro.idVenta !== 0) {
                         await APP.rq.axios2.post(APP.base + '/itinerarios/actualizaBoletoF9' + APP.util.getQueryParamByObject({
                             IdVenta: _this.filtro.idVenta,
@@ -9760,7 +9888,7 @@
                             }
                         }
                     } else return;
-                                       
+
                     var input = {};
                     input.CodiEsca = (item.CodiEsca) ? item.CodiEsca.substr(item.CodiEsca.length - 11) : '';
                     input.CodiProgramacion = parseInt(appVueVenta.filtro.CodiProgramacion);
@@ -10775,7 +10903,7 @@
                                     //Inserta Cliente si no tiene IdCliente
                                     if (_this.item.idCliente == 0 && (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004')) {
                                         var listado = [];
-                                        
+
                                         var input2 = {};
                                         input2.IdCliente = 0;
                                         input2.TipoDoc = _this.item.documento;
@@ -10801,7 +10929,7 @@
                                             })
                                             .catch(APP.rq.axios_handler_error_alert);
                                     }
-                                    
+
                                     //Data para Grabar Reintegro
                                     input.Serie = _this.item.boleto.substring(1, 4); //TODO
                                     input.nume_boleto = _this.item.boleto.substring((_this.item.boleto.length - 7), _this.item.boleto.length); //TODO
@@ -10936,7 +11064,7 @@
                     item.codEmpresa = String(_this.dataOriginal.CodiEmpresa) || '';
                     item.serie = (_this.dataOriginal.Tipo) ? (_this.dataOriginal.Tipo === 'M') ? _.padStart(_this.dataOriginal.SerieBoleto, 4, '0') : _this.dataOriginal.Tipo + _.padStart(_this.dataOriginal.SerieBoleto, 3, '0') : '';
                     item.numero = _.padStart(_this.dataOriginal.NumeBoleto, 7, '0') || '';
-                    
+
                     appVueAnulaReintegro.show(item);
 
                     await deferredModal($('#appVueAnulaReintegro'), true).done(function () {
@@ -11967,7 +12095,7 @@
                 },
                 anularReintegro: async function (data) {
                     var _this = this;
-                    
+
                     var auxObjEmpresa = appController.findEmpresa(data.CodiEmpresa);
 
                     await APP.rq.axios2.post(APP.base + '/reintegro/reintegro-anular' + APP.util.getQueryParamByObject({
@@ -12204,7 +12332,7 @@
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(res => {
                             _this.$nextTick(async () => {
-                                
+
                                 // Valida 'Programación cerrada'
                                 if (res.data.Valor.Activo === '1') {
                                     APP.msg.warning('La programación se encuentra cerrada.');
@@ -12214,7 +12342,7 @@
                                 // Valida 'Manifiesto'
                                 var CodiProgramacion = res.data.Valor.CodiProgramacion;
                                 var CodiSucursal = res.data.Valor.CodiSucursal;
-                                
+
                                 var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion(CodiProgramacion, CodiSucursal);
                                 if (resValidaManifiestoProgramacion) {
                                     APP.msg.warning('Manifiesto ya fue emitido.');
@@ -12425,7 +12553,7 @@
                             }
 
                             _this.processingLote = true;
-                            
+
                             await _this.bloquearAsientoList(asientosBloqueados);
 
                             await APP.msg.infoMessage('Asientos Bloqueados', `Se bloqueó correctamente los asientos: ${asientosBloqueados.join(', ')}`)

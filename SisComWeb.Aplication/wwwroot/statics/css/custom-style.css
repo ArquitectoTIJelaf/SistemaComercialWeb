@@ -127,7 +127,7 @@ body {
 }
 
 .tr-hover {
-    background-color: #ebf7ff !important;
+    background-color: #ebf7ff;
 }
 
 .table-style tbody tr:nth-child(even) {
@@ -262,9 +262,14 @@ body {
     padding-left: 8px;
 }
 
-.table-hover tbody tr:hover td {
-    /*background-color: #D4FFAA;*/
+.table-hover tbody tr:hover {
     background-color: #ECF1F4;
+    color: black;
+}
+
+.table-hover tbody tr:focus-within {
+    background-color: var(--emp-color) !important;
+    color: white;
 }
 
 /*.btn-success {
@@ -513,7 +518,13 @@ body {
 @media (min-width: 768px) {
     .fix-header #page-wrapper {
         margin-top: 30px;
+        padding-top: 50px;
     }
+
+        .fix-header #page-wrapper.noFixed {
+            margin-top: 0 !important;
+            padding-top: 5px !important;
+        }
 }
 
 .footer {

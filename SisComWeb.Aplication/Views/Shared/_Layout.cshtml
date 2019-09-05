@@ -53,7 +53,7 @@
     @Scripts.Render("~/bundles/js")
     <script src="~/wwwroot/plugins/bower_components/signalR/jquery.signalR-2.4.0.min.js"></script>
     <script src="~/signalr/hubs"></script>
-    @{ 
+    @{
         var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
     }
     <script>
@@ -136,7 +136,8 @@
         var appVueHeader = new Vue({
             el: "#appVueHeader",
             data: {
-                mensaje: ''
+                mensaje: '',
+                fixedHeader: true
             },
             mounted: function () {
                 var _this = this;
@@ -145,9 +146,9 @@
                 _this.setClassColorBlueToBorderBottom();
 
                 //setInterval 'MensajeriaInstantanea'
-                ValSetInt_MensajeriaInstantanea = setInterval(function () {
-                    _this.startMensajeriaInstantanea();
-                }, 1000);
+                //ValSetInt_MensajeriaInstantanea = setInterval(function () {
+                //    _this.startMensajeriaInstantanea();
+                //}, 1000);
             },
             methods: {
                 startMensajeriaInstantanea: async function () {
@@ -168,11 +169,11 @@
                         .then(async function (res) {
                             if (res.data.EsCorrecto) {
                                 appVueMensajeria.show(res.data.Valor.Mensaje);
-                                
+
                                 await deferredModal($('#appVueMensajeria'), false).done(function () {
                                     // Continue
                                 });
-                                
+
                                 // Eliminar 'Mensaje'
                                 await APP.rq.axios2.post(APP.base + '/base/eliminarMensaje', res.data.Valor);
                             }
@@ -197,6 +198,14 @@
                 },
                 showLiquidacion: function () {
                     appVueLiquidacion.show();
+                }
+            },
+            watch: {
+                'fixedHeader': function (newVal) {
+                    if (newVal)
+                        document.getElementById("page-wrapper").classList.remove("noFixed");
+                    else
+                        document.getElementById("page-wrapper").classList.add("noFixed");
                 }
             }
         });
@@ -245,8 +254,8 @@
 
                     if (!_this.filtro.codEmpresa) {
                         await _this.getEmpresas();
-                    }                       
-                    
+                    }
+
                     if (!_this.filtro.codSucursal) {
                         await _this.getSucursales();
                     }
@@ -427,7 +436,7 @@
                         }
                     },
                     set: function (value) {
-                        if (value) {                            
+                        if (value) {
                             if (this.list.usuarios.find(x => x.id === value.id))
                                 this.filtro.codUsuario = value.id;
                         }
