@@ -532,6 +532,37 @@ APP.msg.infoBoletoPromocionadoConDescuento = async function (_title, _message, _
     return _bool;
 };
 
+APP.msg.infoNuevoNRoViaje = async function (_title, _message, _objFiltro) {
+    var _bool = false;
+
+    await swal({
+        title: _title || "Mensaje del sistema",
+        html:
+            '<p style="font-weight: 300; font-size: 13px; text-align: justify; line-height: normal; " >' +
+            (_message || "") +
+            '</p>' +
+            '<table style="text-align: left; display: unset; ">' +
+            '<tr><td>Empresa</td><td> : ' + _objFiltro.CodiEmpresa + '</td></tr>' +
+            '<tr><td>Sucursal</td><td> : ' + _objFiltro.CodiOrigenPas + '</td></tr>' +
+            '<tr><td>Origen bus</td><td> : ' + _objFiltro.CodiOrigenBus + '</td></tr>' +
+            '<tr><td>P.V. Origen bus</td><td> : ' + _objFiltro.CodiPuntoVentaBus + '</td></tr>' +
+            '<tr><td>Destino bus</td><td> : ' + _objFiltro.CodiDestinoBus + '</td></tr>' +
+            '<tr><td>Turno</td><td> : ' + _objFiltro.Turno + '</td></tr>' +
+            '<tr><td>Servicio</td><td> : ' + _objFiltro.CodiServicio + '</td></tr>' +
+            '</table>'
+        ,
+        type: "warning",
+        allowOutsideClick: false
+    }).then(res => {
+        if (res.value)
+            _bool = res.value;
+    }).catch(error => {
+        APP.msg.error(error);
+    });
+
+    return _bool;
+};
+
 APP.msg.confirmClaveFechaActualCodiUsuario = async function (_title, _message, _codiUsuario, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
     var _bool = false;
 

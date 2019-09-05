@@ -2,6 +2,7 @@
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 
@@ -329,6 +330,32 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgExcObtenerStAnulacion, false);
+            }
+        }
+
+        public static Response<List<DestinoRutaEntity>> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje)
+        {
+            try
+            {
+                var ListaDestinosRuta = new List<DestinoRutaEntity>();
+                var buscarNroViaje = TurnoRepository.BuscarNroViaje(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio);
+
+                if (buscarNroViaje > 0)
+                {
+                    ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarNroViaje, CodiOrigenPas);
+
+                    if (ListaDestinosRuta.Count > 0)
+                        return new Response<List<DestinoRutaEntity>>(true, ListaDestinosRuta, Message.MsgCorrectoGetNewListaDestinosPas, true);
+                    else
+                        return new Response<List<DestinoRutaEntity>>(false, ListaDestinosRuta, Message.MsgErrorGetNewListaDestinosPas, true);
+                }
+                else
+                    return new Response<List<DestinoRutaEntity>>(false, ListaDestinosRuta, Message.MsgErrorGetNewListaDestinosPas, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcGetNewListaDestinosPas, false);
             }
         }
     }

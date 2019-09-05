@@ -1807,12 +1807,6 @@
                 },
                 sendRowOfTab: async function (e) {
                     let _this = this;
-                    console.log("asd: " + appVueVenta.processing);
-                    if (appVueVenta.processing) {
-                        
-                        return;
-                    }
-
                     var _index = parseInt(e.target.tabIndex / 19);
                     var _item = _this.list.itinerarios[_index];
                     await _this.sendRow(_item);
@@ -3773,7 +3767,7 @@
                     if (FechaVenta)
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
                 },
-                nextStep: function (code) {
+                nextStep: async function (code) {
                     this.showPlano = false;
 
                     if (!$("#panelWrapperV").hasClass("in")) {
@@ -3805,7 +3799,17 @@
                             $('#cboServicio input[type=search]').focus();
                             break;
                         case 7:
-                            $('#cboDestinoPas_2 input[type=search]').focus();
+                            {
+                                // Actualizamos 'lista.destinosPas'
+                                await this.obtenerNewListaDestinosPas(
+                                    this.filtro.CodiEmpresa.id, this.filtro.CodiSucursal.id, this.filtro.CodiOrigenBus.id, this.filtro.CodiPVOrigenBus.id,
+                                    this.filtro.CodiDestinoBus.id, this.filtro.Turno, this.filtro.CodiServicio.id, this.filtro.NroViaje
+                                );
+
+                                this.$nextTick(() => {
+                                    $('#cboDestinoPas_2 input[type=search]').focus();
+                                });
+                            };
                             break;
                         case 8:
                             document.getElementById('txtFecha_2').focus();
@@ -3823,6 +3827,59 @@
 
                             this.recorridoSectionFilter();
                     }
+                },
+                obtenerNewListaDestinosPas: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje) {
+                    var listaDestinosRuta = [];
+                    
+                    var resGetNewListaDestinosPas = await this.getNewListaDestinosPas(_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje);
+                    if (resGetNewListaDestinosPas) {
+                        if (resGetNewListaDestinosPas.EsCorrecto)
+                            listaDestinosRuta = resGetNewListaDestinosPas.Valor;
+                        else {
+                            if (resGetNewListaDestinosPas.Estado) {
+                                var tmpObjFiltro = {};
+                                tmpObjFiltro.CodiEmpresa = _CodiEmpresa;
+                                tmpObjFiltro.CodiOrigenPas = _CodiOrigenPas;
+                                tmpObjFiltro.CodiOrigenBus = _CodiOrigenBus;
+                                tmpObjFiltro.CodiPuntoVentaBus = _CodiPuntoVentaBus;
+                                tmpObjFiltro.CodiDestinoBus = _CodiDestinoBus;
+                                tmpObjFiltro.Turno = _Turno;
+                                tmpObjFiltro.CodiServicio = _CodiServicio;
+                                await APP.msg.infoNuevoNRoViaje(
+                                    ''
+                                    , 'No hay horario disponible para este destino, según ruta: '
+                                    , tmpObjFiltro);
+                            }
+                        }
+                    }
+
+                    if (listaDestinosRuta.length <= 0)
+                        this.filtro.CodiDestinoPas = null;
+
+                    this.list.destinosPas = _.cloneDeep(listaDestinosRuta);
+                },
+                getNewListaDestinosPas: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje) {
+                    var auxResponse = null;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/getNewListaDestinosPas', {
+                        CodiEmpresa: _CodiEmpresa,
+                        CodiOrigenPas: _CodiOrigenPas,
+                        CodiOrigenBus: _CodiOrigenBus,
+                        CodiPuntoVentaBus: _CodiPuntoVentaBus,
+                        CodiDestinoBus: _CodiDestinoBus,
+                        Turno: _Turno,
+                        CodiServicio: _CodiServicio,
+                        NroViaje: _NroViaje
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
                 },
                 showTipoPago: async function () {
                     // Copiar datos del último Ticket para todos los demás.
@@ -6381,7 +6438,6 @@
 
                     if (
                         (this.itemSelected.FlagVenta === 'V' || this.itemSelected.FlagVenta === '7' || this.itemSelected.FlagVenta === '1')
-                        && (this.itemSelected.TipoBoleto === 'F' || this.itemSelected.TipoBoleto === 'B')
                     )
                         auxValidate = true;
 

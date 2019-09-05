@@ -3275,5 +3275,52 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
+        
+        [HttpPost]
+        [Route("getNewListaDestinosPas")]
+        public async Task<ActionResult> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiEmpresa\" : " + CodiEmpresa +
+                                    ",\"CodiOrigenPas\" : " + CodiOrigenPas +
+                                    ",\"CodiOrigenBus\" : " + CodiOrigenBus +
+                                    ",\"CodiPuntoVentaBus\" : " + CodiPuntoVentaBus +
+                                    ",\"CodiDestinoBus\" : " + CodiDestinoBus +
+                                    ",\"Turno\" : \"" + Turno.Replace(" ", "") + "\"" +
+                                    ",\"CodiServicio\" : " + CodiServicio +
+                                    ",\"NroViaje\" : " + NroViaje +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("GetNewListaDestinosPas", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["CodiSucursal"],
+                        label = (string)x["NomOficina"]
+                    }).ToList(),
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

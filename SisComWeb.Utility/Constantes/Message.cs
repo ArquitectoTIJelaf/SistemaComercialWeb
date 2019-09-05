@@ -391,5 +391,10 @@
 
         //Liquidación
         public const string MsgExcLiquidacion = "Excepción: MsgExcLiquidacion.";
+
+        // Destinos ruta
+        public const string MsgCorrectoGetNewListaDestinosPas = "Correcto: GetNewListaDestinosPas.";
+        public const string MsgErrorGetNewListaDestinosPas = "Error: GetNewListaDestinosPas.";
+        public const string MsgExcGetNewListaDestinosPas = "Excepción: GetNewListaDestinosPas.";
     }
 }

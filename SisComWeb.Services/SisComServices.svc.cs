@@ -464,6 +464,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<DestinoRutaEntity>> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje)
+        {
+            try
+            {
+                return TurnoLogic.GetNewListaDestinosPas(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio, NroViaje);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcGetNewListaDestinosPas, false);
+            }
+        }
+
         #endregion
 
         #region BLOQUEO ASIENTO
