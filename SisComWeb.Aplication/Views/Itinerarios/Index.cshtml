@@ -10771,10 +10771,9 @@
                 saveReintegro: async function () {
                     let _this = this;
 
-                    //Todos los campos deben estar llenos
+                    //Valida 'Campos llenos'
                     if (_this.item.numero && _this.item.apellidoPaterno && _this.item.apellidoMaterno &&
-                        _this.item.nombre && _this.item.fechaNac && _this.item.edad &&
-                        _this.item.nacionalidad && _this.item.nacionalidad) {
+                        _this.item.nombre && _this.item.nacionalidad) {
                         _this.disabledAceptar = true;
 
                         var updateReintegro = false;
@@ -12256,7 +12255,9 @@
                     this.limpiarBus(0);
                     this.setData();
                     this.$nextTick(() => {
-                        $('#appVuePaseLote').modal('show');
+                        appVueVenta.$nextTick(() => {
+                            $('#appVuePaseLote').modal('show');
+                        });
                     });
                 },
                 setData: function () {
@@ -12644,7 +12645,10 @@
 
                     await APP.rq.axios2.post(APP.base + '/paseLote/desbloquearAsientoList' + APP.util.getQueryParamByObject({ CodiProgramacion: _this.objProgramacion.CodiProgramacion}))
                         .then(async function (res) {
+                            debugger;
                             //TODO: implementar
+                            _this.list.newAsientos = [];
+                            _this.list.newAsientosManuales = [];
                         });
                 },
                 OrigenDraggable: function (_item) {
@@ -12798,10 +12802,10 @@
                                 }
                             }
 
-                            //TODO: Desbloquear Asientos
-
-                            _this.list.newAsientos = [];
-                            _this.list.newAsientosManuales = [];
+                            // Desbloquea Asientos
+                            await _this.desbloquearAsientoList();
+                            //_this.list.newAsientos = [];
+                            //_this.list.newAsientosManuales = [];
 
                         })
                         .catch(APP.rq.axios_handler_error_alert);
@@ -12911,11 +12915,15 @@
                             _this.list.plano1_Des = [];
                     }
 
-                    _this.$nextTick(() => {
+                    _this.$nextTick(async () => {
                         _this.rainEfect = false;
                         _this.processingLote = false;
-                        _this.list.newAsientos = [];
-                        _this.list.newAsientosManuales = [];
+                        if (_this.objProgramacion && _this.objProgramacion.CodiProgramacion) {
+                            await _this.desbloquearAsientoList();
+                        } else {
+                            _this.list.newAsientos = [];
+                            _this.list.newAsientosManuales = [];
+                        }
                     });
                 },
                 esc: function (event) {
