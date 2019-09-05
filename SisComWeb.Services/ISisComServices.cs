@@ -167,12 +167,8 @@ namespace SisComWeb.Services
         Response<bool> ObtenerStAnulacion(string CodTab, int Pv, string F);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ListaDestinosRuta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "BuscarNroViaje", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<int> BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio);
+        [WebInvoke(Method = "POST", UriTemplate = "GetNewListaDestinosPas", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<DestinoRutaEntity>> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje);
 
         #endregion
 

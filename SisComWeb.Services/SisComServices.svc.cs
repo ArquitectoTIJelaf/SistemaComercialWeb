@@ -464,29 +464,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        public Response<List<DestinoRutaEntity>> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje)
         {
             try
             {
-                return TurnoLogic.ListaDestinosRuta(NroViaje, CodiSucursal);
+                return TurnoLogic.GetNewListaDestinosPas(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio, NroViaje);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcListaDestinosRuta, false);
-            }
-        }
-
-        public Response<int> BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio)
-        {
-            try
-            {
-                return TurnoLogic.BuscarNroViaje(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcBuscarNroViaje, false);
+                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcGetNewListaDestinosPas, false);
             }
         }
 

@@ -333,33 +333,29 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        public static Response<List<DestinoRutaEntity>> GetNewListaDestinosPas(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio, int NroViaje)
         {
             try
             {
-                var consultaAnulacionPorDia = TurnoRepository.ListaDestinosRuta(NroViaje, CodiSucursal);
+                var ListaDestinosRuta = new List<DestinoRutaEntity>();
+                var buscarNroViaje = TurnoRepository.BuscarNroViaje(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio);
 
-                return new Response<List<DestinoRutaEntity>>(true, consultaAnulacionPorDia, Message.MsgCorrectoListaDestinosRuta, true);
+                if (buscarNroViaje > 0)
+                {
+                    ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarNroViaje, CodiOrigenPas);
+
+                    if (ListaDestinosRuta.Count > 0)
+                        return new Response<List<DestinoRutaEntity>>(true, ListaDestinosRuta, Message.MsgCorrectoGetNewListaDestinosPas, true);
+                    else
+                        return new Response<List<DestinoRutaEntity>>(false, ListaDestinosRuta, Message.MsgErrorGetNewListaDestinosPas, true);
+                }
+                else
+                    return new Response<List<DestinoRutaEntity>>(false, ListaDestinosRuta, Message.MsgErrorGetNewListaDestinosPas, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcListaDestinosRuta, false);
-            }
-        }
-
-        public static Response<int> BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio)
-        {
-            try
-            {
-                var valor = TurnoRepository.BuscarNroViaje(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio);
-
-                return new Response<int>(true, valor, Message.MsgCorrectoBuscarNroViaje, true);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcBuscarNroViaje, false);
+                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcGetNewListaDestinosPas, false);
             }
         }
     }

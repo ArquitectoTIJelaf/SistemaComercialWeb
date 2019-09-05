@@ -146,7 +146,6 @@ namespace SisComWeb.Repository
                     }
                 }
             }
-
             return Lista;
         }
 

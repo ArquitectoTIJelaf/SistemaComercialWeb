@@ -393,12 +393,8 @@
         public const string MsgExcLiquidacion = "Excepción: MsgExcLiquidacion.";
 
         // Destinos ruta
-        public const string MsgCorrectoListaDestinosRuta = "Correcto: ListaDestinosRuta.";
-        public const string MsgExcListaDestinosRuta = "Excepción: ListaDestinosRuta.";
-
-        // Buscar 'NroViaje'
-        public const string MsgCorrectoBuscarNroViaje = "Correcto: BuscarNroViaje.";
-        public const string MsgExcBuscarNroViaje = "Excepción: BuscarNroViaje.";
-        
+        public const string MsgCorrectoGetNewListaDestinosPas = "Correcto: GetNewListaDestinosPas.";
+        public const string MsgErrorGetNewListaDestinosPas = "Error: GetNewListaDestinosPas.";
+        public const string MsgExcGetNewListaDestinosPas = "Excepción: GetNewListaDestinosPas.";
     }
 }
