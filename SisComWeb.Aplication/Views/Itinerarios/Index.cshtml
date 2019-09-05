@@ -3775,16 +3775,15 @@
                 },
                 nextStep: function (code) {
                     this.showPlano = false;
+
+                    if (!$("#panelWrapperV").hasClass("in")) {
+                        $('#btnDesplegar').click();
+                        this.showTextTurnos = false;
+                    }
+
                     switch (code) {
                         case 1:
-                            {
-                                if (!$("#panelWrapperV").hasClass("in")) {
-                                    $('#btnDesplegar').click();
-                                    this.showTextTurnos = false;
-                                }
-
-                                $('#cboSucursal input[type=search]').focus();
-                            };
+                            $('#cboSucursal input[type=search]').focus();
                             break;
                         case 2:
                             $('#cboOrigenBus input[type=search]').focus();
@@ -6710,59 +6709,7 @@
 
                     if (!item.IdVenta)
                         this.bloquearAsiento(item, true, true);
-                },
-                //reverseNextStep: function (code) {
-                //    this.showPlano = false;
-                //    switch (code) {
-                //        case 1:
-                //            {
-                //                if (!$("#panelWrapperV").hasClass("in")) {
-                //                    $('#btnDesplegar').click();
-                //                    this.showTextTurnos = false;
-                //                }
-
-                //                $('#cboSucursal input[type=search]').focus();
-                //            };
-                //            break;
-                //        case 2:
-                //            $('#cboOrigenBus input[type=search]').focus();
-                //            break;
-                //        case 3:
-                //            {
-                //                this.$nextTick(() => {
-                //                    $('#cboPVOrigenBus input[type=search]').focus();
-                //                });
-                //            };
-                //            break;
-                //        case 4:
-                //            $('#cboDestinoBus_2 input[type=search]').focus();
-                //            break;
-                //        case 5:
-                //            $('#cboServicio input[type=search]').focus();
-                //            break;
-                //        case 6:
-                //            $('#cboDestinoPas_2 input[type=search]').focus();
-                //            break;
-                //        case 7:
-                //            document.getElementById('txtTurno').focus();
-                //            break;
-                //        case 8:
-                //            document.getElementById('txtFecha_2').focus();
-                //            break;
-                //        case 9:
-                //            {
-                //                this.$nextTick(() => {
-                //                    this.recorridoSectionFilter();
-                //                });
-                //            };
-                //            break;
-                //        default:
-                //            // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
-                //            this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
-
-                //            this.recorridoSectionFilter();
-                //    }
-                //},
+                }
             },
             computed: {
                 setCadenaEmbarques: function () {
