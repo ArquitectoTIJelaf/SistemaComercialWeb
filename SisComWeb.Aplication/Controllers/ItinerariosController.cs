@@ -3275,5 +3275,88 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("listaDestinosRuta")]
+        public async Task<ActionResult> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"NroViaje\" : " + NroViaje +
+                                    ",\"CodiSucursal\" : " + CodiSucursal +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ListaDestinosRuta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<DestinoRuta>> res = new Response<List<DestinoRuta>>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new DestinoRuta
+                    {
+                        CodiSucursal = (short)x["CodiSucursal"],
+                        NomOficina = (string)x["NomOficina"],
+                        Sigla = (string)x["Sigla"],
+                        Color = (string)x["Color"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<DestinoRuta>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        [Route("buscarNroViaje")]
+        public async Task<ActionResult> BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiEmpresa\" : " + CodiEmpresa +
+                                    ",\"CodiOrigenPas\" : " + CodiOrigenPas +
+                                    ",\"CodiOrigenBus\" : " + CodiOrigenBus +
+                                    ",\"CodiPuntoVentaBus\" : " + CodiPuntoVentaBus +
+                                    ",\"CodiDestinoBus\" : " + CodiDestinoBus +
+                                    ",\"Turno\" : \"" + Turno.Replace(" ", "") + "\"" +
+                                    ",\"CodiOrigenPas\" : " + CodiOrigenPas +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("BuscarNroViaje", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<int> res = new Response<int>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (int)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

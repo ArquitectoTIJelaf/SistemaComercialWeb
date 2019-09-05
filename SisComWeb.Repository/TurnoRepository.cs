@@ -146,6 +146,7 @@ namespace SisComWeb.Repository
                     }
                 }
             }
+
             return Lista;
         }
 
@@ -239,33 +240,33 @@ namespace SisComWeb.Repository
             return valor;
         }
 
-        //public static int BuscarNroViaje(int CodiEmpresa, int CodiOrigenPas, int CodiOrigenBus, int CodiPuntoVentaBus, int CodiDestinoBus, string Turno, int CodiServicio)
-        //{
-        //    var valor = new int();
+        public static int BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio)
+        {
+            var valor = new int();
 
-        //    using (IDatabase db = DatabaseHelper.GetDatabase())
-        //    {
-        //        db.ProcedureName = "scwsp_Tb_programacion_Nro_Viaje";
-        //        db.AddParameter("@CodiOrigenPas", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@CodiDestinoBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@CodiServicio", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@Turno", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@CodiOrigenBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@CodiEmpresa", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
-        //        db.AddParameter("@CodiPuntoVentaBus", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Tb_programacion_Nro_Viaje";
+                db.AddParameter("@CodiOrigenPas", DbType.Int16, ParameterDirection.Input, CodiOrigenPas);
+                db.AddParameter("@CodiDestinoBus", DbType.Int16, ParameterDirection.Input, CodiDestinoBus);
+                db.AddParameter("@CodiServicio", DbType.Byte, ParameterDirection.Input, CodiServicio);
+                db.AddParameter("@Turno", DbType.String, ParameterDirection.Input, Turno);
+                db.AddParameter("@CodiOrigenBus", DbType.Int16, ParameterDirection.Input, CodiOrigenBus);
+                db.AddParameter("@CodiEmpresa", DbType.Byte, ParameterDirection.Input, CodiEmpresa);
+                db.AddParameter("@CodiPuntoVentaBus", DbType.Int16, ParameterDirection.Input, CodiPuntoVentaBus);
 
-        //        using (IDataReader drlector = db.GetDataReader())
-        //        {
-        //            while (drlector.Read())
-        //            {
-        //                valor = Reader.GetIntValue(drlector, "cnt");
-        //                break;
-        //            }
-        //        }
-        //    }
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetIntValue(drlector, "NRO_VIAJE");
+                        break;
+                    }
+                }
+            }
 
-        //    return valor;
-        //}
+            return valor;
+        }
 
         #endregion
 

@@ -1807,12 +1807,6 @@
                 },
                 sendRowOfTab: async function (e) {
                     let _this = this;
-                    console.log("asd: " + appVueVenta.processing);
-                    if (appVueVenta.processing) {
-                        
-                        return;
-                    }
-
                     var _index = parseInt(e.target.tabIndex / 19);
                     var _item = _this.list.itinerarios[_index];
                     await _this.sendRow(_item);
@@ -3773,7 +3767,7 @@
                     if (FechaVenta)
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
                 },
-                nextStep: function (code) {
+                nextStep: async function (code) {
                     this.showPlano = false;
                     switch (code) {
                         case 1:
@@ -3824,6 +3818,45 @@
 
                             this.recorridoSectionFilter();
                     }
+                },
+                listaDestinosRuta: async function (_NroViaje, _CodiSucursal) {
+                    var auxResponse = [];
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/listaDestinosRuta', {
+                        _NroViaje: _NroViaje,
+                        _CodiSucursal: _CodiSucursal
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
+                },
+                buscarNroViaje: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio) {
+                    var auxResponse = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/buscarNroViaje', {
+                        CodiEmpresa: _CodiEmpresa,
+                        CodiOrigenPas: _CodiOrigenPas,
+                        CodiOrigenBus: _CodiOrigenBus,
+                        CodiOrigenBus: _CodiPuntoVentaBus,
+                        CodiDestinoBus: _CodiDestinoBus,
+                        Turno: _Turno,
+                        CodiServicio: _CodiServicio
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+
+                    return auxResponse;
                 },
                 showTipoPago: async function () {
                     // Copiar datos del último Ticket para todos los demás.

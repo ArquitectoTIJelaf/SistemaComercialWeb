@@ -2,6 +2,7 @@
 using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 
@@ -329,6 +330,36 @@ namespace SisComWeb.Business
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<bool>(false, false, Message.MsgExcObtenerStAnulacion, false);
+            }
+        }
+
+        public static Response<List<DestinoRutaEntity>> ListaDestinosRuta(int NroViaje, short CodiSucursal)
+        {
+            try
+            {
+                var consultaAnulacionPorDia = TurnoRepository.ListaDestinosRuta(NroViaje, CodiSucursal);
+
+                return new Response<List<DestinoRutaEntity>>(true, consultaAnulacionPorDia, Message.MsgCorrectoListaDestinosRuta, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<DestinoRutaEntity>>(false, null, Message.MsgExcListaDestinosRuta, false);
+            }
+        }
+
+        public static Response<int> BuscarNroViaje(byte CodiEmpresa, short CodiOrigenPas, short CodiOrigenBus, short CodiPuntoVentaBus, short CodiDestinoBus, string Turno, byte CodiServicio)
+        {
+            try
+            {
+                var valor = TurnoRepository.BuscarNroViaje(CodiEmpresa, CodiOrigenPas, CodiOrigenBus, CodiPuntoVentaBus, CodiDestinoBus, Turno, CodiServicio);
+
+                return new Response<int>(true, valor, Message.MsgCorrectoBuscarNroViaje, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<int>(false, 0, Message.MsgExcBuscarNroViaje, false);
             }
         }
     }
