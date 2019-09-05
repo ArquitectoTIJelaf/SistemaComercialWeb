@@ -8,40 +8,50 @@
 @Html.Partial("_Liquidacion")
 
 <style>
-        #appVueNavarHeader .nav .open > a {
-            background: #ffffff !important;
-            border-bottom-color: #ffffff;
-            color: #337ab7;
+    #appVueNavarHeader .nav .open > a {
+        background: #ffffff !important;
+        border-bottom-color: #ffffff;
+        color: #337ab7;
+    }
+
+    #appVueNavarHeader .navbar-top-links > li > a {
+        font-weight: 400;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-bottom: 4px solid #1d4672;
+    }
+
+    #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
+        font-size: 14px;
+    }
+
+        #appVueNavarHeader ul.nav.navbar-top-links.navbar-left > li {
+            border-right: 1px solid #0e2843;
         }
 
-        #appVueNavarHeader .navbar-top-links > li > a {
-            font-weight: 400;
-            padding-left: 15px;
-            padding-right: 15px;
-            border-bottom: 4px solid #1d4672;
-        }
+    #appVueNavarHeader .dropdown-menu > li > a > span {
+        float: right;
+    }
 
-        #appVueNavarHeader ul.nav.navbar-top-links.navbar-left {
-            font-size: 14px;
-        }
+    #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
+        color: #009cff;
+        border-bottom-color: #009cff !important;
+    }
 
-            #appVueNavarHeader ul.nav.navbar-top-links.navbar-left > li {
-                border-right: 1px solid #0e2843;
-            }
+    .container-fluid {
+        margin-top: 25px;
+    }
 
-        #appVueNavarHeader .dropdown-menu > li > a > span {
-            float: right;
-        }
+    .dropdown-submenu {
+        position: relative;
+    }
 
-        #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
-            color: #009cff;
-            border-bottom-color: #009cff !important;
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
         }
-
-        .container-fluid {
-            margin-top: 25px;
-        }
-    </style>
+</style>
 
 <div id="appVueHeader">
     <nav class="navbar navbar-default m-b-0" :class="{'navbar-static-top': fixedHeader}">
@@ -66,35 +76,43 @@
                         <i id="herramientas" class="ti-close ti-menu-alt fa-fw"></i>
                         Herramientas
                     </a>
-                    <ul class="dropdown-menu" style="padding: 9px 0px; left: -1px; ">
-                        <li>
-                            <a href="javascript:void(0);">
-                                Mantenimiento
-                                &ensp;<span class="fa fa-caret-right"></span>
-                            </a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                Pasajes
-                                &ensp;<span class="fa fa-caret-right"></span>
-                            </a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                Reportes
-                                &ensp;<span class="fa fa-caret-right"></span>
-                            </a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="javascript:void(0);">
-                                Utilitario
-                                &ensp;<span class="fa fa-caret-right"></span>
-                            </a>
+                    <ul class="dropdown-menu">
+                        <li v-for="item in menuItems" :class="{'dropdown-submenu': item.children}">
+                            <a class="test" tabindex="-1" href="javascript:void(0);">{{item.name}}<span class="caret" v-if="item.children"></span></a>
+                            <ul class="dropdown-menu" v-if="item.children">
+                                <li v-for="child in item.children"><a tabindex="-1" href="javascript:void(0);" @@click.prevent="setSelectedItem(child.id)">{{child.name}}</a></li>
+                            </ul>
                         </li>
                     </ul>
+                    @*<ul class="dropdown-menu" style="padding: 9px 0px; left: -1px; ">
+                            <li>
+                                <a href="javascript:void(0);">
+                                    Mantenimiento
+                                    &ensp;<span class="fa fa-caret-right"></span>
+                                </a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0);">
+                                    Pasajes
+                                    &ensp;<span class="fa fa-caret-right"></span>
+                                </a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0);">
+                                    Reportes
+                                    &ensp;<span class="fa fa-caret-right"></span>
+                                </a>
+                            </li>
+                            <li role="separator" class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0);">
+                                    Utilitario
+                                    &ensp;<span class="fa fa-caret-right"></span>
+                                </a>
+                            </li>
+                        </ul>*@
                 </li>
                 <li class="borderBottom">
                     <a href="@Url.Action("Index","Itinerarios")" class="open-close waves-effect waves-light hidden-xs">
@@ -118,7 +136,7 @@
                 </li>
                 <li class="borderBottom">
                     <a @@click="showLiquidacion"
-                       href="javascript:void(0)" 
+                       href="javascript:void(0)"
                        class="open-close waves-effect waves-light hidden-xs">
                         Liquidaciones
                     </a>

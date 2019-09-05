@@ -1192,13 +1192,8 @@
         };
 
         function auxSetTd(afterEnter) {
-
-            debugger;
-
+            
             var currCell = $('#tblListaItinerarios tr td').first();
-
-            var LastCell = $('#tblListaItinerarios tr td').last();
-            var _LastCell = LastCell.index();
 
             if (currCell.length > 0) {
                 currCell.focus();
@@ -12645,8 +12640,6 @@
 
                     await APP.rq.axios2.post(APP.base + '/paseLote/desbloquearAsientoList' + APP.util.getQueryParamByObject({ CodiProgramacion: _this.objProgramacion.CodiProgramacion}))
                         .then(async function (res) {
-                            debugger;
-                            //TODO: implementar
                             _this.list.newAsientos = [];
                             _this.list.newAsientosManuales = [];
                         });
