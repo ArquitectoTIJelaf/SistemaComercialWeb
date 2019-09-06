@@ -1859,7 +1859,14 @@
                     await appController.showVentas(item, turnos);
 
                     _this.$nextTick(() => {
-                        //appVueVenta.$refs.refNroAsientoVenta.focus();
+                        setTimeout(function () {
+                            // Animación 'ScrollTop'
+                            animateScrollTop(800);
+                        }, 400);
+
+                        setTimeout(function () {
+                            appVueVenta.$refs.refNroAsientoVenta.focus();
+                        }, 800);
 
                         var _topOfBus = $('.img-bus').offset().top;
                         appVueVenta.top = _topOfBus + 'px';
@@ -2203,12 +2210,16 @@
                         if (_this.showTextTurnos) {
                             appController.disabledAsientos(false);
 
-                            setTimeout(function () {
-                                _this.$refs.refNroAsientoVenta.focus();
+                            if (!_this.firstCharge) {
+                                setTimeout(function () {
+                                    // Animación 'ScrollTop'
+                                    animateScrollTop(800);
+                                }, 400);
 
-                                // Animación 'ScrollTop'
-                                animateScrollTop(800);
-                            }, 400);
+                                setTimeout(function () {
+                                    appVueVenta.$refs.refNroAsientoVenta.focus();
+                                }, 800);
+                            }
                         }
                     });
                 },
@@ -4560,8 +4571,11 @@
                                 }
                             }
                             else {
-                                if (this.list.ventas[this.indexVenta].OldNroAsiento)
+                                if (this.list.ventas[this.indexVenta].OldNroAsiento) {
                                     this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].OldNroAsiento;
+
+                                    this.recorridoSectionVentas();
+                                }
                             }
                         }
                         else {

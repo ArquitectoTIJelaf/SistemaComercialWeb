@@ -180,6 +180,7 @@
         public const string MsgErrorWebServiceFacturacionElectronica = "No se pudo conectar al servicio de Facturación Electrónica.";
 
         public const string MsgErrorGrabaVenta = "Error: GrabaVenta.";
+        public const string MsgErrorAsientoDuplicadoGrabaVenta = "Solicitud cancelada, el asiento ya ha sido vendido o reservado.";
         public const string MsgErrorGrabarCaja = "Error: GrabarCaja.";
 
         public const string MsgCorrectoGrabaVenta = "Correcto: GrabaVenta.";

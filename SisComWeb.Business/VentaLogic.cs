@@ -469,7 +469,12 @@ namespace SisComWeb.Business
                                 // Graba 'Venta'
                                 var grabarVenta = VentaRepository.GrabarVenta(entidad);
                                 if (grabarVenta <= 0)
-                                    return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                {
+                                    if (grabarVenta == -777)
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorAsientoDuplicadoGrabaVenta, false);
+                                    else
+                                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
+                                }
 
                                 entidad.IdVenta = grabarVenta;
                             }
@@ -864,7 +869,12 @@ namespace SisComWeb.Business
                     if (grabarVenta > 0)
                         entidad.IdVenta = grabarVenta;
                     else
-                        return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
+                    {
+                        if (grabarVenta == -777)
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorAsientoDuplicadoGrabaVenta, false);
+                        else
+                            return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabaVenta, false);
+                    }
 
                     // Graba 'Acompañante'
                     if (!string.IsNullOrEmpty(entidad.ObjAcompaniante.TipoDocumento) && !string.IsNullOrEmpty(entidad.ObjAcompaniante.NumeroDocumento))
