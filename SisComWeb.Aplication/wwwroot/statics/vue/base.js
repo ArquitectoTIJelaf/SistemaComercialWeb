@@ -336,7 +336,7 @@ APP.msg.ShowSaveAfterSale = async function (_title, _message) {
     return auxBool;
 };
 
-APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton) {
+APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textButtonCancel, _colorOfButton, _focusCancelButton) {
     var _bool = false;
 
     await swal.fire({
@@ -347,7 +347,8 @@ APP.msg.confirm = async function (_title, _message, _textButtonConfirm, _textBut
         confirmButtonColor: _colorOfButton || "#DD6B55",
         confirmButtonText: _textButtonConfirm || "Si",
         cancelButtonText: _textButtonCancel || "No",
-        allowOutsideClick: false
+        allowOutsideClick: false,
+        focusCancel: _focusCancelButton || false
     }).then(res => {
         if (res.value) _bool = res.value;
         }).catch(error => {

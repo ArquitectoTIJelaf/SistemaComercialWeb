@@ -770,8 +770,8 @@
                                                     <input v-model="list.ventas[indexVenta].NroAsiento"
                                                            @@keydown.13.prevent="enterTxtNroAsientoVenta($event)"
                                                            @@keydown.220.prevent="nextStep(7)"
-                                                           @*@@keydown.9.prevent="enterTxtNroAsientoVenta($event)"*@
-                                                           @*@@blur="validateTxtNroAsientoVenta($event)"*@
+                                                           @@keydown.9.prevent="enterTxtNroAsientoVenta($event)"
+                                                           @@blur="validateTxtNroAsientoVenta($event)"
                                                            @@focus="focusAsiento($event)"
                                                            id="txtNroAsientoVenta"
                                                            ref="refNroAsientoVenta"
@@ -921,8 +921,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6" style="padding-left: 0px; padding-right: 0px; ">
-                                            <div class="col-md-3 p-0">
-                                                <div class="col-md-8">
+                                            <div class="col-md-5 p-0">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label class="control-label">Fecha nac.</label>
                                                         <input id="txtFechaNac"
@@ -940,7 +940,7 @@
                                                                autocomplete="off">
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4">
+                                                <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="control-label">Edad</label>
                                                         <input :value="list.ventas[indexVenta].Edad"
@@ -953,26 +953,26 @@
                                                                autocomplete="off">
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <div class="form-group">
-                                                    <label class="control-label">Sexo</label>
-                                                    <v-select id="cboSexo"
-                                                              placeholder="S"
-                                                              label="label"
-                                                              v-model="list.ventas[indexVenta].Sexo"
-                                                              @@input="$refs.refSexo.typeAheadPointer = $getSelectorVselect(list.sexos, list.ventas[indexVenta].Sexo)"
-                                                              @@keydown.13.native.prevent="recorridoTxtFechaNac()"
-                                                              @*@@keydown.9.native.prevent="recorridoTxtFechaNac()"*@
-                                                              :options="list.sexos"
-                                                              :select-on-tab="true"
-                                                              :disabled="disabledCamposTicket_Pase"
-                                                              ref="refSexo">
-                                                        <template slot="option" slot-scope="option">
-                                                            <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
-                                                        </template>
-                                                        <span slot="no-options" class="text-danger">No hay resultados</span>
-                                                    </v-select>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Sexo</label>
+                                                        <v-select id="cboSexo"
+                                                                  placeholder="S"
+                                                                  label="label"
+                                                                  v-model="list.ventas[indexVenta].Sexo"
+                                                                  @@input="$refs.refSexo.typeAheadPointer = $getSelectorVselect(list.sexos, list.ventas[indexVenta].Sexo)"
+                                                                  @@keydown.13.native.prevent="recorridoTxtFechaNac()"
+                                                                  @*@@keydown.9.native.prevent="recorridoTxtFechaNac()"*@
+                                                                  :options="list.sexos"
+                                                                  :select-on-tab="true"
+                                                                  :disabled="disabledCamposTicket_Pase"
+                                                                  ref="refSexo">
+                                                            <template slot="option" slot-scope="option">
+                                                                <div @@click="$refs.refTelefono.focus()">{{ option.label }}</div>
+                                                            </template>
+                                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                                        </v-select>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
@@ -991,7 +991,7 @@
                                                            autocomplete="off">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label class="control-label">Correo</label>
                                                     <input :value="list.ventas[indexVenta].Correo.toUpperCase()"

@@ -977,7 +977,6 @@
             }
         })
 
-
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
         var Usuario = @Html.Raw(Json.Encode(Model));
         var ImagePath = '@ImagePath';
@@ -1192,9 +1191,6 @@
         };
 
         function auxSetTd(afterEnter) {
-
-            debugger;
-
             var currCell = $('#tblListaItinerarios tr td').first();
 
             var LastCell = $('#tblListaItinerarios tr td').last();
@@ -2389,18 +2385,6 @@
                             case 'FA':
                                 {
                                     if (appController.validatePanelClave('25') === '1') {
-
-                                        //var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
-                                        //    `${_.padStart(ClaveFechaAbiertaABolPasados, 3, '0')} - Confirmar Fecha Abierta`
-                                        //    , 'Este boleto es de fecha pasada, ingrese la clave de autorización.'
-                                        //    , ClaveFechaAbiertaABolPasados);
-
-                                        //if (!resConfirmClaveAutorizacion) {
-                                        //    APP.msg.warning('No se puede procesar datos de fechas pasadas');
-                                        //    _this.disabledAsiento = false;
-                                        //    return auxResponse;
-                                        //}
-
                                         APP.msg.warning('No se puede procesar datos de fechas pasadas.');
                                         _this.disabledAsiento = false;
                                         return auxResponse;
@@ -2697,6 +2681,9 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     _this.disabledAsiento = false;
+                    
+                    if (_this.pickedBusVenta === 'V' || _this.pickedBusVenta === 'R')
+                        _this.indexVenta = 0;
 
                     return auxResponse;
                 },
@@ -2904,7 +2891,6 @@
                         this.list.ventas[this.indexVenta].Observacion = asientoSel.Observacion;
                         this.list.ventas[this.indexVenta].ValidadorClienteEspecial = asientoSel.Especial;
                         this.list.ventas[this.indexVenta].CodiEmpresa = asientoSel.CodiEmpresa;
-
                         this.list.ventas[this.indexVenta].Correo = asientoSel.Correo;
 
                         // Checked opción 'RegistrarNino'
@@ -4367,7 +4353,6 @@
                     this.list.ventas[this.indexVenta].HoraReservacion = '';
                     this.list.ventas[this.indexVenta].ValidadorClienteEspecial = false;
                     this.list.ventas[this.indexVenta].CodiEmpresa = 0;
-
                     this.list.ventas[this.indexVenta].Correo = '';
 
                     this.disabledCampoNroAsiento = false;
@@ -4524,7 +4509,7 @@
                 validateTxtNroAsientoVenta: async function (e) {
                     if (this.eventTxtNroAsientoVenta)
                         e = this.eventTxtNroAsientoVenta;
-
+                    
                     if (this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].NroAsiento.padStart(2, '0');
 
@@ -5001,7 +4986,12 @@
 
                         var resConfirm = await APP.msg.confirm(
                             'Enviar a Fecha Abierta'
-                            , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?')
+                            , 'El boleto N° ' + this.$options.filters.formatNroVenta(auxBoletoCompleto) + ' será enviado a Fecha Abierta, ¿Desea continuar?'
+                            , false
+                            , false
+                            , false
+                            , true
+                        )
 
                         if (resConfirm) {
                             // Valida 'FechaAbierta'
@@ -8135,7 +8125,13 @@
                             // SweetAlert para 'fechaAbierta'
                             if (await APP.msg.confirm(
                                 'Fecha Abierta'
-                                , '¿Desea enviar el Pase a Fecha Abierta?'))
+                                , '¿Desea enviar el Pase a Fecha Abierta?'
+                                , false
+                                , false
+                                , false
+                                , true
+                                )
+                            )
                                 _this.fechaAbierta = true;
 
                             await appController.sendPaseCortesia(item);
@@ -9217,7 +9213,13 @@
                     // SweetAlert para 'fechaAbierta'
                     if (await APP.msg.confirm(
                         'Fecha Abierta'
-                        , '¿Desea enviar la venta al Crédito a Fecha Abierta?'))
+                        , '¿Desea enviar la venta al Crédito a Fecha Abierta?'
+                        , false
+                        , false
+                        , false
+                        , true
+                        )
+                    )
                         request.fechaAbierta = true;
                     else
                         request.fechaAbierta = false;

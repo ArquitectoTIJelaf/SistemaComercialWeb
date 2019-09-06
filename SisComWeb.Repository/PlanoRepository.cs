@@ -9,7 +9,7 @@ namespace SisComWeb.Repository
     {
         #region Métodos No Transaccionales
 
-        public static List<PlanoEntity> BuscarPlanoBus(string CodiPlano)
+        public static List<PlanoEntity> BuscarPlanoBus(string CodiPlano, string CodiBus)
         {
             var Lista = new List<PlanoEntity>();
 
@@ -17,6 +17,7 @@ namespace SisComWeb.Repository
             {
                 db.ProcedureName = "scwsp_BuscarPlanoBus";
                 db.AddParameter("@Codi_Plano", DbType.String, ParameterDirection.Input, CodiPlano);
+                db.AddParameter("@Codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
                 using (IDataReader drlector = db.GetDataReader())
                 {
                     while (drlector.Read())
@@ -26,6 +27,7 @@ namespace SisComWeb.Repository
                             Codigo = Reader.GetStringValue(drlector, "Codigo"),
                             Tipo = Reader.GetStringValue(drlector, "Tipo"),
                             Indice = Reader.GetIntValue(drlector, "Indice"),
+                            Nivel = Reader.GetIntValue(drlector, "Nivel"),
                             // Para evitar Null's
                             ApellidoMaterno = string.Empty,
                             ApellidoPaterno = string.Empty,
@@ -74,28 +76,6 @@ namespace SisComWeb.Repository
             }
 
             return Lista;
-        }
-
-        public static string ObtenerNivelAsiento(string CodiBus, int NumeAsiento)
-        {
-            var valor = string.Empty;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_ObtenerNivelAsiento";
-                db.AddParameter("@Codi_Bus", DbType.String, ParameterDirection.Input, CodiBus);
-                db.AddParameter("@Nume_Asiento", DbType.Int32, ParameterDirection.Input, NumeAsiento);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = Reader.GetStringValue(drlector, "Nivel");
-                        break;
-                    }
-                }
-            }
-
-            return valor;
         }
 
         public static PlanoEntity ObtenerPrecioAsiento(short CodiOrigen, short CodiDestino, string Hora, string Fecha, short CodiServicio, byte CodiEmpresa, string Nivel)

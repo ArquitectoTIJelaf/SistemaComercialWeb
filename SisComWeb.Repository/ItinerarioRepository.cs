@@ -62,7 +62,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje02";
+                db.ProcedureName = "scwsp_VerificaCambiosTurnoViaje";
                 db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
                 db.AddParameter("@FechaProgramacion", DbType.String, ParameterDirection.Input, FechaProgramacion);
                 using (IDataReader drlector = db.GetDataReader())

@@ -15,7 +15,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_BuscarTurno02";
+                db.ProcedureName = "scwsp_BuscarTurno";
                 db.AddParameter("@Codi_Empresa", DbType.Byte, ParameterDirection.Input, request.CodiEmpresa);
                 db.AddParameter("@Codi_PuntoVenta", DbType.Int16, ParameterDirection.Input, request.CodiPuntoVenta);
                 db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, request.CodiOrigen);

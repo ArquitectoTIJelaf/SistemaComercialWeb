@@ -17,7 +17,7 @@ namespace SisComWeb.Business
                 string auxTipoLI = string.Empty;
 
                 // Busca PlanoBus
-                var buscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus);
+                var buscarPlanoBus = PlanoRepository.BuscarPlanoBus(request.PlanoBus, request.CodiBus);
                 if (buscarPlanoBus.Count == 0)
                     return new Response<List<PlanoEntity>>(false, buscarPlanoBus, Message.MsgValidaMuestraPlano, true);
 
@@ -29,36 +29,32 @@ namespace SisComWeb.Business
 
                 // Obtiene 'OrdenOrigenPasajero'
                 var ordenOrigenPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiOrigen);
+
                 // Obtiene 'OrdenDestinoPasajero'
                 var ordenDestinoPasajero = PlanoRepository.ObtenerOrdenOficinaRuta(request.NroViaje, request.CodiDestino);
 
                 // Recorre cada registro
-                foreach (var entidad in buscarPlanoBus)
+                for (int i = 0; i < buscarPlanoBus.Count; i++)
                 {
-                    bool auxBool = int.TryParse(entidad.Tipo, out int auxValue);
+                    bool auxBool = int.TryParse(buscarPlanoBus[i].Tipo, out int auxValue);
                     if (auxBool)
                     {
-                        // Obtiene 'NivelAsiento'
-                        var obtenerNivelAsiento = PlanoRepository.ObtenerNivelAsiento(request.CodiBus, auxValue);
-                        if (!string.IsNullOrEmpty(obtenerNivelAsiento))
-                            entidad.Nivel = int.Parse(obtenerNivelAsiento);
-
                         // Obtiene 'PrecioAsiento'
-                        var obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, entidad.Nivel.ToString());
+                        var obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, request.HoraViaje, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, buscarPlanoBus[i].Nivel.ToString());
 
                         // En caso de no encontrar resultado
                         if (obtenerPrecioAsiento.PrecioNormal == 0 && obtenerPrecioAsiento.PrecioMinimo == 0 && obtenerPrecioAsiento.PrecioMaximo == 0)
                         {
-                            obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, string.Empty, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, entidad.Nivel.ToString());
-                            entidad.PrecioNormal = obtenerPrecioAsiento.PrecioNormal;
-                            entidad.PrecioMinimo = obtenerPrecioAsiento.PrecioMinimo;
-                            entidad.PrecioMaximo = obtenerPrecioAsiento.PrecioMaximo;
+                            obtenerPrecioAsiento = PlanoRepository.ObtenerPrecioAsiento(request.CodiOrigen, request.CodiDestino, string.Empty, request.FechaViaje, request.CodiServicio, request.CodiEmpresa, buscarPlanoBus[i].Nivel.ToString());
+                            buscarPlanoBus[i].PrecioNormal = obtenerPrecioAsiento.PrecioNormal;
+                            buscarPlanoBus[i].PrecioMinimo = obtenerPrecioAsiento.PrecioMinimo;
+                            buscarPlanoBus[i].PrecioMaximo = obtenerPrecioAsiento.PrecioMaximo;
                         }
                         else
                         {
-                            entidad.PrecioNormal = obtenerPrecioAsiento.PrecioNormal;
-                            entidad.PrecioMinimo = obtenerPrecioAsiento.PrecioMinimo;
-                            entidad.PrecioMaximo = obtenerPrecioAsiento.PrecioMaximo;
+                            buscarPlanoBus[i].PrecioNormal = obtenerPrecioAsiento.PrecioNormal;
+                            buscarPlanoBus[i].PrecioMinimo = obtenerPrecioAsiento.PrecioMinimo;
+                            buscarPlanoBus[i].PrecioMaximo = obtenerPrecioAsiento.PrecioMaximo;
                         }
 
                         foreach (PlanoEntity item in listarAsientosVendidos)
@@ -86,31 +82,31 @@ namespace SisComWeb.Business
                                         }
                                         else
                                         {
-                                            if (entidad.NumeAsiento == 0)
+                                            if (buscarPlanoBus[i].NumeAsiento == 0)
                                             {
                                                 if (item.FlagVenta == "X" || item.FlagVenta == "AB")
                                                     item.Color = PlanoRepository.ObtenerColorDestino(request.CodiServicio, item.CodiDestino);
 
                                                 item.FlagVenta = "VI";
-                                                MatchPlano(entidad, item, request);
+                                                MatchPlano(buscarPlanoBus[i], item, request);
                                             }
                                             else
                                             {
-                                                if (short.Parse(entidad.OrdenOrigen) > short.Parse(item.OrdenOrigen))
+                                                if (short.Parse(buscarPlanoBus[i].OrdenOrigen) > short.Parse(item.OrdenOrigen))
                                                 {
                                                     item.FlagVenta = "VI";
-                                                    MatchPlano(entidad, item, request);
+                                                    MatchPlano(buscarPlanoBus[i], item, request);
                                                 }
                                             }
                                         }
                                     }
                                     else if (short.Parse(item.OrdenOrigen) == short.Parse(ordenOrigenPasajero))
                                     {
-                                        MatchPlano(entidad, item, request);
+                                        MatchPlano(buscarPlanoBus[i], item, request);
                                     }
                                     else
                                     {
-                                        MatchPlano(entidad, item, request);
+                                        MatchPlano(buscarPlanoBus[i], item, request);
                                     }
                                 }
                                 else if (short.Parse(ordenDestino) == short.Parse(ordenOrigenPasajero))
@@ -124,7 +120,7 @@ namespace SisComWeb.Business
 
                                     }
                                     else
-                                        entidad.Color = colorVentaPuntosIntermedios;
+                                        buscarPlanoBus[i].Color = colorVentaPuntosIntermedios;
                                 }
                                 else
                                 {
@@ -148,21 +144,30 @@ namespace SisComWeb.Business
                         {
                             if (auxValue == item.NumeAsiento)
                             {
-                                if (entidad.NumeAsiento == 0)
-                                    entidad.NumeAsiento = item.NumeAsiento;
+                                if (buscarPlanoBus[i].NumeAsiento == 0)
+                                    buscarPlanoBus[i].NumeAsiento = item.NumeAsiento;
                             }
                         }
                     }
                     else
                     {
-                        if (entidad.Tipo == "LI")
-                            auxTipoLI = entidad.Tipo;
+                        if (buscarPlanoBus[i].Tipo == "LI")
+                            auxTipoLI = buscarPlanoBus[i].Tipo;
                         else
                         {
-                            if (string.IsNullOrEmpty(auxTipoLI))
-                                entidad.Nivel = 1;
+                            // Caso: "LI LI 'VA' LI LI"
+                            if (buscarPlanoBus[i].Tipo == "VA"
+                                && (i - 1) >= 0 && (i + 1) <= buscarPlanoBus.Count
+                                && buscarPlanoBus[i - 1].Tipo == "LI" && buscarPlanoBus[i + 1].Tipo == "LI")
+
+                                buscarPlanoBus[i].Tipo = "LI";
                             else
-                                entidad.Nivel = 2;
+                            {
+                                if (string.IsNullOrEmpty(auxTipoLI))
+                                    buscarPlanoBus[i].Nivel = 1;
+                                else
+                                    buscarPlanoBus[i].Nivel = 2;
+                            }
                         }
                     }
                 }
