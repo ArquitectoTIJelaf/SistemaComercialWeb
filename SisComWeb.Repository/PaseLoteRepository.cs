@@ -5,7 +5,7 @@ using System.Data;
 namespace SisComWeb.Repository
 {
     public class PaseLoteRepository
-    {   
+    {
         public static List<PaseLoteResponse> UpdatePostergacion(string Lista)
         {
             var lista = new List<PaseLoteResponse>();
@@ -21,12 +21,12 @@ namespace SisComWeb.Repository
                         lista.Add(new PaseLoteResponse
                         {
                             Boleto = Reader.GetStringValue(drlector, "Boleto"),
-                            NumeAsiento = Reader.GetStringValue(drlector, "NumeAsiento"),
+                            NumeAsiento = Reader.GetStringValue(drlector, "NumeAsiento").PadLeft(2, '0'),
                             Pasajero = Reader.GetStringValue(drlector, "Pasajero"),
                             FechaViaje = Reader.GetStringValue(drlector, "FechaViaje"),
                             HoraViaje = Reader.GetStringValue(drlector, "HoraViaje"),
                             IdVenta = Reader.GetIntValue(drlector, "IdVenta"),
-                            CodiProgramacion = Reader.GetStringValue(drlector, "CodiProgramacion")                            
+                            CodiProgramacion = Reader.GetStringValue(drlector, "CodiProgramacion")
                         });
                     }
                 }
@@ -54,7 +54,7 @@ namespace SisComWeb.Repository
             }
             return valor;
         }
-                
+
         public static List<int> DesbloquearAsientosList(int CodiProgramacion, string CodiTerminal)
         {
             var lista = new List<int>();
@@ -75,5 +75,5 @@ namespace SisComWeb.Repository
 
             return lista;
         }
-    }    
+    }
 }

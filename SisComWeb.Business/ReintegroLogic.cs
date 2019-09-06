@@ -744,7 +744,7 @@ namespace SisComWeb.Business
                             NomDestino = "",
                             Precio = 0M,
                             Obs1 = "LIBERACION AL BOLETO : " + request.CodiEsca,
-                            Obs2 = "TERMINAL : " + request.Terminal,
+                            Obs2 = "TERMINAL : " + request.Terminal.ToString().PadLeft(3, '0'),
                             Obs3 = "",
                             Obs4 = "CAJERO AFECTA " + request.CodiUsuario,
                             Obs5 = "NRO VALE SALIDA : " + generarCorrelativoAuxiliarReintegro.PadLeft(7, '0')

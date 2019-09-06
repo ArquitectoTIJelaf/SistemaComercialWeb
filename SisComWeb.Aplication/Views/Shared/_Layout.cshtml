@@ -42,7 +42,7 @@
     </div>
     <div id="wrapper">
         @Html.Partial("_LayoutHeader")
-        @Html.Partial("_LayoutSidebar")
+        @*@Html.Partial("_LayoutSidebar")*@
         <div id="page-wrapper">
             <div class="container-fluid">
                 @RenderBody()
@@ -137,7 +137,19 @@
             el: "#appVueHeader",
             data: {
                 mensaje: '',
-                fixedHeader: true
+                fixedHeader: true,
+                menuItems: [
+                    {
+                        name: 'General',
+                        children: [{ id:0, name: 'Cambio de Horario en Lote (Ctrl+F7)' }, { id:1, name: 'Modificación Boletos (F9)' }]
+                    },
+                    {
+                        name: 'Ubicación'
+                    },
+                    {
+                        name: 'Cta Cte de Ventas'
+                    }
+                ]
             },
             mounted: function () {
                 var _this = this;
@@ -149,6 +161,12 @@
                 ValSetInt_MensajeriaInstantanea = setInterval(function () {
                     _this.startMensajeriaInstantanea();
                 }, 1000);
+
+                $('.dropdown-submenu a.test').on("click", function (e) {
+                    $(this).next('ul').toggle();
+                    e.stopPropagation();
+                    e.preventDefault();
+                });
             },
             methods: {
                 startMensajeriaInstantanea: async function () {
@@ -198,6 +216,13 @@
                 },
                 showLiquidacion: function () {
                     appVueLiquidacion.show();
+                },
+                setSelectedItem(item) {
+                    switch (item) {
+                        case 0: appVuePaseLote.show(); break;
+                        case 1: appVueModificacionBoleto.show(); break;
+                        default:
+                    }
                 }
             },
             watch: {
