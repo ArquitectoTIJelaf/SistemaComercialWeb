@@ -1,0 +1,245 @@
+﻿
+<div id="appVueCTipoPago" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Reintegro de Boletos</b></h4>
+            </div>
+            <div class="modal-body p-t-0 p-b-0">
+                <div class="row">
+                    <div class="form-horizontal">
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12 p-0">
+                                <div class="col-md-4 separate-in-form">
+                                    <label class="control-label label-sm">Empresa:</label>
+                                    <div class="">
+                                        <v-select v-model="filtroCodiEmpresa"
+                                                  :options="list.empresas"
+                                                  :placeholder="'EMPRESA'"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  @@keydown.13.native.prevent=""
+                                                  ref="refCTPEmpresa">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 separate-in-form p-b-10" style="display:flex;">
+                                    <div class="m-t-20">
+                                        <div class="col-xs-4">
+                                            <input v-model="filtro.tipo"
+                                                   type="radio"
+                                                   id="rdoManualCTP"
+                                                   class="rbDescTipo"
+                                                   value="M">
+                                            <label for="rdoManualCTP"
+                                                   class="lblDescTipo"
+                                                   style="line-height: inherit; ">
+                                                Manual
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <input v-model="filtro.tipo"
+                                                   type="radio"
+                                                   id="rdoBoletaCTP"
+                                                   class="rbDescTipo"
+                                                   value="B">
+                                            <label for="rdoBoletaCTP"
+                                                   class="lblDescTipo"
+                                                   style="line-height: inherit; ">
+                                                Boleta
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <input v-model="filtro.tipo"
+                                                   type="radio"
+                                                   id="rdoFacturaCTP"
+                                                   class="rbDescTipo"
+                                                   value="F">
+                                            <label for="rdoFacturaCTP"
+                                                   class="lblDescTipo"
+                                                   style="line-height: inherit; ">
+                                                Factura
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-xs-12 separate-in-form">
+                                    <label class="col-xs-12 control-label label-sm" style="text-align:left;">Número:</label>
+                                    <div class="col-xs-4">
+                                        <input v-model="filtro.serie"
+                                               class="form-control input-sm"
+                                               @@keypress.13.prevent="$refs.refCTPNumero.focus()"
+                                               @@blur="filtro.serie = ($event.target.value) ? ($event.target.value).padStart(3,0) : ''"
+                                               v-mask="'#'.repeat(4)"
+                                               ref="refCTPSerie" />
+                                    </div>
+                                    <div class="col-xs-8">
+                                        <input v-model="filtro.numero"
+                                               class="form-control input-sm"
+                                               @@keypress.13.prevent="searchData"
+                                               @@blur="filtro.numero = ($event.target.value) ? ($event.target.value).padStart(8,0) : ''"
+                                               v-mask="'#'.repeat(8)"
+                                               ref="refCTPNumero" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group m-b-5 bordergray">
+
+                            <div class="col-md-12 p-0">
+                                <div class="col-md-5 p-0">
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label">Tipo doc.</label>
+                                        @*<v-select v-model="filtroTipoDoc"
+                                                  placeholder="TIPO DOC."
+                                                  @@keydown.13.native.prevent=""
+                                                  :options="list.tiposDoc"
+                                                  :select-on-tab="true"
+                                                  :get-option-label="getLabel"
+                                                  name="Tipo"
+                                                  v-validate="'required'"
+                                                  :disabled="true"
+                                                  ref="refCTPTipoDoc">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="">{{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>*@
+                                        <div class="">
+                                            <input :value="item.documento | tipoDocumento"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Número:</label>
+                                        <div class="">
+                                            <input :value="item.numero"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 p-0">
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Apellido Paterno:</label>
+                                        <div class="">
+                                            <input :value="item.apellidoPaterno"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Apellido Materno:</label>
+                                        <div class="">
+                                            <input :value="item.apellidoMaterno"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Nombre:</label>
+                                        <div class="">
+                                            <input :value="item.nombre"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 p-0">
+                                <div class="col-md-5 p-0">
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Origen Pasajero:</label>
+                                        <div class="">
+                                            <input :value="item.origenPasj | rutas"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Destino Pasajero:</label>
+                                        <div class="">
+                                            <input :value="item.destinoPasj | rutas"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 p-0">
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Fecha Venta:</label>
+                                        <div class="">
+                                            <input :value="item.fechaVenta"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205); padding: 5px;"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Hora Viaje:</label>
+                                        <div class="">
+                                            <input :value="item.horaViaje"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Fecha Viaje:</label>
+                                        <div class="">
+                                            <input :value="item.fechaViaje"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205); padding: 5px;"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 p-0">
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Asiento:</label>
+                                        <div class="">
+                                            <input :value="item.asiento | concatZero(2)"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-xs-6 separate-in-form">
+                                        <label class="control-label label-sm">Precio:</label>
+                                        <div class="">
+                                            <input :value="item.precio | fixed2"
+                                                   class="form-control input-sm"
+                                                   style="background-color:rgb(253, 249, 205);"
+                                                   disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="close"
+                        class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
