@@ -43,6 +43,9 @@ namespace SisComWeb.Aplication.Models
         public string TipoPago { get; set; }
         public string ClavUsuario { get; set; }
         public string FechaVenta { get; set; }
+        //NEW
+        public string CodiTarjetaCredito { get; set; }
+        public string NumeTarjetaCredito { get; set; }
         public string[] SplitNombre
         {
             get

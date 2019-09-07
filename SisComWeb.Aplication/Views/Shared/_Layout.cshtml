@@ -217,10 +217,20 @@
                 showLiquidacion: function () {
                     appVueLiquidacion.show();
                 },
-                setSelectedItem(item) {
+                setSelectedItem(item, e) {
                     switch (item) {
-                        case 0: appVuePaseLote.show(); break;
-                        case 1: appVueModificacionBoleto.show(); break;
+                        case 0: {
+                            appVuePaseLote.show();
+                            $('.dropdown-submenu a.test').next('ul').toggle();
+                            //e.stopPropagation();
+                            //e.preventDefault();
+                        }; break;
+                        case 1: {
+                            appVueModificacionBoleto.show();
+                            $('.dropdown-submenu a.test').next('ul').toggle();
+                            //e.stopPropagation();
+                            //e.preventDefault();
+                        }; break;
                         default:
                     }
                 }

@@ -2919,7 +2919,12 @@ namespace SisComWeb.Aplication.Controllers
                         CodiError = (int)data["CodiError"],
                         FechaNac = (string)data["FechaNac"],
                         CodiBus = (string)data["CodiBus"],
-                        DirEmbarque = (string)data["DirEmbarque"]
+                        DirEmbarque = (string)data["DirEmbarque"],
+                        FechaVenta = (string)data["FechaVenta"],
+                        TipoPago = (string)data["TipoPago"],
+                        CodiTarjetaCredito = (string)data["CodiTarjetaCredito"],
+                        NumeTarjetaCredito = (string)data["NumeTarjetaCredito"]
+
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

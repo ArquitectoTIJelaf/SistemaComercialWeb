@@ -1025,6 +1025,8 @@
         var servicios = [];
         var tiposDoc = [];
         var pvOrigenesBus = [];
+        var tiposPago = [];
+        var tarjetas = [];
 
         Vue.filter('formatNombre', function (value) {
             var nombreConcat = value.split(',');
@@ -9591,11 +9593,11 @@
                 setData: function () {
                     let _this = this;
                     var correlativo = appController.getCurrentCorrelativo();
-                    _this.item.tipo = (correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1);
-                    _this.item.serie = correlativo.substring(1, 4);
-                    _this.item.numero = correlativo.substring(5, 13);
-                    _this.item.empresa = appVueVenta.$refs.refEmpresa.value.label;
-                    _this.item.codEmpresa = appVueVenta.$refs.refEmpresa.value.id;
+                    _this.item.tipo = (correlativo) ? ((correlativo.substring(0, 1) === '0') ? 'M' : correlativo.substring(0, 1)) : '';
+                    _this.item.serie = (correlativo) ? correlativo.substring(1, 4) : '';
+                    _this.item.numero = (correlativo) ? correlativo.substring(5, 13) : '';
+                    //_this.item.empresa = appVueVenta.$refs.refEmpresa.value.label;
+                    _this.item.codEmpresa = (appVueVenta.$refs.refEmpresa.value) ? appVueVenta.$refs.refEmpresa.value.id : '';
                     _this.$nextTick(() => {
                         if (_this.list.empresas.length == 0)
                             _this.list.empresas = _.cloneDeep(empresas);
@@ -11493,8 +11495,8 @@
                 dataToSave: function () {
                     let _this = this;
                     return (_this.item.documento && _this.item.numero && _this.item.apellidoPaterno &&
-                        _this.item.apellidoMaterno && _this.item.nombre && _this.item.edad &&
-                        _this.item.nacionalidad && _this.item.asiento && _this.item.precio && _this.item.reintegro);
+                        _this.item.apellidoMaterno && _this.item.nombre && _this.item.nacionalidad &&
+                        _this.item.asiento && _this.item.reintegro);
                 },
                 dataFilled: function () {
                     let _this = this;
@@ -11711,8 +11713,11 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-tipoPago')
                         .then(res => {
-                            if (res.data.Estado) _this.list.tiposPago2 = _.cloneDeep(res.data.Valor);
-                            else APP.msg.error(res.data.Mensaje);
+                            if (res.data.Estado) {
+                                var data = _.cloneDeep(res.data.Valor);
+                                _this.list.tiposPago2 = data;
+                                tiposPago = data;
+                            } else APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
@@ -11720,7 +11725,11 @@
                     var _this = this;
                     APP.rq.axios2.get(APP.base + '/base/get-tarjetasCredito')
                         .then(res => {
-                            if (res.data.Estado) _this.list.tarjetas2 = _.cloneDeep(res.data.Valor);
+                            if (res.data.Estado) {
+                                var data = _.cloneDeep(res.data.Valor);
+                                _this.list.tarjetas2 = data;
+                                tarjetas = data;
+                            }
                             else APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
@@ -13154,26 +13163,18 @@
                     asiento: '',
                     precio: 0,
                     reintegro: '',
-                    fechaNac: ''
+                    fechaNac: '',
+                    tipoPago: '',
+                    numeroTarjeta: '',
+                    codiTarjeta: ''
                 },
                 list: {
-                    rutas: [],
-                    rutasAll: [],
-                    servicios: [],
                     empresas: [],
-                    motivos: [],
-                    tiposDoc: [],
-                    itinerarios: [],
-                    opcionesModificacion: [],
-                    destinosPas: []
+                    tiposPago: [],
+                    tarjetas: []
                 },
-                paginate: ['items'],
                 dataOriginal: {},
-                asientoSel: {},
-                showData: false,
-                lockReintegro: false,
-                lockFilters: false,
-                disabledAceptar: false
+                asientoSel: {}
             },
             mounted: function () {
                 let _this = this;
@@ -13191,6 +13192,7 @@
             methods: {
                 show: function (asientoSel) {
                     let _this = this;
+                    _this.limpiarData();
                     _this.asientoSel = asientoSel;
                     $('#appVueCTipoPago').modal('show');
                     _this.setData();
@@ -13206,22 +13208,12 @@
                             _this.list.empresas = empresas;
                         }
 
-                        if (_this.list.rutas.length == 0) {
-                            _this.list.rutas = _.cloneDeep(rutas);
+                        if (_this.list.tiposPago.length == 0) {                            
+                            _this.list.tiposPago = _.filter(tiposPago, (o) => {return o.id === '01' || o.id === '03'});;
                         }
 
-                        if (_this.list.rutasAll.length == 0) {
-                            _this.list.rutasAll = _.cloneDeep(rutas);
-                            _this.list.rutasAll.unshift(selectAll);
-                        }
-
-                        if (_this.list.servicios.length == 0) {
-                            _this.list.servicios = _.cloneDeep(servicios);
-                            _this.list.servicios.unshift(selectAll);
-                        }
-
-                        if (_this.list.tiposDoc.length == 0) {
-                            _this.list.tiposDoc = _.cloneDeep(tiposDoc);
+                        if (_this.list.tarjetas.length == 0) {
+                            _this.list.tarjetas = tarjetas;
                         }
                     });
                 },
@@ -13246,7 +13238,7 @@
                                     _this.item.destinoPasj = data.CodiDestino;
                                     _this.item.destinoBus = data.CodiRuta;
                                     _this.item.servicio = data.CodiServicio;
-                                    _this.item.fechaVenta = data.FechaViaje;
+                                    _this.item.fechaVenta = data.FechaVenta;
                                     _this.item.fechaViaje = data.FechaViaje;
                                     _this.item.horaViaje = data.HoraViaje;
                                     _this.item.documento = data.TipoDocumento;
@@ -13265,15 +13257,17 @@
                                     _this.item.asiento = data.NumeAsiento;
                                     _this.item.precio = data.PrecioVenta;
                                     _this.item.fechaNac = data.FechaNac;
+                                    _this.item.tipoPago = data.TipoPago;
+                                    _this.item.codiTarjeta = data.CodiTarjetaCredito;
+                                    _this.item.numeroTarjeta = data.NumeTarjetaCredito;
                                 } else APP.msg.warning('No se encontró resultados');
-                            } else {
-                                APP.msg.warning(res.data.Mensaje);
-                            }
+                            } else APP.msg.warning(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 limpiarData: function () {
                     let _this = this;
+                    _this.asientoSel = {};
                     _this.item.origenPasj = '';
                     _this.item.destinoPasj = '';
                     _this.item.destinoBus = '';
@@ -13297,9 +13291,17 @@
                     _this.item.direccion = '';
                     _this.item.asiento = '';
                     _this.item.precio = '';
+                    _this.item.tipoPago = '';
+                    _this.item.numeroTarjeta = '';
+                    _this.item.codiTarjeta = '';
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
+                },
+                confirm: async function () {
+                    if (await APP.msg.confirm('Mensaje de Confirmación', '¿Esta seguro(a) de realizar los cambios?')) {
+
+                    }
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -13333,89 +13335,59 @@
                         });
                     }
                 },
-                filtroCodiOrigen: {
+                computedTipoPago: {
                     get: function () {
-                        if (this.list.rutas.length > 0 && this.list.rutas.find(x => x.id === this.filtroProgramacion.CodiOrigen)) {
-                            return this.list.rutas.find(x => x.id === this.filtroProgramacion.CodiOrigen)
+                        if (this.list.tiposPago.length > 0 && this.list.tiposPago.find(x => x.id === this.item.tipoPago)) {
+                            return this.list.tiposPago.find(x => x.id === this.item.tipoPago)
                         }
                     },
                     set: function (value) {
                         if (value !== '' && value !== null) {
-                            if (this.list.rutas.find(x => x.id === value.id)) {
-                                this.filtroProgramacion.CodiOrigen = value.id;
+                            if (this.list.tiposPago.find(x => x.id === value.id)) {
+                                this.item.tipoPago = value.id;
+                                //this.$refs.refCTPSerie.focus()
                             }
                         } else {
-                            this.filtroProgramacion.CodiOrigen = '';
+                            this.item.tipoPago = '';
                         }
 
                         this.$nextTick(() => {
-                            this.$refs.refCTPOrigen.typeAheadPointer = this.$getSelectorVselect(this.list.rutas, value);
+                            this.$refs.refCTPTipoPago.typeAheadPointer = this.$getSelectorVselect(this.list.tiposPago, value);
                         });
                     }
                 },
-                filtroCodiDestino: {
+                computedTarjetas: {
                     get: function () {
-                        if (this.list.rutasAll.length > 0 && this.list.rutasAll.find(x => x.id === this.filtroProgramacion.CodiDestino)) {
-                            return this.list.rutasAll.find(x => x.id === this.filtroProgramacion.CodiDestino)
+                        if (this.list.tarjetas.length > 0 && this.list.tarjetas.find(x => x.id === this.item.codiTarjeta)) {
+                            return this.list.tarjetas.find(x => x.id === this.item.codiTarjeta)
                         }
                     },
                     set: function (value) {
                         if (value !== '' && value !== null) {
-                            if (this.list.rutasAll.find(x => x.id === value.id)) {
-                                this.filtroProgramacion.CodiDestino = value.id;
-                                this.filtroProgramacion.NomDestino = value.label;
+                            if (this.list.tarjetas.find(x => x.id === value.id)) {
+                                this.item.codiTarjeta = value.id;
+                                //this.$refs.refCTPSerie.focus()
                             }
                         } else {
-                            this.filtroProgramacion.CodiDestino = '';
-                            this.filtroProgramacion.NomDestino = '';
+                            this.item.codiTarjeta = '';
                         }
 
                         this.$nextTick(() => {
-                            this.$refs.refCTPDestino.typeAheadPointer = this.$getSelectorVselect(this.list.rutasAll, value);
+                            this.$refs.refCTPTipoTarjeta.typeAheadPointer = this.$getSelectorVselect(this.list.tarjetas, value);
                         });
                     }
                 },
-                filtroCodiServicio: {
-                    get: function () {
-                        if (this.list.servicios.length > 0 && this.list.servicios.find(x => x.id === this.filtroProgramacion.CodiServicio)) {
-                            return this.list.servicios.find(x => x.id === this.filtroProgramacion.CodiServicio)
+                dataToSave: function () {
+                    let _this = this;
+                    if (_this.item.tipoPago) {
+                        if (_this.item.tipoPago === '01') {
+                            return true;
+                        } else if (_this.item.tipoPago === '03') {
+                            if (item.codiTarjeta && item.numeroTarjeta)
+                                return true;
+                            else return false;
                         }
-                    },
-                    set: function (value) {
-                        if (value !== '' && value !== null) {
-                            if (this.list.servicios.find(x => x.id === value.id)) {
-                                this.filtroProgramacion.CodiServicio = value.id;
-                            }
-                        } else {
-                            this.filtroProgramacion.CodiServicio = '';
-                        }
-
-                        this.$nextTick(() => {
-                            this.$refs.refCTPServicio.typeAheadPointer = this.$getSelectorVselect(this.list.servicios, value);
-                        });
-                    }
-                },
-                filtroTipoDoc: {
-                    get: function () {
-                        if (this.list.tiposDoc.length > 0 && this.list.tiposDoc.find(x => x.id === this.item.documento)) {
-                            return this.list.tiposDoc.find(x => x.id === this.item.documento)
-                        }
-                    },
-                    set: function (value) {
-                        if (value !== '' && value !== null) {
-                            if (this.list.tiposDoc.find(x => x.id === value.id)) {
-                                this.item.documento = value.id;
-                                this.validateDocumento = value;
-                            }
-                        } else {
-                            this.item.documento = '';
-                            this.validateDocumento = {};
-                        }
-
-                        this.$nextTick(() => {
-                            this.$refs.refCTPTipoDoc.typeAheadPointer = this.$getSelectorVselect(this.list.tiposDoc, value);
-                        });
-                    }
+                    } else return false;
                 }
             },
             watch: {

@@ -50,7 +50,11 @@ namespace SisComWeb.Repository
                             Nacionalidad = Reader.GetStringValue(drlector, "nacionalidad"),
                             Tipo = Reader.GetStringValue(drlector, "TIPO"),
                             CodiPuntoVenta = Reader.GetIntValue(drlector, "Punto_Venta"),
-                            CodiServicio = Reader.GetByteValue(drlector, "Servicio")
+                            CodiServicio = Reader.GetByteValue(drlector, "Servicio"),
+                            FechaVenta = Reader.GetDateStringValue(drlector, "FECH_VENTA"),
+                            TipoPago = Reader.GetStringValue(drlector, "tipo_pago"),
+                            CodiTarjetaCredito = Reader.GetStringValue(drlector, "Codi_Tarjeta"),
+                            NumeTarjetaCredito = Reader.GetStringValue(drlector, "Nume_tarjeta")
                         };
                     }
                 }
