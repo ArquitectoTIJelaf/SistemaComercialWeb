@@ -71,6 +71,8 @@ namespace SisComWeb.CuadreImpresora
                     texto.AppendLine(SplitStringPreserving("CUBIERTO " + venta.PolizaNum + " " + venta.PolizaFechaReg + " - " + venta.PolizaFechaVen, 45, "^"));
                     texto.AppendLine("");
                 }
+                texto.AppendLine(SplitStringPreserving("TIPO DE VENTA: " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta), 43, "^", true));
+                texto.AppendLine("");
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                                 venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,
                                                 venta.BoletoSerie, venta.BoletoNum, venta.PrecioCan,
@@ -355,6 +357,30 @@ namespace SisComWeb.CuadreImpresora
 
             return boletoBase64;
         }
+
+        private static string NameOfTipoVenta(string TipoPago, string FlagVenta)
+        {
+            var retorno = "EFECTIVO";
+            if (FlagVenta == "V")
+            {
+                if (TipoPago == "03")
+                    retorno = "TARJETA DE CREDITO";
+            }
+            else
+            {
+                if (FlagVenta == "1")
+                    retorno = "CREDITO";
+                else if (FlagVenta == "I")
+                    retorno = "BOLETO REMOTO";
+                else if (FlagVenta == "O")
+                    retorno = "REINTEGRO";
+                else if (FlagVenta == "7")
+                    retorno = "PASE DE CORTESIA";
+                else if (FlagVenta == "8")
+                    retorno = "CANJE PROMOCIONAL";
+            }
+            return retorno;
+        }
         #endregion
 
         #region "LIQUIDACION"
@@ -365,7 +391,7 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(SplitStringPreserving("EMPRESA :" + liquidacion.Empresa, 30, "||||^", false));
             texto.AppendLine(" ");
             texto.AppendLine(SplitStringPreserving("LIQUIDACIÓN DE CAJERO " + DateTime.Now.ToString("dd/MM/yyyy hh:mm tt"), 30, "|||^"));
-            texto.AppendLine(" ");            
+            texto.AppendLine(" ");
             texto.AppendLine(SplitStringPreserving("SUCURSAL:" + liquidacion.Sucursal, 30, "||||^", false));
             texto.AppendLine(SplitStringPreserving("P.VENTA :" + liquidacion.PuntoVenta, 30, "||||^", false));
             texto.AppendLine(SplitStringPreserving("USUARIO :" + liquidacion.Usuario, 30, "||||^", false));
@@ -406,7 +432,7 @@ namespace SisComWeb.CuadreImpresora
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "TOTAL DE DETRACCIÓN", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Totdet)));
             texto.AppendLine(String.Format("{0,-34}{1,8}", "||||^" + "GASTOS RUTA", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Gasrut)));
             texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL EGRESOS", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.TotalInafecto)));
-            texto.AppendLine(new string('-', 42));       
+            texto.AppendLine(new string('-', 42));
             texto.AppendLine(String.Format("{0,-24}{1,8}", "|||^" + "TOTAL (ING - EGR)", string.Format(CultureInfo.InvariantCulture, "{0:f2}", liquidacion.Total)));
             texto.AppendLine(new string('-', 42));
             texto.AppendLine(" ");

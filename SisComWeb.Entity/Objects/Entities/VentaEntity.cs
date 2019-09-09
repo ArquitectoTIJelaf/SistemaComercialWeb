@@ -352,6 +352,11 @@ namespace SisComWeb.Entity
         public bool ValidateCaja { get; set; }
 
         public string HoraViaje { get; set; }
+
+        //New
+        public string TipoPago { get; set; }
+
+        public string FlagVenta { get; set; }
     }
 
     public class DescuentoBoletoEntity

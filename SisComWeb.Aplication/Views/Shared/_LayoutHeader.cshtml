@@ -31,6 +31,7 @@
 
     #appVueNavarHeader .dropdown-menu > li > a > span {
         float: right;
+        margin-top: 7px;
     }
 
     #appVueNavarHeader .borderBottom.colorBlue a, .borderBottom:hover a {
@@ -49,7 +50,8 @@
         .dropdown-submenu .dropdown-menu {
             top: 0;
             left: 100%;
-            margin-top: -1px;
+            margin-top: -6px;
+            margin-left: 5px;
         }
 </style>
 
@@ -76,11 +78,13 @@
                         <i id="herramientas" class="ti-close ti-menu-alt fa-fw"></i>
                         Herramientas
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" style="margin-left: -1px; padding: 5px; ">
                         <li v-for="item in menuItems" :class="{'dropdown-submenu': item.children}">
                             <a class="test" tabindex="-1" href="javascript:void(0);">{{item.name}}<span class="caret" v-if="item.children"></span></a>
-                            <ul class="dropdown-menu" v-if="item.children">
-                                <li v-for="child in item.children"><a tabindex="-1" href="javascript:void(0);" @@click.prevent="setSelectedItem(child.id)">{{child.name}}</a></li>
+                            <ul class="dropdown-menu" v-if="item.children" style="padding: 5px; ">
+                                <li v-for="child in item.children">
+                                    <a tabindex="-1" href="javascript:void(0);" @@click.prevent="setSelectedItem(item.id, child.id)">{{child.name}}</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>

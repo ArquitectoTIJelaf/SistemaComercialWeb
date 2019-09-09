@@ -219,8 +219,17 @@
 
                         <div class="form-group m-b-5">
                             <div class="col-md-12 p-0">
-                                <div class="col-md-3 col-xs-12 separate-in-form">
-                                    <label class="control-label label-sm">Tipo de Pago:</label>
+                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                    <label class="control-label">Tipo de Pago Original:</label>
+                                    <div class="">
+                                        <input :value="dataOriginal.TipoPago | tipoPago"
+                                               class="form-control input-sm"
+                                               style="background-color:rgb(253, 249, 205);"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Nuevo Tipo de Pago:</label>
                                     <div class="">
                                         <v-select v-model="computedTipoPago"
                                                   :options="list.tiposPago"
@@ -236,7 +245,7 @@
                                         </v-select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-xs-12 separate-in-form" v-show="item.tipoPago === '03'">
+                                <div class="col-md-3 col-xs-6 separate-in-form" v-show="item.tipoPago === '03'">
                                     <label class="control-label label-sm">Tipo de Tarjeta:</label>
                                     <div class="">
                                         <v-select v-model="computedTarjetas"
@@ -253,14 +262,15 @@
                                         </v-select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-xs-12 separate-in-form" v-show="item.tipoPago === '03'">
+                                <div class="col-md-3 col-xs-6 separate-in-form" v-show="item.tipoPago === '03'">
                                     <label class="control-label label-sm">Número Tarjeta:</label>
                                     <div class="">
                                         <input v-model="item.numeroTarjeta"
-                                               class="form-control input-sm"                                          
+                                               class="form-control input-sm"
                                                @@keypress.13.prevent=""
                                                v-mask="'####-####-####-####'"
-                                               autocomplete="off" />
+                                               autocomplete="off"
+                                               ref="refCTPNumeroTarjeta" />
                                     </div>
                                 </div>
                             </div>
@@ -271,7 +281,7 @@
             <div class="modal-footer">
                 <button @@click="confirm"
                         class="btn btn-primary waves-effect waves-light"
-                        :disabled="!item.tipoPago"
+                        :disabled="!dataToSave"
                         ref="refCTPGuardar">
                     <span class="fa fa-floppy-o fa-fw"></span>Guardar
                 </button>

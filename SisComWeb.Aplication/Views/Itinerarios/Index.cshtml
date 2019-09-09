@@ -1081,6 +1081,12 @@
             return (filter) ? filter.label : '';
         });
 
+        Vue.filter('tipoPago', function (value) {
+            if (!value) return '';
+            var filter = _.find(tiposPago, (o) => { return o.id == value.toString(); })
+            return (filter) ? filter.label : '';
+        });
+
         Vue.filter('formatCodiProgramacion', function (value, length = 7) {
             value = String(value || '') || '';
             return value.padStart(length, '0');
@@ -13264,10 +13270,13 @@
                             } else APP.msg.warning(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+
+                    _this.$refs.refCTPTipoPago.$el.querySelector('input').focus();
                 },
                 limpiarData: function () {
                     let _this = this;
                     _this.asientoSel = {};
+                    _this.dataOriginal = {};
                     _this.item.origenPasj = '';
                     _this.item.destinoPasj = '';
                     _this.item.destinoBus = '';
@@ -13345,7 +13354,10 @@
                         if (value !== '' && value !== null) {
                             if (this.list.tiposPago.find(x => x.id === value.id)) {
                                 this.item.tipoPago = value.id;
-                                //this.$refs.refCTPSerie.focus()
+                                this.$nextTick(() => {
+                                    if (value.id === '03')
+                                        this.$refs.refCTPTipoTarjeta.$el.querySelector('input').focus();
+                                });
                             }
                         } else {
                             this.item.tipoPago = '';
@@ -13366,7 +13378,7 @@
                         if (value !== '' && value !== null) {
                             if (this.list.tarjetas.find(x => x.id === value.id)) {
                                 this.item.codiTarjeta = value.id;
-                                //this.$refs.refCTPSerie.focus()
+                                this.$refs.refCTPNumeroTarjeta.focus()
                             }
                         } else {
                             this.item.codiTarjeta = '';
@@ -13383,7 +13395,7 @@
                         if (_this.item.tipoPago === '01') {
                             return true;
                         } else if (_this.item.tipoPago === '03') {
-                            if (item.codiTarjeta && item.numeroTarjeta)
+                            if (_this.item.codiTarjeta && _this.item.numeroTarjeta && _this.item.numeroTarjeta.length == 19)
                                 return true;
                             else return false;
                         }

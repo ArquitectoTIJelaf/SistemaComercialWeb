@@ -417,10 +417,11 @@
                                     <ul id="right-click-menu"
                                         tabindex="-1"
                                         ref="right"
-                                        v-if="(showContextMenu && pickedBusVenta !== 'FA')"
+                                        v-if="showContextMenu"
                                         @@blur="closeMenu"
                                         :style="{top: top, left: left}"
-                                        v-show="showContextMenuBloquearAsiento() || itemSelected.FlagVenta !== ''">
+                                        v-show="(showContextMenuBloquearAsiento() || itemSelected.FlagVenta !== '') && (pickedBusVenta !== 'FA' &&
+                                                itemSelected.FlagVenta !== 'VI')">
 
                                         <li v-show="showContextMenuReimprimir()"
                                             @@click="contextMenuReimprimir(itemSelected)">

@@ -140,14 +140,22 @@
                 fixedHeader: true,
                 menuItems: [
                     {
+                        id: 0,
                         name: 'General',
-                        children: [{ id:0, name: 'Cambio de Horario en Lote (Ctrl+F7)' }, { id:1, name: 'Modificación Boletos (F9)' }]
+                        children: [{ id: 0, name: 'Cambio de Horario en Lote (Ctrl+F7)' }, { id: 1, name: 'Modificación Boletos (F9)' }]
                     },
                     {
+                        id: 1,
                         name: 'Ubicación'
                     },
                     {
+                        id: 2,
                         name: 'Cta Cte de Ventas'
+                    },
+                    {
+                        id: 3,
+                        name: 'Utilitarios',
+                        children: [{ id: 0, name: 'Nota de Crédito' }]
                     }
                 ]
             },
@@ -217,21 +225,26 @@
                 showLiquidacion: function () {
                     appVueLiquidacion.show();
                 },
-                setSelectedItem(item, e) {
+                setSelectedItem(item, child) {
+                    $('.dropdown-submenu a.test').next('ul').toggle();
                     switch (item) {
-                        case 0: {
-                            appVuePaseLote.show();
-                            $('.dropdown-submenu a.test').next('ul').toggle();
-                            //e.stopPropagation();
-                            //e.preventDefault();
-                        }; break;
-                        case 1: {
-                            appVueModificacionBoleto.show();
-                            $('.dropdown-submenu a.test').next('ul').toggle();
-                            //e.stopPropagation();
-                            //e.preventDefault();
-                        }; break;
-                        default:
+                        case 0: // General
+                            {
+                                switch (child) {
+                                    case 0: appVuePaseLote.show(); break;
+                                    case 1: appVueModificacionBoleto.show(); break;
+                                };
+                            };
+                            break;
+                        case 1: break; // Ubicación
+                        case 2: break; // Cta Cte de Ventas
+                        case 3:
+                            {
+                                switch (child) {
+                                    case 0: appVueModificacionBoleto.show(); break;
+                                };
+                            };
+                            break;
                     }
                 }
             },
