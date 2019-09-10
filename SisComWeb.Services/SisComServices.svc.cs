@@ -1321,5 +1321,35 @@ namespace SisComWeb.Services
             }
         }
         #endregion
+
+        #region NOTA DE CRÉDITO
+
+        public Response<string> ConsultaTipoTerminalElectronico(int CodiTerminal, int CodiEmpresa)
+        {
+            try
+            {
+                return NotaCreditoLogic.ConsultaTipoTerminalElectronico(CodiTerminal, CodiEmpresa);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, null, Message.MsgExcConsultaTipoTerminalElectronico, false);
+            }
+        }
+
+        public Response<List<BaseEntity>> ListaClientesNC_Autocomplete(string TipoDocumento, string Value)
+        {
+            try
+            {
+                return NotaCreditoLogic.ListaClientesNC_Autocomplete(TipoDocumento, Value);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaClientesNC_Autocomplete, false);
+            }
+        }
+
+        #endregion
     }
 }

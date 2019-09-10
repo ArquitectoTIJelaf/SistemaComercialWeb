@@ -459,5 +459,17 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ListaLiquidacion", ResponseFormat = WebMessageFormat.Json)]
         Response<LiquidacionEntity> ListaLiquidacion(LiquidacionRequest request);
         #endregion
+
+        #region NOTA DE CRÉDITO
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ConsultaTipoTerminalElectronico", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<string> ConsultaTipoTerminalElectronico(int CodiTerminal, int CodiEmpresa);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaClientesNC_Autocomplete", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaClientesNC_Autocomplete(string TipoDocumento, string Value);
+
+        #endregion
     }
 }

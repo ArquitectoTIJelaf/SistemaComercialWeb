@@ -740,6 +740,8 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        #endregion
+
         [HttpPost]
         [Route("obtenerMensaje")]
         public async Task<JsonResult> ObtenerMensaje(int CodiUsuario, string Fecha, string Tipo, int CodiSucursal, int CodiPventa)
@@ -833,7 +835,5 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
-
-        #endregion
     }
 }

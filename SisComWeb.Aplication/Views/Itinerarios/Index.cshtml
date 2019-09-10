@@ -55,9 +55,10 @@
 @Html.Partial("_PaseLote")
 @Html.Partial("_CTipoPago")
 
+@Html.Partial("_NotaCredito")
+
 @section styles{
     <style type="text/css">
-
         .btn-mini-ticket:focus {
             opacity: 0.3;
         }
@@ -591,6 +592,7 @@
             $(document).on('focus active', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
+
             $(document).on('blur', 'input[type=checkbox]', function () {
                 $('label[for=' + $(this).attr('id') + ']').removeClass('active-chck');
             });
@@ -825,6 +827,18 @@
                 //appVueManifiestoPasajeros.limpiarManifiestoPasajeros();
 
                 window.removeEventListener('keyup', appVueManifiestoPasajeros.esc);
+            });
+
+            $('#appVueNotaCredito').on('shown.bs.modal', function () {
+                window.addEventListener('keyup', appVueNotaCredito.esc);
+
+                $('#cboEmpresaNC input[type=search]').focus();
+            });
+
+            $('#appVueNotaCredito').on('hidden.bs.modal', function () {
+                appVueNotaCredito.limpiarNotaCredito();
+
+                window.removeEventListener('keyup', appVueNotaCredito.esc);
             });
 
             if ($('.dpFiltro').length) {
@@ -1570,7 +1584,9 @@
                     return auxResponse;
                 },
                 getTiposDocumentosSinRaya: function () {
-                    return _.cloneDeep(_.filter(tiposDoc, function (o) { return o.id !== '00'; }));
+                    return _.cloneDeep(_.filter(tiposDoc, function (o) {
+                        return o.id !== '00';
+                    }));
                 },
                 verificaLiquidacionComiDet: async function (_IdVenta) {
                     return await appVueVenta.verificaLiquidacionComiDet(_IdVenta);
@@ -1619,6 +1635,19 @@
                 },
                 showCTipoPago: function (_item) {
                     appVueCTipoPago.show(_item);
+                },
+                showNotaCredito: function () {
+                    appVueNotaCredito.show();
+                },
+                getTiposDocumentosNC: function () {
+                    var auxTiposDoc = [];
+
+                    auxTiposDoc = _.cloneDeep(_.filter(tiposDoc, function (o) {
+                        return o.id === '01' || o.id === '03' || o.id === '07';
+                    }));
+                    auxTiposDoc.unshift({ 'id': '77', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
+
+                    return auxTiposDoc;
                 }
             };
         })();
@@ -1815,7 +1844,7 @@
                         var _index = parseInt(e.target.tabIndex / 19) + (_this.paginate.items.page * 10);
                         var _item = _this.list.itinerarios[_index];
                         //en sendRow cambia el valor chargeCurrCell
-                        await _this.sendRow(_item);                        
+                        await _this.sendRow(_item);
                     }
                 },
                 sendRow: async function (item) {
@@ -1843,7 +1872,7 @@
                                 CodiServicio: option.CodiServicio,
                                 CodiRuta: option.CodiRuta,
                                 CodiOrigen: option.CodiOrigen,
-                                CodiDestino: option.CodiDestino,                                
+                                CodiDestino: option.CodiDestino,
                                 HoraViaje: option.HoraViaje,
                                 FechaViaje: option.FechaViaje,
                                 CodiEmpresa: option.CodiEmpresa,
@@ -2044,7 +2073,6 @@
                 // Crédito
                 readonlyPrecio_Credito: false,
                 disabledCredito: false,
-                disabledCampoNumSolicitud: true,
                 objCreditoCliente: {
                     Ruc: '',
                     RazonSocial: '',
@@ -2121,9 +2149,8 @@
                     input.CodiServicio = item.CodiServicio;
                     input.HoraViaje = item.HoraPartida;
                     input.FechaViaje = item.FechaViaje;
-
-                    var auxValidator = await _this.getCorrelativo(item.CodiEmpresa, _this.pickedBusVenta);
                     // ---------------------------------
+                    var auxValidator = await _this.getCorrelativo(item.CodiEmpresa, _this.pickedBusVenta);
                     if (!auxValidator) {
                         _this.processing = false;
                         _this.showPlano = false;
@@ -2237,6 +2264,7 @@
 
                                 appVueManifiestoPasajeros.list.empresas = _.cloneDeep(res.data.Valor);
                                 appVuePostergacion.list.empresas = _.cloneDeep(res.data.Valor);
+                                appVueNotaCredito.list.empresas = _.cloneDeep(res.data.Valor);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -2265,11 +2293,13 @@
                         .then(res => {
                             if (res.data.Estado) {
                                 tiposDoc = _.cloneDeep(res.data.Valor);
-
                                 var auxListaSinRaya = appController.getTiposDocumentosSinRaya();
                                 _this.list.tiposDoc = _.cloneDeep(auxListaSinRaya);
+
                                 appVueRegistrarInfante.list.tipoDoc = _.cloneDeep(auxListaSinRaya);
                                 appVueReintegro.list.tipoDoc = _.cloneDeep(auxListaSinRaya);
+                                var auxListaNC = appController.getTiposDocumentosNC();
+                                appVueNotaCredito.list.tiposDocumentos = _.cloneDeep(auxListaNC);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -2336,9 +2366,9 @@
                 },
                 changeTurno: function (item) {
                     var _this = this;
-
                     _this.showPlano = false;
-
+                    _this.firstCharge = false;
+                   
                     if (item.FechaViaje !== _this.filtro.Fecha) {
                         _this.list.turnos.forEach(function (objTurno) {
                             objTurno.FechaViaje = _this.filtro.Fecha;
@@ -2693,7 +2723,7 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     _this.disabledAsiento = false;
-                    
+
                     if (_this.pickedBusVenta === 'V' || _this.pickedBusVenta === 'R')
                         _this.indexVenta = 0;
 
@@ -3621,8 +3651,7 @@
                                 if (!_this.list.ventas[_this.indexVenta].DisabledRazonSocial)
                                     _this.list.ventas[_this.indexVenta].RazonSocial = res.data.Valor.RazonSocial;
 
-                                if (_this.pickedBusVenta !== '1')
-                                    _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
+                                _this.list.ventas[_this.indexVenta].Direccion = res.data.Valor.Direccion;
                             }
                             else {
                                 if (res.data.Estado)
@@ -3840,7 +3869,7 @@
                 },
                 obtenerNewListaDestinosPas: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje) {
                     var listaDestinosRuta = [];
-                    
+
                     var resGetNewListaDestinosPas = await this.getNewListaDestinosPas(_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje);
                     if (resGetNewListaDestinosPas) {
                         if (resGetNewListaDestinosPas.EsCorrecto)
@@ -4370,7 +4399,6 @@
                     this.disabledCampoNroAsiento = false;
                     this.disabledCamposTicket = false;
                     this.disabledCamposTicket_Pase = false;
-                    this.disabledCampoNumSolicitud = true;
                     this.validatorReservaHC = false;
                     this.validatorTiempoReserva = false;
 
@@ -4521,7 +4549,7 @@
                 validateTxtNroAsientoVenta: async function (e) {
                     if (this.eventTxtNroAsientoVenta)
                         e = this.eventTxtNroAsientoVenta;
-                    
+
                     if (this.list.ventas[this.indexVenta].NroAsiento && !this.list.ventas[this.indexVenta].NroVenta) {
                         this.list.ventas[this.indexVenta].NroAsiento = this.list.ventas[this.indexVenta].NroAsiento.padStart(2, '0');
 
@@ -5290,7 +5318,7 @@
                         _this.disabledAsiento = false;
                         return;
                     }
-
+                    
                     // Obtenemos '_StAnulacion'
                     var _StAnulacion = await _this.obtenerStAnulacion("09", Usuario.CodiPuntoVenta, moment().format('DD/MM/YYYY'));
 
@@ -5880,8 +5908,6 @@
                     this.list.ventas[this.indexVenta].FechaCita = _request.fechaCita;
                     this.list.ventas[this.indexVenta].Hospital = _request.hospital;
                     this.list.ventas[this.indexVenta].FechaAbierta = _request.fechaAbierta;
-
-                    this.disabledCampoNumSolicitud = false;
 
                     this.recorridoSectionVentas();
                 },
@@ -6976,17 +7002,15 @@
                     if (newVal) {
                         this.mask.documento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                        if (newVal.id === '01')
-                            this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
-                        else {
-                            if (!this.list.ventas[this.indexVenta].IdVenta)
+                        if (!this.list.ventas[this.indexVenta].IdVenta) {
+                            if (newVal.id === '01')
+                                this.list.ventas[this.indexVenta].Nacionalidad = NacionalidadPorDefault;
+                            else
                                 this.list.ventas[this.indexVenta].Nacionalidad = '';
-                        }
 
-                        if (this.oldIndexVenta === this.indexVenta) {
-                            if (this.pickedBusVenta === 'R') {
+                            if (this.oldIndexVenta === this.indexVenta) {
 
-                                if (newVal.id === '00') {
+                                if (this.pickedBusVenta === 'R' && newVal.id === '00') {
                                     this.list.ventas[this.indexVenta].Documento = '0';
                                     this.disabledDocumentoRaya = true;
                                 }
@@ -6994,6 +7018,8 @@
                                     this.list.ventas[this.indexVenta].Documento = '';
                                     this.disabledDocumentoRaya = false;
                                 }
+
+                                this.clearUser();
                             }
                         }
                     }
@@ -7006,7 +7032,8 @@
                 },
                 listVentasCampoRuc: function (newVal, oldVal) {
                     if (this.oldIndexVenta === this.indexVenta) {
-                        if (oldVal && newVal && (newVal.length === 0 || oldVal.length >= 11) && !this.list.ventas[this.indexVenta].IdVenta) {
+
+                        if (oldVal && (newVal.length === 0 || oldVal.length >= 11) && !this.list.ventas[this.indexVenta].IdVenta) {
                             this.clearRazSoc();
                             this.list.ventas[this.indexVenta].DisabledRazonSocial = false;
                         }
@@ -13419,6 +13446,186 @@
                 }
             },
             watch: {
+            }
+        });
+
+        var appVueNotaCredito = new Vue({
+            el: "#appVueNotaCredito",
+            data: {
+                filtro: {
+                    empresa: null,
+                    rdbPasEnc: 'P',
+                    chbDocumentoElec: false,
+                    tipoDocumento: null,
+                    cliente: null,
+                    clienteId: '',
+                    clienteLabel: '',
+                    fechaInicial: '',
+                    fechaFinal: '',
+                    tipoNumDoc: null,
+                    serieNumDoc: '',
+                    numeroNumDoc: '',
+                    rdbManEle: 'M',
+                    concepto: null,
+                    notaCredito: '',
+                    fechaEmision: '',
+                    importe: ''
+                },
+                list: {
+                    empresas: [],
+                    tiposDocumentos: [],
+                    clientes: [],
+                    tiposNumDoc: [
+                        { 'id': 'B', 'label': 'B' },
+                        { 'id': 'F', 'label': 'F' },
+                        { 'id': 'M', 'label': 'M' }
+                    ],
+                    conceptos: [],
+                    documentosEmitidos: [],
+                    documentosSeleccionados: []
+                },
+                mask: {
+                    tipoDocumento: ''
+                }
+            },
+            mounted: function () { },
+            methods: {
+                show: function () {
+                    $('#appVueNotaCredito').modal('show');
+                },
+                cargarChbDocumentoElec: function (_CodiEmpresa) {
+                    var _this = this;
+
+                    APP.rq.axios2.post(APP.base + '/notaCredito/consultaTipoTerminalElectronico', {
+                        CodiEmpresa: _CodiEmpresa
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.filtro.chbDocumentoElec = (res.data.Valor === 'E' ? true : false);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                listaClientesNC_Autocomplete: function (search, loading) {
+                    var _this = this;
+
+                    // Validaciones
+                    if (!isNaN(search) && search.length > 11)
+                        return;
+                    if (isNaN(search) && search.length > 100)
+                        return;
+                    // ------------
+
+                    if (loading)
+                        loading(true);
+
+                    APP.rq.axios2.post(APP.base + '/notaCredito/listaClientesNC_Autocomplete', {
+                        TipoDocumento: _this.filtro.tipoDocumento.id,
+                        Value: search
+                    })
+                        .then(res => {
+                            if (res.data.Estado) {
+                                if (loading)
+                                    loading(false);
+
+                                _this.list.clientes = res.data.Valor;
+                            }
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                cerrarNotaCredito: function () {
+                    $('#appVueNotaCredito').modal('hide');
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarNotaCredito();
+                },
+                limpiarNotaCredito: function () {
+                    this.filtro.empresa = null;
+                    this.filtro.rdbPasEnc = 'P';
+                    this.filtro.chbDocumentoElec = false;
+                    this.filtro.tipoDocumento = null;
+                    this.filtro.cliente = null;
+                    this.filtro.clienteId = '';
+                    this.filtro.clienteLabel = '';
+                    this.filtro.fechaInicial = '';
+                    this.filtro.fechaFinal = '';
+                    this.filtro.tipoNumDoc = null;
+                    this.filtro.serieNumDoc = '';
+                    this.filtro.numeroNumDoc = '';
+                    this.filtro.rdbManEle = 'M';
+                    this.filtro.concepto = null;
+                    this.filtro.notaCredito = '';
+                    this.filtro.fechaEmision = '';
+                    this.filtro.importe = '';
+                },
+                recorrerNotaCredito: function (auxValidate) {
+                    var _this = this;
+
+                    _this.$nextTick(() => {
+                        var auxResponse = false;
+
+                        if (!_this.filtro.empresa) {
+                            $('#cboEmpresaNC input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione una empresa.');
+                        }
+                        else if (!_this.filtro.tipoDocumento) {
+                            $('#cboTipoDocumentoNC input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
+                        }
+                        else if (_this.filtro.tipoDocumento.id == '77' && !_this.filtro.cliente) {
+                            $('#cboClienteNC input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
+                        }
+                        else if (_this.filtro.tipoDocumento.id != '77' && !_this.filtro.clienteId && !_this.filtro.clienteLabel) {
+                            document.getElementById('txtClienteIdNC').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
+                        }
+                        else if (!_this.filtro.fechaInicial) {
+                            document.getElementById('txtFechaInicialNC').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese fecha inicial.');
+                        }
+                        else {
+                            document.getElementById('btnBuscarNC').focus();
+                            auxResponse = true;
+                        }
+
+                        return auxResponse;
+                    });
+                },
+                recorridoVselectTipoDocumento: function () {
+                    var _this = this;
+
+                    _this.$nextTick(function () {
+                        if (_this.filtro.tipoDocumento.id == '77')
+                            $('#cboClienteNC input[type=search]').focus();
+                        else
+                            document.getElementById('txtClienteIdNC').focus();
+                    });
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                }
+            },
+            computed: {},
+            watch: {
+                'filtro.empresa': function (newVal, oldVal) {
+                    if (newVal)
+                        this.cargarChbDocumentoElec(newVal.id);
+                },
+                'filtro.tipoDocumento': function (newVal, oldVal) {
+                    if (newVal) {
+                        this.mask.tipoDocumento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
+
+                        if (this.filtro.tipoDocumento.id == '77')
+                            this.filtro.cliente = null;
+                        else
+                            this.filtro.clienteId = '';
+                    }  
+                }
             }
         });
 
