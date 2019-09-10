@@ -459,5 +459,12 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ListaLiquidacion", ResponseFormat = WebMessageFormat.Json)]
         Response<LiquidacionEntity> ListaLiquidacion(LiquidacionRequest request);
         #endregion
+
+        #region "CAMBIAR TIPO PAGO"
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "CambiarTipoPago", ResponseFormat = WebMessageFormat.Json)]
+        Response<string> CambiarTipoPago(CambiarTPagoRequest request);
+        #endregion
     }
 }

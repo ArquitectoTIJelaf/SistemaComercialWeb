@@ -90,7 +90,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group m-b-5 bordergray">
+                        <div class="form-group m-b-5 bordergray" v-show="dataOriginal.IdVenta">
 
                             <div class="col-md-12 p-0">
                                 <div class="col-md-5 p-0">
@@ -215,9 +215,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group m-b-5">
                             <div class="col-md-12 p-0">
                                 <div class="col-md-3 col-xs-6 separate-in-form">
                                     <label class="control-label">Tipo de Pago Original:</label>
@@ -236,10 +234,10 @@
                                                   :placeholder="'TIPO PAGO'"
                                                   :select-on-tab="true"
                                                   label="label"
-                                                  @@keydown.13.native.prevent=""
+                                                  @@keydown.13.native.prevent="nextStep(0)"
                                                   ref="refCTPTipoPago">
                                             <template slot="option" slot-scope="option">
-                                                <div @@click="">{{ option.label }}</div>
+                                                <div @@click="nextStep(0)">{{ option.label }}</div>
                                             </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -253,10 +251,10 @@
                                                   :placeholder="'TIPO TARJETA'"
                                                   :select-on-tab="true"
                                                   label="label"
-                                                  @@keydown.13.native.prevent=""
+                                                  @@keydown.13.native.prevent="nextStep(1)"
                                                   ref="refCTPTipoTarjeta">
                                             <template slot="option" slot-scope="option">
-                                                <div @@click="">{{ option.label }}</div>
+                                                <div @@click="nextStep(1)">{{ option.label }}</div>
                                             </template>
                                             <span slot="no-options" class="text-danger">No hay resultados</span>
                                         </v-select>
@@ -267,7 +265,7 @@
                                     <div class="">
                                         <input v-model="item.numeroTarjeta"
                                                class="form-control input-sm"
-                                               @@keypress.13.prevent=""
+                                               @@keypress.13.prevent="nextStep(2)"
                                                v-mask="'####-####-####-####'"
                                                autocomplete="off"
                                                ref="refCTPNumeroTarjeta" />

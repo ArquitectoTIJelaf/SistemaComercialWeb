@@ -1321,5 +1321,21 @@ namespace SisComWeb.Services
             }
         }
         #endregion
+
+        #region "CAMBIO TIPO PAGO"
+
+        public Response<string> CambiarTipoPago(CambiarTPagoRequest request)
+        {
+            try
+            {
+                return CambiarTPagoLogic.CambiarTipoPago(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<string>(false, string.Empty, "", false);
+            }
+        }
+        #endregion
     }
 }
