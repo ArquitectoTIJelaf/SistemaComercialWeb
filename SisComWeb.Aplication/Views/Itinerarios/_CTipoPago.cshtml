@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="close">&times;</button>
-                <h4 class="modal-title"><b>Reintegro de Boletos</b></h4>
+                <h4 class="modal-title"><b>Modificación del Tipo de Pago</b></h4>
             </div>
             <div class="modal-body p-t-0 p-b-0">
                 <div class="row">
@@ -90,27 +90,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group m-b-5 bordergray">
+                        <div class="form-group m-b-5 bordergray" v-show="dataOriginal.IdVenta">
 
                             <div class="col-md-12 p-0">
                                 <div class="col-md-5 p-0">
                                     <div class="col-md-6 col-xs-6 separate-in-form">
                                         <label class="control-label">Tipo doc.</label>
-                                        @*<v-select v-model="filtroTipoDoc"
-                                                  placeholder="TIPO DOC."
-                                                  @@keydown.13.native.prevent=""
-                                                  :options="list.tiposDoc"
-                                                  :select-on-tab="true"
-                                                  :get-option-label="getLabel"
-                                                  name="Tipo"
-                                                  v-validate="'required'"
-                                                  :disabled="true"
-                                                  ref="refCTPTipoDoc">
-                                            <template slot="option" slot-scope="option">
-                                                <div @@click="">{{ option.label }}</div>
-                                            </template>
-                                            <span slot="no-options" class="text-danger">No hay resultados</span>
-                                        </v-select>*@
                                         <div class="">
                                             <input :value="item.documento | tipoDocumento"
                                                    class="form-control input-sm"
@@ -230,11 +215,74 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-12 p-0">
+                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                    <label class="control-label">Tipo de Pago Original:</label>
+                                    <div class="">
+                                        <input :value="dataOriginal.TipoPago | tipoPago"
+                                               class="form-control input-sm"
+                                               style="background-color:rgb(253, 249, 205);"
+                                               disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Nuevo Tipo de Pago:</label>
+                                    <div class="">
+                                        <v-select v-model="computedTipoPago"
+                                                  :options="list.tiposPago"
+                                                  :placeholder="'TIPO PAGO'"
+                                                  :select-on-tab="true"
+                                                  label="label"
+                                                  @@keydown.13.native.prevent="nextStep(0)"
+                                                  ref="refCTPTipoPago">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="nextStep(0)">{{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-6 separate-in-form" v-show="item.tipoPago === '03'">
+                                    <label class="control-label label-sm">Tipo de Tarjeta:</label>
+                                    <div class="">
+                                        <v-select v-model="computedTarjetas"
+                                                  :options="list.tarjetas"
+                                                  :placeholder="'TIPO TARJETA'"
+                                                  :select-on-tab="true"
+                                                  label="label"
+                                                  @@keydown.13.native.prevent="nextStep(1)"
+                                                  ref="refCTPTipoTarjeta">
+                                            <template slot="option" slot-scope="option">
+                                                <div @@click="nextStep(1)">{{ option.label }}</div>
+                                            </template>
+                                            <span slot="no-options" class="text-danger">No hay resultados</span>
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-xs-6 separate-in-form" v-show="item.tipoPago === '03'">
+                                    <label class="control-label label-sm">Número Tarjeta:</label>
+                                    <div class="">
+                                        <input v-model="item.numeroTarjeta"
+                                               class="form-control input-sm"
+                                               @@keypress.13.prevent="nextStep(2)"
+                                               v-mask="'####-####-####-####'"
+                                               autocomplete="off"
+                                               ref="refCTPNumeroTarjeta" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
+                <button @@click="confirm"
+                        class="btn btn-primary waves-effect waves-light"
+                        :disabled="!dataToSave"
+                        ref="refCTPGuardar">
+                    <span class="fa fa-floppy-o fa-fw"></span>Guardar
+                </button>
                 <button @@click="close"
                         class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir

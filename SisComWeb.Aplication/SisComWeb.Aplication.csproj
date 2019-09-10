@@ -430,6 +430,7 @@
     <Compile Include="Controllers\NotaCreditoController.cs" />
     <Compile Include="Controllers\AutenticacionController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CambiarTipoPagoController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ItinerariosController.cs" />
     <Compile Include="Controllers\LiquidacionController.cs" />
@@ -447,6 +448,7 @@
     <Compile Include="Helpers\SessionExpire.cs" />
     <Compile Include="Hubs\NotificationHub.cs" />
     <Compile Include="Models\Auditoria.cs" />
+    <Compile Include="Models\CambiarTPago.cs" />
     <Compile Include="Models\Liquidacion.cs" />
     <Compile Include="Models\SucursalControl.cs" />
     <Compile Include="Models\Mensaje.cs" />
@@ -808,6 +810,7 @@
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\CambiarTipoPago\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

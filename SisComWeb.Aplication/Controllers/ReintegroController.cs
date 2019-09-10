@@ -71,7 +71,11 @@ namespace SisComWeb.Aplication.Controllers
                 EmpCodigo = (byte)x["EmpCodigo"],
                 PVentaCodigo = (short)x["PVentaCodigo"],
                 BusCodigo = (string)x["BusCodigo"],
-                EmbarqueCod = (short)x["EmbarqueCod"]
+                EmbarqueCod = (short)x["EmbarqueCod"],
+
+                //NEW
+                TipoPago = (string)x["TipoPago"],
+                FlagVenta = (string)x["FlagVenta"]
             }).ToList();
 
             return lista;

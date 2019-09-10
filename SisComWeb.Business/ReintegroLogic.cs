@@ -556,7 +556,11 @@ namespace SisComWeb.Business
                             EmpCodigo = entidad.CodiEmpresa,
                             PVentaCodigo = entidad.CodiPuntoVenta,
                             BusCodigo = entidad.CodiBus,
-                            EmbarqueCod = entidad.CodiEmbarque
+                            EmbarqueCod = entidad.CodiEmbarque,
+
+                            //NEW
+                            TipoPago = entidad.TipoPago,
+                            FlagVenta = entidad.FlagVenta
                         };
                         listaVentasRealizadas.Add(auxVentaRealizada);
 

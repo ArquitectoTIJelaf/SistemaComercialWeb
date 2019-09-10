@@ -309,6 +309,11 @@ namespace SisComWeb.Aplication.Models
         public bool ValidateCaja { get; set; }
 
         public string HoraViaje { get; set; }
+
+        //NEW
+        public string TipoPago { get; set; }
+
+        public string FlagVenta { get; set; }
     }
 
     public class AnularVentaRequest
