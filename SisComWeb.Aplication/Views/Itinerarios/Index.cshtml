@@ -1359,6 +1359,9 @@
                                 case ClavePostergacionFlag9:
                                     auxResponse = res.data;
                                     break;
+                                case ClaveCambioTipoPago:
+                                    auxResponse = res.data;
+                                    break;
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
@@ -6733,7 +6736,7 @@
                             _this.disabledAsientos = false;
                             return;
                         }
-                        
+
                         if (appController.validatePanelClave('7') === '1') {
 
                             var resConfirmClaveAutorizacion = await APP.msg.confirmClaveAutorizacion(
@@ -11277,7 +11280,7 @@
                                 if (res.data.Estado) {
 
                                     if (res.data.Valor.IdCliente > 0) {
-                                        //TODO: No se incluye Sexo y ValidadorClienteEspecial                                        
+                                        //TODO: No se incluye Sexo y ValidadorClienteEspecial
                                         _this.item.idCliente = res.data.Valor.IdCliente;
                                         _this.item.nombre = res.data.Valor.NombreCliente;
                                         _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
@@ -11321,7 +11324,7 @@
                 searchEmpresa: async function () {
                     var _this = this;
 
-                    if (_this.item.ruc) {
+                    if (_this.item.ruc && _this.item.ruc.length === 11) {
 
                         await APP.rq.axios.get(APP.base + '/itinerarios/consultar-empresa' + APP.util.getQueryParamByObject({
                             rucContacto: _this.item.ruc
@@ -11578,8 +11581,12 @@
 
                     if (newVal != oldVal && oldVal) {
                     //if (_this.filtro.codMotivo == '00002' || _this.filtro.codMotivo == '00004') {
-                        _this.item.razonSocial = '';
-                        _this.item.direccion = '';
+                        _this.$nextTick(() => {
+                            if (_this.item.stReintegro !== 'X' && (oldVal !== _this.dataOriginal.RucCliente || newVal.length == 0)) {
+                                _this.item.razonSocial = '';
+                                _this.item.direccion = '';
+                            }
+                        });
                     }
                 },
                 'item.numero': function (newVal, oldVal) {
