@@ -56,6 +56,7 @@
 @Html.Partial("_AnularReintegro")
 @Html.Partial("_PaseLote")
 @Html.Partial("_CTipoPago")
+@Html.Partial("_CrearProgramacion")
 
 @section styles{
     <style type="text/css">
@@ -585,6 +586,10 @@
             });
 
             $("#appVueAnulaReintegro").draggable({
+                handle: ".modal-header"
+            });
+
+            $("#appVueCrearProgramacion").draggable({
                 handle: ".modal-header"
             });
 
@@ -1203,24 +1208,30 @@
             return d.promise();
         };
 
-        function auxSetTd(afterEnter) {
-            var currCell = $('#tblListaItinerarios tr td').first();
+        function auxSetTd(id, afterEnter, stepsOfRow, auxFirstCurrCell = true) {
+
+            var currCell = (auxFirstCurrCell) ? $('#' + id + ' tr td').first() : $('#' + id + ' tr td').last();
+            var firstRow = $('#' + id + ' tr').first().index();
+            var currRow = $('#' + id + ' tr').first().index();
+            var lastRow = $('#' + id + ' tr').last().index();
 
             if (currCell.length > 0) {
                 currCell.focus();
             }
 
-            $('#tblListaItinerarios tr td').unbind();
+            $('#' + id + ' tr td').unbind();
 
-            $('#tblListaItinerarios').unbind();
+            $('#' + id).unbind();
 
-            $('#tblListaItinerarios tr td').click(function () {
+            $('#' + id + ' tr td').click(function () {
                 currCell = $(this);
+                currRow = $(this).parent().index();
             });
 
-            $('#tblListaItinerarios').keydown(function (e) {
+            $('#' + id).keydown(function (e) {
 
-                if (e.which == 39 || e.which == 37 || e.which == 38 || e.which == 40 || e.which == 13 || e.which == 32 || e.which == 9) {
+                if (e.which == 39 || e.which == 37 || e.which == 38 || e.which == 40 ||
+                    e.which == 13 || e.which == 32 || e.which == 9 || e.which == 35 || e.which == 36) {
 
                     var c = "";
 
@@ -1235,11 +1246,21 @@
                     } else if (e.which == 38) {
                         //Up Arrow
                         e.preventDefault();
-                        c = currCell.closest('tr').prev().find('td:eq(' + currCell.index() + ')');
+                        currRow = currCell.parent().index();
+                        if (currRow == firstRow) {
+                            stepsOfRow(1);
+                        } else {
+                            c = currCell.closest('tr').prev().find('td:eq(' + currCell.index() + ')');
+                        }
                     } else if (e.which == 40) {
                         //Down Arrow
                         e.preventDefault();
-                        c = currCell.closest('tr').next().find('td:eq(' + currCell.index() + ')');
+                        currRow = currCell.parent().index();
+                        if (currRow == lastRow) {
+                            stepsOfRow(2);
+                        } else {
+                            c = currCell.closest('tr').next().find('td:eq(' + currCell.index() + ')');
+                        }
                     } else if (e.which == 9 && !e.shiftKey) {
                         //Tab
                         e.preventDefault();
@@ -1248,6 +1269,14 @@
                         //Shift + Tab
                         e.preventDefault();
                         c = currCell.prev();
+                    } else if (e.which == 36) {
+                        //Inicio
+                        e.preventDefault();
+                        c = $('#' + id + ' tr td').first();
+                    } else if (e.which == 35) {
+                        //Fin
+                        e.preventDefault();
+                        c = $('#' + id + ' tr td').last();
                     } else if (e.which == 13) {
                         //Enter
                         e.preventDefault();
@@ -1640,6 +1669,9 @@
                 },
                 showCTipoPago: function (_item) {
                     appVueCTipoPago.show(_item);
+                },
+                showCrearProgramacion: function (_item) {
+                    appVueCrearProgramacion.show(_item);
                 }
             };
         })();
@@ -1813,21 +1845,25 @@
                 },
                 paginate: ['items'],
                 showVentas: false,
-                chargeCurrCell: false
+                chargeCurrCell: false, //evitar multiples llamadas a auxSetTd
+                auxFirstCurrCell: true //inicia en la primera celda
             },
             mounted: function () {},
             methods: {
                 loadTable: function (list) {
+                    this.auxFirstCurrCell = true;
                     this.list.itinerarios = list;
 
                     this.$nextTick(() => {
                         this.shown = true
                         if (this.$refs.paginator && this.list.itinerarios.length > 0) {
                             this.$refs.paginator.goToPage(1);
-
-                            auxSetTd(appVueTable.sendRowOfTab);
+                            this.setTd();
                         }
                     });
+                },
+                setTd: function () {
+                    auxSetTd('tblListaItinerarios', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
                 },
                 sendRowOfTab: async function (e) {
                     let _this = this;
@@ -1835,8 +1871,25 @@
                         _this.chargeCurrCell = true;
                         var _index = parseInt(e.target.tabIndex / 19) + (_this.paginate.items.page * 10);
                         var _item = _this.list.itinerarios[_index];
-                        //en sendRow cambia el valor chargeCurrCell
                         await _this.sendRow(_item);
+                        _this.chargeCurrCell = false;
+                    }
+                },
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginator.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.itinerarios.length - 1) / 10)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginator.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
                     }
                 },
                 sendRow: async function (item) {
@@ -1895,8 +1948,6 @@
 
                         var _topOfBus = $('.img-bus').offset().top;
                         appVueVenta.top = _topOfBus + 'px';
-
-                        _this.chargeCurrCell = false;
                     });
                 }
             },
@@ -10397,7 +10448,9 @@
                 lockCancelar: true,
                 disabledAceptar: false,
                 validateDocumento: {},
-                updateUser: false
+                updateUser: false,
+                chargeCurrCell: false, //evitar multiples llamadas a auxSetTd
+                auxFirstCurrCell: true //inicia en la primera celda
             },
             mounted: function () {
                 let _this = this;
@@ -10421,10 +10474,16 @@
                     _this.limpiarFiltrosRE();
                     _this.limpiarRE();
                     _this.limpiarRERuta();
-                    _this.asientoSel = asientoSel;
-                    $('#appVueReintegro').modal('show');
+                    _this.asientoSel = asientoSel;                    
                     _this.setData();
                     _this.listaOpcionesModificacion();
+
+                    _this.$nextTick(() => {
+                        if (_this.errors.any())
+                            _this.errors.clear();
+
+                        $('#appVueReintegro').modal('show');
+                    });
                 },
                 setData: function () {
                     let _this = this;
@@ -10473,6 +10532,10 @@
                     }))
                         .then(async (res) => {
                             _this.lockCancelar = false;
+
+                            if (_this.errors.any())
+                                _this.errors.clear();
+
                             if (res.data.EsCorrecto) {
                                 var data = _.cloneDeep(res.data.Valor);
 
@@ -10538,7 +10601,7 @@
                                             case '00004': _this.$refs.refRETipoDoc.$el.querySelector('input').focus(); break;
                                         };
                                     });
-                                } else APP.msg.warning('No se encontró resultados');
+                                } else APP.msg.warning('No se encontró resultados');                                
                             } else {
                                 if (res.data.Valor.CodiError === 5) { //ya tiene adjunto un Reintegro
                                     await APP.msg.infoMessage(res.data.Mensaje, 'debe anular el reintegro antes de continuar');
@@ -10567,7 +10630,7 @@
                                     _this.limpiarRE();
                                     _this.limpiarRERuta();
                                 }
-                            }
+                            }                            
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
@@ -10578,6 +10641,13 @@
                             if (res.data.Estado) {
                                 _this.limpiarRERuta();
                                 _this.list.itinerarios = res.data.Valor;
+
+                                _this.$nextTick(() => {
+                                    if (_this.$refs.paginator && _this.list.itinerarios.length > 0) {
+                                        _this.$refs.paginator.goToPage(1);
+                                        _this.setTd();
+                                    }
+                                });
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -10586,6 +10656,38 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                //--------------------------------------
+                setTd: function () {
+                    auxSetTd('tblProgramacionRE', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
+                },
+                sendRowOfTab: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 19) + (_this.paginate.items.page * 10);
+                        var _item = _this.list.itinerarios[_index];
+                        await _this.dbClickProgramacion(_item);
+                        _this.chargeCurrCell = false;
+                    }
+                },
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginator.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.itinerarios.length - 1) / 10)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginator.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
+                },
+                //--------------------------------------
                 listaOpcionesModificacion: async function () {
                     var _this = this;
 
@@ -10864,8 +10966,9 @@
                     let _this = this;
 
                     //Valida 'Campos llenos'
-                    if (_this.item.numero && _this.item.apellidoPaterno && _this.item.apellidoMaterno &&
-                        _this.item.nombre && _this.item.nacionalidad) {
+                    _this.$validator.validateAll();
+
+                    if (!_this.errors.any()) {
                         _this.disabledAceptar = true;
 
                         var updateReintegro = false;
@@ -11150,6 +11253,50 @@
                         _this.disabledAceptar = false;
                     } else {
                         APP.msg.warning('Debe llenar todos los campos');
+                        debugger;
+                        if (!_this.item.numero) {
+                            if (_this.filtro.codMotivo == '00004') _this.$refs.refREVerifBoleto.click();
+                            _this.$nextTick(() => {
+                                _this.$refs.refRENumeroDoc.focus();
+                                return;
+                            });
+                        } else if (!_this.item.apellidoPaterno) {
+                            if (_this.filtro.codMotivo == '00004') _this.$refs.refREVerifBoleto.click();
+                            _this.$nextTick(() => {
+                                _this.$refs.refREApePat.focus();
+                                return;
+                            });
+                        } else if (!_this.item.apellidoMaterno) {
+                            if (_this.filtro.codMotivo == '00004') _this.$refs.refREVerifBoleto.click();
+                            _this.$nextTick(() => {
+                                _this.$refs.refREApeMat.focus();
+                                return;
+                            });
+                        } else if (!_this.item.nombre) {
+                            if (_this.filtro.codMotivo == '00004') _this.$refs.refREVerifBoleto.click();
+                            _this.$nextTick(() => {
+                                _this.$refs.refRENombre.focus();
+                                return;
+                            });
+                        } else if (!_this.item.nacionalidad) {
+                            if (_this.filtro.codMotivo == '00004') _this.$refs.refREVerifBoleto.click();
+                            _this.$nextTick(() => {
+                                _this.$refs.refRENacionalidad.focus();
+                                return;
+                            });
+                        } else if (!_this.item.reintegro) {
+                            if (_this.filtro.codMotivo == '00004')
+                                _this.$refs.refREDifPrecio.focus();
+                            else
+                                _this.$refs.refREReintegro.focus();
+                            return;
+                        } else if ((_this.filtro.codMotivo == '00003' || _this.filtro.codMotivo == '00004') && !_this.filtroCambio.NumAsiento) {
+                            _this.$refs.refREAsientoNew.focus();
+                            return;
+                        } else if ((_this.filtro.codMotivo == '00003' || _this.filtro.codMotivo == '00004') && !_this.filtroCambio.CodiNuevoDestino) {
+                            _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
+                            return;
+                        }
                     }
                 },
                 updateReintegro: function (IdVenta, Programacion, Destino, Asiento, Origen, NroViaje, FechaProg, VentaRealizada) {
@@ -11300,7 +11447,7 @@
                                             _this.item.direccion = res.data.Valor.Direccion;
                                         }
                                         _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
-                                        _this.updateUser = true;
+                                        _this.updateUser = false;
                                     } else {
                                         _this.item.idCliente = 0;
                                         _this.item.nombre = res.data.Valor.NombreCliente || '';
@@ -11310,6 +11457,7 @@
                                         _this.item.edad = '';
                                         _this.item.telefono = '';
                                         _this.item.nacionalidad = (_this.item.documento === '01') ? 'PERUANA' : '';
+                                        _this.updateUser = true;
                                     }
 
                                     if (!res.data.EsCorrecto)
@@ -11358,7 +11506,12 @@
                                 else
                                     APP.rq.axios_handler_error_alert;
                             });
-                    } else _this.$refs.refRERuc.focus();
+                    } else {
+                        if (_this.item.ruc.length > 0)
+                            _this.$refs.refRERuc.focus();
+                        else
+                            _this.$refs.refRERazSoc.focus();
+                    } 
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -11539,12 +11692,6 @@
                 filtrosFilled: function () {
                     let _this = this;
                     return _this.filtro.codEmpresa && _this.filtro.tipo && _this.filtro.serie && _this.filtro.numero && _this.filtro.codMotivo
-                },
-                dataToSave: function () {
-                    let _this = this;
-                    return (_this.item.documento && _this.item.numero && _this.item.apellidoPaterno &&
-                        _this.item.apellidoMaterno && _this.item.nombre && _this.item.nacionalidad &&
-                        _this.item.asiento && _this.item.reintegro);
                 },
                 dataFilled: function () {
                     let _this = this;
@@ -12339,7 +12486,10 @@
                 rainEfect: false,
                 processingLote: false,
                 dragItem: {},
-                objProgramacion: {}
+                objProgramacion: {},
+                chargeCurrCell: false, //evitar multiples llamadas a auxSetTd
+                auxFirstCurrCell1: true, //inicia en la primera celda
+                auxFirstCurrCell2: true //inicia en la primera celda
             },
             mounted: function () {
                 let _this = this;
@@ -12375,7 +12525,10 @@
                     this.setData();
                     this.$nextTick(() => {
                         appVueVenta.$nextTick(() => {
-                            $('#appVuePaseLote').modal('show');
+                            if (appVueVenta.showVentas)
+                                $('#appVuePaseLote').modal('show');
+                            else
+                                APP.msg.infoMessage('Debe estar en un turno','Para poder acceder a esta opción debe ingresar a un turno');
                         });
                     });
                 },
@@ -12567,8 +12720,31 @@
                                 var _data = _.cloneDeep(res.data.Valor);
                                 _this.limpiarBus(auxProg);
                                 _this.$nextTick(() => {
-                                    if (auxProg === 1) _this.list.itinerarios1 = _data;
-                                    else _this.list.itinerarios2 = _data;
+                                    if (auxProg === 1) {
+
+                                        _this.list.itinerarios1 = _data;
+
+                                        if (_this.list.itinerarios1.length > 0) {
+                                            _this.$nextTick(() => {
+                                                if (_this.$refs.paginator1 && _this.list.itinerarios1.length > 0) {
+                                                    _this.$refs.paginator1.goToPage(1);
+                                                    _this.setTd1();
+                                                }
+                                            });
+                                        }
+                                    } else {
+
+                                        _this.list.itinerarios2 = _data;
+
+                                        if (_this.list.itinerarios2.length > 0) {
+                                            _this.$nextTick(() => {
+                                                if (_this.$refs.paginator2 && _this.list.itinerarios2.length > 0) {
+                                                    _this.$refs.paginator2.goToPage(1);
+                                                    _this.setTd2();
+                                                }
+                                            });
+                                        }
+                                    }
                                 });
                             }
                             else
@@ -12578,6 +12754,68 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                //--------------------------------------
+                setTd1: function () {
+                    auxSetTd('tblProgramacionPLoteOri', this.sendRowOfTab1, this.stepsOfRow1, this.auxFirstCurrCell1);
+                },
+                sendRowOfTab1: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 19) + (_this.paginate.items.page * 5);
+                        var _item = _this.list.itinerarios1[_index];
+                        await _this.dbClickProgramacion(_item, 1);
+                        _this.chargeCurrCell = false;
+                    }
+                },
+                stepsOfRow1: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginator1.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.itinerarios1.length - 1) / 5)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginator1.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
+                },
+                setTd2: function () {
+                    auxSetTd('tblProgramacionPLoteDes', this.sendRowOfTab2, this.stepsOfRow2, this.auxFirstCurrCell2);
+                },
+                sendRowOfTab2: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 19) + (_this.paginate.items2.page * 5);
+                        var _item = _this.list.itinerarios2[_index];
+                        await _this.dbClickProgramacion(_item, 2);
+                        _this.chargeCurrCell = false;
+                    }
+                },
+                stepsOfRow2: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items2.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginator2.goToPage(_this.paginate.items2.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items2.page < parseInt((_this.list.itinerarios2.length - 1) / 5)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginator2.goToPage(_this.paginate.items2.page + 2);
+                            }
+                        }; break;
+                    }
+                },
+                //--------------------------------------
                 previsualizar: function () {
                     let _this = this;
 
@@ -12834,6 +13072,36 @@
                     //        }
                     //    })
                     //    .catch(APP.rq.axios_handler_error_alert);
+                },
+                crearProgramacion: async function () {
+                    let _this = this;
+
+                    var input = {};
+
+                    appController.showCrearProgramacion(input);
+
+                    await deferredModal($('#appVueCrearProgramacion'), true).done(function () {
+                        appVueCrearProgramacion.$nextTick(() => {
+                            window.removeEventListener('keyup', _this.esc);
+                        });
+                    });
+
+                    await deferredModal($('#appVueCrearProgramacion'), false).done(function () {
+                        appVueCrearProgramacion.$nextTick(() => {
+                            //if (appVueMiniMapa.asientoSel.Tipo) {
+                            //    _this.filtroCambio.NumAsiento = appVueMiniMapa.asientoSel.Tipo;
+                            //    _this.list.destinosPas = appVueMiniMapa.list.destinosPas;
+                            //    _this.filtroCambio.Fecha = _this.filtroMiniMapa.FechaViaje;
+                            //    _this.filtroCambio.Hora = _this.filtroMiniMapa.HoraViaje;
+                            //    _this.filtroCambio.Nivel = appVueMiniMapa.asientoSel.Nivel;
+                            //    _this.$nextTick(() => {
+                            //        _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
+                            //    });
+                            //} else _this.$refs.refREAsientoNew.focus();
+
+                            window.addEventListener('keyup', _this.esc);
+                        });
+                    });
                 },
                 confirm: async function () {
                     let _this = this;
@@ -13503,6 +13771,47 @@
             },
             watch: {
             }
+        });
+
+        var appVueCrearProgramacion = new Vue({
+            el: '#appVueCrearProgramacion',
+            data: {},
+            mounted: function () {
+                let _this = this;
+
+                $('#appVueCrearProgramacion').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+
+                    $(document).off('focusin.modal');
+
+                    _this.$nextTick(() => {
+                        //_this.$refs.refCTPNumero.focus();
+                    });
+                });
+            },
+            methods: {
+                show: function (asientoSel) {
+                    let _this = this;
+                    //_this.limpiarData();
+                    //_this.asientoSel = asientoSel;
+                    $('#appVueCrearProgramacion').modal('show');
+                    //_this.setData();
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueCrearProgramacion').modal('hide');
+                },
+            },
+            computed: {},
+            watch: {}
         });
 
     </script>

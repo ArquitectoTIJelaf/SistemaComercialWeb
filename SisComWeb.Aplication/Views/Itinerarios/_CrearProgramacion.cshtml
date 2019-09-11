@@ -1,0 +1,124 @@
+﻿
+<div id="appVueCrearProgramacion" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header modal-drag">
+                <button type="button" class="close" @@click="close">&times;</button>
+                <h4 class="modal-title"><b>Crear Programación</b></h4>
+            </div>
+            <div class="modal-body p-t-10 p-b-0">
+                <div class="row">
+                    <div class="form-horizontal">
+                        <div class="form-group m-b-5">
+                            <div class="col-md-12 p-0">
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">N° Viaje:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm" disabled />
+                                    </div>
+                                </div>
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">Empresa:</label>
+                                    <div class="">
+                                        @*<v-select v-model="filtroCodiEmpresa"
+                                                      :options="list.empresas"
+                                                      :placeholder="'EMPRESA'"
+                                                      :select-on-tab="true"
+                                                      :get-option-label="getLabel"
+                                                      @@keydown.13.native.prevent=""
+                                                      ref="refCTPEmpresa">
+                                                <template slot="option" slot-scope="option">
+                                                    <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                </template>
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">Origen:</label>
+                                    <div class="">
+                                        @*<v-select v-model="filtroCodiEmpresa"
+                                                      :options="list.empresas"
+                                                      :placeholder="'EMPRESA'"
+                                                      :select-on-tab="true"
+                                                      :get-option-label="getLabel"
+                                                      @@keydown.13.native.prevent=""
+                                                      ref="refCTPEmpresa">
+                                                <template slot="option" slot-scope="option">
+                                                    <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                </template>
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">Punto de Venta:</label>
+                                    <div class="">
+                                        @*<v-select v-model="filtroCodiEmpresa"
+                                                      :options="list.empresas"
+                                                      :placeholder="'EMPRESA'"
+                                                      :select-on-tab="true"
+                                                      :get-option-label="getLabel"
+                                                      @@keydown.13.native.prevent=""
+                                                      ref="refCTPEmpresa">
+                                                <template slot="option" slot-scope="option">
+                                                    <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                </template>
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">Destino:</label>
+                                    <div class="">
+                                        @*<v-select v-model="filtroCodiEmpresa"
+                                                      :options="list.empresas"
+                                                      :placeholder="'EMPRESA'"
+                                                      :select-on-tab="true"
+                                                      :get-option-label="getLabel"
+                                                      @@keydown.13.native.prevent=""
+                                                      ref="refCTPEmpresa">
+                                                <template slot="option" slot-scope="option">
+                                                    <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                </template>
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>*@
+                                    </div>
+                                </div>
+                                <div class="col-md-12 separate-in-form">
+                                    <label class="control-label label-sm">Servicio:</label>
+                                    <div class="">
+                                        @*<v-select v-model="filtroCodiEmpresa"
+                                                      :options="list.empresas"
+                                                      :placeholder="'EMPRESA'"
+                                                      :select-on-tab="true"
+                                                      :get-option-label="getLabel"
+                                                      @@keydown.13.native.prevent=""
+                                                      ref="refCTPEmpresa">
+                                                <template slot="option" slot-scope="option">
+                                                    <div @@click="">{{ option.id }} - {{ option.label }}</div>
+                                                </template>
+                                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                                            </v-select>*@
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 separate-in-form">
+                                    <label class="control-label label-sm">Hora:</label>
+                                    <div class="">
+                                        <input class="form-control input-sm dph" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button @@click="close"
+                        class="btn btn-inverse waves-effect waves-light">
+                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

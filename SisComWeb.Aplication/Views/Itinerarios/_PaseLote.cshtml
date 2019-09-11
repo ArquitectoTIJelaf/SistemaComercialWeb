@@ -116,7 +116,7 @@
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
                                             <div class="table-responsive m-b-0" style="background-color: #616e7e;">
-                                                <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
+                                                <table id="tblProgramacionPLoteOri" class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>
                                                             <th class="custom-th" width="%">Estado</th>
@@ -141,9 +141,9 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <paginate ref="paginator" name="items" :list="list.itinerarios1" :per="5">
+                                                        <paginate ref="paginator1" name="items" :list="list.itinerarios1" :per="5">
                                                             <tr v-for="(item, key) in paginated('items')" @@dblclick="dbClickProgramacion(item, 1)">
-                                                                <td class="custom-td">
+                                                                <td :tabindex="(key * 19) + 1" class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
                                                                     </template>
@@ -152,24 +152,24 @@
                                                                     </template>
                                                                     <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                                                 </td>
-                                                                <td class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
-                                                                <td class="custom-td">{{item.RazonSocial}}</td>
-                                                                <td class="custom-td">{{item.NomSucursal}}</td>
-                                                                <td class="custom-td">{{item.NomOrigen}}</td>
-                                                                <td class="custom-td">{{item.NomRuta}}</td>
-                                                                <td class="custom-td">{{item.NomServicio}}</td>
-                                                                <td class="custom-td">{{item.HoraPartida}}</td>
-                                                                <td class="custom-td">{{item.CodiBus}}</td>
-                                                                <td class="custom-td">{{item.PlacaBus}}</td>
-                                                                <td class="custom-td">{{item.AsientosVendidos}}</td>
-                                                                <td class="custom-td">{{item.CapacidadBus}}</td>
-                                                                <td class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
-                                                                <td class="custom-td">{{item.HoraProgramacion}}</td>
-                                                                <td class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
-                                                                <td class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
-                                                                <td class="custom-td">{{item.CodiRuta | concatZero(3)}}</td>
-                                                                <td class="custom-td">{{item.CodiServicio | concatZero(2)}}</td>
-                                                                <td class="custom-td">{{item.FechaProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 2"  class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
+                                                                <td :tabindex="(key * 19) + 3"  class="custom-td">{{item.RazonSocial}}</td>
+                                                                <td :tabindex="(key * 19) + 4"  class="custom-td">{{item.NomSucursal}}</td>
+                                                                <td :tabindex="(key * 19) + 5"  class="custom-td">{{item.NomOrigen}}</td>
+                                                                <td :tabindex="(key * 19) + 6"  class="custom-td">{{item.NomRuta}}</td>
+                                                                <td :tabindex="(key * 19) + 7"  class="custom-td">{{item.NomServicio}}</td>
+                                                                <td :tabindex="(key * 19) + 8"  class="custom-td">{{item.HoraPartida}}</td>
+                                                                <td :tabindex="(key * 19) + 9"  class="custom-td">{{item.CodiBus}}</td>
+                                                                <td :tabindex="(key * 19) + 10" class="custom-td">{{item.PlacaBus}}</td>
+                                                                <td :tabindex="(key * 19) + 11" class="custom-td">{{item.AsientosVendidos}}</td>
+                                                                <td :tabindex="(key * 19) + 12" class="custom-td">{{item.CapacidadBus}}</td>
+                                                                <td :tabindex="(key * 19) + 13" class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 14" class="custom-td">{{item.HoraProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 15" class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
+                                                                <td :tabindex="(key * 19) + 16" class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
+                                                                <td :tabindex="(key * 19) + 17" class="custom-td">{{item.CodiRuta | concatZero(3)}}</td>
+                                                                <td :tabindex="(key * 19) + 18" class="custom-td">{{item.CodiServicio | concatZero(2)}}</td>
+                                                                <td :tabindex="(key * 19) + 19" class="custom-td">{{item.FechaProgramacion}}</td>
                                                             </tr>
                                                         </paginate>
                                                     </tbody>
@@ -177,7 +177,7 @@
                                             </div>
                                         </div>
                                         <center>
-                                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}" @@change="setTd1"></paginate-links>
                                         </center>
                                     </div>
                                 </div>
@@ -408,7 +408,7 @@
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
                                             <div class="table-responsive m-b-0" style="background-color: #616e7e;">
-                                                <table class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
+                                                <table id="tblProgramacionPLoteDes" class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
                                                     <thead>
                                                         <tr>
                                                             <th class="custom-th" width="%">Estado</th>
@@ -433,9 +433,9 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <paginate ref="paginator" name="items2" :list="list.itinerarios2" :per="5">
+                                                        <paginate ref="paginator2" name="items2" :list="list.itinerarios2" :per="5">
                                                             <tr v-for="(item, key) in paginated('items2')" @@dblclick="dbClickProgramacion(item, 2)">
-                                                                <td class="custom-td">
+                                                                <td :tabindex="(key * 19) + 1" class="custom-td">
                                                                     <template v-if="item.Color === '#FFFFFF'">
                                                                         <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
                                                                     </template>
@@ -444,24 +444,24 @@
                                                                     </template>
                                                                     <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                                                 </td>
-                                                                <td class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
-                                                                <td class="custom-td">{{item.RazonSocial}}</td>
-                                                                <td class="custom-td">{{item.NomSucursal}}</td>
-                                                                <td class="custom-td">{{item.NomOrigen}}</td>
-                                                                <td class="custom-td">{{item.NomRuta}}</td>
-                                                                <td class="custom-td">{{item.NomServicio}}</td>
-                                                                <td class="custom-td">{{item.HoraPartida}}</td>
-                                                                <td class="custom-td">{{item.CodiBus}}</td>
-                                                                <td class="custom-td">{{item.PlacaBus}}</td>
-                                                                <td class="custom-td">{{item.AsientosVendidos}}</td>
-                                                                <td class="custom-td">{{item.CapacidadBus}}</td>
-                                                                <td class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
-                                                                <td class="custom-td">{{item.HoraProgramacion}}</td>
-                                                                <td class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
-                                                                <td class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
-                                                                <td class="custom-td">{{item.CodiRuta | concatZero(3)}}</td>
-                                                                <td class="custom-td">{{item.CodiServicio | concatZero(2)}}</td>
-                                                                <td class="custom-td">{{item.FechaProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 2" class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
+                                                                <td :tabindex="(key * 19) + 3" class="custom-td">{{item.RazonSocial}}</td>
+                                                                <td :tabindex="(key * 19) + 4" class="custom-td">{{item.NomSucursal}}</td>
+                                                                <td :tabindex="(key * 19) + 5" class="custom-td">{{item.NomOrigen}}</td>
+                                                                <td :tabindex="(key * 19) + 6" class="custom-td">{{item.NomRuta}}</td>
+                                                                <td :tabindex="(key * 19) + 7" class="custom-td">{{item.NomServicio}}</td>
+                                                                <td :tabindex="(key * 19) + 8" class="custom-td">{{item.HoraPartida}}</td>
+                                                                <td :tabindex="(key * 19) + 9" class="custom-td">{{item.CodiBus}}</td>
+                                                                <td :tabindex="(key * 19) + 10" class="custom-td">{{item.PlacaBus}}</td>
+                                                                <td :tabindex="(key * 19) + 11" class="custom-td">{{item.AsientosVendidos}}</td>
+                                                                <td :tabindex="(key * 19) + 12" class="custom-td">{{item.CapacidadBus}}</td>
+                                                                <td :tabindex="(key * 19) + 13" class="custom-td">{{item.CodiProgramacion | formatCodiProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 14" class="custom-td">{{item.HoraProgramacion}}</td>
+                                                                <td :tabindex="(key * 19) + 15" class="custom-td">{{item.CodiPuntoVenta | concatZero(3)}}</td>
+                                                                <td :tabindex="(key * 19) + 16" class="custom-td">{{item.CodiEmpresa | concatZero(2)}}</td>
+                                                                <td :tabindex="(key * 19) + 17" class="custom-td">{{item.CodiRuta | concatZero(3)}}</td>
+                                                                <td :tabindex="(key * 19) + 18" class="custom-td">{{item.CodiServicio | concatZero(2)}}</td>
+                                                                <td :tabindex="(key * 19) + 19" class="custom-td">{{item.FechaProgramacion}}</td>
                                                             </tr>
                                                         </paginate>
                                                     </tbody>
@@ -469,7 +469,7 @@
                                             </div>
                                         </div>
                                         <center>
-                                            <paginate-links for="items2" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                                            <paginate-links for="items2" :async="true" :classes="{'ul': 'pagination'}" @@change="setTd2"></paginate-links>
                                         </center>
                                     </div>
                                 </div>
@@ -593,6 +593,11 @@
                 </div>
             </div>
             <div class="modal-footer p-t-0">
+                <button class="btn btn-success waves-effect m-t-10"
+                        @@click="crearProgramacion"
+                        ref="refBtnCrearProgramacionPL">
+                    <span class="fa fa-save fa-fw"></span>Crear Programación
+                </button>
                 <button id="btnProccesingLote"
                         class="btn btn-primary waves-effect m-t-10"
                         @@click="confirm"
@@ -617,7 +622,7 @@
                             ref="refBtnProccesingLote">
                         <span class="fa fa-refresh fa-fw"></span>Restaurar
                     </button>
-                </template>                
+                </template>
                 <template v-if="rainEfect">
                     <button id="btnNoProccesingLote"
                             class="btn btn-warning waves-effect m-t-10"
