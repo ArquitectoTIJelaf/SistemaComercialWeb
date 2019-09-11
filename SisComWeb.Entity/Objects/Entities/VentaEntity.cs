@@ -357,6 +357,8 @@ namespace SisComWeb.Entity
         public string TipoPago { get; set; }
 
         public string FlagVenta { get; set; }
+
+        public string CodiEsca { get; set; }
     }
 
     public class DescuentoBoletoEntity

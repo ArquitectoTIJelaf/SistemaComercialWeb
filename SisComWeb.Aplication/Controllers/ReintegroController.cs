@@ -75,7 +75,8 @@ namespace SisComWeb.Aplication.Controllers
 
                 //NEW
                 TipoPago = (string)x["TipoPago"],
-                FlagVenta = (string)x["FlagVenta"]
+                FlagVenta = (string)x["FlagVenta"],
+                CodiEsca = (string)x["CodiEsca"]
             }).ToList();
 
             return lista;

@@ -1997,6 +1997,7 @@ namespace SisComWeb.Aplication.Controllers
                                     //NEW
                                     ",\"TipoPago\" : \"" + ListaVentasRealizadas[i].TipoPago + "\"" +
                                     ",\"FlagVenta\" : \"" + ListaVentasRealizadas[i].FlagVenta + "\"" +
+                                    ",\"CodiEsca\" : \"" + ListaVentasRealizadas[i].CodiEsca + "\"" +
                                 "}";
 
                         if (i < ListaVentasRealizadas.Count - 1)

@@ -314,6 +314,8 @@ namespace SisComWeb.Aplication.Models
         public string TipoPago { get; set; }
 
         public string FlagVenta { get; set; }
+
+        public string CodiEsca { get; set; }
     }
 
     public class AnularVentaRequest
