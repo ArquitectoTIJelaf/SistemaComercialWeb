@@ -72,6 +72,10 @@ namespace SisComWeb.CuadreImpresora
                     texto.AppendLine("");
                 }
                 texto.AppendLine(SplitStringPreserving("TIPO DE VENTA: " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta), 43, "^", true));
+                if(venta.FlagVenta == "O")
+                {
+                    texto.AppendLine(SplitStringPreserving("R " + venta.CodiEsca, 43, "^", true));
+                }
                 texto.AppendLine("");
                 texto.AppendLine(string.Format("@@@{0}|{1}|{2}{3}|{4}|0|{5}|{6}|{7}|{8}",
                                                 venta.EmpRuc, venta.DocTipo, venta.BoletoTipo,

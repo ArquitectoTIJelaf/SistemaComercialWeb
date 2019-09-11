@@ -11242,36 +11242,40 @@
                             APP.msg.warning('Seleccione tipo de documento.');
                             return;
                         }
-                        else if (_this.item.numero.length !== 8) {
+                        else if (_this.item.numero.length !== 8 && _this.item.documento === '01') {
                             _this.$refs.refRETipoDoc.$el.querySelector('input').focus();
                             APP.msg.warning('Ingrese DNI de 8 dígitos.');
                             return;
                         }
 
-                        await APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
-                            numeroDoc: _this.item.numero
-                        }), { timeout: 5000 })
-                            .then(res => {
-                                if (res.data.EsCorrecto) {
-                                    _this.$nextTick(() => {
-                                        _this.item.nombre = res.data.Valor.Nombres;
-                                        _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
-                                        _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
-                                    });
-                                }
-                                else {
-                                    if (res.data.Estado)
-                                        APP.msg.warning(res.data.Mensaje);
+                        if (_this.item.documento === '01') {
+                            await APP.rq.axios.get(APP.base + '/itinerarios/consulta-reniec' + APP.util.getQueryParamByObject({
+                                numeroDoc: _this.item.numero
+                            }), { timeout: 5000 })
+                                .then(res => {
+                                    if (res.data.EsCorrecto) {
+                                        _this.$nextTick(() => {
+                                            _this.item.nombre = res.data.Valor.Nombres;
+                                            _this.item.apellidoPaterno = res.data.Valor.ApellidoPaterno;
+                                            _this.item.apellidoMaterno = res.data.Valor.ApellidoMaterno;
+                                        });
+                                    }
+                                    else {
+                                        if (res.data.Estado)
+                                            APP.msg.warning(res.data.Mensaje);
+                                        else
+                                            APP.msg.error(res.data.Mensaje);
+                                    }
+
+                                    _this.$refs.refREApePat.focus();
+                                })
+                                .catch(err => {
+                                    if (err.code === "ECONNABORTED")
+                                        APP.msg.warning('No se pudo consultar a la RENIEC.');
                                     else
-                                        APP.msg.error(res.data.Mensaje);
-                                }
-                            })
-                            .catch(err => {
-                                if (err.code === "ECONNABORTED")
-                                    APP.msg.warning('No se pudo consultar a la RENIEC.');
-                                else
-                                    APP.rq.axios_handler_error_alert;
-                            });
+                                        APP.rq.axios_handler_error_alert;
+                                });
+                        }
                     }
                 },
                 consultaSunat: async function () {
@@ -11302,12 +11306,14 @@
                                 else
                                     APP.rq.axios_handler_error_alert;
                             });
-                    }
+
+                        _this.$refs.refRERazSoc.focus();
+                    } else _this.$refs.refRERuc.focus();
                 },
                 searchUser: async function () {
                     let _this = this;
-
-                    if (_this.item.documento && _this.item.numero) {
+                    
+                    if (_this.item.documento && _this.item.numero && appController.validateTipoDocumento(_this.item.documento, _this.item.numero, true)) {
 
                         await APP.rq.axios.get(APP.base + '/itinerarios/consultar-usuario' + APP.util.getQueryParamByObject({
                             tipoDoc: _this.item.documento,
@@ -11315,7 +11321,7 @@
                         }), { timeout: 5000 })
                             .then(res => {
                                 if (res.data.Estado) {
-
+                                    
                                     if (res.data.Valor.IdCliente > 0) {
                                         //TODO: No se incluye Sexo y ValidadorClienteEspecial
                                         _this.item.idCliente = res.data.Valor.IdCliente;
@@ -11345,6 +11351,8 @@
 
                                     if (!res.data.EsCorrecto)
                                         APP.msg.warning(res.data.Mensaje);
+
+                                    _this.$refs.refREApePat.focus();
                                 }
                                 else
                                     APP.msg.error(res.data.Mensaje);
@@ -11356,7 +11364,7 @@
                                 else
                                     APP.rq.axios_handler_error_alert;
                             });
-                    }
+                    } else _this.$refs.refRENumeroDoc.focus();
                 },
                 searchEmpresa: async function () {
                     var _this = this;
@@ -11377,6 +11385,8 @@
                                 }
                                 else
                                     APP.msg.error(res.data.Mensaje);
+
+                                _this.$refs.refRERazSoc.focus();
                             })
                             .catch(err => {
                                 if (err.code === "ECONNABORTED") {
@@ -11385,7 +11395,7 @@
                                 else
                                     APP.rq.axios_handler_error_alert;
                             });
-                    }
+                    } else _this.$refs.refRERuc.focus();
                 },
                 esc: function (event) {
                     if (event.keyCode === 27) {
@@ -13310,39 +13320,38 @@
                         Tipo: _this.filtro.tipo
                     }))
                         .then(async (res) => {
-                            if (res.data.EsCorrecto) {
-                                var data = _.cloneDeep(res.data.Valor);
+                            
+                            var data = _.cloneDeep(res.data.Valor);
 
-                                if (data) {
-                                    _this.dataOriginal = _.cloneDeep(data);
-                                    _this.item.origenPasj = data.CodiOrigen;
-                                    _this.item.destinoPasj = data.CodiDestino;
-                                    _this.item.destinoBus = data.CodiRuta;
-                                    _this.item.servicio = data.CodiServicio;
-                                    _this.item.fechaVenta = data.FechaVenta;
-                                    _this.item.fechaViaje = data.FechaViaje;
-                                    _this.item.horaViaje = data.HoraViaje;
-                                    _this.item.documento = data.TipoDocumento;
-                                    _this.item.numero = data.Dni;
-                                    _this.item.apellidoPaterno = data.SplitNombre[1];
-                                    _this.item.apellidoMaterno = data.SplitNombre[2];
-                                    _this.item.nombre = data.SplitNombre[0];
-                                    _this.item.edad = data.Edad;
-                                    _this.item.telefono = data.Telefono;
-                                    _this.item.nacionalidad = data.Nacionalidad;
-                                    _this.item.boleto = (_this.filtro.tipo === 'F') ? appVueVenta.CorrelativoVentaFactura : appVueVenta.CorrelativoVentaBoleta;
-                                    _this.item.venta = data.IdVenta;
-                                    _this.item.ruc = data.RucCliente;
-                                    _this.item.razonSocial = data.RazonSocial;
-                                    _this.item.direccion = data.Direccion;
-                                    _this.item.asiento = data.NumeAsiento;
-                                    _this.item.precio = data.PrecioVenta;
-                                    _this.item.fechaNac = data.FechaNac;
-                                    _this.item.tipoPago = data.TipoPago;
-                                    _this.item.codiTarjeta = data.CodiTarjetaCredito;
-                                    _this.item.numeroTarjeta = data.NumeTarjetaCredito;
-                                } else APP.msg.warning('No se encontró resultados');
-                            } else APP.msg.warning(res.data.Mensaje);
+                            if (data) {
+                                _this.dataOriginal = _.cloneDeep(data);
+                                _this.item.origenPasj = data.CodiOrigen;
+                                _this.item.destinoPasj = data.CodiDestino;
+                                _this.item.destinoBus = data.CodiRuta;
+                                _this.item.servicio = data.CodiServicio;
+                                _this.item.fechaVenta = data.FechaVenta;
+                                _this.item.fechaViaje = data.FechaViaje;
+                                _this.item.horaViaje = data.HoraViaje;
+                                _this.item.documento = data.TipoDocumento;
+                                _this.item.numero = data.Dni;
+                                _this.item.apellidoPaterno = data.SplitNombre[1];
+                                _this.item.apellidoMaterno = data.SplitNombre[2];
+                                _this.item.nombre = data.SplitNombre[0];
+                                _this.item.edad = data.Edad;
+                                _this.item.telefono = data.Telefono;
+                                _this.item.nacionalidad = data.Nacionalidad;
+                                _this.item.boleto = (_this.filtro.tipo === 'F') ? appVueVenta.CorrelativoVentaFactura : appVueVenta.CorrelativoVentaBoleta;
+                                _this.item.venta = data.IdVenta;
+                                _this.item.ruc = data.RucCliente;
+                                _this.item.razonSocial = data.RazonSocial;
+                                _this.item.direccion = data.Direccion;
+                                _this.item.asiento = data.NumeAsiento;
+                                _this.item.precio = data.PrecioVenta;
+                                _this.item.fechaNac = data.FechaNac;
+                                _this.item.tipoPago = data.TipoPago;
+                                _this.item.codiTarjeta = data.CodiTarjetaCredito;
+                                _this.item.numeroTarjeta = data.NumeTarjetaCredito;
+                            } else APP.msg.warning('No se encontró resultados');
                         })
                         .catch(APP.rq.axios_handler_error_alert);
 

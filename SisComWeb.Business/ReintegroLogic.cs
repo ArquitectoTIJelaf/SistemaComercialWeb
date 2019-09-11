@@ -149,6 +149,8 @@ namespace SisComWeb.Business
                     filtro.Codi_Empresa__ = (NuevoCodiEmpresa == 0) ? filtro.Codi_Empresa : Convert.ToString(NuevoCodiEmpresa);
                 }
 
+                var auxBoletoOriginal = string.Format("{0}{1}", filtro.TipoOri, filtro.boleto_original);
+
                 var entidad = new VentaEntity()
                 {
                     CodiEmpresa = byte.Parse(filtro.Codi_Empresa__), //verificar
@@ -184,7 +186,7 @@ namespace SisComWeb.Business
                     TipoTerminalElectronico = filtro.Tipo, //Solo para validar SUNAT
                     TipoImpresora = filtro.TipoImpresora
                 };
-                
+
                 // Seteo 'CodiDocumento'
                 if (!string.IsNullOrEmpty(entidad.RucCliente))
                 {
@@ -560,7 +562,9 @@ namespace SisComWeb.Business
 
                             //NEW
                             TipoPago = entidad.TipoPago,
-                            FlagVenta = entidad.FlagVenta
+                            FlagVenta = entidad.FlagVenta,
+
+                            CodiEsca = auxBoletoOriginal
                         };
                         listaVentasRealizadas.Add(auxVentaRealizada);
 
@@ -583,7 +587,7 @@ namespace SisComWeb.Business
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaReintegro, false);
             }
         }
-        
+
         public static Response<PlanoEntity> ConsultarPrecioRuta(PrecioRutaRequest request)
         {
             try
