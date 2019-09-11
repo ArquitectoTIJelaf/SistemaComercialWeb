@@ -883,7 +883,7 @@
                 });
 
                 $(".dpFiltro").on("dp.change", function (e) {
-                    if (e && e.target) {
+                    if (e && e.target && e.target.value) {
                         switch (e.target.id) {
                             case 'txtFecha':
                                 appVueFilter.nextStep(4);
@@ -896,7 +896,7 @@
                                         appVueVenta.nextStep(9);
                                 };
                                 break;
-                            case 'txtFechaCita':
+                            case 'txtFechaCita': // Validar --> AQUI ME QUEDE - NOTA DE CREDITO.
                                 appVueCreditoOpciones.recorrerFechaCita(9);
                                 break;
                             case 'txtFechaMP':
@@ -905,9 +905,12 @@
                             case 'txtFechaReservacion':
                                 appVueVenta.validateFechaReservacion(13);
                                 break;
-                            //case 'txtFechaRE':
-                            //    appVueReintegro.$refs.refREHoraIt.focus();
-                            //    break;
+                            case 'txtFechaInicialNC':
+                                appVueNotaCredito.recorridoTxtFechaInicial(13);
+                                break;
+                            case 'txtFechaFinalNC':
+                                appVueNotaCredito.recorridoTxtFechaFinal(13);
+                                break;
                             default:
                                 //TODO: Buscar solución general
                                 e.target.nextElementSibling.focus();
@@ -1134,10 +1137,7 @@
         }
 
         Vue.prototype.$getValueDateTimePicker = function obtenerValorDateTimePicker(e) {
-            if (e && !e.target.value)
-                return moment().format('DD/MM/YYYY');
-            else
-                return e.target.value;
+            return e.target.value;
         }
 
         Vue.prototype.$getValueDateTimePicker_Hours = function obtenerValorDateTimePicker_Hours(e) {
@@ -1775,7 +1775,8 @@
                         this.search();
                 },
                 nextStep: function (code) {
-                    this.$nextTick(() => {
+                    var _this = this;
+                    _this.$nextTick(() => {
                         switch (code) {
                             case 1:
                                 $('#cboDestinoPas input[type=search]').focus();
@@ -1799,7 +1800,11 @@
                                 document.getElementById('buscar').focus();
                                 break;
                             default:
-                                this.recorrido();
+                                {
+                                    if (!document.getElementById('txtFecha').value)
+                                        _this.filtro.FechaViaje = moment().format('DD/MM/YYYY');
+                                };
+                                _this.recorrido();
                         }
                     });
                 }
@@ -3191,7 +3196,7 @@
                     else if (!this.filtro.Turno)
                         document.getElementById('txtTurno').focus();
                     else if (!this.filtro.Fecha) {
-                        //document.getElementById('txtFecha_2').focus();
+                        document.getElementById('txtFecha_2').focus();
                     }
                     else
                         appController.chargeTurnos();
@@ -3828,11 +3833,12 @@
                         return `${Nombres} ${ApellidoPaterno} ${ApellidoMaterno}`;
                 },
                 nextStep: async function (code) {
-                    this.showPlano = false;
+                    var _this = this;
+                    _this.showPlano = false;
 
                     if (!$("#panelWrapperV").hasClass("in")) {
                         $('#btnDesplegar').click();
-                        this.showTextTurnos = false;
+                        _this.showTextTurnos = false;
                     }
 
                     switch (code) {
@@ -3844,7 +3850,7 @@
                             break;
                         case 3:
                             {
-                                this.$nextTick(() => {
+                                _this.$nextTick(() => {
                                     $('#cboPVOrigenBus input[type=search]').focus();
                                 });
                             };
@@ -3861,12 +3867,12 @@
                         case 7:
                             {
                                 // Actualizamos 'lista.destinosPas'
-                                await this.obtenerNewListaDestinosPas(
-                                    this.filtro.CodiEmpresa.id, this.filtro.CodiSucursal.id, this.filtro.CodiOrigenBus.id, this.filtro.CodiPVOrigenBus.id,
-                                    this.filtro.CodiDestinoBus.id, this.filtro.Turno, this.filtro.CodiServicio.id, this.filtro.NroViaje
+                                await _this.obtenerNewListaDestinosPas(
+                                    _this.filtro.CodiEmpresa.id, _this.filtro.CodiSucursal.id, _this.filtro.CodiOrigenBus.id, _this.filtro.CodiPVOrigenBus.id,
+                                    _this.filtro.CodiDestinoBus.id, _this.filtro.Turno, _this.filtro.CodiServicio.id, _this.filtro.NroViaje
                                 );
 
-                                this.$nextTick(() => {
+                                _this.$nextTick(() => {
                                     $('#cboDestinoPas_2 input[type=search]').focus();
                                 });
                             };
@@ -3876,16 +3882,20 @@
                             break;
                         case 9:
                             {
-                                this.$nextTick(() => {
-                                    this.recorridoSectionFilter();
+                                _this.filtro.Fecha = document.getElementById('txtFecha_2').value;
+                                if (!_this.filtro.Fecha)
+                                    _this.filtro.Fecha = moment().format('DD/MM/YYYY');
+
+                                _this.$nextTick(() => {
+                                    _this.recorridoSectionFilter();
                                 });
                             };
                             break;
                         default:
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
-                            this.filtro.CodiDestinoPas = _.cloneDeep(this.filtro.CodiDestinoBus);
+                            _this.filtro.CodiDestinoPas = _.cloneDeep(_this.filtro.CodiDestinoBus);
 
-                            this.recorridoSectionFilter();
+                            _this.recorridoSectionFilter();
                     }
                 },
                 obtenerNewListaDestinosPas: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje) {
@@ -13581,20 +13591,33 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                listaClientesNC_Autocomplete: function (search, loading) {
+                listaClientesNC_Autocomplete: async function (search, loading) {
                     var _this = this;
 
                     // Validaciones
-                    if (!isNaN(search) && search.length > 11)
-                        return;
-                    if (isNaN(search) && search.length > 100)
-                        return;
+                    switch (_this.filtro.tipoDocumento.id) {
+                        case '77':
+                            {
+                                if (!isNaN(search) && search.length > 11)
+                                    return;
+                                if (isNaN(search) && search.length > 100)
+                                    return;
+                            };
+                            break;
+                        default:
+                            {
+                                var validateTipoDocumento = appController.validateTipoDocumento(_this.filtro.tipoDocumento.id, _this.filtro.clienteId, true);
+                                if (!validateTipoDocumento)
+                                    return;
+                            };
+                            break;
+                    }
                     // ------------
 
                     if (loading)
                         loading(true);
 
-                    APP.rq.axios2.post(APP.base + '/notaCredito/listaClientesNC_Autocomplete', {
+                    await APP.rq.axios2.post(APP.base + '/notaCredito/listaClientesNC_Autocomplete', {
                         TipoDocumento: _this.filtro.tipoDocumento.id,
                         Value: search
                     })
@@ -13603,7 +13626,15 @@
                                 if (loading)
                                     loading(false);
 
-                                _this.list.clientes = res.data.Valor;
+                                if (_this.filtro.tipoDocumento.id === '77')
+                                    _this.list.clientes = res.data.Valor;
+                                else {
+                                    if (res.data.Valor.length > 0)
+                                        _this.filtro.clienteLabel = res.data.Valor[0].label;
+                                }
+
+                                if (!res.data.EsCorrecto)
+                                    APP.msg.warning(res.data.Mensaje);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -13638,10 +13669,10 @@
                 },
                 recorrerNotaCredito: function (auxValidate) {
                     var _this = this;
+                    var auxResponse = false;
 
                     _this.$nextTick(() => {
-                        var auxResponse = false;
-
+                        
                         if (!_this.filtro.empresa) {
                             $('#cboEmpresaNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione una empresa.');
@@ -13650,7 +13681,7 @@
                             $('#cboTipoDocumentoNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                         }
-                        else if (_this.filtro.tipoDocumento.id == '77' && !_this.filtro.cliente) {
+                        else if (_this.filtro.tipoDocumento.id === '77' && !_this.filtro.cliente) {
                             $('#cboClienteNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
                         }
@@ -13661,6 +13692,14 @@
                         else if (!_this.filtro.fechaInicial) {
                             document.getElementById('txtFechaInicialNC').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese fecha inicial.');
+                        }
+                        else if (!_this.filtro.fechaFinal) {
+                            document.getElementById('txtFechaFinalNC').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese fecha final.');
+                        }
+                        else if (!_this.filtro.tipoNumDoc) {
+                            $('#cboTipoNumDocNC input[type=search]').focus();
+                            if (auxValidate === true) APP.msg.warning('Seleccione un tipo de número documento.');
                         }
                         else {
                             document.getElementById('btnBuscarNC').focus();
@@ -13674,11 +13713,28 @@
                     var _this = this;
 
                     _this.$nextTick(function () {
-                        if (_this.filtro.tipoDocumento.id == '77')
+                        if (_this.filtro.tipoDocumento.id === '77')
                             $('#cboClienteNC input[type=search]').focus();
                         else
                             document.getElementById('txtClienteIdNC').focus();
                     });
+                },
+                recorridoTxtClienteIdNC: async function () {
+                    await this.listaClientesNC_Autocomplete(this.filtro.clienteId, false);
+
+                    if (this.filtro.clienteLabel)
+                        this.recorrerNotaCredito();
+                },
+                recorridoTxtFechaInicial: function (_keyCode) {
+                    console.log('xxxxxx1');
+                    this.filtro.fechaInicial = this.$getValueDateTimePicker(event);
+                    if (_keyCode === 13)
+                        this.recorrerNotaCredito();
+                },
+                recorridoTxtFechaFinal: function (_keyCode) {
+                    this.filtro.fechaFinal = this.$getValueDateTimePicker(event);
+                    if (_keyCode === 13)
+                        this.recorrerNotaCredito();
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -13694,11 +13750,17 @@
                     if (newVal) {
                         this.mask.tipoDocumento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                        if (this.filtro.tipoDocumento.id == '77')
+                        if (this.filtro.tipoDocumento.id === '77')
                             this.filtro.cliente = null;
-                        else
+                        else {
                             this.filtro.clienteId = '';
+                            this.filtro.clienteLabel = '';
+                        }
                     }  
+                },
+                'filtro.clienteId': function (newVal, oldVal) {
+                    if (newVal)
+                        this.filtro.clienteLabel = '';
                 }
             }
         });

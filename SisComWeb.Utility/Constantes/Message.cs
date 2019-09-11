@@ -403,7 +403,8 @@
         public const string MsgExcConsultaTipoTerminalElectronico = "Excepción: ConsultaTipoTerminalElectronico.";
 
         // Clientes
-        public const string MsgCorrectListaClientesNC_Autocomplete = "Correcto: ListaClientesNC_Autocomplete.";
+        public const string MsgCorrectoListaClientesNC_Autocomplete = "Correcto: ListaClientesNC_Autocomplete.";
+        public const string MsgErrorListaClientesNC_Autocomplete = "No se encontró ningún resultado.";
         public const string MsgExcListaClientesNC_Autocomplete = "Excepción: ListaClientesNC_Autocomplete.";
     }
 }

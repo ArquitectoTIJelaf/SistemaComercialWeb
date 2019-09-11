@@ -35,7 +35,10 @@ namespace SisComWeb.Business
 
                 var lista = NotaCreditoRepository.ListaClientesNC_Autocomplete(TipoDocumento, Value);
 
-                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectListaClientesNC_Autocomplete, true);
+                if (lista.Count > 0)
+                    return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaClientesNC_Autocomplete, true);
+                else
+                    return new Response<List<BaseEntity>>(false, lista, Message.MsgErrorListaClientesNC_Autocomplete, true);
             }
             catch (Exception ex)
             {

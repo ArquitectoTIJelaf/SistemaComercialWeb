@@ -89,8 +89,8 @@
                                     <div class="col-md-3 p-r-0 p-l-0">
                                         <input v-model="filtro.clienteId"
                                                @@input="filtro.clienteId = $event.target.value.toUpperCase()"
-                                               @@keydown.13.prevent="recorrerNotaCredito()"
-                                               @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                               @@keydown.13.prevent="recorridoTxtClienteIdNC()"
+                                               @*@@keydown.9.prevent="recorridoTxtClienteIdNC()"*@
                                                @@focus="$event.target.select()"
                                                id="txtClienteIdNC"
                                                ref="refClienteIdNC"
@@ -102,8 +102,6 @@
                                     <div class="col-md-9 p-r-0 p-l-0">
                                         <input :value="filtro.clienteLabel"
                                                @@input="filtro.clienteLabel = $event.target.value.toUpperCase()"
-                                               @*@@keydown.13.prevent="recorrerNotaCredito()"*@
-                                               @*@@keydown.9.prevent="recorrerNotaCredito()"*@
                                                id="txtClienteLabelNC"
                                                ref="refClienteLabelNC"
                                                class="form-control input-sm"
@@ -121,9 +119,9 @@
                                        v-model="filtro.fechaInicial"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @*@@keydown.13.prevent="recorrido(1)"*@
-                                       @*@@keydown.9.prevent="recorrido(1)"*@
-                                       @@blur="filtro.FechaInicial = $getValueDateTimePicker($event)"
+                                       @@keydown.13.prevent="recorridoTxtFechaInicial(13)"
+                                       @*@@keydown.9.prevent="recorridoTxtFechaInicial()"*@
+                                       @@blur="filtro.fechaInicial = $getValueDateTimePicker($event)"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-2">
@@ -135,9 +133,9 @@
                                        v-model="filtro.fechaFinal"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @*@@keydown.13.prevent="recorrido(1)"*@
-                                       @*@@keydown.9.prevent="recorrido(1)"*@
-                                       @@blur="filtro.FechaFinal = $getValueDateTimePicker($event)"
+                                       @@keydown.13.prevent="recorridoTxtFechaFinal(13)"
+                                       @*@@keydown.9.prevent="recorridoTxtFechaFinal()"*@
+                                       @@blur="filtro.fechaFinal = $getValueDateTimePicker($event)"
                                        autocomplete="off" />
                             </div>
                         </div>
@@ -152,18 +150,17 @@
                                               :select-on-tab="true"
                                               @*:get-option-label="getLabel"*@
                                               @@input="$refs.refTipoNumDocNC.typeAheadPointer = $getSelectorVselect(list.tiposNumDoc, filtro.tipoNumDoc)"
-                                              @*@@keydown.13.native.prevent="recorrido(1)"*@
-                                              @*@@keydown.9.native.prevent="recorrido(1)"*@
+                                              @@keydown.13.native.prevent="recorrerNotaCredito()"
+                                              @*@@keydown.9.native.prevent="recorrerNotaCredito()"*@
                                               ref="refTipoNumDocNC">
                                         <template slot="option" slot-scope="option">
-                                            <div @*@@click="recorrido(1)"*@>{{ option.label }}</div>
+                                            <div @@click="recorrerNotaCredito()">{{ option.label }}</div>
                                         </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
                                 <div class="col-md-4">
                                     <input v-model="filtro.serieNumDocNC"
-                                           @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
                                            @*@@keydown.13.prevent="recorrido(1)"*@
                                            @*@@keydown.9.prevent="recorrido(1)"*@
                                            id="txtSerieNumDocNC"
@@ -175,7 +172,6 @@
                                 </div>
                                 <div class="col-md-5">
                                     <input v-model="filtro.numeroNumDocNC"
-                                           @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
                                            @*@@keydown.13.prevent="recorrido(1)"*@
                                            @*@@keydown.9.prevent="recorrido(1)"*@
                                            id="txtNumeroNumDocNC"

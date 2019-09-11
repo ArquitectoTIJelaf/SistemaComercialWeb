@@ -86,14 +86,15 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         id = (string)x["id"],
                         label = (string)x["label"]
-                    }).ToList()
+                    }).ToList(),
+                    EsCorrecto = (bool)tmpResult.SelectToken("EsCorrecto")
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
     }
