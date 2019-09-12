@@ -147,7 +147,7 @@
                                        v-model="filtro.fecha"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @@keydown.13.prevent="cargaTurno()"
+                                       @@keydown.13.prevent="recorrido(7)"
                                        @*@@keydown.9.prevent="recorrido(7)"*@
                                        @@blur="filtro.fecha = $getValueDateTimePicker($event)"
                                        autocomplete="off" />

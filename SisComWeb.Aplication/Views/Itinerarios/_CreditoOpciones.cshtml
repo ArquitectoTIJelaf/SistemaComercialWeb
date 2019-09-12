@@ -17,10 +17,10 @@
                                           placeholder="SECCIÓN"
                                           :options="list.secciones"
                                           :select-on-tab="true"
-                                          @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                          @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones()"
+                                          @*@@keydown.9.native.prevent="recorrerCreditoOpciones()"*@>
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                        <div @@click="recorrerCreditoOpciones()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -37,10 +37,10 @@
                                           placeholder="ÁREA"
                                           :options="list.areas"
                                           :select-on-tab="true"
-                                          @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                          @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                          @@keydown.13.native.prevent="recorrerCreditoOpciones()"
+                                          @*@@keydown.9.native.prevent="recorrerCreditoOpciones()"*@>
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                        <div @@click="recorrerCreditoOpciones()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -77,10 +77,10 @@
                                               :options="list.hospitales"
                                               :select-on-tab="true"
                                               ref="refHospital"
-                                              @@keydown.13.native.prevent="recorrerCreditoOpciones"
-                                              @*@@keydown.9.native.prevent="recorrerCreditoOpciones"*@>
+                                              @@keydown.13.native.prevent="recorrerCreditoOpciones('cboHospital')"
+                                              @*@@keydown.9.native.prevent="recorrerCreditoOpciones('cboHospital')"*@>
                                         <template slot="option" slot-scope="option">
-                                            <div @@click="recorrerCreditoOpciones">{{ option.label }}</div>
+                                            <div @@click="recorrerCreditoOpciones('cboHospital')">{{ option.label }}</div>
                                         </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>

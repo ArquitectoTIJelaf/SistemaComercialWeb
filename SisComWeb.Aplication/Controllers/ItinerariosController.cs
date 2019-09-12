@@ -179,7 +179,6 @@ namespace SisComWeb.Aplication.Controllers
                 BoletoCompleto = (string)x["BoletoCompleto"],
                 // Para el método 'ConvertirVentaToBase64'
                 IdVenta = (int)x["IdVenta"],
-                NomTipVenta = (string)x["NomTipVenta"],
                 BoletoTipo = (string)x["BoletoTipo"],
                 BoletoSerie = (string)x["BoletoSerie"],
                 BoletoNum = (string)x["BoletoNum"],
@@ -211,11 +210,13 @@ namespace SisComWeb.Aplication.Controllers
                 PolizaNum = (string)x["PolizaNum"],
                 PolizaFechaReg = (string)x["PolizaFechaReg"],
                 PolizaFechaVen = (string)x["PolizaFechaVen"],
-
                 EmpRuc = (string)x["EmpRuc"],
                 EmpRazSocial = (string)x["EmpRazSocial"],
                 EmpDireccion = (string)x["EmpDireccion"],
                 EmpElectronico = (string)x["EmpElectronico"],
+
+                TipoPago = (string)x["TipoPago"],
+                FlagVenta = (string)x["FlagVenta"],
 
                 // Parámetros extras
                 EmpCodigo = (byte)x["EmpCodigo"],
@@ -1939,7 +1940,6 @@ namespace SisComWeb.Aplication.Controllers
                     {
                         _body += "{" +
                                     "\"IdVenta\": " + ListaVentasRealizadas[i].IdVenta +
-                                    ",\"NomTipVenta\" : \"" + ListaVentasRealizadas[i].NomTipVenta + "\"" +
                                     ",\"NumeAsiento\" : \"" + ListaVentasRealizadas[i].NumeAsiento + "\"" +
                                     ",\"BoletoCompleto\" : \"" + ListaVentasRealizadas[i].BoletoCompleto + "\"" +
                                     ",\"BoletoTipo\" : \"" + ListaVentasRealizadas[i].BoletoTipo + "\"" +
@@ -1997,7 +1997,7 @@ namespace SisComWeb.Aplication.Controllers
                                     //NEW
                                     ",\"TipoPago\" : \"" + ListaVentasRealizadas[i].TipoPago + "\"" +
                                     ",\"FlagVenta\" : \"" + ListaVentasRealizadas[i].FlagVenta + "\"" +
-                                    ",\"CodiEsca\" : \"" + ListaVentasRealizadas[i].CodiEsca + "\"" +
+                                    ",\"CodiEsca\" : \"" + ListaVentasRealizadas[i].CodiEsca + "\"" + // Solo para 'Reintegro'
                                 "}";
 
                         if (i < ListaVentasRealizadas.Count - 1)

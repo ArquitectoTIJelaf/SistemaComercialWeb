@@ -27,7 +27,6 @@ namespace SisComWeb.Aplication.Controllers
                 BoletoCompleto = (string)x["BoletoCompleto"],
                 // Para el método 'ConvertirVentaToBase64'
                 IdVenta = (int)x["IdVenta"],
-                NomTipVenta = (string)x["NomTipVenta"],
                 BoletoTipo = (string)x["BoletoTipo"],
                 BoletoSerie = (string)x["BoletoSerie"],
                 BoletoNum = (string)x["BoletoNum"],

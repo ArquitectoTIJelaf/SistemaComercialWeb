@@ -26,7 +26,6 @@
     var claveAnulacionPanel36 = Constant.CLAVE_ANULACION_PANEL36;
     var claveTiempoReserva = Constant.CLAVE_TIEMPO_RESERVA;
     var claveReimpresionPanel226 = Constant.CLAVE_REIMPRESION_PANEL226;
-
     var claveCambioNivelServicio = Constant.CLAVE_CAMBIO_DE_NIVEL_DE_SERVICIO_;
     var clavePostergacionFlag9 = Constant.CLAVE_POSTERGACION_FLAG_9;
 
@@ -49,7 +48,6 @@
 @Html.Partial("_ModificacionBoleto")
 @Html.Partial("_FechaAbierta")
 @Html.Partial("_Reintegro")
-
 @Html.Partial("_ManifiestoPasajeros")
 @Html.Partial("_MiniMapa")
 @Html.Partial("_TipoPago2")
@@ -57,7 +55,6 @@
 @Html.Partial("_PaseLote")
 @Html.Partial("_CTipoPago")
 @Html.Partial("_CrearProgramacion")
-
 @Html.Partial("_NotaCredito")
 
 @section styles{
@@ -399,15 +396,6 @@
             100% {
                 color: #064072;
             }
-        }
-
-        #btnActualizar:focus {
-            color: #2A97F4;
-            font-weight: 500 !important;
-            font-size: 16px;
-            -webkit-animation-name: pulseColor;
-            -webkit-animation-iteration-count: infinite;
-            -webkit-animation-duration: 1s;
         }
 
         .animated {
@@ -856,13 +844,12 @@
                                 switch (e[0].previousElementSibling.id) {
                                     case 'txtFechaReservacion':
                                         {
-                                            if (appVueVenta.validateFechaReservacion(13) === false)
+                                            if (appVueVenta.validateFechaReservacion(13, true) === false)
                                                 return;
                                         };
                                         break;
                                 }
                             }
-                            this.hide();
                         },
                         up: null,
                         down: null,
@@ -891,18 +878,19 @@
                     if (e && e.target && e.target.value) {
                         switch (e.target.id) {
                             case 'txtFecha':
-                                appVueFilter.nextStep(4);
+                                {
+                                    if (appVueFilter.filtro.FechaViaje !== document.getElementById('txtFecha').value)
+                                        appVueFilter.nextStep(4);
+                                };
                                 break;
                             case 'txtFecha_2':
                                 {
-                                    var aux01 = document.getElementById('txtFecha_2').value;
-                                    var aux02 = appVueVenta.filtro.Fecha;
-                                    if (aux01 !== aux02)
+                                    if (appVueVenta.filtro.Fecha !== document.getElementById('txtFecha_2').value)
                                         appVueVenta.nextStep(9);
                                 };
                                 break;
-                            case 'txtFechaCita': // Validar --> AQUI ME QUEDE - NOTA DE CREDITO.
-                                appVueCreditoOpciones.recorrerFechaCita(9);
+                            case 'txtFechaCita':
+                                appVueCreditoOpciones.recorrerFechaCita();
                                 break;
                             case 'txtFechaMP':
                                 appVueManifiestoPasajeros.cargaTurno();
@@ -910,12 +898,12 @@
                             case 'txtFechaReservacion':
                                 appVueVenta.validateFechaReservacion(13);
                                 break;
-                            case 'txtFechaInicialNC':
-                                appVueNotaCredito.recorridoTxtFechaInicial(13);
-                                break;
-                            case 'txtFechaFinalNC':
-                                appVueNotaCredito.recorridoTxtFechaFinal(13);
-                                break;
+                            //case 'txtFechaInicialNC':
+                            //    appVueNotaCredito.recorridoTxtFechaInicial(13);
+                            //    break;
+                            //case 'txtFechaFinalNC':
+                            //    appVueNotaCredito.recorridoTxtFechaFinal(13);
+                            //    break;
                             default:
                                 //TODO: Buscar solución general
                                 e.target.nextElementSibling.focus();
@@ -927,6 +915,18 @@
             if ($('.dpNac').length) {
                 $('.dpNac').datetimepicker({
                     keyBinds: {
+                        enter: function (e) {
+                            if (e) {
+                                switch (e[0].previousElementSibling.id) {
+                                    case 'txtFechaNacRA':
+                                        {
+                                            if (appVueRegistrarInfante.recorrerFechaNac() === false)
+                                                return;
+                                        };
+                                        break;
+                                }
+                            }
+                        },
                         up: null,
                         down: null,
                         left: null,
@@ -951,7 +951,7 @@
                 });
 
                 $(".dpNac").on("dp.change", function (e) {
-                    if (e && e.target) {
+                    if (e && e.target && e.target.value) {
                         switch (e.target.id) {
                             case 'txtFechaNac':
                                 appVueVenta.recorrerFechaNac();
@@ -972,13 +972,12 @@
                                 switch (e[0].previousElementSibling.id) {
                                     case 'txtHoraReservacion':
                                         {
-                                            if (await appVueVenta.validateHoraReservacion(13) === false)
+                                            if (await appVueVenta.validateHoraReservacion(13, true) === false)
                                                 return;
                                         };
                                         break;
                                 }
                             }
-                            this.hide();
                         },
                         up: null,
                         down: null,
@@ -1028,10 +1027,8 @@
         var ClaveAnulacionPanel36 = '@claveAnulacionPanel36';
         var ClaveTiempoReserva = '@claveTiempoReserva';
         var ClaveReimpresionPanel226 = '@claveReimpresionPanel226';
-
         var ClaveCambioNivelServicio = '@claveCambioNivelServicio';
         var ClavePostergacionFlag9 = '@clavePostergacionFlag9';
-
         var ClaveCambioTipoPago = '@claveCambioTipoPago';
 
         var ClaveCancelarReserva = '';
@@ -1146,10 +1143,7 @@
         }
 
         Vue.prototype.$getValueDateTimePicker_Hours = function obtenerValorDateTimePicker_Hours(e) {
-            if (e && !e.target.value)
-                return moment().format('hh:mm A');
-            else
-                return e.target.value;
+            return e.target.value;
         }
 
         Vue.prototype.$filterLettersToName = function $filtroLetrasParaNombres(value) {
@@ -1324,9 +1318,6 @@
                     appVueVenta.showVentas = false;
                 },
                 chargeTurnos: async function () {
-                    // Si está actualizando, no volver a actualizar.
-                    if (appVueVenta.processing) return;
-                    // ---------------------------------------------
                     var item = {};
                     appVueVenta.firstCharge = false;
                     item.CodiEmpresa = appVueVenta.filtro.CodiEmpresa.id;
@@ -1807,38 +1798,45 @@
                         this.search();
                 },
                 nextStep: function (code) {
-                    var _this = this;
-                    _this.$nextTick(() => {
-                        switch (code) {
-                            case 1:
-                                $('#cboDestinoPas input[type=search]').focus();
-                                break;
-                            case 2:
-                                $('#cboDestinoBus input[type=search]').focus();
-                                break;
-                            case 3:
-                                document.getElementById('txtFecha').focus();
-                                break;
-                            case 4:
-                                document.getElementById('txtHora').focus();
-                                break;
-                            case 5:
-                                $('#chckTodos:first').focus();
-                                break;
-                            case 6:
-                                $('#chckProgramados:first').focus();
-                                break;
-                            case 7:
-                                document.getElementById('buscar').focus();
-                                break;
-                            default:
-                                {
-                                    if (!document.getElementById('txtFecha').value)
-                                        _this.filtro.FechaViaje = moment().format('DD/MM/YYYY');
-                                };
-                                _this.recorrido();
-                        }
-                    });
+                    switch (code) {
+                        case 1:
+                            $('#cboDestinoPas input[type=search]').focus();
+                            break;
+                        case 2:
+                            $('#cboDestinoBus input[type=search]').focus();
+                            break;
+                        case 3:
+                            document.getElementById('txtFecha').focus();
+                            break;
+                        case 4:
+                            {
+                                this.filtro.FechaViaje = document.getElementById('txtFecha').value;
+
+                                if (!this.filtro.FechaViaje)
+                                    this.filtro.FechaViaje = moment().format('DD/MM/YYYY');
+
+                                this.$nextTick(() => {
+                                    document.getElementById('txtHora').focus();
+                                });
+                            };
+                            break;
+                        case 5:
+                            $('#chckTodos:first').focus();
+                            break;
+                        case 6:
+                            $('#chckProgramados:first').focus();
+                            break;
+                        case 7:
+                            document.getElementById('buscar').focus();
+                            break;
+                        default:
+                            {
+                                if (!this.filtro.FechaViaje)
+                                    this.filtro.FechaViaje = moment().format('DD/MM/YYYY');
+
+                                this.recorrido();
+                            };
+                    }
                 }
             },
             watch: {
@@ -1929,6 +1927,10 @@
                 sendRow: async function (item) {
                     let _this = this;
 
+                    // Para evitar volver a solicitar la misma consulta
+                    if (appVueVenta.processing)
+                        return;
+
                     if (item.ProgramacionCerrada !== '0') {
                         switch (item.ProgramacionCerrada) {
                             case '1':
@@ -1969,7 +1971,7 @@
                         }
                         return filtered;
                     }, []);
-
+                    
                     await appController.showVentas(item, turnos);
 
                     _this.$nextTick(() => {
@@ -3420,19 +3422,19 @@
                     this.recorridoSectionVentas();
                 },
                 recorrerFechaNac: function () {
-                    var auxFechaNac = this.list.ventas[this.indexVenta].FechaNac;
-                    this.list.ventas[this.indexVenta].FechaNac = (auxFechaNac ? auxFechaNac : moment().format('DD/MM/YYYY'));
+                    this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
 
-                    this.$nextTick(() => {
-                        this.recorridoTxtFechaNac();
-                    });
+                    this.recorridoTxtFechaNac();
                 },
                 setDateAndCalcYears: function () {
-                    if (!document.getElementById('txtFechaNac').value)
-                        document.getElementById('txtFechaNac').value = moment().format('DD/MM/YYYY');
+                    var _this = this;
 
-                    this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
-                    this.list.ventas[this.indexVenta].Edad = appController.calculaEdad(this.list.ventas[this.indexVenta].FechaNac);
+                    _this.$nextTick(() => {
+                        if (_this.list.ventas[_this.indexVenta].FechaNac)
+                            _this.list.ventas[_this.indexVenta].Edad = appController.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
+                        else
+                            _this.list.ventas[_this.indexVenta].Edad = '';
+                    });
                 },
                 searchUser: async function () {
                     var _this = this;
@@ -3935,18 +3937,25 @@
                             break;
                         case 9:
                             {
-                                _this.filtro.Fecha = document.getElementById('txtFecha_2').value;
                                 if (!_this.filtro.Fecha)
                                     _this.filtro.Fecha = moment().format('DD/MM/YYYY');
 
                                 _this.$nextTick(() => {
+                                    document.getElementById('txtFecha_2').blur();
+
                                     _this.recorridoSectionFilter();
                                 });
                             };
                             break;
                         default:
+                            document.getElementById('btnActualizar').blur();
+
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
                             _this.filtro.CodiDestinoPas = _.cloneDeep(_this.filtro.CodiDestinoBus);
+
+                            // Seteo 'Fecha' si no hay ninguna seleccionada
+                            if (!_this.filtro.Fecha)
+                                _this.filtro.Fecha = moment().format('DD/MM/YYYY');
 
                             _this.recorridoSectionFilter();
                     }
@@ -6361,77 +6370,92 @@
 
                     return auxResponse;
                 },
-                validateFechaReservacion: function (_keyCode) {
-                    this.list.ventas[this.indexVenta].FechaReservacion = this.$getValueDateTimePicker(event);
+                validateFechaReservacion: function (_keyCode, _validateKeyBinds) {
+                    var _this = this;
+                    
+                    if (!document.getElementById('txtFechaReservacion').value)
+                        _this.list.ventas[_this.indexVenta].FechaReservacion = moment().format('DD/MM/YYYY');
+                    else
+                        _this.list.ventas[_this.indexVenta].FechaReservacion = document.getElementById('txtFechaReservacion').value;
+                    
+                    _this.$nextTick(() => {
+                        if (_keyCode === 13) {
 
-                    if (_keyCode === 13) {
-                        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isAfter(moment(this.filtro.Fecha, 'DD/MM/YYYY'))) {
-                            APP.msg.warning('La fecha de confirmación debe ser menor o igual a la fecha de viaje.');
-                            return false;
+                            if (moment(_this.list.ventas[_this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isAfter(moment(_this.filtro.Fecha, 'DD/MM/YYYY'))) {
+                                APP.msg.warning('La fecha de confirmación debe ser menor o igual a la fecha de viaje.');
+                                if (_validateKeyBinds === true) return false;
+                            }
+
+                            if (moment(_this.list.ventas[_this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
+                                APP.msg.warning('La fecha de confirmación debe ser igual o mayor a la fecha actual.');
+                                if (_validateKeyBinds === true) return false;
+                            }
+
+                            _this.recorridoTxtRuc();
                         }
-
-                        if (moment(this.list.ventas[this.indexVenta].FechaReservacion, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
-                            APP.msg.warning('La fecha de confirmación debe ser igual o mayor a la fecha actual.');
-                            return false;
-                        }
-
-                        this.recorridoTxtRuc();
-                    }
+                    });
                 },
-                validateHoraReservacion: async function (_keyCode) {
-                    this.list.ventas[this.indexVenta].HoraReservacion = this.$getValueDateTimePicker_Hours(event);
+                validateHoraReservacion: async function (_keyCode, _validateKeyBinds) {
+                    var _this = this;
 
-                    if (_keyCode === 13) {
-                        var tmpHoraBase = appController.getHoraBaseReservacion(this.list.embarques, Usuario.CodiPuntoVenta);
+                    if (!document.getElementById('txtHoraReservacion').value)
+                        _this.list.ventas[_this.indexVenta].HoraReservacion = moment().format('hh:mm A')
+                    else
+                        _this.list.ventas[_this.indexVenta].HoraReservacion = document.getElementById('txtHoraReservacion').value;
 
-                        if (this.list.ventas[this.indexVenta].FechaReservacion === moment().format('DD/MM/YYYY')) {
+                    _this.$nextTick(async function() {
+                        if (_keyCode === 13) {
+                            var tmpHoraBase = appController.getHoraBaseReservacion(_this.list.embarques, Usuario.CodiPuntoVenta);
 
-                            if (this.list.ventas[this.indexVenta].ValidadorClienteEspecial) {
-                                if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isBefore(moment(), 'minutes')) {
-                                    APP.msg.warning('La hora de confirmación debe ser igual o mayor a la hora actual.');
-                                    return false;
+                            if (_this.list.ventas[_this.indexVenta].FechaReservacion === moment().format('DD/MM/YYYY')) {
+
+                                if (_this.list.ventas[_this.indexVenta].ValidadorClienteEspecial) {
+                                    if (moment(_this.list.ventas[_this.indexVenta].HoraReservacion, 'hh:mmA').isBefore(moment(), 'minutes')) {
+                                        APP.msg.warning('La hora de confirmación debe ser igual o mayor a la hora actual.');
+                                        if (_validateKeyBinds === true) return false;
+                                    }
+                                }
+                                else {
+                                    if (moment(_this.list.ventas[_this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
+                                        APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
+                                        if (_validateKeyBinds === true) return false;
+                                    }
                                 }
                             }
-                            else {
-                                if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isSameOrBefore(moment(), 'minutes')) {
-                                    APP.msg.warning('La hora de confirmación debe ser mayor a la hora actual.');
-                                    return false;
+
+                            if (_this.list.ventas[_this.indexVenta].FechaReservacion === _this.filtro.Fecha) {
+                                if (moment(_this.list.ventas[_this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
+                                    APP.msg.warning('La hora de confirmación debe ser menor o igual a la hora de embarque (' + tmpHoraBase + ').');
+                                    if (_validateKeyBinds === true) return false;
                                 }
-                            }
-                        }
 
-                        if (this.list.ventas[this.indexVenta].FechaReservacion === this.filtro.Fecha) {
-                            if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(moment(tmpHoraBase, 'hh:mmA'), 'minutes')) {
-                                APP.msg.warning('La hora de confirmación debe ser menor o igual a la hora de embarque (' + tmpHoraBase + ').');
-                                return false;
-                            }
+                                if (VerificaHoraConfirmacion !== '0') {
 
-                            if (VerificaHoraConfirmacion !== '0') {
+                                    var HoraReal = moment(tmpHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
 
-                                var HoraReal = moment(tmpHoraBase, 'hh:mmA').add(VerificaHoraConfirmacion, 'minutes');
+                                    if (moment(_this.list.ventas[_this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
 
-                                if (moment(this.list.ventas[this.indexVenta].HoraReservacion, 'hh:mmA').isAfter(HoraReal, 'minutes')) {
+                                        if (!_this.list.ventas[_this.indexVenta].ValidadorClienteEspecial && !_this.validatorReservaHC) {
 
-                                    if (!this.list.ventas[this.indexVenta].ValidadorClienteEspecial && !this.validatorReservaHC) {
+                                            appClaveAutorizacion.horaReal = HoraReal.format('hh:mmA');
+                                            appController.showClaveAutorizacion(ClaveHoraConfirmacion);
 
-                                        appClaveAutorizacion.horaReal = HoraReal.format('hh:mmA');
-                                        appController.showClaveAutorizacion(ClaveHoraConfirmacion);
+                                            await deferredModal($('#appClaveAutorizacion'), false).done(function () {
+                                                appClaveAutorizacion.horaReal = '';
+                                            });
 
-                                        await deferredModal($('#appClaveAutorizacion'), false).done(function () {
-                                            appClaveAutorizacion.horaReal = '';
-                                        });
-
-                                        if (!this.validatorReservaHC) {
-                                            document.getElementById('txtHoraReservacion').focus();
-                                            return false;
+                                            if (!_this.validatorReservaHC) {
+                                                document.getElementById('txtHoraReservacion').focus();
+                                                if (_validateKeyBinds === true) return false;
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        this.recorridoTxtRuc();
-                    }
+                            _this.recorridoTxtRuc();
+                        }
+                    });
                 },
                 sendClaveAutorizacionReserva: async function (_CodiUsuario, _password) {
                     var auxResponse = false;
@@ -6473,8 +6497,14 @@
                 configEventKeyF5: function (e) {
                     if (e.keyCode === 116 && !e.ctrlKey) {
                         if (this.showVentas) {
+
                             e.preventDefault();
-                            appController.chargeTurnos();
+
+                            // Para evitar volver a solicitar la misma consulta
+                            if (appVueVenta.processing)
+                                return;
+                            else
+                                appController.chargeTurnos();
                         }
                     }
                 },
@@ -6701,9 +6731,11 @@
                                 objVentaRealizada.EmpElectronico = auxObjEmpresa.Electronico;
                                 objVentaRealizada.TipoTerminalElectronico = this.TipoTerminalElectronico;
                                 objVentaRealizada.TipoImpresora = this.TipoImpresora;
-
                                 objVentaRealizada.ValidateCaja = resValidateReimprimir.ValCaja;
                                 objVentaRealizada.HoraViaje = this.filtro.Turno;
+
+                                objVentaRealizada.TipoPago = _itemSelected.TipoPago;
+                                objVentaRealizada.FlagVenta = _itemSelected.FlagVenta;
 
                                 ListaVentasRealizadas.push(objVentaRealizada);
 
@@ -7794,7 +7826,7 @@
                                                 (function (i) {
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
-                                                    }, i * 5000);
+                                                    }, i * 2500);
                                                 })(i);
                                             }
                                         }
@@ -7823,7 +7855,7 @@
                                                 (function (i) {
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
-                                                    }, i * 5000);
+                                                    }, i * 2500);
                                                 })(i);
                                             }
                                         }
@@ -7995,18 +8027,25 @@
                         this.disabledBotones = true;
                 },
                 recorrerFechaNac: function () {
-                    this.FechaNac = (this.FechaNac ? this.FechaNac : moment().format('DD/MM/YYYY'));
+                    if (!this.FechaNac) {
+                        APP.msg.warning('Ingrese fecha de nacimiento.');
+                        return false;
+                    }
 
-                    this.$nextTick(() => {
-                        this.recorridoSectionParentesco();
-                    });
+                    //if (!document.getElementById('txtFechaNacRA').value)
+                    //    this.FechaNac = moment().format('DD/MM/YYYY');
+
+                    this.recorridoSectionParentesco();
                 },
                 setDateAndCalcYears: function () {
-                    if (!document.getElementById('txtFechaNacRA').value)
-                        document.getElementById('txtFechaNacRA').value = moment().format('DD/MM/YYYY');
+                    var _this = this;
 
-                    this.FechaNac = document.getElementById('txtFechaNacRA').value;
-                    this.Edad = appController.calculaEdad(this.FechaNac);
+                    _this.$nextTick(() => {
+                        if (_this.FechaNac)
+                            _this.Edad = appController.calculaEdad(_this.FechaNac);
+                        else
+                            _this.Edad = '';
+                    });
                 },
                 recorridoSectionParentesco: function (auxValidate) {
                     var auxResponse = false;
@@ -9341,7 +9380,7 @@
                 },
                 recorrerCreditoOpciones: function (auxValidate) {
                     var auxResponse = false;
-
+                    
                     if (!this.seccion) {
                         $('#cboSeccion input[type=search]').focus();
                         if (auxValidate === true) APP.msg.warning('Seleccione una sección.');
@@ -9351,6 +9390,7 @@
                         if (auxValidate === true) APP.msg.warning('Seleccione una área.');
                     }
                     else if (this.showOpcionesHospital) {
+
                         if (!this.fechaCita) {
                             document.getElementById('txtFechaCita').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione una fecha.');
@@ -9362,6 +9402,8 @@
                                 document.getElementById('txtFechaCita').focus();
                                 APP.msg.warning('Selecciona una fecha menor o igual a la fecha actual.');
                             }
+                            else if (auxValidate !== 'cboHospital' && auxValidate !== true && !this.hospital)
+                                $('#cboHospital input[type=search]').focus();
                             else {
                                 document.getElementById('btnAceptar_CO').focus();
                                 auxResponse = true;
@@ -9376,7 +9418,14 @@
                     return auxResponse;
                 },
                 recorrerFechaCita: function () {
-                    $('#cboHospital input[type=search]').focus();
+                    var _this = this;
+
+                    if (!document.getElementById('txtFechaCita').value)
+                        this.fechaCita = moment().format('DD/MM/YYYY');
+
+                    _this.$nextTick(() => {
+                        _this.recorrerCreditoOpciones();
+                    });
                 },
                 saveCreditoOpciones: async function () {
                     if (!this.recorrerCreditoOpciones(true))
@@ -10379,6 +10428,9 @@
                     }
                 },
                 cargaTurno: function () {
+                    if (!document.getElementById('txtFechaMP').value)
+                        this.filtro.fecha = moment().format('DD/MM/YYYY');
+
                     alert('Carga turno');
                 },
                 getLabel: function (option) {
