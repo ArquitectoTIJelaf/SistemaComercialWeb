@@ -351,9 +351,11 @@ namespace SisComWeb.Business
                         filtro.tota_ruta1 = filtro.PRECIO_VENTA / (1 + (igv / 100));
                         filtro.tota_ruta2 = filtro.PRECIO_VENTA - filtro.tota_ruta1;
 
-                        //Graba Reintegro
+                        //GRABA REINTEGRO
                         var res = ReintegroRepository.SaveReintegro(filtro);
+
                         var ventaRealizada = (res > 0) ? true : false;
+
 
                         if (ventaRealizada)
                         {

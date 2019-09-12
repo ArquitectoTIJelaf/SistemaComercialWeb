@@ -1,4 +1,38 @@
-﻿
+﻿<style>
+    .footer-text {
+        float: left;
+        padding-left: 20px;
+        font-weight: 400;
+        font-size: 15px;
+    }
+
+    .blinkdiv {
+        color: black;
+        -webkit-animation-name: blackWhite;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-duration: 1s;
+    }
+
+    @@-webkit-keyframes blackWhite {
+        0% {
+            color: gray;
+        }
+
+        50% {
+            color: gray;
+        }
+
+        51% {
+            color: black;
+        }
+
+        100% {
+            color: black;
+        }
+    }
+</style>
+
+
 <div id="appVueMiniMapa" data-keyboard="false" data-backdrop="static" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -145,6 +179,7 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <span class="blinkdiv footer-text">Doble click para seleccionar asiento</span>
                 <button @@click="close" class="btn btn-inverse waves-effect waves-light">
                     <span class="glyphicon glyphicon-log-out fa-fw"></span>Cancelar
                 </button>
