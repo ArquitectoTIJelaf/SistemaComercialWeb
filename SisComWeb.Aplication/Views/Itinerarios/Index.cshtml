@@ -1944,6 +1944,7 @@
 
                     var turnos = _this.list.itinerarios.reduce(function (filtered, option) {
                         if (option.CodiDestino === item.CodiDestino) {
+                            debugger;
                             var someNewValue =
                             {
                                 NomServicio: option.NomServicio,
@@ -1957,6 +1958,7 @@
                                 CodiEmpresa: option.CodiEmpresa,
                                 CodiPuntoVenta: option.CodiPuntoVenta,
                                 CodiSucursal: option.CodiSucursal,
+                                Color: option.Color
                                 //PlanoBus: option.PlanoBus,
                                 //CodiProgramacion: option.CodiProgramacion,
                                 //CodiBus: option.CodiBus,
