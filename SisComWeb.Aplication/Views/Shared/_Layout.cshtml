@@ -168,7 +168,7 @@
                 //setInterval 'MensajeriaInstantanea'
                 ValSetInt_MensajeriaInstantanea = setInterval(function () {
                     _this.startMensajeriaInstantanea();
-                }, 1000);
+                }, 2500);
 
                 $('.dropdown-submenu a.test').on("click", function (e) {
                     $(this).next('ul').toggle();
@@ -208,7 +208,7 @@
                     // setInterval 'MensajeriaInstantanea'
                     ValSetInt_MensajeriaInstantanea = setInterval(function () {
                         _this.startMensajeriaInstantanea();
-                    }, 5000);
+                    }, 2500);
                 },
                 setClassColorBlueToBorderBottom: function () {
                     var elements = document.getElementsByClassName("borderBottom");
@@ -241,7 +241,7 @@
                         case 3:
                             {
                                 switch (child) {
-                                    case 0: appVueModificacionBoleto.show(); break;
+                                    case 0: appController.showNotaCredito(); break;
                                 };
                             };
                             break;

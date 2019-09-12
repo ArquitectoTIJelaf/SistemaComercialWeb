@@ -670,7 +670,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
+                db.ProcedureName = "scwsp_Tb_Venta_Reintegro_Consulta_Anul_Ele02";
                 db.AddParameter("@Ser", DbType.String, ParameterDirection.Input, Ser);
                 db.AddParameter("@Bol", DbType.String, ParameterDirection.Input, Bol);
                 db.AddParameter("@Emp", DbType.String, ParameterDirection.Input, Emp);
@@ -689,13 +689,11 @@ namespace SisComWeb.Repository
                         entidad.RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE");
                         entidad.FechaVenta = Reader.GetDateStringValue(drlector, "FECH_VENTA");
                         entidad.CodiEmpresa = Reader.GetByteValue(drlector, "CODI_EMPRESA");
-
                         entidad.SucVenta = Reader.GetSmallIntValue(drlector, "SUC_VENTA");
                         entidad.Nombre = Reader.GetStringValue(drlector, "NOMBRE");
                         entidad.TipoDocumento = Reader.GetStringValue(drlector, "TIPO_DOC");
                         entidad.Dni = Reader.GetStringValue(drlector, "DNI");
                         entidad.Edad = Reader.GetByteValue(drlector, "EDAD");
-                        entidad.RucCliente = Reader.GetStringValue(drlector, "NIT_CLIENTE");
                         entidad.Telefono = Reader.GetStringValue(drlector, "TELEFONO");
 
                         break;

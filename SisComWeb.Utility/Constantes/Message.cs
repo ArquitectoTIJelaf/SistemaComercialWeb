@@ -397,5 +397,14 @@
         public const string MsgCorrectoGetNewListaDestinosPas = "Correcto: GetNewListaDestinosPas.";
         public const string MsgErrorGetNewListaDestinosPas = "Error: GetNewListaDestinosPas.";
         public const string MsgExcGetNewListaDestinosPas = "Excepción: GetNewListaDestinosPas.";
+
+        // Nota crédito
+        public const string MsgCorrectoConsultaTipoTerminalElectronico = "Correcto: ConsultaTipoTerminalElectronico.";
+        public const string MsgExcConsultaTipoTerminalElectronico = "Excepción: ConsultaTipoTerminalElectronico.";
+
+        // Clientes
+        public const string MsgCorrectoListaClientesNC_Autocomplete = "Correcto: ListaClientesNC_Autocomplete.";
+        public const string MsgErrorListaClientesNC_Autocomplete = "No se encontró ningún resultado.";
+        public const string MsgExcListaClientesNC_Autocomplete = "Excepción: ListaClientesNC_Autocomplete.";
     }
 }
