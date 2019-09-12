@@ -20,10 +20,10 @@
                                           label="label"
                                           v-model="CodiTipoDoc"
                                           :options="list.tipoDoc"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco()"
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco()"*@>
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                        <div @@click="recorridoSectionParentesco()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -42,8 +42,8 @@
                                        autocomplete="off"
                                        :value="Documento.toUpperCase()"
                                        @@input="Documento = $event.target.value.toUpperCase()"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
+                                       @@keypress.13.prevent="recorridoSectionParentesco()"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco()"*@
                                        v-mask="mask.documento"
                                        v-validate="'min: ' + validateMinNumero" />
                             </div>
@@ -62,8 +62,8 @@
                                        autocomplete="off"
                                        v-model="Nombres"
                                        @@input="Nombres = $filterLettersToName(Nombres)"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@>
+                                       @@keypress.13.prevent="recorridoSectionParentesco()"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco()"*@>
                             </div>
                         </div>
                     </div>
@@ -78,8 +78,8 @@
                                        placeholder="APELLIDO PATERNO"
                                        v-model="ApellidoPaterno"
                                        @@input="ApellidoPaterno = $filterLettersToName(ApellidoPaterno)"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
+                                       @@keypress.13.prevent="recorridoSectionParentesco()"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco()"*@
                                        autocomplete="off">
                             </div>
                         </div>
@@ -93,8 +93,8 @@
                                        placeholder="APELLIDO MATERNO"
                                        v-model="ApellidoMaterno"
                                        @@input="ApellidoMaterno = $filterLettersToName(ApellidoMaterno)"
-                                       @@keypress.13.prevent="recorridoSectionParentesco"
-                                       @*@@keydown.9.prevent="recorridoSectionParentesco"*@
+                                       @@keypress.13.prevent="recorridoSectionParentesco()"
+                                       @*@@keydown.9.prevent="recorridoSectionParentesco()"*@
                                        autocomplete="off">
                             </div>
                         </div>
@@ -136,10 +136,10 @@
                                           label="label"
                                           v-model="Sexo"
                                           :options="list.sexos"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco()"
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco()"*@>
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                        <div @@click="recorridoSectionParentesco()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -155,10 +155,10 @@
                                           label="label"
                                           v-model="Parentesco"
                                           :options="list.parentesco"
-                                          @@keydown.13.native.prevent="recorridoSectionParentesco"
-                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco"*@>
+                                          @@keydown.13.native.prevent="recorridoSectionParentesco()"
+                                          @*@@keydown.9.native.prevent="recorridoSectionParentesco()"*@>
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorridoSectionParentesco">{{ option.label }}</div>
+                                        <div @@click="recorridoSectionParentesco()">{{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>

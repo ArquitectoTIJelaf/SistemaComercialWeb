@@ -590,7 +590,7 @@ namespace SisComWeb.Business
                         case "01": // Contado
                             break;
                         case "02": // Múltiple pago
-                        case "03": // Tarjeta de crédito    
+                        case "03": // Tarjeta de crédito
                             {
                                 //  Genera 'CorrelativoAuxiliar'
                                 var generarCorrelativoAuxiliar = VentaRepository.GenerarCorrelativoAuxiliar("CAJA", entidad.CodiOficina.ToString(), entidad.CodiPuntoVenta.ToString(), string.Empty);
@@ -650,6 +650,10 @@ namespace SisComWeb.Business
                                     Tipo = entidad.Tipo
                                 };
                                 VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
+
+                                // Los 'Múltiple pago' se terminan convirtiendo en 'Tarjeta de crédito'
+                                if (entidad.TipoPago == "02")
+                                    entidad.TipoPago = "03";
                             };
                             break;
                         case "04": // Delivery
@@ -747,11 +751,13 @@ namespace SisComWeb.Business
                         PolizaNum = entidad.PolizaNum,
                         PolizaFechaReg = entidad.PolizaFechaReg,
                         PolizaFechaVen = entidad.PolizaFechaVen,
-
                         EmpRuc = entidad.RucEmpresa,
                         EmpRazSocial = entidad.NomEmpresa,
                         EmpDireccion = entidad.DireccionEmpresa,
                         EmpElectronico = entidad.ElectronicoEmpresa,
+
+                        TipoPago = entidad.TipoPago,
+                        FlagVenta = entidad.FlagVenta,
 
                         // Parámetros extras
                         EmpCodigo = entidad.CodiEmpresa,
@@ -2004,8 +2010,7 @@ namespace SisComWeb.Business
                         };
                         VentaRepository.GrabarAuditoria(objAuditoria);
                     }
-
-                    entidad.NomTipVenta = "EFECTIVO";
+                    
                     entidad.LinkPag_FE = obtenerParametroRempresa.PaginaWebEmisor ?? string.Empty;
                     entidad.ResAut_FE = obtenerParametroRempresa.ResolucionAutorizado ?? string.Empty;
 

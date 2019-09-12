@@ -106,7 +106,7 @@ namespace SisComWeb.CuadreImpresora
                 }
                 texto.AppendLine("DOC. CLIENTE".PadRight(25) + (": " + venta.DocNumero).PadRight(65));
                 texto.AppendLine("PASAJERO".PadRight(25) + (": " + venta.PasNombreCom).PadRight(65));
-                texto.AppendLine("CONDICION DE VENTA".PadRight(25) + (": " + venta.NomTipVenta).PadRight(65));
+                texto.AppendLine("CONDICION DE VENTA".PadRight(25) + (": " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta)).PadRight(65));
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine("    DESCRIPCION DEL SERVICIO".PadRight(30) + "TOTAL".PadLeft(50));
                 texto.AppendLine(new string('-', 80));
@@ -157,7 +157,7 @@ namespace SisComWeb.CuadreImpresora
                     texto.AppendLine("DIRECCION".PadRight(25) + (": " + venta.PasDireccion).PadRight(40));
                 }
                 texto.AppendLine("CLIENTE".PadRight(25) + (": " + venta.DocNumero + " - " + venta.PasNombreCom).PadRight(40));
-                texto.AppendLine("COD. VENTA".PadRight(25) + (": " + venta.NomTipVenta).PadRight(40));
+                texto.AppendLine("COD. VENTA".PadRight(25) + (": " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta)).PadRight(40));
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine("    DESCRIPCION DEL SERVICIO".PadRight(25));
                 texto.AppendLine(new string('-', 70));
@@ -220,7 +220,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("^COD. CAJERO      : " + venta.CajeroCod);
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine("");
-                texto.AppendLine("^TIPO VENTA: " + venta.NomTipVenta);
+                texto.AppendLine("^TIPO VENTA: " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta));
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine(" # DESCRIPCIÓN                      TOTAL");
                 texto.AppendLine(new string('-', 42));
@@ -272,7 +272,7 @@ namespace SisComWeb.CuadreImpresora
                 }
                 texto.AppendLine("DOC. CLIENTE".PadRight(25) + (": " + venta.DocNumero).PadRight(65));
                 texto.AppendLine("PASAJERO".PadRight(25) + (": " + venta.PasNombreCom).PadRight(65));
-                texto.AppendLine("CONDICION DE VENTA".PadRight(25) + (": " + venta.NomTipVenta).PadRight(65));
+                texto.AppendLine("CONDICION DE VENTA".PadRight(25) + (": " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta)).PadRight(65));
                 texto.AppendLine(new string('-', 80));
                 texto.AppendLine("    DESCRIPCION DEL SERVICIO".PadRight(30) + "TOTAL".PadLeft(50));
                 texto.AppendLine(new string('-', 80));
@@ -323,7 +323,7 @@ namespace SisComWeb.CuadreImpresora
                     texto.AppendLine("DIRECCION".PadRight(25) + (": " + venta.PasDireccion).PadRight(40));
                 }
                 texto.AppendLine("CLIENTE".PadRight(25) + (": " + venta.DocNumero + " - " + venta.PasNombreCom).PadRight(40));
-                texto.AppendLine("COD. VENTA".PadRight(25) + (": " + venta.NomTipVenta).PadRight(40));
+                texto.AppendLine("COD. VENTA".PadRight(25) + (": " + NameOfTipoVenta(venta.TipoPago, venta.FlagVenta)).PadRight(40));
                 texto.AppendLine(new string('-', 70));
                 texto.AppendLine("    DESCRIPCION DEL SERVICIO".PadRight(25));
                 texto.AppendLine(new string('-', 70));

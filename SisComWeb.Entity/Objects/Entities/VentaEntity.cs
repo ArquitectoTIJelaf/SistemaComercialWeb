@@ -247,8 +247,6 @@ namespace SisComWeb.Entity
     {
         public int IdVenta { get; set; }
 
-        public string NomTipVenta { get; set; }
-
         public string NumeAsiento { get; set; }
 
         public string BoletoCompleto { get; set; }

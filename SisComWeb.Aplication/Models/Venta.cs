@@ -220,8 +220,6 @@ namespace SisComWeb.Aplication.Models
     {
         public int IdVenta { get; set; }
 
-        public string NomTipVenta { get; set; }
-
         public string NumeAsiento { get; set; }
 
         public string BoletoCompleto { get; set; }
