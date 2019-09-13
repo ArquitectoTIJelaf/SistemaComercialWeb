@@ -2358,7 +2358,6 @@
                         return;
                     }
                     // ---------------------------------
-                    console.log('ENTRO XDDDDD');
                     await APP.rq.axios.post(APP.base + '/itinerarios/turnos', input)
                         .then(async function (res) {
                             if (res.data.EsCorrecto) {
@@ -7958,7 +7957,7 @@
                                         var _listaImpresiones = res.data.Valor;
                                         var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
-                                            for (i = 0; i < _listaImpresiones.length; i++) {
+                                            for (i = 0; i < _listaLength; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
@@ -8016,8 +8015,8 @@
 
                     // Valida: Si es venta múltiple y no es el último boleto, entonces se realiza un 'CORTE_SEPARADOR'
                     if (_CantidadVentas > 1 && _CantidadVentas > (_Posicion + 1)) {
-                        auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'CORTE_SEPARADOR';
-                        axios({ method: "GET", "url": auxUrl })
+                        auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'IMPRESORA_I2'; // 'IMPRESORA_I2': Nombre reconocido por el programa.
+                        axios({ method: "GET", "url": auxUrl });
                     }
 
                     // Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
