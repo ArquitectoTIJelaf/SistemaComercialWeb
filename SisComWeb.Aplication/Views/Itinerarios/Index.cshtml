@@ -14089,6 +14089,25 @@
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
                 },
+                save: async function () {
+                    let _this = this;
+
+                    //Validación si no tiene hora de programación
+                    if (!_this.filtro.HoraProgramacion) {
+                        APP.msg.warning('Debe seleccionar una hora');
+                        _this.$refs.refCPHoraProg.focus();
+                        return;
+                    }
+                    
+                    //await APP.rq.axios.post(APP.base + '/paseLote/crearProgramacion', _this.filtro)
+                    //    .then(async function (res) {
+                    //        if (res.data.Estado) {
+                    //            APP.msg.info('Se creó la Programación correctamente');
+                    //            _this.close();
+                    //        }
+                    //    })
+                    //    .catch(APP.rq.axios_handler_error_alert);
+                },
                 limpiarData: function () {
                     let _this = this;
                     _this.filtro = {};
