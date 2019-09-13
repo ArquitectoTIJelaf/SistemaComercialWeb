@@ -116,7 +116,7 @@
                                     <div class="form-group m-b-5">
                                         <div class="custom-scroll-container">
                                             <div class="table-responsive m-b-0" style="background-color: #616e7e;">
-                                                <table id="tblProgramacionPLoteOri" class="table table-hover tbl-mini-row" style="cursor:default;background-color:white;">
+                                                <table id="tblProgramacionPLoteOri" class="table table-hover tbl-mini-row" style="cursor:default; background-color:white;">
                                                     <thead>
                                                         <tr>
                                                             <th class="custom-th" width="%">Estado</th>
@@ -152,14 +152,14 @@
                                                                     </template>
                                                                     <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                                                 </td>
-                                                                <td :tabindex="(key * 19) + 2"  class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
-                                                                <td :tabindex="(key * 19) + 3"  class="custom-td">{{item.RazonSocial}}</td>
-                                                                <td :tabindex="(key * 19) + 4"  class="custom-td">{{item.NomSucursal}}</td>
-                                                                <td :tabindex="(key * 19) + 5"  class="custom-td">{{item.NomOrigen}}</td>
-                                                                <td :tabindex="(key * 19) + 6"  class="custom-td">{{item.NomRuta}}</td>
-                                                                <td :tabindex="(key * 19) + 7"  class="custom-td">{{item.NomServicio}}</td>
-                                                                <td :tabindex="(key * 19) + 8"  class="custom-td">{{item.HoraPartida}}</td>
-                                                                <td :tabindex="(key * 19) + 9"  class="custom-td">{{item.CodiBus}}</td>
+                                                                <td :tabindex="(key * 19) + 2" class="custom-td">{{item.NroViaje | concatZero(6)}}</td>
+                                                                <td :tabindex="(key * 19) + 3" class="custom-td">{{item.RazonSocial}}</td>
+                                                                <td :tabindex="(key * 19) + 4" class="custom-td">{{item.NomSucursal}}</td>
+                                                                <td :tabindex="(key * 19) + 5" class="custom-td">{{item.NomOrigen}}</td>
+                                                                <td :tabindex="(key * 19) + 6" class="custom-td">{{item.NomRuta}}</td>
+                                                                <td :tabindex="(key * 19) + 7" class="custom-td">{{item.NomServicio}}</td>
+                                                                <td :tabindex="(key * 19) + 8" class="custom-td">{{item.HoraPartida}}</td>
+                                                                <td :tabindex="(key * 19) + 9" class="custom-td">{{item.CodiBus}}</td>
                                                                 <td :tabindex="(key * 19) + 10" class="custom-td">{{item.PlacaBus}}</td>
                                                                 <td :tabindex="(key * 19) + 11" class="custom-td">{{item.AsientosVendidos}}</td>
                                                                 <td :tabindex="(key * 19) + 12" class="custom-td">{{item.CapacidadBus}}</td>
@@ -190,111 +190,111 @@
                         <div class="img-bus">
                             <img height="210" src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
                         </div>
-                        <div class="table-responsive form-bus">
+                        <div class="table-responsive form-bus" style="display:table;">
 
                             <table id="tblLista" class="table table-bus mini-bus">
                                 <tbody>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano1_Ori"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainUp' : item.IDS}"
-                                                            :draggable="OrigenDraggable(item)"
-                                                            @@dragstart="onDragstart(item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano2_Ori"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainUp' : item.IDS}"
-                                                            :draggable="OrigenDraggable(item)"
-                                                            @@dragstart="onDragstart(item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano3_Ori"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainUp' : item.IDS}"
-                                                            :draggable="OrigenDraggable(item)"
-                                                            @@dragstart="onDragstart(item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano4_Ori"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainUp' : item.IDS}"
-                                                            :draggable="OrigenDraggable(item)"
-                                                            @@dragstart="onDragstart(item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano5_Ori"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainUp' : item.IDS}"
-                                                            :draggable="OrigenDraggable(item)"
-                                                            @@dragstart="onDragstart(item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'red'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano1_Ori"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainUp' : item.IDS}"
+                                                        :draggable="OrigenDraggable(item)"
+                                                        @@dragstart="onDragstart(item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': item.Color} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano2_Ori"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainUp' : item.IDS}"
+                                                        :draggable="OrigenDraggable(item)"
+                                                        @@dragstart="onDragstart(item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': item.Color} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano3_Ori"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainUp' : item.IDS}"
+                                                        :draggable="OrigenDraggable(item)"
+                                                        @@dragstart="onDragstart(item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': item.Color} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano4_Ori"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainUp' : item.IDS}"
+                                                        :draggable="OrigenDraggable(item)"
+                                                        @@dragstart="onDragstart(item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': item.Color} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano5_Ori"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainUp' : item.IDS}"
+                                                        :draggable="OrigenDraggable(item)"
+                                                        @@dragstart="onDragstart(item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': item.Color} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -482,111 +482,111 @@
                         <div class="img-bus">
                             <img height="210" src="~/wwwroot/plugins/images/users/cabecera-bus.png" />
                         </div>
-                        <div class="table-responsive form-bus">
+                        <div class="table-responsive form-bus" style="display:table;">
 
                             <table id="tblLista" class="table table-bus mini-bus">
                                 <tbody>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano1_Des"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainDown' : item.IDS}"
-                                                            @@dragover.prevent 
-                                                            @@drop="onDrop($event, item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano2_Des"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainDown' : item.IDS}"
-                                                            @@dragover.prevent 
-                                                            @@drop="onDrop($event, item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano3_Des"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainDown' : item.IDS}"
-                                                            @@dragover.prevent 
-                                                            @@drop="onDrop($event, item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano4_Des"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainDown' : item.IDS}"
-                                                            @@dragover.prevent 
-                                                            @@drop="onDrop($event, item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td v-for="(item, key) in list.plano5_Des"
-                                                class="bus-td">
-                                                <template v-if="!isNaN(item.Tipo)">
-                                                    <button class="btn btn-bus"
-                                                            :class="{'rainDown' : item.IDS}"
-                                                            @@dragover.prevent 
-                                                            @@drop="onDrop($event, item)"
-                                                            :style="[item.NumeAsiento ? {'background-color': 'green'} : {'background-color': ''}]"
-                                                            :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
-                                                        <div class="number-of-seat">
-                                                            {{item.Tipo}}
-                                                        </div>
-                                                    </button>
-                                                </template>
-                                                <template v-else>
-                                                    <span :class="[item.Tipo]"></span>
-                                                </template>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano1_Des"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainDown' : item.IDS}"
+                                                        @@dragover.prevent
+                                                        @@drop="onDrop($event, item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': (item.Color) ? item.Color : $colorBloqueoInterno} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano2_Des"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainDown' : item.IDS}"
+                                                        @@dragover.prevent
+                                                        @@drop="onDrop($event, item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': (item.Color) ? item.Color : $colorBloqueoInterno} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano3_Des"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainDown' : item.IDS}"
+                                                        @@dragover.prevent
+                                                        @@drop="onDrop($event, item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': (item.Color) ? item.Color : $colorBloqueoInterno} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano4_Des"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainDown' : item.IDS}"
+                                                        @@dragover.prevent
+                                                        @@drop="onDrop($event, item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': (item.Color) ? item.Color : $colorBloqueoInterno} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td v-for="(item, key) in list.plano5_Des"
+                                            class="bus-td">
+                                            <template v-if="!isNaN(item.Tipo)">
+                                                <button class="btn btn-bus"
+                                                        :class="{'rainDown' : item.IDS}"
+                                                        @@dragover.prevent
+                                                        @@drop="onDrop($event, item)"
+                                                        :style="[item.NumeAsiento ? {'background-color': (item.Color) ? item.Color : $colorBloqueoInterno} : {'background-color': ''}]"
+                                                        :title="(item.NumeAsiento ? $getFormatName(item.Nombres, item.ApellidoPaterno, item.ApellidoMaterno) : 'PRECIO NORMAL: ' + item.PrecioNormal)">
+                                                    <div class="number-of-seat">
+                                                        {{item.Tipo}}
+                                                    </div>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <span :class="[item.Tipo]"></span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
