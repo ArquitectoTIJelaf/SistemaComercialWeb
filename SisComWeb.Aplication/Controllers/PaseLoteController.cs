@@ -193,5 +193,48 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<List<int>>(false, Constant.EXCEPCION, new List<int>(), false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("crearProgramacion")]
+        public async Task<ActionResult> CrearProgramacion(FiltroBloqueoAsiento filtro)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + filtro.CodiProgramacion +
+                                    ",\"NroViaje\" : " + filtro.NroViaje +
+                                    ",\"CodiOrigen\" : " + filtro.CodiOrigen +
+                                    ",\"CodiDestino\" : " + filtro.CodiDestino +
+                                    ",\"NumeAsientos\" : [ " + String.Join(", ", filtro.NumeAsientos.ToArray()) + " ]" +
+                                    ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
+                                    ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.Precio) + "\"" +
+                                    ",\"CodiTerminal\" : " + int.Parse(usuario.Terminal.ToString("D3")) +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("CrearProgramacion", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<int>> res = new Response<List<int>>
+                {
+                    EsCorrecto = (bool)tmpResult["EsCorrecto"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = tmpResult["Valor"].ToObject<List<int>>(),
+                    Estado = (bool)tmpResult["Estado"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<int>>(false, Constant.EXCEPCION, new List<int>(), false), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
