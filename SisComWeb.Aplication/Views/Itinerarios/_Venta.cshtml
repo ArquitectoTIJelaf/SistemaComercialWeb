@@ -303,16 +303,22 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-3" id="divOtrosTurnos" style="float: right;">
+                                    <div class="col-md-3 col-xs-12" id="divOtrosTurnos">
                                         <div style="border-left: 1px solid rgb(228, 231, 234); ">
-                                            <label style="width: 100%; text-align: center; ">OTROS TURNOS</label>
-                                            <div style="overflow-y:auto;height: 100px;">
-                                                <ul style="list-style-type: none; padding-left: 0;">
-                                                    <li v-for="item in list.turnos">
+                                            <label>OTROS TURNOS</label>
+                                            <div style="overflow-y:auto; height: 100px;">
+                                                <ul>
+                                                    <li v-for="item in list.turnos" :style="bgcEnlaceTurnos(item.HoraPartida, item.NomServicio)">
                                                         <a @@click="changeTurno(item)"
                                                            :title="item.HoraPartida + ' - ' + item.NomServicio"
-                                                           style="cursor:pointer; font-weight: 500; color: var(--emp-color); "
                                                            :style="bgcEnlaceTurnos(item.HoraPartida, item.NomServicio)">
+                                                            <template v-if="item.Color === '#FFFFFF'">
+                                                                <span class="mdi mdi-checkbox-blank-circle-outline" style="color:#DDDDDD"></span>
+                                                            </template>
+                                                            <template v-else>
+                                                                <span class="mdi mdi-checkbox-blank-circle" :style="{color: item.Color}"></span>
+                                                            </template>
+                                                            <span v-if="item.SecondColor" class="mdi mdi-checkbox-blank-circle" :style="{color: item.SecondColor}"></span>
                                                             {{item.HoraPartida}}  -  {{item.NomServicio}}
                                                         </a>
                                                     </li>
