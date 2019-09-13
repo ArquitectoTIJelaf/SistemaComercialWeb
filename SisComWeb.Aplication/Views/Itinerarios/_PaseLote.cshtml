@@ -84,7 +84,7 @@
                                                            v-mask="'##/##/####'"
                                                            @@focus="$event.target.select()"
                                                            @@keydown.13.prevent="$refs.refLOTEHoraIt1.focus()"
-                                                           @@blur="filtroOrigen.FechaViaje = $getValueDateTimePicker($event)"
+                                                           @@blur="filtroOrigen.FechaViaje = $event.target.value"
                                                            autocomplete="off"
                                                            ref="refLOTEFechaIt1" />
                                                 </div>
@@ -376,7 +376,7 @@
                                                            v-mask="'##/##/####'"
                                                            @@focus="$event.target.select()"
                                                            @@keydown.13.prevent="$refs.refLOTEHoraIt2.focus()"
-                                                           @@blur="filtroDestino.FechaViaje = $getValueDateTimePicker($event)"
+                                                           @@blur="filtroDestino.FechaViaje = $event.target.value"
                                                            autocomplete="off"
                                                            ref="refLOTEFechaIt2" />
                                                 </div>

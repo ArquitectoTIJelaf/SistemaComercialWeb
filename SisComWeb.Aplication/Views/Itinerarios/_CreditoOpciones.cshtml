@@ -60,7 +60,7 @@
                                            @@focus="$event.target.select()"
                                            @@keydown.13.prevent="recorrerFechaCita()"
                                            @*@@keydown.9.prevent="recorrerFechaCita()"*@
-                                           @@blur="fechaCita = $getValueDateTimePicker($event)"
+                                           @@blur="fechaCita = $event.target.value"
                                            v-mask="'##/##/####'"
                                            autocomplete="off" />
                                 </div>

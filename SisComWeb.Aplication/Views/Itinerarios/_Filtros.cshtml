@@ -86,7 +86,7 @@
                                                    @@focus="$event.target.select()"
                                                    @@keydown.13.prevent="nextStep(4)"
                                                    @*@@keydown.9.prevent="nextStep(4)"*@
-                                                   @@blur="filtro.FechaViaje = $getValueDateTimePicker($event)"
+                                                   @@blur="filtro.FechaViaje = $event.target.value"
                                                    autocomplete="off" />
                                         </div>
                                     </div>

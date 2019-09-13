@@ -109,8 +109,6 @@
                                        placeholder="FECHA NAC."
                                        v-model="FechaNac"
                                        @@focus="$event.target.select()"
-                                       @@keydown.13.prevent="recorrerFechaNac()"
-                                       @*@@keydown.9.prevent="recorrerFechaNac()"*@
                                        @@blur="setDateAndCalcYears()"
                                        autocomplete="off"
                                        v-mask="'##/##/####'">

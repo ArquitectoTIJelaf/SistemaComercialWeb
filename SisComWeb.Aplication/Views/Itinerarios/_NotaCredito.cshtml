@@ -119,9 +119,7 @@
                                        v-model="filtro.fechaInicial"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @@keydown.13.prevent="recorridoTxtFechaInicial(13)"
-                                       @*@@keydown.9.prevent="recorridoTxtFechaInicial()"*@
-                                       @@blur="filtro.fechaInicial = $getValueDateTimePicker($event)"
+                                       @@blur="filtro.fechaInicial = $event.target.value"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-2">
@@ -133,9 +131,7 @@
                                        v-model="filtro.fechaFinal"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @@keydown.13.prevent="recorridoTxtFechaFinal(13)"
-                                       @*@@keydown.9.prevent="recorridoTxtFechaFinal()"*@
-                                       @@blur="filtro.fechaFinal = $getValueDateTimePicker($event)"
+                                       @@blur="filtro.fechaFinal = $event.target.value"
                                        autocomplete="off" />
                             </div>
                         </div>
@@ -309,7 +305,7 @@
                                        @@focus="$event.target.select()"
                                        @*@@keydown.13.prevent="recorrido(1)"*@
                                        @*@@keydown.9.prevent="recorrido(1)"*@
-                                       @@blur="filtro.FechaEmision = $getValueDateTimePicker($event)"
+                                       @@blur="filtro.FechaEmision = $event.target.value"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-2">

@@ -135,7 +135,7 @@
                                        @@focus="$event.target.select()"
                                        @@keydown.13.prevent="recorrido(6)"
                                        @*@@keydown.9.prevent="recorrido(6)"*@
-                                       @@blur="filtro.turno = $getValueDateTimePicker_Hours($event)"
+                                       @@blur="filtro.turno = $event.target.value"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-4">
@@ -149,7 +149,7 @@
                                        @@focus="$event.target.select()"
                                        @@keydown.13.prevent="recorrido(7)"
                                        @*@@keydown.9.prevent="recorrido(7)"*@
-                                       @@blur="filtro.fecha = $getValueDateTimePicker($event)"
+                                       @@blur="filtro.fecha = $event.target.value"
                                        autocomplete="off" />
                             </div>
                         </div>

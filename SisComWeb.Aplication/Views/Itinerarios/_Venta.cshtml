@@ -240,7 +240,7 @@
                                                        @@keydown.13.prevent="nextStep(6)"
                                                        @@keydown.220.prevent="nextStep(4)"
                                                        @*@@keydown.9.prevent="nextStep(6)"*@
-                                                       @@blur="filtro.Turno = $getValueDateTimePicker_Hours($event)"
+                                                       @@blur="filtro.Turno = $event.target.value"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
@@ -298,7 +298,7 @@
                                                        @@focus="$event.target.select()"
                                                        @@keydown.13.prevent="nextStep(9)"
                                                        @*@@keydown.9.prevent="nextStep(9)"*@
-                                                       @@blur="filtro.Fecha = $getValueDateTimePicker($event)"
+                                                       @@blur="filtro.Fecha = $event.target.value"
                                                        autocomplete="off" />
                                             </div>
                                         </div>
@@ -937,8 +937,8 @@
                                                                :disabled="disabledCamposTicket"
                                                                v-model="list.ventas[indexVenta].FechaNac"
                                                                @@focus="$event.target.select()"
-                                                               @@keydown.13.prevent="recorrerFechaNac()"
-                                                               @*@@keydown.9.prevent="recorrerFechaNac()"*@
+                                                               @@keydown.13.prevent="recorridoTxtFechaNac()"
+                                                               @*@@keydown.9.prevent="recorridoTxtFechaNac()"*@
                                                                @@blur="setDateAndCalcYears()"
                                                                v-mask="'##/##/####'"
                                                                autocomplete="off">
@@ -1177,7 +1177,7 @@
                                                                    v-model="list.ventas[indexVenta].FechaReservacion"
                                                                    :disabled="disabledCamposTicket || list.ventas[indexVenta].FlagVenta == 'R'"
                                                                    @@focus="$event.target.select()"
-                                                                   @@blur="list.ventas[indexVenta].FechaReservacion = $getValueDateTimePicker($event)"
+                                                                   @@blur="list.ventas[indexVenta].FechaReservacion = $event.target.value"
                                                                    v-mask="'##/##/####'"
                                                                    autocomplete="off" />
                                                         </div>
@@ -1192,7 +1192,7 @@
                                                                    v-model="list.ventas[indexVenta].HoraReservacion"
                                                                    :disabled="disabledCamposTicket || list.ventas[indexVenta].FlagVenta == 'R'"
                                                                    @@focus="$event.target.select()"
-                                                                   @@blur="list.ventas[indexVenta].HoraReservacion = $getValueDateTimePicker_Hours($event)"
+                                                                   @@blur="list.ventas[indexVenta].HoraReservacion = $event.target.value"
                                                                    v-mask="'##:## AM'"
                                                                    autocomplete="off" />
                                                         </div>

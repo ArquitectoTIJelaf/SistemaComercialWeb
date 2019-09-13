@@ -594,6 +594,8 @@
 
             //#endregion
 
+            //#region MODALES
+
             $('#appVueTipoPago').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueTipoPago.esc);
 
@@ -836,6 +838,10 @@
                 window.removeEventListener('keyup', appVueNotaCredito.esc);
             });
 
+            //#endregion
+
+            //#region DATETIMEPICKER
+
             if ($('.dpFiltro').length) {
                 $('.dpFiltro').datetimepicker({
                     keyBinds: {
@@ -845,6 +851,18 @@
                                     case 'txtFechaReservacion':
                                         {
                                             if (appVueVenta.validateFechaReservacion(13, true) === false)
+                                                return;
+                                        };
+                                        break;
+                                    case 'txtFechaInicialNC':
+                                        {
+                                            if (appVueNotaCredito.recorridoTxtFechaInicial(13, true) === false)
+                                                return;
+                                        };
+                                        break;
+                                    case 'txtFechaFinalNC':
+                                        {
+                                            if (appVueNotaCredito.recorridoTxtFechaFinal(13, true) === false)
                                                 return;
                                         };
                                         break;
@@ -890,20 +908,35 @@
                                 };
                                 break;
                             case 'txtFechaCita':
-                                appVueCreditoOpciones.recorrerFechaCita();
+                                {
+                                    if (appVueCreditoOpciones.fechaCita !== document.getElementById('txtFechaCita').value)
+                                        appVueCreditoOpciones.recorrerFechaCita();
+                                };
                                 break;
                             case 'txtFechaMP':
-                                appVueManifiestoPasajeros.cargaTurno();
+                                {
+                                    if (appVueManifiestoPasajeros.filtro.fecha !== document.getElementById('txtFechaMP').value)
+                                        appVueManifiestoPasajeros.cargaTurno();
+                                };
                                 break;
                             case 'txtFechaReservacion':
-                                appVueVenta.validateFechaReservacion(13);
+                                {
+                                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FechaReservacion !== document.getElementById('txtFechaReservacion').value)
+                                        appVueVenta.validateFechaReservacion(13);
+                                };
                                 break;
-                            //case 'txtFechaInicialNC':
-                            //    appVueNotaCredito.recorridoTxtFechaInicial(13);
-                            //    break;
-                            //case 'txtFechaFinalNC':
-                            //    appVueNotaCredito.recorridoTxtFechaFinal(13);
-                            //    break;
+                            case 'txtFechaInicialNC':
+                                {
+                                    if (appVueNotaCredito.filtro.fechaInicial !== document.getElementById('txtFechaInicialNC').value)
+                                        appVueNotaCredito.recorridoTxtFechaInicial(13);
+                                };
+                                break;
+                            case 'txtFechaFinalNC':
+                                {
+                                    if (appVueNotaCredito.filtro.fechaFinal !== document.getElementById('txtFechaFinalNC').value)
+                                        appVueNotaCredito.recorridoTxtFechaFinal(13);
+                                };
+                                break;
                             default:
                                 //TODO: Buscar solución general
                                 e.target.nextElementSibling.focus();
@@ -954,10 +987,16 @@
                     if (e && e.target && e.target.value) {
                         switch (e.target.id) {
                             case 'txtFechaNac':
-                                appVueVenta.recorrerFechaNac();
+                                {
+                                    if (appVueVenta.list.ventas[appVueVenta.indexVenta].FechaNac !== document.getElementById('txtFechaNac').value)
+                                        appVueVenta.recorridoTxtFechaNac();
+                                };
                                 break;
                             case 'txtFechaNacRA':
-                                appVueRegistrarInfante.recorrerFechaNac();
+                                {
+                                    if (appVueRegistrarInfante.FechaNac !== document.getElementById('txtFechaNacRA').value)
+                                        appVueRegistrarInfante.recorrerFechaNac();
+                                };
                                 break;
                         }
                     }
@@ -999,6 +1038,9 @@
                     }
                 });
             }
+
+            //#endregion
+
         })
 
         var UrlIndexPrincipal = '@Url.Action("Index", "Principal")';
@@ -1136,14 +1178,6 @@
             }
 
             return value;
-        }
-
-        Vue.prototype.$getValueDateTimePicker = function obtenerValorDateTimePicker(e) {
-            return e.target.value;
-        }
-
-        Vue.prototype.$getValueDateTimePicker_Hours = function obtenerValorDateTimePicker_Hours(e) {
-            return e.target.value;
         }
 
         Vue.prototype.$filterLettersToName = function $filtroLetrasParaNombres(value) {
@@ -1797,7 +1831,7 @@
                     else
                         this.search();
                 },
-                nextStep: function (code) {
+                nextStep: function (code, _auxEvent) {
                     switch (code) {
                         case 1:
                             $('#cboDestinoPas input[type=search]').focus();
@@ -1810,12 +1844,10 @@
                             break;
                         case 4:
                             {
-                                this.filtro.FechaViaje = document.getElementById('txtFecha').value;
-
                                 if (!this.filtro.FechaViaje)
                                     this.filtro.FechaViaje = moment().format('DD/MM/YYYY');
-
-                                this.$nextTick(() => {
+                                
+                                this.$nextTick(() => { // '$nextTick' para realizar de forma correcta el evento 'blur'
                                     document.getElementById('txtHora').focus();
                                 });
                             };
@@ -3242,15 +3274,14 @@
                         $('#cboPVOrigenBus input[type=search]').focus();
                     else if (!this.filtro.CodiDestinoBus)
                         $('#cboDestinoBus_2 input[type=search]').focus();
+                    else if (!this.filtro.Turno)
+                        document.getElementById('txtTurno').focus();
                     else if (!this.filtro.CodiServicio)
                         $('#cboServicio input[type=search]').focus();
                     else if (!this.filtro.CodiDestinoPas)
                         $('#cboDestinoPas_2 input[type=search]').focus();
-                    else if (!this.filtro.Turno)
-                        document.getElementById('txtTurno').focus();
-                    else if (!this.filtro.Fecha) {
+                    else if (!this.filtro.Fecha)
                         document.getElementById('txtFecha_2').focus();
-                    }
                     else
                         appController.chargeTurnos();
                 },
@@ -3419,20 +3450,13 @@
                     this.indexVenta = _index;
                     this.recorridoSectionVentas();
                 },
-                recorrerFechaNac: function () {
+                setDateAndCalcYears: function () {
                     this.list.ventas[this.indexVenta].FechaNac = document.getElementById('txtFechaNac').value;
 
-                    this.recorridoTxtFechaNac();
-                },
-                setDateAndCalcYears: function () {
-                    var _this = this;
-
-                    _this.$nextTick(() => {
-                        if (_this.list.ventas[_this.indexVenta].FechaNac)
-                            _this.list.ventas[_this.indexVenta].Edad = appController.calculaEdad(_this.list.ventas[_this.indexVenta].FechaNac);
-                        else
-                            _this.list.ventas[_this.indexVenta].Edad = '';
-                    });
+                    if (this.list.ventas[this.indexVenta].FechaNac)
+                        this.list.ventas[this.indexVenta].Edad = appController.calculaEdad(this.list.ventas[this.indexVenta].FechaNac);
+                    else
+                        this.list.ventas[this.indexVenta].Edad = '';
                 },
                 searchUser: async function () {
                     var _this = this;
@@ -3937,11 +3961,10 @@
                             {
                                 if (!_this.filtro.Fecha)
                                     _this.filtro.Fecha = moment().format('DD/MM/YYYY');
-
+                                
                                 _this.$nextTick(() => {
-                                    document.getElementById('txtFecha_2').blur();
-
-                                    _this.recorridoSectionFilter();
+                                    if (!_this.processing)
+                                        _this.recorridoSectionFilter();
                                 });
                             };
                             break;
@@ -3951,7 +3974,6 @@
                             // Seteo el 'Destino Pasajero' por el valor del 'Destino Bus'
                             _this.filtro.CodiDestinoPas = _.cloneDeep(_this.filtro.CodiDestinoBus);
 
-                            // Seteo 'Fecha' si no hay ninguna seleccionada
                             if (!_this.filtro.Fecha)
                                 _this.filtro.Fecha = moment().format('DD/MM/YYYY');
 
@@ -6370,11 +6392,9 @@
                 },
                 validateFechaReservacion: function (_keyCode, _validateKeyBinds) {
                     var _this = this;
-                    
-                    if (!document.getElementById('txtFechaReservacion').value)
+
+                    if (!_this.list.ventas[_this.indexVenta].FechaReservacion)
                         _this.list.ventas[_this.indexVenta].FechaReservacion = moment().format('DD/MM/YYYY');
-                    else
-                        _this.list.ventas[_this.indexVenta].FechaReservacion = document.getElementById('txtFechaReservacion').value;
                     
                     _this.$nextTick(() => {
                         if (_keyCode === 13) {
@@ -6396,10 +6416,8 @@
                 validateHoraReservacion: async function (_keyCode, _validateKeyBinds) {
                     var _this = this;
 
-                    if (!document.getElementById('txtHoraReservacion').value)
-                        _this.list.ventas[_this.indexVenta].HoraReservacion = moment().format('hh:mm A')
-                    else
-                        _this.list.ventas[_this.indexVenta].HoraReservacion = document.getElementById('txtHoraReservacion').value;
+                    if (!_this.list.ventas[_this.indexVenta].HoraReservacion)
+                        _this.list.ventas[_this.indexVenta].HoraReservacion = moment().format('hh:mm A');
 
                     _this.$nextTick(async function() {
                         if (_keyCode === 13) {
@@ -8025,25 +8043,24 @@
                         this.disabledBotones = true;
                 },
                 recorrerFechaNac: function () {
-                    if (!this.FechaNac) {
+                    var _this = this;
+
+                    if (!_this.FechaNac) {
                         APP.msg.warning('Ingrese fecha de nacimiento.');
                         return false;
                     }
 
-                    //if (!document.getElementById('txtFechaNacRA').value)
-                    //    this.FechaNac = moment().format('DD/MM/YYYY');
-
-                    this.recorridoSectionParentesco();
+                    _this.$nextTick(() => {
+                        _this.recorridoSectionParentesco();
+                    });
                 },
                 setDateAndCalcYears: function () {
-                    var _this = this;
+                    this.FechaNac = document.getElementById('txtFechaNacRA').value;
 
-                    _this.$nextTick(() => {
-                        if (_this.FechaNac)
-                            _this.Edad = appController.calculaEdad(_this.FechaNac);
-                        else
-                            _this.Edad = '';
-                    });
+                    if (this.FechaNac)
+                        this.Edad = appController.calculaEdad(this.FechaNac);
+                    else
+                        this.Edad = '';
                 },
                 recorridoSectionParentesco: function (auxValidate) {
                     var auxResponse = false;
@@ -9418,8 +9435,8 @@
                 recorrerFechaCita: function () {
                     var _this = this;
 
-                    if (!document.getElementById('txtFechaCita').value)
-                        this.fechaCita = moment().format('DD/MM/YYYY');
+                    if (!_this.fechaCita)
+                        _this.fechaCita = moment().format('DD/MM/YYYY');
 
                     _this.$nextTick(() => {
                         _this.recorrerCreditoOpciones();
@@ -10421,15 +10438,22 @@
                             document.getElementById('txtFechaMP').focus();
                             break;
                         case 7:
-                            document.getElementById('btnCargarTurnoMP').focus();
+                            {
+                                if (!this.filtro.fecha)
+                                    this.filtro.fecha = moment().format('DD/MM/YYYY');
+
+                                this.$nextTick(() => {
+                                    document.getElementById('btnCargarTurnoMP').focus();
+                                });
+                            };
                             break;
                     }
                 },
                 cargaTurno: function () {
-                    if (!document.getElementById('txtFechaMP').value)
+                    if (!this.filtro.fecha)
                         this.filtro.fecha = moment().format('DD/MM/YYYY');
 
-                    alert('Carga turno');
+                    alert('Cargar turno.');
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -14095,16 +14119,43 @@
                     if (this.filtro.clienteLabel)
                         this.recorrerNotaCredito();
                 },
-                recorridoTxtFechaInicial: function (_keyCode) {
-                    console.log('xxxxxx1');
-                    this.filtro.fechaInicial = this.$getValueDateTimePicker(event);
-                    if (_keyCode === 13)
-                        this.recorrerNotaCredito();
+                recorridoTxtFechaInicial: function (_keyCode, _validateKeyBinds) {
+                    var _this = this;
+
+                    if (!_this.filtro.fechaInicial)
+                        _this.filtro.fechaInicial = moment().format('DD/MM/YYYY');
+
+                    _this.$nextTick(() => {
+                        if (_keyCode === 13) {
+                            if (_this.filtro.fechaFinal) {
+                                if (moment(_this.filtro.fechaInicial, 'DD/MM/YYYY').isAfter(moment(_this.filtro.fechaFinal, 'DD/MM/YYYY'))) {
+                                    APP.msg.warning('La fecha inicial debe ser menor o igual a la fecha final.');
+                                    if (_validateKeyBinds === true) return false;
+                                }
+                            }
+
+                            _this.recorrerNotaCredito();
+                        }
+                    });
                 },
-                recorridoTxtFechaFinal: function (_keyCode) {
-                    this.filtro.fechaFinal = this.$getValueDateTimePicker(event);
-                    if (_keyCode === 13)
-                        this.recorrerNotaCredito();
+                recorridoTxtFechaFinal: function (_keyCode, _validateKeyBinds) {
+                    var _this = this;
+
+                    if (!_this.filtro.fechaFinal)
+                        _this.filtro.fechaFinal = moment().format('DD/MM/YYYY');
+
+                    _this.$nextTick(() => {
+                        if (_keyCode === 13) {
+                            if (_this.filtro.fechaInicial) {
+                                if (moment(_this.filtro.fechaInicial, 'DD/MM/YYYY').isAfter(moment(_this.filtro.fechaFinal, 'DD/MM/YYYY'))) {
+                                    APP.msg.warning('La fecha final debe ser igual o mayor a la fecha inicial.');
+                                    if (_validateKeyBinds === true) return false;
+                                }
+                            }
+
+                            _this.recorrerNotaCredito();
+                        }
+                    });
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`

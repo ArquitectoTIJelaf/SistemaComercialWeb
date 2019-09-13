@@ -571,7 +571,7 @@
                                                            v-mask="'##/##/####'"
                                                            @@focus="$event.target.select()"
                                                            @@keydown.13.prevent="$refs.refREHoraIt.focus()"
-                                                           @@blur="filtroProgramacion.FechaViaje = $getValueDateTimePicker($event)"
+                                                           @@blur="filtroProgramacion.FechaViaje = $event.target.value"
                                                            autocomplete="off"
                                                            ref="refREFechaIt" />
                                                 </div>
