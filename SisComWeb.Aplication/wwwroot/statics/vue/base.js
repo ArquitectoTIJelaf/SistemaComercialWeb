@@ -1771,15 +1771,21 @@ const Autocomplete = {
 };
 /*!********************* Vue Autocomplete*/
 
-/*********************** Vue Mask *****/
+/*********************** Vue Mask *************/
 
 Vue.use(VueMask.VueMaskPlugin);
-/*********************** Vue Mask *****/
+/*********************** Vue Mask *************/
 
-/*********************** Vue Select *****/
+/*********************** Vue Select **********/
 
 Vue.component('v-select', VueSelect.VueSelect);
-/*!********************* Vue Select *****/
+/*!******************** Vue Select ***********/
+
+
+/***************** Vue Pretty Checkbox *****/
+
+Vue.use(PrettyCheckbox);
+/*!**************  Vue Pretty Checkbox *****/
 
 /*************** Variables Generales ****/
 APP.ventas = {};

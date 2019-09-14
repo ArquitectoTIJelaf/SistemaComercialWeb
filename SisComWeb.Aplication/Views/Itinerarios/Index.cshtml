@@ -12817,7 +12817,14 @@
                                         _this.nuevaProgramacion.NroViaje = res.data.Valor.NroViaje;
 
                                         _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
-                                        _this.list.destinosRutaOri = res.data.Valor.ListaDestinosRuta;
+
+                                        var tempList = [];
+                                        for (var e of _.cloneDeep(res.data.Valor.ListaDestinosRuta)) {
+                                            e.check = false;
+                                            tempList.push(e);
+                                        };
+                                        _this.list.destinosRutaOri = tempList;
+
                                         _this.list.plano5_Ori = _this.list.tempListOri.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano4_Ori = _this.list.tempListOri.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -12840,7 +12847,14 @@
                                         _this.objProgramacion.CodiDestino = _.cloneDeep(res.data.Valor.CodiDestino);
 
                                         _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
-                                        _this.list.destinosRutaDes = res.data.Valor.ListaDestinosRuta;
+                                        //_this.list.destinosRutaDes = res.data.Valor.ListaDestinosRuta;
+                                        var tempList = [];
+                                        for (var e of _.cloneDeep(res.data.Valor.ListaDestinosRuta)) {
+                                            e.check = true;
+                                            tempList.push(e);
+                                        };
+                                        _this.list.destinosRutaDes = tempList;
+
                                         _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -13114,6 +13128,90 @@
 
                             await _this.bloquearAsientoList(asientosBloqueados);
 
+                            await APP.msg.infoMessage('Asientos Bloqueados', `Se bloqueó correctamente los asientos: ${asientosBloqueados.join(', ')}`)
+                        } else APP.msg.info('No se encontró coincidencias');
+                    });
+                },
+                procesarEnLoteSelect: function () {
+                    let _this = this;
+
+                    //Si esta previsualizando, corta el efecto (IDS = 0)
+                    if (_this.rainEfect) {
+
+                        for (var e2 of _this.list.tempListDes) {
+                            if (e2.NumeAsiento !== 0) {
+                                if (_this.list.newAsientos.includes(e2.NumeAsiento)) {
+                                    e2.NumeAsiento = 0;
+                                    e2.IDS = 0;
+                                }
+                            }
+                        }
+
+                        _this.stopPrevisualizar();
+                        _this.rainEfect = false;
+                    }
+
+                    //Se crea asientosBloqueados tempoarlmente
+                    var asientosBloqueados = [];
+
+
+                    _this.$nextTick(async () => {
+                        
+                        /*
+                         * Si la lista newAsientos (utilizada para Procesar Lote) esta vacía,
+                         * hace un recorrido de los asientos vendidos de la lista de origien
+                         * y en caso de estar libre el asiento en la lista de destino, lo almacena en newAsientos
+                         * */
+                        if (!_this.list.newAsientos.length > 0) {
+
+                            for (var e1 of _this.list.tempListOri) {
+                                for (var e2 of _this.list.tempListDes) {
+                                    if (e1.NumeAsiento !== 0 && e1.IdVenta !== '') {
+                                        if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
+                                            //Solo agrega a newAsientos los checkbox marcados
+                                            if (_.findIndex(_this.list.destinosRutaOri, (o) => { return o.CodiSucursal === e1.CodiDestino && o.check }) >= 0) {
+                                                _this.list.newAsientos.push(_.cloneDeep(e1.NumeAsiento));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        /*
+                         * A partir del Proceso, newAsientos debe contar con 
+                         * coincidencias para continuar el proceso 
+                         * */
+                        if (_this.list.newAsientos.length > 0) {
+
+                            for (var e1 of _this.list.tempListOri) {
+                                if (e1.NumeAsiento !== 0) {
+                                    if (_this.list.newAsientos.includes(e1.NumeAsiento)) {
+                                        e1.NumeAsiento = 0;
+                                    }
+                                }
+                            }
+
+                            /*
+                             * Recorre la lista de destino y setea el NumeAsiento 
+                             * (con solor $colorBloqueoInterno) a partir de newAsientos
+                             * */
+                            for (var e2 of _this.list.tempListDes) {
+                                for (var asiento of _this.list.newAsientos) {
+                                    if (e2.NumeAsiento === 0 && parseInt(e2.Tipo) === asiento) {
+                                        e2.NumeAsiento = asiento;
+                                        asientosBloqueados.push(_.padStart(asiento, 2, '0'));
+                                    }
+                                }
+                            }
+
+                            //Variable que indica si se esta Procesando en lote o no
+                            _this.processingLote = true;
+
+                            //Bloquea los asientos a partir de asientosBloqueados
+                            await _this.bloquearAsientoList(asientosBloqueados);
+
+                            //Mensaje estático indicando los asientos bloqueados
                             await APP.msg.infoMessage('Asientos Bloqueados', `Se bloqueó correctamente los asientos: ${asientosBloqueados.join(', ')}`)
                         } else APP.msg.info('No se encontró coincidencias');
                     });
