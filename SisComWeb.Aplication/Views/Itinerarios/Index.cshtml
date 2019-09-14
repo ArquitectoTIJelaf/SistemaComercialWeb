@@ -1172,14 +1172,14 @@
 
         Vue.prototype.$getValueDateTimePicker = function obtenerValorDateTimePicker(e, _validateFechaActual) {
             if (e && !e.target.value && _validateFechaActual !== false)
-                e.target.value = '10/09/2019'; // moment().format('DD/MM/YYYY')
+                e.target.value = moment().format('DD/MM/YYYY');
 
             return e.target.value;
         }
 
         Vue.prototype.$getValueDateTimePicker_Hours = function obtenerValorDateTimePicker_Hours(e, _validateHoraActual) {
             if (e && !e.target.value && _validateHoraActual !== false)
-                return '03:00AM'; // moment().format('hh:mm A')
+                return moment().format('hh:mm A');
 
             return e.target.value;
         }
