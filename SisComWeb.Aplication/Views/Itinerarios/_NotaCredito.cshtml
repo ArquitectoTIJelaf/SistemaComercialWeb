@@ -119,7 +119,7 @@
                                        v-model="filtro.fechaInicial"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @@blur="filtro.fechaInicial = $event.target.value"
+                                       @@blur="filtro.fechaInicial = $getValueDateTimePicker($event)"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-2">
@@ -131,7 +131,7 @@
                                        v-model="filtro.fechaFinal"
                                        v-mask="'##/##/####'"
                                        @@focus="$event.target.select()"
-                                       @@blur="filtro.fechaFinal = $event.target.value"
+                                       @@blur="filtro.fechaFinal = $getValueDateTimePicker($event)"
                                        autocomplete="off" />
                             </div>
                         </div>
@@ -305,7 +305,7 @@
                                        @@focus="$event.target.select()"
                                        @*@@keydown.13.prevent="recorrido(1)"*@
                                        @*@@keydown.9.prevent="recorrido(1)"*@
-                                       @@blur="filtro.FechaEmision = $event.target.value"
+                                       @@blur="filtro.FechaEmision = $getValueDateTimePicker($event)"
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-2">

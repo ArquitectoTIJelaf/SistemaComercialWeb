@@ -86,7 +86,7 @@
                                                    @@focus="$event.target.select()"
                                                    @@keydown.13.prevent="nextStep(4)"
                                                    @*@@keydown.9.prevent="nextStep(4)"*@
-                                                   @@blur="filtro.FechaViaje = $event.target.value"
+                                                   @@blur="filtro.FechaViaje = $getValueDateTimePicker($event)"
                                                    autocomplete="off" />
                                         </div>
                                     </div>
@@ -103,7 +103,7 @@
                                                @@focus="$event.target.select()"
                                                @@keydown.13.prevent="nextStep(5)"
                                                @*@@keydown.9.prevent="nextStep(5)"*@
-                                               @@blur="filtro.Hora = $event.target.value"
+                                               @@blur="filtro.Hora = $getValueDateTimePicker_Hours($event, false)"
                                                autocomplete="off" />
                                     </div>
                                 </div>

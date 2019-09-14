@@ -670,7 +670,7 @@ namespace SisComWeb.Repository
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
-                db.ProcedureName = "scwsp_Tb_Venta_Reintegro_Consulta_Anul_Ele02";
+                db.ProcedureName = "scwsp_Tb_Venta_Reintegro_Consulta_Anul_Ele";
                 db.AddParameter("@Ser", DbType.String, ParameterDirection.Input, Ser);
                 db.AddParameter("@Bol", DbType.String, ParameterDirection.Input, Bol);
                 db.AddParameter("@Emp", DbType.String, ParameterDirection.Input, Emp);
