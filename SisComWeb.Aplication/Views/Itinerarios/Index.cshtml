@@ -54,7 +54,6 @@
 @Html.Partial("_AnularReintegro")
 @Html.Partial("_PaseLote")
 @Html.Partial("_CTipoPago")
-@Html.Partial("_CrearProgramacion")
 @Html.Partial("_NotaCredito")
 
 @section styles{
@@ -12694,7 +12693,9 @@
                     plano2_Des: [],
                     plano1_Des: [],
                     newAsientos: [],
-                    newAsientosManuales: []
+                    newAsientosManuales: [],
+                    destinosRutaOri: [],
+                    destinosRutaDes: []
                 },
                 paginate: ['items', 'items2'],
                 rainEfect: false,
@@ -12865,6 +12866,7 @@
                                         _this.nuevaProgramacion.NroViaje = res.data.Valor.NroViaje;
 
                                         _this.list.tempListOri = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                        _this.list.destinosRutaOri = res.data.Valor.ListaDestinosRuta;
                                         _this.list.plano5_Ori = _this.list.tempListOri.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano4_Ori = _this.list.tempListOri.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano3_Ori = _this.list.tempListOri.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -12887,6 +12889,7 @@
                                         _this.objProgramacion.CodiDestino = _.cloneDeep(res.data.Valor.CodiDestino);
 
                                         _this.list.tempListDes = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+                                        _this.list.destinosRutaDes = res.data.Valor.ListaDestinosRuta;
                                         _this.list.plano5_Des = _this.list.tempListDes.filter(x => x.Indice === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano4_Des = _this.list.tempListDes.filter(x => x.Indice + 1 === Math.ceil(x.Indice / 5) * 5);
                                         _this.list.plano3_Des = _this.list.tempListDes.filter(x => x.Indice + 2 === Math.ceil(x.Indice / 5) * 5);
@@ -13304,63 +13307,6 @@
                     //    })
                     //    .catch(APP.rq.axios_handler_error_alert);
                 },
-                crearProgramacion: async function () {
-                    let _this = this;
-
-                    // Validación de Plano de Origen
-                    if (!_this.list.tempListOri.length > 0) {
-                        APP.msg.infoMessage('Plano de origen no seleccionado', 'Debe seleccionar un plano de origen con el que se creará la nueva programación');
-                        return;
-                    }
-
-                    //Validación de no tener asientos bloqueados
-                    if (!(_this.list.newAsientos.length == 0 && _this.list.newAsientosManuales.length == 0)) {
-                        if (_this.rainEfect) {
-                            _this.stopPrevisualizar();
-                        } else {
-                            if (await APP.msg.confirm('Mensaje de Confirmación', 'Los asientos bloqueados se restaurarán. ¿Desea continuar?')) {
-                                _this.restaurarLote();
-                                APP.msg.info('Se desbloquearon los asientos');
-                            } else return;
-                        }
-                    }
-
-                    var input = {};
-                    input.CodiEmpresa = _this.nuevaProgramacion.CodiEmpresa;
-                    input.CodiSucursal = _this.nuevaProgramacion.CodiSucursal;
-                    input.CodiPuntoVenta = _this.nuevaProgramacion.CodiPuntoVenta;
-                    input.CodiRuta = _this.nuevaProgramacion.CodiRuta;
-                    input.CodiBus = _this.nuevaProgramacion.CodiBus;
-                    input.FechaProgramacion = _this.nuevaProgramacion.FechaProgramacion;
-                    input.HoraProgramacion = _this.nuevaProgramacion.HoraProgramacion;
-                    input.CodiServicio = _this.nuevaProgramacion.CodiServicio;
-                    input.NroViaje = _this.nuevaProgramacion.NroViaje;
-
-                    appController.showCrearProgramacion(input);
-
-                    await deferredModal($('#appVueCrearProgramacion'), true).done(function () {
-                        appVueCrearProgramacion.$nextTick(() => {
-                            window.removeEventListener('keyup', _this.esc);
-                        });
-                    });
-
-                    await deferredModal($('#appVueCrearProgramacion'), false).done(function () {
-                        appVueCrearProgramacion.$nextTick(() => {
-                            //if (appVueMiniMapa.asientoSel.Tipo) {
-                            //    _this.filtroCambio.NumAsiento = appVueMiniMapa.asientoSel.Tipo;
-                            //    _this.list.destinosPas = appVueMiniMapa.list.destinosPas;
-                            //    _this.filtroCambio.Fecha = _this.filtroMiniMapa.FechaViaje;
-                            //    _this.filtroCambio.Hora = _this.filtroMiniMapa.HoraViaje;
-                            //    _this.filtroCambio.Nivel = appVueMiniMapa.asientoSel.Nivel;
-                            //    _this.$nextTick(() => {
-                            //        _this.$refs.refREDestinoNew.$el.querySelector('input').focus();
-                            //    });
-                            //} else _this.$refs.refREAsientoNew.focus();
-
-                            window.addEventListener('keyup', _this.esc);
-                        });
-                    });
-                },
                 confirm: async function () {
                     let _this = this;
 
@@ -13501,6 +13447,9 @@
                     _this.nuevaProgramacion.HoraProgramacion = '';
                     _this.nuevaProgramacion.CodiServicio = '';
                     _this.nuevaProgramacion.NroViaje = '';
+
+                    _this.list.destinosRutaOri = [];
+                    _this.list.destinosRutaDes = [];
                 },
                 limpiarBus: function (auxMapa) {
                     let _this = this;
@@ -14052,79 +14001,6 @@
             },
             watch: {
             }
-        });
-
-        var appVueCrearProgramacion = new Vue({
-            el: '#appVueCrearProgramacion',
-            data: {
-                filtro: {},
-                list: {
-                    empresas: [],
-                    rutas: [],
-                    servicios: []
-                }
-            },
-            mounted: function () {
-                let _this = this;
-
-                $('#appVueCrearProgramacion').on('shown.bs.modal', function () {
-                    window.addEventListener('keyup', _this.esc);
-
-                    $(document).off('focusin.modal');
-
-                    _this.$nextTick(() => {
-                        _this.$refs.refCPHoraProg.focus();
-                    });
-                });
-            },
-            methods: {
-                show: function (_filtro) {
-                    let _this = this;
-                    _this.limpiarData();
-                    _this.filtro = _filtro;
-                    $('#appVueCrearProgramacion').modal('show');
-                    _this.setData();
-                },
-                setData: function () {
-                },
-                getLabel: function (option) {
-                    return `${option.id} - ${option.label}`
-                },
-                save: async function () {
-                    let _this = this;
-
-                    //Validación si no tiene hora de programación
-                    if (!_this.filtro.HoraProgramacion) {
-                        APP.msg.warning('Debe seleccionar una hora');
-                        _this.$refs.refCPHoraProg.focus();
-                        return;
-                    }
-                    
-                    //await APP.rq.axios.post(APP.base + '/paseLote/crearProgramacion', _this.filtro)
-                    //    .then(async function (res) {
-                    //        if (res.data.Estado) {
-                    //            APP.msg.info('Se creó la Programación correctamente');
-                    //            _this.close();
-                    //        }
-                    //    })
-                    //    .catch(APP.rq.axios_handler_error_alert);
-                },
-                limpiarData: function () {
-                    let _this = this;
-                    _this.filtro = {};
-                },
-                esc: function (event) {
-                    if (event.keyCode === 27) {
-                        this.close();
-                    }
-                },
-                close: function () {
-                    window.removeEventListener('keyup', this.esc);
-                    $('#appVueCrearProgramacion').modal('hide');
-                },
-            },
-            computed: {},
-            watch: {}
         });
 
         var appVueNotaCredito = new Vue({
