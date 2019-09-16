@@ -11,7 +11,16 @@
                     <div class="panel panel-default m-b-0 m-t-10" v-show="true">
                         <div class="panel-heading p-0">
                             <div class="font-12 p-t-0 p-b-0">
-                                FILTROS DE ORIGEN
+                                <div class="" style="display:inline;">FILTROS DE ORIGEN</div>
+                                <div class="p-l-30" style="display:inline;" v-if="list.destinosRutaOri.length > 0">
+                                    <div v-for="(item, key) in list.destinosRutaOri" style="margin-right: 7px; display: inline-block;" :title="item.NomOficina">
+                                        <p-check class="p-icon p-curve p-tada p-plain" v-model="item.check">
+                                            <i slot="extra" class="icon fa fa-bookmark" :style="{'color': item.Color}"></i>
+                                            {{item.Sigla}}
+                                        </p-check>
+
+                                    </div>
+                                </div>
                                 <div class="panel-action">
                                     <a @@click="" ref="refCollapseOrigen" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
@@ -303,7 +312,15 @@
                     <div class="panel panel-default m-b-0 m-t-10" v-show="true">
                         <div class="panel-heading p-0">
                             <div class="font-12 p-t-0 p-b-0">
-                                FILTROS DE DESTINO
+                                <div class="" style="display:inline;">FILTROS DE DESTINO</div>
+                                <div class="p-l-30" style="display:inline;" v-if="list.destinosRutaDes.length > 0">
+                                    <div v-for="item in list.destinosRutaDes" style="margin-right: 7px;display: inline-block;" :title="item.NomOficina">
+                                        <p-check class="p-icon p-curve p-tada p-plain" v-model="item.check" checked disabled>
+                                            <i slot="extra" class="icon fa fa-bookmark" :style="{'color': item.Color}"></i>
+                                            {{item.Sigla}}
+                                        </p-check>
+                                    </div>
+                                </div>
                                 <div class="panel-action">
                                     <a @@click="" ref="refCollapseDestino" class="btn btn-default btn-sm" href="javascript:void(0);" data-perform="panel-collapse"><i class="ti-minus"></i></a>
                                 </div>
@@ -594,9 +611,10 @@
             </div>
             <div class="modal-footer p-t-0">
                 <button class="btn btn-success waves-effect m-t-10"
-                        @@click="crearProgramacion"
-                        ref="refBtnCrearProgramacionPL">
-                    <span class="fa fa-save fa-fw"></span>Crear Programación
+                        @@click="procesarEnLoteSelect"
+                        :disabled="!(list.tempListOri.length > 0 || list.tempListDes.length > 0) || processingLote"
+                        ref="refBtnProccesingLoteSelect">
+                    <span class="fa fa-refresh fa-fw"></span>Procesar Seleccionados
                 </button>
                 <button id="btnProccesingLote"
                         class="btn btn-primary waves-effect m-t-10"

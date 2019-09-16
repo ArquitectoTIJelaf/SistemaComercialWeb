@@ -23,6 +23,7 @@
     <link href="~/wwwroot/plugins/bower_components/bootrstrap-datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="~/wwwroot/plugins/bower_components/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="~/wwwroot/plugins/bower_components/jquery-ui/jquery-ui.css" rel="stylesheet" />
+    <link href="~/wwwroot/plugins/bower_components/pretty-checkbox/pretty-checkbox.min.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
     <script type="text/javascript">
         var main_globals = {};
@@ -57,7 +58,7 @@
         var urlImprimirBoleto = System.Configuration.ConfigurationManager.AppSettings["urlImprimirBoleto"];
     }
     <script>
-
+        
         var Usuario = '@usuario';
         var UrlImprimirBoleto = '@urlImprimirBoleto';
         var ValSetInt_MensajeriaInstantanea = 0;
