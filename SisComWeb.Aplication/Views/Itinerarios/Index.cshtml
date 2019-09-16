@@ -1600,7 +1600,10 @@
                 asignBeneficiarioDrag: async function () {
                     if (appVuePostergacion.filtro.empresa && appVuePostergacion.filtro.serie && appVuePostergacion.filtro.documento) {
                         await appVuePostergacion.searchPasajero();
-                        await appVuePostergacion.asignBeneficiario();
+
+                        var auxValidate = await appVuePostergacion.asignBeneficiario();
+                        if (auxValidate === false) // Especificamos el valor 'false' para diferenciarlo del 'null'.
+                            await appController.liberarAsientoActual();
                     }
                     else
                         this.showPostergacion();
@@ -2713,6 +2716,14 @@
                                 {
                                     if (_this.objTurno.SucControlReserva === '1') {
                                         APP.msg.warning('La oficina no está autorizada para reservar asientos.');
+                                        _this.disabledAsiento = false;
+                                        return auxResponse;
+                                    }
+
+                                    if ((appController.validatePanel('104') !== '1' || appController.validatePanelNivel(1, Usuario.Nivel) !== '1') &&
+                                        _this.list.ventas[0].NroAsiento > 0) {
+
+                                        APP.msg.warning('No está autorizado para reservar más de un asiento a la vez.');
                                         _this.disabledAsiento = false;
                                         return auxResponse;
                                     }
@@ -4091,50 +4102,7 @@
 
                     return auxResponse;
                 },
-                showTipoPago: async function () {
-                    // Copiar datos del último Ticket para todos los demás.
-                    switch (this.pickedBusVenta) {
-                        case 'R':
-                            {
-                                if (appController.validatePanel('104') === '1' && appController.validatePanelNivel(1, Usuario.Nivel) === '1') {
-                                    var auxLength = this.list.ventas.length;
-                                    var validatorDocumento = _.findIndex(this.list.ventas, o => { return o.Documento.length >= 8; });
-
-                                    if (auxLength > 1 && validatorDocumento === (auxLength - 1)) {
-                                        if (await APP.msg.confirm(
-                                            'Copiar datos',
-                                            '¿Desea copiar los datos de este ticket para todos los demás?')) {
-
-                                            for (var i = auxLength - 2; i >= 0; i--) {
-                                                this.list.ventas[i].ApellidoMaterno = _.cloneDeep(this.list.ventas[auxLength - 1].ApellidoMaterno);
-                                                this.list.ventas[i].ApellidoPaterno = _.cloneDeep(this.list.ventas[auxLength - 1].ApellidoPaterno);
-                                                this.list.ventas[i].CodiTipoDoc = _.cloneDeep(this.list.ventas[auxLength - 1].CodiTipoDoc);
-                                                this.list.ventas[i].Direccion = _.cloneDeep(this.list.ventas[auxLength - 1].Direccion);
-                                                this.list.ventas[i].Documento = _.cloneDeep(this.list.ventas[auxLength - 1].Documento);
-                                                this.list.ventas[i].Edad = _.cloneDeep(this.list.ventas[auxLength - 1].Edad);
-                                                this.list.ventas[i].FechaNac = _.cloneDeep(this.list.ventas[auxLength - 1].FechaNac);
-                                                this.list.ventas[i].IdCliente = _.cloneDeep(this.list.ventas[auxLength - 1].IdCliente);
-                                                this.list.ventas[i].Nacionalidad = _.cloneDeep(this.list.ventas[auxLength - 1].Nacionalidad);
-                                                this.list.ventas[i].Nombres = _.cloneDeep(this.list.ventas[auxLength - 1].Nombres);
-                                                this.list.ventas[i].RazonSocial = _.cloneDeep(this.list.ventas[auxLength - 1].RazonSocial);
-                                                this.list.ventas[i].Recoger = _.cloneDeep(this.list.ventas[auxLength - 1].Recoger);
-                                                this.list.ventas[i].Ruc = _.cloneDeep(this.list.ventas[auxLength - 1].Ruc);
-                                                this.list.ventas[i].Sexo = _.cloneDeep(this.list.ventas[auxLength - 1].Sexo);
-                                                this.list.ventas[i].Telefono = _.cloneDeep(this.list.ventas[auxLength - 1].Telefono);
-                                                this.list.ventas[i].Precio = _.cloneDeep(this.list.ventas[auxLength - 1].Precio);
-                                                this.list.ventas[i].FechaReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].FechaReservacion);
-                                                this.list.ventas[i].HoraReservacion = _.cloneDeep(this.list.ventas[auxLength - 1].HoraReservacion);
-                                                this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(this.list.ventas[auxLength - 1].ValidadorClienteEspecial);
-
-                                                this.list.ventas[i].Correo = _.cloneDeep(this.list.ventas[auxLength - 1].Correo);
-                                            }
-                                        }
-                                    }
-                                }
-                            };
-                            break;
-                    }
-
+                showTipoPago: function () {
                     if (!this.errorsInTicketsVenta())
                         return;
 
@@ -4494,7 +4462,49 @@
 
                     this.recorridoSectionVentas();
                 },
-                rightSlider: function () {
+                rightSlider: async function () {
+
+                    // Copiar datos del último Ticket para todos los demás.
+                    switch (this.pickedBusVenta) {
+                        case 'R':
+                            {
+                                var auxLength = this.list.ventas.length;
+
+                                if (auxLength > 1 && appController.validatePanel('104') === '1' && appController.validatePanelNivel(1, Usuario.Nivel) === '1') {
+
+                                    if (await APP.msg.confirm(
+                                        'Copiar datos',
+                                        '¿Desea copiar los datos de este ticket para todos los demás?')) {
+                                        
+                                        for (var i = 1; i < auxLength; i++) { // 'i = 0': No tomamos encuenta el original.
+
+                                            this.list.ventas[i].ApellidoMaterno = _.cloneDeep(this.list.ventas[0].ApellidoMaterno);
+                                            this.list.ventas[i].ApellidoPaterno = _.cloneDeep(this.list.ventas[0].ApellidoPaterno);
+                                            this.list.ventas[i].CodiTipoDoc = _.cloneDeep(this.list.ventas[0].CodiTipoDoc);
+                                            this.list.ventas[i].Direccion = _.cloneDeep(this.list.ventas[0].Direccion);
+                                            this.list.ventas[i].Documento = _.cloneDeep(this.list.ventas[0].Documento);
+                                            this.list.ventas[i].Edad = _.cloneDeep(this.list.ventas[0].Edad);
+                                            this.list.ventas[i].FechaNac = _.cloneDeep(this.list.ventas[0].FechaNac);
+                                            this.list.ventas[i].IdCliente = _.cloneDeep(this.list.ventas[0].IdCliente);
+                                            this.list.ventas[i].Nacionalidad = _.cloneDeep(this.list.ventas[0].Nacionalidad);
+                                            this.list.ventas[i].Nombres = _.cloneDeep(this.list.ventas[0].Nombres);
+                                            this.list.ventas[i].RazonSocial = _.cloneDeep(this.list.ventas[0].RazonSocial);
+                                            this.list.ventas[i].Recoger = _.cloneDeep(this.list.ventas[0].Recoger);
+                                            this.list.ventas[i].Ruc = _.cloneDeep(this.list.ventas[0].Ruc);
+                                            this.list.ventas[i].Sexo = _.cloneDeep(this.list.ventas[0].Sexo);
+                                            this.list.ventas[i].Telefono = _.cloneDeep(this.list.ventas[0].Telefono);
+                                            this.list.ventas[i].Precio = _.cloneDeep(this.list.ventas[0].Precio);
+                                            this.list.ventas[i].FechaReservacion = _.cloneDeep(this.list.ventas[0].FechaReservacion);
+                                            this.list.ventas[i].HoraReservacion = _.cloneDeep(this.list.ventas[0].HoraReservacion);
+                                            this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(this.list.ventas[0].ValidadorClienteEspecial);
+                                            this.list.ventas[i].Correo = _.cloneDeep(this.list.ventas[0].Correo);
+                                        }
+                                    }
+                                }
+                            };
+                            break;
+                    }
+
                     if (this.indexVenta < this.list.ventas.length - 1)
                         this.indexVenta++;
                     $('#bannerVentas').removeClass().addClass('col-md-10 slideOutRight animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
@@ -8471,6 +8481,12 @@
             mounted: function () { },
             methods: {
                 show: function () {
+                    
+                    if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
+                        if (appController.validatePanel('62') === '1')
+                            this.TipoPostergacion = '1';
+                    }
+
                     this.showBeneficiario = false;
                     $('#appVuePostergacion').modal('show');
                 },
@@ -8572,7 +8588,8 @@
 
                     var validaPostergacion = await _this.validaPostergacion();
                     if (!validaPostergacion) {
-                        return;
+                        _this.postClick = false;
+                        return false;
                     }
 
                     var input = {};
@@ -8665,6 +8682,15 @@
                         var verificaNC = await appController.verificaNC(this.objBeneficiario.IdVenta);
                         if (verificaNC !== 0)
                             return auxValidate = false;
+                        if (this.objBeneficiario.NivelAsiento !== String(appVueVenta.list.ventas[appVueVenta.indexVenta].NivelAsiento)) {
+                            var resClaveCambioDeNivelDeAsiento = await APP.msg.confirmClaveAutorizacion(
+                                `${_.padStart(ClaveCambioDeNivelDeAsiento, 3, '0')} - Postergar boleto`
+                                , 'Para cambiar de nivel de asiento ingrese la clave de autorización.'
+                                , ClaveCambioDeNivelDeAsiento);
+
+                            if (!resClaveCambioDeNivelDeAsiento)
+                                return auxValidate = false;
+                        }
                         if (appController.validatePanel('91') === '1') {
                             if (this.objBeneficiario.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
                                 APP.msg.warning('No se puede postergar boletos de otros puntos de venta.');
