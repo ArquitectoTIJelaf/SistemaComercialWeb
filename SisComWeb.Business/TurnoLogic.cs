@@ -242,6 +242,10 @@ namespace SisComWeb.Business
                     buscarTurno.TablaBloqueoAsientos.CodiDestino = consultarTablaBloqueoAsientos.CodiDestino;
                 }
 
+                // Actualiza 'TbViajeProgramacionCantidad'
+                if (buscarTurno.CodiProgramacion > 0)
+                    TurnoRepository.ActualizarTbViajeProgramacionCantidad(buscarTurno.CodiProgramacion);
+
                 // Lista 'PlanoBus'
                 PlanoRequest requestPlano = new PlanoRequest
                 {

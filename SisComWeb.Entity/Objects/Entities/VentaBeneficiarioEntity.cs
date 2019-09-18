@@ -22,7 +22,6 @@
 
         public short CodiPuntoVenta { get; set; }
 
-
         public string FechaProgramacion { get; set; }
 
         public byte CodiServicioProgramacion { get; set; }

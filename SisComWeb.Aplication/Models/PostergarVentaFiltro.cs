@@ -18,16 +18,18 @@
         public short CodiOrigen { get; set; }
         public short CodiDestino { get; set; }
         public string NomOrigen { get; set; }
-
-        public string CodiEsca { get; set; }
         public string CodiOrigenBoleto { get; set; }
         public string CodiRutaBoleto { get; set; }
-        public int CodiProgramacionBoleto { get; set; }
         public string BoletoCompleto { get; set; }
         public string NomPasajero { get; set; }
         public string FechaViajeBoleto { get; set; }
         public string HoraViajeBoleto { get; set; }
         public string NomDestinoBoleto { get; set; }
         public decimal PrecioVenta { get; set; }
+        public string TipoPostergacion { get; set; }
+        public int NumeAsientoBoleto { get; set; }
+        public string NomDestino { get; set; }
+
+        public decimal PrecioVentaBoleto { get; set; }
     }
 }

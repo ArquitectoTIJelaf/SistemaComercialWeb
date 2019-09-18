@@ -28,7 +28,6 @@
     var claveReimpresionPanel226 = Constant.CLAVE_REIMPRESION_PANEL226;
     var claveCambioNivelServicio = Constant.CLAVE_CAMBIO_DE_NIVEL_DE_SERVICIO_;
     var clavePostergacionFlag9 = Constant.CLAVE_POSTERGACION_FLAG_9;
-
     var claveCambioTipoPago = Constant.CLAVE_CAMBIO_TIPO_PAGO;
 }
 
@@ -1595,6 +1594,12 @@
                     appVuePostergacion.filtro.empresa = _objFiltros.Empresa;
                     appVuePostergacion.filtro.serie = auxNroVenta.substring(0, 4);
                     appVuePostergacion.filtro.documento = auxNroVenta.substring(5);
+                    if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
+                        if (appController.validatePanel('62') === '1')
+                            appVuePostergacion.filtro.tipoPostergacion = '1';
+                        else
+                            appVuePostergacion.filtro.tipoPostergacion = '0';
+                    }
                 },
                 asignBeneficiarioDrag: async function () {
                     if (appVuePostergacion.filtro.empresa && appVuePostergacion.filtro.serie && appVuePostergacion.filtro.documento) {
@@ -1709,19 +1714,6 @@
                 },
                 verificaManifiestoPorPVenta: async function (_CodiProgramacion, _CodiPuntoVenta) {
                     return await appVueVenta.verificaManifiestoPorPVenta(_CodiProgramacion, _CodiPuntoVenta);
-                },
-                getValuePNP: function (_canPNP) {
-                    var auxResponse = true;
-
-                    var nPNP = _.filter(appVueVenta.list.tempList, function (obj) { return obj.FlagVenta === 'S'; }).length;
-                    if (_canPNP > 0) {
-                        if (nPNP >= _canPNP)
-                            auxResponse = false;
-                        else
-                            auxResponse = true;
-                    }
-
-                    return auxResponse;
                 },
                 validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
                     return appVueVenta.validaDocumentoRepetido(_TipoDocumento, _NumeroDocumento, _NroAsiento);
@@ -5228,18 +5220,17 @@
                                 IdVenta: tmpAsientoSel.IdVenta,
                                 CodiServicio: _this.filtro.CodiServicio.id,
                                 CodiRuta: _this.filtro.CodiDestinoBus.id,
-
-                                BoletoCompleto: tmpAsientoSel.Boleto,
+                                BoletoCompleto: tmpAsientoSel.TipoBoleto + tmpAsientoSel.Boleto,
                                 NumeAsiento: tmpAsientoSel.NumeAsiento,
                                 Pasajero: tmpAsientoSel.Nombres + ' ' + tmpAsientoSel.ApellidoPaterno + ' ' + tmpAsientoSel.ApellidoMaterno,
                                 FechaViaje: _this.filtro.Fecha,
                                 HoraViaje: _this.filtro.Turno,
                                 NomDestino: tmpAsientoSel.NomDestino,
                                 PrecioVenta: tmpAsientoSel.PrecioVenta,
-
-                                CodiEsca: tmpAsientoSel.CodiEsca ? tmpAsientoSel.CodiEsca.substr(1) : '',
                                 CodiOrigen: tmpAsientoSel.CodiOrigen,
-                                CodiProgramacion: _this.filtro.CodiProgramacion
+                                CodiProgramacion: _this.filtro.CodiProgramacion,
+
+                                CodiEmpresa: _this.filtro.CodiEmpresa.id
                             }))
                                 .then(async function (res) {
                                     await appController.chargeTurnos();
@@ -8467,15 +8458,15 @@
                 filtro: {
                     empresa: null,
                     serie: '',
-                    documento: ''
+                    documento: '',
+                    tipoPostergacion: '0'
                 },
                 list: {
                     empresas: []
                 },
                 showBeneficiario: false,
                 objBeneficiario: {},
-                postClick: false,
-                TipoPostergacion: '0'
+                postClick: false
             },
             mounted: function () { },
             methods: {
@@ -8483,7 +8474,7 @@
                     
                     if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
                         if (appController.validatePanel('62') === '1')
-                            this.TipoPostergacion = '1';
+                            this.filtro.tipoPostergacion = '1';
                     }
 
                     this.showBeneficiario = false;
@@ -8526,11 +8517,12 @@
                     return this.filtro.documento = parseInt(_documento) > 0 ? _.padStart(_documento, 7, '0') : '';
                 },
                 limpiarCampos: function () {
+                    this.filtro.empresa = null;
                     this.filtro.serie = '';
                     this.filtro.documento = '';
+                    this.filtro.tipoPostergacion = '0';
                     this.objBeneficiario = {};
                     this.postClick = false;
-                    this.TipoPostergacion = '0';
                 },
                 searchPasajero: async function () {
                     var _this = this;
@@ -8608,9 +8600,6 @@
                     input.CodiOrigen = appVueVenta.filtro.CodiSucursal.id;
                     input.CodiDestino = appVueVenta.filtro.CodiDestinoPas.id;
                     input.NomOrigen = appVueVenta.filtro.CodiSucursal.label;
-
-                    // AGREGAMOS NUEVOS
-                    input.CodiEsca = _this.objBeneficiario.CodiEsca;
                     input.CodiOrigenBoleto = _this.objBeneficiario.CodiOrigen;
                     input.CodiRutaBoleto = _this.objBeneficiario.CodiRuta;
                     input.CodiProgramacionBoleto = _this.objBeneficiario.CodiProgramacion;
@@ -8619,7 +8608,12 @@
                     input.FechaViajeBoleto = _this.objBeneficiario.FechaViaje;
                     input.HoraViajeBoleto = _this.objBeneficiario.HoraViaje;
                     input.NomDestinoBoleto = _this.$options.filters.rutas(_this.objBeneficiario.CodiDestino);
-                    input.PrecioVenta = _this.objBeneficiario.PrecioVenta;
+                    input.TipoPostergacion = _this.filtro.tipoPostergacion;
+                    input.NumeAsientoBoleto = _this.objBeneficiario.NumeAsiento;
+                    input.NomDestino = appVueVenta.filtro.CodiDestinoPas.label;
+                    input.PrecioVenta = appVueVenta.list.ventas[appVueVenta.indexVenta].Precio;
+
+                    input.PrecioVentaBoleto = _this.objBeneficiario.PrecioVenta;
 
                     // Limpiar 'AsientosBloqueados'
                     var auxResponse = await appVueVenta.cancelarBoletos();
@@ -8629,7 +8623,7 @@
                     }
 
                     appController.disabledAsientos(true);
-
+                    
                     await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
                         .then(async function (res) {
                             await _this.close();
@@ -8656,8 +8650,8 @@
                 validaPostergacion: async function () {
                     var auxValidate = true;
 
-                    // TipoPostergacion = '0' -> Ctrl + F4
-                    if (this.TipoPostergacion === '0') {
+                    // tipoPostergacion = '0' -> Ctrl + F4
+                    if (this.filtro.tipoPostergacion === '0') {
                         if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
                             if (appController.validatePanel('62') === '1') {
                                 APP.msg.warning('Solicitud denegada, consulte con el administrador.');
@@ -8681,15 +8675,6 @@
                         var verificaNC = await appController.verificaNC(this.objBeneficiario.IdVenta);
                         if (verificaNC !== 0)
                             return auxValidate = false;
-                        if (this.objBeneficiario.NivelAsiento !== String(appVueVenta.list.ventas[appVueVenta.indexVenta].NivelAsiento)) {
-                            var resClaveCambioDeNivelDeAsiento = await APP.msg.confirmClaveAutorizacion(
-                                `${_.padStart(ClaveCambioDeNivelDeAsiento, 3, '0')} - Postergar boleto`
-                                , 'Para cambiar de nivel de asiento ingrese la clave de autorización.'
-                                , ClaveCambioDeNivelDeAsiento);
-
-                            if (!resClaveCambioDeNivelDeAsiento)
-                                return auxValidate = false;
-                        }
                         if (appController.validatePanel('91') === '1') {
                             if (this.objBeneficiario.CodiPuntoVenta !== Usuario.CodiPuntoVenta) {
                                 APP.msg.warning('No se puede postergar boletos de otros puntos de venta.');
@@ -8742,8 +8727,7 @@
                                     return auxValidate = false;
                             }
                         }
-                        var canPNP = await this.tablasPnpConsulta('10');
-                        var valuePNP = appController.getValuePNP(canPNP);
+                        var valuePNP = await this.obtenerValorPNP('10', appVueVenta.filtro.CodiProgramacion);
                         if (this.objBeneficiario.FlagVenta === 'S' && !valuePNP) {
                             APP.msg.warning('Se ha superado el número máximo de boletos, no se puede emitir más boletos PNP.');
                             return auxValidate = false;
@@ -8794,10 +8778,19 @@
                                 }
                             }
                         }
+                        if (this.objBeneficiario.NivelAsiento !== String(appVueVenta.list.ventas[appVueVenta.indexVenta].NivelAsiento)) {
+                            var resClaveCambioDeNivelDeAsiento = await APP.msg.confirmClaveAutorizacion(
+                                `${_.padStart(ClaveCambioDeNivelDeAsiento, 3, '0')} - Postergar boleto`
+                                , 'Para cambiar de nivel de asiento ingrese la clave de autorización.'
+                                , ClaveCambioDeNivelDeAsiento);
+
+                            if (!resClaveCambioDeNivelDeAsiento)
+                                return auxValidate = false;
+                        }
                     }
 
-                    // TipoPostergacion = '1' -> F11
-                    if (this.TipoPostergacion === '1') {
+                    // tipoPostergacion = '1' -> F11
+                    if (this.filtro.tipoPostergacion === '1') {
                         if (moment(this.objBeneficiario.FechaViaje, 'DD/MM/YYYY').isBefore(moment(), 'days')) {
                             APP.msg.warning('No se puede postergar boletos de fechas pasadas.');
                             return auxValidate = false;
@@ -8908,8 +8901,7 @@
                             }
                         }
                         if (this.objBeneficiario.FechaViaje !== appVueVenta.filtro.Fecha) {
-                            var canPNP = await this.tablasPnpConsulta('10');
-                            var valuePNP = appController.getValuePNP(canPNP);
+                            var valuePNP = await this.obtenerValorPNP('10', appVueVenta.filtro.CodiProgramacion);
                             if (this.objBeneficiario.FlagVenta === 'S' && !valuePNP) {
                                 APP.msg.warning('Se ha superado el número máximo de boletos, no se puede emitir más boletos PNP.');
                                 return auxValidate = false;
@@ -8955,11 +8947,12 @@
 
                     return auxValidate;
                 },
-                tablasPnpConsulta: async function (_Tabla) {
-                    var auxResponse = 0;
+                obtenerValorPNP: async function (_Tabla, _CodiProgramacion) {
+                    var auxResponse = true;
 
-                    await APP.rq.axios2.post(APP.base + '/itinerarios/tablasPnpConsulta', {
-                        Tabla: _Tabla
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/obtenerValorPNP', {
+                        Tabla: _Tabla,
+                        CodiProgramacion: _CodiProgramacion
                     })
                         .then(res => {
                             if (res.data.Estado)

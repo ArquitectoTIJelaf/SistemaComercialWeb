@@ -187,9 +187,7 @@ namespace SisComWeb.Repository
                 Documento = string.Empty,
                 ImpManifiesto = string.Empty,
                 Cierre = string.Empty,
-                NivelAsiento = string.Empty,
-
-                CodiEsca = string.Empty
+                NivelAsiento = string.Empty
             };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
@@ -221,8 +219,6 @@ namespace SisComWeb.Repository
                         entidad.ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto");
                         entidad.Cierre = Reader.GetStringValue(drlector, "Cierre");
                         entidad.NivelAsiento = Reader.GetStringValue(drlector, "NivelAsiento");
-
-                        entidad.CodiEsca = Reader.GetStringValue(drlector, "CodiEsca");
                         entidad.CodiRuta = Reader.GetSmallIntValue(drlector, "Codi_ruta");
                         entidad.PrecioVenta = Reader.GetDecimalValue(drlector, "PREC_VENTA");
                         break;

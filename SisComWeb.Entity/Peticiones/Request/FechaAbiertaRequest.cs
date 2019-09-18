@@ -52,7 +52,6 @@ namespace SisComWeb.Entity.Peticiones.Request
 
         public int CodiRuta { get; set; }
 
-
         public short CodiUsuario { get; set; }
 
         public string NomUsuario { get; set; }
@@ -77,11 +76,13 @@ namespace SisComWeb.Entity.Peticiones.Request
 
         public decimal PrecioVenta { get; set; }
 
-
-        public string CodiEsca { get; set; }
-
         public string CodiOrigen { get; set; }
 
         public int CodiProgramacion { get; set; }
+
+
+        public byte CodiEmpresa { get; set; }
+
+        public string CodiSucursal { get; set; }
     }
 }

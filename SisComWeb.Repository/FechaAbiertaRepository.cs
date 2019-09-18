@@ -115,6 +115,28 @@ namespace SisComWeb.Repository
             return Codigo;
         }
 
+        public static bool ObtenerValorPNP(string Tabla, int CodiProgramacion)
+        {
+            var valor = true;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Obtener_Valor_PNP";
+                db.AddParameter("@tabla", DbType.String, ParameterDirection.Input, Tabla);
+                db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetBooleanValue(drlector, "validate");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         public static bool VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
         {
             bool Response = false;
@@ -148,19 +170,6 @@ namespace SisComWeb.Repository
                 db.Execute();
             }
         }
-
-        public static void VentaUpdateCnt(int Prog, int NewProg, int Suc, int NewSuc)
-        {
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "Usp_Tb_Programacion_Venta_UPDATE_CNT";
-                db.AddParameter("@Prog", DbType.Int32, ParameterDirection.Input, Prog);
-                db.AddParameter("@NewProg", DbType.Int32, ParameterDirection.Input, NewProg);
-                db.AddParameter("@SUC", DbType.Int32, ParameterDirection.Input, Suc);
-                db.AddParameter("@NEWSUC", DbType.Int32, ParameterDirection.Input, NewSuc);
-                db.Execute();
-            }
-        }
         
         public static void VentaDerivadaUpdateViaje(int IdVenta, string FechaViaje, string HoraViaje, string CodServicio)
         {
@@ -174,6 +183,19 @@ namespace SisComWeb.Repository
                 db.Execute();
             }
         }
+
+        public static void VentaUpdatePostergacion(decimal IdVenta, int CodiOrigen, int CodiDestino)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "Usp_Tb_Venta_Update_Postergacion_2";
+                db.AddParameter("@id_Venta", DbType.Decimal, ParameterDirection.Input, IdVenta);
+                db.AddParameter("@cod_origen", DbType.Int32, ParameterDirection.Input, CodiOrigen);
+                db.AddParameter("@codiRuta", DbType.Int32, ParameterDirection.Input, CodiDestino);
+                db.Execute();
+            }
+        }
+
         #endregion
     }
 }

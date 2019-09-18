@@ -309,6 +309,17 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static void ActualizarTbViajeProgramacionCantidad(int CodiProgramacion)
+        {
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_tb_viaje_programacion_Update_Cnt";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+
+                db.Execute();
+            }
+        }
+
         #endregion
     }
 }

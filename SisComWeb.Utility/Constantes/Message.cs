@@ -387,8 +387,8 @@
         public const string MsgDesbloquearAsientos = "Excepción: DesbloquearAsiento(S).";
 
         // Tabla PNP
-        public const string MsgCorrectoTablasPnpConsulta = "Correcto: TablasPnpConsulta.";
-        public const string MsgExcTablasPnpConsulta = "Excepción: TablasPnpConsulta.";
+        public const string MsgCorrectoObtenerValorPNP = "Correcto: ObtenerValorPNP.";
+        public const string MsgExcObtenerValorPNP = "Excepción: ObtenerValorPNP.";
 
         //Liquidación
         public const string MsgExcLiquidacion = "Excepción: MsgExcLiquidacion.";

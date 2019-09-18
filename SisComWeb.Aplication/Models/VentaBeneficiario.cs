@@ -22,7 +22,6 @@
 
         public short CodiPuntoVenta { get; set; }
 
-
         public string FechaProgramacion { get; set; }
 
         public byte CodiServicioProgramacion { get; set; }
@@ -38,8 +37,6 @@
         public string Cierre { get; set; }
 
         public string NivelAsiento { get; set; }
-
-        public string CodiEsca { get; set; }
 
         public short CodiRuta { get; set; }
 

@@ -1599,8 +1599,6 @@ namespace SisComWeb.Aplication.Controllers
                         ImpManifiesto = (string)data["ImpManifiesto"],
                         Cierre = (string)data["Cierre"],
                         NivelAsiento = (string)data["NivelAsiento"],
-
-                        CodiEsca = (string)data["CodiEsca"],
                         CodiRuta = (short)data["CodiRuta"],
                         PrecioVenta = (decimal)data["PrecioVenta"]
                     },
@@ -1646,11 +1644,8 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiOrigen\" : " + filtro.CodiOrigen +
                                     ",\"CodiDestino\" : " + filtro.CodiDestino +
                                     ",\"NomOrigen\" : \"" + filtro.NomOrigen + "\"" +
-
-                                    ",\"CodiEsca\" : \"" + filtro.CodiEsca + "\"" +
                                     ",\"CodiOrigenBoleto\" : \"" + filtro.CodiOrigenBoleto + "\"" +
                                     ",\"CodiRutaBoleto\" : \"" + filtro.CodiRutaBoleto + "\"" +
-                                    ",\"CodiProgramacionBoleto\" : " + filtro.CodiProgramacionBoleto +
                                     ",\"BoletoCompleto\" : \"" + filtro.BoletoCompleto + "\"" +
                                     ",\"CodiEmpresaUsuario\" : \"" + usuario.CodiEmpresa + "\"" +
                                     ",\"CodiSucursalUsuario\" : \"" + usuario.CodiSucursal + "\"" +
@@ -1659,7 +1654,12 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"FechaViajeBoleto\" : \"" + filtro.FechaViajeBoleto + "\"" +
                                     ",\"HoraViajeBoleto\" : \"" + filtro.HoraViajeBoleto + "\"" +
                                     ",\"NomDestinoBoleto\" : \"" + filtro.NomDestinoBoleto + "\"" +
+                                    ",\"TipoPostergacion\" : \"" + filtro.TipoPostergacion + "\"" +
+                                    ",\"NumeAsientoBoleto\" : " + filtro.NumeAsientoBoleto +
+                                    ",\"NomDestino\" : \"" + filtro.NomDestino + "\"" +
                                     ",\"PrecioVenta\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.PrecioVenta) + "\"" +
+
+                                    ",\"PrecioVentaBoleto\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(filtro.PrecioVentaBoleto) + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("PostergarVenta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1708,7 +1708,6 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
                                     ",\"NomOficina\" : \"" + usuario.NomSucursal + "\"" +
                                     ",\"CodiPuntoVenta\" : " + usuario.CodiPuntoVenta +
-
                                     ",\"BoletoCompleto\" : \"" + request.BoletoCompleto + "\"" +
                                     ",\"NumeAsiento\" : " + request.NumeAsiento +
                                     ",\"Pasajero\" : \"" + request.Pasajero + "\"" +
@@ -1716,10 +1715,11 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"HoraViaje\" : \"" + request.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"NomDestino\" : \"" + request.NomDestino + "\"" +
                                     ",\"PrecioVenta\" : " + request.PrecioVenta +
-
-                                    ",\"CodiEsca\" : \"" + (request.CodiEsca ?? string.Empty) + "\"" +
                                     ",\"CodiOrigen\" : \"" + request.CodiOrigen + "\"" +
                                     ",\"CodiProgramacion\" : " + request.CodiProgramacion +
+
+                                    ",\"CodiEmpresa\" : " + request.CodiEmpresa +
+                                    ",\"CodiSucursal\" : \"" + usuario.CodiSucursal + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("ModificarVentaAFechaAbierta", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -3251,8 +3251,8 @@ namespace SisComWeb.Aplication.Controllers
         }
 
         [HttpPost]
-        [Route("tablasPnpConsulta")]
-        public async Task<ActionResult> TablasPnpConsulta(string Tabla)
+        [Route("obtenerValorPNP")]
+        public async Task<ActionResult> ObtenerValorPNP(string Tabla, int CodiProgramacion)
         {
             try
             {
@@ -3262,26 +3262,27 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"Tabla\" : \"" + Tabla + "\"" +
+                                    ",\"CodiProgramacion\" : " + CodiProgramacion +
                                 "}";
-                    HttpResponseMessage response = await client.PostAsync("TablasPnpConsulta", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage response = await client.PostAsync("ObtenerValorPNP", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
                         result = await response.Content.ReadAsStringAsync();
                 }
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<int> res = new Response<int>()
+                Response<bool> res = new Response<bool>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (int)tmpResult["Valor"]
+                    Valor = (bool)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
         

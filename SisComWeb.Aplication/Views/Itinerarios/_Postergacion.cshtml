@@ -1,5 +1,5 @@
 ﻿<div id="appVuePostergacion" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" style="width: 500px; top:50%; transform: translateY(-50%)">
+    <div class="modal-dialog" style="width: 500px; top:45%; transform: translateY(-50%)">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="close">&times;</button>
@@ -59,13 +59,13 @@
                             <div class="col-md-7">
                                 <label class="col-md-12 control-label label-sm">&nbsp;</label>
                                 <div class="col-md-12">
-                                    <input type="radio" id="radCambioHorario" value="0" v-model="TipoPostergacion">
+                                    <input type="radio" id="radCambioHorario" value="0" v-model="filtro.tipoPostergacion">
                                     <label for="radCambioHorario"
                                            class="lblBoletoTipoDir"
                                            title="Cambio de horario">
                                         Ctrl + F4
                                     </label>
-                                    <input type="radio" id="radPostergacion" value="1" v-model="TipoPostergacion">
+                                    <input type="radio" id="radPostergacion" value="1" v-model="filtro.tipoPostergacion">
                                     <label for="radPostergacion"
                                            class="lblBoletoTipoDir"
                                            title="Postergación">

@@ -394,8 +394,8 @@ namespace SisComWeb.Services
         Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "TablasPnpConsulta", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<int> TablasPnpConsulta(string Tabla);
+        [WebInvoke(Method = "POST", UriTemplate = "ObtenerValorPNP", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion);
 
         #endregion
 

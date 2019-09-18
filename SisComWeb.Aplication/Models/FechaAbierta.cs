@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
+﻿
 namespace SisComWeb.Aplication.Models
 {
     public class FechaAbierta
@@ -65,7 +61,6 @@ namespace SisComWeb.Aplication.Models
 
         public int CodiRuta { get; set; }
 
-
         public string BoletoCompleto { get; set; }
 
         public byte NumeAsiento { get; set; }
@@ -80,11 +75,11 @@ namespace SisComWeb.Aplication.Models
 
         public decimal PrecioVenta { get; set; }
 
-
-        public string CodiEsca { get; set; }
-
         public string CodiOrigen { get; set; }
 
         public int CodiProgramacion { get; set; }
+
+
+        public byte CodiEmpresa { get; set; }
     }
 }

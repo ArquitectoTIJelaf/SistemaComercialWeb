@@ -1129,16 +1129,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<int> TablasPnpConsulta(string Tabla)
+        public Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
         {
             try
             {
-                return FechaAbiertaLogic.TablasPnpConsulta(Tabla);
+                return FechaAbiertaLogic.ObtenerValorPNP(Tabla, CodiProgramacion);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcTablasPnpConsulta, false);
+                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
             }
         }
 

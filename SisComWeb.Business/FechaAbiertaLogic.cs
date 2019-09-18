@@ -143,9 +143,6 @@ namespace SisComWeb.Business
                 FechaAbiertaRepository.VentaUpdatePostergacionEle(filtro);
                 FechaAbiertaRepository.VentaUpdateImpManifiesto(filtro.IdVenta);
                 FechaAbiertaRepository.VentaDerivadaUpdateViaje(filtro.IdVenta, filtro.FechaViaje, filtro.HoraViaje, filtro.CodiServicio);
-                FechaAbiertaRepository.VentaUpdateCnt(0, filtro.CodiProgramacion, filtro.Oficina, filtro.Oficina);
-                if(filtro.CodiProgramacion > 0)
-                    FechaAbiertaRepository.VentaUpdateCnt(filtro.CodiProgramacion, filtro.CodiProgramacion, filtro.Oficina, filtro.Oficina);
 
                 var objAuditoria = new AuditoriaEntity
                 {
@@ -189,18 +186,18 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<int> TablasPnpConsulta(string Tabla)
+        public static Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
         {
             try
             {
-                var tablasPnpConsulta = FechaAbiertaRepository.TablasPnpConsulta(Tabla);
+                var obtenerValorPNP = FechaAbiertaRepository.ObtenerValorPNP(Tabla, CodiProgramacion);
                 
-                return new Response<int>(true, tablasPnpConsulta, Message.MsgCorrectoTablasPnpConsulta, true);
+                return new Response<bool>(true, obtenerValorPNP, Message.MsgCorrectoObtenerValorPNP, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcTablasPnpConsulta, false);
+                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
             }
         }
     }
