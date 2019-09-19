@@ -76,7 +76,7 @@
                                        class="form-control input-sm"
                                        type="text"
                                        placeholder="BENEFICIARIO"
-                                       @@keypress.13.prevent="recorridoPaseCortesia"
+                                       @@keypress.13.prevent="recorridoPaseCortesia('txtBeneficiarioPC')"
                                        @*@@keydown.9.native.prevent="recorridoPaseCortesia"*@
                                        autocomplete="off" />
                             </div>
@@ -85,7 +85,7 @@
                     <div class="form-group m-b-5">
                         <div class="custom-scroll-container">
                             <div class="table-responsive" style="background-color: #616e7e;">
-                                <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                                <table id="tblListaBeneficiariosPC" class="table table-hover" style="cursor:default;background-color:white;">
                                     <thead>
                                         <tr>
                                             <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Nombre</th>
@@ -95,12 +95,12 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <paginate ref="paginatorPC" name="items" :list="list.filterBeneficiarios" :per="3">
-                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                                <td class="custom-td">{{item.NombreBeneficiario | formatNombre}}</td>
-                                                <td class="custom-td">{{item.Documento}}</td>
-                                                <td class="custom-td">{{item.NumeroDocumento}}</td>
-                                                <td class="custom-td">{{item.Sexo}}</td>
+                                        <paginate ref="paginatorPC" name="items" :list="list.filterBeneficiarios" :per="5">
+                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td :tabindex="(key * 4) + 1" class="custom-td">{{item.NombreBeneficiario | formatNombre}}</td>
+                                                <td :tabindex="(key * 4) + 2" class="custom-td">{{item.Documento}}</td>
+                                                <td :tabindex="(key * 4) + 3" class="custom-td">{{item.NumeroDocumento}}</td>
+                                                <td :tabindex="(key * 4) + 4" class="custom-td">{{item.Sexo}}</td>
                                             </tr>
                                         </paginate>
                                     </tbody>
@@ -108,7 +108,7 @@
                             </div>
                         </div>
                         <center>
-                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}" @@change="setTd"></paginate-links>
                         </center>
                     </div>
                     <div class="form-group m-b-5">

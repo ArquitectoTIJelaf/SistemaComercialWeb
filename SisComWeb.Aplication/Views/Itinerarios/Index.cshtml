@@ -996,10 +996,16 @@
 
             $('#appVueCreditoClientes').on('shown.bs.modal', function () {
                 window.addEventListener('keyup', appVueCreditoClientes.esc);
+
+                appVueCreditoClientes.listarClientesContrato();
             });
 
             $('#appVueCreditoClientes').on('hidden.bs.modal', function () {
                 appVueCreditoClientes.limpiarCreditoClientes();
+
+                appVueCreditoClientes.$nextTick(() => {
+                    document.getElementById('txtNroAsientoVenta').focus();
+                });
 
                 window.removeEventListener('keyup', appVueCreditoClientes.esc);
             });
@@ -2183,13 +2189,13 @@
                                 CodiRuta: option.CodiRuta,
                                 CodiOrigen: option.CodiOrigen,
                                 CodiDestino: option.CodiDestino,
-                                HoraViaje: option.HoraViaje,
                                 FechaViaje: option.FechaViaje,
                                 CodiEmpresa: option.CodiEmpresa,
                                 CodiPuntoVenta: option.CodiPuntoVenta,
                                 CodiSucursal: option.CodiSucursal,
                                 Color: option.Color,
-                                SecondColor: option.SecondColor
+                                SecondColor: option.SecondColor,
+                                //HoraProgramacion: option.HoraProgramacion,
                                 //PlanoBus: option.PlanoBus,
                                 //CodiProgramacion: option.CodiProgramacion,
                                 //CodiBus: option.CodiBus,
@@ -2365,7 +2371,7 @@
                     TablaBloqueoAsientos: null,
                     SucControlReserva: '',
                     SucControlFechaAbierta: '',
-                    SucControlBloqueo: '',
+                    SucControlBloqueo: ''
                 },
                 Correlativo: '',
                 auxFocus: {
@@ -2482,7 +2488,6 @@
                                 else
                                     _this.list.destinosPas = _.cloneDeep(rutas);
                                 // --------------------------------------------------
-
                                 _this.filtro.CodiEmpresa = _this.list.empresas.find(x => x.id === String(res.data.Valor.CodiEmpresa));
                                 _this.filtro.CodiSucursal = _this.list.sucursales.find(x => x.id === String(res.data.Valor.CodiOrigen));
                                 _this.filtro.CodiOrigenBus = _this.list.origenesBus.find(x => x.id === String(res.data.Valor.CodiSucursal));
@@ -2511,8 +2516,9 @@
                                 _this.objTurno.X_Estado = res.data.Valor.X_Estado;
                                 _this.objTurno.CantidadMaxBloqAsi = res.data.Valor.CantidadMaxBloqAsi;
                                 _this.objTurno.Xcierre = res.data.Valor.Activo;
-
                                 _this.objTurno.TablaBloqueoAsientos = res.data.Valor.TablaBloqueoAsientos;
+                                debugger;
+                                _this.updateEnlaceTurnos(_this.filtro.Turno, _this.filtro.CodiServicio.label, res.data.Valor.Color, res.data.Valor.SecondColor);
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
                                 // -------------------------------------------------------
@@ -4100,6 +4106,25 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
+                bgcEnlaceTurnos: function (_HoraPartida, _NomServicio) {
+                    if (this.filtro.CodiServicio) {
+                        if (this.filtro.Turno.replace(' ', '') === _HoraPartida && this.filtro.CodiServicio.label === _NomServicio)
+                            return { 'background-color': 'var(--emp-color)', 'color': 'white' };
+                        else
+                            return { 'color': 'var(--emp-color)' };
+                    }
+                },
+                updateEnlaceTurnos: function (_HoraPartida, _NomServicio, _Color, _SecondColor) {
+                    for (var objTurno of this.list.turnos) {
+
+                        if (objTurno.HoraPartida === _HoraPartida && objTurno.NomServicio === _NomServicio) {
+                            objTurno.Color = _Color;
+                            objTurno.SecondColor = _SecondColor;
+
+                            break;
+                        }
+                    }
+                },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
                     if (FechaVenta)
                         return { 'background-color': `${Color}` };
@@ -4176,7 +4201,11 @@
                             };
                             break;
                         case 8:
-                            document.getElementById('txtFecha_2').focus();
+                            {
+                                _this.$nextTick(() => {
+                                    document.getElementById('txtFecha_2').focus();
+                                });
+                            };
                             break;
                         case 9:
                             {
@@ -6692,14 +6721,6 @@
                     else
                         return { 'background-color': '#1e4672', 'border-color': '#1e4672' };
                 },
-                bgcEnlaceTurnos: function (_HoraPartida, _NomServicio) {
-                    if (this.filtro.CodiServicio) {
-                        if (this.filtro.Turno === _HoraPartida && this.filtro.CodiServicio.label === _NomServicio)
-                            return { 'background-color': 'var(--emp-color)', 'color': 'white' };
-                        else
-                            return { 'color': 'var(--emp-color)' };
-                    }
-                },
                 configEventKeyF5: function (e) {
                     if (e.keyCode === 116 && !e.ctrlKey) {
                         if (this.showVentas) {
@@ -7242,10 +7263,12 @@
             },
             watch: {
                 'filtro.CodiEmpresa': function (newVal, oldVal) {
-                    this.showPlano = false;
+                    if (!newVal)
+                        this.showPlano = false;
                 },
                 'filtro.CodiSucursal': function (newVal, oldVal) {
-                    this.showPlano = false;
+                    if (!newVal)
+                        this.showPlano = false;
                 },
                 'filtro.CodiOrigenBus': function (newVal, oldVal) {
                     // Evita doble consulta cuando 'getTurno'
@@ -7263,35 +7286,30 @@
                         this.filtro.CodiPVOrigenBus = null;
                     }
 
-                    this.showPlano = false;
+                    if (!newVal)
+                        this.showPlano = false;
                 },
                 'filtro.CodiPVOrigenBus': function (newVal, oldVal) {
-                    this.showPlano = false;
+                    if (!newVal)
+                        this.showPlano = false;
                 },
                 'filtro.CodiDestinoBus': function (newVal, oldVal) {
-                    this.showPlano = false;
-                },
-                'filtro.CodiServicio': function (newVal, oldVal) {
-                    this.showPlano = false;
-                },
-                'filtro.CodiDestinoPas': function (newVal, oldVal) {
-                    this.showPlano = false;
+                    if (!newVal)
+                        this.showPlano = false;
                 },
                 'filtro.Turno': function (newVal, oldVal) {
-                    if (newVal)
-                        this.filtro.Turno = newVal.replace(' ', '');
-
                     if (newVal.replace(' ', '') !== oldVal.replace(' ', ''))
                         this.showPlano = false;
                 },
+                'filtro.CodiServicio': function (newVal, oldVal) {
+                    if (!newVal)
+                        this.showPlano = false;
+                },
+                'filtro.CodiDestinoPas': function (newVal, oldVal) {
+                    if (!newVal)
+                        this.showPlano = false;
+                },
                 'filtro.Fecha': function (newVal, oldVal) {
-                    //if (moment(newVal, 'DD/MM/YYYY').isValid()) {
-                    //    var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd') || '';
-                    //    document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
-                    //}
-                    //else
-                    //    document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
-
                     this.showPlano = false;
                 },
                 'list.ventas': {
@@ -8400,7 +8418,9 @@
                 boletosByPrecio: '',
                 totalBoletos: '',
                 fechaAbierta: false,
-                searchInTable: ''
+                searchInTable: '',
+                chargeCurrCell: false,
+                auxFirstCurrCell: true
             },
             mounted: function () { },
             methods: {
@@ -8433,18 +8453,17 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                recorridoPaseCortesia: function () {
-                    var _this = this;
-                    if (!_this.gerente)
+                recorridoPaseCortesia: function (auxValidate) {
+                    if (!this.gerente)
                         $('#cboGerentePC input[type=search]').focus();
-                    else if (!_this.solicitante)
+                    else if (!this.solicitante)
                         $('#cboSolicitantePC input[type=search]').focus();
-                    else if (!_this.concepto)
+                    else if (!this.concepto)
                         document.getElementById('txtConceptoPC').focus();
-                    else if (!_this.searchInTable)
+                    else if (!this.searchInTable && auxValidate !== 'txtBeneficiarioPC')
                         document.getElementById('txtBeneficiarioPC').focus();
                     else
-                        document.getElementById('btnAsignaPC').focus();
+                        this.setTd();
                 },
                 fillBeneficiario: function (solicitante) {
                     this.listaBeneficiarios(solicitante.id);
@@ -8452,6 +8471,9 @@
                 },
                 listaBeneficiarios: function (codSocio) {
                     var _this = this;
+
+                    _this.auxFirstCurrCell = true;
+
                     APP.rq.axios2.post(APP.base + '/itinerarios/listaBeneficiarioPase', {
                         CodiSocio: codSocio
                     })
@@ -8472,6 +8494,63 @@
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                setTd: function () {
+                    auxSetTd('tblListaBeneficiariosPC', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
+                },
+                sendRowOfTab: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 4) + (_this.paginate.items.page * 5);
+                        var _item = _this.list.filterBeneficiarios[_index];
+                        await _this.sendRow(_item);
+                        _this.$nextTick(() => {
+                            _this.chargeCurrCell = false;
+                        });
+                    }
+                },
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginatorPC.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.filterBeneficiarios.length - 1) / 5)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginatorPC.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
+                },
+                sendRow: async function (item) {
+                    var _this = this;
+                    if (_this.validateSend()) {
+                        var auxValidate = await _this.validarPase(_this.solicitante.id);
+
+                        if (auxValidate) {
+                            // SweetAlert para 'fechaAbierta'
+                            if (await APP.msg.confirm(
+                                'Fecha Abierta'
+                                , '¿Desea enviar el Pase a Fecha Abierta?'
+                                , false
+                                , false
+                                , false
+                                , true
+                            )
+                            )
+                                _this.fechaAbierta = true;
+
+                            await appController.sendPaseCortesia(item);
+                            $('#appVuePaseCortesia').modal('hide');
+                        }
+                    }
+                    else
+                        _this.recorridoPaseCortesia();
                 },
                 esc: function (event) {
                     if (event.keyCode === 27)
@@ -8531,31 +8610,6 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
-                },
-                sendRow: async function (item) {
-                    var _this = this;
-                    if (_this.validateSend()) {
-                        var auxValidate = await _this.validarPase(_this.solicitante.id);
-
-                        if (auxValidate) {
-                            // SweetAlert para 'fechaAbierta'
-                            if (await APP.msg.confirm(
-                                'Fecha Abierta'
-                                , '¿Desea enviar el Pase a Fecha Abierta?'
-                                , false
-                                , false
-                                , false
-                                , true
-                                )
-                            )
-                                _this.fechaAbierta = true;
-
-                            await appController.sendPaseCortesia(item);
-                            $('#appVuePaseCortesia').modal('hide');
-                        }
-                    }
-                    else
-                        _this.recorridoPaseCortesia();
                 }
             },
             computed: {},
@@ -9479,17 +9533,21 @@
                     clientes: []
                 },
                 paginate: ['items'],
-                venta: {}
+                venta: {},
+                chargeCurrCell: false,
+                auxFirstCurrCell: true
             },
             mounted: function () { },
             methods: {
                 show: function (_dataVenta) {
                     this.venta = _dataVenta;
-                    this.listarClientesContrato();
                     $('#appVueCreditoClientes').modal('show');
                 },
                 listarClientesContrato: function () {
                     var _this = this;
+
+                    _this.auxFirstCurrCell = true;
+
                     var _request = {};
                     _request.FechaViaje = _this.venta.FechaViaje;
                     _request.CodiOficina = (_this.venta.CodiOficina ? _this.venta.CodiOficina.id : '0');
@@ -9511,6 +9569,8 @@
                                 _this.$nextTick(() => {
                                     if (_this.$refs.paginatorCC && _this.list.clientes.length > 0)
                                         _this.$refs.paginatorCC.goToPage(1);
+
+                                    _this.setTd();
                                 });
                             }
                             else
@@ -9518,15 +9578,37 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                esc: function (event) {
-                    if (event.keyCode === 27)
-                        this.cerrarCreditoClientes();
+                setTd: function () {
+                    auxSetTd('tblListaClientesCC', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
                 },
-                cerrarCreditoClientes: function () {
-                    $('#appVueCreditoClientes').modal('hide');
+                sendRowOfTab: function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 3) + (_this.paginate.items.page * 5);
+                        var _item = _this.list.clientes[_index];
+                        _this.sendRow(_item);
+                        _this.$nextTick(() => {
+                            _this.chargeCurrCell = false;
+                        });
+                    }
                 },
-                limpiarCreditoClientes: function () {
-                    this.list.clientes = [];
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginatorCC.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.clientes.length - 1) / 5)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginatorCC.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
                 },
                 sendRow: function (item) {
                     var auxItem = {};
@@ -9543,6 +9625,16 @@
                     appController.sendDataCredito(auxItem);
 
                     this.cerrarCreditoClientes();
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27)
+                        this.cerrarCreditoClientes();
+                },
+                cerrarCreditoClientes: function () {
+                    $('#appVueCreditoClientes').modal('hide');
+                },
+                limpiarCreditoClientes: function () {
+                    this.list.clientes = [];
                 }
             },
             computed: {},
@@ -9723,7 +9815,9 @@
                 NombreBCP: '',
                 ApePaternoBCP: '',
                 ApeMaternoBCP: '',
-                TipoDocId: ''
+                TipoDocId: '',
+                chargeCurrCell: false, //evitar multiples llamadas a auxSetTd
+                auxFirstCurrCell: true //inicia en la primera celda
             },
             mounted: function () { },
             methods: {
@@ -9734,6 +9828,8 @@
                 },
                 getClientesPasaje() {
                     var _this = this;
+
+                    _this.auxFirstCurrCell = true;
 
                     document.getElementById('txtApeMaternoBCP').blur();
 
@@ -9787,14 +9883,57 @@
                                 _this.list.clientesPasaje = _.sortBy(res.data.Valor, ['NombreCliente', 'ApellidoPaterno', 'ApellidoMaterno']);
 
                                 _this.$nextTick(function () {
-                                    if (_this.$refs.paginatorBCP && _this.list.clientesPasaje.length > 0)
+                                    if (_this.$refs.paginatorBCP && _this.list.clientesPasaje.length > 0) {
                                         _this.$refs.paginatorBCP.goToPage(1);
+
+                                        _this.setTd();
+                                    }
                                 })
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                setTd: function () {
+                    auxSetTd('tblListaPasajerosBCP', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
+                },
+                sendRowOfTab: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 4) + (_this.paginate.items.page * 5);
+                        var _item = _this.list.clientesPasaje[_index];
+                        await _this.sendRow(_item);
+                        _this.$nextTick(() => {
+                            _this.chargeCurrCell = false;
+                        });
+                    }
+                },
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginatorBCP.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.clientesPasaje.length - 1) / 5)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginatorBCP.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
+                },
+                sendRow: async function (item) {
+                    await appController.sendBuscaClientePasaje(item);
+                    $('#appVueBuscaClientePasaje').modal('hide');
+
+                    this.$nextTick(function () {
+                        appController.recorridoSectionVentas();
+                    });
                 },
                 esc: function (event) {
                     if (event.keyCode === 27)
@@ -9814,14 +9953,6 @@
                     this.ApeMaternoBCP = '';
                     this.TipoDocId = '';
                 },
-                sendRow: async function (item) {
-                    await appController.sendBuscaClientePasaje(item);
-                    $('#appVueBuscaClientePasaje').modal('hide');
-
-                    this.$nextTick(function () {
-                        appController.recorridoSectionVentas();
-                    });
-                }
             },
             computed: {},
             watch: {}

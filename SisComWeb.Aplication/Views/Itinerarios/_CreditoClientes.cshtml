@@ -10,7 +10,7 @@
                     <div class="form-group m-b-5">
                         <div class="custom-scroll-container">
                             <div class="table-responsive" style="background-color: #616e7e;">
-                                <table id="tblLista" class="table table-hover" style="cursor:default;background-color:white;">
+                                <table id="tblListaClientesCC" class="table table-hover" style="cursor:default;background-color:white;">
                                     <thead>
                                         <tr>
                                             <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">Ruc</th>
@@ -19,11 +19,11 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <paginate ref="paginatorCC" name="items" :list="list.clientes" :per="10">
-                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                                <td class="custom-td">{{item.RucCliente}}</td>
-                                                <td class="custom-td">{{item.RazonSocial}}</td>
-                                                <td class="custom-td">{{item.NumeContrato}}</td>
+                                        <paginate ref="paginatorCC" name="items" :list="list.clientes" :per="5">
+                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td :tabindex="(key * 3) + 1" class="custom-td">{{item.RucCliente}}</td>
+                                                <td :tabindex="(key * 3) + 2" class="custom-td">{{item.RazonSocial}}</td>
+                                                <td :tabindex="(key * 3) + 3" class="custom-td">{{item.NumeContrato}}</td>
                                             </tr>
                                         </paginate>
                                     </tbody>
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <center>
-                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}" @@change="setTd"></paginate-links>
                         </center>
                     </div>
                 </div>

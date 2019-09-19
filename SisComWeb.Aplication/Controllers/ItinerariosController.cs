@@ -438,8 +438,10 @@ namespace SisComWeb.Aplication.Controllers
                         X_Estado = (string)data["X_Estado"],
                         Activo = (string)data["Activo"],
                         CantidadMaxBloqAsi = (short)data["CantidadMaxBloqAsi"],
+                        TablaBloqueoAsientos = _ObjetoTablaBloqueoAsientos(data["TablaBloqueoAsientos"]),
 
-                        TablaBloqueoAsientos = _ObjetoTablaBloqueoAsientos(data["TablaBloqueoAsientos"])
+                        Color = (string)data["Color"],
+                        SecondColor = (string)data["SecondColor"]
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };
@@ -889,10 +891,10 @@ namespace SisComWeb.Aplication.Controllers
                                     // RESERVA
                                     ",\"IdVenta\" : " + Listado[i].IdVenta +
 
-                                    ",\"FechaReservacion\" : \"" + (Listado[i].FechaReservacion ?? string.Empty) + "\"" +
-                                    ",\"HoraReservacion\" : \"" + (Listado[i].HoraReservacion ?? string.Empty).Replace(" ", "") + "\"" +
+                                    ",\"FechaReservacion\" : \"" + (Listado[i].FechaReservacion ?? "") + "\"" +
+                                    ",\"HoraReservacion\" : \"" + (Listado[i].HoraReservacion ?? "").Replace(" ", "") + "\"" +
 
-                                    ",\"HoraEscala\" : \"" + (Listado[i].HoraEscala ?? string.Empty).Replace(" ", "") + "\"" +
+                                    ",\"HoraEscala\" : \"" + (Listado[i].HoraEscala ?? "").Replace(" ", "") + "\"" +
                                  "}";
 
                         if (i < Listado.Count - 1)
@@ -1398,23 +1400,23 @@ namespace SisComWeb.Aplication.Controllers
                     client.BaseAddress = new Uri(url);
                     var _body = "{" +
                                     "\"CodiUsuario\" : " + request.CodiUsuario +
-                                    ",\"NomUsuario\" :  \"" + (request.NomUsuario ?? string.Empty) + "\"" +
-                                    ",\"Tabla\" : \"" + (request.Tabla ?? string.Empty) + "\"" +
-                                    ",\"TipoMovimiento\" : \"" + (request.TipoMovimiento ?? string.Empty) + "\"" +
-                                    ",\"Boleto\" : \"" + (request.Boleto ?? string.Empty) + "\"" +
-                                    ",\"NumeAsiento\" : \"" + (request.NumeAsiento ?? string.Empty) + "\"" +
-                                    ",\"NomOficina\" : \"" + (request.NomOficina ?? string.Empty) + "\"" +
-                                    ",\"NomPuntoVenta\" : \"" + (request.NomPuntoVenta ?? string.Empty) + "\"" +
-                                    ",\"Pasajero\" : \"" + (request.Pasajero ?? string.Empty) + "\"" +
-                                    ",\"FechaViaje\" : \"" + (request.FechaViaje ?? string.Empty) + "\"" +
-                                    ",\"HoraViaje\" : \"" + (request.HoraViaje ?? string.Empty).Replace(" ", "") + "\"" +
-                                    ",\"NomDestino\" : \"" + (request.NomDestino ?? string.Empty) + "\"" +
+                                    ",\"NomUsuario\" :  \"" + (request.NomUsuario ?? "") + "\"" +
+                                    ",\"Tabla\" : \"" + (request.Tabla ?? "") + "\"" +
+                                    ",\"TipoMovimiento\" : \"" + (request.TipoMovimiento ?? "") + "\"" +
+                                    ",\"Boleto\" : \"" + (request.Boleto ?? "") + "\"" +
+                                    ",\"NumeAsiento\" : \"" + (request.NumeAsiento ?? "") + "\"" +
+                                    ",\"NomOficina\" : \"" + (request.NomOficina ?? "") + "\"" +
+                                    ",\"NomPuntoVenta\" : \"" + (request.NomPuntoVenta ?? "") + "\"" +
+                                    ",\"Pasajero\" : \"" + (request.Pasajero ?? "") + "\"" +
+                                    ",\"FechaViaje\" : \"" + (request.FechaViaje ?? "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (request.HoraViaje ?? "").Replace(" ", "") + "\"" +
+                                    ",\"NomDestino\" : \"" + (request.NomDestino ?? "") + "\"" +
                                     ",\"Precio\" : \"" + DataUtility.ConvertDecimalToStringWithTwoDecimals(request.Precio) + "\"" +
-                                    ",\"Obs1\" : \"" + (request.Obs1 ?? string.Empty).ToUpper() + "\"" +
-                                    ",\"Obs2\" : \"" + (request.Obs2 ?? string.Empty).ToUpper() + "\"" +
-                                    ",\"Obs3\" : \"" + (request.Obs3 ?? string.Empty).ToUpper() + "\"" +
-                                    ",\"Obs4\" : \"" + (request.Obs4 ?? string.Empty).ToUpper() + "\"" +
-                                    ",\"Obs5\" : \"" + (request.Obs5 ?? string.Empty).ToUpper() + "\"" +
+                                    ",\"Obs1\" : \"" + (request.Obs1 ?? "").ToUpper() + "\"" +
+                                    ",\"Obs2\" : \"" + (request.Obs2 ?? "").ToUpper() + "\"" +
+                                    ",\"Obs3\" : \"" + (request.Obs3 ?? "").ToUpper() + "\"" +
+                                    ",\"Obs4\" : \"" + (request.Obs4 ?? "").ToUpper() + "\"" +
+                                    ",\"Obs5\" : \"" + (request.Obs5 ?? "").ToUpper() + "\"" +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("GrabarAuditoria", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
@@ -1959,7 +1961,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"UsuarioCodTerminal\" : \"" + usuario.Terminal.ToString("D3") + "\"" +
 
                                     ",\"ValidateCaja\" : " + ListaVentasRealizadas[i].ValidateCaja.ToString().ToLower() +
-                                    ",\"HoraViaje\" : \"" + (ListaVentasRealizadas[i].HoraViaje ?? string.Empty).Replace(" ", "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (ListaVentasRealizadas[i].HoraViaje ?? "").Replace(" ", "") + "\"" +
                                     //NEW
                                     ",\"TipoPago\" : \"" + ListaVentasRealizadas[i].TipoPago + "\"" +
                                     ",\"FlagVenta\" : \"" + ListaVentasRealizadas[i].FlagVenta + "\"" +
@@ -2734,7 +2736,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Tipo\" : \"" + (filtro.Tipo ?? "") + "\"" +
                                     ",\"Oficina\" : " + filtro.Oficina +
                                     ",\"FechaViaje\" : \"" + (filtro.FechaViaje ?? "") + "\"" +
-                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "") + "\"" +
+                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "").Replace(" ", "") + "\"" +
                                     ",\"NroViaje\" : " + filtro.NroViaje +
                                     ",\"FechaProgramacion\" : \"" + filtro.FechaProgramacion + "\"" +
                                     ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +

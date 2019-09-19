@@ -123,6 +123,12 @@ namespace SisComWeb.Business
                 if (buscarTurno.CodiProgramacion > 0)
                     buscarTurno.AsientosVendidos = ItinerarioRepository.ObtenerTotalVentas(buscarTurno.CodiProgramacion, buscarTurno.NroViaje, buscarTurno.CodiOrigen, buscarTurno.CodiDestino);
 
+                // Seteo 'Color'
+                buscarTurno.Color = ItinerarioLogic.GetColor(buscarTurno.ProgramacionCerrada, buscarTurno.AsientosVendidos, int.Parse(buscarTurno.CapacidadBus), buscarTurno.StOpcional);
+
+                // Seteo 'SecondColor'
+                buscarTurno.SecondColor = ItinerarioLogic.GetSecondColor(buscarTurno.AsientosVendidos, int.Parse(buscarTurno.CapacidadBus), buscarTurno.StOpcional);
+
                 // Consulta 'ManifiestoProgramacion'
                 var consultaManifiestoProgramacion = ConsultaManifiestoProgramacion(buscarTurno.CodiProgramacion, request.CodiOrigen.ToString());
                 if (consultaManifiestoProgramacion.Estado)

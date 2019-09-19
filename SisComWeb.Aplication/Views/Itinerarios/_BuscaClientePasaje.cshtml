@@ -63,7 +63,7 @@
                     <div class="form-group m-b-5">
                         <div class="custom-scroll-container">
                             <div class="table-responsive" style="background-color: #616e7e;">
-                                <table id="tblListaBCP" class="table table-hover" style="cursor:default;background-color:white;">
+                                <table id="tblListaPasajerosBCP" class="table table-hover" style="cursor:default;background-color:white;">
                                     <thead>
                                         <tr>
                                             <th style="padding: 4px 10px 4px 10px;" class="custom-th" width="%">DNI</th>
@@ -74,11 +74,11 @@
                                     </thead>
                                     <tbody>
                                         <paginate ref="paginatorBCP" name="items" :list="list.clientesPasaje" :per="5">
-                                            <tr v-for="item in paginated('items')" @@dblclick="sendRow(item)">
-                                                <td class="custom-td">{{item.NumeroDoc}}</td>
-                                                <td class="custom-td">{{item.NombreCliente}}</td>
-                                                <td class="custom-td">{{item.ApellidoPaterno}}</td>
-                                                <td class="custom-td">{{item.ApellidoMaterno}}</td>
+                                            <tr v-for="(item, key) in paginated('items')" @@dblclick="sendRow(item)">
+                                                <td :tabindex="(key * 4) + 1" class="custom-td">{{item.NumeroDoc}}</td>
+                                                <td :tabindex="(key * 4) + 2" class="custom-td">{{item.NombreCliente}}</td>
+                                                <td :tabindex="(key * 4) + 3" class="custom-td">{{item.ApellidoPaterno}}</td>
+                                                <td :tabindex="(key * 4) + 4" class="custom-td">{{item.ApellidoMaterno}}</td>
                                             </tr>
                                         </paginate>
                                     </tbody>
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <center>
-                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            <paginate-links for="items" :async="true" :classes="{'ul': 'pagination'}" @@change="setTd"></paginate-links>
                         </center>
                     </div>
                 </div>
