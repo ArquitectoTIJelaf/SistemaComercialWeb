@@ -355,7 +355,7 @@
             margin-bottom: 0;
         }
 
-        .table-bus {            
+        .table-bus {
             cursor: default;
             background-color: white;
             height: 252px;
@@ -398,7 +398,7 @@
             background-color: #f7fafc;
             border: 1px solid #5b5b5c !important;
             color: #333;
-            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0));
+            background-image: radial-gradient(circle,rgba(255,255,255,.5),rgba(255,255,255,0.3));
         }
 
         .number-of-seat {
@@ -558,6 +558,180 @@
         td:focus {
             background-color: var(--emp-color) !important;
             color: white;
+        }
+
+        #ventaBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #reservaBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #fecAbiertaBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #paseBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #creditoBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #postergadoBVdiv {
+            float: left;
+            width: 100%;
+        }
+
+        #objPlanoBusPlaca {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 400
+        }
+
+        #objPlanoChoferCopiloto {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 400
+        }
+
+        @@media screen and (min-width: 576px) {
+            #ventaBVdiv {
+                width: 100%;
+            }
+
+            #reservaBVdiv {
+                width: 100%;
+            }
+
+            #fecAbiertaBVdiv {
+                width: 100%;
+            }
+
+            #paseBVdiv {
+                width: 100%;
+            }
+
+            #creditoBVdiv {
+                width: 100%;
+            }
+
+            #postergadoBVdiv {
+                width: 100%;
+            }
+        }
+
+        @@media screen and (min-width: 768px) {
+            #ventaBVdiv {
+                width: 50%;
+            }
+
+            #reservaBVdiv {
+                width: 50%;
+            }
+
+            #fecAbiertaBVdiv {
+                width: 50%;
+            }
+
+            #paseBVdiv {
+                width: 50%;
+            }
+
+            #creditoBVdiv {
+                width: 50%;
+            }
+
+            #postergadoBVdiv {
+                width: 50%;
+            }
+        }
+
+        @@media screen and (min-width: 992px) {
+            #ventaBVdiv {
+                width: 33.33%;
+            }
+
+            #reservaBVdiv {
+                width: 33.33%;
+            }
+
+            #fecAbiertaBVdiv {
+                width: 33.33%;
+            }
+
+            #paseBVdiv {
+                width: 33.33%;
+            }
+
+            #creditoBVdiv {
+                width: 33.33%;
+            }
+
+            #postergadoBVdiv {
+                width: 33.33%;
+            }
+        }
+
+        @@media screen and (min-width: 1200px) {
+            #ventaBVdiv {
+                width: 13.66%;
+            }
+
+            #reservaBVdiv {
+                width: 16.66%;
+            }
+
+            #fecAbiertaBVdiv {
+                width: 17.66%;
+            }
+
+            #paseBVdiv {
+                width: 13.66%;
+            }
+
+            #creditoBVdiv {
+                width: 16.66%;
+            }
+
+            #postergadoBVdiv {
+                width: 21.66%;
+            }
+        }
+
+        .blinkEspecial {
+            color: blue;
+            font-size:14px;
+            -webkit-animation-name: blueWhite;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-duration: 1s;
+        }
+
+        @@-webkit-keyframes blueWhite {
+            0% {
+                color: gray;
+            }
+
+            50% {
+                color: gray;
+            }
+
+            51% {
+                color: dodgerblue;
+            }
+
+            100% {
+                color: dodgerblue;
+            }
         }
     </style>
 
@@ -4474,7 +4648,7 @@
                                     if (await APP.msg.confirm(
                                         'Copiar datos',
                                         '¿Desea copiar los datos de este ticket para todos los demás?')) {
-                                        
+
                                         for (var i = 1; i < auxLength; i++) { // 'i = 0': No tomamos encuenta el original.
 
                                             this.list.ventas[i].ApellidoMaterno = _.cloneDeep(this.list.ventas[0].ApellidoMaterno);
@@ -7149,12 +7323,12 @@
                         this.showPlano = false;
                 },
                 'filtro.Fecha': function (newVal, oldVal) {
-                    if (moment(newVal, 'DD/MM/YYYY').isValid()) {
-                        var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd') || '';
-                        document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
-                    }
-                    else
-                        document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
+                    //if (moment(newVal, 'DD/MM/YYYY').isValid()) {
+                    //    var _nombreDia = moment(newVal, 'DD/MM/YYYY').format('dddd') || '';
+                    //    document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA: ' + _nombreDia.toUpperCase();
+                    //}
+                    //else
+                    //    document.getElementById('lblNameDay_Fecha').innerHTML = 'DÍA:';
 
                     this.showPlano = false;
                 },
@@ -8480,7 +8654,7 @@
             mounted: function () { },
             methods: {
                 show: function () {
-                    
+
                     if (Usuario.Nivel !== 50 && Usuario.CodiUsuario != JLMrootCode) {
                         if (appController.validatePanel('62') === '1')
                             this.TipoPostergacion = '1';
@@ -13182,7 +13356,7 @@
 
 
                     _this.$nextTick(async () => {
-                        
+
                         /*
                          * Si la lista newAsientos (utilizada para Procesar Lote) esta vacía,
                          * hace un recorrido de los asientos vendidos de la lista de origien
@@ -13205,8 +13379,8 @@
                         }
 
                         /*
-                         * A partir del Proceso, newAsientos debe contar con 
-                         * coincidencias para continuar el proceso 
+                         * A partir del Proceso, newAsientos debe contar con
+                         * coincidencias para continuar el proceso
                          * */
                         if (_this.list.newAsientos.length > 0) {
 
@@ -13219,7 +13393,7 @@
                             }
 
                             /*
-                             * Recorre la lista de destino y setea el NumeAsiento 
+                             * Recorre la lista de destino y setea el NumeAsiento
                              * (con solor $colorBloqueoInterno) a partir de newAsientos
                              * */
                             for (var e2 of _this.list.tempListDes) {
