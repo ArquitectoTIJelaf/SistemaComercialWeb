@@ -42,7 +42,7 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"PrecioVenta\": \"" + request.PrecioVenta + "\"" +
                                     ",\"CodiDestino\": \"" + request.CodiDestino + "\"" +
                                     ",\"FechaViaje\": \"" + request.FechaViaje + "\"" +
-                                    ",\"HoraViaje\": \"" + request.HoraViaje + "\"" +
+                                    ",\"HoraViaje\": \"" + (request.HoraViaje ?? "").Replace(" ","") + "\"" +
                                     ",\"NumeAsiento\": \"" + request.NumeAsiento + "\"" +
                                     ",\"NombDestino\": \"" + request.NombDestino + "\"" +
                                     ",\"NomSucursal\": \"" + usuario.NomSucursal + "\"" +

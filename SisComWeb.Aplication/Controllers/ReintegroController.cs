@@ -128,12 +128,12 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"Vale_Remoto\" : \"" + "" + "\"" + //HC
                                     ",\"Tipo_Venta\" : \"" + "N" + "\"" + //HC
                                     ",\"Fecha_viaje\" : \"" + filtro.Fecha_viaje + "\"" +
-                                    ",\"HORA_V\" : \"" + filtro.HORA_V + "\"" +
+                                    ",\"HORA_V\" : \"" + (filtro.HORA_V ?? "").Replace(" ","") + "\"" +
                                     ",\"nacionalidad\" : \"" + filtro.nacionalidad + "\"" +
                                     ",\"servicio\" : \"" + filtro.servicio + "\"" +
                                     ",\"Sube_en\" : \"" + filtro.Sube_en + "\"" +
                                     ",\"Baja_en\" : \"" + filtro.Baja_en + "\"" +
-                                    ",\"Hora_Emb\" : \"" + filtro.Hora_Emb + "\"" +
+                                    ",\"Hora_Emb\" : \"" + (filtro.Hora_Emb ?? "").Replace(" ", "") + "\"" +
                                     ",\"nivel\" : \"" + "1" + "\"" + //HC
                                     ",\"Codi_Empresa__\" : \"" + filtro.Codi_Empresa__ + "\"" +
                                     ",\"CODI_SUCURSAL__\" : \"" + filtro.CODI_SUCURSAL__ + "\"" +
@@ -214,7 +214,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"CodiOrigen\" : " + filtro.CodiOrigen +
                                     ",\"CodiDestino\" : " + filtro.CodiDestino +
-                                    ",\"HoraViaje\" : \"" + filtro.HoraViaje + "\"" +
+                                    ",\"HoraViaje\" : \"" + (filtro.HoraViaje ?? "").Replace(" ","") + "\"" +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"CodiEmpresa\" : " + filtro.CodiEmpresa +

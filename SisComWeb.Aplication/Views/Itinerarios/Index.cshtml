@@ -54,6 +54,7 @@
 @Html.Partial("_PaseLote")
 @Html.Partial("_CTipoPago")
 @Html.Partial("_NotaCredito")
+@Html.Partial("_RptPVentaEmbarques")
 
 @section styles{
     <style type="text/css">
@@ -1921,6 +1922,9 @@
                     auxTiposDoc.unshift({ 'id': '77', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
 
                     return auxTiposDoc;
+                },
+                showRptPVentaEmbarques: function () {
+                    appVueRptPVentaEmbarques.show();
                 }
             };
         })();
@@ -2139,12 +2143,14 @@
                 stepsOfRow: function (_auxStep) {
                     let _this = this;
                     switch (_auxStep) {
+                        //Registros de Arriba
                         case 1: {
                             if (_this.paginate.items.page > 0) {
                                 _this.auxFirstCurrCell = false;
                                 _this.$refs.paginator.goToPage(_this.paginate.items.page);
                             }
                         }; break;
+                        //Registros de Abajo
                         case 2: {
                             if (_this.paginate.items.page < parseInt((_this.list.itinerarios.length - 1) / 10)) {
                                 _this.auxFirstCurrCell = true;
@@ -7174,6 +7180,9 @@
 
                     if (!item.IdVenta)
                         this.bloquearAsiento(item, true, true);
+                },
+                showRptPVentaEmbarques: function () {
+                    appController.showRptPVentaEmbarques();
                 }
             },
             computed: {
@@ -10259,7 +10268,9 @@
                 paginate: ['items'],
                 showData: false,
                 asientoSel: {},
-                panel: true
+                panel: true,
+                chargeCurrCell: false, //evitar multiples llamadas a auxSetTd
+                auxFirstCurrCell: true //inicia en la primera celda
             },
             mounted: function () {
                 let _this = this;
@@ -10299,11 +10310,50 @@
                     await APP.rq.axios2.post(APP.base + '/itinerarios/ventaConsultaF6' + APP.util.getQueryParamByObject(_this.item))
                         .then(res => {
                             if (res.data.Valor.length > 0) {
+                                _this.auxFirstCurrCell = true;
                                 _this.list.pasajeros = res.data.Valor;
                                 _this.showData = true;
+                                _this.$nextTick(() => {
+                                    debugger;
+                                    _this.setTd();
+                                });
                             } else APP.msg.warning('No se encontró resultados');
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                setTd: function () {
+                    auxSetTd('tblPasajerosFA', this.sendRowOfTab, this.stepsOfRow, this.auxFirstCurrCell);
+                },
+                sendRowOfTab: async function (e) {
+                    let _this = this;
+                    if (!_this.chargeCurrCell) {
+                        _this.chargeCurrCell = true;
+                        var _index = parseInt(e.target.tabIndex / 8) + (_this.paginate.items.page * 10);
+                        var _item = _this.list.pasajeros[_index];
+                        await _this.sendRow(_item);
+                        appVueFechaAbierta.$nextTick(() => {
+                            _this.chargeCurrCell = false;
+                        });
+                    }
+                },
+                stepsOfRow: function (_auxStep) {
+                    let _this = this;
+                    switch (_auxStep) {
+                        //Registros de Arriba
+                        case 1: {
+                            if (_this.paginate.items.page > 0) {
+                                _this.auxFirstCurrCell = false;
+                                _this.$refs.paginatorFA.goToPage(_this.paginate.items.page);
+                            }
+                        }; break;
+                        //Registros de Abajo
+                        case 2: {
+                            if (_this.paginate.items.page < parseInt((_this.list.pasajeros.length - 1) / 10)) {
+                                _this.auxFirstCurrCell = true;
+                                _this.$refs.paginatorFA.goToPage(_this.paginate.items.page + 2);
+                            }
+                        }; break;
+                    }
                 },
                 sendRow: async function (item) {
                     let _this = this;
@@ -14492,6 +14542,57 @@
                     if (newVal)
                         this.filtro.clienteLabel = '';
                 }
+            }
+        });
+
+        var appVueRptPVentaEmbarques = new Vue({
+            el: '#appVueRptPVentaEmbarques',
+            name: 'appVueRptPVentaEmbarques',
+            data: {
+            },
+            mounted: function () {
+                let _this = this;
+
+                $('#appVueRptPVentaEmbarques').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+
+                    $(document).off('focusin.modal');
+
+                    _this.$nextTick(() => {
+                        //_this.$refs.refCTPNumero.focus();
+                    });
+                });
+            },
+            methods: {
+                show: function (asientoSel) {
+                    let _this = this;
+                    //_this.limpiarData();
+                    //_this.asientoSel = asientoSel;
+                    $('#appVueRptPVentaEmbarques').modal('show');
+                    //_this.setData();
+                },
+                setData: function () {
+                    let _this = this;
+                },
+                searchData: async function () {
+                    let _this = this;
+                },
+                limpiarData: function () {
+                    let _this = this;
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueRptPVentaEmbarques').modal('hide');
+                },
+            },
+            computed: {
+            },
+            watch: {
             }
         });
 
