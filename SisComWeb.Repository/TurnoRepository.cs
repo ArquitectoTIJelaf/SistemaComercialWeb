@@ -186,6 +186,7 @@ namespace SisComWeb.Repository
                     while (drlector.Read())
                     {
                         valor = Reader.GetStringValue(drlector, "NOM_TIP") ?? "0";
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }

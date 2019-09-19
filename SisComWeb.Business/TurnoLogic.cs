@@ -36,16 +36,16 @@ namespace SisComWeb.Business
 
                     // Obtiene 'BusProgramacion'
                     obtenerBus = ItinerarioRepository.ObtenerBusProgramacion(buscarTurno.CodiProgramacion);
-                    buscarTurno.CodiBus = obtenerBus.CodiBus ?? "0000";
-                    buscarTurno.PlanoBus = obtenerBus.PlanBus ?? "000";
-                    buscarTurno.CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                    buscarTurno.PlacaBus = obtenerBus.PlacBus ?? "00-0000";
-                    buscarTurno.CodiChofer = obtenerBus.CodiChofer ?? "00000";
-                    buscarTurno.NombreChofer = obtenerBus.NombreChofer ?? "NINGUNO";
-                    buscarTurno.CodiCopiloto = obtenerBus.CodiCopiloto ?? "00000";
-                    buscarTurno.NombreCopiloto = obtenerBus.NombreCopiloto ?? "NINGUNO";
+                    buscarTurno.CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                    buscarTurno.PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                    buscarTurno.CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                    buscarTurno.PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
+                    buscarTurno.CodiChofer = string.IsNullOrEmpty(obtenerBus.CodiChofer) ? "00000" : obtenerBus.CodiChofer;
+                    buscarTurno.NombreChofer = string.IsNullOrEmpty(obtenerBus.NombreChofer) ? "NINGUNO" : obtenerBus.NombreChofer;
+                    buscarTurno.CodiCopiloto = string.IsNullOrEmpty(obtenerBus.CodiCopiloto) ? "00000" : obtenerBus.CodiCopiloto;
+                    buscarTurno.NombreCopiloto = string.IsNullOrEmpty(obtenerBus.NombreCopiloto) ? "NINGUNO" : obtenerBus.NombreCopiloto;
 
-                    buscarTurno.Activo = obtenerBus.Activo ?? "";
+                    buscarTurno.Activo = string.IsNullOrEmpty(obtenerBus.Activo) ? string.Empty : obtenerBus.Activo;
                 }
                 else
                 {
@@ -53,14 +53,14 @@ namespace SisComWeb.Business
                     obtenerBus = ItinerarioRepository.ObtenerBusEstandar(buscarTurno.CodiEmpresa, buscarTurno.CodiSucursal, buscarTurno.CodiRuta, buscarTurno.CodiServicio, buscarTurno.HoraPartida);
                     if (!string.IsNullOrEmpty(obtenerBus.CodiBus))
                     {
-                        buscarTurno.CodiBus = obtenerBus.CodiBus ?? "0000";
-                        buscarTurno.PlanoBus = obtenerBus.PlanBus ?? "000";
-                        buscarTurno.CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                        buscarTurno.PlacaBus = obtenerBus.PlacBus ?? "00-0000";
-                        buscarTurno.CodiChofer = obtenerBus.CodiChofer ?? "00000";
-                        buscarTurno.NombreChofer = obtenerBus.NombreChofer ?? "NINGUNO";
-                        buscarTurno.CodiCopiloto = obtenerBus.CodiCopiloto ?? "00000";
-                        buscarTurno.NombreCopiloto = obtenerBus.NombreCopiloto ?? "NINGUNO";
+                        buscarTurno.CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                        buscarTurno.PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                        buscarTurno.CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                        buscarTurno.PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
+                        buscarTurno.CodiChofer = string.IsNullOrEmpty(obtenerBus.CodiChofer) ? "00000" : obtenerBus.CodiChofer;
+                        buscarTurno.NombreChofer = string.IsNullOrEmpty(obtenerBus.NombreChofer) ? "NINGUNO" : obtenerBus.NombreChofer;
+                        buscarTurno.CodiCopiloto = string.IsNullOrEmpty(obtenerBus.CodiCopiloto) ? "00000" : obtenerBus.CodiCopiloto;
+                        buscarTurno.NombreCopiloto = string.IsNullOrEmpty(obtenerBus.NombreCopiloto) ? "NINGUNO" : obtenerBus.NombreCopiloto;
                     }
                     else
                     {
@@ -68,27 +68,27 @@ namespace SisComWeb.Business
                         obtenerBus = ItinerarioRepository.ObtenerBusEstandar(buscarTurno.CodiEmpresa, buscarTurno.CodiSucursal, buscarTurno.CodiRuta, buscarTurno.CodiServicio, string.Empty);
                         if (!string.IsNullOrEmpty(obtenerBus.CodiBus))
                         {
-                            buscarTurno.CodiBus = obtenerBus.CodiBus ?? "0000";
-                            buscarTurno.PlanoBus = obtenerBus.PlanBus ?? "000";
-                            buscarTurno.CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                            buscarTurno.PlacaBus = obtenerBus.PlacBus ?? "00-0000";
-                            buscarTurno.CodiChofer = obtenerBus.CodiChofer ?? "00000";
-                            buscarTurno.NombreChofer = obtenerBus.NombreChofer ?? "NINGUNO";
-                            buscarTurno.CodiCopiloto = obtenerBus.CodiCopiloto ?? "00000";
-                            buscarTurno.NombreCopiloto = obtenerBus.NombreCopiloto ?? "NINGUNO";
+                            buscarTurno.CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                            buscarTurno.PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                            buscarTurno.CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                            buscarTurno.PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
+                            buscarTurno.CodiChofer = string.IsNullOrEmpty(obtenerBus.CodiChofer) ? "00000" : obtenerBus.CodiChofer;
+                            buscarTurno.NombreChofer = string.IsNullOrEmpty(obtenerBus.NombreChofer) ? "NINGUNO" : obtenerBus.NombreChofer;
+                            buscarTurno.CodiCopiloto = string.IsNullOrEmpty(obtenerBus.CodiCopiloto) ? "00000" : obtenerBus.CodiCopiloto;
+                            buscarTurno.NombreCopiloto = string.IsNullOrEmpty(obtenerBus.NombreCopiloto) ? "NINGUNO" : obtenerBus.NombreCopiloto;
                         }
                         else
                         {
                             // En caso de no encontrar resultado
                             obtenerBus = ItinerarioRepository.ObtenerBusEstandar(buscarTurno.CodiEmpresa, buscarTurno.CodiSucursal, 0, buscarTurno.CodiServicio, string.Empty);
-                            buscarTurno.CodiBus = obtenerBus.CodiBus ?? "0000";
-                            buscarTurno.PlanoBus = obtenerBus.PlanBus ?? "000";
-                            buscarTurno.CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                            buscarTurno.PlacaBus = obtenerBus.PlacBus ?? "00-0000";
-                            buscarTurno.CodiChofer = obtenerBus.CodiChofer ?? "00000";
-                            buscarTurno.NombreChofer = obtenerBus.NombreChofer ?? "NINGUNO";
-                            buscarTurno.CodiCopiloto = obtenerBus.CodiCopiloto ?? "00000";
-                            buscarTurno.NombreCopiloto = obtenerBus.NombreCopiloto ?? "NINGUNO";
+                            buscarTurno.CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                            buscarTurno.PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                            buscarTurno.CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                            buscarTurno.PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
+                            buscarTurno.CodiChofer = string.IsNullOrEmpty(obtenerBus.CodiChofer) ? "00000" : obtenerBus.CodiChofer;
+                            buscarTurno.NombreChofer = string.IsNullOrEmpty(obtenerBus.NombreChofer) ? "NINGUNO" : obtenerBus.NombreChofer;
+                            buscarTurno.CodiCopiloto = string.IsNullOrEmpty(obtenerBus.CodiCopiloto) ? "00000" : obtenerBus.CodiCopiloto;
+                            buscarTurno.NombreCopiloto = string.IsNullOrEmpty(obtenerBus.NombreCopiloto) ? "NINGUNO" : obtenerBus.NombreCopiloto;
                         }
                     }
                 }

@@ -185,20 +185,5 @@ namespace SisComWeb.Business
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
             }
         }
-
-        public static Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
-        {
-            try
-            {
-                var obtenerValorPNP = FechaAbiertaRepository.ObtenerValorPNP(Tabla, CodiProgramacion);
-                
-                return new Response<bool>(true, obtenerValorPNP, Message.MsgCorrectoObtenerValorPNP, true);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
-            }
-        }
     }
 }

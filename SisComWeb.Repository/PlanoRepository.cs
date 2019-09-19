@@ -305,7 +305,8 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "orden") ?? "0";
+                        valor = Reader.GetStringValue(drlector, "orden");
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }

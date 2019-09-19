@@ -473,20 +473,13 @@ namespace SisComWeb.Utility
         {
             string colorHexadecimal = string.Empty;
 
-            if (_Color == "0")
-            {
-                colorHexadecimal = "#ffffff";
-            }
-            else
-            {
-                var auxColor = long.Parse(_Color);
-                int b = (int)(auxColor / 65536);
-                int g = (int)((auxColor - b * 65536) / 256);
-                int r = (int)(auxColor - b * 65536 - g * 256);
+            var auxColor = long.Parse(_Color);
+            int b = (int)(auxColor / 65536);
+            int g = (int)((auxColor - b * 65536) / 256);
+            int r = (int)(auxColor - b * 65536 - g * 256);
 
-                Color colorRGB = Color.FromArgb(r, g, b);
-                colorHexadecimal = "#" + colorRGB.R.ToString("X2") + colorRGB.G.ToString("X2") + colorRGB.B.ToString("X2");
-            }
+            Color colorRGB = Color.FromArgb(r, g, b);
+            colorHexadecimal = "#" + colorRGB.R.ToString("X2") + colorRGB.G.ToString("X2") + colorRGB.B.ToString("X2");
 
             return colorHexadecimal;
         }

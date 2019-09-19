@@ -3,12 +3,15 @@ using SisComWeb.Repository;
 using SisComWeb.Utility;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace SisComWeb.Business
 {
     public class PlanoLogic
     {
-        private static readonly string colorVentaPuntosIntermedios = "#2271B3";
+        private static readonly string ColorVentaPuntosIntermedios = ConfigurationManager.AppSettings["colorVentaPuntosIntermedios"];
+        private static readonly string ColorVentaReserva = ConfigurationManager.AppSettings["colorVentaReserva"];
+        private static readonly string ColorVentaPaseCortesia = ConfigurationManager.AppSettings["colorVentaPaseCortesia"];
 
         public static Response<List<PlanoEntity>> MuestraPlano(PlanoRequest request)
         {
@@ -120,7 +123,7 @@ namespace SisComWeb.Business
 
                                     }
                                     else
-                                        buscarPlanoBus[i].Color = colorVentaPuntosIntermedios;
+                                        buscarPlanoBus[i].Color = ColorVentaPuntosIntermedios;
                                 }
                                 else
                                 {
@@ -246,28 +249,30 @@ namespace SisComWeb.Business
                     entidad.FechaVenta = string.Empty;
                     entidad.FechaViaje = string.Empty;
                     break;
-                case "VI": // Venta intermedia
-                    entidad.IdVenta = item.IdVenta;
-                    entidad.Color = item.Color;
-                    entidad.FechaVenta = "07/07/1777";
-                    entidad.FechaViaje = string.Empty;
-                    break;
                 default:
                     {
-                        switch (entidad.FlagVenta)
-                        {
-                            case "7": // Pase de cortesía
-                                entidad.Sigla = "PS";
-                                break;
-                            case "1": // Crédito
-                                entidad.Sigla = "VC";
-                                break;
-                        };
-
                         entidad.IdVenta = item.IdVenta;
                         entidad.Color = item.Color;
                         entidad.FechaVenta = item.FechaVenta;
                         entidad.FechaViaje = item.FechaViaje;
+
+                        switch (entidad.FlagVenta)
+                        {
+                            case "VI": // Venta intermedia
+                                entidad.FechaVenta = "07/07/1777";
+                                entidad.FechaViaje = string.Empty;
+                                break;
+                            case "7": // Pase de cortesía
+                                entidad.Sigla = "PS";
+                                entidad.Color = ColorVentaPaseCortesia;
+                                break;
+                            case "1": // Crédito
+                                entidad.Sigla = "VC";
+                                break;
+                            case "R": // Reserva
+                                entidad.Color = ColorVentaReserva;
+                                break;
+                        };
                     };
                     break;
             }

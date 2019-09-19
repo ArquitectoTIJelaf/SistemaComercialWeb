@@ -223,12 +223,8 @@ namespace SisComWeb.Services
         Response<VentaResponse> PostergarVenta(PostergarVentaRequest filtro);
 
         [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ConsultaPos", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<string> ConsultaPos(string CodTab, string CodEmp);
-
-        [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ConsultaSumaBoletosPostergados", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp);
+        Response<bool> ConsultaSumaBoletosPostergados(string CodTab, string CodEmp, string Tipo, string Numero, string Emp);
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "EliminarReserva", ResponseFormat = WebMessageFormat.Json)]
@@ -253,6 +249,10 @@ namespace SisComWeb.Services
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "ObtenerTiempoReserva", ResponseFormat = WebMessageFormat.Json)]
         Response<ReservacionEntity> ObtenerTiempoReserva();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ObtenerValorPNP", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion);
 
         #endregion
 
@@ -304,7 +304,7 @@ namespace SisComWeb.Services
 
         #endregion
 
-        #region FECHA ABIERTA
+        #region ENVIAR A FECHA ABIERTA
 
         [OperationContract]
         [WebInvoke(Method = "POST", UriTemplate = "ModificarVentaAFechaAbierta", ResponseFormat = WebMessageFormat.Json)]
@@ -393,9 +393,7 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "VentaUpdatePostergacionEle", ResponseFormat = WebMessageFormat.Json)]
         Response<VentaResponse> VentaUpdatePostergacionEle(FechaAbiertaRequest filtro);
 
-        [OperationContract]
-        [WebInvoke(Method = "POST", UriTemplate = "ObtenerValorPNP", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
-        Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion);
+        
 
         #endregion
 

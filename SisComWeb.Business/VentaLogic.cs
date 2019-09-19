@@ -450,10 +450,18 @@ namespace SisComWeb.Business
                     {
                         if (resValidarDocumentoSUNAT.Estado)
                         {
+                            var tmpTipoPago = string.Empty;
+
+                            if (entidad.TipoPago == "02")
+                            {
+                                tmpTipoPago = entidad.TipoPago;
+                                entidad.TipoPago = "03";
+                            }
+
                             // Valida 'FechaAbierta'
                             if (entidad.FechaAbierta)
                             {
-                                var auxCodiProgramacion = entidad.CodiProgramacion;
+                                var tmpCodiProgramacion = entidad.CodiProgramacion;
                                 entidad.CodiProgramacion = 0;
 
                                 // Graba 'VentaFechaAbierta'
@@ -462,7 +470,7 @@ namespace SisComWeb.Business
                                     return new Response<VentaResponse>(false, valor, Message.MsgErrorGrabarVentaFechaAbierta, false);
 
                                 entidad.IdVenta = grabarVentaFechaAbierta;
-                                entidad.CodiProgramacion = auxCodiProgramacion;
+                                entidad.CodiProgramacion = tmpCodiProgramacion;
                             }
                             else
                             {
@@ -478,6 +486,11 @@ namespace SisComWeb.Business
 
                                 entidad.IdVenta = grabarVenta;
                             }
+
+                            if (tmpTipoPago == "02")
+                                entidad.TipoPago = tmpTipoPago;
+                            else
+                                tmpTipoPago = string.Empty;
 
                             if (entidad.IdVenta > 0)
                             {
@@ -650,10 +663,6 @@ namespace SisComWeb.Business
                                     Tipo = entidad.Tipo
                                 };
                                 VentaRepository.GrabarPagoTarjetaCredito(objTarjetaCreditoEntity);
-
-                                // Los 'Múltiple pago' se terminan convirtiendo en 'Tarjeta de crédito'
-                                if (entidad.TipoPago == "02")
-                                    entidad.TipoPago = "03";
                             };
                             break;
                         case "04": // Delivery
@@ -756,7 +765,7 @@ namespace SisComWeb.Business
                         EmpDireccion = entidad.DireccionEmpresa,
                         EmpElectronico = entidad.ElectronicoEmpresa,
 
-                        TipoPago = entidad.TipoPago,
+                        TipoPago = entidad.TipoPago == "02" ? "03" : entidad.TipoPago,
                         FlagVenta = entidad.FlagVenta,
 
                         // Parámetros extras
@@ -1766,33 +1775,42 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Response<string> ConsultaPos(string CodTab, string CodEmp)
+        public static Response<bool> ConsultaSumaBoletosPostergados(string CodTab, string CodEmp, string Tipo, string Numero, string Emp)
         {
             try
             {
-                var consultaPos = VentaRepository.ConsultaPos(CodTab, CodEmp);
+                var auxValidate = new bool();
 
-                return new Response<string>(true, consultaPos, Message.MsgCorrectoConsultaPos, true);
+                var consultaPos = VentaRepository.ConsultaPos(CodTab, CodEmp);
+                if (consultaPos != "0")
+                {
+                    var consultaSumaBoletosPostergados = VentaRepository.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+
+                    if (consultaSumaBoletosPostergados <= int.Parse(consultaPos))
+                        auxValidate = true;
+                }
+
+                return new Response<bool>(true, auxValidate, Message.MsgCorrectoConsultaSumaBoletosPostergados, true);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
+                return new Response<bool>(false, false, Message.MsgExcConsultaSumaBoletosPostergados, false);
             }
         }
 
-        public static Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
+        public static Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
         {
             try
             {
-                var consultaSumaBoletosPostergados = VentaRepository.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
+                var obtenerValorPNP = VentaRepository.ObtenerValorPNP(Tabla, CodiProgramacion);
 
-                return new Response<int>(true, consultaSumaBoletosPostergados, Message.MsgCorrectoConsultaSumaBoletosPostergados, true);
+                return new Response<bool>(true, obtenerValorPNP, Message.MsgCorrectoObtenerValorPNP, true);
             }
             catch (Exception ex)
             {
-                Log.Instance(typeof(VentaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
             }
         }
 

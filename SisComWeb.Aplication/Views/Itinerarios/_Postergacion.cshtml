@@ -15,13 +15,14 @@
                                           id="cboEmpresaPos"
                                           placeholder="EMPRESA"
                                           @@keydown.13.native.prevent="$refs.refSeriePos.focus()"
-                                          @*@@keypress.9.native.prevent="$refs.refSeriePos.focus()"*@
+                                          @*@@keydown.9.native.prevent="$refs.refSeriePos.focus()"*@
                                           :options="list.empresas"
                                           :select-on-tab="true"
+                                          :get-option-label="getLabel"
                                           ref="refEmpresaPos"
                                           label="label">
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="$refs.refSeriePos.focus()">{{ option.label }}</div>
+                                        <div @@click="$refs.refSeriePos.focus()">{{ option.id }} - {{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -35,7 +36,7 @@
                                        class="form-control input-sm"
                                        placeholder="0000"
                                        ref="refSeriePos"
-                                       @@keypress.13.prevent="recorrido"
+                                       @@keydown.13.prevent="recorrido"
                                        @*@@keydown.9.prevent="recorrido"*@
                                        @@focus="$event.target.select()"
                                        @@blur="blurSerie"
@@ -49,7 +50,7 @@
                                        class="form-control input-sm"
                                        placeholder="0000000"
                                        ref="refNumeroPos"
-                                       @@keypress.13.prevent="searchPasajero"
+                                       @@keydown.13.prevent="searchPasajero"
                                        @*@@keydown.9.prevent="recorrido"*@
                                        @@focus="$event.target.select()"
                                        @@blur="blurNumero"
@@ -57,15 +58,15 @@
                                        autocomplete="off" />
                             </div>
                             <div class="col-md-7">
-                                <label class="col-md-12 control-label label-sm">&nbsp;</label>
-                                <div class="col-md-12">
-                                    <input type="radio" id="radCambioHorario" value="0" v-model="filtro.tipoPostergacion">
+                                <label class="col-md-12 control-label label-sm" style="text-align: left; ">Tipo postergación:</label>
+                                <div class="col-md-12 m-t-5">
+                                    <input name="groupRadTipoPostergacion" type="radio" id="radCambioHorario" value="0" v-model="filtro.tipoPostergacion">
                                     <label for="radCambioHorario"
                                            class="lblBoletoTipoDir"
                                            title="Cambio de horario">
                                         Ctrl + F4
                                     </label>
-                                    <input type="radio" id="radPostergacion" value="1" v-model="filtro.tipoPostergacion">
+                                    <input name="groupRadTipoPostergacion" type="radio" id="radPostergacion" value="1" v-model="filtro.tipoPostergacion">
                                     <label for="radPostergacion"
                                            class="lblBoletoTipoDir"
                                            title="Postergación">
@@ -75,7 +76,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 separate-in-form" style="text-align: right; ">
-                            <button @@click="searchPasajero" :disabled="!filledCampos || postClick" id="btnBuscarPos" class="btn btn-primary waves-effect">
+                            <button @@click="searchPasajero" :disabled="postClick" id="btnBuscarPos" class="btn btn-primary waves-effect">
                                 <span class="fa fa-search fa-fw"></span>Buscar
                             </button>
                         </div>
@@ -131,7 +132,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button @@click="asignBeneficiario" id="btnAsignarPos" :disabled="!filledCampos || postClick" class="btn btn-info waves-effect">
+                <button @@click="asignBeneficiario" id="btnAsignarPos" :disabled="postClick" class="btn btn-info waves-effect">
                     <span class="fa fa-save fa-fw"></span>Asignar
                 </button>
                 <button @@click="close" class="btn btn-inverse waves-effect">

@@ -634,29 +634,16 @@ namespace SisComWeb.Services
             }
         }
 
-        public Response<string> ConsultaPos(string CodTab, string CodEmp)
+        public Response<bool> ConsultaSumaBoletosPostergados(string CodTab, string CodEmp, string Tipo, string Numero, string Emp)
         {
             try
             {
-                return VentaLogic.ConsultaPos(CodTab, CodEmp);
+                return VentaLogic.ConsultaSumaBoletosPostergados(CodTab, CodEmp, Tipo, Numero, Emp);
             }
             catch (Exception ex)
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<string>(false, null, Message.MsgExcConsultaPos, false);
-            }
-        }
-
-        public Response<int> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
-        {
-            try
-            {
-                return VentaLogic.ConsultaSumaBoletosPostergados(Tipo, Numero, Emp);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<int>(false, 0, Message.MsgExcConsultaSumaBoletosPostergados, false);
+                return new Response<bool>(false, false, Message.MsgExcConsultaSumaBoletosPostergados, false);
             }
         }
 
@@ -735,6 +722,19 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<ReservacionEntity>(false, null, Message.MsgExcObtenerTiempoReserva, false);
+            }
+        }
+
+        public Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
+        {
+            try
+            {
+                return VentaLogic.ObtenerValorPNP(Tabla, CodiProgramacion);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
             }
         }
 
@@ -887,7 +887,7 @@ namespace SisComWeb.Services
 
         #endregion
 
-        #region FECHA ABIERTA
+        #region ENVIAR A FECHA ABIERTA
 
         public Response<bool> ModificarVentaAFechaAbierta(VentaToFechaAbiertaRequest request)
         {
@@ -1126,19 +1126,6 @@ namespace SisComWeb.Services
             {
                 Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 return new Response<VentaResponse>(false, null, Message.MsgExcVentaUpdatePostergacionEle, false);
-            }
-        }
-
-        public Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion)
-        {
-            try
-            {
-                return FechaAbiertaLogic.ObtenerValorPNP(Tabla, CodiProgramacion);
-            }
-            catch (Exception ex)
-            {
-                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return new Response<bool>(false, false, Message.MsgExcObtenerValorPNP, false);
             }
         }
 

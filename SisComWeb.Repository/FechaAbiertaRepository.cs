@@ -8,8 +8,6 @@ namespace SisComWeb.Repository
 {
     public class FechaAbiertaRepository
     {
-        #region Métodos No Transaccionales
-
         public static List<FechaAbiertaEntity> VentaConsultaF6(FechaAbiertaRequest filtro)
         {
             var lista = new List<FechaAbiertaEntity>();
@@ -115,28 +113,6 @@ namespace SisComWeb.Repository
             return Codigo;
         }
 
-        public static bool ObtenerValorPNP(string Tabla, int CodiProgramacion)
-        {
-            var valor = true;
-
-            using (IDatabase db = DatabaseHelper.GetDatabase())
-            {
-                db.ProcedureName = "scwsp_Obtener_Valor_PNP";
-                db.AddParameter("@tabla", DbType.String, ParameterDirection.Input, Tabla);
-                db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
-                using (IDataReader drlector = db.GetDataReader())
-                {
-                    while (drlector.Read())
-                    {
-                        valor = Reader.GetBooleanValue(drlector, "validate");
-                        break;
-                    }
-                }
-            }
-
-            return valor;
-        }
-
         public static bool VentaUpdatePostergacionEle(FechaAbiertaRequest filtro)
         {
             bool Response = false;
@@ -195,7 +171,5 @@ namespace SisComWeb.Repository
                 db.Execute();
             }
         }
-
-        #endregion
     }
 }

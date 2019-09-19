@@ -1745,8 +1745,8 @@ namespace SisComWeb.Aplication.Controllers
         }
 
         [HttpPost]
-        [Route("consultaPos")]
-        public async Task<ActionResult> ConsultaPos(string CodTab, string CodEmp)
+        [Route("consultaSumaBoletosPostergados")]
+        public async Task<ActionResult> ConsultaSumaBoletosPostergados(string CodTab, string CodEmp, string Tipo, string Numero, string Emp)
         {
             try
             {
@@ -1757,41 +1757,7 @@ namespace SisComWeb.Aplication.Controllers
                     var _body = "{" +
                                     "\"CodTab\" : \"" + CodTab + "\"" +
                                     ",\"CodEmp\" : \"" + CodEmp + "\"" +
-                                "}";
-                    HttpResponseMessage response = await client.PostAsync("ConsultaPos", new StringContent(_body, Encoding.UTF8, "application/json"));
-                    if (response.IsSuccessStatusCode)
-                        result = await response.Content.ReadAsStringAsync();
-                }
-
-                JToken tmpResult = JObject.Parse(result);
-
-                Response<string> res = new Response<string>()
-                {
-                    Estado = (bool)tmpResult["Estado"],
-                    Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (string)tmpResult["Valor"]
-                };
-
-                return Json(res, JsonRequestBehavior.AllowGet);
-            }
-            catch
-            {
-                return Json(new Response<string>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
-        [Route("consultaSumaBoletosPostergados")]
-        public async Task<ActionResult> ConsultaSumaBoletosPostergados(string Tipo, string Numero, string Emp)
-        {
-            try
-            {
-                string result = string.Empty;
-                using (HttpClient client = new HttpClient())
-                {
-                    client.BaseAddress = new Uri(url);
-                    var _body = "{" +
-                                    "\"Tipo\": \"" + Tipo + "\"" +
+                                    ",\"Tipo\": \"" + Tipo + "\"" +
                                     ",\"Numero\": \"" + Numero + "\"" +
                                     ",\"Emp\": \"" + Emp + "\"" +
                                 "}";
@@ -1802,18 +1768,18 @@ namespace SisComWeb.Aplication.Controllers
 
                 JToken tmpResult = JObject.Parse(result);
 
-                Response<int> res = new Response<int>()
+                Response<bool> res = new Response<bool>()
                 {
                     Estado = (bool)tmpResult["Estado"],
                     Mensaje = (string)tmpResult["Mensaje"],
-                    Valor = (int)tmpResult["Valor"]
+                    Valor = (bool)tmpResult["Valor"]
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<int>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+                return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
 

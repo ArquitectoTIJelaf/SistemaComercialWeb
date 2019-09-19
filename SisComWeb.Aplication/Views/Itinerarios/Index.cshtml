@@ -1718,9 +1718,6 @@
                 validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
                     return appVueVenta.validaDocumentoRepetido(_TipoDocumento, _NumeroDocumento, _NroAsiento);
                 },
-                consultaPos: async function (_CodTab, _CodEmp) {
-                    return await appVueVenta.consultaPos(_CodTab, _CodEmp);
-                },
                 consultaSumaBoletosPostergados: async function (_Tipo, _Numero, _Emp) {
                     return await appVueVenta.consultaSumaBoletosPostergados(_Tipo, _Numero, _Emp);
                 },
@@ -2261,7 +2258,7 @@
                     }
                 });
 
-                window.addEventListener('keydown', this.configEventKeyF5);
+                //window.addEventListener('keydown', this.configEventKeyF5);
                 window.addEventListener('keydown', this.configEventKeyF3);
             },
             methods: {
@@ -2275,8 +2272,7 @@
                     var _this = this;
                     _this.processing = true;
 
-                    if (_this.pickedBusVenta !== '1') // Crédito
-                        _this.pickedBusVenta = 'V';
+                    _this.pickedBusVenta = 'V';
 
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
@@ -3188,7 +3184,6 @@
                     await APP.rq.axios2.post(APP.base + '/itinerarios/liberarAsiento', { IDS: asientoSel.IDS })
                         .then(res => {
                             if (res.data.EsCorrecto) {
-
                                 asientoSel.IDS = 0;
                                 asientoSel.NumeAsiento = 0;
 
@@ -3932,16 +3927,8 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 },
                 bgcVentaBus: function (FechaVenta, Color, NumeAsiento, IDS, FlagVenta) {
-                    if (FechaVenta) {
-                        switch (FlagVenta) {
-                            case 'R':
-                                return { 'background-color': `${APP.ventas.colorReserva}` };
-                            case '7':
-                                return { 'background-color': `${APP.ventas.colorPaseCortesia}` };
-                            default:
-                                return { 'background-color': `${Color}` };
-                        }
-                    }
+                    if (FechaVenta)
+                        return { 'background-color': `${Color}` };
                     else {
                         if (NumeAsiento > 0) {
                             if (IDS === 0)
@@ -5334,24 +5321,25 @@
 
                             return auxValidate = false;
                         }
+                        
+                        var resConsultaSumaBoletosPostergados = await this.consultaSumaBoletosPostergados(
+                            '79',
+                            '02',
+                            _tmpAsientoSel.TipoBoleto,
+                            _tmpAsientoSel.Boleto,
+                            _tmpAsientoSel.CodiEmpresa);
+                        if (resConsultaSumaBoletosPostergados) {
 
-                        var resConsultaPos = await this.consultaPos('79', '02');
-                        var resConsultaSumaBoletosPostergados = await this.consultaSumaBoletosPostergados(_tmpAsientoSel.TipoBoleto, _tmpAsientoSel.Boleto, _tmpAsientoSel.CodiEmpresa);
+                            var resConfirmClaveAutorizacion02 = true;
 
-                        if (resConsultaPos !== '0') {
-                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+                            if (appController.validatePanelClave('28') === '1') {
+                                resConfirmClaveAutorizacion02 = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Enviar boleto a Fecha Abierta`
+                                    , 'Ha llegado al tope de fecha abierta para este boleto, ingrese la clave de autorización.'
+                                    , ClavePostergacionesBoleto);
 
-                                var resConfirmClaveAutorizacion02 = true;
-
-                                if (appController.validatePanelClave('28') === '1') {
-                                    resConfirmClaveAutorizacion02 = await APP.msg.confirmClaveAutorizacion(
-                                        `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Enviar boleto a Fecha Abierta`
-                                        , 'Ha llegado al tope de fecha abierta para este boleto, ingrese la clave de autorización.'
-                                        , ClavePostergacionesBoleto);
-
-                                    if (!resConfirmClaveAutorizacion02)
-                                        return auxValidate = false;
-                                }
+                                if (!resConfirmClaveAutorizacion02)
+                                    return auxValidate = false;
                             }
                         }
 
@@ -5414,27 +5402,12 @@
 
                     return auxValidate;
                 },
-                consultaPos: async function (_CodTab, _CodEmp) {
-                    var auxResponse = '0';
-
-                    await APP.rq.axios2.post(APP.base + '/itinerarios/consultaPos', {
-                        CodTab: _CodTab,
-                        CodEmp: _CodEmp
-                    })
-                        .then(res => {
-                            if (res.data.Estado)
-                                auxResponse = res.data.Valor;
-                            else
-                                APP.msg.error(res.data.Mensaje);
-                        })
-                        .catch(APP.rq.axios_handler_error_alert);
-
-                    return auxResponse;
-                },
-                consultaSumaBoletosPostergados: async function (_Tipo, _Numero, _Emp) {
-                    var auxResponse = 0;
+                consultaSumaBoletosPostergados: async function (_CodTab, _CodEmp, _Tipo, _Numero, _Emp) {
+                    var auxResponse = false;
 
                     await APP.rq.axios2.post(APP.base + '/itinerarios/consultaSumaBoletosPostergados', {
+                        CodTab: _CodTab,
+                        CodEmp: _CodEmp,
                         Tipo: _Tipo,
                         Numero: _Numero,
                         Emp: _Emp
@@ -6643,16 +6616,6 @@
 
                     return auxValidate;
                 },
-                showContextMenuReimprimir: function () {
-                    var auxValidate = false;
-
-                    if (
-                        (this.itemSelected.FlagVenta === 'V' || this.itemSelected.FlagVenta === '7' || this.itemSelected.FlagVenta === '1')
-                    )
-                        auxValidate = true;
-
-                    return auxValidate;
-                },
                 validateReimprimir: async function (_itemSelected) {
                     var auxValidate = {};
                     auxValidate.ValReimprimir = true;
@@ -6705,22 +6668,27 @@
                     return auxValidate;
                 },
                 openMenu: function (e, _item) {
-                    // Animación 'ScrollTop'
-                    animateScrollTop(800);
+                    if (
+                        (this.showContextMenuBloquearAsiento() || _item.FlagVenta !== '') &&
+                        (this.pickedBusVenta !== 'FA' && _item.FlagVenta !== 'VI')
+                    ) {
+                        this.showContextMenu = true;
+                        this.itemSelected = _item;
 
-                    //Lo usamos para 'fillDataAsientoVendido'
-                    if (_item.IdVenta && _item.Tipo !== this.list.ventas[this.indexVenta].NroAsiento)
-                        this.bloquearAsiento(_item, true);
+                        // Animación 'ScrollTop'
+                        animateScrollTop(800);
 
-                    this.showContextMenu = true;
-                    this.itemSelected = _item;
+                        //Lo usamos para 'fillDataAsientoVendido'
+                        if (this.itemSelected.IdVenta && this.itemSelected.Tipo !== this.list.ventas[this.indexVenta].NroAsiento)
+                            this.bloquearAsiento(_item, true);
 
-                    var varScrollTop = $(window).scrollTop();
+                        var varScrollTop = $(window).scrollTop();
 
-                    Vue.nextTick(function () {
-                        this.$refs.right.focus();
-                        this.setMenu(e.y, e.x, varScrollTop);
-                    }.bind(this));
+                        Vue.nextTick(function () {
+                            this.$refs.right.focus();
+                            this.setMenu(e.y, e.x, varScrollTop);
+                        }.bind(this));
+                    }
 
                     e.preventDefault();
                 },
@@ -6948,7 +6916,10 @@
                         objAsiento.CodiPuntoVenta = 0;
                         objAsiento.CodiSucursal = 0;
                         objAsiento.CodiUsuario = 0;
-                        objAsiento.Color = "";
+                        // Caso color 'Azul':
+                        if (objAsiento.Color !== '#2271B3')
+                            objAsiento.Color = "";
+                        // ------------------
                         objAsiento.Correo = "";
                         objAsiento.Direccion = "";
                         objAsiento.Edad = 0;
@@ -8488,33 +8459,59 @@
                     $('#appVuePostergacion').modal('hide');
                     await appController.liberarAsientoActual();
                 },
-                recorrido: function () {
-                    var _this = this;
-                    if (!_this.filtro.empresa)
+                recorrido: function (_auxValidate) {
+                    var auxResponse = false;
+
+                    if (!this.filtro.empresa) {
                         $('#cboEmpresaPos input[type=search]').focus();
-                    else if (!_this.filtro.serie)
+                        if (_auxValidate === true) APP.msg.warning('Seleccione empresa.');
+                    }
+                    else if (!this.filtro.serie) {
                         document.getElementById('txtSeriePos').focus();
-                    else if (!_this.filtro.documento)
+                        if (_auxValidate === true) APP.msg.warning('Ingrese serie.');
+                    }
+                    else if (!this.filtro.documento) {
                         document.getElementById('txtNumeroPos').focus();
-                    else
+                        if (_auxValidate === true) APP.msg.warning('Ingrese número.');
+                    }
+                    else {
                         document.getElementById('btnBuscarPos').focus();
+                        auxResponse = true;
+                    }
+
+                    return auxResponse;
                 },
                 blurSerie: function () {
                     var _serie = _.cloneDeep(this.filtro.serie);
-                    if (!isNaN(this.filtro.serie))
-                        this.filtro.serie = parseInt(_serie) > 0 ? _.padStart(_serie, 4, '0').toUpperCase() : '';
-                    else {
-                        if (_serie.substring(0, 1).toUpperCase() === 'B')
-                            this.filtro.serie = 'B' + _.padStart(_serie.substring(1, 4), 3, '0');
-                        else if (_serie.substring(0, 1).toUpperCase() === 'F')
-                            this.filtro.serie = 'F' + _.padStart(_serie.substring(1, 4), 3, '0');
-                        else
-                            this.filtro.serie = '';
+
+                    var _seriePart01 = _serie.substring(0, 1).toUpperCase();
+                    if (_seriePart01 && _seriePart01 !== 'B' && _seriePart01 !== 'F' && _seriePart01 !== 'M') {
+                        this.filtro.serie = '';
+                        return;
                     }
+
+                    var _seriePart02 = _serie.substring(1, 4);
+                    if (_seriePart02 && !isNaN(_seriePart02))
+                        _seriePart02 = _.padStart(_serie.substring(1, 4), 3, '0');
+                    else {
+                        this.filtro.serie = '';
+                        return;
+                    }
+
+                    this.filtro.serie = _seriePart01 + _seriePart02;
                 },
                 blurNumero: function () {
                     var _documento = _.cloneDeep(this.filtro.documento);
-                    return this.filtro.documento = parseInt(_documento) > 0 ? _.padStart(_documento, 7, '0') : '';
+
+                    var _documento = _documento.substring(0, 7);
+                    if (_documento && !isNaN(_documento))
+                        _documento = _.padStart(_documento.substring(0, 7), 7, '0');
+                    else {
+                        this.filtro.documento = '';
+                        return;
+                    }
+
+                    this.filtro.documento = _documento;
                 },
                 limpiarCampos: function () {
                     this.filtro.empresa = null;
@@ -8526,15 +8523,17 @@
                 },
                 searchPasajero: async function () {
                     var _this = this;
+
+                    // Validación
+                    if (!_this.recorrido(true))
+                        return;
+
                     _this.showBeneficiario = false;
                     _this.postClick = true;
 
-                    var _tipo = _this.filtro.serie.substring(0, 1) === '0' ? 'M' : _this.filtro.serie.substring(0, 1);
-                    var _serie = isNaN(_this.filtro.serie) ? parseInt(_this.filtro.serie.substring(1, 4)) : parseInt(_this.filtro.serie);
-
                     await APP.rq.axios2.get(APP.base + '/itinerarios/buscar-venta-x-boleto' + APP.util.getQueryParamByObject({
-                        Tipo: _tipo,
-                        Serie: _serie,
+                        Tipo: _this.filtro.serie.substring(0, 1),
+                        Serie: parseInt(_this.filtro.serie.substring(1)),
                         Numero: parseInt(_this.filtro.documento),
                         CodiEmpresa: _this.filtro.empresa.id
                     }))
@@ -8552,8 +8551,7 @@
                                 _this.objBeneficiario.Nombre = nombresSplit[0];
                                 _this.objBeneficiario.ApellidoPaterno = nombresSplit[1];
                                 _this.objBeneficiario.ApellidoMaterno = nombresSplit[2];
-
-                                _this.objBeneficiario.BoletoCompleto = _tipo + String(_serie).padStart(3, '0') + '-' + _.cloneDeep(_this.filtro.documento).padStart(7, '0');
+                                _this.objBeneficiario.BoletoCompleto = _this.filtro.serie + '-' + _this.filtro.documento;
 
                                 _this.$nextTick(() => {
                                     document.getElementById('btnAsignarPos').focus();
@@ -8572,9 +8570,22 @@
                             }
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+
+                    _this.$nextTick(() => {
+                        if (!_this.showBeneficiario)
+                            document.getElementById('txtNumeroPos').focus();
+                    });
                 },
                 asignBeneficiario: async function () {
                     var _this = this;
+
+                    // Validación
+                    if (Object.keys(_this.objBeneficiario).length === 0) {
+                        APP.msg.warning('Busque un pasajero.');
+                        document.getElementById('txtNumeroPos').focus();
+                        return;
+                    }
+
                     _this.postClick = true;
 
                     var validaPostergacion = await _this.validaPostergacion();
@@ -8759,23 +8770,22 @@
                                 return auxValidate = false;
                             }
                         }
-                        var resConsultaPos = await appController.consultaPos('79', '03');
                         var resConsultaSumaBoletosPostergados = await appController.consultaSumaBoletosPostergados(
+                            '79',
+                            '03',
                             this.objBeneficiario.BoletoCompleto.substring(0, 1),
                             this.objBeneficiario.BoletoCompleto.substring(1),
                             this.filtro.empresa.id);
-                        if (resConsultaPos !== '0') {
-                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+                        if (resConsultaSumaBoletosPostergados) {
 
-                                if (appController.validatePanelClave('28') === '1') {
-                                    var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
-                                        `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
-                                        , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
-                                        , ClavePostergacionesBoleto);
+                            if (appController.validatePanelClave('28') === '1') {
+                                var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
+                                    , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
+                                    , ClavePostergacionesBoleto);
 
-                                    if (!resClavePostergacionesBoleto)
-                                        return auxValidate = false;
-                                }
+                                if (!resClavePostergacionesBoleto)
+                                    return auxValidate = false;
                             }
                         }
                         if (this.objBeneficiario.NivelAsiento !== String(appVueVenta.list.ventas[appVueVenta.indexVenta].NivelAsiento)) {
@@ -8875,23 +8885,22 @@
                                     return auxValidate = false;
                             }
                         }
-                        var resConsultaPos = await appController.consultaPos('79', '03');
                         var resConsultaSumaBoletosPostergados = await appController.consultaSumaBoletosPostergados(
+                            '79',
+                            '03',
                             this.objBeneficiario.BoletoCompleto.substring(0, 1),
                             this.objBeneficiario.BoletoCompleto.substring(1),
                             this.filtro.empresa.id);
-                        if (resConsultaPos !== '0') {
-                            if (resConsultaSumaBoletosPostergados <= parseInt(resConsultaPos)) {
+                        if (resConsultaSumaBoletosPostergados) {
 
-                                if (appController.validatePanelClave('28') === '1') {
-                                    var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
-                                        `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
-                                        , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
-                                        , ClavePostergacionesBoleto);
+                            if (appController.validatePanelClave('28') === '1') {
+                                var resClavePostergacionesBoleto = await APP.msg.confirmClaveAutorizacion(
+                                    `${_.padStart(ClavePostergacionesBoleto, 3, '0')} - Postergar boleto`
+                                    , 'Ha llegado al tope de postergación para este boleto, ingrese la clave de autorización.'
+                                    , ClavePostergacionesBoleto);
 
-                                    if (!resClavePostergacionesBoleto)
-                                        return auxValidate = false;
-                                }
+                                if (!resClavePostergacionesBoleto)
+                                    return auxValidate = false;
                             }
                         }
                         if (Usuario.Nivel !== 11 && Usuario.Nivel !== 1) {
@@ -8963,16 +8972,12 @@
                         .catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
+                },
+                getLabel: function (option) {
+                    return `${option.id} - ${option.label}`
                 }
             },
-            computed: {
-                filledCampos: function () {
-                    if (this.filtro.empresa)
-                        return this.filtro.empresa.id && this.filtro.serie && this.filtro.documento;
-                    else
-                        return false;
-                }
-            }
+            computed: {}
         });
 
         var appClaveAutorizacion = new Vue({

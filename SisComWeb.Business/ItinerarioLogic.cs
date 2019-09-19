@@ -68,10 +68,10 @@ namespace SisComWeb.Business
 
                         // Obtiene 'BusProgramacion'
                         obtenerBus = ItinerarioRepository.ObtenerBusProgramacion(buscarItinerarios[i].CodiProgramacion);
-                        buscarItinerarios[i].CodiBus = obtenerBus.CodiBus ?? "0000";
-                        buscarItinerarios[i].PlanoBus = obtenerBus.PlanBus ?? "000";
-                        buscarItinerarios[i].CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                        buscarItinerarios[i].PlacaBus = obtenerBus.PlacBus ?? "00-0000";
+                        buscarItinerarios[i].CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                        buscarItinerarios[i].PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                        buscarItinerarios[i].CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                        buscarItinerarios[i].PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
                     }
                     else
                     {
@@ -107,10 +107,10 @@ namespace SisComWeb.Business
                             {
                                 // En caso de no encontrar resultado
                                 obtenerBus = ItinerarioRepository.ObtenerBusEstandar(buscarItinerarios[i].CodiEmpresa, buscarItinerarios[i].CodiSucursal, 0, buscarItinerarios[i].CodiServicio, string.Empty);
-                                buscarItinerarios[i].CodiBus = obtenerBus.CodiBus ?? "0000";
-                                buscarItinerarios[i].PlanoBus = obtenerBus.PlanBus ?? "000";
-                                buscarItinerarios[i].CapacidadBus = obtenerBus.NumePasajeros ?? "0";
-                                buscarItinerarios[i].PlacaBus = obtenerBus.PlacBus ?? "00-0000";
+                                buscarItinerarios[i].CodiBus = string.IsNullOrEmpty(obtenerBus.CodiBus) ? "0000" : obtenerBus.CodiBus;
+                                buscarItinerarios[i].PlanoBus = string.IsNullOrEmpty(obtenerBus.PlanBus) ? "000" : obtenerBus.PlanBus;
+                                buscarItinerarios[i].CapacidadBus = string.IsNullOrEmpty(obtenerBus.NumePasajeros) ? "0" : obtenerBus.NumePasajeros;
+                                buscarItinerarios[i].PlacaBus = string.IsNullOrEmpty(obtenerBus.PlacBus) ? "00-0000" : obtenerBus.PlacBus;
                             }
                         }
                     }

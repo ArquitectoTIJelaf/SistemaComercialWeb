@@ -292,7 +292,8 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "") ?? "0";
+                        valor = Reader.GetStringValue(drlector, "");
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }
@@ -586,7 +587,8 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "MES_CON") ?? "0";
+                        valor = Reader.GetStringValue(drlector, "MES_CON");
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }
@@ -777,7 +779,8 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "MINUTOS") ?? "0";
+                        valor = Reader.GetStringValue(drlector, "MINUTOS");
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }
@@ -891,6 +894,28 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static bool ObtenerValorPNP(string Tabla, int CodiProgramacion)
+        {
+            var valor = true;
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_Obtener_Valor_PNP";
+                db.AddParameter("@tabla", DbType.String, ParameterDirection.Input, Tabla);
+                db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetBooleanValue(drlector, "validate");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales
@@ -934,12 +959,12 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Nivel_Asiento", DbType.Byte, ParameterDirection.Input, entidad.NivelAsiento);
                 db.AddParameter("@Codi_Terminal", DbType.Int16, ParameterDirection.Input, entidad.CodiTerminal);
                 db.AddParameter("@Credito", DbType.Decimal, ParameterDirection.Input, entidad.Credito);
-                db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.Concepto ?? "");
+                db.AddParameter("@Reco_Venta", DbType.String, ParameterDirection.Input, entidad.Concepto ?? string.Empty);
                 db.AddParameter("@IdContrato", DbType.Int32, ParameterDirection.Input, entidad.IdContrato);
-                db.AddParameter("@NroSolicitud", DbType.String, ParameterDirection.Input, entidad.NroSolicitud ?? "");
+                db.AddParameter("@NroSolicitud", DbType.String, ParameterDirection.Input, entidad.NroSolicitud ?? string.Empty);
                 db.AddParameter("@IdAreaContrato", DbType.Int32, ParameterDirection.Input, entidad.IdArea);
-                db.AddParameter("@Flg_Ida", DbType.String, ParameterDirection.Input, entidad.FlgIda ?? "");
-                db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, entidad.FechaCita ?? "");
+                db.AddParameter("@Flg_Ida", DbType.String, ParameterDirection.Input, entidad.FlgIda ?? string.Empty);
+                db.AddParameter("@Fecha_Cita", DbType.String, ParameterDirection.Input, entidad.FechaCita ?? string.Empty);
                 db.AddParameter("@Id_hospital", DbType.Int32, ParameterDirection.Input, entidad.IdHospital);
                 db.AddParameter("@IdTabla", DbType.Int32, ParameterDirection.Input, entidad.IdPrecio);
                 db.AddParameter("@Precio_Normal", DbType.Decimal, ParameterDirection.Input, entidad.PrecioNormal);

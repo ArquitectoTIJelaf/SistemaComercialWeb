@@ -199,7 +199,8 @@ namespace SisComWeb.Repository
                 {
                     while (drlector.Read())
                     {
-                        valor = Reader.GetStringValue(drlector, "st") ?? "0";
+                        valor = Reader.GetStringValue(drlector, "st");
+                        valor = string.IsNullOrEmpty(valor) ? "0" : valor;
                         break;
                     }
                 }
