@@ -710,7 +710,7 @@
 
         .blinkEspecial {
             color: blue;
-            font-size:14px;
+            font-size: 14px;
             -webkit-animation-name: blueWhite;
             -webkit-animation-iteration-count: infinite;
             -webkit-animation-duration: 1s;
@@ -5530,7 +5530,7 @@
 
                             return auxValidate = false;
                         }
-                        
+
                         var resConsultaSumaBoletosPostergados = await this.consultaSumaBoletosPostergados(
                             '79',
                             '02',
@@ -7966,8 +7966,11 @@
 
                         return auxResponse;
                     }
-                    else
+                    else {
                         auxResponse = true;
+                        if (auxValidate !== true) document.getElementById('btnSaveVentaTipoPago').focus();
+                    }
+                        
 
                     return auxResponse;
                 },
@@ -8865,7 +8868,7 @@
                     }
 
                     appController.disabledAsientos(true);
-                    
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
                         .then(async function (res) {
                             await _this.close();
