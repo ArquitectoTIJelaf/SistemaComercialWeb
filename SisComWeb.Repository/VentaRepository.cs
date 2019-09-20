@@ -916,6 +916,32 @@ namespace SisComWeb.Repository
             return valor;
         }
 
+        public static byte VerificaDocumentoRepetido(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string TipoDoc, string Documento)
+        {
+            var valor = new byte();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_VerificaDocumentoRepetido";
+                db.AddParameter("@Codi_Programacion", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@Nro_Viaje", DbType.Int32, ParameterDirection.Input, NroViaje);
+                db.AddParameter("@Codi_Origen", DbType.Int16, ParameterDirection.Input, CodiOrigen);
+                db.AddParameter("@Codi_Destino", DbType.Int16, ParameterDirection.Input, CodiDestino);
+                db.AddParameter("@TIPO_DOC", DbType.String, ParameterDirection.Input, TipoDoc);
+                db.AddParameter("@Documento", DbType.String, ParameterDirection.Input, Documento);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        valor = Reader.GetByteValue(drlector, "NUME_ASIENTO");
+                        break;
+                    }
+                }
+            }
+
+            return valor;
+        }
+
         #endregion
 
         #region Métodos Transaccionales

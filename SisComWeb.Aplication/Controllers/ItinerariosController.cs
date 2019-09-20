@@ -3300,5 +3300,45 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("verificaDocumentoRepetido")]
+        public async Task<ActionResult> VerificaDocumentoRepetido(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string TipoDoc, string Documento)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    var _body = "{" +
+                                    "\"CodiProgramacion\" : " + CodiProgramacion +
+                                    ",\"NroViaje\" : " + NroViaje +
+                                    ",\"CodiOrigen\" : " + CodiOrigen +
+                                    ",\"CodiDestino\" : " + CodiDestino +
+                                    ",\"TipoDoc\" : \"" + TipoDoc + "\"" +
+                                    ",\"Documento\" : \"" + Documento + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("VerificaDocumentoRepetido", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<byte> res = new Response<byte>()
+                {
+                    Estado = (bool)tmpResult["Estado"],
+                    Mensaje = (string)tmpResult["Mensaje"],
+                    Valor = (byte)tmpResult["Valor"]
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<byte>(false, Constant.EXCEPCION, 0), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

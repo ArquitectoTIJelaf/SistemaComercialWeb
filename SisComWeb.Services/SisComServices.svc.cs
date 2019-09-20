@@ -738,6 +738,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<byte> VerificaDocumentoRepetido(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string TipoDoc, string Documento)
+        {
+            try
+            {
+                return VentaLogic.VerificaDocumentoRepetido(CodiProgramacion, NroViaje, CodiOrigen, CodiDestino, TipoDoc, Documento);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<byte>(false, 0, Message.MsgExcVerificaDocumentoRepetido, false);
+            }
+        }
+
         #endregion
 
         #region ANULAR VENTA
