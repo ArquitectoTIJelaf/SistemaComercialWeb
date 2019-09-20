@@ -2081,11 +2081,11 @@ namespace SisComWeb.Business
                     var original = CuadreImpresora.Cuadre.WriteText(entidad, TipoImpresion);
 
                     var copia1 = string.Empty;
-                    if (objPanelCopia1 != null && objPanelCopia1.Valor == "1")
+                    //if (objPanelCopia1 != null && objPanelCopia1.Valor == "1")
                         copia1 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
 
                     var copia2 = string.Empty;
-                    if (objPanelCopia2 != null && objPanelCopia2.Valor == "1")
+                    //if (objPanelCopia2 != null && objPanelCopia2.Valor == "1")
                         copia2 = CuadreImpresora.Cuadre.WriteTextCopy(entidad, TipoImpresion);
 
                     var documentos = new ImpresionEntity()

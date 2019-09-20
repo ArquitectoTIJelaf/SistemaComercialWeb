@@ -710,7 +710,7 @@
 
         .blinkEspecial {
             color: blue;
-            font-size:14px;
+            font-size: 14px;
             -webkit-animation-name: blueWhite;
             -webkit-animation-iteration-count: infinite;
             -webkit-animation-duration: 1s;
@@ -5501,7 +5501,7 @@
 
                             return auxValidate = false;
                         }
-                        
+
                         var resConsultaSumaBoletosPostergados = await this.consultaSumaBoletosPostergados(
                             '79',
                             '02',
@@ -8025,7 +8025,7 @@
                                     ListaVentasRealizadas: _ListaVentasRealizadas,
                                     TipoImpresion: _TipoImpresion
                                 })
-                                    .then(function (res) {
+                                    .then(async function (res) {
                                         var _listaImpresiones = res.data.Valor;
                                         var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
@@ -8078,55 +8078,57 @@
                             break;
                     }
                 },
-                imprimirBoleto: function (_Documentos, _Posicion, _CantidadVentas) {
-                    var auxValidate = true;
-                    var auxUrl = '';
+                imprimirBoleto: async function (_Documentos) {
+                    await axios({ method: "GET", "url": UrlImprimirBoleto + '?base=' + _Documentos.Original + '&' + 'name=' + 'IMPRESORA' });
+                    if (_Documentos.Copia1)
+                        await axios({ method: "GET", "url": UrlImprimirBoleto + '?base=' + _Documentos.Copia1 + '&' + 'name=' + 'IMPRESORA_I' });
+                    if (_Documentos.Copia2)
+                        await axios({ method: "GET", "url": UrlImprimirBoleto + '?base=' + _Documentos.Copia2 + '&' + 'name=' + 'IMPRESORA_I2' });
 
-                    // Imprime '_Documentos'
-                    for (const doc in _Documentos) {
-                        var docValor = `${_Documentos[doc]}`;
+                    //var auxValidate = true;
+                    //var auxUrl = '';
 
-                        if (docValor) {
-                            if (doc === 'Original')
-                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
-                            else if (doc === 'Copia1')
-                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I';
-                            else if (doc === 'Copia2')
-                                auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
+                    //// Imprime '_Documentos'
+                    //for (const doc in _Documentos) {
+                    //    var docValor = `${_Documentos[doc]}`;
 
-                            if (auxUrl) {
-                                // Servicio local
-                                axios({ method: "GET", "url": auxUrl })
-                                    .then(res => {
-                                        //APP.msg.success('Boleto enviado a imprimir correctamente.');
-                                    }, error => {
-                                        //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
-                                        auxValidate = false;
-                                    });
-                            }
+                    //    if (docValor) {
+                    //        if (doc === 'Original')
+                    //            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA';
+                    //        else if (doc === 'Copia1')
+                    //            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I';
+                    //        else if (doc === 'Copia2')
+                    //            auxUrl = UrlImprimirBoleto + '?base=' + docValor + '&' + 'name=' + 'IMPRESORA_I2';
 
-                            // Para continuar con el siguiente 'doc'
-                            auxUrl = '';
+                    //        if (auxUrl) {
+                    //            debugger;
+                    //            // Servicio local
+                    //            await axios({ method: "GET", "url": auxUrl })
+                    //                .then(res => {
+                    //                    debugger;
+                    //                    //APP.msg.success('Boleto enviado a imprimir correctamente.');
+                    //                }, error => {
+                    //                    //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                    //                    auxValidate = false;
+                    //                });
+                    //        }
 
-                            // Valida 'error'
-                            if (!auxValidate)
-                                break;
-                        }
-                    }
+                    //        // Para continuar con el siguiente 'doc'
+                    //        auxUrl = '';
 
-                    // Valida: Si es venta múltiple y no es el último boleto, entonces se realiza un 'CORTE_SEPARADOR'
-                    if (_CantidadVentas > 1 && _CantidadVentas > (_Posicion + 1)) {
-                        auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'IMPRESORA_I2'; // 'IMPRESORA_I2': Nombre reconocido por el programa.
-                        axios({ method: "GET", "url": auxUrl });
-                    }
+                    //        // Valida 'error'
+                    //        if (!auxValidate)
+                    //            break;
+                    //    }
+                    //}
 
-                    // Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
-                    if (auxValidate) {
-                        if (_Posicion === 0)
-                            APP.msg.success('Boleto enviado a imprimir correctamente.');
-                    }
-                    else
-                        APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
+                    //// Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
+                    //if (auxValidate) {
+                    //    if (_Posicion === 0)
+                    //        APP.msg.success('Boleto enviado a imprimir correctamente.');
+                    //}
+                    //else
+                    //    APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                 }
             },
             computed: {
@@ -8817,7 +8819,7 @@
                     }
 
                     appController.disabledAsientos(true);
-                    
+
                     await APP.rq.axios.post(APP.base + '/itinerarios/postergar-venta', input)
                         .then(async function (res) {
                             await _this.close();
