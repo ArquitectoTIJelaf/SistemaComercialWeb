@@ -8048,14 +8048,26 @@
                                     TipoImpresion: _TipoImpresion
                                 })
                                     .then(function (res) {
-                                        var _listaImpresiones = res.data.Valor;
-                                        var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
-                                            for (i = 0; i < _listaLength; i++) {
+                                            var _listaImpresiones = res.data.Valor;
+
+                                            for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
+
+                                                    var tmpTime = 0;
+
+                                                    if (_listaImpresiones.length > 0) {
+                                                        if (_listaImpresiones[0].Copia1 && _listaImpresiones[0].Copia2)
+                                                            tmpTime = 6000;
+                                                        else if (_listaImpresiones[0].Copia1 || _listaImpresiones[0].Copia2)
+                                                            tmpTime = 4000;
+                                                        else
+                                                            tmpTime = 3000;
+                                                    }
+
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i);
-                                                    }, i * 3500);
+                                                    }, i * tmpTime);
                                                 })(i);
                                             }
                                         }
@@ -8065,7 +8077,6 @@
                                             else
                                                 APP.msg.error(res.data.Mensaje);
                                         }
-
                                     })
                                     .catch(APP.rq.axios_handler_error_alert);
                             };
@@ -8077,14 +8088,26 @@
                                     TipoImpresion: _TipoImpresion
                                 })
                                     .then(function (res) {
-                                        var _listaImpresiones = res.data.Valor;
-                                        var _listaLength = _listaImpresiones.length;
                                         if (res.data.EsCorrecto) {
-                                            for (i = 0; i < _listaLength; i++) {
+                                            var _listaImpresiones = res.data.Valor;
+
+                                            for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
+
+                                                    var tmpTime = 0;
+
+                                                    if (_listaImpresiones.length > 0) {
+                                                        if (_listaImpresiones[0].Copia1 && _listaImpresiones[0].Copia2)
+                                                            tmpTime = 6000;
+                                                        else if (_listaImpresiones[0].Copia1 || _listaImpresiones[0].Copia2)
+                                                            tmpTime = 4000;
+                                                        else
+                                                            tmpTime = 3000;
+                                                    }
+
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i);
-                                                    }, i * 3500);
+                                                    }, i * tmpTime);
                                                 })(i);
                                             }
                                         }
