@@ -305,7 +305,7 @@ namespace SisComWeb.Entity
 
         public string FechaViaje { get; set; }
 
-        public string EmbarqueDir { get; set; }
+        public string EmbarqueDir { get; set; } // Descripción del embarque
 
         public string EmbarqueHora { get; set; }
 
@@ -332,6 +332,9 @@ namespace SisComWeb.Entity
         public string BusCodigo { get; set; }
 
         public short EmbarqueCod { get; set; }
+
+
+        public string EmbarqueDirAgencia { get; set; } // Dirección del embarque
 
         // Reimpresión
         public short UsuarioCodigo { get; set; }

@@ -50,7 +50,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("|||^FECHA VIAJE    : " + venta.FechaViaje);
                 texto.AppendLine("|||^HORA DE SALIDA : " + venta.EmbarqueHora);
                 texto.AppendLine("|||^ASIENTO        : " + venta.NumeAsiento);
-                texto.AppendLine(SplitStringPreserving("DIR.EMBARQUE: " + venta.EmpDirAgencia, 30, "||||^", false));
+                texto.AppendLine(SplitStringPreserving("DIR.EMBARQUE: " + venta.EmbarqueDirAgencia, 30, "||||^", false));
                 texto.AppendLine(new string('-', 42));
                 texto.AppendLine("|||^TOTAL" + ("S/ " + DataUtility.ConvertDecimalToStringWithTwoDecimals(venta.PrecioCan)).PadLeft(20));
                 texto.AppendLine("^SON: " + venta.PrecioDes);
@@ -233,7 +233,7 @@ namespace SisComWeb.CuadreImpresora
                 texto.AppendLine("   FECHA VIAJE: " + venta.FechaViaje);
                 texto.AppendLine("   HORA EMBARQUE: " + venta.EmbarqueHora);
                 texto.AppendLine(SplitStringPreserving("LUGAR EMBARQUE: " + venta.EmbarqueDir, 40, "   ", false));
-                texto.AppendLine(SplitStringPreserving("DIR. EMBARQUE: " + venta.EmpDirAgencia, 40, "   ", false));
+                texto.AppendLine(SplitStringPreserving("DIR. EMBARQUE: " + venta.EmbarqueDirAgencia, 40, "   ", false));
                 texto.AppendLine("");
                 if (TipoImpresion == TipoReimprimir)
                 {

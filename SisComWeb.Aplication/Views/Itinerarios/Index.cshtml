@@ -2490,7 +2490,7 @@
                                 }
                                 // --------------------------------------------------
                                 if (res.data.Valor.ListaAuxDestinosRuta.length > 0)
-                                    _this.list.destinosPas = _.cloneDeep(res.data.Valor.ListaAuxDestinosRuta);
+                                    _this.list.destinosPas = _.sortBy(_.cloneDeep(res.data.Valor.ListaAuxDestinosRuta), [function (o) { return parseInt(o.id); }]);
                                 else
                                     _this.list.destinosPas = _.cloneDeep(rutas);
                                 // --------------------------------------------------
@@ -2523,7 +2523,7 @@
                                 _this.objTurno.CantidadMaxBloqAsi = res.data.Valor.CantidadMaxBloqAsi;
                                 _this.objTurno.Xcierre = res.data.Valor.Activo;
                                 _this.objTurno.TablaBloqueoAsientos = res.data.Valor.TablaBloqueoAsientos;
-                                debugger;
+                                
                                 _this.updateEnlaceTurnos(_this.filtro.Turno, _this.filtro.CodiServicio.label, res.data.Valor.Color, res.data.Valor.SecondColor);
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
@@ -4264,7 +4264,7 @@
                     if (listaDestinosRuta.length <= 0)
                         this.filtro.CodiDestinoPas = null;
 
-                    this.list.destinosPas = _.cloneDeep(listaDestinosRuta);
+                    this.list.destinosPas = _.sortBy(_.cloneDeep(listaDestinosRuta), [function (o) { return parseInt(o.id); }]);
                 },
                 getNewListaDestinosPas: async function (_CodiEmpresa, _CodiOrigenPas, _CodiOrigenBus, _CodiPuntoVentaBus, _CodiDestinoBus, _Turno, _CodiServicio, _NroViaje) {
                     var auxResponse = null;
@@ -8050,8 +8050,8 @@
                                             for (i = 0; i < _listaLength; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
-                                                    }, i * 2500);
+                                                        _this.imprimirBoleto(_listaImpresiones[i], i);
+                                                    }, i * 3500);
                                                 })(i);
                                             }
                                         }
@@ -8079,8 +8079,8 @@
                                             for (i = 0; i < _listaLength; i++) {
                                                 (function (i) {
                                                     setTimeout(function () {
-                                                        _this.imprimirBoleto(_listaImpresiones[i], i, _listaLength);
-                                                    }, i * 2500);
+                                                        _this.imprimirBoleto(_listaImpresiones[i], i);
+                                                    }, i * 3500);
                                                 })(i);
                                             }
                                         }
@@ -8096,7 +8096,7 @@
                             break;
                     }
                 },
-                imprimirBoleto: function (_Documentos, _Posicion, _CantidadVentas) {
+                imprimirBoleto: function (_Documentos, _Posicion) {
                     var auxValidate = true;
                     var auxUrl = '';
 
@@ -8130,12 +8130,6 @@
                             if (!auxValidate)
                                 break;
                         }
-                    }
-
-                    // Valida: Si es venta múltiple y no es el último boleto, entonces se realiza un 'CORTE_SEPARADOR'
-                    if (_CantidadVentas > 1 && _CantidadVentas > (_Posicion + 1)) {
-                        auxUrl = UrlImprimirBoleto + '?base=' + ' ' + '&' + 'name=' + 'IMPRESORA_I2'; // 'IMPRESORA_I2': Nombre reconocido por el programa.
-                        axios({ method: "GET", "url": auxUrl });
                     }
 
                     // Valida: Si es el primer boleto o si hubo algún error, entonces se muestra 'APP.msg'
@@ -10445,7 +10439,6 @@
                                 _this.list.pasajeros = res.data.Valor;
                                 _this.showData = true;
                                 _this.$nextTick(() => {
-                                    debugger;
                                     _this.setTd();
                                 });
                             } else APP.msg.warning('No se encontró resultados');
