@@ -55,6 +55,7 @@
 @Html.Partial("_CTipoPago")
 @Html.Partial("_NotaCredito")
 @Html.Partial("_RptPVentaEmbarques")
+@Html.Partial("_ConectorVisa")
 
 @section styles{
     <style type="text/css">
@@ -12692,6 +12693,24 @@
                             this.vuelto2 = '';
                     }
                 },
+                conectarVisa: async function () {
+                    let _this = this;
+
+                    appVueConectorVisa.show();
+
+                    await deferredModal($('#appVueConectorVisa'), true).done(function () {
+                        appVueConectorVisa.$nextTick(() => {
+                            //appClaveAutorizacion.auditoria.TipoMovimiento = 'AUTORIZACION_RE_';
+                            //appClaveAutorizacion.auditoria.Boleto = `${_.padStart(data.SerieBoleto, 3, '0')}-${_.padStart(data.NumeBoleto, 7, '0')}`;
+                        });
+                    });
+
+                    await deferredModal($('#appVueConectorVisa'), false).done(function () {
+                        appVueConectorVisa.$nextTick(() => {
+                            //checkClaveAutorizacion = appClaveAutorizacion.trustedPassword;
+                        });
+                    });
+                },
                 esc: function (event) {
                     if (event.keyCode === 27) this.close();
                 },
@@ -14721,6 +14740,53 @@
             },
             watch: {
             }
+        });
+
+        var appVueConectorVisa = new Vue({
+            el: '#appVueConectorVisa',
+            name: 'appVueConectorVisa',
+            data: {},
+            mounted: function () {
+                let _this = this;
+
+                $('#appVueConectorVisa').on('shown.bs.modal', function () {
+                    window.addEventListener('keyup', _this.esc);
+
+                    $(document).off('focusin.modal');
+
+                    _this.$nextTick(() => {
+                        //_this.$refs.refCTPNumero.focus();
+                    });
+                });},
+            methods: {
+                show: function (asientoSel) {
+                    let _this = this;
+                    //_this.limpiarData();
+                    //_this.asientoSel = asientoSel;
+                    $('#appVueConectorVisa').modal('show');
+                    //_this.setData();
+                },
+                setData: function () {
+                    let _this = this;
+                },
+                searchData: async function () {
+                    let _this = this;
+                },
+                limpiarData: function () {
+                    let _this = this;
+                },
+                esc: function (event) {
+                    if (event.keyCode === 27) {
+                        this.close();
+                    }
+                },
+                close: function () {
+                    window.removeEventListener('keyup', this.esc);
+                    $('#appVueConectorVisa').modal('hide');
+                },
+            },
+            computed: {},
+            watch: {}
         });
 
     </script>
