@@ -1925,7 +1925,7 @@
                     auxTiposDoc = _.cloneDeep(_.filter(tiposDoc, function (o) {
                         return o.id === '01' || o.id === '03' || o.id === '07';
                     }));
-                    auxTiposDoc.unshift({ 'id': '77', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
+                    auxTiposDoc.unshift({ 'id': '6', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
 
                     return auxTiposDoc;
                 },
@@ -14537,7 +14537,7 @@
 
                     // Validaciones
                     switch (_this.filtro.tipoDocumento.id) {
-                        case '77':
+                        case '6':
                             {
                                 if (!isNaN(search) && search.length > 11)
                                     return;
@@ -14567,7 +14567,7 @@
                                 if (loading)
                                     loading(false);
 
-                                if (_this.filtro.tipoDocumento.id === '77')
+                                if (_this.filtro.tipoDocumento.id === '6')
                                     _this.list.clientes = res.data.Valor;
                                 else {
                                     if (res.data.Valor.length > 0)
@@ -14581,6 +14581,33 @@
                                 APP.msg.error(res.data.Mensaje);
                         })
                         .catch(APP.rq.axios_handler_error_alert);
+                },
+                blurSerieNumDocNC: function () {
+                    var _serie = _.cloneDeep(this.filtro.serieNumDocNC);
+
+                    var _serie = _serie.substring(0, 3);
+                    if (_serie && !isNaN(_serie))
+                        _serie = _.padStart(_serie.substring(0, 3), 3, '0');
+                    else {
+                        this.filtro.serieNumDocNC = '';
+                        return;
+                    }
+
+                    this.filtro.serieNumDocNC = _serie;
+                },
+                blurNumeroNumDocNC: function () {
+                    debugger;
+                    var _numero = _.cloneDeep(this.filtro.numeroNumDocNC);
+
+                    var _numero = _numero.substring(0, 7);
+                    if (_numero && !isNaN(_numero))
+                        _numero = _.padStart(_numero.substring(0, 7), 7, '0');
+                    else {
+                        this.filtro.numeroNumDocNC = '';
+                        return;
+                    }
+
+                    this.filtro.numeroNumDocNC = _numero;
                 },
                 cerrarNotaCredito: function () {
                     $('#appVueNotaCredito').modal('hide');
@@ -14613,7 +14640,7 @@
                     var auxResponse = false;
 
                     _this.$nextTick(() => {
-
+                        debugger;
                         if (!_this.filtro.empresa) {
                             $('#cboEmpresaNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione una empresa.');
@@ -14622,11 +14649,11 @@
                             $('#cboTipoDocumentoNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                         }
-                        else if (_this.filtro.tipoDocumento.id === '77' && !_this.filtro.cliente) {
+                        else if (_this.filtro.tipoDocumento.id === '6' && !_this.filtro.cliente) {
                             $('#cboClienteNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
                         }
-                        else if (_this.filtro.tipoDocumento.id != '77' && !_this.filtro.clienteId && !_this.filtro.clienteLabel) {
+                        else if (_this.filtro.tipoDocumento.id != '6' && !_this.filtro.clienteId && !_this.filtro.clienteLabel) {
                             document.getElementById('txtClienteIdNC').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
                         }
@@ -14642,6 +14669,14 @@
                             $('#cboTipoNumDocNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de número documento.');
                         }
+                        else if (!_this.filtro.serieNumDocNC) {
+                            document.getElementById('txtSerieNumDocNC').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese serie de documento.');
+                        }
+                        else if (!_this.filtro.numeroNumDocNC) {
+                            document.getElementById('txtNumeroNumDocNC').focus();
+                            if (auxValidate === true) APP.msg.warning('Ingrese número de documento.');
+                        }
                         else {
                             document.getElementById('btnBuscarNC').focus();
                             auxResponse = true;
@@ -14654,7 +14689,7 @@
                     var _this = this;
 
                     _this.$nextTick(function () {
-                        if (_this.filtro.tipoDocumento.id === '77')
+                        if (_this.filtro.tipoDocumento.id === '6')
                             $('#cboClienteNC input[type=search]').focus();
                         else
                             document.getElementById('txtClienteIdNC').focus();
@@ -14704,7 +14739,7 @@
                     if (newVal) {
                         this.mask.tipoDocumento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                        if (this.filtro.tipoDocumento.id === '77')
+                        if (this.filtro.tipoDocumento.id === '6')
                             this.filtro.cliente = null;
                         else {
                             this.filtro.clienteId = '';

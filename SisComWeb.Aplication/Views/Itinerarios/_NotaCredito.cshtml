@@ -65,7 +65,7 @@
                                 </v-select>
                             </div>
                             <div class="col-md-6">
-                                <div v-show="filtro.tipoDocumento != null && filtro.tipoDocumento.id == '77'">
+                                <div v-show="filtro.tipoDocumento != null && filtro.tipoDocumento.id == '6'">
                                     <label class="control-label">Cliente:</label>
                                     <v-select id="cboClienteNC"
                                               placeholder="CLIENTE"
@@ -84,7 +84,7 @@
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
-                                <div v-show="filtro.tipoDocumento == null || filtro.tipoDocumento.id != '77'">
+                                <div v-show="filtro.tipoDocumento == null || filtro.tipoDocumento.id != '6'">
                                     <label class="col-md-12 control-label" style="text-align: left; ">Documento:</label>
                                     <div class="col-md-3 p-r-0 p-l-0">
                                         <input v-model="filtro.clienteId"
@@ -157,24 +157,28 @@
                                 </div>
                                 <div class="col-md-4">
                                     <input v-model="filtro.serieNumDocNC"
-                                           @*@@keydown.13.prevent="recorrido(1)"*@
-                                           @*@@keydown.9.prevent="recorrido(1)"*@
                                            id="txtSerieNumDocNC"
                                            ref="refSerieNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="SERIE"
-                                           maxlength="3"
+                                           @@keydown.13.prevent="recorrerNotaCredito()"
+                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurSerieNumDocNC"
+                                           v-mask="'N'.repeat(3)"
                                            autocomplete="off">
                                 </div>
                                 <div class="col-md-5">
                                     <input v-model="filtro.numeroNumDocNC"
-                                           @*@@keydown.13.prevent="recorrido(1)"*@
-                                           @*@@keydown.9.prevent="recorrido(1)"*@
                                            id="txtNumeroNumDocNC"
                                            ref="refNumeroNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="NUMERO"
-                                           maxlength="7"
+                                           @@keydown.13.prevent="recorrerNotaCredito()"
+                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurNumeroNumDocNC"
+                                           v-mask="'N'.repeat(7)"
                                            autocomplete="off">
                                 </div>
                             </div>

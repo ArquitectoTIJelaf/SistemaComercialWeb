@@ -139,7 +139,9 @@ namespace SisComWeb.Aplication.Controllers
                 CodiSucursal = (short)x["CodiSucursal"],
                 NomOficina = (string)x["NomOficina"],
                 Sigla = (string)x["Sigla"],
-                Color = (string)x["Color"]
+                Color = (string)x["Color"],
+
+                Cantidad = (int)x["Cantidad"]
             }).ToList();
 
             return lista;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 
 namespace SisComWeb.Business
 {
@@ -279,6 +280,12 @@ namespace SisComWeb.Business
                 }
                 else
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
+
+                // Seteo de 'Cantidad' por 'DestinosRuta'
+                foreach (var destinoRuta in buscarTurno.ListaDestinosRuta)
+                {
+                    destinoRuta.Cantidad = resMuestraPlano.Valor.Count(x => x.CodiDestino == destinoRuta.CodiSucursal);
+                }
 
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);
             }

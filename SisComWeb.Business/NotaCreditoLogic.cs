@@ -30,7 +30,7 @@ namespace SisComWeb.Business
                 if (Value == "null")
                     Value = string.Empty;
 
-                if (TipoDocumento != "77") // Caso: RUC.
+                if (TipoDocumento != "6") // Caso: RUC.
                     TipoDocumento = VentaLogic.TipoDocumentoHomologado(TipoDocumento).ToString();
 
                 var lista = NotaCreditoRepository.ListaClientesNC_Autocomplete(TipoDocumento, Value);
