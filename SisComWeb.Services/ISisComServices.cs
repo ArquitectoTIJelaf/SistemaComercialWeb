@@ -254,6 +254,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ObtenerValorPNP", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<bool> ObtenerValorPNP(string Tabla, int CodiProgramacion);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "VerificaDocumentoRepetido", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<byte> VerificaDocumentoRepetido(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string TipoDoc, string Documento);
+
         #endregion
 
         #region ANULAR VENTA

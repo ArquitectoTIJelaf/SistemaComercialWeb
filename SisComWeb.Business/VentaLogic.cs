@@ -789,6 +789,21 @@ namespace SisComWeb.Business
             }
         }
 
+        public static Response<byte> VerificaDocumentoRepetido(int CodiProgramacion, int NroViaje, short CodiOrigen, short CodiDestino, string TipoDoc, string Documento)
+        {
+            try
+            {
+                var verificaDocumentoRepetido = VentaRepository.VerificaDocumentoRepetido(CodiProgramacion, NroViaje, CodiOrigen, CodiDestino, TipoDoc, Documento);
+
+                return new Response<byte>(true, verificaDocumentoRepetido, Message.MsgCorrectoVerificaDocumentoRepetido, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(FechaAbiertaLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<byte>(false, 0, Message.MsgExcVerificaDocumentoRepetido, false);
+            }
+        }
+
         #endregion
 
         #region GRABAR RESERVA
@@ -2638,6 +2653,7 @@ namespace SisComWeb.Business
                 return new Response<bool>(false, false, Message.MsgExActualizaBoletoF9, false);
             }
         }
+
         #endregion
     }
 }

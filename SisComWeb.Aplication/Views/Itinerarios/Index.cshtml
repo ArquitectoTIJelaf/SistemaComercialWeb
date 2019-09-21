@@ -1897,8 +1897,8 @@
                 verificaManifiestoPorPVenta: async function (_CodiProgramacion, _CodiPuntoVenta) {
                     return await appVueVenta.verificaManifiestoPorPVenta(_CodiProgramacion, _CodiPuntoVenta);
                 },
-                validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
-                    return appVueVenta.validaDocumentoRepetido(_TipoDocumento, _NumeroDocumento, _NroAsiento);
+                validaDocumentoRepetido: async function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
+                    return await appVueVenta.validaDocumentoRepetido(_TipoDocumento, _NumeroDocumento, _NroAsiento);
                 },
                 consultaSumaBoletosPostergados: async function (_Tipo, _Numero, _Emp) {
                     return await appVueVenta.consultaSumaBoletosPostergados(_Tipo, _Numero, _Emp);
@@ -2524,7 +2524,7 @@
                                 _this.objTurno.CantidadMaxBloqAsi = res.data.Valor.CantidadMaxBloqAsi;
                                 _this.objTurno.Xcierre = res.data.Valor.Activo;
                                 _this.objTurno.TablaBloqueoAsientos = res.data.Valor.TablaBloqueoAsientos;
-                                
+
                                 _this.updateEnlaceTurnos(_this.filtro.Turno, _this.filtro.CodiServicio.label, res.data.Valor.Color, res.data.Valor.SecondColor);
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
@@ -3712,7 +3712,10 @@
 
                     // Valida 'DocumentoRepetido'
                     if (_this.pickedBusVenta !== 'R' && _this.pickedBusVenta !== 'FA' && appController.validatePanel('107') === '1') {
-                        var resValidaDocumentoRepetido = _this.validaDocumentoRepetido(_this.list.ventas[_this.indexVenta].CodiTipoDoc.id, _this.list.ventas[_this.indexVenta].Documento, _this.list.ventas[_this.indexVenta].NroAsiento);
+
+                        var resValidaDocumentoRepetido = await _this.validaDocumentoRepetido(_this.list.ventas[_this.indexVenta].CodiTipoDoc.id,
+                            _this.list.ventas[_this.indexVenta].Documento, _this.list.ventas[_this.indexVenta].NroAsiento);
+
                         if (!resValidaDocumentoRepetido)
                             return;
                     }
@@ -3827,17 +3830,16 @@
                         _this.recorridoSectionVentas();
                     });
                 },
-                validaDocumentoRepetido: function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
+                validaDocumentoRepetido: async function (_TipoDocumento, _NumeroDocumento, _NroAsiento) {
                     var auxResponse = true;
 
-                    for (var objAsiento of this.list.tempList) {
-                        if (!isNaN(objAsiento.Tipo) && objAsiento.FlagVenta !== 'R') {
-                            if (objAsiento.TipoDocumento === _TipoDocumento && objAsiento.NumeroDocumento === _NumeroDocumento) {
-                                APP.msg.warning('Documento usado en el asiento ' + objAsiento.Tipo + ', ingrese otro.');
-                                auxResponse = false;
-                                return auxResponse;
-                            }
-                        }
+                    var verificaDocumentoRepetido = await this.verificaDocumentoRepetido(this.filtro.CodiProgramacion, this.filtro.NroViaje,
+                        this.filtro.CodiSucursal.id, this.filtro.CodiDestinoPas.id, _TipoDocumento, _NumeroDocumento);
+
+                    if (verificaDocumentoRepetido) {
+                        APP.msg.warning('Documento usado en el asiento ' + String(verificaDocumentoRepetido).padStart(2, '0') + ', ingrese otro.');
+                        auxResponse = false;
+                        return auxResponse;
                     }
 
                     for (var objAsiento of this.list.ventas) {
@@ -3849,6 +3851,27 @@
                             }
                         }
                     }
+
+                    return auxResponse;
+                },
+                verificaDocumentoRepetido: async function (_CodiProgramacion, _NroViaje, _CodiOrigen, _CodiDestino, _TipoDoc, _Documento) {
+                    var auxResponse = 0;
+
+                    await APP.rq.axios2.post(APP.base + '/itinerarios/verificaDocumentoRepetido', {
+                        CodiProgramacion: _CodiProgramacion,
+                        NroViaje: _NroViaje,
+                        CodiOrigen: _CodiOrigen,
+                        CodiDestino: _CodiDestino,
+                        TipoDoc: _TipoDoc,
+                        Documento: _Documento
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                auxResponse = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
 
                     return auxResponse;
                 },
@@ -4290,8 +4313,10 @@
 
                     return auxResponse;
                 },
-                showTipoPago: function () {
-                    if (!this.errorsInTicketsVenta())
+                showTipoPago: async function () {
+
+                    var errorsInTicketsVenta = await this.errorsInTicketsVenta();
+                    if (!errorsInTicketsVenta)
                         return;
 
                     document.getElementById('btnTipoPago').disabled = true;
@@ -4329,7 +4354,7 @@
 
                     appController.showTipoPago(this.list.embarques, this.list.arribos, input, this.list.ventas);
                 },
-                errorsInTicketsVenta: function () {
+                errorsInTicketsVenta: async function () {
                     var auxValidate = true;
 
                     for (i = 0; i < this.list.ventas.length; i++) {
@@ -4597,7 +4622,7 @@
 
                         for (ii = this.list.ventas.length - 1; ii >= 0; ii--) {
 
-                            var resValidaDocumentoRepetido = this.validaDocumentoRepetido(
+                            var resValidaDocumentoRepetido = await this.validaDocumentoRepetido(
                                 this.list.ventas[ii].CodiTipoDoc.id,
                                 this.list.ventas[ii].Documento,
                                 this.list.ventas[ii].NroAsiento);
@@ -7971,7 +7996,7 @@
                         auxResponse = true;
                         if (auxValidate !== true) document.getElementById('btnSaveVentaTipoPago').focus();
                     }
-                        
+
 
                     return auxResponse;
                 },
@@ -9013,11 +9038,10 @@
                         }
                         if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
                             if (appController.validatePanel('107') === '1') {
-                                if (appController.validaDocumentoRepetido(
-                                    this.objBeneficiario.TipoDocumento,
-                                    this.objBeneficiario.Documento,
-                                    appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento)
-                                )
+                                var validaDocumentoRepetido = await appController.validaDocumentoRepetido(this.objBeneficiario.TipoDocumento,
+                                    this.objBeneficiario.Documento, appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento);
+
+                                if (!validaDocumentoRepetido)
                                     return auxValidate = false;
                             }
                         }
@@ -9135,11 +9159,11 @@
                         }
                         if (this.objBeneficiario.CodiProgramacion !== appVueVenta.filtro.CodiProgramacion) {
                             if (appController.validatePanel('107') === '1') {
-                                if (appController.validaDocumentoRepetido(
-                                    this.objBeneficiario.TipoDocumento,
-                                    this.objBeneficiario.Documento,
-                                    appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento)
-                                )
+
+                                var validaDocumentoRepetido = await appController.validaDocumentoRepetido(this.objBeneficiario.TipoDocumento,
+                                    this.objBeneficiario.Documento, appVueVenta.list.ventas[appVueVenta.indexVenta].NroAsiento);
+
+                                if (!validaDocumentoRepetido)
                                     return auxValidate = false;
                             }
                         }
