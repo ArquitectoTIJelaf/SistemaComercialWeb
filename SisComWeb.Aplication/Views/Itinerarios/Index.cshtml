@@ -8079,20 +8079,20 @@
                                             for (i = 0; i < _listaImpresiones.length; i++) {
                                                 (function (i) {
 
-                                                    var tmpTime = 0;
+                                                    //var tmpTime = 0;
 
-                                                    if (_listaImpresiones.length > 0) {
-                                                        if (_listaImpresiones[0].Copia1 && _listaImpresiones[0].Copia2)
-                                                            tmpTime = 6000;
-                                                        else if (_listaImpresiones[0].Copia1 || _listaImpresiones[0].Copia2)
-                                                            tmpTime = 4000;
-                                                        else
-                                                            tmpTime = 3000;
-                                                    }
+                                                    //if (_listaImpresiones.length > 0) {
+                                                    //    if (_listaImpresiones[0].Copia1 && _listaImpresiones[0].Copia2)
+                                                    //        tmpTime = 6000;
+                                                    //    else if (_listaImpresiones[0].Copia1 || _listaImpresiones[0].Copia2)
+                                                    //        tmpTime = 4000;
+                                                    //    else
+                                                    //        tmpTime = 3000;
+                                                    //}
 
                                                     setTimeout(function () {
                                                         _this.imprimirBoleto(_listaImpresiones[i], i);
-                                                    }, i * tmpTime);
+                                                    }, i);
                                                 })(i);
                                             }
                                         }
@@ -8168,6 +8168,8 @@
                                 // Servicio local
                                 axios({ method: "GET", "url": auxUrl })
                                     .then(res => {
+                                        if (res.data === "ERROR AL EJECUTAR")
+                                            APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
                                         //APP.msg.success('Boleto enviado a imprimir correctamente.');
                                     }, error => {
                                         //APP.msg.error('Imprimir Boleto: Ha ocurrido una excepción.');
