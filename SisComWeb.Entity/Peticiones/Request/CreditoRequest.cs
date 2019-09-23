@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-
+﻿
 namespace SisComWeb.Entity
 {
     public class CreditoRequest

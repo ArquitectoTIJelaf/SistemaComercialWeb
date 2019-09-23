@@ -41,7 +41,10 @@
                                 </label>
                             </div>
                             <div class="col-md-3" style="text-align: right; ">
-                                <input type="checkbox" id="chbDocumentoElecNC" v-model="filtro.chbDocumentoElec">
+                                <input type="checkbox"
+                                       id="chbDocumentoElecNC"
+                                       v-model="filtro.chbDocumentoElec"
+                                       :disabled="TipoTerminalElectronico === 'M'">
                                 <label for="chbDocumentoElecNC" style="color: black; ">Documento electrónico</label>
                             </div>
                         </div>
@@ -65,7 +68,7 @@
                                 </v-select>
                             </div>
                             <div class="col-md-6">
-                                <div v-show="filtro.tipoDocumento != null && filtro.tipoDocumento.id == '77'">
+                                <div v-show="filtro.tipoDocumento !== null && filtro.tipoDocumento.id === '06'">
                                     <label class="control-label">Cliente:</label>
                                     <v-select id="cboClienteNC"
                                               placeholder="CLIENTE"
@@ -84,7 +87,7 @@
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
                                 </div>
-                                <div v-show="filtro.tipoDocumento == null || filtro.tipoDocumento.id != '77'">
+                                <div v-show="filtro.tipoDocumento === null || filtro.tipoDocumento.id !== '06'">
                                     <label class="col-md-12 control-label" style="text-align: left; ">Documento:</label>
                                     <div class="col-md-3 p-r-0 p-l-0">
                                         <input v-model="filtro.clienteId"
@@ -156,25 +159,29 @@
                                     </v-select>
                                 </div>
                                 <div class="col-md-4">
-                                    <input v-model="filtro.serieNumDocNC"
-                                           @*@@keydown.13.prevent="recorrido(1)"*@
-                                           @*@@keydown.9.prevent="recorrido(1)"*@
+                                    <input v-model="filtro.serieNumDoc"
                                            id="txtSerieNumDocNC"
                                            ref="refSerieNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="SERIE"
-                                           maxlength="3"
+                                           @@keydown.13.prevent="recorrerNotaCredito()"
+                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurSerieNumDoc"
+                                           v-mask="'N'.repeat(3)"
                                            autocomplete="off">
                                 </div>
                                 <div class="col-md-5">
-                                    <input v-model="filtro.numeroNumDocNC"
-                                           @*@@keydown.13.prevent="recorrido(1)"*@
-                                           @*@@keydown.9.prevent="recorrido(1)"*@
+                                    <input v-model="filtro.numeroNumDoc"
                                            id="txtNumeroNumDocNC"
                                            ref="refNumeroNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="NUMERO"
-                                           maxlength="7"
+                                           @@keydown.13.prevent="recorrerNotaCredito()"
+                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@focus="$event.target.select()"
+                                           @@blur="blurNumeroNumDoc"
+                                           v-mask="'N'.repeat(7)"
                                            autocomplete="off">
                                 </div>
                             </div>
@@ -194,7 +201,7 @@
                             <div class="col-md-4" style="text-align: right; ">
                                 <label class="col-md-12 control-label">&nbsp;</label>
                                 <button id="btnBuscarNC"
-                                        @*@@click="cerrarNotaCredito()"*@
+                                        @@click="buscarDocumentosEmitidos()"
                                         class="btn btn-info waves-effect text-left">
                                     <i class="fa fa-search fa-fw" aria-hidden="true"></i>Buscar
                                 </button>
@@ -218,11 +225,11 @@
                                         </thead>
                                         <tbody v-show="list.documentosSeleccionados.length > 0">
                                             <tr v-for="doc in list.documentosEmitidos" @*@@click="sendRow(item)"*@>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
+                                                <td class="custom-td">{{doc.ColumnTipo}}</td>
+                                                <td class="custom-td">{{doc.ColumnNroDocumento}}</td>
+                                                <td class="custom-td">{{doc.Fecha}}</td>
+                                                <td class="custom-td">{{doc.CodiPuntoVenta}}</td>
+                                                <td class="custom-td">{{doc.Total}}</td>
                                             </tr>
                                         </tbody>
                                     </table>

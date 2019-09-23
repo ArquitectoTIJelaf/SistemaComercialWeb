@@ -407,5 +407,9 @@
         // Documento repetido
         public const string MsgCorrectoVerificaDocumentoRepetido = "Correcto: VerificaDocumentoRepetido.";
         public const string MsgExcVerificaDocumentoRepetido = "Excepción: VerificaDocumentoRepetido.";
+
+        // Documentos Emitidos
+        public const string MsgCorrectoListaDocumentosEmitidos = "Correcto: ListaDocumentosEmitidos.";
+        public const string MsgExcListaDocumentosEmitidos = "Excepción: ListaDocumentosEmitidos.";
     }
 }

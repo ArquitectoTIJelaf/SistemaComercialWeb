@@ -139,7 +139,9 @@ namespace SisComWeb.Aplication.Controllers
                 CodiSucursal = (short)x["CodiSucursal"],
                 NomOficina = (string)x["NomOficina"],
                 Sigla = (string)x["Sigla"],
-                Color = (string)x["Color"]
+                Color = (string)x["Color"],
+
+                Cantidad = (int)x["Cantidad"]
             }).ToList();
 
             return lista;
@@ -379,8 +381,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-
                                     ",\"CodiPvUsuario\" : " + usuario.CodiPuntoVenta +
+
+                                    ",\"CodiSucursalUsuario\" : " + usuario.CodiSucursal +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)

@@ -1350,6 +1350,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<DocumentoEmitidoNCEntity>> ListaDocumentosEmitidos(DocumentosEmitidosRequest request)
+        {
+            try
+            {
+                return NotaCreditoLogic.ListaDocumentosEmitidos(request);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<DocumentoEmitidoNCEntity>>(false, null, Message.MsgExcListaDocumentosEmitidos, false);
+            }
+        }
+
         #endregion
 
         #region "CAMBIO TIPO PAGO"
