@@ -13,6 +13,7 @@ namespace SisComWeb.Business
     {
         private static readonly short DefaultCantMaxBloqAsi = short.Parse(ConfigurationManager.AppSettings["defaultCantMaxBloqAsi"]);
 
+
         public static Response<ItinerarioEntity> MuestraTurno(TurnoRequest request)
         {
             try
@@ -282,9 +283,12 @@ namespace SisComWeb.Business
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
 
                 // Seteo de 'Cantidad' por 'DestinosRuta'
-                foreach (var destinoRuta in buscarTurno.ListaDestinosRuta)
+                if (buscarTurno.CodiOrigen == request.CodiSucursalUsuario)
                 {
-                    destinoRuta.Cantidad = resMuestraPlano.Valor.Count(x => x.CodiDestino == destinoRuta.CodiSucursal);
+                    foreach (var destinoRuta in buscarTurno.ListaDestinosRuta)
+                    {
+                        destinoRuta.Cantidad = resMuestraPlano.Valor.Count(x => x.CodiDestino == destinoRuta.CodiSucursal && (x.FlagVenta == "V" || x.FlagVenta == "P" || x.FlagVenta == "1"));
+                    }
                 }
 
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);

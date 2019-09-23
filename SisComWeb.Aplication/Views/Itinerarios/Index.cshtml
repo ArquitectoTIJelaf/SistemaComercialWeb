@@ -1925,7 +1925,7 @@
                     auxTiposDoc = _.cloneDeep(_.filter(tiposDoc, function (o) {
                         return o.id === '01' || o.id === '03' || o.id === '07';
                     }));
-                    auxTiposDoc.unshift({ 'id': '6', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
+                    auxTiposDoc.unshift({ 'id': '06', 'label': 'RUC', 'MinLonDocumento': '11', 'MaxLonDocumento': '11', 'TipoDatoDocumento': '#' });
 
                     return auxTiposDoc;
                 },
@@ -14496,6 +14496,8 @@
                     fechaEmision: '',
                     importe: ''
                 },
+                TipoTerminalElectronico: '',
+                TipoDocEleMan: '',
                 list: {
                     empresas: [],
                     tiposDocumentos: [],
@@ -14525,8 +14527,11 @@
                         CodiEmpresa: _CodiEmpresa
                     })
                         .then(res => {
-                            if (res.data.Estado)
-                                _this.filtro.chbDocumentoElec = (res.data.Valor === 'E' ? true : false);
+                            if (res.data.Estado) {
+                                _this.TipoTerminalElectronico = res.data.Valor;
+                                _this.filtro.chbDocumentoElec = (_this.TipoTerminalElectronico === 'E' ? true : false);
+                                _this.filtro.rdbManEle = (_this.TipoTerminalElectronico === 'E' ? 'E' : 'M');
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -14537,7 +14542,7 @@
 
                     // Validaciones
                     switch (_this.filtro.tipoDocumento.id) {
-                        case '6':
+                        case '06':
                             {
                                 if (!isNaN(search) && search.length > 11)
                                     return;
@@ -14567,7 +14572,7 @@
                                 if (loading)
                                     loading(false);
 
-                                if (_this.filtro.tipoDocumento.id === '6')
+                                if (_this.filtro.tipoDocumento.id === '06')
                                     _this.list.clientes = res.data.Valor;
                                 else {
                                     if (res.data.Valor.length > 0)
@@ -14582,8 +14587,8 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                blurSerieNumDocNC: function () {
-                    var _serie = _.cloneDeep(this.filtro.serieNumDocNC);
+                blurSerieNumDoc: function () {
+                    var _serie = _.cloneDeep(this.filtro.serieNumDoc);
 
                     var _serie = _serie.substring(0, 3);
                     if (_serie && !isNaN(_serie))
@@ -14593,11 +14598,10 @@
                         return;
                     }
 
-                    this.filtro.serieNumDocNC = _serie;
+                    this.filtro.serieNumDoc = _serie;
                 },
-                blurNumeroNumDocNC: function () {
-                    debugger;
-                    var _numero = _.cloneDeep(this.filtro.numeroNumDocNC);
+                blurNumeroNumDoc: function () {
+                    var _numero = _.cloneDeep(this.filtro.numeroNumDoc);
 
                     var _numero = _numero.substring(0, 7);
                     if (_numero && !isNaN(_numero))
@@ -14607,7 +14611,7 @@
                         return;
                     }
 
-                    this.filtro.numeroNumDocNC = _numero;
+                    this.filtro.numeroNumDoc = _numero;
                 },
                 cerrarNotaCredito: function () {
                     $('#appVueNotaCredito').modal('hide');
@@ -14618,7 +14622,7 @@
                 },
                 limpiarNotaCredito: function () {
                     this.filtro.empresa = null;
-                    this.filtro.rdbPasEnc = 'P';
+                    this.filtro.rdbPasEnc = 'P'; // P: Pasaje | E: Encomienda
                     this.filtro.chbDocumentoElec = false;
                     this.filtro.tipoDocumento = null;
                     this.filtro.cliente = null;
@@ -14629,18 +14633,20 @@
                     this.filtro.tipoNumDoc = null;
                     this.filtro.serieNumDoc = '';
                     this.filtro.numeroNumDoc = '';
-                    this.filtro.rdbManEle = 'M';
+                    this.filtro.rdbManEle = 'M'; // M: Manual | E: Electrónico
                     this.filtro.concepto = null;
                     this.filtro.notaCredito = '';
                     this.filtro.fechaEmision = '';
                     this.filtro.importe = '';
+
+                    this.TipoTerminalElectronico = '';
+                    this.TipoDocEleMan = '';
                 },
                 recorrerNotaCredito: function (auxValidate) {
                     var _this = this;
                     var auxResponse = false;
 
                     _this.$nextTick(() => {
-                        debugger;
                         if (!_this.filtro.empresa) {
                             $('#cboEmpresaNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione una empresa.');
@@ -14649,11 +14655,11 @@
                             $('#cboTipoDocumentoNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de documento.');
                         }
-                        else if (_this.filtro.tipoDocumento.id === '6' && !_this.filtro.cliente) {
+                        else if (_this.filtro.tipoDocumento.id === '06' && !_this.filtro.cliente) {
                             $('#cboClienteNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
                         }
-                        else if (_this.filtro.tipoDocumento.id != '6' && !_this.filtro.clienteId && !_this.filtro.clienteLabel) {
+                        else if (_this.filtro.tipoDocumento.id != '06' && !_this.filtro.clienteId && !_this.filtro.clienteLabel) {
                             document.getElementById('txtClienteIdNC').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese ' + _this.filtro.tipoDocumento.label + '.');
                         }
@@ -14669,11 +14675,11 @@
                             $('#cboTipoNumDocNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de número documento.');
                         }
-                        else if (!_this.filtro.serieNumDocNC) {
+                        else if (!_this.filtro.serieNumDoc) {
                             document.getElementById('txtSerieNumDocNC').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese serie de documento.');
                         }
-                        else if (!_this.filtro.numeroNumDocNC) {
+                        else if (!_this.filtro.numeroNumDoc) {
                             document.getElementById('txtNumeroNumDocNC').focus();
                             if (auxValidate === true) APP.msg.warning('Ingrese número de documento.');
                         }
@@ -14689,7 +14695,7 @@
                     var _this = this;
 
                     _this.$nextTick(function () {
-                        if (_this.filtro.tipoDocumento.id === '6')
+                        if (_this.filtro.tipoDocumento.id === '06')
                             $('#cboClienteNC input[type=search]').focus();
                         else
                             document.getElementById('txtClienteIdNC').focus();
@@ -14727,6 +14733,64 @@
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
+                },
+                buscarDocumentosEmitidos: function () {
+                    var _this = this;
+
+                    if (!_this.validateBuscarDocumentosEmitidos())
+                        return;
+
+                    var auxRuc = _this.filtro.tipoDocumento.id === '06' ? _this.filtro.cliente.id : _this.filtro.clienteId;
+
+                    APP.rq.axios2.post(APP.base + '/notaCredito/listaDocumentosEmitidos', {
+                        Ruc: auxRuc,
+                        FechaInicial: _this.filtro.fechaInicial,
+                        FechaFinal: _this.filtro.fechaFinal,
+                        Serie: _this.filtro.serieNumDoc,
+                        Numero: _this.filtro.numeroNumDoc,
+                        CodiEmpresa: _this.filtro.empresa.id,
+                        Tipo: _this.TipoDocEleMan, // Calculado en la validación
+                        
+                        TipoDocumento: _this.filtro.tipoDocumento.id, // '06' -> Ruc, '01' -> Dni, '03' -> C. extranjería, '07' -> Pasaporte
+                        TipoPasEnc: _this.filtro.rdbPasEnc,
+                        TipoNumDoc: _this.filtro.tipoNumDoc // 'B', 'F', 'M'
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.documentosEmitidos = res.data.Valor;
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
+                },
+                validateBuscarDocumentosEmitidos: function () {
+                    var auxValidate = false;
+
+                    if (this.filtro.empresa.Contingencia === '0') {
+
+                        if (this.TipoTerminalElectronico === 'M' && this.filtro.rdbManEle === 'E') {
+                            APP.msg.warning('No se puede hacer una Nota de crédito manual a un documento electrónico.');
+                            return auxValidate;
+                        }
+                    }
+
+                    // Validación y seteo de 'TipoDocEleMan'
+                    if (this.filtro.rdbPasEnc === 'E')
+                        this.TipoDocEleMan = this.filtro.rdbManEle === 'E' ? 'E' : 'M';
+                    else {
+                        if (this.filtro.rdbManEle === 'E')
+                            this.TipoDocEleMan = this.filtro.tipoDocumento.id === '06' ? 'F' : 'B';
+                        else {
+                            if (this.TipoTerminalElectronico === 'E') {
+                                APP.msg.warning('No se puede hacer una Nota de crédito electrónico a un boleto de viaje.');
+                                return auxValidate;
+                            }
+                            else
+                                this.TipoDocEleMan = 'M';
+                        }
+                    }
+
+                    return auxValidate = true;
                 }
             },
             computed: {},
@@ -14739,7 +14803,7 @@
                     if (newVal) {
                         this.mask.tipoDocumento = (newVal.TipoDatoDocumento).repeat(newVal.MaxLonDocumento);
 
-                        if (this.filtro.tipoDocumento.id === '6')
+                        if (this.filtro.tipoDocumento.id === '06')
                             this.filtro.cliente = null;
                         else {
                             this.filtro.clienteId = '';

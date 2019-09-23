@@ -472,6 +472,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "ListaClientesNC_Autocomplete", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<List<BaseEntity>> ListaClientesNC_Autocomplete(string TipoDocumento, string Value);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaDocumentosEmitidos", ResponseFormat = WebMessageFormat.Json)]
+        Response<List<DocumentoEmitidoNCEntity>> ListaDocumentosEmitidos(DocumentosEmitidosRequest request);
+
         #endregion
 
         #region "CAMBIAR TIPO PAGO"

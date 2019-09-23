@@ -497,7 +497,7 @@
                                                       height:24px;
                                                       background-image: radial-gradient(circle,rgba(255,255,255,0.5),rgba(255,255,255,0.3));"
                                                :style="{'background-color': item.Color}"
-                                               :value="_.padStart(key,2,'0')" />
+                                               :value="_.padStart(item.Cantidad,2,'0')" />
                                         <label style="width:25px;">{{item.Sigla}}</label>
                                     </div>
                                     <div style="margin-right: 7px;display: inline-block;" title="TOTAL">
@@ -510,7 +510,7 @@
                                                       width:25px;
                                                       height:24px;
                                                       background-image: radial-gradient(circle,rgba(255,255,255,0.5),rgba(255,255,255,0.3));"
-                                               value="00"/>
+                                               :value="_.sumBy(list.destinosRuta, 'Cantidad')" />
                                         <label style="width:25px;">TOT</label>
                                     </div>
                                 </div>

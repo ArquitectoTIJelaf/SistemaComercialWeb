@@ -97,5 +97,63 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpPost]
+        [Route("listaDocumentosEmitidos")]
+        public async Task<JsonResult> ListaDocumentosEmitidos(DocumentosEmitidosRequest request)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaDocumentosEmitidos");
+                    var _body = "{" +
+                                    "\"Ruc\" : \"" + request.Ruc + "\"" +
+                                    ",\"FechaInicial\" : \"" + request.FechaInicial + "\"" +
+                                    ",\"FechaFinal\" : \"" + request.FechaFinal + "\"" +
+                                    ",\"Serie\" : " + request.Serie +
+                                    ",\"Numero\" : " + request.Numero +
+                                    ",\"CodiEmpresa\" : " + request.CodiEmpresa +
+                                    ",\"Tipo\" : \"" + request.Tipo + "\"" +
+
+                                    ",\"TipoDocumento\" : \"" + request.TipoDocumento + "\"" +
+                                    ",\"TipoPasEnc\" : \"" + request.TipoPasEnc + "\"" +
+                                    ",\"TipoNumDoc\" : \"" + request.TipoNumDoc + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ListaDocumentosEmitidos", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<DocumentoEmitidoNC>> res = new Response<List<DocumentoEmitidoNC>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new DocumentoEmitidoNC
+                    {
+                        NitCliente = (string)x["NitCliente"],
+                        Fecha = (string)x["Fecha"],
+                        IdVenta = (int)x["IdVenta"],
+                        TpoDoc = (string)x["TpoDoc"],
+                        Serie = (short)x["Serie"],
+                        Numero = (int)x["Numero"],
+                        CodiPuntoVenta = (short)x["CodiPuntoVenta"],
+                        Total = (decimal)x["Total"],
+                        Tipo = (string)x["Tipo"],
+                        IngIgv = (string)x["IngIgv"],
+                        ImpManifiesto = (string)x["ImpManifiesto"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<DocumentoEmitidoNC>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

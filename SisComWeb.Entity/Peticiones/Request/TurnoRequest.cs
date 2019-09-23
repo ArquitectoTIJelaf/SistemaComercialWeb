@@ -20,7 +20,9 @@
 
         public string FechaViaje { get; set; }
 
-
         public short CodiPvUsuario { get; set; }
+
+
+        public int CodiSucursalUsuario { get; set; }
     }
 }

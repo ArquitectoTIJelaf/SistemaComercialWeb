@@ -381,8 +381,9 @@ namespace SisComWeb.Aplication.Controllers
                                     ",\"CodiServicio\" : " + filtro.CodiServicio +
                                     ",\"HoraViaje\" : \"" + filtro.HoraViaje.Replace(" ", "") + "\"" +
                                     ",\"FechaViaje\" : \"" + filtro.FechaViaje + "\"" +
-
                                     ",\"CodiPvUsuario\" : " + usuario.CodiPuntoVenta +
+
+                                    ",\"CodiSucursalUsuario\" : " + usuario.CodiSucursal +
                                 "}";
                     HttpResponseMessage response = await client.PostAsync("MuestraTurno", new StringContent(_body, Encoding.UTF8, "application/json"));
                     if (response.IsSuccessStatusCode)
