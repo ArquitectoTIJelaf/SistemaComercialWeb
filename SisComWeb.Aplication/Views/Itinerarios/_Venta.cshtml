@@ -365,7 +365,7 @@
                             </div>
                             <div class="p-0" style="width:64%;">
                                 <div class="col-md-12" style="padding-top:5px;">
-                                    <div class="col-md-8" style="padding-top:5px; padding-bottom:5px;">
+                                    @*<div class="col-md-8" style="padding-top:5px; padding-bottom:5px;">
                                         <div style="margin-right: 7px;display: inline-block;" title="CAPACIDAD DEL BUS">
                                             <label style="width:25px;">CAP</label>
                                             <input style="border-radius: 0px 0px 0px 0px;
@@ -450,11 +450,11 @@
                                                         height:24px;"
                                                    disabled/>
                                         </div>
-                                    </div>
+                                    </div>*@
                                     <div class="col-md-4" style="text-align: right; padding-bottom:5px;">
-                                        <button @@click="showRptPVentaEmbarques" class="btn btn-emp btn-block-custom waves-effect waves-light" style="color:white;">
+                                        @*<button @@click="showRptPVentaEmbarques" class="btn btn-emp btn-block-custom waves-effect waves-light" style="color:white;">
                                             <span class="fa fa-eye fa-fw"></span>Puntos de Venta y Embarques
-                                        </button>
+                                        </button>*@
                                     </div>
                                 </div>
                             </div>
@@ -510,7 +510,7 @@
                                                       width:25px;
                                                       height:24px;
                                                       background-image: radial-gradient(circle,rgba(255,255,255,0.5),rgba(255,255,255,0.3));"
-                                               :value="_.sumBy(list.destinosRuta, 'Cantidad')" />
+                                               :value="_.padStart(_.sumBy(list.destinosRuta, 'Cantidad'),2,'0')" />
                                         <label style="width:25px;">TOT</label>
                                     </div>
                                 </div>
