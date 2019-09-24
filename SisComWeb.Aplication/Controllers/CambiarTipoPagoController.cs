@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
 {
+    [SessionExpire]
     [RoutePrefix("cTipoPago")]
     public class CambiarTipoPagoController : Controller
     {

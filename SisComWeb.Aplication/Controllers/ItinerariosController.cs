@@ -278,6 +278,29 @@ namespace SisComWeb.Aplication.Controllers
             return objeto;
         }
 
+        private static ResumenProgramacion _ObjetoResumenProgramacion(JToken obj)
+        {
+            var objeto = new ResumenProgramacion();
+
+             // Valida 'obj'
+            if (string.IsNullOrEmpty(obj.ToString()))
+                return objeto;
+            // ------------
+
+            JObject data = (JObject)obj;
+
+            objeto.CAP = (string)data["CAP"];
+            objeto.VTS = (string)data["VTS"];
+            objeto.VTT = (string)data["VTT"];
+            objeto.RET = (string)data["RET"];
+            objeto.PAS = (string)data["PAS"];
+            objeto.RVA = (string)data["RVA"];
+            objeto.LBR = (string)data["LBR"];
+            objeto.TOT = (string)data["TOT"];
+
+            return objeto;
+        }
+
         [Route("")]
         public ActionResult Index()
         {
@@ -444,7 +467,8 @@ namespace SisComWeb.Aplication.Controllers
                         TablaBloqueoAsientos = _ObjetoTablaBloqueoAsientos(data["TablaBloqueoAsientos"]),
 
                         Color = (string)data["Color"],
-                        SecondColor = (string)data["SecondColor"]
+                        SecondColor = (string)data["SecondColor"],
+                        ListaResumenProgramacion = _ObjetoResumenProgramacion(data["ListaResumenProgramacion"])
                     },
                     EsCorrecto = (bool)tmpResult["EsCorrecto"]
                 };

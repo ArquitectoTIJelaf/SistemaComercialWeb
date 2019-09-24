@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace SisComWeb.Aplication.Controllers
 {
+    [SessionExpire]
     [RoutePrefix("notaCredito")]
     public class NotaCreditoController : Controller
     {

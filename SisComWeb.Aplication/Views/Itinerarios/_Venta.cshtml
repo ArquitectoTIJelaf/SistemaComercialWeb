@@ -365,10 +365,11 @@
                             </div>
                             <div class="p-0" style="width:64%;">
                                 <div class="col-md-12" style="padding-top:5px;">
-                                    @*<div class="col-md-8" style="padding-top:5px; padding-bottom:5px;">
+                                    <div class="col-md-9" style="padding-top:5px; padding-bottom:5px;">
                                         <div style="margin-right: 7px;display: inline-block;" title="CAPACIDAD DEL BUS">
                                             <label style="width:25px;">CAP</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.CAP"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -376,11 +377,12 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="VENTAS POR SUCURSAL">
                                             <label style="width:25px;">VTS</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.VTS"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -388,11 +390,12 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="VENTAS TOTALES">
                                             <label style="width:25px;">VTT</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.VTT"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -400,11 +403,12 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="RETORNOS">
                                             <label style="width:25px;">RET</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.RET"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -412,11 +416,25 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
+                                        </div>
+                                        <div style="margin-right: 7px;display: inline-block;" title="PASES CORTESÍA">
+                                            <label style="width:25px;">PAS</label>
+                                            <input :value="resumentProgramacion.PAS"
+                                                   style="border-radius: 0px 0px 0px 0px;
+                                                        -moz-border-radius: 0px 0px 0px 0px;
+                                                        -webkit-border-radius: 0px 0px 0px 0px;
+                                                        border: 1px solid #CCC;
+                                                        text-align:center;
+                                                        font-weight:700;
+                                                        width:35px;
+                                                        height:24px;"
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="RESERVAS">
                                             <label style="width:25px;">RVA</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.RVA"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -424,11 +442,12 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="LIBRES">
                                             <label style="width:25px;">LBR</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.LBR"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -436,11 +455,12 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
                                         <div style="margin-right: 7px;display: inline-block;" title="TOTAL">
                                             <label style="width:25px;">TOT</label>
-                                            <input style="border-radius: 0px 0px 0px 0px;
+                                            <input :value="resumentProgramacion.TOT"
+                                                   style="border-radius: 0px 0px 0px 0px;
                                                         -moz-border-radius: 0px 0px 0px 0px;
                                                         -webkit-border-radius: 0px 0px 0px 0px;
                                                         border: 1px solid #CCC;
@@ -448,13 +468,13 @@
                                                         font-weight:700;
                                                         width:35px;
                                                         height:24px;"
-                                                   disabled/>
+                                                   disabled />
                                         </div>
-                                    </div>*@
-                                    <div class="col-md-4" style="text-align: right; padding-bottom:5px;">
-                                        @*<button @@click="showRptPVentaEmbarques" class="btn btn-emp btn-block-custom waves-effect waves-light" style="color:white;">
-                                            <span class="fa fa-eye fa-fw"></span>Puntos de Venta y Embarques
-                                        </button>*@
+                                    </div>
+                                    <div class="col-md-3" style="text-align: right; padding-bottom:5px;">
+                                        <button @@click="showRptPVentaEmbarques" class="btn btn-emp btn-block-custom waves-effect waves-light" style="color:white;">
+                                            <span class="fa fa-eye fa-fw"></span>P. Venta y Embarques
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -528,8 +548,7 @@
                                         @@blur="closeMenu"
                                         :style="{top: top, left: left}"
                                         @*v-show="(showContextMenuBloquearAsiento() || itemSelected.FlagVenta !== '') && (pickedBusVenta !== 'FA' &&
-                                                itemSelected.FlagVenta !== 'VI')"*@
-                                        >
+                                                itemSelected.FlagVenta !== 'VI')"*@>
 
                                         <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
                                             @@click="contextMenuReimprimir(itemSelected)">
