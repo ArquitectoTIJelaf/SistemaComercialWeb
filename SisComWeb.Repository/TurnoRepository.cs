@@ -12,7 +12,20 @@ namespace SisComWeb.Repository
 
         public static ItinerarioEntity BuscarTurno(TurnoRequest request)
         {
-            var entidad = new ItinerarioEntity();
+            var entidad = new ItinerarioEntity()
+            {
+                RazonSocial = string.Empty,
+                NomSucursal = string.Empty,
+                NomRuta = string.Empty,
+                NomServicio = string.Empty,
+                NomPuntoVenta = string.Empty,
+                HoraProgramacion = string.Empty,
+                StOpcional = string.Empty,
+                NomOrigen = string.Empty,
+                NomDestino = string.Empty,
+                HoraPartida = string.Empty,
+                DescServicio = string.Empty
+            };
 
             using (IDatabase db = DatabaseHelper.GetDatabase())
             {
@@ -25,7 +38,6 @@ namespace SisComWeb.Repository
                 db.AddParameter("@Codi_Ruta", DbType.Int16, ParameterDirection.Input, request.CodiRuta);
                 db.AddParameter("@Codi_Servicio", DbType.Byte, ParameterDirection.Input, request.CodiServicio);
                 db.AddParameter("@Hora", DbType.String, ParameterDirection.Input, request.HoraViaje);
-
                 db.AddParameter("@FechaViaje", DbType.String, ParameterDirection.Input, request.FechaViaje);
                 using (IDataReader drlector = db.GetDataReader())
                 {
