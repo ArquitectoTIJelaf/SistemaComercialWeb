@@ -1,4 +1,5 @@
 ﻿using SisComWeb.Entity;
+using SisComWeb.Entity.Objects.Entities;
 using SisComWeb.Utility;
 using System.Collections.Generic;
 using System.Data;
@@ -266,6 +267,31 @@ namespace SisComWeb.Repository
             }
 
             return valor;
+        }
+
+        // HMSV: 23/09/2019
+        public static ResumenProgramacionEntity ListaResumenProgramacion(int CodiProgramacion, int CodiSucursal)
+        {
+            var entidad = new ResumenProgramacionEntity();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListaResumenProgramacion";
+                db.AddParameter("@CODI_PROGRAMACION", DbType.Int32, ParameterDirection.Input, CodiProgramacion);
+                db.AddParameter("@CODI_SUCURSAL", DbType.Int16, ParameterDirection.Input, CodiSucursal);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        entidad.VTS = Reader.GetStringValue(drlector, "VTS") ?? "0";
+                        entidad.VTT = Reader.GetStringValue(drlector, "VTT") ?? "0";
+                        entidad.RET = Reader.GetStringValue(drlector, "RET") ?? "0";
+                        entidad.PAS = Reader.GetStringValue(drlector, "PAS") ?? "0";
+                        entidad.RVA = Reader.GetStringValue(drlector, "RVA") ?? "0";
+                    }
+                }
+            }
+            return entidad;
         }
 
         #endregion

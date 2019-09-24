@@ -158,6 +158,17 @@ namespace SisComWeb.Business
                 // Lista 'DestinosRuta'
                 buscarTurno.ListaDestinosRuta = TurnoRepository.ListaDestinosRuta(buscarTurno.NroViaje, buscarTurno.CodiSucursal);
 
+                // Lista 'ResumenProgramacion'
+                buscarTurno.ListaResumenProgramacion = TurnoRepository.ListaResumenProgramacion(buscarTurno.CodiProgramacion, request.CodiSucursalUsuario);
+                // 'ResumenProgramacion' Capacidad del Bus
+                buscarTurno.ListaResumenProgramacion.CAP = buscarTurno.CapacidadBus;
+                // 'ResumenProgramacion' Libres
+                buscarTurno.ListaResumenProgramacion.LBR = Convert.ToString(Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.CAP) - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.VTT)
+                    + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.PAS) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RET) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RVA));
+                // 'ResumenProgramacion' Total
+                buscarTurno.ListaResumenProgramacion.TOT = Convert.ToString(Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.CAP) - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.LBR)
+                    - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RVA));
+
                 // Elimina 'Reservas' por escala
                 if (buscarTurno.CodiProgramacion > 0)
                 {
@@ -283,12 +294,9 @@ namespace SisComWeb.Business
                     return new Response<ItinerarioEntity>(false, buscarTurno, resMuestraPlano.Mensaje, false);
 
                 // Seteo de 'Cantidad' por 'DestinosRuta'
-                if (buscarTurno.CodiOrigen == request.CodiSucursalUsuario)
+                foreach (var destinoRuta in buscarTurno.ListaDestinosRuta)
                 {
-                    foreach (var destinoRuta in buscarTurno.ListaDestinosRuta)
-                    {
-                        destinoRuta.Cantidad = resMuestraPlano.Valor.Count(x => x.CodiDestino == destinoRuta.CodiSucursal && (x.FlagVenta == "V" || x.FlagVenta == "P" || x.FlagVenta == "1"));
-                    }
+                    destinoRuta.Cantidad = resMuestraPlano.Valor.Count(x => x.CodiDestino == destinoRuta.CodiSucursal && x.CodiOrigen == request.CodiSucursalUsuario && (x.FlagVenta != "X" && x.FlagVenta != "R" && x.FlagVenta != "O"));
                 }
 
                 return new Response<ItinerarioEntity>(true, buscarTurno, Message.MsgCorrectoMuestraTurno, true);

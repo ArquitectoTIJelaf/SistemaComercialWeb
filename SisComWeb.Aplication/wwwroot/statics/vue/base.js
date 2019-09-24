@@ -697,6 +697,7 @@ APP.rq.axios_handler_error = function (error) {
 };
 
 APP.rq.axios_handler_error_alert = function (error) {
+    debugger;
     if (error.response && APP.rq.checkIfErrorSession(error.response)) {
         APP.msg.errorWithoutTime("Su sessión ha expirado, por favor inicie sesión de nuevo <a href='{0}'>aquí</a> o presione F5.".format(APP.base));
     } else {

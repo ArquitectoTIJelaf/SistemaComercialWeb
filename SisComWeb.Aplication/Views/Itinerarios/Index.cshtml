@@ -2345,7 +2345,7 @@
                     panelControlClave: [],
                     panelControlNivel: [],
                     usuariosClaveAnuRei: [],
-                    usuariosClaveControl: []
+                    usuariosClaveControl: []                    
                 },
                 objPlano: {
                     CodiBus: '',
@@ -2422,18 +2422,21 @@
                 showContextMenu: false,
                 itemSelected: null,
                 top: '0px',
-                left: '0px'
+                left: '0px',
+                resumentProgramacion: {}
             },
             mounted: function () {
-                this.getEmpresas();
-                this.getServicios();
-                this.getTiposDoc();
-                this.getPVOrigenesBus();
-                this.listarPanelesControl();
+                let _this = this;
 
-                this.getSucursalControl();
+                _this.getEmpresas();
+                _this.getServicios();
+                _this.getTiposDoc();
+                _this.getPVOrigenesBus();
+                _this.listarPanelesControl();
 
-                this.$validator.extend('formatoNumeroTarjeta', {
+                _this.getSucursalControl();
+
+                _this.$validator.extend('formatoNumeroTarjeta', {
                     getMessage(field, val) {
                         return `El campo ${field} debe tener ${val} dígitos.`
                     },
@@ -2445,8 +2448,15 @@
                     }
                 });
 
-                //window.addEventListener('keydown', this.configEventKeyF5);
-                window.addEventListener('keydown', this.configEventKeyF3);
+                //window.addEventListener('keydown', _this.configEventKeyF5);
+                window.addEventListener('keydown', _this.configEventKeyF3);
+
+                //Focus en Asiento
+                window.addEventListener('keydown', e => {
+                    if (e.altKey && e.keyCode == 220) {
+                        _this.$refs.refNroAsientoVenta.focus();
+                    }
+                });
             },
             methods: {
                 chargeVentas: async function (item, turnos) {
@@ -2460,6 +2470,8 @@
                     _this.processing = true;
 
                     _this.pickedBusVenta = 'V';
+
+                    _this.resumentProgramacion = {};
 
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
@@ -2528,6 +2540,8 @@
                                 _this.updateEnlaceTurnos(_this.filtro.Turno, _this.filtro.CodiServicio.label, res.data.Valor.Color, res.data.Valor.SecondColor);
 
                                 _this.list.tempList = _.cloneDeep(res.data.Valor.ListaPlanoBus);
+
+                                _this.resumentProgramacion = _.cloneDeep(res.data.Valor.ListaResumenProgramacion);
                                 // -------------------------------------------------------
                                 var auxResponse = await _this.limpiarAsientosBloqueados();
                                 if (!auxResponse) {
@@ -13124,6 +13138,14 @@
                         _this.$refs.refLOTEOrigen1.$el.querySelector('input').focus();
                     });
                 });
+
+                $('#appVuePaseLote').on('hidden.bs.modal', function () {
+                    _this.desbloquearAsientoList();
+                });
+                
+                window.onbeforeunload = function () {
+                    return _this.desbloquearAsientoList();
+                };
             },
             methods: {
                 show: async function () {
@@ -13204,14 +13226,7 @@
                             }
                         }
                     }
-
-                    //// Valida 'Manifiesto'
-                    //var resValidaManifiestoProgramacion = await _this.validaManifiestoProgramacion();
-                    //if (!resValidaManifiestoProgramacion) {
-                    //    _this.disabledAsiento = false;
-                    //    return;
-                    //}
-
+                    
                     var input = {};
                     input.CodiEmpresa = item.CodiEmpresa;
                     input.CodiOrigen = item.CodiOrigen;
@@ -13394,7 +13409,6 @@
                         })
                         .catch(APP.rq.axios_handler_error_alert);
                 },
-                //--------------------------------------
                 setTd1: function () {
                     auxSetTd('tblProgramacionPLoteOri', this.sendRowOfTab1, this.stepsOfRow1, this.auxFirstCurrCell1);
                 },
@@ -13455,7 +13469,6 @@
                         }; break;
                     }
                 },
-                //--------------------------------------
                 previsualizar: function () {
                     let _this = this;
 
@@ -13465,11 +13478,24 @@
                             for (var e2 of _this.list.tempListDes) {
                                 if (e1.NumeAsiento !== 0 && e1.IdVenta !== '') {
                                     if (e2.NumeAsiento === 0 && e1.NumeAsiento === parseInt(e2.Tipo)) {
-                                        var numeAsiento = _.cloneDeep(e1.NumeAsiento)
-                                        _this.list.newAsientos.push(numeAsiento);
-                                        e1.IDS = numeAsiento;
-                                        e2.NumeAsiento = numeAsiento;
-                                        e2.IDS = numeAsiento;
+
+                                        //Si hay alguno marcado con check
+                                        if (_.findIndex(_this.list.destinosRutaOri, 'check') >= 0) {
+                                            //Solo agrega a newAsientos los checkbox marcados
+                                            if (_.findIndex(_this.list.destinosRutaOri, (o) => { return o.CodiSucursal === e1.CodiDestino && o.check }) >= 0) {
+                                                var numeAsiento = _.cloneDeep(e1.NumeAsiento)
+                                                _this.list.newAsientos.push(numeAsiento);
+                                                e1.IDS = numeAsiento;
+                                                e2.NumeAsiento = numeAsiento;
+                                                e2.IDS = numeAsiento;
+                                            }
+                                        } else {
+                                            var numeAsiento = _.cloneDeep(e1.NumeAsiento)
+                                            _this.list.newAsientos.push(numeAsiento);
+                                            e1.IDS = numeAsiento;
+                                            e2.NumeAsiento = numeAsiento;
+                                            e2.IDS = numeAsiento;
+                                        }
                                     }
                                 }
                             }
@@ -13479,9 +13505,6 @@
                             _this.rainEfect = true;
                             _this.$refs.refBtnProccesingLote.focus();
                         } else APP.msg.info('No se encontró coincidencias');
-
-
-
                     }
                 },
                 stopPrevisualizar: function () {
@@ -13530,6 +13553,8 @@
                     }
 
                     var asientosBloqueados = [];
+
+                    _this.list.newAsientos = [];
 
                     _this.$nextTick(async () => {
 
@@ -13595,7 +13620,8 @@
                     //Se crea asientosBloqueados tempoarlmente
                     var asientosBloqueados = [];
 
-
+                    _this.list.newAsientos = [];
+                    
                     _this.$nextTick(async () => {
 
                         /*
@@ -13724,11 +13750,13 @@
                 desbloquearAsientoList: async function () {
                     let _this = this;
 
-                    await APP.rq.axios2.post(APP.base + '/paseLote/desbloquearAsientoList' + APP.util.getQueryParamByObject({ CodiProgramacion: _this.objProgramacion.CodiProgramacion}))
-                        .then(async function (res) {
-                            _this.list.newAsientos = [];
-                            _this.list.newAsientosManuales = [];
-                        });
+                    if (_this.objProgramacion && _this.objProgramacion.CodiProgramacion) {
+                        await APP.rq.axios2.post(APP.base + '/paseLote/desbloquearAsientoList' + APP.util.getQueryParamByObject({ CodiProgramacion: _this.objProgramacion.CodiProgramacion }))
+                            .then(async function (res) {
+                                _this.list.newAsientos = [];
+                                _this.list.newAsientosManuales = [];
+                            });
+                    }
                 },
                 OrigenDraggable: function (_item) {
                     if (_item && _item.NumeAsiento && !_item.IDS && _item.IdVenta)
@@ -13767,7 +13795,7 @@
 
                     await _this.bloquearAsientoList(nuevoAsiento);
 
-                    APP.msg.warning('Se bloqueó el asiento: ' + _.cloneDeep(_.padStart(nuevoAsiento, 2, '0')))
+                    APP.msg.info('Se bloqueó correctamente el asiento: ' + _.cloneDeep(_.padStart(nuevoAsiento, 2, '0')))
                 },
                 bloquearAsiento: async function (_asiento) {
                     //var input = {};

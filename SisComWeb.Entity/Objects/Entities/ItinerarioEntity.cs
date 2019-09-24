@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SisComWeb.Entity.Objects.Entities;
+using System.Collections.Generic;
 
 namespace SisComWeb.Entity
 {
@@ -94,5 +95,8 @@ namespace SisComWeb.Entity
 
 
         public TablaBloqueoAsientosEntity TablaBloqueoAsientos { get; set; }
+
+        // HMSV: 23/09/2019
+        public ResumenProgramacionEntity ListaResumenProgramacion { get; set; }
     }
 }

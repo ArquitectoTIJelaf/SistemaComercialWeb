@@ -14,6 +14,7 @@ using System.Xml.Serialization;
 
 namespace SisComWeb.Aplication.Controllers
 {
+    [SessionExpire]
     [RoutePrefix("paseLote")]
     public class PaseLoteController : Controller
     {

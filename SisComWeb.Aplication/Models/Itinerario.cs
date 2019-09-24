@@ -51,7 +51,9 @@ namespace SisComWeb.Aplication.Models
         public short CantidadMaxBloqAsi { get; set; }
 
         public TablaBloqueoAsientos TablaBloqueoAsientos { get; set; }
-    }
+        // HMSV: 23/09/2019
+        public ResumenProgramacion ListaResumenProgramacion { get; set; }
+}
 
     public class FiltroItinerario
     {
