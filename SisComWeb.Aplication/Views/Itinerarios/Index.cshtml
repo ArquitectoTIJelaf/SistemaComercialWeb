@@ -818,6 +818,10 @@
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
 
+            $(document).on('blur', 'input[type=checkbox]', function () {
+                $('label[for=' + $(this).attr('id') + ']').removeClass('active-chck');
+            });
+
             //#endregion
 
             //#region MODALES
