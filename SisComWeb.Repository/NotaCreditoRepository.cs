@@ -81,7 +81,7 @@ namespace SisComWeb.Repository
                         var item = new DocumentoEmitidoNCEntity
                         {
                             NitCliente = Reader.GetStringValue(drlector, "nit_cliente"),
-                            Fecha = Reader.GetStringValue(drlector, "fecha"),
+                            Fecha = Reader.GetDateStringValue(drlector, "fecha"),
                             IdVenta = Reader.GetIntValue(drlector, "id_venta"),
                             TpoDoc = Reader.GetStringValue(drlector, "TpoDoc"),
                             Serie = Reader.GetSmallIntValue(drlector, "Serie"),
@@ -89,6 +89,7 @@ namespace SisComWeb.Repository
                             CodiPuntoVenta = Reader.GetSmallIntValue(drlector, "Codi_PuntoVenta"),
                             Total = Reader.GetDecimalValue(drlector, "total"),
                             Tipo = Reader.GetStringValue(drlector, "tipo"),
+
                             IngIgv = Reader.GetStringValue(drlector, "IngIgv"),
                             ImpManifiesto = Reader.GetStringValue(drlector, "imp_manifiesto")
                         };

@@ -818,10 +818,6 @@
                 $('label[for=' + $(this).attr('id') + ']').addClass('active-chck');
             });
 
-            $(document).on('blur', 'input[type=checkbox]', function () {
-                $('label[for=' + $(this).attr('id') + ']').removeClass('active-chck');
-            });
-
             //#endregion
 
             //#region MODALES
@@ -1364,7 +1360,7 @@
             return e.target.value;
         }
 
-        Vue.prototype.$formatNumberWithTwoDecimals = function formatoNumeroConDosDecimales(value, _parteEntera) {
+        Vue.prototype.$filterNumberWithTwoDecimals = function filterNumeroConDosDecimales(value, _parteEntera) {
             var re1 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)$/g;
             var re2 = /^([0-9]+[\.]?[0-9]?[0-9]?|[0-9]+)/g;
 
@@ -1385,6 +1381,15 @@
             }
 
             return value;
+        }
+
+        Vue.prototype.$formatNumberWithTwoDecimals = function formatNumeroConDosDecimales(e, _value) {
+            if (_value)
+                e.target.value = parseFloat(_value || '0').toFixed(2);
+            else
+                e.target.value = '';
+
+            return e.target.value;
         }
 
         Vue.prototype.$filterLettersToName = function $filtroLetrasParaNombres(value) {
@@ -3503,7 +3508,7 @@
                         $('#cboDestinoBus_2 input[type=search]').focus();
                     else if (!this.filtro.Turno)
                         document.getElementById('txtTurno').focus();
-                    else if (!this.filtro.CodiServicio)
+                    else if (!this.filtro.CodiServicio || this.list.destinosPas.length <= 0)
                         $('#cboServicio input[type=search]').focus();
                     else if (!this.filtro.CodiDestinoPas)
                         $('#cboDestinoPas_2 input[type=search]').focus();
@@ -4226,7 +4231,10 @@
                                 );
 
                                 _this.$nextTick(() => {
-                                    $('#cboDestinoPas_2 input[type=search]').focus();
+                                    if (_this.list.destinosPas.length > 0)
+                                        $('#cboDestinoPas_2 input[type=search]').focus();
+                                    else
+                                        $('#cboServicio input[type=search]').focus();
                                 });
                             };
                             break;
@@ -8008,13 +8016,13 @@
                     switch (e.target.id) {
                         case 'txtImportePagadoC':
                         case 'txtImportePagadoTP':
-                            this.importePagado = this.$formatNumberWithTwoDecimals(this.importePagado, _parteEntera);
+                            this.importePagado = this.$filterNumberWithTwoDecimals(this.importePagado, _parteEntera);
                             break;
                         case 'txtTarjetaCantTP':
-                            this.tarjetaCant = this.$formatNumberWithTwoDecimals(this.tarjetaCant, _parteEntera);
+                            this.tarjetaCant = this.$filterNumberWithTwoDecimals(this.tarjetaCant, _parteEntera);
                             break;
                         case 'txtEfectivoTP':
-                            this.efectivo = this.$formatNumberWithTwoDecimals(this.efectivo, _parteEntera);
+                            this.efectivo = this.$filterNumberWithTwoDecimals(this.efectivo, _parteEntera);
                             break;
                     }
                     // -----------------
@@ -12693,13 +12701,13 @@
                     switch (e.target.id) {
                         case 'txtImportePagadoC2':
                         case 'txtImportePagadoTP2':
-                            this.importePagado2 = this.$formatNumberWithTwoDecimals(this.importePagado2, _parteEntera);
+                            this.importePagado2 = this.$filterNumberWithTwoDecimals(this.importePagado2, _parteEntera);
                             break;
                         case 'txtTarjetaCantTP2':
-                            this.tarjetaCant2 = this.$formatNumberWithTwoDecimals(this.tarjetaCant2, _parteEntera);
+                            this.tarjetaCant2 = this.$filterNumberWithTwoDecimals(this.tarjetaCant2, _parteEntera);
                             break;
                         case 'txtEfectivoTP2':
-                            this.efectivo = this.$formatNumberWithTwoDecimals(this.efectivo2, _parteEntera);
+                            this.efectivo = this.$filterNumberWithTwoDecimals(this.efectivo2, _parteEntera);
                             break;
                     }
                     // -----------------
@@ -14772,11 +14780,15 @@
                         
                         TipoDocumento: _this.filtro.tipoDocumento.id, // '06' -> Ruc, '01' -> Dni, '03' -> C. extranjería, '07' -> Pasaporte
                         TipoPasEnc: _this.filtro.rdbPasEnc,
-                        TipoNumDoc: _this.filtro.tipoNumDoc // 'B', 'F', 'M'
+                        TipoNumDoc: _this.filtro.tipoNumDoc.id // 'B', 'F', 'M'
                     })
                         .then(res => {
-                            if (res.data.Estado)
+                            if (res.data.Estado) {
                                 _this.list.documentosEmitidos = res.data.Valor;
+
+                                if (!res.data.EsCorrecto)
+                                    APP.msg.warning(res.data.Mensaje);
+                            }
                             else
                                 APP.msg.error(res.data.Mensaje);
                         })
@@ -14810,6 +14822,10 @@
                     }
 
                     return auxValidate = true;
+                },
+                seleccionarDocumento: function (_key, _item) {
+                    this.list.documentosEmitidos.splice(_key, 1);
+                    this.list.documentosSeleccionados.push(_item);
                 }
             },
             computed: {},

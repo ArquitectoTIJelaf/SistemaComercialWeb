@@ -57,7 +57,7 @@
                                            id="txtImporteDescDC"
                                            class="form-control input-sm"
                                            onPaste="return false"
-                                           @@input="ImporteDescuento = $formatNumberWithTwoDecimals(ImporteDescuento, 3)"
+                                           @@input="ImporteDescuento = $filterNumberWithTwoDecimals(ImporteDescuento, 3)"
                                            @@keydown.13.prevent="recorrerDescuentoControl(true)"
                                            @*@@keydown.9.prevent="recorrerDescuentoControl(true)"*@
                                            type="text"

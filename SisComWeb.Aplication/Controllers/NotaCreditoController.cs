@@ -144,15 +144,21 @@ namespace SisComWeb.Aplication.Controllers
                         Total = (decimal)x["Total"],
                         Tipo = (string)x["Tipo"],
                         IngIgv = (string)x["IngIgv"],
-                        ImpManifiesto = (string)x["ImpManifiesto"]
-                    }).ToList()
+                        ImpManifiesto = (string)x["ImpManifiesto"],
+
+                        ColumnTipo = (string)x["ColumnTipo"],
+                        ColumnNroDocumento = (string)x["ColumnNroDocumento"],
+                        ImporteNC = string.Empty,
+                        Plano = new bool()
+                    }).ToList(),
+                    EsCorrecto = (bool)tmpResult.SelectToken("EsCorrecto")
                 };
 
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch
             {
-                return Json(new Response<List<DocumentoEmitidoNC>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+                return Json(new Response<List<DocumentoEmitidoNC>>(false, Constant.EXCEPCION, null, false), JsonRequestBehavior.AllowGet);
             }
         }
     }

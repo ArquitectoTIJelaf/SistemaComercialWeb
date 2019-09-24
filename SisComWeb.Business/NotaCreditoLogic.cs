@@ -51,25 +51,34 @@ namespace SisComWeb.Business
         {
             try
             {
-                var lista = NotaCreditoRepository.ListaDocumentosEmitidos(request);
+                var ListaDocumentosEmitidos = NotaCreditoRepository.ListaDocumentosEmitidos(request);
 
-                foreach (var entidad in lista)
+                for (int i = 0; i < ListaDocumentosEmitidos.Count; i++)
                 {
-                    if (entidad.Total > 0 && (request.TipoDocumento == "06" ? "F" : "B") == request.TipoNumDoc)
+                    if (ListaDocumentosEmitidos[i].Total > 0 && (request.TipoDocumento == "06" ? "F" : "B") == request.TipoNumDoc)
                     {
                         if (request.TipoPasEnc == "P" && request.Tipo == "M")
-                            entidad.ColumnTipo = "16";
+                            ListaDocumentosEmitidos[i].ColumnTipo = "16";
                         else
-                            entidad.ColumnTipo = (request.TipoDocumento == "06" ? "01" : "03");
+                            ListaDocumentosEmitidos[i].ColumnTipo = (request.TipoDocumento == "06" ? "01" : "03");
 
-                        if (entidad.Tipo == "F" || entidad.Tipo == "B")
-                            entidad.ColumnNroDocumento = (request.TipoDocumento == "06" ? "F" : "B") + entidad.Serie.ToString("D3") + "-" + entidad.Numero.ToString("D8");
+                        if (ListaDocumentosEmitidos[i].Tipo == "F" || ListaDocumentosEmitidos[i].Tipo == "B")
+                            ListaDocumentosEmitidos[i].ColumnNroDocumento = (request.TipoDocumento == "06" ? "F" : "B") + ListaDocumentosEmitidos[i].Serie.ToString("D3") + "-" + ListaDocumentosEmitidos[i].Numero.ToString("D8");
                         else
-                            entidad.ColumnNroDocumento = entidad.Serie.ToString("D4") + "-" + entidad.Numero.ToString("D8");
+                            ListaDocumentosEmitidos[i].ColumnNroDocumento = ListaDocumentosEmitidos[i].Serie.ToString("D4") + "-" + ListaDocumentosEmitidos[i].Numero.ToString("D8");
+                    }
+                    else
+                    {
+                        ListaDocumentosEmitidos.RemoveAt(i);
+                        i--;
+                        continue;
                     }
                 }
 
-                return new Response<List<DocumentoEmitidoNCEntity>>(true, lista, Message.MsgCorrectoListaDocumentosEmitidos, true);
+                if (ListaDocumentosEmitidos.Count > 0)
+                    return new Response<List<DocumentoEmitidoNCEntity>>(true, ListaDocumentosEmitidos, Message.MsgCorrectoListaDocumentosEmitidos, true);
+                else
+                    return new Response<List<DocumentoEmitidoNCEntity>>(false, ListaDocumentosEmitidos, Message.MsgErrorListaDocumentosEmitidos, true);
             }
             catch (Exception ex)
             {

@@ -47,5 +47,14 @@
         public string IngIgv { get; set; }
 
         public string ImpManifiesto { get; set; }
+
+
+        public string ColumnTipo { get; set; }
+
+        public string ColumnNroDocumento { get; set; }
+
+        public string ImporteNC { get; set; }
+
+        public bool Plano { get; set; }
     }
 }

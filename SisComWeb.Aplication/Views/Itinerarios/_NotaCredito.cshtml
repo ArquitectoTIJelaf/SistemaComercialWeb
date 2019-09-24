@@ -1,11 +1,11 @@
 ﻿<div id="appVueNotaCredito" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" @@click="cerrarNotaCredito()">&times;</button>
                 <h4 class="modal-title"><b>Nota de crédito</b></h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-b-0">
                 <div class="form-horizontal">
                     <div class="form-group m-b-15" style="border-bottom: 1px solid #e5e5e5; ">
                         <div class="col-md-12 m-b-5">
@@ -56,7 +56,6 @@
                                           v-model="filtro.tipoDocumento"
                                           :options="list.tiposDocumentos"
                                           :select-on-tab="true"
-                                          @*:get-option-label="getLabel"*@
                                           @@input="$refs.refTipoDocumentoNC.typeAheadPointer = $getSelectorVselect(list.tiposDocumentos, filtro.tipoDocumento)"
                                           @@keydown.13.native.prevent="recorridoVselectTipoDocumento()"
                                           @*@@keydown.9.native.prevent="recorridoVselectTipoDocumento()"*@
@@ -147,7 +146,6 @@
                                               v-model="filtro.tipoNumDoc"
                                               :options="list.tiposNumDoc"
                                               :select-on-tab="true"
-                                              @*:get-option-label="getLabel"*@
                                               @@input="$refs.refTipoNumDocNC.typeAheadPointer = $getSelectorVselect(list.tiposNumDoc, filtro.tipoNumDoc)"
                                               @@keydown.13.native.prevent="recorrerNotaCredito()"
                                               @*@@keydown.9.native.prevent="recorrerNotaCredito()"*@
@@ -210,7 +208,7 @@
                     </div>
                     <div class="form-group m-b-0">
                         <div class="col-md-5">
-                            <label class="col-md-12 control-label" style="text-align: center; ">Documentos emitidos</label>
+                            <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos emitidos</label>
                             <div class="custom-scroll-container">
                                 <div class="table-responsive" style="background-color: #616e7e; ">
                                     <table id="tblListaDocumentosEmitidosNC" class="table table-hover" style="cursor:default; background-color:white; ">
@@ -218,18 +216,18 @@
                                             <tr>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Tipo</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. Documento</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emi.</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emisión</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Oficina</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Importe</th>
                                             </tr>
                                         </thead>
-                                        <tbody v-show="list.documentosSeleccionados.length > 0">
-                                            <tr v-for="doc in list.documentosEmitidos" @*@@click="sendRow(item)"*@>
-                                                <td class="custom-td">{{doc.ColumnTipo}}</td>
-                                                <td class="custom-td">{{doc.ColumnNroDocumento}}</td>
-                                                <td class="custom-td">{{doc.Fecha}}</td>
-                                                <td class="custom-td">{{doc.CodiPuntoVenta}}</td>
-                                                <td class="custom-td">{{doc.Total}}</td>
+                                        <tbody v-show="list.documentosEmitidos.length > 0">
+                                            <tr v-for="(item, key) in list.documentosEmitidos" @@click="seleccionarDocumento(key, item)">
+                                                <td class="custom-td">{{item.ColumnTipo}}</td>
+                                                <td class="custom-td">{{item.ColumnNroDocumento}}</td>
+                                                <td class="custom-td">{{item.Fecha}}</td>
+                                                <td class="custom-td">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
+                                                <td class="custom-td">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -237,7 +235,7 @@
                             </div>
                         </div>
                         <div class="col-md-7">
-                            <label class="col-md-12 control-label" style="text-align: center; ">Documentos seleccionados</label>
+                            <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos seleccionados</label>
                             <div class="custom-scroll-container">
                                 <div class="table-responsive" style="background-color: #616e7e; ">
                                     <table id="tblListaDocumentosSeleccionadosNC" class="table table-hover" style="cursor:default; background-color:white; ">
@@ -245,22 +243,39 @@
                                             <tr>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Tipo</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. Documento</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emi.</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emisión</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Oficina</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Importe</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Importe Nota Crédito">Imp. NC</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Importe Nota Crédito">Importe N.C.</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Plano</th>
                                             </tr>
                                         </thead>
                                         <tbody v-show="list.documentosSeleccionados.length > 0">
-                                            <tr v-for="doc in list.documentosSeleccionados" @*@@click="sendRow(item)"*@>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
-                                                <td class="custom-td"></td>
+                                            <tr v-for="(item, key) in list.documentosSeleccionados">
+                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnTipo}}</td>
+                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnNroDocumento}}</td>
+                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.Fecha}}</td>
+                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
+                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
+                                                <td class="custom-td">
+                                                    <input :id="'txtDocSelImporteNC_' + key"
+                                                           class="form-control input-sm"
+                                                           type="text"
+                                                           placeholder="0.00"
+                                                           onPaste="return false"
+                                                           v-model="item.ImporteNC"
+                                                           @@input="item.ImporteNC = $filterNumberWithTwoDecimals(item.ImporteNC, 3)"
+                                                           @@blur="item.ImporteNC = $formatNumberWithTwoDecimals($event, item.ImporteNC)"
+                                                           @*@@keydown.13.prevent="recorrerDescuentoControl(true)"*@
+                                                           @*@@keydown.9.prevent="recorrerDescuentoControl(true)"*@
+                                                           style="height: 20px; padding: 0px 10px; "
+                                                           autocomplete="off" />
+                                                </td>
+                                                <td class="custom-td" style="text-align: center; ">
+                                                    <input :id="'cboDocSelPlano_' + key"
+                                                           type="checkbox"
+                                                           v-model="item.Plano">
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -268,82 +283,80 @@
                             </div>
                         </div>
                     </div>
-                    <div v-show="list.documentosEmitidos.length > 0">
-                        <div class="form-group m-b-15">
-                            <div class="col-md-6">
-                                <label class="control-label">Concepto:</label>
-                                <v-select id="cboConceptoNC"
-                                          placeholder="CONCEPTO"
-                                          v-model="filtro.concepto"
-                                          :options="list.conceptos"
-                                          :select-on-tab="true"
-                                          :get-option-label="getLabel"
-                                          @@input="$refs.refConceptoNC.typeAheadPointer = $getSelectorVselect(list.conceptos, filtro.concepto)"
-                                          @*@@keydown.13.native.prevent="recorrido(1)"*@
-                                          @*@@keydown.9.native.prevent="recorrido(1)"*@
-                                          ref="refConceptoNC">
-                                    <template slot="option" slot-scope="option">
-                                        <div @*@@click="recorrido(1)"*@>{{ option.id }} - {{ option.label }}</div>
-                                    </template>
-                                    <span slot="no-options" class="text-danger">No hay resultados</span>
-                                </v-select>
+                    <div class="form-group m-b-15" v-show="list.documentosSeleccionados.length > 0">
+                        <div class="col-md-6">
+                            <label class="control-label">Concepto:</label>
+                            <v-select id="cboConceptoNC"
+                                      placeholder="CONCEPTO"
+                                      v-model="filtro.concepto"
+                                      :options="list.conceptos"
+                                      :select-on-tab="true"
+                                      :get-option-label="getLabel"
+                                      @@input="$refs.refConceptoNC.typeAheadPointer = $getSelectorVselect(list.conceptos, filtro.concepto)"
+                                      @*@@keydown.13.native.prevent="recorrido(1)"*@
+                                      @*@@keydown.9.native.prevent="recorrido(1)"*@
+                                      ref="refConceptoNC">
+                                <template slot="option" slot-scope="option">
+                                    <div @*@@click="recorrido(1)"*@>{{ option.id }} - {{ option.label }}</div>
+                                </template>
+                                <span slot="no-options" class="text-danger">No hay resultados</span>
+                            </v-select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">Nota crédito:</label>
+                            <input v-model="filtro.notaCredito"
+                                   @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
+                                   @*@@keydown.13.prevent="recorrido(1)"*@
+                                   @*@@keydown.9.prevent="recorrido(1)"*@
+                                   id="txtNotaCreditoNC"
+                                   ref="refNotaCreditoNC"
+                                   class="form-control input-sm"
+                                   placeholder="NOTA CRÉDITO"
+                                   @*maxlength="10" NO SE SABE CON EXACTITUD*@
+                                   autocomplete="off">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">Fecha emisión:</label>
+                            <input id="txtFechaEmisionNC"
+                                   class="form-control input-sm dpFiltro"
+                                   type="text"
+                                   placeholder="FECHA EMISIÓN"
+                                   v-model="filtro.fechaEmision"
+                                   v-mask="'##/##/####'"
+                                   @@focus="$event.target.select()"
+                                   @*@@keydown.13.prevent="recorrido(1)"*@
+                                   @*@@keydown.9.prevent="recorrido(1)"*@
+                                   @@blur="filtro.FechaEmision = $getValueDateTimePicker($event)"
+                                   autocomplete="off" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="control-label">Importe:</label>
+                            <input v-model="filtro.importe"
+                                   @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
+                                   @*@@keydown.13.prevent="recorrido(1)"*@
+                                   @*@@keydown.9.prevent="recorrido(1)"*@
+                                   id="txtImporteNC"
+                                   ref="refImporteNC"
+                                   class="form-control input-sm"
+                                   placeholder="IMPORTE"
+                                   @*maxlength="10" NO SE SABE CON EXACTITUD*@
+                                   autocomplete="off">
+                        </div>
+                        <div class="col-md-12 m-t-10 p-l-0 p-r-0">
+                            <div class="col-md-1">
+                                <label class="control-label">Glosa:</label>
                             </div>
-                            <div class="col-md-2">
-                                <label class="control-label">Nota crédito:</label>
-                                <input v-model="filtro.notaCredito"
+                            <div class="col-md-11">
+                                <input v-model="filtro.glosa"
                                        @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
                                        @*@@keydown.13.prevent="recorrido(1)"*@
                                        @*@@keydown.9.prevent="recorrido(1)"*@
-                                       id="txtNotaCreditoNC"
-                                       ref="refNotaCreditoNC"
+                                       id="txtGlosaNC"
+                                       ref="refGlosaNC"
                                        class="form-control input-sm"
-                                       placeholder="NOTA CRÉDITO"
+                                       placeholder="GLOSA"
                                        @*maxlength="10" NO SE SABE CON EXACTITUD*@
                                        autocomplete="off">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="control-label">Fecha emisión:</label>
-                                <input id="txtFechaEmisionNC"
-                                       class="form-control input-sm dpFiltro"
-                                       type="text"
-                                       placeholder="FECHA EMISIÓN"
-                                       v-model="filtro.fechaEmision"
-                                       v-mask="'##/##/####'"
-                                       @@focus="$event.target.select()"
-                                       @*@@keydown.13.prevent="recorrido(1)"*@
-                                       @*@@keydown.9.prevent="recorrido(1)"*@
-                                       @@blur="filtro.FechaEmision = $getValueDateTimePicker($event)"
-                                       autocomplete="off" />
-                            </div>
-                            <div class="col-md-2">
-                                <label class="control-label">Importe:</label>
-                                <input v-model="filtro.importe"
-                                       @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
-                                       @*@@keydown.13.prevent="recorrido(1)"*@
-                                       @*@@keydown.9.prevent="recorrido(1)"*@
-                                       id="txtImporteNC"
-                                       ref="refImporteNC"
-                                       class="form-control input-sm"
-                                       placeholder="IMPORTE"
-                                       @*maxlength="10" NO SE SABE CON EXACTITUD*@
-                                       autocomplete="off">
-                            </div>
-                            <div class="col-md-12 m-t-10 p-l-0 p-r-0">
-                                <div class="col-md-1">
-                                    <label class="control-label">Glosa:</label>
-                                </div>
-                                <div class="col-md-11">
-                                    <input v-model="filtro.glosa"
-                                           @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
-                                           @*@@keydown.13.prevent="recorrido(1)"*@
-                                           @*@@keydown.9.prevent="recorrido(1)"*@
-                                           id="txtGlosaNC"
-                                           ref="refGlosaNC"
-                                           class="form-control input-sm"
-                                           placeholder="GLOSA"
-                                           @*maxlength="10" NO SE SABE CON EXACTITUD*@
-                                           autocomplete="off">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -351,27 +364,27 @@
             </div>
             <div class="modal-footer">
                 <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosEmitidos.length > 0"
+                        v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-danger waves-effect pull-left">
                     <span class="glyphicon glyphicon-ban-circle fa-fw"></span>Anular
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosEmitidos.length > 0"
+                        v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-success waves-effect">
                     <span class="glyphicon glyphicon-plus fa-fw"></span>Nuevo
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosEmitidos.length > 0"
+                        v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-primary waves-effect">
                     <span class="glyphicon glyphicon-search fa-fw"></span>Buscar
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosEmitidos.length > 0"
+                        v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-info waves-effect">
                     <i class="fa fa-print fa-fw" aria-hidden="true"></i>General
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosEmitidos.length > 0"
+                        v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-info waves-effect">
                     <span class="glyphicon glyphicon-print fa-fw"></span>Impresión
                 </button>

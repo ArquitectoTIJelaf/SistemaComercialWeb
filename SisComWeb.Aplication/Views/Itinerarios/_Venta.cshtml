@@ -1350,7 +1350,7 @@
                                                            class="form-control input-sm"
                                                            placeholder="0.00"
                                                            onPaste="return false"
-                                                           @@input="list.ventas[indexVenta].Precio = $formatNumberWithTwoDecimals(list.ventas[indexVenta].Precio, 3)"
+                                                           @@input="list.ventas[indexVenta].Precio = $filterNumberWithTwoDecimals(list.ventas[indexVenta].Precio, 3)"
                                                            @@keydown.13.prevent="keyTxtPrecio($event)"
                                                            @*@@keydown.9.prevent="keyTxtPrecio($event)"*@
                                                            @@keydown.112.prevent="keyTxtPrecio($event)"

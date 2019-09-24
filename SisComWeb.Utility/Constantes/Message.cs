@@ -401,7 +401,7 @@
 
         // Clientes
         public const string MsgCorrectoListaClientesNC_Autocomplete = "Correcto: ListaClientesNC_Autocomplete.";
-        public const string MsgErrorListaClientesNC_Autocomplete = "No se encontró ningún resultado.";
+        public const string MsgErrorListaClientesNC_Autocomplete = "No se encontró ningún cliente.";
         public const string MsgExcListaClientesNC_Autocomplete = "Excepción: ListaClientesNC_Autocomplete.";
 
         // Documento repetido
@@ -410,6 +410,7 @@
 
         // Documentos Emitidos
         public const string MsgCorrectoListaDocumentosEmitidos = "Correcto: ListaDocumentosEmitidos.";
+        public const string MsgErrorListaDocumentosEmitidos = "No se encontró ningún documento emitido.";
         public const string MsgExcListaDocumentosEmitidos = "Excepción: ListaDocumentosEmitidos.";
     }
 }
