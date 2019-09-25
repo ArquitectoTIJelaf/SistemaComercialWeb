@@ -163,8 +163,8 @@ namespace SisComWeb.Business
                 // 'ResumenProgramacion' Capacidad del Bus
                 buscarTurno.ListaResumenProgramacion.CAP = buscarTurno.CapacidadBus;
                 // 'ResumenProgramacion' Libres
-                buscarTurno.ListaResumenProgramacion.LBR = Convert.ToString(Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.CAP) - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.VTT)
-                    + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.PAS) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RET) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RVA));
+                buscarTurno.ListaResumenProgramacion.LBR = Convert.ToString(Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.CAP) - (Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.VTT)
+                    + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.PAS) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RET) + Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RVA)));
                 // 'ResumenProgramacion' Total
                 buscarTurno.ListaResumenProgramacion.TOT = Convert.ToString(Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.CAP) - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.LBR)
                     - Convert.ToDecimal(buscarTurno.ListaResumenProgramacion.RVA));
