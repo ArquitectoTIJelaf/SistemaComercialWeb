@@ -59,6 +59,16 @@
 
 @section styles{
     <style type="text/css">
+        #tblListaDocumentosSeleccionadosNC tbody tr td .active-chck {
+            color: black;
+            font-weight: 400;
+        }
+
+        #tblListaDocumentosSeleccionadosNC tbody tr .tdImporteNC input:focus {
+            color: black;
+            font-weight: 400;
+        }
+
         .btn-mini-ticket:focus {
             opacity: 0.3;
         }
@@ -1084,6 +1094,18 @@
                         enter: function (e) {
                             if (e) {
                                 switch (e[0].previousElementSibling.id) {
+                                    case 'txtFecha':
+                                        {
+                                            if (appVueFilter.nextStep(4) === false)
+                                                return;
+                                        };
+                                        break;
+                                    case 'txtFecha_2':
+                                        {
+                                            if (appVueVenta.nextStep(9) === false)
+                                                return;
+                                        };
+                                        break;
                                     case 'txtFechaReservacion':
                                         {
                                             if (appVueVenta.validateFechaReservacion() === false)
@@ -1099,6 +1121,18 @@
                                     case 'txtFechaFinalNC':
                                         {
                                             if (appVueNotaCredito.recorridoTxtFechaFinal() === false)
+                                                return;
+                                        };
+                                        break;
+                                    case 'txtFechaCita':
+                                        {
+                                            if (appVueCreditoOpciones.recorrerFechaCita() === false)
+                                                return;
+                                        };
+                                        break;
+                                    case 'txtFechaMP':
+                                        {
+                                            if (appVueManifiestoPasajeros.recorrido(7) === false)
                                                 return;
                                         };
                                         break;
@@ -1119,8 +1153,8 @@
                     toolbarPlacement: 'top',
                     format: 'DD/MM/YYYY',
                     defaultDate: moment(),
-                    maxDate: moment().add(1, 'year'),
-                    minDate: moment().subtract(1, 'year'),
+                    maxDate: maxDate_dpFiltro,
+                    minDate: minDate_dpFiltro,
                     tooltips: {
                         today: 'Ir a la fecha actual',
                         clear: 'Borrar fecha',
@@ -1273,6 +1307,9 @@
         var TipoReimprimir = 'Reimpresion';
         var VerificaHoraConfirmacion = '0';
         var TiempoReserva = null;
+
+        var maxDate_dpFiltro = moment().add(1, 'year');
+        var minDate_dpFiltro = moment().subtract(1, 'year');
 
         var selectAll = {
             id: '0',
@@ -1941,6 +1978,27 @@
                 },
                 showRptPVentaEmbarques: function () {
                     appVueRptPVentaEmbarques.show();
+                },
+                validateMinMax_dpFiltro: function (_Fecha) {
+                    var auxValidate = true;
+
+                    var tmpMaxDate_dpFiltro = _.cloneDeep(maxDate_dpFiltro); // Para no modificar la variable global.
+                    var tmpMinDate_dpFiltro = _.cloneDeep(minDate_dpFiltro).add(1, 'day'); // Para no modificar la variable global.
+
+                    if (_Fecha) {
+                        if (moment(_Fecha, 'DD/MM/YYYY').isAfter(tmpMaxDate_dpFiltro, 'days')) {
+                            APP.msg.warning('Fecha máxima: ' + tmpMaxDate_dpFiltro.format('DD/MM/YYYY'));
+                            auxValidate = false;
+                        }
+                        else {
+                            if (moment(_Fecha, 'DD/MM/YYYY').isBefore(tmpMinDate_dpFiltro, 'days')) {
+                                APP.msg.warning('Fecha mínima: ' + tmpMinDate_dpFiltro.format('DD/MM/YYYY'));
+                                auxValidate = false;
+                            }
+                        }
+                    }
+
+                    return auxValidate;
                 }
             };
         })();
@@ -2059,6 +2117,11 @@
                             break;
                         case 4:
                             {
+                                this.filtro.FechaViaje = this.$getValueDateTimePicker(event);
+
+                                if (!appController.validateMinMax_dpFiltro(this.filtro.FechaViaje))
+                                    return false; // 'return false' -> 'keyBinds: enter'
+
                                 document.getElementById('txtFecha').blur();
 
                                 this.$nextTick(() => {
@@ -4265,6 +4328,11 @@
                             break;
                         case 9:
                             {
+                                _this.filtro.Fecha = _this.$getValueDateTimePicker(event);
+
+                                if (!appController.validateMinMax_dpFiltro(_this.filtro.Fecha))
+                                    return false; // 'return false' -> 'keyBinds: enter'
+
                                 document.getElementById('txtFecha_2').blur();
 
                                 if (!_this.processing) {
@@ -4702,13 +4770,13 @@
                     this.recorridoSectionVentas();
                 },
                 rightSlider: async function () {
+                    var _this = this;
+                    var auxLength = _this.list.ventas.length;
 
                     // Copiar datos del último Ticket para todos los demás.
-                    switch (this.pickedBusVenta) {
+                    switch (_this.pickedBusVenta) {
                         case 'R':
                             {
-                                var auxLength = this.list.ventas.length;
-
                                 if (auxLength > 1 && appController.validatePanel('104') === '1' && appController.validatePanelNivel(1, Usuario.Nivel) === '1') {
 
                                     if (await APP.msg.confirm(
@@ -4717,40 +4785,55 @@
 
                                         for (var i = 1; i < auxLength; i++) { // 'i = 0': No tomamos encuenta el original.
 
-                                            this.list.ventas[i].ApellidoMaterno = _.cloneDeep(this.list.ventas[0].ApellidoMaterno);
-                                            this.list.ventas[i].ApellidoPaterno = _.cloneDeep(this.list.ventas[0].ApellidoPaterno);
-                                            this.list.ventas[i].CodiTipoDoc = _.cloneDeep(this.list.ventas[0].CodiTipoDoc);
-                                            this.list.ventas[i].Direccion = _.cloneDeep(this.list.ventas[0].Direccion);
-                                            this.list.ventas[i].Documento = _.cloneDeep(this.list.ventas[0].Documento);
-                                            this.list.ventas[i].Edad = _.cloneDeep(this.list.ventas[0].Edad);
-                                            this.list.ventas[i].FechaNac = _.cloneDeep(this.list.ventas[0].FechaNac);
-                                            this.list.ventas[i].IdCliente = _.cloneDeep(this.list.ventas[0].IdCliente);
-                                            this.list.ventas[i].Nacionalidad = _.cloneDeep(this.list.ventas[0].Nacionalidad);
-                                            this.list.ventas[i].Nombres = _.cloneDeep(this.list.ventas[0].Nombres);
-                                            this.list.ventas[i].RazonSocial = _.cloneDeep(this.list.ventas[0].RazonSocial);
-                                            this.list.ventas[i].Recoger = _.cloneDeep(this.list.ventas[0].Recoger);
-                                            this.list.ventas[i].Ruc = _.cloneDeep(this.list.ventas[0].Ruc);
-                                            this.list.ventas[i].Sexo = _.cloneDeep(this.list.ventas[0].Sexo);
-                                            this.list.ventas[i].Telefono = _.cloneDeep(this.list.ventas[0].Telefono);
-                                            this.list.ventas[i].Precio = _.cloneDeep(this.list.ventas[0].Precio);
-                                            this.list.ventas[i].FechaReservacion = _.cloneDeep(this.list.ventas[0].FechaReservacion);
-                                            this.list.ventas[i].HoraReservacion = _.cloneDeep(this.list.ventas[0].HoraReservacion);
-                                            this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(this.list.ventas[0].ValidadorClienteEspecial);
-                                            this.list.ventas[i].Correo = _.cloneDeep(this.list.ventas[0].Correo);
+                                            _this.list.ventas[i].ApellidoMaterno = _.cloneDeep(_this.list.ventas[0].ApellidoMaterno);
+                                            _this.list.ventas[i].ApellidoPaterno = _.cloneDeep(_this.list.ventas[0].ApellidoPaterno);
+                                            _this.list.ventas[i].CodiTipoDoc = _.cloneDeep(_this.list.ventas[0].CodiTipoDoc);
+                                            _this.list.ventas[i].Direccion = _.cloneDeep(_this.list.ventas[0].Direccion);
+                                            _this.list.ventas[i].Documento = _.cloneDeep(_this.list.ventas[0].Documento);
+                                            _this.list.ventas[i].Edad = _.cloneDeep(_this.list.ventas[0].Edad);
+                                            _this.list.ventas[i].FechaNac = _.cloneDeep(_this.list.ventas[0].FechaNac);
+                                            _this.list.ventas[i].IdCliente = _.cloneDeep(_this.list.ventas[0].IdCliente);
+                                            _this.list.ventas[i].Nacionalidad = _.cloneDeep(_this.list.ventas[0].Nacionalidad);
+                                            _this.list.ventas[i].Nombres = _.cloneDeep(_this.list.ventas[0].Nombres);
+                                            _this.list.ventas[i].RazonSocial = _.cloneDeep(_this.list.ventas[0].RazonSocial);
+                                            _this.list.ventas[i].Recoger = _.cloneDeep(_this.list.ventas[0].Recoger);
+                                            _this.list.ventas[i].Ruc = _.cloneDeep(_this.list.ventas[0].Ruc);
+                                            _this.list.ventas[i].Sexo = _.cloneDeep(_this.list.ventas[0].Sexo);
+                                            _this.list.ventas[i].Telefono = _.cloneDeep(_this.list.ventas[0].Telefono);
+                                            _this.list.ventas[i].Precio = _.cloneDeep(_this.list.ventas[0].Precio);
+                                            _this.list.ventas[i].FechaReservacion = _.cloneDeep(_this.list.ventas[0].FechaReservacion);
+                                            _this.list.ventas[i].HoraReservacion = _.cloneDeep(_this.list.ventas[0].HoraReservacion);
+                                            _this.list.ventas[i].ValidadorClienteEspecial = _.cloneDeep(_this.list.ventas[0].ValidadorClienteEspecial);
+                                            _this.list.ventas[i].Correo = _.cloneDeep(_this.list.ventas[0].Correo);
                                         }
+
+                                        _this.indexVenta = auxLength - 1;
+                                        $('#bannerVentas').removeClass().addClass('col-md-10 slideOutRight animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+                                            $(this).removeClass().addClass('col-md-10');
+                                        });
+
+                                        _this.$nextTick(() => {
+                                            document.getElementById('btnTipoPago').focus();
+                                        });
+                                        
+                                        return;
                                     }
                                 }
                             };
                             break;
                     }
 
-                    if (this.indexVenta < this.list.ventas.length - 1)
-                        this.indexVenta++;
+                    if (_this.indexVenta < auxLength - 1)
+                        _this.indexVenta++;
+
                     $('#bannerVentas').removeClass().addClass('col-md-10 slideOutRight animated').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
                         $(this).removeClass().addClass('col-md-10');
                     });
 
-                    this.recorridoSectionVentas();
+                    
+                    _this.$nextTick(() => {
+                        _this.recorridoSectionVentas();
+                    });
                 },
                 limpiarVenta: function () {
                     this.indexVenta = 0;
@@ -9843,6 +9926,11 @@
                 recorrerFechaCita: function () {
                     var _this = this;
 
+                    _this.fechaCita = _this.$getValueDateTimePicker(event);
+
+                    if (!appController.validateMinMax_dpFiltro(_this.fechaCita))
+                        return false; // 'return false' -> 'keyBinds: enter'
+
                     document.getElementById('txtFechaCita').blur();
 
                     _this.$nextTick(() => {
@@ -10933,6 +11021,11 @@
                             break;
                         case 7:
                             {
+                                _this.filtro.fecha = _this.$getValueDateTimePicker(event);
+
+                                if (!appController.validateMinMax_dpFiltro(_this.filtro.fecha))
+                                    return false; // 'return false' -> 'keyBinds: enter'
+
                                 document.getElementById('txtFechaMP').blur();
 
                                 _this.$nextTick(() => {
@@ -14570,6 +14663,7 @@
                     documentosEmitidos: [],
                     documentosSeleccionados: []
                 },
+                paginate: ['itemsDE', 'itemsDS'],
                 mask: {
                     tipoDocumento: ''
                 }
@@ -14589,7 +14683,7 @@
                             if (res.data.Estado) {
                                 _this.TipoTerminalElectronico = res.data.Valor;
                                 _this.filtro.chbDocumentoElec = (_this.TipoTerminalElectronico === 'E' ? true : false);
-                                _this.filtro.rdbManEle = (_this.TipoTerminalElectronico === 'E' ? 'E' : 'M');
+                                _this.listaConceptosNC(_this.filtro.empresa.Ruc, _this.TipoTerminalElectronico, '7', _this.filtro.empresa.Electronico);
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -14701,7 +14795,7 @@
                     this.TipoTerminalElectronico = '';
                     this.TipoDocEleMan = '';
                 },
-                recorrerNotaCredito: function (auxValidate) {
+                recorrerFiltrosNotaCredito: function (auxValidate) {
                     var _this = this;
                     var auxResponse = false;
 
@@ -14734,14 +14828,8 @@
                             $('#cboTipoNumDocNC input[type=search]').focus();
                             if (auxValidate === true) APP.msg.warning('Seleccione un tipo de número documento.');
                         }
-                        else if (!_this.filtro.serieNumDoc) {
+                        else if (!_this.filtro.serieNumDoc && auxValidate !== true)
                             document.getElementById('txtSerieNumDocNC').focus();
-                            if (auxValidate === true) APP.msg.warning('Ingrese serie de documento.');
-                        }
-                        else if (!_this.filtro.numeroNumDoc) {
-                            document.getElementById('txtNumeroNumDocNC').focus();
-                            if (auxValidate === true) APP.msg.warning('Ingrese número de documento.');
-                        }
                         else {
                             document.getElementById('btnBuscarNC').focus();
                             auxResponse = true;
@@ -14764,31 +14852,39 @@
                     await this.listaClientesNC_Autocomplete(this.filtro.clienteId, false);
 
                     if (this.filtro.clienteLabel)
-                        this.recorrerNotaCredito();
+                        this.recorrerFiltrosNotaCredito();
                 },
                 recorridoTxtFechaInicial: function () {
                     this.filtro.fechaInicial = this.$getValueDateTimePicker(event);
 
+                    if (!appController.validateMinMax_dpFiltro(this.filtro.fechaInicial))
+                        return false;
+
                     if (this.filtro.fechaFinal) {
+
                         if (moment(this.filtro.fechaInicial, 'DD/MM/YYYY').isAfter(moment(this.filtro.fechaFinal, 'DD/MM/YYYY'))) {
                             APP.msg.warning('La fecha inicial debe ser menor o igual a la fecha final.');
                             return false;
                         }
                     }
 
-                    this.recorrerNotaCredito();
+                    this.recorrerFiltrosNotaCredito();
                 },
                 recorridoTxtFechaFinal: function () {
                     this.filtro.fechaFinal = this.$getValueDateTimePicker(event);
 
+                    if (!appController.validateMinMax_dpFiltro(this.filtro.fechaFinal))
+                        return false;
+
                     if (this.filtro.fechaInicial) {
+
                         if (moment(this.filtro.fechaInicial, 'DD/MM/YYYY').isAfter(moment(this.filtro.fechaFinal, 'DD/MM/YYYY'))) {
                             APP.msg.warning('La fecha final debe ser igual o mayor a la fecha inicial.');
                             return false;
                         }
                     }
 
-                    this.recorrerNotaCredito();
+                    this.recorrerFiltrosNotaCredito();
                 },
                 getLabel: function (option) {
                     return `${option.id} - ${option.label}`
@@ -14801,7 +14897,7 @@
 
                     var auxRuc = _this.filtro.tipoDocumento.id === '06' ? _this.filtro.cliente.id : _this.filtro.clienteId;
 
-                    APP.rq.axios2.post(APP.base + '/notaCredito/listaDocumentosEmitidos', {
+                    APP.rq.axios.post(APP.base + '/notaCredito/listaDocumentosEmitidos', {
                         Ruc: auxRuc,
                         FechaInicial: _this.filtro.fechaInicial,
                         FechaFinal: _this.filtro.fechaFinal,
@@ -14809,7 +14905,7 @@
                         Numero: _this.filtro.numeroNumDoc,
                         CodiEmpresa: _this.filtro.empresa.id,
                         Tipo: _this.TipoDocEleMan, // Calculado en la validación
-                        
+
                         TipoDocumento: _this.filtro.tipoDocumento.id, // '06' -> Ruc, '01' -> Dni, '03' -> C. extranjería, '07' -> Pasaporte
                         TipoPasEnc: _this.filtro.rdbPasEnc,
                         TipoNumDoc: _this.filtro.tipoNumDoc.id // 'B', 'F', 'M'
@@ -14855,9 +14951,78 @@
 
                     return auxValidate = true;
                 },
-                seleccionarDocumento: function (_key, _item) {
-                    this.list.documentosEmitidos.splice(_key, 1);
+                seleccionarDocumento: function (_Index, _item) {
+                    var findIndex = _.findIndex(this.list.documentosEmitidos, function (o) { return o.Index === _Index; });
+
+                    this.list.documentosEmitidos.splice(findIndex, 1);
                     this.list.documentosSeleccionados.push(_item);
+
+                    this.$nextTick(() => {
+                        this.recorridoDocumentosSeleccionados(1, 0);
+                    });
+                },
+                recorridoDocumentosSeleccionados: function (_auxType, _IndexActual) {
+                    var auxValidate = true;
+                    
+                    if (_auxType === 1) {
+                        for (i = 0; i < this.list.documentosSeleccionados.length; i++) {
+                            if (!this.list.documentosSeleccionados[i].ImporteNC) {
+
+                                var tmpNewPage = parseInt(i / 5);
+
+                                if (this.paginate.itemsDS.page !== tmpNewPage)
+                                    this.paginate.itemsDS.page = tmpNewPage;
+
+                                this.$nextTick(() => {
+                                    document.getElementById('txtDocSelImporteNC_' + this.list.documentosSeleccionados[i].Index).focus();
+                                });
+
+                                return auxValidate = false;
+                            }
+                        }
+                    }
+                    else { // _auxType === 2
+                        document.getElementById('cboDocSelPlano_' + _IndexActual).focus();
+                        return auxValidate = false;
+                    }
+
+                    $('#cboConceptoNC input[type=search]').focus();
+
+                    return auxValidate;
+                },
+                deseleccionarDocumento: function (_Index, _item, _key) {
+                    var findIndex = _.findIndex(this.list.documentosSeleccionados, function (o) { return o.Index === _Index; });
+
+                    this.list.documentosSeleccionados.splice(findIndex, 1);
+                    this.list.documentosEmitidos.push(_item);
+
+                    this.list.documentosEmitidos = _.sortBy(this.list.documentosEmitidos, ['Index']);
+
+                    this.$nextTick(() => {
+                        if (this.list.documentosSeleccionados.length > 0) {
+                            var auxObjectID = document.getElementById('btnDeseleccionarDocSelNC_' + _key);
+                            if (auxObjectID)
+                                auxObjectID.blur();
+                        }
+                    });
+                },
+                listaConceptosNC: function (_RucEmpresa, _TipoTerminalElectronico, _CodDoc, _ElectronicoEmpresa) {
+                    var _this = this;
+
+                    APP.rq.axios2.post(APP.base + '/base/listaConceptosNC', {
+                        RucEmpresa: _RucEmpresa,
+                        TipoTerminalElectronico: _TipoTerminalElectronico,
+                        CodDoc: _CodDoc, // FE: Código de conceptos
+
+                        ElectronicoEmpresa: _ElectronicoEmpresa
+                    })
+                        .then(res => {
+                            if (res.data.Estado)
+                                _this.list.conceptos = _.cloneDeep(res.data.Valor);
+                            else
+                                APP.msg.error(res.data.Mensaje);
+                        })
+                        .catch(APP.rq.axios_handler_error_alert);
                 }
             },
             computed: {},
@@ -14881,6 +15046,10 @@
                 'filtro.clienteId': function (newVal, oldVal) {
                     if (newVal)
                         this.filtro.clienteLabel = '';
+                },
+                'filtro.tipoNumDoc': function (newVal, oldVal) {
+                    if (newVal)
+                        this.filtro.rdbManEle = newVal.id === 'M' ? 'M' : 'E';
                 }
             }
         });

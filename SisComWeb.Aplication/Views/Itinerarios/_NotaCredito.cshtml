@@ -18,11 +18,11 @@
                                           :select-on-tab="true"
                                           :get-option-label="getLabel"
                                           @@input="$refs.refEmpresaNC.typeAheadPointer = $getSelectorVselect(list.empresas, filtro.empresa)"
-                                          @@keydown.13.native.prevent="recorrerNotaCredito()"
-                                          @*@@keydown.9.native.prevent="recorrerNotaCredito()"*@
+                                          @@keydown.13.native.prevent="recorrerFiltrosNotaCredito()"
+                                          @*@@keydown.9.native.prevent="recorrerFiltrosNotaCredito()"*@
                                           ref="refEmpresaNC">
                                     <template slot="option" slot-scope="option">
-                                        <div @@click="recorrerNotaCredito()">{{ option.id }} - {{ option.label }}</div>
+                                        <div @@click="recorrerFiltrosNotaCredito()">{{ option.id }} - {{ option.label }}</div>
                                     </template>
                                     <span slot="no-options" class="text-danger">No hay resultados</span>
                                 </v-select>
@@ -77,11 +77,11 @@
                                               :get-option-label="getLabel"
                                               :filterable="false"
                                               @@search="listaClientesNC_Autocomplete"
-                                              @@keydown.13.native.prevent="recorrerNotaCredito()"
-                                              @*@@keydown.9.native.prevent="recorrerNotaCredito()"*@
+                                              @@keydown.13.native.prevent="recorrerFiltrosNotaCredito()"
+                                              @*@@keydown.9.native.prevent="recorrerFiltrosNotaCredito()"*@
                                               ref="refClienteNC">
                                         <template slot="option" slot-scope="option">
-                                            <div @@click="recorrerNotaCredito()">{{ option.id }} - {{ option.label }}</div>
+                                            <div @@click="recorrerFiltrosNotaCredito()">{{ option.id }} - {{ option.label }}</div>
                                         </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -147,11 +147,11 @@
                                               :options="list.tiposNumDoc"
                                               :select-on-tab="true"
                                               @@input="$refs.refTipoNumDocNC.typeAheadPointer = $getSelectorVselect(list.tiposNumDoc, filtro.tipoNumDoc)"
-                                              @@keydown.13.native.prevent="recorrerNotaCredito()"
-                                              @*@@keydown.9.native.prevent="recorrerNotaCredito()"*@
+                                              @@keydown.13.native.prevent="recorrerFiltrosNotaCredito()"
+                                              @*@@keydown.9.native.prevent="recorrerFiltrosNotaCredito()"*@
                                               ref="refTipoNumDocNC">
                                         <template slot="option" slot-scope="option">
-                                            <div @@click="recorrerNotaCredito()">{{ option.label }}</div>
+                                            <div @@click="recorrerFiltrosNotaCredito()">{{ option.label }}</div>
                                         </template>
                                         <span slot="no-options" class="text-danger">No hay resultados</span>
                                     </v-select>
@@ -162,8 +162,8 @@
                                            ref="refSerieNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="SERIE"
-                                           @@keydown.13.prevent="recorrerNotaCredito()"
-                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@keydown.13.prevent="$refs.refNumeroNumDocNC.focus()"
+                                           @*@@keydown.9.prevent="$refs.refNumeroNumDocNC.focus()"*@
                                            @@focus="$event.target.select()"
                                            @@blur="blurSerieNumDoc"
                                            v-mask="'N'.repeat(3)"
@@ -175,8 +175,8 @@
                                            ref="refNumeroNumDocNC"
                                            class="form-control input-sm"
                                            placeholder="NUMERO"
-                                           @@keydown.13.prevent="recorrerNotaCredito()"
-                                           @*@@keydown.9.prevent="recorrerNotaCredito()"*@
+                                           @@keydown.13.prevent="$refs.refBuscarNC.focus()"
+                                           @*@@keydown.9.prevent="$refs.refBuscarNC.focus()"*@
                                            @@focus="$event.target.select()"
                                            @@blur="blurNumeroNumDoc"
                                            v-mask="'N'.repeat(7)"
@@ -199,18 +199,19 @@
                             <div class="col-md-4" style="text-align: right; ">
                                 <label class="col-md-12 control-label">&nbsp;</label>
                                 <button id="btnBuscarNC"
-                                        @@click="buscarDocumentosEmitidos()"
-                                        class="btn btn-info waves-effect text-left">
+                                        class="btn btn-info waves-effect text-left"
+                                        ref="refBuscarNC"
+                                        @@click="buscarDocumentosEmitidos()">
                                     <i class="fa fa-search fa-fw" aria-hidden="true"></i>Buscar
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group m-b-0">
+                    <div class="form-group m-b-0" v-show="list.documentosEmitidos.length > 0">
                         <div class="col-md-5">
                             <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos emitidos</label>
                             <div class="custom-scroll-container">
-                                <div class="table-responsive" style="background-color: #616e7e; ">
+                                <div class="table-responsive">
                                     <table id="tblListaDocumentosEmitidosNC" class="table table-hover" style="cursor:default; background-color:white; ">
                                         <thead>
                                             <tr>
@@ -222,22 +223,27 @@
                                             </tr>
                                         </thead>
                                         <tbody v-show="list.documentosEmitidos.length > 0">
-                                            <tr v-for="(item, key) in list.documentosEmitidos" @@click="seleccionarDocumento(key, item)">
-                                                <td class="custom-td">{{item.ColumnTipo}}</td>
-                                                <td class="custom-td">{{item.ColumnNroDocumento}}</td>
-                                                <td class="custom-td">{{item.Fecha}}</td>
-                                                <td class="custom-td">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
-                                                <td class="custom-td">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
-                                            </tr>
+                                            <paginate ref="paginatorDocumentosEmitidosNC" name="itemsDE" :list="list.documentosEmitidos" :per="5">
+                                                <tr v-for="item in paginated('itemsDE')" @@click="seleccionarDocumento(item.Index, item)">
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnTipo}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnNroDocumento}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.Fecha}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
+                                                </tr>
+                                            </paginate>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <center>
+                                <paginate-links for="itemsDE" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            </center>
                         </div>
                         <div class="col-md-7">
                             <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos seleccionados</label>
                             <div class="custom-scroll-container">
-                                <div class="table-responsive" style="background-color: #616e7e; ">
+                                <div class="table-responsive">
                                     <table id="tblListaDocumentosSeleccionadosNC" class="table table-hover" style="cursor:default; background-color:white; ">
                                         <thead>
                                             <tr>
@@ -247,40 +253,61 @@
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Oficina</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Importe</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Importe Nota Crédito">Importe N.C.</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Plano</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="10%">Plano</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="5%"></th>
                                             </tr>
                                         </thead>
                                         <tbody v-show="list.documentosSeleccionados.length > 0">
-                                            <tr v-for="(item, key) in list.documentosSeleccionados">
-                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnTipo}}</td>
-                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnNroDocumento}}</td>
-                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{item.Fecha}}</td>
-                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
-                                                <td class="custom-td" style="padding: 5px 10px !important; ">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
-                                                <td class="custom-td">
-                                                    <input :id="'txtDocSelImporteNC_' + key"
-                                                           class="form-control input-sm"
-                                                           type="text"
-                                                           placeholder="0.00"
-                                                           onPaste="return false"
-                                                           v-model="item.ImporteNC"
-                                                           @@input="item.ImporteNC = $filterNumberWithTwoDecimals(item.ImporteNC, 3)"
-                                                           @@blur="item.ImporteNC = $formatNumberWithTwoDecimals($event, item.ImporteNC)"
-                                                           @*@@keydown.13.prevent="recorrerDescuentoControl(true)"*@
-                                                           @*@@keydown.9.prevent="recorrerDescuentoControl(true)"*@
-                                                           style="height: 20px; padding: 0px 10px; "
-                                                           autocomplete="off" />
-                                                </td>
-                                                <td class="custom-td" style="text-align: center; ">
-                                                    <input :id="'cboDocSelPlano_' + key"
-                                                           type="checkbox"
-                                                           v-model="item.Plano">
-                                                </td>
-                                            </tr>
+                                            <paginate ref="paginatorDocumentosSeleccionadosNC" name="itemsDS" :list="list.documentosSeleccionados" :per="5">
+                                                <tr v-for="(item, key) in paginated('itemsDS')">
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnTipo}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.ColumnNroDocumento}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{item.Fecha}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{String(item.CodiPuntoVenta).padStart(2, '0')}}</td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; ">{{parseFloat(item.Total || '0').toFixed(2)}}</td>
+                                                    <td class="custom-td tdImporteNC">
+                                                        <input :id="'txtDocSelImporteNC_' + item.Index"
+                                                               class="form-control input-sm"
+                                                               type="text"
+                                                               placeholder="0.00"
+                                                               onPaste="return false"
+                                                               v-model="item.ImporteNC"
+                                                               @@input="item.ImporteNC = $filterNumberWithTwoDecimals(item.ImporteNC, 3)"
+                                                               @@blur="item.ImporteNC = $formatNumberWithTwoDecimals($event, item.ImporteNC)"
+                                                               @@keydown.13.prevent="recorridoDocumentosSeleccionados(2, item.Index)"
+                                                               @*@@keydown.9.prevent="recorridoDocumentosSeleccionados(2, item.Index)"*@
+                                                               style="height: 18px; padding: 0px 10px; "
+                                                               autocomplete="off" />
+                                                    </td>
+                                                    <td class="custom-td" style="padding: 5px 10px !important; text-align: center; ">
+                                                        <input :id="'cboDocSelPlano_' + item.Index"
+                                                               type="checkbox"
+                                                               v-model="item.Plano"
+                                                               @@keydown.13.prevent="recorridoDocumentosSeleccionados(1, item.Index)"
+                                                               @*@@keydown.9.prevent="recorridoDocumentosSeleccionados(1, item.Index)"*@
+                                                               style="float:left; margin: 2px 0px 0px 5px; " />
+                                                        <label :for="'cboDocSelPlano_' + item.Index"
+                                                               style="margin-top: 0px; margin-bottom: 0px; font-weight: 300; ">
+                                                            {{item.Plano ? 'SI' : 'NO'}}
+                                                        </label>
+                                                    </td>
+                                                    <td class="custom-td" style="padding: 2px 10px 3px 10px !important; ">
+                                                        <button @@click="deseleccionarDocumento(item.Index, item, key)"
+                                                                :id="'btnDeseleccionarDocSelNC_' + key"
+                                                                class="btn btn-danger waves-effect btn-xs"
+                                                                title="Remover">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </paginate>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+                            <center>
+                                <paginate-links for="itemsDS" :async="true" :classes="{'ul': 'pagination'}"></paginate-links>
+                            </center>
                         </div>
                     </div>
                     <div class="form-group m-b-15" v-show="list.documentosSeleccionados.length > 0">
@@ -291,13 +318,12 @@
                                       v-model="filtro.concepto"
                                       :options="list.conceptos"
                                       :select-on-tab="true"
-                                      :get-option-label="getLabel"
                                       @@input="$refs.refConceptoNC.typeAheadPointer = $getSelectorVselect(list.conceptos, filtro.concepto)"
                                       @*@@keydown.13.native.prevent="recorrido(1)"*@
                                       @*@@keydown.9.native.prevent="recorrido(1)"*@
                                       ref="refConceptoNC">
                                 <template slot="option" slot-scope="option">
-                                    <div @*@@click="recorrido(1)"*@>{{ option.id }} - {{ option.label }}</div>
+                                    <div @*@@click="recorrido(1)"*@>{{ option.label }}</div>
                                 </template>
                                 <span slot="no-options" class="text-danger">No hay resultados</span>
                             </v-select>
@@ -371,30 +397,21 @@
                 <button @*@@click="cerrarNotaCredito()"*@
                         v-show="list.documentosSeleccionados.length > 0"
                         class="btn btn-success waves-effect">
-                    <span class="glyphicon glyphicon-plus fa-fw"></span>Nuevo
+                    <i class="fa fa-floppy-o fa-fw" aria-hidden="true"></i>Generar
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
                         v-show="list.documentosSeleccionados.length > 0"
-                        class="btn btn-primary waves-effect">
+                        class="btn btn-info waves-effect">
                     <span class="glyphicon glyphicon-search fa-fw"></span>Buscar
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
                         v-show="list.documentosSeleccionados.length > 0"
-                        class="btn btn-info waves-effect">
-                    <i class="fa fa-print fa-fw" aria-hidden="true"></i>General
-                </button>
-                <button @*@@click="cerrarNotaCredito()"*@
-                        v-show="list.documentosSeleccionados.length > 0"
-                        class="btn btn-info waves-effect">
+                        class="btn btn-primary waves-effect">
                     <span class="glyphicon glyphicon-print fa-fw"></span>Impresión
                 </button>
                 <button @*@@click="cerrarNotaCredito()"*@
-                        class="btn btn-danger waves-effect">
-                    <span class="glyphicon glyphicon-remove fa-fw"></span>Cancelar
-                </button>
-                <button @@click="cerrarNotaCredito()"
                         class="btn btn-inverse waves-effect">
-                    <span class="glyphicon glyphicon-log-out fa-fw"></span>Salir
+                    <i class="fa fa-refresh fa-fw" aria-hidden="true"></i>Limpiar
                 </button>
             </div>
         </div>

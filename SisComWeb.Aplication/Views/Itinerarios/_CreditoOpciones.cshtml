@@ -58,8 +58,6 @@
                                            placeholder="FECHA CITA"
                                            type="text"
                                            @@focus="$event.target.select()"
-                                           @@keydown.13.prevent="recorrerFechaCita()"
-                                           @*@@keydown.9.prevent="recorrerFechaCita()"*@
                                            @@blur="fechaCita = $getValueDateTimePicker($event)"
                                            v-mask="'##/##/####'"
                                            autocomplete="off" />

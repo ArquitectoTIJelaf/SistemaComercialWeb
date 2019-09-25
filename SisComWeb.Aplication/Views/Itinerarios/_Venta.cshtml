@@ -297,8 +297,6 @@
                                                            v-model="filtro.Fecha"
                                                            v-mask="'##/##/####'"
                                                            @@focus="$event.target.select()"
-                                                           @@keydown.13.prevent="nextStep(9)"
-                                                           @*@@keydown.9.prevent="nextStep(9)"*@
                                                            @@blur="filtro.Fecha = $getValueDateTimePicker($event)"
                                                            autocomplete="off" />
                                                     <span @@click="nextStep(8)" class="field-icon m-r-10">{{filtro.Fecha | diaSemana}}</span>

@@ -356,5 +356,41 @@ namespace SisComWeb.Business
                 return new Response<SucursalControlEntity>(false, null, Message.MsgExcGetSucursalControl, false);
             }
         }
+
+        public static Response<List<BaseEntity>> ListaConceptosNC(string RucEmpresa, string TipoTerminalElectronico, string CodDoc, string ElectronicoEmpresa)
+        {
+            try
+            {
+                var lista = new List<BaseEntity>();
+
+                if (TipoTerminalElectronico == "E" && ElectronicoEmpresa == "1")
+                {
+                    var obtenerRparametro = VentaLogic.ObtenerRparametro(RucEmpresa);
+
+                    foreach (var objeto in obtenerRparametro.RDocumentNote)
+                    {
+                        if (objeto.CodDoc == CodDoc) // Motivo: Nota de crédito.
+                        {
+                            var entidad = new BaseEntity()
+                            {
+                                id = objeto.CodMotivo,
+                                label = objeto.Descripcion
+                            };
+
+                            lista.Add(entidad);
+                        }
+                    }
+                }
+                else
+                    lista = BaseRepository.ListaConceptosNC(CodDoc);
+
+                return new Response<List<BaseEntity>>(true, lista, Message.MsgCorrectoListaConceptosNC, true);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(BaseLogic)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaConceptosNC, false);
+            }
+        }
     }
 }

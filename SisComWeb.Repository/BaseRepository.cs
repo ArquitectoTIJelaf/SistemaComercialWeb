@@ -98,6 +98,10 @@ namespace SisComWeb.Repository
                     item.id = DataUtility.ObjectToString(reader["USUARIO"]);
                     item.label = DataUtility.ObjectToString(reader["nomb_usuario"]).ToUpper();
                     break;
+                case 20:
+                    item.id = DataUtility.ObjectToString(reader["codigo"]);
+                    item.label = DataUtility.ObjectToString(reader["descripcion"]).ToUpper();
+                    break;
             }
             return item;
         }
@@ -507,6 +511,7 @@ namespace SisComWeb.Repository
                     }
                 }
             }
+
             return entidad;
         }
 
@@ -534,7 +539,28 @@ namespace SisComWeb.Repository
                     }
                 }
             }
+
             return entidad;
+        }
+
+        public static List<BaseEntity> ListaConceptosNC(string CodiDoc)
+        {
+            var Lista = new List<BaseEntity>();
+
+            using (IDatabase db = DatabaseHelper.GetDatabase())
+            {
+                db.ProcedureName = "scwsp_ListarConceptosNC";
+                db.AddParameter("@codi_doc", DbType.String, ParameterDirection.Input, CodiDoc);
+                using (IDataReader drlector = db.GetDataReader())
+                {
+                    while (drlector.Read())
+                    {
+                        Lista.Add(GetItem(drlector, 20));
+                    }
+                }
+            }
+
+            return Lista;
         }
 
         #endregion

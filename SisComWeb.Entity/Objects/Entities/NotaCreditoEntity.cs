@@ -24,7 +24,6 @@
 
         public string ImpManifiesto { get; set; }
 
-
         public string ColumnTipo { get; set; }
 
         public string ColumnNroDocumento { get; set; }

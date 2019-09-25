@@ -1962,14 +1962,14 @@ namespace SisComWeb.Business
 
                 foreach (var entidad in Listado)
                 {
-                    var obtenerParametroRempresa = new Rempresa();
+                    var obtenerRparametro = new RParametro();
                     var buscarAgenciaEmbarque = VentaRepository.BuscarAgenciaEmpresa(entidad.EmpCodigo, entidad.EmbarqueCod);
 
                     // Solo para 'Terminales electrónicos'
                     if (entidad.BoletoTipo != "M" && entidad.EmpElectronico == "1")
                     {
-                        obtenerParametroRempresa = ObtenerParametroRempresa(entidad.EmpRuc);
-                        if (obtenerParametroRempresa == null)
+                        obtenerRparametro = ObtenerRparametro(entidad.EmpRuc);
+                        if (!obtenerRparametro.Estado)
                             return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
                     }
 
@@ -1979,7 +1979,7 @@ namespace SisComWeb.Business
                         var auxBoletoCompleto = entidad.BoletoTipo + entidad.BoletoSerie + "-" + entidad.BoletoNum;
                         var obtenerPrecioReimpresion = new decimal();
 
-                        var obtenerCodigoX = string.Empty;
+                        var obtenerValidarDocumentResult = new ResponseDocument();
                         if (entidad.BoletoTipo != "M")
                         {
                             if (entidad.ValidateCaja)
@@ -2036,8 +2036,8 @@ namespace SisComWeb.Business
 
                             if (entidad.EmpElectronico == "1")
                             {
-                                obtenerCodigoX = ObtenerCodigoX(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
-                                if (obtenerCodigoX == null)
+                                obtenerValidarDocumentResult = ObtenerValidarDocumentResult(entidad.EmpRuc, entidad.BoletoTipo, short.Parse(entidad.BoletoSerie), int.Parse(entidad.BoletoNum));
+                                if (!obtenerValidarDocumentResult.Estado)
                                     return new Response<List<ImpresionEntity>>(false, listaImpresiones, Message.MsgErrorWebServiceFacturacionElectronica, true);
                             }
                         }
@@ -2059,7 +2059,7 @@ namespace SisComWeb.Business
                         entidad.EmisionHora = DateTime.ParseExact(entidad.EmisionHora, "HH:mm:ss", CultureInfo.InvariantCulture).ToString("hh:mmtt", CultureInfo.InvariantCulture);
                         entidad.DocTipo = TipoDocumentoHomologado(entidad.DocTipo.ToString("D2"));
                         entidad.PrecioDes = DataUtility.MontoSolesALetras(DataUtility.ConvertDecimalToStringWithTwoDecimals(entidad.PrecioCan));
-                        entidad.CodigoX_FE = obtenerCodigoX;
+                        entidad.CodigoX_FE = obtenerValidarDocumentResult.SignatureValue;
                         entidad.PolizaNum = consultaNroPoliza.NroPoliza;
                         entidad.PolizaFechaReg = consultaNroPoliza.FechaReg;
                         entidad.PolizaFechaVen = consultaNroPoliza.FechaVen;
@@ -2091,8 +2091,8 @@ namespace SisComWeb.Business
                         VentaRepository.GrabarAuditoria(objAuditoria);
                     }
                     
-                    entidad.LinkPag_FE = obtenerParametroRempresa.PaginaWebEmisor ?? string.Empty;
-                    entidad.ResAut_FE = obtenerParametroRempresa.ResolucionAutorizado ?? string.Empty;
+                    entidad.LinkPag_FE = obtenerRparametro.Rempresa.PaginaWebEmisor ?? string.Empty;
+                    entidad.ResAut_FE = obtenerRparametro.Rempresa.ResolucionAutorizado ?? string.Empty;
 
                     entidad.EmbarqueDirAgencia = string.IsNullOrEmpty(buscarAgenciaEmbarque.Direccion) ? entidad.EmbarqueDir : buscarAgenciaEmbarque.Direccion;
 
@@ -2393,11 +2393,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static Rempresa ObtenerParametroRempresa(string Ruc)
+        public static RParametro ObtenerRparametro(string Ruc)
         {
             try
             {
-                var Rempresa = new Rempresa();
+                var Rparametro = new RParametro();
 
                 var serviceFE = new Ws_SeeFacteSoapClient();
                 var seguridadFE = new Security
@@ -2405,10 +2405,10 @@ namespace SisComWeb.Business
                     ID = Ruc,
                     User = UserWebSUNAT
                 };
-                
-                 Rempresa = serviceFE.GetParametro(seguridadFE).Rempresa; // ResolucionAutorizado // Paginaweb
 
-                return Rempresa;
+                Rparametro = serviceFE.GetParametro(seguridadFE);
+
+                return Rparametro;
             }
             catch (Exception ex)
             {
@@ -2417,11 +2417,11 @@ namespace SisComWeb.Business
             }
         }
 
-        public static string ObtenerCodigoX(string Ruc, string DocTipo, short BoletoSerie, int BoletoNum)
+        public static ResponseDocument ObtenerValidarDocumentResult(string Ruc, string DocTipo, short BoletoSerie, int BoletoNum)
         {
             try
             {
-                var CodigoX = string.Empty;
+                var responseDocument = new ResponseDocument();
                 var auxTDocumento = string.Empty;
 
                 var serviceFE = new Ws_SeeFacteSoapClient();
@@ -2442,9 +2442,9 @@ namespace SisComWeb.Business
                         break;
                 };
 
-                CodigoX = serviceFE.GetValidarDocument(seguridadFE, auxTDocumento, DocTipo + BoletoSerie.ToString("D3"), BoletoNum.ToString("D8")).SignatureValue ?? string.Empty;
+                responseDocument = serviceFE.GetValidarDocument(seguridadFE, auxTDocumento, DocTipo + BoletoSerie.ToString("D3"), BoletoNum.ToString("D8"));
 
-                return CodigoX;
+                return responseDocument;
             }
             catch (Exception ex)
             {

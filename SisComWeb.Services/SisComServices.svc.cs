@@ -288,6 +288,19 @@ namespace SisComWeb.Services
             }
         }
 
+        public Response<List<BaseEntity>> ListaConceptosNC(string RucEmpresa, string TipoTerminalElectronico, string CodDoc, string ElectronicoEmpresa)
+        {
+            try
+            {
+                return BaseLogic.ListaConceptosNC(RucEmpresa, TipoTerminalElectronico, CodDoc, ElectronicoEmpresa);
+            }
+            catch (Exception ex)
+            {
+                Log.Instance(typeof(SisComServices)).Error(System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                return new Response<List<BaseEntity>>(false, null, Message.MsgExcListaConceptosNC, false);
+            }
+        }
+
         #endregion
 
         #region LOGIN

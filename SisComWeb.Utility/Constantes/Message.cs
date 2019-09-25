@@ -88,6 +88,10 @@
         public const string MsgCorrectoGetSucursalControl = "Correcto: GetSucursalControl.";
         public const string MsgExcGetSucursalControl = "Excepción: GetSucursalControl.";
 
+        // Conceptos - Nota de crédito
+        public const string MsgCorrectoListaConceptosNC = "Correcto: ListaConceptosNC.";
+        public const string MsgExcListaConceptosNC = "Excepción: ListaConceptosNC.";
+
         // Cliente Pasaje
         public const string MsgCorrectoBuscaPasajero = "Correcto: BuscaPasajero.";
         public const string MsgExcBuscaPasajero = "Excepción: BuscaPasajero.";

@@ -98,6 +98,10 @@ namespace SisComWeb.Services
         [WebInvoke(Method = "POST", UriTemplate = "GetSucursalControl", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
         Response<SucursalControlEntity> GetSucursalControl(string CodiPuntoVenta);
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", UriTemplate = "ListaConceptosNC", BodyStyle = WebMessageBodyStyle.WrappedRequest, ResponseFormat = WebMessageFormat.Json)]
+        Response<List<BaseEntity>> ListaConceptosNC(string RucEmpresa, string TipoTerminalElectronico, string CodDoc, string ElectronicoEmpresa);
+
         #endregion
 
         #region LOGIN

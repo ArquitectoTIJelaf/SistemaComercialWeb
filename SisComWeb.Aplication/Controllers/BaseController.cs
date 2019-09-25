@@ -740,6 +740,49 @@ namespace SisComWeb.Aplication.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("listaConceptosNC")]
+        public async Task<JsonResult> ListaConceptosNC(string RucEmpresa, string TipoTerminalElectronico, string CodDoc, string ElectronicoEmpresa)
+        {
+            try
+            {
+                string result = string.Empty;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url + "ListaConceptosNC");
+                    var _body = "{" +
+                                    "\"RucEmpresa\" : \"" + RucEmpresa + "\"" +
+                                    ",\"TipoTerminalElectronico\" : \"" + TipoTerminalElectronico + "\"" +
+                                    ",\"CodDoc\" : \"" + CodDoc + "\"" +
+
+                                    ",\"ElectronicoEmpresa\" : \"" + ElectronicoEmpresa + "\"" +
+                                "}";
+                    HttpResponseMessage response = await client.PostAsync("ListaConceptosNC", new StringContent(_body, Encoding.UTF8, "application/json"));
+                    if (response.IsSuccessStatusCode)
+                        result = await response.Content.ReadAsStringAsync();
+                }
+
+                JToken tmpResult = JObject.Parse(result);
+
+                Response<List<Base>> res = new Response<List<Base>>()
+                {
+                    Estado = (bool)tmpResult.SelectToken("Estado"),
+                    Mensaje = (string)tmpResult.SelectToken("Mensaje"),
+                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new Base
+                    {
+                        id = (string)x["id"],
+                        label = (string)x["label"]
+                    }).ToList()
+                };
+
+                return Json(res, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new Response<List<Base>>(false, Constant.EXCEPCION, null), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
         [HttpPost]
@@ -835,5 +878,7 @@ namespace SisComWeb.Aplication.Controllers
                 return Json(new Response<bool>(false, Constant.EXCEPCION, false), JsonRequestBehavior.AllowGet);
             }
         }
+
+
     }
 }

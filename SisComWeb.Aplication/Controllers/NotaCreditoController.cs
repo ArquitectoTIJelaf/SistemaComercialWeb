@@ -133,7 +133,7 @@ namespace SisComWeb.Aplication.Controllers
                 {
                     Estado = (bool)tmpResult.SelectToken("Estado"),
                     Mensaje = (string)tmpResult.SelectToken("Mensaje"),
-                    Valor = ((JArray)tmpResult["Valor"]).Select(x => new DocumentoEmitidoNC
+                    Valor = ((JArray)tmpResult["Valor"]).Select((x, index) => new DocumentoEmitidoNC
                     {
                         NitCliente = (string)x["NitCliente"],
                         Fecha = (string)x["Fecha"],
@@ -146,11 +146,12 @@ namespace SisComWeb.Aplication.Controllers
                         Tipo = (string)x["Tipo"],
                         IngIgv = (string)x["IngIgv"],
                         ImpManifiesto = (string)x["ImpManifiesto"],
-
                         ColumnTipo = (string)x["ColumnTipo"],
                         ColumnNroDocumento = (string)x["ColumnNroDocumento"],
                         ImporteNC = string.Empty,
-                        Plano = new bool()
+                        Plano = new bool(),
+
+                        Index = index
                     }).ToList(),
                     EsCorrecto = (bool)tmpResult.SelectToken("EsCorrecto")
                 };
