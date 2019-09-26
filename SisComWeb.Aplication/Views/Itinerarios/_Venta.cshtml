@@ -345,7 +345,7 @@
                                     </div>
                                     <div id="fecAbiertaBVdiv" @@click.prevent="changePickedBusVenta('FA')">
                                         <input name="groupRadPickedBusVenta" type="radio" id="fecAbiertaBV" value="FA" v-model="pickedBusVenta" class="align-radio">
-                                        <label for="fecAbiertaBV" class="align-label-radio">F.&nbsp;Abierta</label>
+                                        <label for="fecAbiertaBV" class="align-label-radio" title="Fecha abierta">F. Abierta</label>
                                     </div>
                                     <div id="paseBVdiv" @@click.prevent="changePickedBusVenta('7')">
                                         <input name="groupRadPickedBusVenta" type="radio" id="paseBV" value="7" v-model="pickedBusVenta" class="align-radio">
@@ -544,9 +544,7 @@
                                         ref="right"
                                         v-if="showContextMenu"
                                         @@blur="closeMenu"
-                                        :style="{top: top, left: left}"
-                                        @*v-show="(showContextMenuBloquearAsiento() || itemSelected.FlagVenta !== '') && (pickedBusVenta !== 'FA' &&
-                                                itemSelected.FlagVenta !== 'VI')"*@>
+                                        :style="{top: top, left: left}">
 
                                         <li v-show="itemSelected.FlagVenta === 'V' || itemSelected.FlagVenta === '7' || itemSelected.FlagVenta === '1'"
                                             @@click="contextMenuReimprimir(itemSelected)">

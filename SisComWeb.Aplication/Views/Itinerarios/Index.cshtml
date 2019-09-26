@@ -10051,12 +10051,16 @@
                                 _this.list.clientesPasaje = _.sortBy(res.data.Valor, ['NombreCliente', 'ApellidoPaterno', 'ApellidoMaterno']);
 
                                 _this.$nextTick(function () {
-                                    if (_this.$refs.paginatorBCP && _this.list.clientesPasaje.length > 0) {
-                                        _this.$refs.paginatorBCP.goToPage(1);
+                                    if (_this.list.clientesPasaje.length > 0) {
+                                        if (_this.$refs.paginatorBCP) {
+                                            _this.$refs.paginatorBCP.goToPage(1);
 
-                                        _this.setTd();
+                                            _this.setTd();
+                                        }
                                     }
-                                })
+                                    else
+                                        document.getElementById('txtNombreBCP').focus();
+                                });
                             }
                             else
                                 APP.msg.error(res.data.Mensaje);
@@ -14643,13 +14647,7 @@
                     serieNumDoc: '',
                     numeroNumDoc: '',
                     rdbManEle: 'M',
-                    concepto: null,
-                    notaCredito: '',
-                    fechaEmision: '',
-                    importe: ''
                 },
-                TipoTerminalElectronico: '',
-                TipoDocEleMan: '',
                 list: {
                     empresas: [],
                     tiposDocumentos: [],
@@ -14663,10 +14661,19 @@
                     documentosEmitidos: [],
                     documentosSeleccionados: []
                 },
-                paginate: ['itemsDE', 'itemsDS'],
+                detalle: {
+                    concepto: null,
+                    notaCredito: '',
+                    fechaEmision: moment().format('DD/MM/YYYY'),
+                    importe: '',
+                    glosa: ''
+                },
                 mask: {
                     tipoDocumento: ''
-                }
+                },
+                paginate: ['itemsDE', 'itemsDS'],
+                TipoTerminalElectronico: '',
+                TipoDocEleMan: ''
             },
             mounted: function () { },
             methods: {
@@ -14787,10 +14794,11 @@
                     this.filtro.serieNumDoc = '';
                     this.filtro.numeroNumDoc = '';
                     this.filtro.rdbManEle = 'M'; // M: Manual | E: Electrónico
-                    this.filtro.concepto = null;
-                    this.filtro.notaCredito = '';
-                    this.filtro.fechaEmision = '';
-                    this.filtro.importe = '';
+                    this.detalle.concepto = null;
+                    this.detalle.notaCredito = '';
+                    this.detalle.fechaEmision = '';
+                    this.detalle.importe = '';
+                    this.detalle.glosa = '';
 
                     this.TipoTerminalElectronico = '';
                     this.TipoDocEleMan = '';
@@ -14961,6 +14969,18 @@
                         this.recorridoDocumentosSeleccionados(1, 0);
                     });
                 },
+                seleccionarTodo: function () {
+                    for (i = 0; i < this.list.documentosEmitidos.length; i++) {
+
+                        this.list.documentosSeleccionados.push(_.cloneDeep(this.list.documentosEmitidos[i]));
+                        this.list.documentosEmitidos.splice(i, 1);
+                        i--;
+                    }
+
+                    this.$nextTick(() => {
+                        this.recorridoDocumentosSeleccionados(1, 0);
+                    });
+                },
                 recorridoDocumentosSeleccionados: function (_auxType, _IndexActual) {
                     var auxValidate = true;
                     
@@ -15006,6 +15026,33 @@
                         }
                     });
                 },
+                deseleccionarTodo: async function () {
+                    var confirmDeseleccionarTodo = await APP.msg.confirm(
+                        'Remover documentos',
+                        'Se removerán todos los documentos, ¿Desea continuar?');
+
+                    if (!confirmDeseleccionarTodo)
+                        return;
+
+                    for (i = 0; i < this.list.documentosSeleccionados.length; i++) {
+
+                        this.list.documentosEmitidos.push(_.cloneDeep(this.list.documentosSeleccionados[i]));
+                        this.list.documentosSeleccionados.splice(i, 1);
+                        i--;
+                    }
+
+                    this.list.documentosEmitidos = _.sortBy(this.list.documentosEmitidos, ['Index']);
+                },
+                recorridoImporteNC: function (_auxType, _IndexActual) {
+                    var tmp_i = _.findIndex(this.list.documentosSeleccionados, function (o) { return o.Index === _IndexActual; });
+
+                    if (this.list.documentosSeleccionados[tmp_i].ImporteNC > this.list.documentosSeleccionados[tmp_i].Total) {
+                        APP.msg.warning('El importe de nota de crédito no puede ser mayor al importe del documento.');
+                        return;
+                    }
+
+                    this.recorridoDocumentosSeleccionados(_auxType, _IndexActual);
+                },
                 listaConceptosNC: function (_RucEmpresa, _TipoTerminalElectronico, _CodDoc, _ElectronicoEmpresa) {
                     var _this = this;
 
@@ -15025,7 +15072,18 @@
                         .catch(APP.rq.axios_handler_error_alert);
                 }
             },
-            computed: {},
+            computed: {
+                computedPrueba: function () {
+                    debugger;
+                    var tmpImporte = (_.sumBy(this.list.documentosSeleccionados, function (o) {
+                        return parseFloat(o.ImporteNC || 0);
+                    })).toFixed(2);
+
+                    this.detalle.importe = (tmpImporte === '0.00' ? '' : tmpImporte);
+
+                    return this.detalle.importe;
+                }
+            },
             watch: {
                 'filtro.empresa': function (newVal, oldVal) {
                     if (newVal)

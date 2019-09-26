@@ -207,16 +207,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group m-b-0" v-show="list.documentosEmitidos.length > 0">
+                    <div class="form-group m-b-0" v-show="list.documentosEmitidos.length > 0 || list.documentosSeleccionados.length > 0">
                         <div class="col-md-5">
-                            <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos emitidos</label>
+                            <div class="col-md-12 control-label p-t-0" style="text-align: center; padding-left: 11.5px; padding-right: 11.5px; ">
+                                <label >Documentos emitidos</label>
+                                <button class="btn btn-info waves-effect btn-xs pull-right"
+                                        title="Seleccionar todo"
+                                        @@click="seleccionarTodo()"
+                                        :disabled="list.documentosEmitidos.length <= 0" >
+                                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                </button>
+                            </div>
                             <div class="custom-scroll-container">
                                 <div class="table-responsive">
                                     <table id="tblListaDocumentosEmitidosNC" class="table table-hover" style="cursor:default; background-color:white; ">
                                         <thead>
                                             <tr>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Tipo</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. Documento</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. documento</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emisión</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Oficina</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Importe</th>
@@ -241,14 +249,23 @@
                             </center>
                         </div>
                         <div class="col-md-7">
-                            <label class="col-md-12 control-label p-t-0" style="text-align: center; ">Documentos seleccionados</label>
+
+                            <div class="col-md-12 control-label p-t-0" style="text-align: center; padding-left: 11.5px; padding-right: 11.5px; ">
+                                <label>Documentos seleccionados</label>
+                                <button class="btn btn-danger waves-effect btn-xs pull-right"
+                                        title="Remover todo"
+                                        @@click="deseleccionarTodo()"
+                                        :disabled="list.documentosSeleccionados.length <= 0">
+                                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                                </button>
+                            </div>
                             <div class="custom-scroll-container">
                                 <div class="table-responsive">
                                     <table id="tblListaDocumentosSeleccionadosNC" class="table table-hover" style="cursor:default; background-color:white; ">
                                         <thead>
                                             <tr>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Tipo</th>
-                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. Documento</th>
+                                                <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Número documento">Nro. documento</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%" title="Fecha emisión">F. emisión</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Oficina</th>
                                                 <th style="padding: 4px 10px 4px 10px; " class="custom-th" width="%">Importe</th>
@@ -274,8 +291,9 @@
                                                                v-model="item.ImporteNC"
                                                                @@input="item.ImporteNC = $filterNumberWithTwoDecimals(item.ImporteNC, 3)"
                                                                @@blur="item.ImporteNC = $formatNumberWithTwoDecimals($event, item.ImporteNC)"
-                                                               @@keydown.13.prevent="recorridoDocumentosSeleccionados(2, item.Index)"
-                                                               @*@@keydown.9.prevent="recorridoDocumentosSeleccionados(2, item.Index)"*@
+                                                               @@keydown.13.prevent="recorridoImporteNC(2, item.Index)"
+                                                               @*@@keydown.9.prevent="recorridoImporteNC(2, item.Index)"*@
+                                                               @@focus="$event.target.select()"
                                                                style="height: 18px; padding: 0px 10px; "
                                                                autocomplete="off" />
                                                     </td>
@@ -315,7 +333,7 @@
                             <label class="control-label">Concepto:</label>
                             <v-select id="cboConceptoNC"
                                       placeholder="CONCEPTO"
-                                      v-model="filtro.concepto"
+                                      v-model="detalle.concepto"
                                       :options="list.conceptos"
                                       :select-on-tab="true"
                                       @@input="$refs.refConceptoNC.typeAheadPointer = $getSelectorVselect(list.conceptos, filtro.concepto)"
@@ -330,15 +348,12 @@
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Nota crédito:</label>
-                            <input v-model="filtro.notaCredito"
-                                   @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
-                                   @*@@keydown.13.prevent="recorrido(1)"*@
-                                   @*@@keydown.9.prevent="recorrido(1)"*@
-                                   id="txtNotaCreditoNC"
+                            <input id="txtNotaCreditoNC"
                                    ref="refNotaCreditoNC"
                                    class="form-control input-sm"
                                    placeholder="NOTA CRÉDITO"
-                                   @*maxlength="10" NO SE SABE CON EXACTITUD*@
+                                   :value="detalle.notaCredito"
+                                   disabled="disabled"
                                    autocomplete="off">
                         </div>
                         <div class="col-md-2">
@@ -347,25 +362,18 @@
                                    class="form-control input-sm dpFiltro"
                                    type="text"
                                    placeholder="FECHA EMISIÓN"
-                                   v-model="filtro.fechaEmision"
-                                   v-mask="'##/##/####'"
-                                   @@focus="$event.target.select()"
-                                   @*@@keydown.13.prevent="recorrido(1)"*@
-                                   @*@@keydown.9.prevent="recorrido(1)"*@
-                                   @@blur="filtro.FechaEmision = $getValueDateTimePicker($event)"
+                                   :value="detalle.fechaEmision"
+                                   disabled="disabled"
                                    autocomplete="off" />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Importe:</label>
-                            <input v-model="filtro.importe"
-                                   @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
-                                   @*@@keydown.13.prevent="recorrido(1)"*@
-                                   @*@@keydown.9.prevent="recorrido(1)"*@
-                                   id="txtImporteNC"
+                            <input id="txtImporteNC"
                                    ref="refImporteNC"
                                    class="form-control input-sm"
                                    placeholder="IMPORTE"
-                                   @*maxlength="10" NO SE SABE CON EXACTITUD*@
+                                   :value="computedPrueba"
+                                   disabled="disabled"
                                    autocomplete="off">
                         </div>
                         <div class="col-md-12 m-t-10 p-l-0 p-r-0">
@@ -373,7 +381,7 @@
                                 <label class="control-label">Glosa:</label>
                             </div>
                             <div class="col-md-11">
-                                <input v-model="filtro.glosa"
+                                <input v-model="detalle.glosa"
                                        @*@@input="list.ventas[indexVenta].ApellidoPaterno = $filterLettersToName(list.ventas[indexVenta].ApellidoPaterno)"*@
                                        @*@@keydown.13.prevent="recorrido(1)"*@
                                        @*@@keydown.9.prevent="recorrido(1)"*@
@@ -381,7 +389,7 @@
                                        ref="refGlosaNC"
                                        class="form-control input-sm"
                                        placeholder="GLOSA"
-                                       @*maxlength="10" NO SE SABE CON EXACTITUD*@
+                                       maxlength="100"
                                        autocomplete="off">
                             </div>
                         </div>
